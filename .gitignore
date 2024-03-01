@@ -1,0 +1,7 @@
+*.json
+*.zip
+*.7z
+*.bz2
+*.gz
+*.xz
+.mypy_cache/
