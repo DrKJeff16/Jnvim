@@ -1,4 +1,8 @@
-local exists = require('user').exists
+---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
+
+local User = require('user')
+local exists = User.exists
 
 if not exists('lspconfig') then
 	return
@@ -34,13 +38,15 @@ Neodev.setup({
 	pathStrict = true,
 })
 
+-- TODO: Append if existing instead of assuming.
 local capabilities = require('cmp_nvim_lsp').default_capabilities
 
----@module 'spconfig''
+---@module 'lspconfig''
 local lspconfig
 
 lspconfig = require('lspconfig')
 
+---@type { integer: { integer: string, integer: table } }
 local srv = {
 	{
 		'lua_ls',
@@ -53,10 +59,10 @@ local srv = {
 				    	version = 'LuaJIT',
 				    	fileEncoding = 'utf8',
 				    },
-				    workspace = {
-						checkThirdParty = false,
-						library = rt_file('', true),
-				    },
+				    -- workspace = {
+						-- checkThirdParty = false,
+						-- library = rt_file('', true),
+				    -- },
 					completion = {
 						enable = true,
 						autoRequire = false,
@@ -66,9 +72,9 @@ local srv = {
 					},
 					diagnostics = {
 						enable = true,
-						globals = {
-							'vim',
-						},
+						-- globals = {
+						-- 	'vim',
+						-- },
 						workspaceRate = 70,
 					},
 					hint = {
@@ -117,7 +123,7 @@ local srv = {
 
 				plugins = {
 					autopep8 = {
-						enabled = false,
+						enabled = true,
 					},
 					flake8 = {
 						enabled = true,
@@ -198,12 +204,12 @@ local srv = {
 						enabled = true,
 						convention = 'numpy',
 						addIgnore = {
-							'F400',
-							'F401',
+							'D400',
+							'D401',
 						},
 						ignore = {
-							'F400',
-							'F401',
+							'D400',
+							'D401',
 						},
 						match = "(?!test_).*\\.py",
 						matchDir = "[^\\.].*",
@@ -220,9 +226,7 @@ local srv = {
 						enabled = true,
 						eager = true,
 					},
-					yapf = {
-						enabled = true,
-					},
+					yapf = { enabled = false },
 				},
 
 				rope = {
@@ -262,6 +266,7 @@ au('LspAttach', {
 	    map('n', '<Leader>lgD', lsp_buf.declaration, opts)
 	    map('n', '<Leader>lgd', lsp_buf.definition, opts)
 	    map('n', '<Leader>lk', lsp_buf.hover, opts)
+	    map('n', 'K', lsp_buf.hover, opts)
 	    map('n', '<Leader>lgi', lsp_buf.implementation, opts)
 	    map('n', '<Leader>lS', lsp_buf.signature_help, opts)
 	    map('n', '<Leader>lwa', lsp_buf.add_workspace_folder, opts)
