@@ -15,6 +15,10 @@ local api = vim.api
 local set = vim.o
 local opt = vim.opt
 
+if exists(pfx..'luasnip') then
+	require(pfx..'luasnip')
+end
+
 local sk = require(sub_kinds)
 sk:setup()
 
