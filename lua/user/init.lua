@@ -36,4 +36,12 @@ function M:multisrc(mods, pfx)
 	end
 end
 
+function M.assoc()
+	vim.cmd[[
+	au BufNewFile,BufReadPre *.org set ft=org
+	au BufNewFile,BufReadPre *.clangd set ft=yaml
+	au BufNewFile,BufReadPre .spacemacs set ft=lisp
+	]]
+end
+
 return M

@@ -85,9 +85,10 @@ Lazy.setup({
 		dependencies = { 'folke/neodev.nvim' },
 	},
 	{ 'folke/neodev.nvim', lazy = true },
+
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000, lazy = true },
 	{
 		'folke/tokyonight.nvim',
-		lazy = false,
 		priority = 1000,
 		config = function()
 			local Tokyonight = require('tokyonight')

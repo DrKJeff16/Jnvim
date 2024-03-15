@@ -101,19 +101,12 @@ local srv = {
 		},
 	},
 
-	{
-		'bashls',
-		{
-			capabilities = capabilities(),
-		},
-	},
-
-	{
-		'clangd',
-		{
-			capabilities = capabilities(),
-		},
-	},
+	{ 'bashls', { capabilities = capabilities() } },
+	{ 'clangd', { capabilities = capabilities() } },
+	{ 'cmake', { capabilities = capabilities() } },
+	{ 'css_variables', { capabilities = capabilities() } },
+	{ 'html', { capabilities = capabilities() } },
+	{ 'jsonls', { capabilities = capabilities() } },
 	{
 		'pylsp',
 		{

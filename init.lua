@@ -13,7 +13,6 @@ local map = api.nvim_set_keymap
 local opt_tbl = {}
 
 map('n', '<Space>', '<Nop>', { noremap = true, silent = true })
-map('v', '<Space>', '<Nop>', { noremap = true, silent = true })
 let.mapleader = ' '
 let.maplocalleader = ' '
 
@@ -114,5 +113,7 @@ set.visualbell = false
 
 local User = require('user')
 local exists = User.exists
+
+User.assoc()
 
 local Pkg = (exists('lazy_cfg') and require('lazy_cfg') or nil)
