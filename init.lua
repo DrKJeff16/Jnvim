@@ -15,12 +15,12 @@ local opt_tbl = {}
 map('n', '<Space>', '<Nop>', { noremap = true, silent = true })
 let.mapleader = ' '
 let.maplocalleader = ' '
+let.loaded_netrw = 1
+let.loaded_netrwPlugin = 1
 
 vim.cmd[[
 filetype plugin indent on
 syntax on
-let g:loaded_netrw       = 1
-let g:loaded_netrwPlugin = 1
 ]]
 
 map('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
@@ -29,7 +29,7 @@ map('n', '<Leader>fn', ':edit ', { noremap = true, silent = false })
 map('n', '<Leader>fs', ':w<CR>', { noremap = true, silent = true })
 map('n', '<Leader>fS', ':w ', { noremap = true, silent = false })
 
-map('n', '<Leader>fvs', ':luafile $MYVIMRC<CR>', { noremap = true, silent = false })
+map('n', '<Leader>fvs', ':luafile $MYVIMRC<CR>', { noremap = true, silent = true })
 map('n', '<Leader>fve', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = false })
 
 map('n', '<Leader>wss', ':split<CR>', { noremap = true, silent = true })
@@ -56,8 +56,7 @@ map('n', '<Leader>bD', ':bdel!<CR>', { noremap = true, silent = true })
 map('n', '<Leader>bf', ':bfirst<CR>', { noremap = true, silent = true })
 map('n', '<Leader>bl', ':blast<CR>', { noremap = true, silent = true })
 
-map('v', '<Leader>s', ':sort<CR>', { noremap = true, silent = false })
-map('v', '<Leader>S', ':sort!<CR>', { noremap = true, silent = false })
+map('v', '<Leader>is', ':sort<CR>', { noremap = true, silent = false })
 
 set.fileformat = 'unix'
 set.encoding = 'utf-8'
