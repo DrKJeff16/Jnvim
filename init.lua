@@ -23,6 +23,8 @@ let g:loaded_netrw       = 1
 let g:loaded_netrwPlugin = 1
 ]]
 
+map('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+
 map('n', '<Leader>fn', ':edit ', { noremap = true, silent = false })
 map('n', '<Leader>fs', ':w<CR>', { noremap = true, silent = true })
 map('n', '<Leader>fS', ':w ', { noremap = true, silent = false })
