@@ -15,4 +15,4 @@ hi TreesitterContextBottom gui=underline guisp=Grey
 hi TreesitterContextLineNumberBottom gui=underline guisp=Grey
 ]]
 
-Context.setup()
+Context.setup({})

@@ -57,7 +57,7 @@ Lazy.setup({
 	{ 'vim-scripts/L9', lazy = true },
 	{
 		'nvim-treesitter/nvim-treesitter',
-		build = ':TSUpdate',
+		build = ':verbose TSUpdate',
 		cmd = {
       		"TSInstall",
       		"TSUninstall",

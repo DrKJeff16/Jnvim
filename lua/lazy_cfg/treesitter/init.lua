@@ -34,7 +34,6 @@ local ensure = {
 	'html',
 	'ini',
 	'java',
-	'javascript',
 	'json',
 	'json5',
 	'jsonc',
@@ -51,7 +50,6 @@ local ensure = {
 	'readline',
 	'regex',
 	'rst',
-	'rust',
 	'scss',
 	'ssh_config',
 	'todotxt',
@@ -62,7 +60,7 @@ local ensure = {
 	'yaml',
 }
 
-if exists('orgmode') then
+local add_org = function()
 	local Orgmode = require('orgmode')
 	local org_dir = '~/.org'
 	Orgmode.setup_ts_grammar()
@@ -73,6 +71,10 @@ if exists('orgmode') then
 		org_agenda_files = org_dir..'/agenda/*',
 		org_default_notes_file = org_dir..'/notes/default.org'
 	})
+end
+
+if exists('orgmode') then
+	add_org()
 end
 
 ---@return string[]|table|boolean
