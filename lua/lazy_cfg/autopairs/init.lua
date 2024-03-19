@@ -1,5 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
+
 local User = require('user')
 local exists = User.exists
 
