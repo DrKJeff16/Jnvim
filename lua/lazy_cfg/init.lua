@@ -244,7 +244,7 @@ source_cfg('lualine')
 source_cfg('lspconfig')
 source_cfg('cmp')
 source_cfg('treesitter')
--- source_cfg('autopairs')
+source_cfg('autopairs')
 source_cfg('blank_line')
 
 vim.api.nvim_set_keymap('n', '<Leader>lL', ':Lazy<CR>', { noremap = true, silent = true })

@@ -11,8 +11,9 @@ end
 
 local pfix = 'lazy_cfg.autopairs.'
 
-local Rule = require('nvim-autopairs.rule')
 local Ap = require('nvim-autopairs')
+
+local Rule = require('nvim-autopairs.rule')
 local Conds = require('nvim-autopairs.conds')
 local Handlers = require('nvim-autopairs.completion.handlers')
 
@@ -23,6 +24,7 @@ Ap.setup({
 		"spectre_panel",
 		'checkhealth',
 		'help',
+		'lazy',
 	},
 	
 	disable_in_macro = false,  -- disable when recording or executing a macro
@@ -47,7 +49,7 @@ Ap.setup({
 	ignored_next_char = string.gsub([[ [%w%%%'%[%"%.] ]], "%s+", ""),
 	-- ignored_next_char = '[%w%.]',
 
-	map_cr = true,
+	map_cr = false,
 	map_bs = true,  -- map the <BS> key
 	-- map_c_h = false,  -- Map the <C-h> key to delete a pair
 	map_c_w = false,  -- map <c-w> to delete a pair if possible
@@ -55,6 +57,7 @@ Ap.setup({
 		all = '(',
 		tex = '{',
 		bash = '{',
+		lua = '{',
 	},
 
 	fast_wrap = {
