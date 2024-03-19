@@ -2,10 +2,12 @@
 ---@diagnostic disable:unused-function
 
 local set = vim.o
+local opt = vim.opt
 local fn = vim.fn
 local api = vim.api
 local let = vim.g
 local lsp = vim.lsp
+local bo = vim.bo
 
 local map = api.nvim_set_keymap
 
@@ -18,45 +20,43 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-vim.cmd[[
-filetype plugin indent on
-syntax on
-]]
+local s_noremap = { noremap = true, silent = true }
+local ns_noremap = { noremap = true, silent = false }
 
-map('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+map('t', '<Esc>', '<C-\\><C-n>', s_noremap)
 
-map('n', '<Leader>fn', ':edit ', { noremap = true, silent = false })
-map('n', '<Leader>fs', ':w<CR>', { noremap = true, silent = true })
-map('n', '<Leader>fS', ':w ', { noremap = true, silent = false })
+map('n', '<Leader>fn', ':edit ', ns_noremap)
+map('n', '<Leader>fs', ':w<CR>', s_noremap)
+map('n', '<Leader>fS', ':w ', ns_noremap)
 
-map('n', '<Leader>fvs', ':luafile $MYVIMRC<CR>', { noremap = true, silent = true })
-map('n', '<Leader>fve', ':tabnew $MYVIMRC<CR>', { noremap = true, silent = false })
+map('n', '<Leader>fvs', ':luafile $MYVIMRC<CR>', s_noremap)
+map('n', '<Leader>fve', ':tabnew $MYVIMRC<CR>', ns_noremap)
 
-map('n', '<Leader>wss', ':split<CR>', { noremap = true, silent = true })
-map('n', '<Leader>wsv', ':vsplit<CR>', { noremap = true, silent = true })
-map('n', '<Leader>wsS', ':split ', { noremap = true, silent = false })
-map('n', '<Leader>wsV', ':vsplit ', { noremap = true, silent = false })
+map('n', '<Leader>wss', ':split<CR>', s_noremap)
+map('n', '<Leader>wsv', ':vsplit<CR>', s_noremap)
+map('n', '<Leader>wsS', ':split ', ns_noremap)
+map('n', '<Leader>wsV', ':vsplit ', ns_noremap)
 
-map('n', '<Leader>qq', ':qa<CR>', { noremap = true, silent = true })
-map('n', '<Leader>qQ', ':qa!<CR>', { noremap = true, silent = true })
+map('n', '<Leader>qq', ':qa<CR>', s_noremap)
+map('n', '<Leader>qQ', ':qa!<CR>', s_noremap)
 
-map('n', '<Leader>tn', ':tabN<CR>', { noremap = true, silent = false })
-map('n', '<Leader>tp', ':tabp<CR>', { noremap = true, silent = false })
-map('n', '<Leader>td', ':tabc<CR>', { noremap = true, silent = true })
-map('n', '<Leader>tD', ':tabc!<CR>', { noremap = true, silent = true })
-map('n', '<Leader>tf', ':tabfirst<CR>', { noremap = true, silent = true })
-map('n', '<Leader>tl', ':tablast<CR>', { noremap = true, silent = true })
-map('n', '<Leader>ta', ':tabnew ', { noremap = true, silent = false })
-map('n', '<Leader>tA', ':tabnew<CR>', { noremap = true, silent = true })
+map('n', '<Leader>tn', ':tabN<CR>', ns_noremap)
+map('n', '<Leader>tp', ':tabp<CR>', ns_noremap)
+map('n', '<Leader>td', ':tabc<CR>', s_noremap)
+map('n', '<Leader>tD', ':tabc!<CR>', s_noremap)
+map('n', '<Leader>tf', ':tabfirst<CR>', s_noremap)
+map('n', '<Leader>tl', ':tablast<CR>', s_noremap)
+map('n', '<Leader>ta', ':tabnew ', ns_noremap)
+map('n', '<Leader>tA', ':tabnew<CR>', s_noremap)
 
-map('n', '<Leader>bn', ':bN<CR>', { noremap = true, silent = false })
-map('n', '<Leader>bp', ':bp<CR>', { noremap = true, silent = false })
-map('n', '<Leader>bd', ':bdel<CR>', { noremap = true, silent = true })
-map('n', '<Leader>bD', ':bdel!<CR>', { noremap = true, silent = true })
-map('n', '<Leader>bf', ':bfirst<CR>', { noremap = true, silent = true })
-map('n', '<Leader>bl', ':blast<CR>', { noremap = true, silent = true })
+map('n', '<Leader>bn', ':bN<CR>', ns_noremap)
+map('n', '<Leader>bp', ':bp<CR>', ns_noremap)
+map('n', '<Leader>bd', ':bdel<CR>', s_noremap)
+map('n', '<Leader>bD', ':bdel!<CR>', s_noremap)
+map('n', '<Leader>bf', ':bfirst<CR>', s_noremap)
+map('n', '<Leader>bl', ':blast<CR>', s_noremap)
 
-map('v', '<Leader>is', ':sort<CR>', { noremap = true, silent = false })
+map('v', '<Leader>is', ':sort<CR>', ns_noremap)
 
 set.fileformat = 'unix'
 set.encoding = 'utf-8'
@@ -64,8 +64,8 @@ set.fileencoding = 'utf-8'
 
 set.formatoptions = 'orq'
 
--- hi.all()
 set.completeopt = 'menu,menuone,noinsert,noselect,preview'
+opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
 
 set.backspace = 'indent,eol,start'
 set.mouse = ''
@@ -118,3 +118,8 @@ local exists = User.exists
 User.assoc()
 
 local Pkg = (exists('lazy_cfg') and require('lazy_cfg') or nil)
+
+vim.cmd[[
+filetype plugin indent on
+syntax on
+]]
