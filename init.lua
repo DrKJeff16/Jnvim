@@ -30,102 +30,88 @@ local s_noremap = { noremap = true, silent = true }
 ---@type MapOpts
 local ns_noremap = { noremap = true, silent = false }
 
-map('t', '<Esc>', '<C-\\><C-n>', s_noremap)
+---@param lhs string
+---@param rhs string
+---@param opts? MapOpts
+local nmap = function(lhs, rhs, opts)
+	opts = opts or s_noremap
+	map('n', lhs, rhs, opts)
+end
+---@param lhs string
+---@param rhs string
+---@param opts? MapOpts
+local vmap = function(lhs, rhs, opts)
+	opts = opts or s_noremap
+	map('v', lhs, rhs, opts)
+end
+---@param lhs string
+---@param rhs string
+---@param opts? MapOpts
+local imap = function(lhs, rhs, opts)
+	opts = opts or s_noremap
+	map('i', lhs, rhs, opts)
+end
+---@param lhs string
+---@param rhs string
+---@param opts? MapOpts
+local tmap = function(lhs, rhs, opts)
+	opts = opts or s_noremap
+	map('t', lhs, rhs, opts)
+end
 
-map('n', '<Leader>fn', ':edit ', ns_noremap)
-map('n', '<Leader>fs', ':w<CR>', s_noremap)
-map('n', '<Leader>fS', ':w ', ns_noremap)
-
-map('n', '<Leader>fvs', ':luafile $MYVIMRC<CR>', s_noremap)
-map('n', '<Leader>fve', ':tabnew $MYVIMRC<CR>', ns_noremap)
-
-map('n', '<Leader>wss', ':split<CR>', s_noremap)
-map('n', '<Leader>wsv', ':vsplit<CR>', s_noremap)
-map('n', '<Leader>wsS', ':split ', ns_noremap)
-map('n', '<Leader>wsV', ':vsplit ', ns_noremap)
-
-map('n', '<Leader>qq', ':qa<CR>', s_noremap)
-map('n', '<Leader>qQ', ':qa!<CR>', s_noremap)
-
-map('n', '<Leader>tn', ':tabN<CR>', ns_noremap)
-map('n', '<Leader>tp', ':tabp<CR>', ns_noremap)
-map('n', '<Leader>td', ':tabc<CR>', s_noremap)
-map('n', '<Leader>tD', ':tabc!<CR>', s_noremap)
-map('n', '<Leader>tf', ':tabfirst<CR>', s_noremap)
-map('n', '<Leader>tl', ':tablast<CR>', s_noremap)
-map('n', '<Leader>ta', ':tabnew ', ns_noremap)
-map('n', '<Leader>tA', ':tabnew<CR>', s_noremap)
-
-map('n', '<Leader>bn', ':bN<CR>', ns_noremap)
-map('n', '<Leader>bp', ':bp<CR>', ns_noremap)
-map('n', '<Leader>bd', ':bdel<CR>', s_noremap)
-map('n', '<Leader>bD', ':bdel!<CR>', s_noremap)
-map('n', '<Leader>bf', ':bfirst<CR>', s_noremap)
-map('n', '<Leader>bl', ':blast<CR>', s_noremap)
-
-map('v', '<Leader>is', ':sort<CR>', ns_noremap)
-
-set.fileformat = 'unix'
-set.encoding = 'utf-8'
-set.fileencoding = 'utf-8'
-
-set.formatoptions = 'orq'
-
-set.completeopt = 'menu,menuone,noinsert,noselect,preview'
-opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
-
-set.backspace = 'indent,eol,start'
-set.mouse = ''
-set.ruler = true
-set.laststatus = 2
-set.hidden = true
-set.showtabline = 2
-set.wrap = true
-set.wildmenu = true
-set.showcmd = true
-set.showmode = false
-set.autoread = true
-set.spell = false
--- set.secure = true
-set.confirm = true
-
-set.incsearch = true
-set.hlsearch = true
-set.showmatch = true
-
-set.smartcase = true
-set.ignorecase = false
-
-set.number = true
-set.relativenumber = false
-set.signcolumn = 'yes'
-
-set.background = 'dark'
-set.termguicolors = true
-
-set.tabstop = 4
-set.softtabstop = 4
-set.shiftwidth = 4
-set.expandtab = false
-set.autoindent = true
-set.smartindent = true
-set.smarttab = true
-set.copyindent = true
-set.preserveindent = true
-
-set.splitbelow = true
-set.splitright = true
-
-set.belloff = 'all'
-set.visualbell = false
-
-local User = require('user')
-local exists = User.exists
+nmap('<Space>', '<Nop>')
+let.mapleader = ' '
+let.maplocalleader = ' '
 
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-local Pkg = (exists('lazy_cfg') and require('lazy_cfg') or nil)
+tmap('<Esc>', '<C-\\><C-n>')
+
+---@type MapTbl[]
+local nmap_tbl = {
+	{ lhs = '<Leader>fn', rhs = ':edit ', opts = ns_noremap },
+	{ lhs = '<Leader>fs', rhs = ':w<CR>' },
+	{ lhs = '<Leader>fS', rhs = ':w ', opts = ns_noremap },
+	{ lhs = '<Leader>ff', rhs = ':ed ', opts = ns_noremap },
+
+	{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
+	{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = ns_noremap },
+
+	{ lhs = '<Leader>wss', rhs = ':split<CR>' },
+	{ lhs = '<Leader>wsv', rhs = ':vsplit<CR>' },
+	{ lhs = '<Leader>wsS', rhs = ':split ', opts = ns_noremap },
+	{ lhs = '<Leader>wsV', rhs = ':vsplit ', opts = ns_noremap },
+
+	{ lhs = '<Leader>qq', rhs = ':qa<CR>' },
+	{ lhs = '<Leader>qQ', rhs = ':qa!<CR>' },
+
+	{ lhs = '<Leader>tn', rhs = ':tabN<CR>', opts = ns_noremap },
+	{ lhs = '<Leader>tp', rhs = ':tabp<CR>', opts = ns_noremap },
+	{ lhs = '<Leader>td', rhs = ':tabc<CR>' },
+	{ lhs = '<Leader>tD', rhs = ':tabc!<CR>' },
+	{ lhs = '<Leader>tf', rhs = ':tabfirst<CR>' },
+	{ lhs = '<Leader>tl', rhs = ':tablast<CR>' },
+	{ lhs = '<Leader>ta', rhs = ':tabnew ', opts = ns_noremap },
+	{ lhs = '<Leader>tA', rhs = ':tabnew<CR>' },
+
+	{ lhs = '<Leader>bn', rhs = ':bNext<CR>' },
+	{ lhs = '<Leader>bp', rhs = ':bprevious<CR>' },
+	{ lhs = '<Leader>bd', rhs = ':bdel<CR>' },
+	{ lhs = '<Leader>bD', rhs = ':bdel!<CR>' },
+	{ lhs = '<Leader>bf', rhs = ':bfirst<CR>' },
+	{ lhs = '<Leader>bl', rhs = ':blast<CR>' },
+}
+
+for _, v in next, nmap_tbl do
+	if not v.opts then
+		nmap(v.lhs, v.rhs)
+	else
+		nmap(v.lhs, v.rhs, v.opts)
+	end
+end
+
+vmap('<Leader>is', ':sort<CR>')
 
 vim.cmd[[
 filetype plugin indent on
