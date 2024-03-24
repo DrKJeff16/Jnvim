@@ -33,7 +33,7 @@ local hi = api.nvim_set_hl
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')
 
-local Tapi = api.tree
+local Tapi = require('nvim-tree.api').tree
 
 ---@alias KeyOpts vim.keymap.set.Opts
 
@@ -285,3 +285,7 @@ local hl_set = function(hls)
 end
 
 hl_set(hl_groups)
+
+kmap('n', '<Leader>ftt', Tapi.open, { noremap = true, silent = true })
+kmap('n', '<Leader>ftd', Tapi.close, { noremap = true, silent = true })
+kmap('n', '<Leader>ftf', Tapi.focus, { noremap = true, silent = true })
