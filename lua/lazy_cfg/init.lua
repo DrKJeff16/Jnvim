@@ -1,26 +1,30 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local fn = vim.fn
+local opt = vim.opt
+local let = vim.g
+local set = vim.o
+
+local lazypath = fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 local User = require('user')
 local exists = User.exists
 
-if not exists('lazy') then
-	if not vim.loop.fs_stat(lazypath) then
-  		vim.fn.system({
-    		"git",
-    		"clone",
-    		"--filter=blob:none",
-    		"https://github.com/folke/lazy.nvim.git",
-    		"--branch=stable", -- latest stable release
-    		lazypath,
-  		})
-	end
+if not exists('lazy') or not vim.loop.fs_stat(lazypath) then
+  	fn.system({
+    	"git",
+    	"clone",
+    	"--filter=blob:none",
+    	"https://github.com/folke/lazy.nvim.git",
+    	"--branch=stable", -- latest stable release
+    	lazypath,
+  	})
 end
 
-vim.opt.rtp:prepend(lazypath)
+opt.rtp:prepend(lazypath)
 
+---@type string
 local pfx = 'lazy_cfg.'
 
 ---@param dir string
@@ -37,38 +41,20 @@ end
 local Lazy = require('lazy')
 
 Lazy.setup({
-	{
-		'folke/lazy.nvim',
-		priority = 1000,
-		event = 'VimEnter',
-	},
-	{
-		'tpope/vim-commentary',
-		priority = 660,
-		event = 'InsertEnter',
-	},
-	{
-		'tpope/vim-endwise',
-		priority = 750,
-		event = 'InsertEnter',
-	},
-	{ 'tpope/vim-fugitive', lazy = true },
+	{ 'folke/lazy.nvim', priority = 1000 },
+
+	{ 'tpope/vim-commentary', lazy = false },
+	{ 'tpope/vim-endwise', lazy = false },
+	{ 'tpope/vim-fugitive', lazy = false },
 	{ 'tpope/vim-speeddating', lazy = true },
-	{ 'vim-scripts/L9', lazy = true },
+
+	{ 'vim-scripts/L9', lazy = false },
+
 	{
 		'nvim-treesitter/nvim-treesitter',
+		lazy = true,
 		build = ':verbose TSUpdate',
-		cmd = {
-      		"TSInstall",
-      		"TSUninstall",
-      		"TSUpdate",
-      		"TSUpdateSync",
-      		"TSInstallInfo",
-      		"TSInstallSync",
-      		"TSInstallFromGrammar",
-    	},
-    	event = "User FileOpened",
-		priority = 750,
+		priority = 850,
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-context',
 			'nvim-orgmode/orgmode',
@@ -81,10 +67,12 @@ Lazy.setup({
 
 	{
 		'neovim/nvim-lspconfig',
+		lazy = true,
 		priority = 850,
 		dependencies = { 'folke/neodev.nvim' },
 	},
-	{ 'folke/neodev.nvim', lazy = true },
+	{ 'folke/neodev.nvim', lazy = true, dependencies = { 'folke/neoconf.nvim' } },
+	{ 'folke/neoconf.nvim', lazy = true },
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000, lazy = true },
 	{
@@ -94,23 +82,23 @@ Lazy.setup({
 			local Tokyonight = require('tokyonight')
 
 			Tokyonight.setup({
-				style = "night", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-  				transparent = false, -- Enable this to disable setting the background color
-  				terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
+				style = "night",
+  				transparent = false,
+  				terminal_colors = true,
   				styles = {
   					comments = { italic = false },
   					keywords = { italic = false },
   					functions = { bold = true },
   					variables = {},
-  					-- Background styles. Can be "dark", "transparent" or "normal"
-  					sidebars = "dark", -- style for sidebars, see below
-  					floats = "dark", -- style for floating windows
+  					sidebars = "dark",
+  					floats = "dark",
   				},
 			})
+
 			vim.cmd[[colorscheme tokyonight-night]]
 		end,
 	},
-	{ 'lunarvim/lunar.nvim', lazy = true },
+
 	{
   		"folke/todo-comments.nvim",
   		dependencies = { "nvim-lua/plenary.nvim" },
@@ -124,54 +112,18 @@ Lazy.setup({
 			"PlenaryBustedDirectory",
 		},
 	},
-	{
-		"lewis6991/hover.nvim",
-    	config = function()
-        	require("hover").setup {
-            	init = function()
-                	-- Require providers
-                	if exists('lspconfig') then
-                		require("hover.providers.lsp")
-                	end
-                	-- require('hover.providers.gh')
-                	-- require('hover.providers.gh_user')
-                	-- require('hover.providers.jira')
-                	require('hover.providers.man')
-                	-- require('hover.providers.dictionary')
-            	end,
-            	preview_opts = {
-                	border = 'single'
-            	},
-            	-- Whether the contents of a currently open hover window should be moved
-            	-- to a :h preview-window when pressing the hover keymap.
-            	preview_window = false,
-            	title = true,
-            	mouse_providers = {
-                	'LSP'
-            	},
-            	mouse_delay = 1000
-        	}
 
-        	-- Setup keymaps
-        	vim.keymap.set("n", "K", require("hover").hover, {desc = "hover.nvim"})
-        	vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
-        	vim.keymap.set("n", "<C-p>", function() require("hover").hover_switch("previous") end, {desc = "hover.nvim (previous source)"})
-        	vim.keymap.set("n", "<C-n>", function() require("hover").hover_switch("next") end, {desc = "hover.nvim (next source)"})
+	-- { "lewis6991/hover.nvim", lazy = true },
 
-        	-- Mouse support
-        	vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
-        	vim.o.mousemoveevent = true
-		end,
-		event = 'User FileOpened',
-	},
 	{
 		'hrsh7th/nvim-cmp',
+		lazy = true,
+		event = { 'InsertEnter', 'CmdlineEnter' },
 		priority = 1000,
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter',
 			'neovim/nvim-lspconfig',
 			'onsails/lspkind.nvim',
-		    'L3MON4D3/LuaSnip',
 
 		    "hrsh7th/cmp-nvim-lsp",
 		    "hrsh7th/cmp-nvim-lua",
@@ -183,27 +135,27 @@ Lazy.setup({
 		    "FelipeLema/cmp-async-path",
 		    "hrsh7th/cmp-cmdline",
 		    'saadparwaiz1/cmp_luasnip',
-			'folke/neodev.nvim',
 		},
 	},
-	{ 'onsails/lspkind.nvim', lazy = false, priority = 8500 },
+	{ 'onsails/lspkind.nvim', lazy = true },
+
+	{ 'hrsh7th/cmp-nvim-lsp', lazy = true },
+	{ 'hrsh7th/cmp-nvim-lua', lazy = true },
+	{ 'hrsh7th/cmp-nvim-lsp-document-symbol', lazy = true },
+	{ 'hrsh7th/cmp-nvim-lsp-signature-help', lazy = true },
+	{ 'hrsh7th/cmp-buffer', lazy = true },
+	{ 'hrsh7th/cmp-path', lazy = true },
+	{ 'petertriho/cmp-git', lazy = true },
+	{ 'FelipeLema/cmp-async-path', lazy = true },
+	{ 'hrsh7th/cmp-cmdline', lazy = true },
+	{ 'saadparwaiz1/cmp_luasnip', lazy = true, dependencies = { 'L3MON4D3/LuaSnip' } },
 	{
 		'L3MON4D3/LuaSnip',
+		lazy = true,
 		dependencies = { "rafamadriz/friendly-snippets" },
 		build = 'make install_jsregexp',
 	},
-	{ "rafamadriz/friendly-snippets", lazy = false },
-
-	{'hrsh7th/cmp-nvim-lsp', lazy = false},
-	{'hrsh7th/cmp-nvim-lua', lazy = false},
-	{'hrsh7th/cmp-nvim-lsp-document-symbol', lazy = true },
-	{'hrsh7th/cmp-nvim-lsp-signature-help', lazy = true },
-	{'hrsh7th/cmp-buffer', lazy = true},
-	{'hrsh7th/cmp-path', lazy = false},
-	{'petertriho/cmp-git', lazy = true},
-	{'FelipeLema/cmp-async-path', lazy = true},
-	{'hrsh7th/cmp-cmdline', lazy = false},
-	{'saadparwaiz1/cmp_luasnip', lazy = true},
+	{ "rafamadriz/friendly-snippets", lazy = true },
 
 	{
 		"nvim-telescope/telescope.nvim",
@@ -213,38 +165,31 @@ Lazy.setup({
 	},
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true },
 
-	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000 },
+	{ 'nvim-tree/nvim-web-devicons', lazy = true },
 	{
 		'nvim-lualine/lualine.nvim',
+		lazy = true,
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 		priority = 1000,
 	},
 
-	{
-		'windwp/nvim-autopairs',
-		event = 'InsertEnter',
-		priority = 450,
-	},
+	{ 'windwp/nvim-autopairs', lazy = true },
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
 		lazy = true,
 		dependencies = { 'https://gitlab.com/HiPhish/rainbow-delimiters.nvim' },
+		enabled = false,
 	},
 
-	{
-    	"ahmedkhalf/project.nvim",
-    	lazy = true,
-    	event = "VimEnter",
-    	cmd = "Telescope projects",
-  	},
+	{ "ahmedkhalf/project.nvim", lazy = true, cmd = "Telescope projects" },
 })
 
-source_cfg('lualine')
 source_cfg('lspconfig')
-source_cfg('cmp')
 source_cfg('treesitter')
-source_cfg('autopairs')
-source_cfg('blank_line')
+-- source_cfg('autopairs')
+-- source_cfg('blank_line')
+source_cfg('cmp')
+source_cfg('lualine')
 
-vim.api.nvim_set_keymap('n', '<Leader>lL', ':Lazy<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>Ll', ':Lazy<CR>', { noremap = true, silent = true })
