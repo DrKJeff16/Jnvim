@@ -195,13 +195,20 @@ cmp.setup({
 		docs = { auto_open = true },
 	},
 
+	completion = {
+		autocomplete = {
+			require('cmp.types').cmp.TriggerEvent.TextChanged,
+		},
+	},
+
 	formatting = sk.formatting,
+
 	matching = {
 		disallow_fuzzy_matching = false,
 		disallow_fullfuzzy_matching = true,
 		disallow_prefix_unmatching = false,
 		disallow_partial_matching = false,
-		disallow_partial_fuzzy_matching = false,
+		disallow_partial_fuzzy_matching = true,
 	},
 	snippet = {
 		expand = function(args)
@@ -229,9 +236,6 @@ cmp.setup({
 		-- { name = 'nvim_lsp' },
 		{
     		name = 'nvim_lsp',
-    		-- entry_filter = function(entry, ctx)
-      			-- return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
-    		-- end
   		},
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
@@ -241,12 +245,7 @@ cmp.setup({
 
 cmp.setup.filetype({ 'bash', 'sh', 'zsh' }, {
 	sources = Config.sources({
-		{
-    		name = 'nvim_lsp',
-    		entry_filter = function(entry, ctx)
-      			return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
-    		end
-  		},
+		{ name = 'nvim_lsp' },
 		{ name = 'path' },
 		{ name = 'luasnip' },
 	}, {
@@ -261,22 +260,19 @@ if exists('orgmode') then
 			{ name = 'buffer' },
 		}, {
 			{ name = 'orgmode' },
+			{ name = 'buffer' },
 		}),
 	})
 end
 
 cmp.setup.filetype('lua', {
 	sources = Config.sources({
-		{
-    		name = 'nvim_lsp',
-    		entry_filter = function(entry, ctx)
-      			return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
-    		end
-  		},
+		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 	}, {
 		{ name = 'nvim_lua' },
+		{ name = 'buffer' },
 	})
 })
 
@@ -286,12 +282,15 @@ cmp.setup.filetype('gitcommit', {
 		{ name = 'path' },
 	}, {
 		{ name = 'git' },
+		{ name = 'buffer' },
 	}),
 })
 cmp.setup.cmdline({ '/', '?' }, {
 	mapping = map.preset.cmdline(),
 	completion = {
-		autocomplete = false
+		autocomplete = {
+			require('cmp.types').cmp.TriggerEvent.TextChanged,
+		},
 	},
 	sources = Config.sources({
 	    { name = 'buffer' },
