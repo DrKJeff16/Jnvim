@@ -14,8 +14,10 @@ local hi = api.nvim_set_hl
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
--- TODO: Make the option table.
-local opt_tbl = {}
+require('user.types')
+local User = require('user')
+local exists = User.exists
+local options = User.opts
 
 local Pkg = {}
 
@@ -23,7 +25,9 @@ if exists('lazy_cfg') then
 	Pkg = require('lazy_cfg')
 end
 
+---@type MapOpts
 local s_noremap = { noremap = true, silent = true }
+---@type MapOpts
 local ns_noremap = { noremap = true, silent = false }
 
 map('t', '<Esc>', '<C-\\><C-n>', s_noremap)
