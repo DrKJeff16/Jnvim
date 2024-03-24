@@ -6,7 +6,9 @@ local opt = vim.opt
 local let = vim.g
 local set = vim.o
 
-local lazypath = fn.stdpath("data") .. "/lazy/lazy.nvim"
+local map = api.nvim_set_keymap
+
+local lazypath = fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 local User = require('user')
 local exists = User.exists
@@ -172,8 +174,16 @@ Lazy.setup({
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 		priority = 1000,
 	},
+	{
+		'akinsho/bufferline.nvim',
+		lazy = true,
+		version = '*',
+		dependencies = { 'nvim-tree/nvim-web-devicons' },
+		priority = 1000,
+	},
 
-	{ 'windwp/nvim-autopairs', lazy = true },
+	{ 'windwp/nvim-autopairs', lazy = true, enabled = false },
+
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",

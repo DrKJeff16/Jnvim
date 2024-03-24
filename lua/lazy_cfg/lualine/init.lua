@@ -1,4 +1,5 @@
 ---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
 
 local User = require('user')
 local exists = User.exists
@@ -7,9 +8,41 @@ if not exists('lualine') then
 	return
 end
 
+local pfx = 'lazy_cfg.lualine.'
+
+---@type string[]
+local submodules = {
+	'bufferline',
+}
+
+---@param subs string[]
+---@param prefix? string
+---@return table<string, any>
+local src = function(subs, prefix)
+	if not prefix or type(prefix) ~= 'string' or prefix == '' then
+		prefix = pfx
+	end
+
+	local path = ''
+	local cond = false
+
+	---@type table<string, any>
+	local res = {}
+
+	for _, v in next, subs do
+		path = prefix..v
+		cond = exists(path)
+		if cond then
+			res[path] = require(path)
+		end
+	end
+
+	return res
+end
+
 local Lualine = require('lualine')
 
-return Lualine.setup({
+Lualine.setup({
   	options = {
       	icons_enabled = false,
         theme = 'tokyonight',
@@ -92,8 +125,8 @@ return Lualine.setup({
         lualine_y = {'progress'},
         lualine_z = {'location'}
     },
-    tabline = {},
-    winbar = {},
     inactive_winbar = {},
     extensions = {}
 })
+
+src(submodules)
