@@ -39,7 +39,7 @@ Neodev.setup({
 })
 
 -- TODO: Append if existing instead of assuming.
-local capabilities = require('cmp_nvim_lsp').default_capabilities
+local caps = require('cmp_nvim_lsp').default_capabilities()
 
 ---@module 'lspconfig''
 local lspconfig
@@ -51,18 +51,16 @@ local srv = {
 	{
 		'lua_ls',
 		{
-			capabilities = capabilities(),
+			capabilities = caps,
 
 			settings = {
 				Lua = {
 				    runtime = {
 				    	version = 'LuaJIT',
-				    	fileEncoding = 'utf8',
 				    },
-				    -- workspace = {
-						-- checkThirdParty = false,
-						-- library = rt_file('', true),
-				    -- },
+				    workspace = {
+						checkThirdParty = false,
+				    },
 					completion = {
 						enable = true,
 						autoRequire = false,
@@ -72,9 +70,9 @@ local srv = {
 					},
 					diagnostics = {
 						enable = true,
-						-- globals = {
-						-- 	'vim',
-						-- },
+						globals = {
+							'vim',
+						},
 						workspaceRate = 70,
 					},
 					hint = {
@@ -101,16 +99,16 @@ local srv = {
 		},
 	},
 
-	{ 'bashls', { capabilities = capabilities() } },
-	{ 'clangd', { capabilities = capabilities() } },
-	{ 'cmake', { capabilities = capabilities() } },
-	{ 'css_variables', { capabilities = capabilities() } },
-	{ 'html', { capabilities = capabilities() } },
-	{ 'jsonls', { capabilities = capabilities() } },
+	{ 'bashls', { capabilities = caps } },
+	{ 'clangd', { capabilities = caps } },
+	{ 'cmake', { capabilities = caps } },
+	{ 'css_variables', { capabilities = caps } },
+	{ 'html', { capabilities = caps } },
+	{ 'jsonls', { capabilities = caps } },
 	{
 		'pylsp',
 		{
-			capabilities = capabilities(),
+			capabilities = caps,
 			settings = {
 				configurationSources = { 'flake8' },
 
