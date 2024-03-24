@@ -10,15 +10,18 @@ local lsp = vim.lsp
 local bo = vim.bo
 
 local map = api.nvim_set_keymap
+local hi = api.nvim_set_hl
+local au = api.nvim_create_autocmd
+local augroup = api.nvim_create_augroup
 
 -- TODO: Make the option table.
 local opt_tbl = {}
 
-map('n', '<Space>', '<Nop>', { noremap = true, silent = true })
-let.mapleader = ' '
-let.maplocalleader = ' '
-let.loaded_netrw = 1
-let.loaded_netrwPlugin = 1
+local Pkg = {}
+
+if exists('lazy_cfg') then
+	Pkg = require('lazy_cfg')
+end
 
 local s_noremap = { noremap = true, silent = true }
 local ns_noremap = { noremap = true, silent = false }
@@ -115,7 +118,8 @@ set.visualbell = false
 local User = require('user')
 local exists = User.exists
 
-User.assoc()
+let.loaded_netrw = 1
+let.loaded_netrwPlugin = 1
 
 local Pkg = (exists('lazy_cfg') and require('lazy_cfg') or nil)
 
@@ -123,3 +127,5 @@ vim.cmd[[
 filetype plugin indent on
 syntax on
 ]]
+
+User.assoc()
