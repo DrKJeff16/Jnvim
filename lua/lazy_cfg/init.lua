@@ -30,14 +30,19 @@ opt.rtp:prepend(lazypath)
 ---@type string
 local pfx = 'lazy_cfg.'
 
----@param dir string
----@param prefx? string
-local source_cfg = function(dir, prefx)
-	prefx = prefx or pfx
-	local path = prefx..dir
+---@param dirs string[]
+---@param prefix? string
+local source_cfg = function(dirs, prefix)
+	if not prefix or type(prefix) ~= 'string' or prefix == '' then
+		prefix = pfx
+	end
+	local path = ''
 
-	if exists(path) then
-		require(path)
+	for _, v in next, dirs do
+		path = prefix..v
+		if exists(path) then
+			require(path)
+		end
 	end
 end
 
@@ -204,14 +209,33 @@ Lazy.setup({
 		enabled = false,
 	},
 
+	{
+		'nvim-tree/nvim-tree.lua',
+		lazy = false,
+		priority = 1000,
+		dependencies = {
+			'nvim-tree/nvim-web-devicons',
+			'antosha417/nvim-lsp-file-operations',
+			'echasnovski/mini.base16',
+		},
+	},
+	{ 'antosha417/nvim-lsp-file-operations', lazy = true },
+	{ 'echasnovski/mini.base16', lazy = true },
+
 	{ 'rhysd/vim-syntax-codeowners', lazy = false, priority = 300 },
 })
 
-source_cfg('lspconfig')
-source_cfg('treesitter')
--- source_cfg('autopairs')
--- source_cfg('blank_line')
-source_cfg('cmp')
-source_cfg('lualine')
+---@type string[]
+local submods = {
+	'lspconfig',
+	'treesitter',
+	-- 'autopairs',
+	-- 'blank_line',
+	'cmp',
+	'lualine',
+	'nvim_tree',
+}
 
-vim.api.nvim_set_keymap('n', '<Leader>Ll', ':Lazy<CR>', { noremap = true, silent = true })
+source_cfg(submods)
+
+map('n', '<Leader>Ll', ':Lazy<CR>', { noremap = true, silent = true })
