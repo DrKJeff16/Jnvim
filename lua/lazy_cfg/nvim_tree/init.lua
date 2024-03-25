@@ -44,6 +44,10 @@ local tree_map = function(lhs, rhs, kopts)
 	kmap('n', lhs, rhs, kopts)
 end
 
+kmap('n', '<Leader>ftt', Tapi.open, { noremap = true, silent = true })
+kmap('n', '<Leader>ftd', Tapi.close, { noremap = true, silent = true })
+kmap('n', '<Leader>ftf', Tapi.focus, { noremap = true, silent = true })
+
 ---@param nwin number
 local tab_win_close = function(nwin)
 	local get_tabpage = api.nvim_win_get_tabpage
@@ -98,14 +102,15 @@ local tree_open = function(data)
 
 	local ft = bo[data.buf].ft
 	local ignore = {
-		'gitcommit',
-		'help',
-		'checkhealth',
-		'TelescopePrompt',
-		'lazy',
+		'sh',
+		'bash',
+		'c',
+		'cpp',
+		'gitignore',
+		'python',
 	}
 
-	if vim.tbl_contains(ignore, ft) then
+	if not vim.tbl_contains(ignore, ft) then
 		return
 	end
 
@@ -285,7 +290,3 @@ local hl_set = function(hls)
 end
 
 hl_set(hl_groups)
-
-kmap('n', '<Leader>ftt', Tapi.open, { noremap = true, silent = true })
-kmap('n', '<Leader>ftd', Tapi.close, { noremap = true, silent = true })
-kmap('n', '<Leader>ftf', Tapi.focus, { noremap = true, silent = true })
