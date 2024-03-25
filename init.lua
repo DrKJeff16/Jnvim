@@ -19,11 +19,14 @@ local User = require('user')
 local exists = User.exists
 local options = User.opts
 
-local Pkg = require('lazy_cfg')
+local plug_pfx = 'lazy_cfg'
+
+local Pkg = require(plug_pfx)
+plug_pfx = plug_pfx .. '.'
 
 for _, v in next, Pkg do
-	if exists('lazy_cfg.'..v) then
-		require('lazy_cfg.'..v)
+	if exists(plug_pfx..v) then
+		require(plug_pfx..v)
 	end
 end
 
