@@ -30,22 +30,6 @@ opt.rtp:prepend(lazypath)
 ---@type string
 local pfx = 'lazy_cfg.'
 
----@param dirs string[]
----@param prefix? string
-local source_cfg = function(dirs, prefix)
-	if not prefix or type(prefix) ~= 'string' or prefix == '' then
-		prefix = pfx
-	end
-	local path = ''
-
-	for _, v in next, dirs do
-		path = prefix..v
-		if exists(path) then
-			require(path)
-		end
-	end
-end
-
 local Lazy = require('lazy')
 
 Lazy.setup({
@@ -211,7 +195,7 @@ Lazy.setup({
 
 	{
 		'nvim-tree/nvim-tree.lua',
-		lazy = false,
+		lazy = true,
 		priority = 1000,
 		dependencies = {
 			'nvim-tree/nvim-web-devicons',
@@ -222,10 +206,9 @@ Lazy.setup({
 	{ 'antosha417/nvim-lsp-file-operations', lazy = true },
 	{ 'echasnovski/mini.base16', lazy = true },
 
-	{ 'rhysd/vim-syntax-codeowners', lazy = false, priority = 300 },
+	'rhysd/vim-syntax-codeowners',
 })
 
----@type string[]
 local submods = {
 	'lspconfig',
 	'treesitter',
@@ -236,6 +219,4 @@ local submods = {
 	'nvim_tree',
 }
 
-source_cfg(submods)
-
-map('n', '<Leader>Ll', ':Lazy<CR>', { noremap = true, silent = true })
+return submods

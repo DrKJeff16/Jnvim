@@ -19,10 +19,12 @@ local User = require('user')
 local exists = User.exists
 local options = User.opts
 
-local Pkg = {}
+local Pkg = require('lazy_cfg')
 
-if exists('lazy_cfg') then
-	Pkg = require('lazy_cfg')
+for _, v in next, Pkg do
+	if exists('lazy_cfg.'..v) then
+		require('lazy_cfg.'..v)
+	end
 end
 
 ---@type MapOpts
@@ -104,11 +106,7 @@ local nmap_tbl = {
 }
 
 for _, v in next, nmap_tbl do
-	if not v.opts then
-		nmap(v.lhs, v.rhs)
-	else
-		nmap(v.lhs, v.rhs, v.opts)
-	end
+	nmap(v.lhs, v.rhs, v.opts or s_noremap)
 end
 
 vmap('<Leader>is', ':sort<CR>')
