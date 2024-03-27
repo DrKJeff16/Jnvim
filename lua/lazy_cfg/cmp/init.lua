@@ -100,19 +100,10 @@ local tab_map = {
 local stab_map = cmp.config.disable
 
 local cr_map = function(fallback)
-	local opts = { select = true, behavior = cmp.ConfirmBehavior.Insert }
-	if cmp.get_selected_entry() and cmp.get_active_entry() then
-		cmp.confirm(opts)
-		if has_words_before() then
-			cmp.complete()
-		end
-	else
-		if cmp.visible() then
-			cmp.close()
-		end
-		fallback()
-		cmp.complete()
+	if cmp.visible() then
+		cmp.close()
 	end
+	fallback()
 end
 
 local bs_map = {

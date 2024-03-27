@@ -194,16 +194,21 @@ Lazy.setup({
 	{ 'echasnovski/mini.base16', lazy = true },
 
 	'rhysd/vim-syntax-codeowners',
+
+	{
+		'lewis6991/gitsigns.nvim',
+		lazy = true,
+	},
 })
 
 ---@type string[]
 local submods = {
 	'lspconfig',
 	'treesitter',
-	'cmp',
 	'nvim_tree',
-
+	'gitsigns',
 	'lualine',
+	'cmp',
 }
 
 return submods
