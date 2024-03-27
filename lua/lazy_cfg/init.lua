@@ -15,14 +15,14 @@ local User = require('user')
 local exists = User.exists
 
 if not exists('lazy') or not vim.loop.fs_stat(lazypath) then
-  	fn.system({
-    	'git',
-    	'clone',
-    	'--filter=blob:none',
-    	'https://github.com/folke/lazy.nvim.git',
-    	'--branch=stable', -- latest stable release
-    	lazypath,
-  	})
+	fn.system({
+		'git',
+		'clone',
+		'--filter=blob:none',
+		'https://github.com/folke/lazy.nvim.git',
+		'--branch=stable', -- latest stable release
+		lazypath,
+	})
 end
 
 opt.rtp:prepend(lazypath)
@@ -68,10 +68,10 @@ Lazy.setup({
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000 },
 
 	{
-  		'folke/todo-comments.nvim',
-  		dependencies = { 'nvim-lua/plenary.nvim' },
-  		opts = {},
-  		priority = 1000,
+		'folke/todo-comments.nvim',
+		dependencies = { 'nvim-lua/plenary.nvim' },
+		opts = {},
+		priority = 1000,
 	},
 
 	{
@@ -81,7 +81,7 @@ Lazy.setup({
 			'PlenaryBustedFile',
 			'PlenaryBustedDirectory',
 		},
-  		priority = 1000,
+		priority = 1000,
 	},
 
 	{
@@ -92,17 +92,17 @@ Lazy.setup({
 			'neovim/nvim-lspconfig',
 			'onsails/lspkind.nvim',
 
-		    'hrsh7th/cmp-nvim-lsp',
-		    'hrsh7th/cmp-nvim-lua',
-		    'hrsh7th/cmp-nvim-lsp-document-symbol',
-		    'hrsh7th/cmp-nvim-lsp-signature-help',
-		    'hrsh7th/cmp-buffer',
-		    'hrsh7th/cmp-path',
-		    'petertriho/cmp-git',
-		    'davidsierradz/cmp-conventionalcommits',
-		    -- 'FelipeLema/cmp-async-path',
-		    'hrsh7th/cmp-cmdline',
-		    'saadparwaiz1/cmp_luasnip',
+			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/cmp-nvim-lua',
+			'hrsh7th/cmp-nvim-lsp-document-symbol',
+			'hrsh7th/cmp-nvim-lsp-signature-help',
+			'hrsh7th/cmp-buffer',
+			'hrsh7th/cmp-path',
+			'petertriho/cmp-git',
+			'davidsierradz/cmp-conventionalcommits',
+			-- 'FelipeLema/cmp-async-path',
+			'hrsh7th/cmp-cmdline',
+			'saadparwaiz1/cmp_luasnip',
 		},
 	},
 	{ 'onsails/lspkind.nvim', lazy = true },
@@ -128,11 +128,11 @@ Lazy.setup({
 
 	{
 		'nvim-telescope/telescope.nvim',
-    	lazy = true,
-    	cmd = 'Telescope',
-    	dependencies = { 'nvim-telescope/telescope-fzf-native.nvim' },
-    	priority = 1000,
-    	enabled = false,
+		lazy = true,
+		cmd = 'Telescope',
+		dependencies = { 'nvim-telescope/telescope-fzf-native.nvim' },
+		priority = 1000,
+		enabled = false,
 	},
 	{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make', lazy = true, enabled = false },
 	{

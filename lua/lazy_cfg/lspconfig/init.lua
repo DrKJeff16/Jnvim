@@ -76,12 +76,12 @@ local srv = {
 		{
 			settings = {
 				Lua = {
-				    runtime = {
-				    	version = 'LuaJIT',
-				    },
-				    workspace = {
+					runtime = {
+						version = 'LuaJIT',
+					},
+					workspace = {
 						checkThirdParty = false,
-				    },
+					},
 					completion = {
 						enable = true,
 						autoRequire = false,
@@ -274,25 +274,25 @@ map('n', '<Leader>lq', diag.setloclist, map_opts)
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
 	callback = function(ev)
-	    bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-	    local opts = { buffer = ev.buf }
-	    map('n', '<Leader>lgD', lsp_buf.declaration, opts)
-	    map('n', '<Leader>lgd', lsp_buf.definition, opts)
-	    map('n', '<Leader>lk', lsp_buf.hover, opts)
-	    map('n', 'K', lsp_buf.hover, opts)
-	    map('n', '<Leader>lgi', lsp_buf.implementation, opts)
-	    map('n', '<Leader>lS', lsp_buf.signature_help, opts)
-	    map('n', '<Leader>lwa', lsp_buf.add_workspace_folder, opts)
-	    map('n', '<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
-	    keymap('n', '<Leader>lwl', function()
-	    	print(insp(lsp_buf.list_workspace_folders()))
-	    	end, opts)
-	    map('n', '<Leader>lD', lsp_buf.type_definition, opts)
-	    map('n', '<Leader>lrn', lsp_buf.rename, opts)
-	    keymap({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
-	    map('n', '<Leader>lgr', lsp_buf.references, opts)
-	    keymap('n', '<Leader>lf', function()
-	    	lsp_buf.format({ async = true })
-	    	end, opts)
+		bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+		local opts = { buffer = ev.buf }
+		map('n', '<Leader>lgD', lsp_buf.declaration, opts)
+		map('n', '<Leader>lgd', lsp_buf.definition, opts)
+		map('n', '<Leader>lk', lsp_buf.hover, opts)
+		map('n', 'K', lsp_buf.hover, opts)
+		map('n', '<Leader>lgi', lsp_buf.implementation, opts)
+		map('n', '<Leader>lS', lsp_buf.signature_help, opts)
+		map('n', '<Leader>lwa', lsp_buf.add_workspace_folder, opts)
+		map('n', '<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
+		keymap('n', '<Leader>lwl', function()
+			print(insp(lsp_buf.list_workspace_folders()))
+		end, opts)
+		map('n', '<Leader>lD', lsp_buf.type_definition, opts)
+		map('n', '<Leader>lrn', lsp_buf.rename, opts)
+		keymap({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
+		map('n', '<Leader>lgr', lsp_buf.references, opts)
+		keymap('n', '<Leader>lf', function()
+			lsp_buf.format({ async = true })
+		end, opts)
 	end,
 })

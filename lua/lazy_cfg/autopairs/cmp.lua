@@ -19,19 +19,19 @@ local ft_handles = {
 		-- "*" is a alias to all filetypes
 		["*"] = {
 			["("] = {
-			    kind = {
-			        Cmp.lsp.CompletionItemKind.Function,
-			        Cmp.lsp.CompletionItemKind.Method,
-			    },
-			    handler = handlers["*"]
+				kind = {
+					Cmp.lsp.CompletionItemKind.Function,
+					Cmp.lsp.CompletionItemKind.Method,
+				},
+				handler = handlers["*"]
 			}
 		},
 		lua = {
 			["("] = {
-			    kind = {
-			        Cmp.lsp.CompletionItemKind.Function,
-			        Cmp.lsp.CompletionItemKind.Method
-			    },
+				kind = {
+					Cmp.lsp.CompletionItemKind.Function,
+					Cmp.lsp.CompletionItemKind.Method
+				},
 			},
 		},
 		tex = false,
@@ -42,8 +42,8 @@ local ft_handles = {
 local M = {
 	on = function()
 		Cmp.event:on(
-			'confirm_done',
-			cmp_ap.on_confirm_done(ft_handles)
+		'confirm_done',
+		cmp_ap.on_confirm_done(ft_handles)
 		)
 	end
 }

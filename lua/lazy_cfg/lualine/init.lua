@@ -43,8 +43,8 @@ end
 local Lualine = require('lualine')
 
 Lualine.setup({
-  	options = {
-      	icons_enabled = false,
+	options = {
+		icons_enabled = false,
         theme = 'tokyonight',
         component_separators = { left = '|', right = '|'},
         section_separators = { left = '', right = ''},
@@ -73,38 +73,38 @@ Lualine.setup({
 			},
         },
         lualine_b = {
-        	'branch',
-        	-- 'diff',
-        	{
-        		'diagnostics',
-        		sources = { 'nvim_lsp' },
-        		sections = { 'error', 'warn' },
-        		symbols = {
-        			error = 'E',
-        			warn = 'W',
+			'branch',
+			-- 'diff',
+			{
+				'diagnostics',
+				sources = { 'nvim_lsp' },
+				sections = { 'error', 'warn' },
+				symbols = {
+					error = 'E',
+					warn = 'W',
 					info = 'I',
 					hint = '?'
 				},
-        	},
+			},
         },
         lualine_c = {
-        	{
-        		'filename',
-        		file_status = true,
-        		newfile_status = true,
-        		path = 1,
-        		shorting_target = 15,
-        		symbold = {
+			{
+				'filename',
+				file_status = true,
+				newfile_status = true,
+				path = 1,
+				shorting_target = 15,
+				symbold = {
 					modified = '[+]',
 					readonly = '[RO]',
 					unnamed = '[NONAME]',
 					newfile = '[NEW]'
-        		},
-        	},
+				},
+			},
 		},
         lualine_x = {
-        	'encoding',
-        	'fileformat',
+			'encoding',
+			'fileformat',
 			{
 				'filetype',
 				icon_only = false,
@@ -112,8 +112,8 @@ Lualine.setup({
 			}
 		},
         lualine_y = {
-        	'progress',
-        	-- { 'searchcount', timeout = 10 }
+			'progress',
+			-- { 'searchcount', timeout = 10 }
         },
         lualine_z = {'location'}
     },

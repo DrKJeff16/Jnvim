@@ -26,17 +26,17 @@ Ap.setup({
 		'help',
 		'lazy',
 	},
-	
+
 	disable_in_macro = false,  -- disable when recording or executing a macro
 	disable_in_visualblock = false,  -- disable when insert after visual block mode
 	disable_in_replace_mode = true,
-	
+
 	enable_moveright = true,
 	enable_afterquote = true,  -- add bracket pairs after quote
 	enable_check_bracket_line = false,  --- check bracket in same line
 	enable_bracket_in_quote = false,  --
 	enable_abbr = false,  -- trigger abbreviation
-	
+
 	break_undo = true,  -- switch for basic rule break undo sequence
 
 	check_ts = true,
@@ -61,24 +61,24 @@ Ap.setup({
 	},
 
 	fast_wrap = {
-      map = "<M-e>",
-      chars = { "{", "[", "(", '"', "'" },
-      pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
-      offset = 0, -- Offset from pattern match
-      end_key = "$",
-      keys = "qwertyuiopzxcvbnmasdfghjkl",
-      check_comma = true,
-      highlight = "Search",
-      highlight_grey = "Comment",
+		map = "<M-e>",
+		chars = { "{", "[", "(", '"', "'" },
+		pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
+		offset = 0, -- Offset from pattern match
+		end_key = "$",
+		keys = "qwertyuiopzxcvbnmasdfghjkl",
+		check_comma = true,
+		highlight = "Search",
+		highlight_grey = "Comment",
     },
 })
 
 local ts_conds = require('nvim-autopairs.ts-conds')
 Ap.add_rules({
-  	Rule("%", "%", "lua")
+	Rule("%", "%", "lua")
     :with_pair(ts_conds.is_ts_node({'string','comment'})),
-  	Rule("$", "$", "lua")
-  	:with_pair(ts_conds.is_not_ts_node({'function'}))
+	Rule("$", "$", "lua")
+	:with_pair(ts_conds.is_not_ts_node({'function'}))
 })
 
 ---@alias str_arr string[]

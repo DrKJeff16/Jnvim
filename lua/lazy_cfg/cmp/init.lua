@@ -49,18 +49,18 @@ local map = cmp.mapping
 
 local map_close = function(fallback)
 	if cmp.visible() then
-	cmp.close()
+		cmp.close()
 	end
 	fallback()
 end
 
 local tab_map = {
 	i = function(fallback)
-    	local jumpable = Luasnip.expand_or_locally_jumpable
+		local jumpable = Luasnip.expand_or_locally_jumpable
 		local opts = { behavior = cmp.SelectBehavior.Select }
-    	-- local num_entries = #cmp.get_entries()
-    	if cmp.visible() then
-    		cmp.select_next_item(opts)
+		-- local num_entries = #cmp.get_entries()
+		if cmp.visible() then
+			cmp.select_next_item(opts)
 		elseif jumpable() then
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
@@ -68,13 +68,13 @@ local tab_map = {
 			cmp.select_next_item(opts)
 		else
 			fallback()
-    	end
+		end
 	end,
 	s = function(fallback)
-    	local jumpable = Luasnip.expand_or_locally_jumpable
+		local jumpable = Luasnip.expand_or_locally_jumpable
 		local opts = { behavior = cmp.SelectBehavior.Select }
-    	if cmp.visible() and #cmp.get_entries() >= 1 then
-    		cmp.select_next_item(opts)
+		if cmp.visible() and #cmp.get_entries() >= 1 then
+			cmp.select_next_item(opts)
 		elseif jumpable() then
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
@@ -82,18 +82,18 @@ local tab_map = {
 			cmp.select_next_item(opts)
 		else
 			fallback()
-    	end
+		end
 	end,
 	c = function(fallback)
 		local opts = { behavior = cmp.SelectBehavior.Replace }
-    	if cmp.visible() and #cmp.get_entries() >= 1 then
+		if cmp.visible() and #cmp.get_entries() >= 1 then
 			cmp.select_next_item(opts)
-    	elseif has_words_before() then
+		elseif has_words_before() then
 			cmp.complete()
 			cmp.select_next_entry(opts)
 		else
 			fallback()
-    	end
+		end
 	end,
 }
 
@@ -216,31 +216,31 @@ cmp.setup({
 		end,
 	},
 	window = sk.window,
-    mapping = map.preset.insert({
-      	['<C-b>'] = map.scroll_docs(-4),
-      	['<C-f>'] = map.scroll_docs(4),
-      	['<C-j>'] = map.scroll_docs(-4),
-      	['<C-k>'] = map.scroll_docs(4),
-      	['<C-Space>'] = map.complete(),
-    	['<CR>'] = map(cr_map, { 'i', 's', 'c' }),
-	   	['<Tab>'] = map(tab_map),
-    	['<S-Tab>'] = map(stab_map),
+	mapping = map.preset.insert({
+		['<C-b>'] = map.scroll_docs(-4),
+		['<C-f>'] = map.scroll_docs(4),
+		['<C-j>'] = map.scroll_docs(-4),
+		['<C-k>'] = map.scroll_docs(4),
+		['<C-Space>'] = map.complete(),
+		['<CR>'] = map(cr_map, { 'i', 's', 'c' }),
+		['<Tab>'] = map(tab_map),
+		['<S-Tab>'] = map(stab_map),
 		['<BS>'] = map(bs_map),
 		['<Down>'] = map(du_map, { 'i', 's', 'c' }),
 		['<Up>'] = map(du_map, { 'i', 's', 'c' }),
-    	['<Left>'] = map(l_map, { 'i', 's', 'c' }),
-    	['<Right>'] = map(r_map, { 'i', 's', 'c' }),
-    }),
+		['<Left>'] = map(l_map, { 'i', 's', 'c' }),
+		['<Right>'] = map(r_map, { 'i', 's', 'c' }),
+	}),
 
-    sources = Config.sources({
+	sources = Config.sources({
 		-- { name = 'nvim_lsp' },
 		{
-    		name = 'nvim_lsp',
-  		},
+			name = 'nvim_lsp',
+		},
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 		{ name = 'path' },
-    }),
+	}),
 })
 
 cmp.setup.filetype({ 'bash', 'sh', 'zsh' }, {
@@ -294,16 +294,16 @@ cmp.setup.cmdline({ '/', '?' }, {
 		},
 	},
 	sources = Config.sources({
-	    { name = 'buffer' },
+		{ name = 'buffer' },
 	}),
 })
 
 cmp.setup.cmdline(':', {
 	mapping = map.preset.cmdline(),
 	sources = Config.sources({
-	    { name = 'path' }
+		{ name = 'path' }
 	}, {
-	    { name = 'cmdline' }
+		{ name = 'cmdline' }
 	})
 })
 

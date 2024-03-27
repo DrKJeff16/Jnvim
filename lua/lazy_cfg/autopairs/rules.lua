@@ -57,13 +57,13 @@ Ap.add_rules({
 })
 for _, bracket in pairs(bpairs) do
 	Ap.add_rules {
-	  	-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
-	  	Rule(bracket[1] .. ' ', ' ' .. bracket[2])
-	  	:with_pair(Conds.none())
-	  	:with_move(function(opts) return opts.char == bracket[2] end)
-	  	:with_del(Conds.none())
-	  	:use_key(bracket[2])
-	  	-- Removes the trailing whitespace that can occur without this
-	  	:replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
+		-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
+		Rule(bracket[1] .. ' ', ' ' .. bracket[2])
+		:with_pair(Conds.none())
+		:with_move(function(opts) return opts.char == bracket[2] end)
+		:with_del(Conds.none())
+		:use_key(bracket[2])
+		-- Removes the trailing whitespace that can occur without this
+		:replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
 	}
 end
