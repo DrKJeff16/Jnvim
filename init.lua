@@ -17,18 +17,7 @@ local augroup = api.nvim_create_augroup
 require('user.types')
 local User = require('user')
 local exists = User.exists
-local options = User.opts
-
-local plug_pfx = 'lazy_cfg'
-
-local Pkg = require(plug_pfx)
-plug_pfx = plug_pfx .. '.'
-
-for _, v in next, Pkg do
-	if exists(plug_pfx..v) then
-		require(plug_pfx..v)
-	end
-end
+local options = User.opts()
 
 ---@type MapOpts
 local s_noremap = { noremap = true, silent = true }
@@ -71,52 +60,102 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-tmap('<Esc>', '<C-\\><C-n>')
+User.pfx = 'lazy_cfg'
 
----@type MapTbl[]
-local nmap_tbl = {
-	{ lhs = '<Leader>fn', rhs = ':edit ', opts = ns_noremap },
-	{ lhs = '<Leader>fs', rhs = ':w<CR>' },
-	{ lhs = '<Leader>fS', rhs = ':w ', opts = ns_noremap },
-	{ lhs = '<Leader>ff', rhs = ':ed ', opts = ns_noremap },
+local plug_pfx = User.pfx
 
-	{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
-	{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = ns_noremap },
+local Pkg = require(plug_pfx)
+plug_pfx = plug_pfx .. '.'
 
-	{ lhs = '<Leader>wss', rhs = ':split<CR>' },
-	{ lhs = '<Leader>wsv', rhs = ':vsplit<CR>' },
-	{ lhs = '<Leader>wsS', rhs = ':split ', opts = ns_noremap },
-	{ lhs = '<Leader>wsV', rhs = ':vsplit ', opts = ns_noremap },
+---@type table<string, any>
+local Subs = {}
 
-	{ lhs = '<Leader>qq', rhs = ':qa<CR>' },
-	{ lhs = '<Leader>qQ', rhs = ':qa!<CR>' },
-
-	{ lhs = '<Leader>tn', rhs = ':tabN<CR>', opts = ns_noremap },
-	{ lhs = '<Leader>tp', rhs = ':tabp<CR>', opts = ns_noremap },
-	{ lhs = '<Leader>td', rhs = ':tabc<CR>' },
-	{ lhs = '<Leader>tD', rhs = ':tabc!<CR>' },
-	{ lhs = '<Leader>tf', rhs = ':tabfirst<CR>' },
-	{ lhs = '<Leader>tl', rhs = ':tablast<CR>' },
-	{ lhs = '<Leader>ta', rhs = ':tabnew ', opts = ns_noremap },
-	{ lhs = '<Leader>tA', rhs = ':tabnew<CR>' },
-
-	{ lhs = '<Leader>bn', rhs = ':bNext<CR>' },
-	{ lhs = '<Leader>bp', rhs = ':bprevious<CR>' },
-	{ lhs = '<Leader>bd', rhs = ':bdel<CR>' },
-	{ lhs = '<Leader>bD', rhs = ':bdel!<CR>' },
-	{ lhs = '<Leader>bf', rhs = ':bfirst<CR>' },
-	{ lhs = '<Leader>bl', rhs = ':blast<CR>' },
-}
-
-for _, v in next, nmap_tbl do
-	nmap(v.lhs, v.rhs, v.opts or s_noremap)
+for _, v in next, Pkg do
+	if exists(plug_pfx..v) then
+		Subs[v] = require(plug_pfx..v) or nil
+	end
 end
 
-vmap('<Leader>is', ':sort<CR>')
+if Subs.colorschemes then
+	local Csc = Subs.colorschemes
+	Csc.tokyonight.setup()
+	-- Csc.catpucchin.setup()
+end
+
+---@class MapsTbls
+---@field nmap? MapTbl[]
+---@field imap? MapTbl[]
+---@field vmap? MapTbl[]
+---@field tmap? MapTbl[]
+local map_tbl = {
+	nmap = {
+		{ lhs = '<Leader>fn', rhs = ':edit ', opts = ns_noremap },
+		{ lhs = '<Leader>fs', rhs = ':w<CR>' },
+		{ lhs = '<Leader>fS', rhs = ':w ', opts = ns_noremap },
+		{ lhs = '<Leader>ff', rhs = ':ed ', opts = ns_noremap },
+
+		{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
+		{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = ns_noremap },
+
+		{ lhs = '<Leader>wss', rhs = ':split<CR>' },
+		{ lhs = '<Leader>wsv', rhs = ':vsplit<CR>' },
+		{ lhs = '<Leader>wsS', rhs = ':split ', opts = ns_noremap },
+		{ lhs = '<Leader>wsV', rhs = ':vsplit ', opts = ns_noremap },
+
+		{ lhs = '<Leader>qq', rhs = ':qa<CR>' },
+		{ lhs = '<Leader>qQ', rhs = ':qa!<CR>' },
+
+		{ lhs = '<Leader>tn', rhs = ':tabN<CR>', opts = ns_noremap },
+		{ lhs = '<Leader>tp', rhs = ':tabp<CR>', opts = ns_noremap },
+		{ lhs = '<Leader>td', rhs = ':tabc<CR>' },
+		{ lhs = '<Leader>tD', rhs = ':tabc!<CR>' },
+		{ lhs = '<Leader>tf', rhs = ':tabfirst<CR>' },
+		{ lhs = '<Leader>tl', rhs = ':tablast<CR>' },
+		{ lhs = '<Leader>ta', rhs = ':tabnew ', opts = ns_noremap },
+		{ lhs = '<Leader>tA', rhs = ':tabnew<CR>' },
+
+		{ lhs = '<Leader>bn', rhs = ':bNext<CR>' },
+		{ lhs = '<Leader>bp', rhs = ':bprevious<CR>' },
+		{ lhs = '<Leader>bd', rhs = ':bdel<CR>' },
+		{ lhs = '<Leader>bD', rhs = ':bdel!<CR>' },
+		{ lhs = '<Leader>bf', rhs = ':bfirst<CR>' },
+		{ lhs = '<Leader>bl', rhs = ':blast<CR>' },
+
+		{ lhs = '<Leader>Ll', rhs = ':Lazy<CR>' },
+		{ lhs = '<Leader>LL', rhs = ':Lazy ', opts = ns_noremap },
+		{ lhs = '<Leader>Ls', rhs = ':Lazy sync<CR>' },
+		{ lhs = '<Leader>Lx', rhs = ':Lazy clean<CR>' },
+		{ lhs = '<Leader>Lc', rhs = ':Lazy check<CR>' },
+	},
+	vmap = {
+		{ lhs = '<Leader>is', rhs = ':sort<CR>', opts = ns_noremap },
+	},
+	tmap = {
+		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },
+	},
+}
+
+---@type table<string, fun()>
+local map_fields = {
+	['nmap'] = nmap,
+	['vmap'] = vmap,
+	['tmap'] = tmap,
+	['imap'] = imap,
+}
+
+for k, f in next, map_fields do
+	local tbl = map_tbl[k] or nil
+	if tbl ~= nil then
+		local func = f
+		for _, v in next, tbl do
+			func(v.lhs, v.rhs, v.opts or s_noremap)
+		end
+	end
+end
+
+User.assoc()
 
 vim.cmd[[
 filetype plugin indent on
 syntax on
 ]]
-
-User.assoc()

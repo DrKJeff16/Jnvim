@@ -65,29 +65,7 @@ Lazy.setup({
 	{ 'folke/neoconf.nvim', lazy = true },
 
 	{ 'catppuccin/nvim', name = 'catppuccin', priority = 1000, lazy = true },
-	{
-		'folke/tokyonight.nvim',
-		priority = 1000,
-		config = function()
-			local Tokyonight = require('tokyonight')
-
-			Tokyonight.setup({
-				style = 'night',
-  				transparent = false,
-  				terminal_colors = true,
-  				styles = {
-  					comments = { italic = false },
-  					keywords = { italic = false },
-  					functions = { bold = true },
-  					variables = {},
-  					sidebars = 'dark',
-  					floats = 'dark',
-  				},
-			})
-
-			vim.cmd[[colorscheme tokyonight-night]]
-		end,
-	},
+	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000 },
 
 	{
   		'folke/todo-comments.nvim',
@@ -212,6 +190,7 @@ Lazy.setup({
 })
 
 local submods = {
+	'colorschemes',
 	'lspconfig',
 	'treesitter',
 	-- 'autopairs',
