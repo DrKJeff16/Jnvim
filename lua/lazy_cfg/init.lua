@@ -195,8 +195,11 @@ Lazy.setup({
 
 	'rhysd/vim-syntax-codeowners',
 
+	{ 'lewis6991/gitsigns.nvim', lazy = true },
+
 	{
-		'lewis6991/gitsigns.nvim',
+		'folke/which-key.nvim',
+		priority = 1000,
 		lazy = true,
 	},
 })
