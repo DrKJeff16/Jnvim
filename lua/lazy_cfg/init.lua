@@ -190,14 +190,12 @@ Lazy.setup({
 })
 
 local submods = {
-	'colorschemes',
 	'lspconfig',
 	'treesitter',
-	-- 'autopairs',
-	-- 'blank_line',
 	'cmp',
-	'lualine',
 	'nvim_tree',
+
+	'lualine',
 }
 
 return submods

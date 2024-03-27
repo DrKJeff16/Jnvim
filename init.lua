@@ -67,18 +67,17 @@ local plug_pfx = User.pfx
 local Pkg = require(plug_pfx)
 plug_pfx = plug_pfx .. '.'
 
----@type table<string, any>
-local Subs = {}
-
 for _, v in next, Pkg do
 	if exists(plug_pfx..v) then
-		Subs[v] = require(plug_pfx..v) or nil
+		require(plug_pfx..v)
 	end
 end
 
-if Subs.colorschemes then
-	local Csc = Subs.colorschemes
-	Csc.tokyonight.setup()
+if exists(plug_pfx..'colorschemes') then
+	local Csc = require(plug_pfx..'colorschemes')
+	if Csc.tokyonight then
+		Csc.tokyonight.setup()
+	end
 	-- Csc.catpucchin.setup()
 end
 
