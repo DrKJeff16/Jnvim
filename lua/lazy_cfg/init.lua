@@ -212,6 +212,7 @@ local submods = {
 	'gitsigns',
 	'lualine',
 	'cmp',
+	'which_key',  -- NOTE: Must be last call
 }
 
 return submods
