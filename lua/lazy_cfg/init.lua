@@ -79,7 +79,7 @@ Lazy.setup({
 	{ 'folke/neodev.nvim', lazy = true, dependencies = { 'folke/neoconf.nvim' } },
 	{ 'folke/neoconf.nvim', lazy = true },
 
-	{ 'catppuccin/nvim', name = 'catppuccin', priority = 1000, lazy = true },
+	{ 'catppuccin/nvim', lazy = true, name = 'catppuccin', priority = 1000 },
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000 },
 
 	{
