@@ -84,11 +84,11 @@ Lazy.setup({
 
 	{
 		'folke/todo-comments.nvim',
+		lazy = true,
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter',
 			'nvim-lua/plenary.nvim',
 		},
-		opts = {},
 		priority = 1000,
 	},
 
@@ -206,8 +206,9 @@ Lazy.setup({
 
 ---@type string[]
 local submods = {
-	'lspconfig',
 	'treesitter',
+	'lspconfig',
+	'todo_comments',
 	'nvim_tree',
 	'gitsigns',
 	'lualine',
