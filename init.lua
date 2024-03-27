@@ -120,6 +120,8 @@ local map_tbl = {
 		{ lhs = '<Leader>bf', rhs = ':bfirst<CR>' },
 		{ lhs = '<Leader>bl', rhs = ':blast<CR>' },
 
+		{ lhs = '<Leader>fir', rhs = ':%retab<CR>' },
+
 		{ lhs = '<Leader>Ll', rhs = ':Lazy<CR>' },
 		{ lhs = '<Leader>LL', rhs = ':Lazy ', opts = ns_noremap },
 		{ lhs = '<Leader>Ls', rhs = ':Lazy sync<CR>' },
