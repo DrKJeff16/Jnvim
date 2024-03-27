@@ -6,28 +6,30 @@ local opt = vim.opt
 local let = vim.g
 local set = vim.o
 local api = vim.api
+local loop = vim.loop
 
 local map = api.nvim_set_keymap
+local au = api.nvim_create_autocmd
+local augroup = api.nvim_create_augroup
 
 local lazypath = fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 local User = require('user')
 local exists = User.exists
 
-if not exists('lazy') or not vim.loop.fs_stat(lazypath) then
+if not exists('lazy') or not loop.fs_stat(lazypath) then
 	fn.system({
 		'git',
 		'clone',
 		'--filter=blob:none',
 		'https://github.com/folke/lazy.nvim.git',
-		'--branch=stable', -- latest stable release
+		'--branch=stable',
 		lazypath,
 	})
 end
 
 opt.rtp:prepend(lazypath)
 
----@type string
 local pfx = 'lazy_cfg.'
 
 local Lazy = require('lazy')
@@ -35,10 +37,22 @@ local Lazy = require('lazy')
 Lazy.setup({
 	{ 'folke/lazy.nvim', priority = 1000 },
 
+	{
+		'nvim-lua/plenary.nvim',
+		lazy = true,
+		cmd = {
+			'PlenaryBustedFile',
+			'PlenaryBustedDirectory',
+		},
+		priority = 1000,
+	},
+
+	{ 'nvim-tree/nvim-web-devicons', lazy = true },
+
 	{ 'tpope/vim-commentary', lazy = false },
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false },
-	{ 'tpope/vim-speeddating', lazy = true },
+	{ 'tpope/vim-speeddating', lazy = true, enabled = false },
 
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 
@@ -58,6 +72,7 @@ Lazy.setup({
 
 	{
 		'neovim/nvim-lspconfig',
+		priority = 1000,
 		lazy = true,
 		dependencies = { 'folke/neodev.nvim' },
 	},
@@ -69,18 +84,11 @@ Lazy.setup({
 
 	{
 		'folke/todo-comments.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
-		opts = {},
-		priority = 1000,
-	},
-
-	{
-		'nvim-lua/plenary.nvim',
-		lazy = true,
-		cmd = {
-			'PlenaryBustedFile',
-			'PlenaryBustedDirectory',
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter',
+			'nvim-lua/plenary.nvim',
 		},
+		opts = {},
 		priority = 1000,
 	},
 
@@ -143,7 +151,6 @@ Lazy.setup({
 		enabled = false,
 	},
 
-	{ 'nvim-tree/nvim-web-devicons', lazy = true },
 	{
 		'nvim-lualine/lualine.nvim',
 		lazy = true,
@@ -189,6 +196,7 @@ Lazy.setup({
 	'rhysd/vim-syntax-codeowners',
 })
 
+---@type string[]
 local submods = {
 	'lspconfig',
 	'treesitter',
