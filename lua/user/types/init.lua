@@ -34,7 +34,7 @@
 ---@class UserMod
 ---@field pfx? string
 ---@field cond? table
----@field opts UserOptsMod
+---@field opts fun(): UserOptsMod
 ---@field new fun(self: UserMod, prefix?: string): UserMod
 ---@field multisrc? fun(self: UserMod, mods: ModTbl, prefix: string): any
 ---@field exists fun(mod: string): boolean

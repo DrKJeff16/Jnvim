@@ -10,7 +10,9 @@ local M = {}
 
 M.pfx = pfx
 
-M.opts = require(pfx..'opts')
+M.opts = function()
+	return require(pfx..'opts')
+end
 
 ---@param prefix? string
 ---@return UserMod
