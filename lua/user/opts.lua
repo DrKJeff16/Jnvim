@@ -17,6 +17,7 @@ local bo = vim.bo
 local opt_tbl = {
 	opt = {
 		['completeopt'] = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
+		['termguicolors'] = true,
 	},
 	set = {
 		['hid'] = true,
