@@ -230,11 +230,11 @@ local on_attach = function(bufn)
 
 	tree_map('<C-t>', Tapi.change_root_to_parent, opts('Up'))
 	tree_map('?', Tapi.toggle_help, opts('Help'))
-	tree_map("l", edit_or_open,          opts("Edit Or Open"))
-	tree_map("L", vsplit_preview,        opts("Vsplit Preview"))
-	tree_map("h", Tapi.close,        opts("Close"))
-	tree_map("H", Tapi.collapse_all, opts("Collapse All"))
-	tree_map("ga", git_add, opts("Git Add"))
+	tree_map('l', edit_or_open,          opts('Edit Or Open'))
+	tree_map('L', vsplit_preview,        opts('Vsplit Preview'))
+	tree_map('h', Tapi.close,        opts('Close'))
+	tree_map('H', Tapi.collapse_all, opts('Collapse All'))
+	tree_map('ga', git_add, opts('Git Add'))
 	tree_map('t', swap_then_open_tab, opts('Open Tab'))
 end
 
