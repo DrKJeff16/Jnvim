@@ -4,7 +4,7 @@
 local User = require('user')
 local exists = User.exists
 
-if not exists('lspconfig') then
+if not exists('lspconfig') or not exists('neodev') then
 	return
 end
 
@@ -38,21 +38,42 @@ Neodev.setup({
 	pathStrict = true,
 })
 
--- TODO: Append if existing instead of assuming.
-local caps = require('cmp_nvim_lsp').default_capabilities()
+if exists('neoconf') then
+	require('neoconf').setup({})
+end
+
+---@alias SrvTbl { integer: string, integer: table }[]
+
+---@param srv_tbl SrvTbl
+---@return SrvTbl res
+local add_caps = function(srv_tbl)
+	---@type SrvTbl
+	local res = {}
+
+	if exists('cmp_nvim_lsp') then
+		local caps = require('cmp_nvim_lsp').default_capabilities()
+
+		for _, v in next, srv_tbl do
+			v[2].capabilities = caps
+			table.insert(res, v)
+		end
+	else
+		res = srv_tbl
+	end
+
+	return res
+end
 
 ---@module 'lspconfig''
 local lspconfig
 
 lspconfig = require('lspconfig')
 
----@type { integer: { integer: string, integer: table } }
+---@type SrvTbl
 local srv = {
 	{
 		'lua_ls',
 		{
-			capabilities = caps,
-
 			settings = {
 				Lua = {
 				    runtime = {
@@ -99,16 +120,15 @@ local srv = {
 		},
 	},
 
-	{ 'bashls', { capabilities = caps } },
-	{ 'clangd', { capabilities = caps } },
-	{ 'cmake', { capabilities = caps } },
-	{ 'css_variables', { capabilities = caps } },
-	{ 'html', { capabilities = caps } },
-	{ 'jsonls', { capabilities = caps } },
+	{ 'bashls', {} },
+	{ 'clangd', {} },
+	{ 'cmake', {} },
+	{ 'css_variables', {} },
+	{ 'html', {} },
+	{ 'jsonls', {} },
 	{
 		'pylsp',
 		{
-			capabilities = caps,
 			settings = {
 				configurationSources = { 'flake8' },
 
@@ -237,6 +257,8 @@ local srv = {
 		},
 	},
 }
+
+srv = add_caps(srv)
 
 for _, v in ipairs(srv) do
 	lspconfig[v[1]].setup(v[2])
