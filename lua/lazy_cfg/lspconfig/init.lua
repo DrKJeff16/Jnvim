@@ -42,7 +42,7 @@ if exists('neoconf') then
 	require('neoconf').setup({})
 end
 
----@alias SrvTbl { integer: string, integer: table }[]
+---@alias SrvTbl { [string]: table }
 
 ---@param srv_tbl SrvTbl
 ---@return SrvTbl res
@@ -50,15 +50,42 @@ local add_caps = function(srv_tbl)
 	---@type SrvTbl
 	local res = {}
 
-	if exists('cmp_nvim_lsp') then
-		local caps = require('cmp_nvim_lsp').default_capabilities()
 
-		for _, v in next, srv_tbl do
-			v[2].capabilities = caps
-			table.insert(res, v)
+
+	for k, v in next, srv_tbl do
+		res[k] = v
+
+		if exists('cmp_nvim_lsp') then
+			local caps = require('cmp_nvim_lsp').default_capabilities()
+			res[k].capabilities = caps
 		end
-	else
-		res = srv_tbl
+		if exists('schemastore') then
+			local SchSt = require('schemastore')
+			if k == 'jsonls' then
+				res[k].settings = {
+					json = {
+						schemas = SchSt.json.schemas({
+							select = {
+								'.eslintrc',
+								'package.json',
+							},
+						}),
+						validate = { enable = true },
+					},
+				}
+			end
+			if k == 'yamlls' then
+				res[k].settings = {
+					yaml = {
+						schemaStore = {
+							enable = false,
+							url = '',
+						},
+						schemas = SchSt.yaml.schemas({}),
+					},
+				}
+			end
+		end
 	end
 
 	return res
@@ -71,177 +98,117 @@ lspconfig = require('lspconfig')
 
 ---@type SrvTbl
 local srv = {
-	{
-		'lua_ls',
-		{
-			settings = {
-				Lua = {
-					runtime = {
-						version = 'LuaJIT',
-					},
-					workspace = {
-						checkThirdParty = false,
-					},
-					completion = {
-						enable = true,
-						autoRequire = false,
-						callSnippet = 'Replace',
-						displayContext = 5,
-						showParams = false,
-					},
-					diagnostics = {
-						enable = true,
-						globals = {
-							'vim',
-						},
-						workspaceRate = 70,
-					},
-					hint = {
-						arrayIndex = 'Enable',
-						enable = true,
-						paramName = 'All',
-						paramType = true,
-						setType = true,
-					},
-					hover = {
-						enable = true,
-					},
-					semantic = {
-						enable = true,
-						annotation = true,
-						keyword = true,
-						variable = true,
-					},
-					signatureHelp = {
-						enable = true,
-					},
+	['lua_ls'] = {
+		settings = {
+			Lua = {
+				runtime = { version = 'LuaJIT' },
+				workspace = { checkThirdParty = false },
+				completion = {
+					enable = true,
+					autoRequire = false,
+					callSnippet = 'Replace',
+					displayContext = 5,
+					showParams = false,
 				},
+				diagnostics = {
+					enable = true,
+					globals = { 'vim' },
+					workspaceRate = 70,
+				},
+				hint = {
+					arrayIndex = 'Enable',
+					enable = true,
+					paramName = 'All',
+					paramType = true,
+					setType = true,
+				},
+				hover = { enable = true },
+				semantic = {
+					enable = true,
+					annotation = true,
+					keyword = true,
+					variable = true,
+				},
+				signatureHelp = { enable = true },
 			},
 		},
 	},
 
-	{ 'bashls', {} },
-	{ 'clangd', {} },
-	{ 'cmake', {} },
-	{ 'css_variables', {} },
-	{ 'html', {} },
-	{ 'jsonls', {} },
-	{
-		'pylsp',
-		{
-			settings = {
-				configurationSources = { 'flake8' },
+	['bashls'] = {},
+	['clangd'] = {},
+	['cmake'] = {},
+	['css_variables'] = {},
+	['html'] = {},
+	['jsonls'] = {},
+	['yamlls'] = {},
+	['pylsp'] = {
+		settings = {
+			configurationSources = { 'flake8' },
 
-				plugins = {
-					autopep8 = {
-						enabled = true,
-					},
-					flake8 = {
-						enabled = true,
-						hangClosing = true,
-						maxLineLength = 100,
-						indentSize = 4,
-						ignore = {
-							'F400',
-							'F401',
-						},
-					},
-					jedi = {
-						auto_import_modules = {
-							'argparse',
-							'os',
-							're',
-							'sys',
-							'typing',
-						},
-
-					},
-					jedi_completion = {
-						enabled = true,
-						include_params = false,
-						include_class_objects = true,
-						include_function_objects = true,
-						fuzzy = false,
-						eager = true,
-						resolve_at_most = 30,
-						cache_for = {
-							'argparse',
-							'math',
-							'matplotlib',
-							'numpy',
-							'os',
-							'pandas',
-							're',
-							'setuptools',
-							'string',
-							'sys',
-							'typing',
-							'wheel',
-						},
-					},
-					jedi_definition = {
-						enabled = true,
-						follow_imports = true,
-						follow_builtin_imports = true,
-						follow_builtin_definitions = true,
-					},
-					jedi_hover = { enabled = true },
-					jedi_references = { enabled = true },
-					jedi_signature_help = { enabled = true },
-					jedi_symbols = {
-						enabled = true,
-						all_scopes = false,
-						include_import_symbols = true,
-					},
-					mccabe = {
-						enabled = true,
-						threshold = 15,
-					},
-					preload = {
-						enabled = true,
-						modules = {
-							'argparse',
-							'math',
-							'numpy',
-							'os',
-							're',
-							'string',
-							'sys',
-							'typing',
-						},
-					},
-					pycodestyle = { enabled = false },
-					pydocstyle = {
-						enabled = true,
-						convention = 'numpy',
-						addIgnore = {
-							'D400',
-							'D401',
-						},
-						ignore = {
-							'D400',
-							'D401',
-						},
-						match = "(?!test_).*\\.py",
-						matchDir = "[^\\.].*",
-					},
-					pyflakes = { enabled = false },
-					pylint = { enabled = false },
-					rope_autoimport = {
-						enabled = true,
-						completions = { enabled = true },
-						code_actions = { enabled = true },
-						memory = true,
-					},
-					rope_completion = {
-						enabled = true,
-						eager = true,
-					},
-					yapf = { enabled = false },
+			plugins = {
+				autopep8 = {
+					enabled = true,
 				},
-
-				rope = {
-					extensionModules = {
+				flake8 = {
+					enabled = true,
+					hangClosing = true,
+					maxLineLength = 100,
+					indentSize = 4,
+					ignore = {
+						'F400',
+						'F401',
+					},
+				},
+				jedi = {
+					auto_import_modules = {
+						'argparse',
+						'os',
+						're',
+						'sys',
+						'typing',
+					},
+				},
+				jedi_completion = {
+					enabled = true,
+					include_params = false,
+					include_class_objects = true,
+					include_function_objects = true,
+					fuzzy = false,
+					eager = true,
+					resolve_at_most = 30,
+					cache_for = {
+						'argparse',
+						'math',
+						'matplotlib',
+						'numpy',
+						'os',
+						'pandas',
+						're',
+						'setuptools',
+						'string',
+						'sys',
+						'typing',
+						'wheel',
+					},
+				},
+				jedi_definition = {
+					enabled = true,
+					follow_imports = true,
+					follow_builtin_imports = true,
+					follow_builtin_definitions = true,
+				},
+				jedi_hover = { enabled = true },
+				jedi_references = { enabled = true },
+				jedi_signature_help = { enabled = true },
+				jedi_symbols = {
+					enabled = true,
+					all_scopes = false,
+					include_import_symbols = true,
+				},
+				mccabe = { enabled = true, threshold = 15 },
+				preload = {
+					enabled = true,
+					modules = {
 						'argparse',
 						'math',
 						'numpy',
@@ -251,8 +218,40 @@ local srv = {
 						'sys',
 						'typing',
 					},
-					ropeFolder = nil,
 				},
+				pycodestyle = { enabled = false },
+				pydocstyle = {
+					enabled = true,
+					convention = 'numpy',
+					addIgnore = { 'D400', 'D401' },
+					ignore = { 'D400', 'D401' },
+					match = "(?!test_).*\\.py",
+					matchDir = "[^\\.].*",
+				},
+				pyflakes = { enabled = false },
+				pylint = { enabled = false },
+				rope_autoimport = {
+					enabled = true,
+					completions = { enabled = true },
+					code_actions = { enabled = true },
+					memory = true,
+				},
+				rope_completion = { enabled = true, eager = true },
+				yapf = { enabled = false },
+			},
+
+			rope = {
+				extensionModules = {
+					'argparse',
+					'math',
+					'numpy',
+					'os',
+					're',
+					'string',
+					'sys',
+					'typing',
+				},
+				ropeFolder = nil,
 			},
 		},
 	},
@@ -260,8 +259,8 @@ local srv = {
 
 srv = add_caps(srv)
 
-for _, v in ipairs(srv) do
-	lspconfig[v[1]].setup(v[2])
+for k, v in next, srv do
+	lspconfig[k].setup(v)
 end
 
 local map_opts = { noremap = true, silent = true }
