@@ -6,7 +6,9 @@ local opt = vim.opt
 local let = vim.g
 local set = vim.o
 local api = vim.api
-local loop = vim.loop
+
+local rtp = opt.rtp
+local fs_stat = vim.loop.fs_stat
 
 local map = api.nvim_set_keymap
 local au = api.nvim_create_autocmd
@@ -17,7 +19,7 @@ local lazypath = fn.stdpath('data') .. '/lazy/lazy.nvim'
 local User = require('user')
 local exists = User.exists
 
-if not exists('lazy') or not loop.fs_stat(lazypath) then
+if not exists('lazy') or not fs_stat(lazypath) then
 	fn.system({
 		'git',
 		'clone',
@@ -28,7 +30,7 @@ if not exists('lazy') or not loop.fs_stat(lazypath) then
 	})
 end
 
-opt.rtp:prepend(lazypath)
+rtp:prepend(lazypath)
 
 local pfx = 'lazy_cfg.'
 
@@ -208,11 +210,11 @@ Lazy.setup({
 local submods = {
 	'treesitter',
 	'lspconfig',
+	'cmp',
 	'todo_comments',
 	'nvim_tree',
 	'gitsigns',
 	'lualine',
-	'cmp',
 	'which_key',  -- NOTE: Must be last call
 }
 
