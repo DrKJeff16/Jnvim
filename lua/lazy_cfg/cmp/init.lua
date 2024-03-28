@@ -20,7 +20,7 @@ if exists(pfx..'luasnip') then
 end
 
 local sks = require(sub_kinds)
-local sk = sks.setup()
+local sk = sks.setup(true)
 
 local hi = api.nvim_set_hl
 local get_mode = api.nvim_get_mode
@@ -103,14 +103,51 @@ local tab_map = {
 	end,
 }
 
-local cr_map = function(fallback)
-	local opts = { select = false }
-	if cmp.visible() and cmp.get_selected_entry() then
-			cmp.complete(opts)
-	else
-		fallback()
-	end
-end
+
+local cr_map = {
+	---@param fallback fun(...)
+	i = function(fallback)
+		local opts = { select = false }
+
+		if cmp.visible() then
+			if cmp.get_selected_entry() and cmp.get_active_entry() then
+				cmp.confirm(opts)
+			else
+				fallback()
+			end
+		else
+			fallback()
+		end
+	end,
+	---@param fallback fun(...)
+	s = function(fallback)
+		local opts = { select = false }
+
+		if cmp.visible() then
+			if cmp.get_selected_entry() and cmp.get_active_entry() then
+				cmp.confirm(opts)
+			else
+				fallback()
+			end
+		else
+			fallback()
+		end
+	end,
+	---@param fallback fun(...)
+	c = function(fallback)
+		local opts = { select = true }
+
+		if cmp.visible() then
+			if cmp.get_selected_entry() and cmp.get_active_entry() then
+				cmp.confirm(opts)
+			else
+				fallback()
+			end
+		else
+			fallback()
+		end
+	end,
+}
 
 local bs_map = function(fallback)
 	if cmp.visible() then
@@ -181,7 +218,7 @@ cmp.setup({
 		['<C-j>'] = map.scroll_docs(-4),
 		['<C-k>'] = map.scroll_docs(4),
 		['<C-Space>'] = map.complete(),
-		['<CR>'] = map(cr_map, { 'i', 's', 'c' }),
+		['<CR>'] = map(cr_map),
 		['<Tab>'] = map(tab_map),
 		['<S-Tab>'] = cmp.config.disable,
 		['<BS>'] = map(bs_map, { 'i', 's', 'c' }),
