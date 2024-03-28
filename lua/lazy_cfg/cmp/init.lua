@@ -19,8 +19,8 @@ if exists(pfx..'luasnip') then
 	require(pfx..'luasnip')
 end
 
-local sk = require(sub_kinds)
-sk:setup()
+local sks = require(sub_kinds)
+local sk = sks.setup()
 
 local hi = api.nvim_set_hl
 local get_mode = api.nvim_get_mode
@@ -57,93 +57,67 @@ end
 local tab_map = {
 	i = function(fallback)
 		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
+		local opts = { behavior = cmp.SelectBehavior.Replace }
 		-- local num_entries = #cmp.get_entries()
-		if cmp.visible() then
+		if cmp.visible() and #cmp.get_entries() > 0 then
 			cmp.select_next_item(opts)
 		elseif jumpable() then
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
 			cmp.complete()
-			cmp.select_next_item(opts)
+			if cmp.visible() and #cmp.get_entries() > 0 then
+				cmp.select_next_item(opts)
+			end
 		else
 			fallback()
 		end
 	end,
 	s = function(fallback)
 		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
-		if cmp.visible() and #cmp.get_entries() >= 1 then
+		local opts = { behavior = cmp.SelectBehavior.Replace }
+		if cmp.visible() and #cmp.get_entries() > 0 then
 			cmp.select_next_item(opts)
 		elseif jumpable() then
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
 			cmp.complete()
-			cmp.select_next_item(opts)
+			if cmp.visible() and #cmp.get_entries() > 0 then
+				cmp.select_next_item(opts)
+			end
 		else
 			fallback()
 		end
 	end,
 	c = function(fallback)
 		local opts = { behavior = cmp.SelectBehavior.Replace }
-		if cmp.visible() and #cmp.get_entries() >= 1 then
+		if cmp.visible() and #cmp.get_entries() > 0 then
 			cmp.select_next_item(opts)
 		elseif has_words_before() then
 			cmp.complete()
-			cmp.select_next_entry(opts)
+			if cmp.visible() and #cmp.get_entries() > 0 then
+				cmp.select_next_item(opts)
+			end
 		else
 			fallback()
 		end
 	end,
 }
 
-local stab_map = cmp.config.disable
-
 local cr_map = function(fallback)
+	local opts = { select = false }
+	if cmp.visible() and cmp.get_selected_entry() then
+			cmp.complete(opts)
+	else
+		fallback()
+	end
+end
+
+local bs_map = function(fallback)
 	if cmp.visible() then
 		cmp.close()
 	end
 	fallback()
 end
-
-local bs_map = {
-	i = function(fallback)
-		if not cmp.visible() or not has_words_before() then
-			cmp.abort()
-		elseif not cmp.get_selected_entry() and not cmp.get_active_entry() then
-			cmp.close()
-		end
-		fallback()
-		if has_words_before() then
-			cmp.complete()
-		end
-	end,
-	s = function(fallback)
-		fallback()
-		if not cmp.visible() or not has_words_before() then
-			cmp.abort()
-		elseif not cmp.get_selected_entry() and not cmp.get_active_entry() then
-			cmp.close()
-		end
-		if has_words_before() then
-			cmp.complete()
-		end
-	end,
-	c = function(fallback)
-		local was_open = cmp.visible()
-
-		fallback()
-		if not cmp.visible() and not has_words_before() then
-			cmp.abort()
-		elseif not cmp.get_selected_entry() and not cmp.get_active_entry() then
-			cmp.close()
-		end
-
-		if was_open and has_words_before() then
-			cmp.complete()
-		end
-	end,
-}
 local du_map = function(fallback)
 	if cmp.visible() then
 		cmp.abort()
@@ -179,34 +153,28 @@ cmp.setup({
 	end,
 
 	view = {
-		entries = {
-			name = 'custom',
-			selection_order = 'near_cursor',
-		},
+		entries = { name = 'custom' },
 		docs = { auto_open = true },
-	},
-
-	completion = {
-		autocomplete = {
-			require('cmp.types').cmp.TriggerEvent.TextChanged,
-		},
 	},
 
 	formatting = sk.formatting,
 
 	matching = {
-		disallow_fuzzy_matching = false,
-		disallow_fullfuzzy_matching = true,
+		disallow_fuzzy_matching = true,
+		disallow_fullfuzzy_matching = false,
 		disallow_prefix_unmatching = false,
 		disallow_partial_matching = false,
 		disallow_partial_fuzzy_matching = true,
 	},
+
 	snippet = {
 		expand = function(args)
 			Luasnip.lsp_expand(args.body)
 		end,
 	},
+
 	window = sk.window,
+
 	mapping = map.preset.insert({
 		['<C-b>'] = map.scroll_docs(-4),
 		['<C-f>'] = map.scroll_docs(4),
@@ -215,22 +183,21 @@ cmp.setup({
 		['<C-Space>'] = map.complete(),
 		['<CR>'] = map(cr_map, { 'i', 's', 'c' }),
 		['<Tab>'] = map(tab_map),
-		['<S-Tab>'] = map(stab_map),
-		['<BS>'] = map(bs_map),
-		['<Down>'] = map(du_map, { 'i', 's', 'c' }),
-		['<Up>'] = map(du_map, { 'i', 's', 'c' }),
-		['<Left>'] = map(l_map, { 'i', 's', 'c' }),
-		['<Right>'] = map(r_map, { 'i', 's', 'c' }),
+		['<S-Tab>'] = cmp.config.disable,
+		['<BS>'] = map(bs_map, { 'i', 's', 'c' }),
+		['<Down>'] = cmp.config.disable,
+		['<Up>'] = cmp.config.disable,
+		['<Left>'] = cmp.config.disable,
+		['<Right>'] = cmp.config.disable,
 	}),
 
 	sources = Config.sources({
-		-- { name = 'nvim_lsp' },
-		{
-			name = 'nvim_lsp',
-		},
+		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 		{ name = 'path' },
+	}, {
+		{ name = 'buffer' },
 	}),
 })
 
@@ -247,8 +214,8 @@ cmp.setup.filetype({ 'bash', 'sh', 'zsh' }, {
 if exists('orgmode') then
 	cmp.setup.filetype({ 'org', 'orgagenda', 'orghelp' }, {
 		sources = Config.sources({
-			{ name = 'async_path' },
-			{ name = 'buffer' },
+			-- { name = 'async_path' },
+			{ name = 'path' },
 		}, {
 			{ name = 'orgmode' },
 			{ name = 'buffer' },
@@ -262,19 +229,19 @@ cmp.setup.filetype('lua', {
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 	}, {
-		{ name = 'nvim_lua' },
+		-- { name = 'nvim_lua' },
 		{ name = 'buffer' },
 	})
 })
 
 cmp.setup.filetype('gitcommit', {
 	sources = Config.sources({
-		{ name = 'luasnip' },
-		{ name = 'path' },
+		-- { name = 'luasnip' },
+		-- { name = 'path' },
 		{ name = 'conventionalcommits' },
 	}, {
 		{ name = 'git' },
-		{ name = 'buffer' },
+		-- { name = 'buffer' },
 	}),
 })
 cmp.setup.cmdline({ '/', '?' }, {
