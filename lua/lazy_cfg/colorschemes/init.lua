@@ -26,7 +26,7 @@ end
 ---@type string[]
 local submods = {
 	'tokyonight',
-	'catpucchin',
+	'catppuccin',
 	'spaceduck',
 	'dracula',
 }

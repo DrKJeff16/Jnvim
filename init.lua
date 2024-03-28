@@ -75,7 +75,9 @@ end
 
 if exists(plug_pfx..'colorschemes') then
 	local Csc = require(plug_pfx..'colorschemes')
-	if Csc.tokyonight then
+	if Csc.catppuccin then
+		Csc.catppuccin.setup()
+	elseif Csc.tokyonight then
 		Csc.tokyonight.setup()
 	end
 	-- Csc.catpucchin.setup()
