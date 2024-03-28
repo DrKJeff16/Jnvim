@@ -8,6 +8,9 @@ if not exists('lspconfig') or not exists('neodev') then
 	return
 end
 
+---@type 'lazy_cfg.lspconfig.'
+local pfx = 'lazy_cfg.lspconfig.'
+
 local api = vim.api
 local bo = vim.bo
 local lsp = vim.lsp
@@ -22,6 +25,63 @@ local map = vim.keymap.set
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
+
+---@class SubCaller
+---@field clangd? fun(): any
+
+---@param subs string[]
+---@param prefix? string
+---@return SubCaller res
+local src = function(subs, prefix)
+	prefix = prefix or pfx
+
+	---@type SubCaller
+	local res = {}
+
+	for _, v in next, subs do
+		local path = prefix..v
+
+		if exists(path) then
+			---@return any
+			res[v] = function()
+				return require(path)
+			end
+		end
+	end
+
+	return res
+end
+
+local submods = {
+	'clangd',
+	'kinds',
+}
+
+local sub_call = src(submods)
+sub_call.clangd()
+sub_call.kinds().setup()
+
+vim.cmd[[
+au! ColorScheme * highlight NormalFloat guibg=#1f2335
+au! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335
+]]
+
+local border = {
+	{"🭽", "FloatBorder"},
+	{"▔", "FloatBorder"},
+	{"🭾", "FloatBorder"},
+	{"▕", "FloatBorder"},
+	{"🭿", "FloatBorder"},
+	{"▁", "FloatBorder"},
+	{"🭼", "FloatBorder"},
+	{"▏", "FloatBorder"},
+}
+
+-- LSP settings (for overriding per client)
+local handlers =  {
+	["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = border}),
+	["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = border }),
+}
 
 local Neodev = require('neodev')
 Neodev.setup({
@@ -38,8 +98,12 @@ Neodev.setup({
 	pathStrict = true,
 })
 
-if exists('neoconf') then
-	require('neoconf').setup({})
+-- if exists('neoconf') then
+-- 	require('neoconf').setup({})
+-- end
+
+if exists(pfx..'kinds') then
+	require('lazy_cfg.lspconfig.kinds').setup()
 end
 
 ---@alias SrvTbl { [string]: table }
@@ -50,17 +114,21 @@ local add_caps = function(srv_tbl)
 	---@type SrvTbl
 	local res = {}
 
-
-
 	for k, v in next, srv_tbl do
 		res[k] = v
+
+		if handlers then
+			res[k].handlers = handlers
+		end
 
 		if exists('cmp_nvim_lsp') then
 			local caps = require('cmp_nvim_lsp').default_capabilities()
 			res[k].capabilities = caps
 		end
+
 		if exists('schemastore') then
 			local SchSt = require('schemastore')
+
 			if k == 'jsonls' then
 				res[k].settings = {
 					json = {
@@ -91,10 +159,7 @@ local add_caps = function(srv_tbl)
 	return res
 end
 
----@module 'lspconfig''
-local lspconfig
-
-lspconfig = require('lspconfig')
+local lspconfig = require('lspconfig')
 
 ---@type SrvTbl
 local srv = {
@@ -297,3 +362,34 @@ au('LspAttach', {
 		end, opts)
 	end,
 })
+
+vim.diagnostic.config({
+	virtual_text = { source = 'if_many' },
+	float = { source = 'if_many' },
+	signs = true,
+	underline = true,
+	update_in_insert = false,
+	severity_sort = false,
+})
+
+local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+for type, icon in pairs(signs) do
+	local hlite = "DiagnosticSign" .. type
+	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
+end
+
+vim.o.updatetime = 250
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
+	callback = function()
+		vim.diagnostic.open_float(nil, {focus=false, scope = 'cursor'})
+	end
+})
+
+-- To instead override globally
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+	opts = opts or {}
+	opts.border = opts.border or border
+	return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
