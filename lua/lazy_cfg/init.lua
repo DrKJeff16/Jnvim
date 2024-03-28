@@ -221,8 +221,13 @@ Lazy.setup({
 
 	{
 		'folke/which-key.nvim',
-		lazy = true,
+		-- lazy = true,
+		event = 'VeryLazy',
 		priority = 1000,
+		init = function()
+			vim.o.timeout = true
+			vim.o.timeoutlen = 300
+		end,
 	},
 })
 

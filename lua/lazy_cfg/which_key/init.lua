@@ -16,6 +16,7 @@ set.timeoutlen = 300
 local pfx = 'lazy_cfg.which_key.'
 
 local WK = require('which-key')
+local presets = require('which-key.plugins.presets')
 
 WK.setup({
 	plugins = {
@@ -24,8 +25,8 @@ WK.setup({
 		-- the presets plugin, adds help for a bunch of default keybindings in Neovim
 		-- No actual key bindings are created
 		spelling = {
-			enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
-			suggestions = 20, -- how many suggestions should be shown in the list?
+			enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+			suggestions = 0, -- how many suggestions should be shown in the list?
 		},
 		presets = {
 			operators = true, -- adds help for operators like d, y, ...
@@ -43,13 +44,12 @@ WK.setup({
 	key_labels = {
 		-- override the label used to display some keys. It doesn't effect WK in any other way.
 		-- For example:
-		-- ["<space>"] = "SPC",
-		-- ["<cr>"] = "RET",
-		-- ["<tab>"] = "TAB",
+		["<space>"] = "SPC",
+		["<cr>"] = "RET",
+		["<tab>"] = "TAB",
+		['<leader>'] = 'LDR',
 	},
-	motions = {
-		count = true,
-	},
+	motions = { count = true },
 	icons = {
 		breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
 		separator = "➜", -- symbol used between a key and it's label
@@ -60,18 +60,18 @@ WK.setup({
 		scroll_up = "<c-u>", -- binding to scroll up inside the popup
 	},
 	window = {
-		border = "none", -- none, single, double, shadow
-		position = "bottom", -- bottom, top
-		margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
+		border = "double", -- none, single, double, shadow
+		position = "top", -- bottom, top
+		margin = { 2, 4, 2, 4 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
 		padding = { 1, 2, 1, 2 }, -- extra window padding [top, right, bottom, left]
-		winblend = 0, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+		winblend = 15, -- value between 0-100 0 for fully opaque and 100 for fully transparent
 		zindex = 1000, -- positive value to position WhichKey above other floating windows.
 	},
 	layout = {
-		height = { min = 4, max = 25 }, -- min and max height of the columns
-		width = { min = 20, max = 50 }, -- min and max width of the columns
-		spacing = 3, -- spacing between columns
-		align = "left", -- align columns left, center or right
+		height = { min = 4, max = 20 }, -- min and max height of the columns
+		width = { min = 25, max = 60 }, -- min and max width of the columns
+		spacing = 2, -- spacing between columns
+		align = "center", -- align columns left, center or right
 	},
 	ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
 	hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
@@ -89,8 +89,8 @@ WK.setup({
 		-- registers
 		'"',
 		"<c-r>",
-		-- spelling
-		"z=",
+		-- -- spelling
+		-- "z=",
 	},
 	triggers_blacklist = {
 		-- list of mode / prefixes that should never be hooked by WhichKey
@@ -105,3 +105,76 @@ WK.setup({
 		filetypes = {},
 	},
 })
+
+---@alias ModeEnum
+---| 'n'
+---| 'v'
+---| 'i'
+---| 't'
+
+---@alias KeyTbl
+---|string[]
+---|{ integer: string, integer:string, [string]: (boolean|integer) }
+---|string
+---|table<string, (string|fun(...): any)>
+
+---@alias MapsTbl table<string, table<string, 'which_key_ignore'|any>>
+
+---@class RegOpts
+---@field mode? ModeEnum
+---@field prefix string
+---@field buffer? nil|integer
+---@field silent? boolean
+---@field noremap? boolean
+---@field nowait? boolean
+---@field expr? boolean
+
+---@param maps table<(string|integer), any>
+---@param opts? RegOpts
+local reg = function(maps, opts)
+	opts = opts or { noremap = true, nowait = true }
+	local register = WK.register
+
+	register(maps, opts)
+end
+
+local regs = {
+	['<leader>f'] = {
+		name = '+file',
+		s = { '<CMD>w<cr>', 'Save File', noremap = true, silent = true },
+		S = { '<CMD>w ', 'Save File Interactively', noremap = true, silent = false },
+
+		i = {
+			name = '+indent',
+			r = {
+				'<CMD>%retab<cr>',
+				'Retab',
+				noremap = true,
+				silent = true,
+			},
+		},
+
+		f = {
+			'<CMD>ed ',
+			'Choose a buffer to edit interactively',
+			silent = false,
+			noremap = true,
+			nowait = true,
+		},
+
+		t = {
+			name = '+NvimTree',
+			t = {
+				'<CMD>NvimTreeOpen<cr>',
+				'Open NvimTree',
+				silent = true,
+				nowait = true,
+				noremap = true,
+			},
+		},
+	},
+}
+
+reg(regs)
+
+presets.operators['v'] = nil
