@@ -270,6 +270,8 @@ map('n', '<Leader>l[', diag.goto_prev, map_opts)
 map('n', '<Leader>l]', diag.goto_next, map_opts)
 map('n', '<Leader>lq', diag.setloclist, map_opts)
 
+lsp.set_log_level('TRACE')
+
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
 	callback = function(ev)
