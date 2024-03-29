@@ -96,7 +96,8 @@ WK.setup({
 		-- list of mode / prefixes that should never be hooked by WhichKey
 		-- this is mostly relevant for keymaps that start with a native binding
 		i = { "j", "k" },
-		v = { "j", "k" },
+		v = { "j", "k", "v" },
+		n = { "j", "k", "v" },
 	},
 	-- disable the WhichKey popup for certain buf types and file types.
 	-- Disabled by default for Telescope
@@ -106,75 +107,8 @@ WK.setup({
 	},
 })
 
----@alias ModeEnum
----| 'n'
----| 'v'
----| 'i'
----| 't'
-
----@alias KeyTbl
----|string[]
----|{ integer: string, integer:string, [string]: (boolean|integer) }
----|string
----|table<string, (string|fun(...): any)>
-
----@alias MapsTbl table<string, table<string, 'which_key_ignore'|any>>
-
----@class RegOpts
----@field mode? ModeEnum
----@field prefix string
----@field buffer? nil|integer
----@field silent? boolean
----@field noremap? boolean
----@field nowait? boolean
----@field expr? boolean
-
----@param maps table<(string|integer), any>
----@param opts? RegOpts
-local reg = function(maps, opts)
-	opts = opts or { noremap = true, nowait = true }
-	local register = WK.register
-
-	register(maps, opts)
+if exists('lazy_cfg.which_key.register') then
+	require('lazy_cfg.which_key.register')
 end
-
-local regs = {
-	['<leader>f'] = {
-		name = '+file',
-		s = { '<CMD>w<cr>', 'Save File', noremap = true, silent = true },
-		S = { '<CMD>w ', 'Save File Interactively', noremap = true, silent = false },
-
-		i = {
-			name = '+indent',
-			r = {
-				'<CMD>%retab<cr>',
-				'Retab',
-				noremap = true,
-				silent = true,
-			},
-		},
-
-		f = {
-			'<CMD>ed ',
-			'Choose a buffer to edit interactively',
-			silent = false,
-			noremap = true,
-			nowait = true,
-		},
-
-		t = {
-			name = '+NvimTree',
-			t = {
-				'<CMD>NvimTreeOpen<cr>',
-				'Open NvimTree',
-				silent = true,
-				nowait = true,
-				noremap = true,
-			},
-		},
-	},
-}
-
-reg(regs)
 
 presets.operators['v'] = nil
