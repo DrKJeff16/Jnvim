@@ -8,6 +8,8 @@ if not exists('lspconfig') or not exists('neodev') then
 	return
 end
 
+require('user.types.lspconfig')
+
 ---@type 'lazy_cfg.lspconfig.'
 local pfx = 'lazy_cfg.lspconfig.'
 
@@ -20,14 +22,33 @@ local insp = vim.inspect
 
 -- local fs_stat = vim.loop.fs_stat
 
-local keymap = vim.keymap.set
-local map = vim.keymap.set
+local kmap = vim.keymap.set
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
 
+---@param lhs string
+---@param rhs string|fun(...): any
+---@param opts? vim.keymap.set.Opts
+local nmap = function(lhs, rhs, opts)
+	opts = opts or { noremap = true, silent = true, nowait = true }
+
+	if not opts.noremap then
+		opts.noremap = true
+	end
+	if not opts.silent then
+		opts.silent = true
+	end
+	if not opts.nowait then
+		opts.nowait = true
+	end
+
+	kmap('n', lhs, rhs, opts)
+end
+
 ---@class SubCaller
 ---@field clangd? fun(): any
+---@field kinds? fun(): LspKindsMod
 
 ---@param subs string[]
 ---@param prefix? string
@@ -79,8 +100,8 @@ local border = {
 
 -- LSP settings (for overriding per client)
 local handlers =  {
-	["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = border}),
-	["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = border }),
+	["textDocument/hover"] =  lsp.with(lsp.handlers.hover, {border = border}),
+	["textDocument/signatureHelp"] =  lsp.with(lsp.handlers.signature_help, {border = border }),
 }
 
 local Neodev = require('neodev')
@@ -330,40 +351,40 @@ end
 
 local map_opts = { noremap = true, silent = true }
 
-map('n', '<Leader>le', diag.open_float, map_opts)
-map('n', '<Leader>l[', diag.goto_prev, map_opts)
-map('n', '<Leader>l]', diag.goto_next, map_opts)
-map('n', '<Leader>lq', diag.setloclist, map_opts)
+nmap('<Leader>le', diag.open_float, map_opts)
+nmap('<Leader>l[', diag.goto_prev, map_opts)
+nmap('<Leader>l]', diag.goto_next, map_opts)
+nmap('<Leader>lq', diag.setloclist, map_opts)
 
 lsp.set_log_level('TRACE')
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
 	callback = function(ev)
-		bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+		bo[ev.buf].omnifunc = 'v:lua.lsp.omnifunc'
 		local opts = { buffer = ev.buf }
-		map('n', '<Leader>lgD', lsp_buf.declaration, opts)
-		map('n', '<Leader>lgd', lsp_buf.definition, opts)
-		map('n', '<Leader>lk', lsp_buf.hover, opts)
-		map('n', 'K', lsp_buf.hover, opts)
-		map('n', '<Leader>lgi', lsp_buf.implementation, opts)
-		map('n', '<Leader>lS', lsp_buf.signature_help, opts)
-		map('n', '<Leader>lwa', lsp_buf.add_workspace_folder, opts)
-		map('n', '<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
-		keymap('n', '<Leader>lwl', function()
+		nmap('<Leader>lgD', lsp_buf.declaration, opts)
+		nmap('<Leader>lgd', lsp_buf.definition, opts)
+		nmap('<Leader>lk', lsp_buf.hover, opts)
+		nmap('K', lsp_buf.hover, opts)
+		nmap('<Leader>lgi', lsp_buf.implementation, opts)
+		nmap('<Leader>lS', lsp_buf.signature_help, opts)
+		nmap('<Leader>lwa', lsp_buf.add_workspace_folder, opts)
+		nmap('<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
+		nmap('<Leader>lwl', function()
 			print(insp(lsp_buf.list_workspace_folders()))
 		end, opts)
-		map('n', '<Leader>lD', lsp_buf.type_definition, opts)
-		map('n', '<Leader>lrn', lsp_buf.rename, opts)
-		keymap({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
-		map('n', '<Leader>lgr', lsp_buf.references, opts)
-		keymap('n', '<Leader>lf', function()
+		nmap('<Leader>lD', lsp_buf.type_definition, opts)
+		nmap('<Leader>lrn', lsp_buf.rename, opts)
+		kmap({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
+		nmap('<Leader>lgr', lsp_buf.references, opts)
+		nmap('<Leader>lf', function()
 			lsp_buf.format({ async = true })
 		end, opts)
 	end,
 })
 
-vim.diagnostic.config({
+diag.config({
 	virtual_text = { source = 'if_many' },
 	float = { source = 'if_many' },
 	signs = true,
@@ -379,17 +400,17 @@ for type, icon in pairs(signs) do
 end
 
 vim.o.updatetime = 250
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-	callback = function()
-		vim.diagnostic.open_float(nil, {focus=false, scope = 'cursor'})
-	end
-})
+-- api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+-- 	group = api.nvim_create_augroup("float_diagnostic", { clear = true }),
+-- 	callback = function()
+-- 		diag.open_float(nil, {focus=false, scope = 'cursor'})
+-- 	end
+-- })
 
--- To instead override globally
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-	opts = opts or {}
-	opts.border = opts.border or border
-	return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
+-- -- To instead override globally
+-- local orig_util_open_floating_preview = lsp.util.open_floating_preview
+-- function lsp.util.open_floating_preview(contents, syntax, opts, ...)
+-- 	opts = opts or {}
+-- 	opts.border = opts.border or border
+-- 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
+-- end

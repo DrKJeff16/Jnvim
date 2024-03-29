@@ -14,7 +14,10 @@
 
 ---@alias OptPairTbl table<string, VimOption>
 
----@alias MapOpts vim.api.keyset.keymap
+---@alias ApiMapOpts vim.api.keyset.keymap
+---@alias KeyMapOpts vim.keymap.set.Opts
+
+---@alias MapOpts ApiMapOpts|KeyMapOpts
 
 ---@class OptsTbl
 ---@field set? OptPairTbl
@@ -43,45 +46,40 @@
 ---@field exists fun(mod: string): boolean
 ---@field assoc fun()
 
+---@type 'user.types.'
 local pfx = 'user.types.'
 
----@param subs string[]
----@param prefix? string
----@return table<string, fun(): any> res
-local src = function(subs, prefix)
-	prefix = prefix or pfx
+---@class UserTypesMod
+---@field lspconfig? any
+---@field cmp? any
+---@field gitsigns? any
+---@field colorschemes? any
+---@field treesitter? any
+---@field opts? any
+---@field nvim_tree? any
+---@field todo_comments? any
+---@field which_key? any
+local M = {}
 
-	---@type table<string, fun(): any>
-	local res = {}
-
-	for _, v in next, subs do
-		local path = prefix..v
-		local ok, _ = pcall(require, path)
-		if ok then
-			---@return any
-			res[v] = function()
-				return require(path)
-			end
-		end
-	end
-
-	return res
-end
-
----@type string[]
-local submods = {
+local subs = {
 	'lspconfig',
 	'cmp',
+	'gitsigns',
+	'colorschemes',
 	'treesitter',
 	'opts',
 	'nvim_tree',
 	'todo_comments',
+	'which_key'
 }
 
-local subs = src(submods)
-
-if #subs > 0 then
-	for _, v in next, subs do
-		v()
+for _, v in next, subs do
+	local path = pfx..v
+	local ok, _ = pcall(require, path)
+	if ok then
+		---@return any
+		M[v] = require(path)
 	end
 end
+
+return M
