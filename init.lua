@@ -1,6 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types')
+
 local set = vim.o
 local opt = vim.opt
 local fn = vim.fn
@@ -14,15 +16,10 @@ local hi = api.nvim_set_hl
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
-require('user.types')
-local User = require('user')
-local exists = User.exists
-local options = User.opts()
-
 ---@type MapOpts
-local s_noremap = { noremap = true, silent = true }
+local s_noremap = { noremap = true, silent = true, nowait = true }
 ---@type MapOpts
-local ns_noremap = { noremap = true, silent = false }
+local ns_noremap = { noremap = true, silent = false, nowait = true }
 
 ---@param lhs string
 ---@param rhs string
@@ -60,27 +57,26 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-User.pfx = 'lazy_cfg'
+local User = require('user')
+local exists = User.exists
+local options = User.opts()
 
-local plug_pfx = User.pfx
-
-local Pkg = require(plug_pfx)
-plug_pfx = plug_pfx .. '.'
+local Pkg = require('lazy_cfg')
 
 for _, v in next, Pkg do
-	if exists(plug_pfx..v) then
-		require(plug_pfx..v)
+	local path = 'lazy_cfg.'..v
+	if exists(path) then
+		require(path)
 	end
 end
 
-if exists(plug_pfx..'colorschemes') then
-	local Csc = require(plug_pfx..'colorschemes')
-	if Csc.catppuccin then
-		Csc.catppuccin.setup()
-	elseif Csc.tokyonight then
+if exists('lazy_cfg.colorschemes') then
+	local Csc = require('lazy_cfg.colorschemes')
+	if Csc.tokyonight then
 		Csc.tokyonight.setup()
+	elseif Csc.catppuccin then
+		Csc.catppuccin.setup()
 	end
-	-- Csc.catpucchin.setup()
 end
 
 ---@class MapsTbls
