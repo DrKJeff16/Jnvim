@@ -19,6 +19,12 @@ local bo = vim.bo
 local sched = vim.schedule
 local sched_wp = vim.schedule_wrap
 
+local in_tbl = vim.tbl_contains
+local empty = vim.tbl_isempty
+local filter_tbl = vim.tbl_filter
+local tbl_map = vim.tbl_map
+
+set.termguicolors = true
 opt.termguicolors = true
 
 let.loaded_netrw = 1
@@ -29,47 +35,110 @@ local map = api.nvim_set_keymap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local hi = api.nvim_set_hl
-
-local Tree = require('nvim-tree')
-local Api = require('nvim-tree.api')
-
-local Tapi = require('nvim-tree.api').tree
+local get_tabpage = api.nvim_win_get_tabpage
+local get_bufn = api.nvim_win_get_buf
+local win_list = api.nvim_tabpage_list_wins
+local close_win = api.nvim_win_close
+local list_wins = api.nvim_list_wins
 
 ---@alias KeyOpts vim.keymap.set.Opts
 
 ---@param lhs string
----@param rhs string|fun()
----@param kopts KeyOpts
-local tree_map = function(lhs, rhs, kopts)
-	kmap('n', lhs, rhs, kopts)
+---@param rhs string|fun(...): any
+---@param opts? KeyOpts
+local nmap = function(lhs, rhs, opts)
+	if not opts or not rhs then
+		return
+	end
+
+	opts = opts or { noremap = true, nowait = true, silent = true }
+	for _, v in next, { 'noremap', 'nowait', 'silent' } do
+		if not opts[v] then
+			opts[v] = true
+		end
+	end
+
+	kmap('n', lhs, rhs, opts)
 end
 
-kmap('n', '<Leader>ftt', Tapi.open, { noremap = true, silent = true })
-kmap('n', '<Leader>ftd', Tapi.close, { noremap = true, silent = true })
-kmap('n', '<Leader>ftf', Tapi.focus, { noremap = true, silent = true })
+local Tree = require('nvim-tree')
+local Api = require('nvim-tree.api')
+local Tapi = Api.tree
+local Tnode = Api.node
+local CfgApi = Api.config
+
+---@type fun(...): any
+local open = Tapi.open
+---@type fun(...): any
+local close = Tapi.close
+---@type fun(...): any
+local toggle = Tapi.toggle
+---@type fun(...): any
+local toggle_help = Tapi.toggle_help
+---@type fun(...): any
+local focus = Tapi.focus
+---@type fun(...): any
+local change_root = Tapi.change_root
+---@type fun(...): any
+local change_root_to_parent = Tapi.change_root_to_parent
+---@type fun(...): any
+local reload = Tapi.reload
+---@type fun(...): any
+local get_node = Tapi.get_node_under_cursor
+---@type fun(...): any
+local collapse_all = Tapi.collapse_all
+
+---@class TreeCustomKeys
+---@field lhs string
+---@field rhs string|fun(...): any
+---@field opts? KeyOpts
+
+---@param keys TreeCustomKeys[]
+local map_lft = function(keys)
+	if not keys or type(keys) ~= 'table' or empty(keys) then
+		return
+	end
+
+	for _, args in next, keys do
+		if args and type(args) == 'table' and not empty(args) then
+			args.opts = args.opts or {}
+
+			for _, v in next, { 'noremap', 'nowait', 'silent' } do
+				if not args.opts[v] then
+					args.opts[v] = true
+				end
+			end
+
+			nmap(args.lhs, args.rhs, args.opts)
+		end
+	end
+end
+
+---@type TreeCustomKeys[]
+local my_maps = {
+	{ lhs = '<Leader>fto', rhs = open },
+	{ lhs = '<Leader>ftt', rhs = toggle },
+	{ lhs = '<Leader>ftd', rhs = close },
+	{ lhs = '<Leader>ftc', rhs = close },
+	{ lhs = '<Leader>ftf', rhs = focus },
+}
+
+map_lft(my_maps)
 
 ---@param nwin number
 local tab_win_close = function(nwin)
-	local get_tabpage = api.nvim_win_get_tabpage
-	local get_bufn = api.nvim_win_get_buf
-	local win_list = api.nvim_tabpage_list_wins
-	local close_win = api.nvim_win_close
-	local list_wins = api.nvim_list_wins
-
 	local ntab = get_tabpage(nwin)
 	local nbuf = get_bufn(nwin)
 	local buf_info = fn.getbufinfo(nbuf)[1]
 
-	local tab_wins = vim.tbl_filter(function(w) return w - nwin end, win_list(ntab))
-	local tab_bufs = vim.tbl_map(get_bufn, tab_wins)
+	local tab_wins = filter_tbl(function(w) return w - nwin end, win_list(ntab))
+	local tab_bufs = tbl_map(get_bufn, tab_wins)
 
-	if buf_info.name:match('.*NvimTree_%d*$') then
-		if not vim.tbl_isempty(tab_bufs) then
-			Tapi.close()
-		end
+	if buf_info.name:match('.*NvimTree_%d*$') and not empty(tab_bufs) then
+		close()
 	elseif #tab_bufs == 1 then
 		local lbuf_info = fn.getbufinfo(tab_bufs[1])[1]
-		if lbuf_info .name:match('.*NvimTree_%d*$') then
+		if lbuf_info.name:match('.*NvimTree_%d*$') then
 			sched(function()
 				if #list_wins() == 1 then
 					vim.cmd('quit')
@@ -101,7 +170,7 @@ local tree_open = function(data)
 	end
 
 	local ft = bo[data.buf].ft
-	local ignore = {
+	local noignore = {
 		'sh',
 		'bash',
 		'c',
@@ -110,14 +179,11 @@ local tree_open = function(data)
 		'python',
 	}
 
-	if not vim.tbl_contains(ignore, ft) then
+	if not in_tbl(noignore, ft) then
 		return
 	end
 
-	local open = Tapi.open
-	local toggle = Tapi.toggle
-	local focus = Tapi.focus
-	local change_root = Tapi.change_root
+
 
 	---@class TreeToggleOpts
 	---@field focus? boolean Defaults to `true`
@@ -125,32 +191,26 @@ local tree_open = function(data)
 	---@field path? string|nil Defaults to `nil`
 	---@field current_window? boolean Defaults to `false`
 	---@field update_root? boolean Defaults to `false`
-	local toggle_opts = {
-		focus = false,
-		find_file = true,
-	}
+	local toggle_opts = { focus = false, find_file = true }
 
 	---@class TreeOpenOpts
 	---@field find_file? boolean Defaults to `false`
 	---@field path? string|nil Defaults to `nil`
 	---@field current_window? boolean Defaults to `false`
 	---@field update_root? boolean Defaults to `false`
-	local open_opts = {
-		find_file = true,
-	}
+	local open_opts = { find_file = true }
 
 	if dir then
 		cd(data.file)
-		Tapi.open()
+		open()
 	else
-		Tapi.toggle(toggle_opts)
+		toggle(toggle_opts)
 	end
 end
 
 local edit_or_open = function()
-	local node = Tapi.get_node_under_cursor()
-	local edit = Api.node.open.edit
-	local close = Tapi.close
+	local node = get_node()
+	local edit = Tnode.open.edit
 
 	edit()
 	if not node.nodes then
@@ -159,9 +219,9 @@ local edit_or_open = function()
 end
 
 local vsplit_preview = function()
-	local node = Tapi.get_node_under_cursor()
-	local edit = Api.node.open.edit
-	local vert = Api.node.open.vertical
+	local node = get_node()
+	local edit = Tnode.open.edit
+	local vert = Tnode.open.vertical
 
 	if node.nodes then
 		edit()
@@ -169,17 +229,29 @@ local vsplit_preview = function()
 		vert()
 	end
 
-	Tapi.focus()
+	focus()
 end
 
 local git_add = function()
-	local node = Tapi.get_node_under_cursor()
+	---@class TreeNodeGSDir
+	---@field direct? string[]
+	---@field indirect? string[]
+
+	---@class TreeNodeGitStatus
+	---@field file? string
+	---@field dir TreeNodeGSDir
+
+	---@class TreeNode
+	---@field git_status TreeNodeGitStatus
+	---@field absolute_path string
+	---@field file string
+	local node = get_node()
 	local ngs = node.git_status
+	local ngsf = ngs.file
 	local abs = node.absolute_path
+	local gs = ngsf or ''
 
-	local gs = ngs.file
-
-	if gs == nil then
+	if gs == '' then
 		if ngs.dir.direct ~= nil then
 			gs = ngs.dir.direct[1]
 		elseif ngs.dir.indirect ~= nil then
@@ -187,29 +259,30 @@ local git_add = function()
 		end
 	end
 
-	---@alias StrArr string[]
-	---@type StrArr[]
+	---@class StrArr
+	---@field add string[]
+	---@field restore string[]
 	local conds = {
-		{ '??', 'MM', 'AM', ' M' },
-		{ 'M ', 'A ' },
+		add = { '??', 'MM', 'AM', ' M' },
+		restore = { 'M ', 'A ' },
 	}
 
-	if vim.tbl_contains(gs, conds[1]) then
+	if in_tbl(conds.add, gs) then
 		vim.cmd('silent !git add'..abs)
-	elseif vim.tbl_contains(gs, conds[2]) then
+	elseif in_tbl(conds.restore, gs) then
 		vim.cmd('silent !git restore --staged'..abs)
 	end
 
-	Tapi.reload()
+	reload()
 end
 
 local swap_then_open_tab = function()
-	local node = Tapi.get_node_under_cursor()
+	local node = get_node()
 	vim.cmd('wincmd l')
-	Api.node.open.tab(node)
+	Tnode.open.tab(node)
 end
 
----@param bufn number
+---@param bufn integer
 local on_attach = function(bufn)
 	---@param desc string
 	---@return KeyOpts
@@ -226,16 +299,16 @@ local on_attach = function(bufn)
 		return res
 	end
 
-	Api.config.mappings.default_on_attach(bufn)
+	CfgApi.mappings.default_on_attach(bufn)
 
-	tree_map('<C-t>', Tapi.change_root_to_parent, opts('Up'))
-	tree_map('?', Tapi.toggle_help, opts('Help'))
-	tree_map('l', edit_or_open,          opts('Edit Or Open'))
-	tree_map('L', vsplit_preview,        opts('Vsplit Preview'))
-	tree_map('h', Tapi.close,        opts('Close'))
-	tree_map('H', Tapi.collapse_all, opts('Collapse All'))
-	tree_map('ga', git_add, opts('Git Add'))
-	tree_map('t', swap_then_open_tab, opts('Open Tab'))
+	nmap('<C-t>', change_root_to_parent, opts('Up'))
+	nmap('?', toggle_help, opts('Help'))
+	nmap('l', edit_or_open,          opts('Edit Or Open'))
+	nmap('L', vsplit_preview,        opts('Vsplit Preview'))
+	nmap('h', close,        opts('Close'))
+	nmap('H', collapse_all, opts('Collapse All'))
+	nmap('ga', git_add, opts('Git Add'))
+	nmap('t', swap_then_open_tab, opts('Open Tab'))
 end
 
 Tree.setup({
@@ -247,21 +320,24 @@ Tree.setup({
 	filters = { dotfiles = false },
 })
 
+---@alias HlOpts vim.api.keyset.highlight
+---@alias AuOpts vim.api.keyset.create_autocmd
+
 ---@class HlGroups
 ---@field name string 
----@field opts vim.api.keyset.highlight
+---@field opts HlOpts
+
+---@class AuCmds
+---@field event string|string[]
+---@field opts AuOpts
 
 ---@type HlGroups[]
 local hl_groups = {
 	{ name = 'NvimTreeExecFile', opts = { fg = '#ffa0a0' } },
-	{ name = 'NvimTreeSpecialFile', opts ={ fg = '#ff80ff', underline = true } },
-	{ name = 'NvimTreeSymlink', opts ={ fg = 'Yellow', italic = true } },
-	{ name = 'NvimTreeImageFile', opts ={ link = 'Title' } },
+	{ name = 'NvimTreeSpecialFile', opts = { fg = '#ff80ff', underline = true } },
+	{ name = 'NvimTreeSymlink', opts = { fg = 'Yellow', italic = true } },
+	{ name = 'NvimTreeImageFile', opts = { link = 'Title' } },
 }
-
----@class AuCmds
----@field event string|string[]
----@field opts vim.api.keyset.create_autocmd
 
 ---@type AuCmds[]
 local au_cmds = {
@@ -270,8 +346,13 @@ local au_cmds = {
 		event = 'WinClosed',
 		opts = {
 			callback = function()
+				---@type number
 				local nwin = tonumber(fn.expand('<amatch>'))
-				sched_wp(tab_win_close(nwin))
+
+				local tabc = function()
+					return tab_win_close(nwin)
+				end
+				sched_wp(tabc)
 			end,
 			nested = true,
 		}
@@ -279,14 +360,11 @@ local au_cmds = {
 }
 
 for _, v in next, au_cmds do
-	au(v.event, v.opts)
-end
-
----@param hls HlGroups[]
-local hl_set = function(hls)
-	for _, v in next, hls do
-		hi(0, v.name, v.opts)
+	if v.event and v.opts then
+		au(v.event, v.opts)
 	end
 end
 
-hl_set(hl_groups)
+for _, v in next, hl_groups do
+	hi(0, v.name, v.opts)
+end
