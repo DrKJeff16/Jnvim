@@ -11,12 +11,9 @@ require(pfx..'types')
 local M = {}
 
 ---@param subs string[]
----@param prefix? string
-local src = function(subs, prefix)
-	prefix = prefix or pfx
-
+local src = function(subs)
 	for _, v in next, subs do
-		local path = prefix..v
+		local path = pfx..v
 		if exists(path) then
 			M[v] = require(path)
 		end
