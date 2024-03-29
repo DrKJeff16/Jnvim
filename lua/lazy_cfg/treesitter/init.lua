@@ -1,4 +1,5 @@
 ---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
 
 local User = require('user')
 local exists = User.exists
@@ -12,6 +13,7 @@ local pfx = 'lazy_cfg.treesitter.'
 local Ts = require('nvim-treesitter')
 local Cfg = require('nvim-treesitter.configs')
 local Install = require('nvim-treesitter.install')
+local TSUtils = require('nvim-treesitter.ts_utils')
 
 Install.prefer_git = true
 
@@ -94,7 +96,8 @@ local additional_hl = function()
 	return res
 end
 
-Cfg.setup({
+---@type TSConfig
+local TSConfig = {
 	auto_install = true,
 	sync_install = false,
 	ensure_installed = ensure,
@@ -119,19 +122,31 @@ Cfg.setup({
 	},
 
 	indent = { enable = true, disable = { 'lua' } },
-})
+
+	incremental_selection = { enable = false },
+}
+
+if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
+	TSConfig.rainbow = require('lazy_cfg.treesitter.rainbow').rainbow
+end
 
 ---@type string[]
 local Modules = {
 	'context',
 }
 
----@type { [string]: any }
+---@type table<string, any>
 local M = {}
 
-for _, s in ipairs(Modules) do
+for _, s in next, Modules do
 	local mod = pfx..s
-	M[s] = (exists(mod) and require(mod) or nil)
+	if exists(mod) then
+		M[s] = require(mod)
+	end
 end
 
-return M
+require('ts_context_commentstring').setup({
+  enable_autocmd = false,
+})
+
+Cfg.setup(TSConfig)

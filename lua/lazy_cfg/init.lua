@@ -53,7 +53,22 @@ Lazy.setup({
 
 	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000 },
 
-	{ 'tpope/vim-commentary', lazy = false },
+	-- { 'tpope/vim-commentary', lazy = false },
+	{
+		'numToStr/Comment.nvim',
+		config = function()
+			require('Comment').setup({
+				pre_hook = function()
+					return vim.bo.commentstring
+				end,
+			})
+		end,
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter',
+			'JoosepAlviste/nvim-ts-context-commentstring',
+		},
+	},
+
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive' },
 	{ 'tpope/vim-speeddating', lazy = true, enabled = false },
@@ -66,14 +81,13 @@ Lazy.setup({
 			'nvim-treesitter/nvim-treesitter-context',
 			'nvim-orgmode/orgmode',
 			'JoosepAlviste/nvim-ts-context-commentstring',
+			'HiPhish/nvim-ts-rainbow2',
 		},
 	},
 	{ 'nvim-treesitter/nvim-treesitter-context', lazy = true },
 	{ 'nvim-orgmode/orgmode', lazy = true },
-	{
-		'JoosepAlviste/nvim-ts-context-commentstring',
-		lazy = true,
-	},
+	{ 'HiPhish/nvim-ts-rainbow2', lazy = true },
+	{ 'JoosepAlviste/nvim-ts-context-commentstring', lazy = true },
 
 	{
 		'neovim/nvim-lspconfig',
@@ -96,6 +110,8 @@ Lazy.setup({
 
 	{ 'catppuccin/nvim', lazy = true, priority = 1000, name = 'catppuccin' },
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000, name = 'tokyonight' },
+	{ 'vigoux/oak', lazy = true, priority = 1000 },
+	{ 'bkegley/gloombuddy', lazy = true, priority = 1000 },
 
 	{
 		'folke/todo-comments.nvim',
