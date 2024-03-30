@@ -28,7 +28,8 @@ M.cond = {}
 ---@param mod string
 ---@return boolean res
 function M.exists(mod)
-	local res = false
+	---@type boolean
+	local res
 	if mod and type(mod) == 'string' and mod ~= '' then
 		res, _ = pcall(require, mod)
 	end
