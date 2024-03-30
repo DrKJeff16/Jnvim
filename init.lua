@@ -92,6 +92,10 @@ local map_tbl = {
 		{ lhs = '<Leader>ff', rhs = ':ed ', opts = ns_noremap },
 
 		{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
+		{ lhs = '<Leader>fvl', rhs = ':luafile %<CR>' },
+		{ lhs = '<Leader>fvv', rhs = ':so %<CR>' },
+		{ lhs = '<Leader>fvV', rhs = ':so ', opts = ns_noremap },
+		{ lhs = '<Leader>fvL', rhs = ':luafile ', opts = ns_noremap },
 		{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = ns_noremap },
 
 		{ lhs = '<Leader>wss', rhs = ':split<CR>' },
@@ -125,6 +129,8 @@ local map_tbl = {
 		{ lhs = '<Leader>Ls', rhs = ':Lazy sync<CR>' },
 		{ lhs = '<Leader>Lx', rhs = ':Lazy clean<CR>' },
 		{ lhs = '<Leader>Lc', rhs = ':Lazy check<CR>' },
+		{ lhs = '<Leader>Li', rhs = ':Lazy install<CR>' },
+		{ lhs = '<Leader>Lr', rhs = ':Lazy reload<CR>' },
 	},
 	vmap = {
 		{ lhs = '<Leader>is', rhs = ':sort<CR>', opts = ns_noremap },
