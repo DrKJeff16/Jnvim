@@ -47,56 +47,103 @@ end
 
 local regs = {
 	['<leader>f'] = {
-		name = '+file',
-		s = { '<CMD>w<cr>', 'Save File', noremap = true, silent = true, nowait = true },
-		S = { '<CMD>w ', 'Save File Interactively', noremap = true, silent = false, nowait = true },
-
-		i = {
-			name = '+Indent',
-			r = {
-				'<CMD>%retab<cr>',
-				'Retab',
-				noremap = true,
-				silent = true,
-				nowait = true,
-			},
-		},
-
-		f = {
-			'<CMD>ed ',
-			'Choose a buffer to edit interactively',
-			silent = false,
+		name = '+File',
+		s = {
+			'<CMD>w<cr>',
+			'Save File',
 			noremap = true,
+			silent = true,
 			nowait = true,
 		},
-
+	},
+	['<leader>fi'] = {
+		name = '+Indent',
+		r = {
+			'<CMD>%retab<cr>',
+			'Retab',
+			noremap = true,
+			silent = true,
+			nowait = true,
+		},
+	},
+	['<leader>ft'] = {
+		name = '+NvimTree',
 		t = {
-			name = '+NvimTree',
-			t = {
-				'<CMD>NvimTreeOpen<cr>',
-				'Open NvimTree',
-				silent = true,
-				nowait = true,
-				noremap = true,
-			},
-			f = {
-				'<CMD>NvimTreeFocus<cr>',
-				'Focus NvimTree',
-				silent = true,
-				nowait = true,
-				noremap = true,
-			},
-			d = {
-				'<CMD>NvimTreeClose<cr>',
-				'Close NvimTree',
-				silent = true,
-				nowait = true,
-				noremap = true,
-			},
+			'<CMD>NvimTreeOpen<cr>',
+			'Open NvimTree',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		f = {
+			'<CMD>NvimTreeFocus<cr>',
+			'Focus NvimTree',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		d = {
+			'<CMD>NvimTreeClose<cr>',
+			'Close NvimTree',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+	},
+	['<leader>t'] = {
+		name = '+Tabs',
+		d = {
+			'<CMD>tabclose<cr>',
+			'Close Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		D = {
+			'<CMD>tabclose!<cr>',
+			'Close Tab (Forcefully)',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		A = {
+			'<CMD>tabnew<cr>',
+			'Open New Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		f = {
+			'<CMD>tabfirst<cr>',
+			'Go To First Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		l = {
+			'<CMD>tablast<cr>',
+			'Go To Last Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		n = {
+			'<CMD>tabNext<cr>',
+			'Go To Next Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
+		},
+		p = {
+			'<CMD>tabprev<cr>',
+			'Go To Previous Tab',
+			silent = true,
+			nowait = true,
+			noremap = true,
 		},
 	},
 	['<leader>b'] = {
-		name = '+buffer',
+		name = '+Buffer',
 		d = {
 			'<CMD>bdel<cr>',
 			'Close Buffer',
@@ -144,15 +191,8 @@ local regs = {
 	['<leader>L'] = {
 		name = '+Lazy',
 		l = {
-			'<CMD>Lazy ',
-			'Run Lazy Interactively',
-			silent = false,
-			nowait = true,
-			noremap = true,
-		},
-		L = {
 			'<CMD>Lazy<cr>',
-			'Open Lazy Menu',
+			'Run Lazy Interactively',
 			silent = true,
 			nowait = true,
 			noremap = true,
@@ -197,18 +237,41 @@ local regs = {
 			noremap = true,
 		},
 	},
-	 ['<leader>w'] = {
-		name = '+Window',
+	['<leader>w'] = { name = '+Window' },
+	['<leader>ws'] = {
+		name = '+Split',
 		s = {
-			name = '+Split',
-			s = {
-				'<CMD>split<cr>',
-				'Split Window Horizontally',
-				noremap = true,
-				nowait = true,
-			},
+			'<CMD>split<cr>',
+			'Split Window Horizontally',
+			noremap = true,
+			nowait = true,
+			silent = true,
 		},
-	 },
+		v = {
+			'<CMD>vsplit<cr>',
+			'Split Window Vertically',
+			noremap = true,
+			nowait = true,
+			silent = true,
+		},
+	},
+	['<leader>q'] = {
+		name = '+Quitting Nvim',
+		q = {
+			'<CMD>qa<cr>',
+			'Quit All Of Nvim Tabs',
+			noremap = true,
+			silent = true,
+			nowait = true,
+		},
+		Q = {
+			'<CMD>qa!<cr>',
+			'Quit All Of Nvim Tabs (Forcefully)',
+			noremap = true,
+			silent = true,
+			nowait = true,
+		},
+	},
 }
 
 reg(regs)
