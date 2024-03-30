@@ -56,13 +56,8 @@ Lazy.setup({
 	-- { 'tpope/vim-commentary', lazy = false },
 	{
 		'numToStr/Comment.nvim',
-		config = function()
-			require('Comment').setup({
-				pre_hook = function()
-					return vim.bo.commentstring
-				end,
-			})
-		end,
+		lazy = true,
+		name = 'Comment',
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter',
 			'JoosepAlviste/nvim-ts-context-commentstring',
@@ -246,6 +241,13 @@ Lazy.setup({
 			vim.o.timeoutlen = 300
 		end,
 	},
+
+	{
+		'norcalli/nvim-colorizer.lua',
+		lazy = true,
+		priority = 1000,
+		name = 'colorizer',
+	},
 })
 
 ---@type string[]
@@ -253,6 +255,8 @@ local submods = {
 	'treesitter',
 	'lspconfig',
 	'cmp',
+	'Comment',
+	'colorizer',
 	'todo_comments',
 	'nvim_tree',
 	'gitsigns',
