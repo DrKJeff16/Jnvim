@@ -3,19 +3,16 @@
 
 local pfx = 'lazy_cfg.colorschemes.'
 
-require('user.types')
-require(pfx..'types')
+require('user.types.colorschemes')
 local User = require('user')
 local exists = User.exists
 
----@type CscSubMod|nil
-local M = nil
+---@type CscSubMod
+local M = {}
 
 if exists('catppuccin') then
-	M = {
-		mod_pfx = pfx..'catppuccin',
-		mod_cmd = 'catppuccin',
-	}
+	M.mod_pfx = pfx..'catppuccin'
+	M.mod_cmd = 'catppuccin'
 
 	function M.setup()
 		local Cppc = require('catppuccin')
@@ -31,7 +28,7 @@ if exists('catppuccin') then
     		show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
     		term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
     		dim_inactive = {
-        		enabled = false, -- dims the background color of inactive window
+        		enabled = true, -- dims the background color of inactive window
         		shade = "dark",
         		percentage = 0.15, -- percentage of the shade to apply to the inactive window
     		},
@@ -63,14 +60,14 @@ if exists('catppuccin') then
         		treesitter = true,
         		notify = false,
         		mini = {
-            		enabled = false,
+            		enabled = true,
             		indentscope_color = "",
         		},
         		-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
     		},
 		})
 
-		vim.cmd.colorscheme(M.mod_cmd)
+		vim.cmd('colorscheme '..M.mod_cmd)
 	end
 end
 

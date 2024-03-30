@@ -4,8 +4,8 @@
 local User = require('user')
 local exists = User.exists
 
+require('user.types.colorschemes')
 local pfx = 'lazy_cfg.colorschemes.'
-require(pfx..'types')
 
 ---@type CscMod
 local M = {}
@@ -20,10 +20,10 @@ local src = function(subs)
 	end
 end
 
----@type string[]
 local submods = {
 	'tokyonight',
 	'catppuccin',
+	'nightfox',
 	'spaceduck',
 	'dracula',
 }

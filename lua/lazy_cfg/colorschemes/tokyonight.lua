@@ -4,7 +4,7 @@
 local pfx = 'lazy_cfg.colorschemes.'
 
 require('user.types')
-require(pfx..'types')
+require('user.types.colorschemes')
 local User = require('user')
 local exists = User.exists
 

@@ -72,10 +72,12 @@ end
 
 if exists('lazy_cfg.colorschemes') then
 	local Csc = require('lazy_cfg.colorschemes')
-	if Csc.tokyonight then
-		Csc.tokyonight.setup()
+	if Csc.nightfox then
+		Csc.nightfox.setup()
 	elseif Csc.catppuccin then
 		Csc.catppuccin.setup()
+	elseif Csc.tokyonight then
+		Csc.tokyonight.setup()
 	end
 end
 

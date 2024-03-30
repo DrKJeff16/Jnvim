@@ -112,6 +112,7 @@ Lazy.setup({
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000, name = 'tokyonight' },
 	{ 'vigoux/oak', lazy = true, priority = 1000 },
 	{ 'bkegley/gloombuddy', lazy = true, priority = 1000 },
+	{ 'EdenEast/nightfox.nvim', lazy = true, priority = 1000, name = 'nightfox' },
 
 	{
 		'folke/todo-comments.nvim',
