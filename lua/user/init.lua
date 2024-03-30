@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types')
+require('user.types.user.maps')
 
 local pfx = 'user.'
 
@@ -11,7 +12,7 @@ local M = {}
 M.pfx = pfx
 
 M.opts = function()
-	return require(pfx..'opts')
+	return require(M.pfx..'opts')
 end
 
 ---@param prefix? string
