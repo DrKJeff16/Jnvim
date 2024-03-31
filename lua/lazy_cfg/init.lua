@@ -249,6 +249,14 @@ Lazy.setup({
 		priority = 1000,
 		name = 'colorizer',
 	},
+
+	{
+		'akinsho/toggleterm.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'toggleterm',
+		version = '*',
+	},
 })
 
 ---@class LazyMods
@@ -261,6 +269,7 @@ Lazy.setup({
 ---@field todo_comments? fun()
 ---@field nvim_tree? fun()
 ---@field gitsigns? fun()
+---@field toggleterm? fun()
 ---@field lualine? fun()
 ---@field which_key? fun()
 local submods = {
@@ -290,6 +299,9 @@ local submods = {
 	end,
 	gitsigns = function()
 		return require('lazy_cfg.gitsigns')
+	end,
+	toggleterm = function()
+		return require('lazy_cfg.toggleterm')
 	end,
 	lualine = function()
 		return require('lazy_cfg.lualine')

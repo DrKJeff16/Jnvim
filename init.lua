@@ -110,6 +110,7 @@ local map_tbl = {
 		{ lhs = '<Leader>prt', rhs = ':lua Pkg.nvim_tree()<cr>' },
 		{ lhs = '<Leader>prg', rhs = ':lua Pkg.gitsigns()<cr>' },
 		{ lhs = '<Leader>prh', rhs = ':lua Pkg.colorizer()<cr>' },
+		{ lhs = '<Leader>prs', rhs = ':lua Pkg.toggleterm()<cr>' },
 		{ lhs = '<Leader>prk', rhs = ':lua Pkg.which_key()<cr>' },
 	},
 	v = {

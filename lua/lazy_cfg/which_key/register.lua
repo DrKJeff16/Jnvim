@@ -233,6 +233,8 @@ local regs = {
 		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'WARNING\' } })<cr>',
 		'Previous \'WARNING\' Comment',
 	},
+
+	['<leader>T'] = { name = '+ToggleTerm' },
 }
 
 reg(regs)
