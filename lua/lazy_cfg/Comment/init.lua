@@ -1,10 +1,12 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
-require('user.types.user.maps')
 local User = require('user')
 local exists = User.exists
+local maps = User.maps()
+
+local map = maps.map
+local kmap = maps.kmap
 
 if not exists('Comment') then
 	return
@@ -15,35 +17,6 @@ local set = vim.o
 local fn = vim.fn
 local api = vim.api
 local let = vim.g
-local keymap = vim.keymap
-
-local kmap = keymap.set
-local map = api.nvim_set_keymap
-
----@param lhs string
----@param rhs string|fun(...): any
----@param opts KeyMapOpts
-local nmap_k = function(lhs, rhs, opts)
-	opts = opts or {}
-
-	opts.noremap = opts.noremap or true
-	opts.nowait = opts.nowait or true
-	opts.silent = opts.silent or true
-
-	kmap('n', lhs, rhs, opts)
-end
----@param lhs string
----@param rhs string
----@param opts ApiMapOpts
-local nmap = function(lhs, rhs, opts)
-	opts = opts or {}
-
-	opts.noremap = opts.noremap or true
-	opts.nowait = opts.nowait or true
-	opts.silent = opts.silent or true
-
-	map('n', lhs, rhs, opts)
-end
 
 local Comment = require('Comment')
 

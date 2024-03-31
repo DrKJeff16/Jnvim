@@ -3,6 +3,7 @@
 
 local User = require('user')
 local exists = User.exists
+local maps = User.maps()
 
 if not exists('lspconfig') or not exists('neodev') then
 	return
@@ -20,31 +21,12 @@ local lsp_buf = lsp.buf
 local diag = vim.diagnostic
 local insp = vim.inspect
 
--- local fs_stat = vim.loop.fs_stat
-
-local kmap = vim.keymap.set
+local kmap = maps.kmap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
 
----@param lhs string
----@param rhs string|fun(...): any
----@param opts? vim.keymap.set.Opts
-local nmap = function(lhs, rhs, opts)
-	opts = opts or { noremap = true, silent = true, nowait = true }
-
-	if not opts.noremap then
-		opts.noremap = true
-	end
-	if not opts.silent then
-		opts.silent = true
-	end
-	if not opts.nowait then
-		opts.nowait = true
-	end
-
-	kmap('n', lhs, rhs, opts)
-end
+local nmap = kmap.n
 
 ---@class SubCaller
 ---@field clangd? fun(): any
@@ -376,7 +358,7 @@ au('LspAttach', {
 		end, opts)
 		nmap('<Leader>lD', lsp_buf.type_definition, opts)
 		nmap('<Leader>lrn', lsp_buf.rename, opts)
-		kmap({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
+		vim.keymap.set({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
 		nmap('<Leader>lgr', lsp_buf.references, opts)
 		nmap('<Leader>lf', function()
 			lsp_buf.format({ async = true })
@@ -386,7 +368,7 @@ au('LspAttach', {
 
 diag.config({
 	virtual_text = { source = 'if_many' },
-	float = { source = 'if_many' },
+	float = false,
 	signs = true,
 	underline = true,
 	update_in_insert = false,

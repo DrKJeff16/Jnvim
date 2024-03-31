@@ -204,6 +204,35 @@ local regs = {
 		'<CMD>qa!<cr>',
 		'Quit All Of Nvim Tabs (Forcefully)',
 	},
+
+	['<leader>c'] = { name = '+TODO Comments' },
+	['<leader>ct'] = { name = '+TODO' },
+	['<leader>ctn'] = {
+		'<CMD>lua require(\'todo-comments\').jump_next()<cr>',
+		'Next \'TODO\' Comment',
+	},
+	['<leader>ctp'] = {
+		'<CMD>lua require(\'todo-comments\').jump_prev()<cr>',
+		'Previous \'TODO\' Comment',
+	},
+	['<leader>ce'] = { name = '+ERROR' },
+	['<leader>cen'] = {
+		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'ERROR\' } })<cr>',
+		'Next \'ERROR\' Comment',
+	},
+	['<leader>cep'] = {
+		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'ERROR\' } })<cr>',
+		'Previous \'ERROR\' Comment',
+	},
+	['<leader>cw'] = { name = '+WARNING' },
+	['<leader>cwn'] = {
+		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'WARNING\' } })<cr>',
+		'Next \'WARNING\' Comment',
+	},
+	['<leader>cwp'] = {
+		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'WARNING\' } })<cr>',
+		'Previous \'WARNING\' Comment',
+	},
 }
 
 reg(regs)

@@ -4,31 +4,12 @@
 require('user.types')
 local User = require('user')
 local exists = User.exists
+local kmap = User.maps().kmap
+
+local nmap = kmap.n
 
 if not exists('todo-comments') then
 	return
-end
-
-local keymap = vim.keymap
-
-local kmap = keymap.set
-
----@param lhs string
----@param rhs string|fun(...)
----@param opts? vim.keymap.set.Opts
-local nmap = function(lhs, rhs, opts)
-	opts = opts or { noremap = true, silent = true, nowait = true }
-
-	if not opts.noremap then
-		opts.noremap = true
-	end
-	if not opts.silent then
-		opts.silent = true
-	end
-	if not opts.nowait then
-		opts.nowait = true
-	end
-	kmap('n', lhs, rhs, opts)
 end
 
 local pfx = 'lazy_cfg.todo_comments.'
@@ -136,16 +117,48 @@ Todo.setup({
 	},
 })
 
-nmap(']t', function()
-	Todo.jump_next()
-end, { desc = 'Next todo comment' })
+---@class RhsOpts
+---@field [1] string|fun()
+---@field [2]? vim.keymap.set.Opts
 
-nmap('[t', function()
-	Todo.jump_prev()
-end, { desc = 'Previous todo comment' })
+---@alias TodoKeys table<string, RhsOpts>
 
--- You can also specify a list of valid jump keywords
+---@type TodoKeys
+local maps = {
+	-- `TODO`
+	['<leader>ctn'] = {
+		function() Todo.jump_next() end,
+		{ desc = 'Next \'TODO\' Comment' },
+	},
+	['<leader>ctp'] = {
+		function() Todo.jump_prev() end,
+		{ desc = 'Previous \'TODO\' Comment' },
+	},
 
-nmap(']t', function()
-	Todo.jump_next({keywords = { 'ERROR', 'WARNING' }})
-end, { desc = 'Next error/warning todo comment' })
+	-- `ERROR`
+	['<leader>cen'] = {
+		function() Todo.jump_next({ keywords = { 'ERROR' } }) end,
+		{ desc = 'Next \'ERROR\' Comment' },
+	},
+	['<leader>cep'] = {
+		function() Todo.jump_prev({ keywords = { 'ERROR' } }) end,
+		{ desc = 'Previous \'ERROR\' Comment' },
+	},
+
+	-- `WARNING`
+	['<leader>cwn'] = {
+		function() Todo.jump_next({ keywords = { 'WARNING' } }) end,
+		{ desc = 'Next \'WARNING\' Comment' },
+	},
+	['<leader>cwp'] = {
+		function() Todo.jump_prev({ keywords = { 'WARNING' } }) end,
+		{ desc = 'Previous \'WARNING\' Comment' },
+	},
+}
+
+for lhs, t in next, maps do
+	local rhs = t[1]
+	local opts = t[2] or {}
+
+	nmap(lhs, rhs, opts)
+end

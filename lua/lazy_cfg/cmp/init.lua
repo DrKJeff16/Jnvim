@@ -228,7 +228,6 @@ cmp.setup.filetype('lua', {
 	sources = Config.sources({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
-		{ name = 'luasnip' },
 	}, {
 		{ name = 'buffer' },
 	})
@@ -236,11 +235,9 @@ cmp.setup.filetype('lua', {
 
 cmp.setup.filetype('gitcommit', {
 	sources = Config.sources({
-		{ name = 'luasnip' },
 		{ name = 'conventionalcommits' },
 	}, {
 		{ name = 'git' },
-		{ name = 'buffer' },
 	}),
 })
 cmp.setup.cmdline({ '/', '?' }, {

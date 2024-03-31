@@ -7,7 +7,7 @@ end
 
 local pfx = 'user.'
 
-require(pfx..'types')
+require('user.types')
 
 local set = vim.o
 local opt = vim.opt

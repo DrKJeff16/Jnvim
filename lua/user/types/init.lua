@@ -19,26 +19,15 @@
 ---@field opt? OptPairTbl
 ---|table
 
----@class UserOptsMod
----@field pfx? string
----@field __index? UserOptsMod
----@field opt_tbl OptsTbl
----@field new? fun(): UserOptsMod
----@field optset fun(opts: OptPairTbl, vim_tbl?: table)
----@field setup? fun(self?: UserOptsMod)
-
 require('user.types.user.maps')
 
 ---@class UserMod
----@field pfx? string
----@field cond? table
----@field opts fun(): UserOptsMod
----@field new fun(self: UserMod, prefix?: string): UserMod
----@field multisrc? fun(self: UserMod, mods: ModTbl, prefix: string): any
+---@field pfx string
+---@field opts fun()
 ---@field exists fun(mod: string): boolean
 ---@field assoc fun()
+---@field maps fun(): UserMaps
 
----@type 'user.types.'
 local pfx = 'user.types.'
 
 ---@class UserSubTypes

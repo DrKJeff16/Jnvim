@@ -3,6 +3,9 @@
 
 local User = require('user')
 local exists = User.exists
+local kmap = User.maps().kmap
+
+local nmap = kmap.n
 
 if not exists('nvim-tree') then
 	return
@@ -30,8 +33,6 @@ opt.termguicolors = true
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-local kmap = vim.keymap.set
-local map = api.nvim_set_keymap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local hi = api.nvim_set_hl
@@ -42,24 +43,6 @@ local close_win = api.nvim_win_close
 local list_wins = api.nvim_list_wins
 
 ---@alias KeyOpts vim.keymap.set.Opts
-
----@param lhs string
----@param rhs string|fun(...): any
----@param opts? KeyOpts
-local nmap = function(lhs, rhs, opts)
-	if not opts or not rhs then
-		return
-	end
-
-	opts = opts or { noremap = true, nowait = true, silent = true }
-	for _, v in next, { 'noremap', 'nowait', 'silent' } do
-		if not opts[v] then
-			opts[v] = true
-		end
-	end
-
-	kmap('n', lhs, rhs, opts)
-end
 
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')

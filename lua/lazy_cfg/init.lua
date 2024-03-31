@@ -1,6 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.colorschemes')
+
 local fn = vim.fn
 local opt = vim.opt
 local let = vim.g
@@ -10,7 +12,6 @@ local api = vim.api
 local rtp = opt.rtp
 local fs_stat = vim.loop.fs_stat
 
-local map = api.nvim_set_keymap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
@@ -250,18 +251,53 @@ Lazy.setup({
 	},
 })
 
----@type string[]
+---@class LazyMods
+---@field colorschemes? fun(): CscMod
+---@field treesitter? fun()
+---@field lspconfig? fun()
+---@field cmp? fun()
+---@field Comment? fun()
+---@field colorizer? fun()
+---@field todo_comments? fun()
+---@field nvim_tree? fun()
+---@field gitsigns? fun()
+---@field lualine? fun()
+---@field which_key? fun()
 local submods = {
-	'treesitter',
-	'lspconfig',
-	'cmp',
-	'Comment',
-	'colorizer',
-	'todo_comments',
-	'nvim_tree',
-	'gitsigns',
-	'lualine',
-	'which_key',  -- NOTE: Must be last call
+	colorschemes = function()
+		return require('lazy_cfg.colorschemes')
+	end,
+	treesitter = function()
+		return require('lazy_cfg.treesitter')
+	end,
+	lspconfig = function()
+		return require('lazy_cfg.lspconfig')
+	end,
+	cmp = function()
+		return require('lazy_cfg.cmp')
+	end,
+	Comment = function()
+		return require('lazy_cfg.Comment')
+	end,
+	colorizer = function()
+		return require('lazy_cfg.colorizer')
+	end,
+	todo_comments = function()
+		return require('lazy_cfg.todo_comments')
+	end,
+	nvim_tree = function()
+		return require('lazy_cfg.nvim_tree')
+	end,
+	gitsigns = function()
+		return require('lazy_cfg.gitsigns')
+	end,
+	lualine = function()
+		return require('lazy_cfg.lualine')
+	end,
+	--- NOTE: Must be last call
+	which_key = function()
+		return require('lazy_cfg.which_key')
+	end,
 }
 
 return submods

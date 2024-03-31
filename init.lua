@@ -11,44 +11,23 @@ local let = vim.g
 local lsp = vim.lsp
 local bo = vim.bo
 
-local map = api.nvim_set_keymap
 local hi = api.nvim_set_hl
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
----@type MapOpts
-local s_noremap = { noremap = true, silent = true, nowait = true }
----@type MapOpts
-local ns_noremap = { noremap = true, silent = false, nowait = true }
+local User = require('user')
+local exists = User.exists
+local map = User.maps().map
 
----@param lhs string
----@param rhs string
----@param opts? MapOpts
-local nmap = function(lhs, rhs, opts)
-	opts = opts or s_noremap
-	map('n', lhs, rhs, opts)
-end
----@param lhs string
----@param rhs string
----@param opts? MapOpts
-local vmap = function(lhs, rhs, opts)
-	opts = opts or s_noremap
-	map('v', lhs, rhs, opts)
-end
----@param lhs string
----@param rhs string
----@param opts? MapOpts
-local imap = function(lhs, rhs, opts)
-	opts = opts or s_noremap
-	map('i', lhs, rhs, opts)
-end
----@param lhs string
----@param rhs string
----@param opts? MapOpts
-local tmap = function(lhs, rhs, opts)
-	opts = opts or s_noremap
-	map('t', lhs, rhs, opts)
-end
+local nmap = map.n
+local imap = map.i
+local tmap = map.t
+local vmap = map.v
+
+User.opts()
+
+---@type ApiMapOpts
+local ns_noremap = { noremap = true, silent = false, nowait = true }
 
 nmap('<Space>', '<Nop>')
 let.mapleader = ' '
@@ -57,21 +36,10 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
-local User = require('user')
-local exists = User.exists
-local options = User.opts()
+_G.Pkg = require('lazy_cfg')
 
-local Pkg = require('lazy_cfg')
-
-for _, v in next, Pkg do
-	local path = 'lazy_cfg.'..v
-	if exists(path) then
-		require(path)
-	end
-end
-
-if exists('lazy_cfg.colorschemes') then
-	local Csc = require('lazy_cfg.colorschemes')
+if Pkg.colorschemes then
+	_G.Csc = Pkg.colorschemes()
 	if Csc.nightfox then
 		Csc.nightfox.setup()
 	elseif Csc.catppuccin then
@@ -81,13 +49,13 @@ if exists('lazy_cfg.colorschemes') then
 	end
 end
 
----@class MapsTbls
----@field nmap? MapTbl[]
----@field imap? MapTbl[]
----@field vmap? MapTbl[]
----@field tmap? MapTbl[]
+---@class Maps
+---@field n? MapTbl[]
+---@field i? MapTbl[]
+---@field v? MapTbl[]
+---@field t? MapTbl[]
 local map_tbl = {
-	nmap = {
+	n = {
 		{ lhs = '<Leader>fn', rhs = ':edit ', opts = ns_noremap },
 		{ lhs = '<Leader>fs', rhs = ':w<CR>' },
 		{ lhs = '<Leader>fS', rhs = ':w ', opts = ns_noremap },
@@ -133,30 +101,44 @@ local map_tbl = {
 		{ lhs = '<Leader>Lc', rhs = ':Lazy check<CR>' },
 		{ lhs = '<Leader>Li', rhs = ':Lazy install<CR>' },
 		{ lhs = '<Leader>Lr', rhs = ':Lazy reload<CR>' },
+
+		{ lhs = '<Leader>prc', rhs = ':lua Pkg.cmp()<cr>' },
+		{ lhs = '<Leader>prl', rhs = ':lua Pkg.lspconfig()<cr>' },
+		{ lhs = '<Leader>prL', rhs = ':lua Pkg.lualine()<cr>' },
+		{ lhs = '<Leader>prT', rhs = ':lua Pkg.treesitter()<cr>' },
+		{ lhs = '<Leader>prC', rhs = ':lua Pkg.Comment()<cr>' },
+		{ lhs = '<Leader>prt', rhs = ':lua Pkg.nvim_tree()<cr>' },
+		{ lhs = '<Leader>prg', rhs = ':lua Pkg.gitsigns()<cr>' },
+		{ lhs = '<Leader>prh', rhs = ':lua Pkg.colorizer()<cr>' },
+		{ lhs = '<Leader>prk', rhs = ':lua Pkg.which_key()<cr>' },
 	},
-	vmap = {
+	v = {
 		{ lhs = '<Leader>is', rhs = ':sort<CR>', opts = ns_noremap },
 	},
-	tmap = {
+	t = {
 		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },
 	},
 }
 
----@type table<string, fun()>
 local map_fields = {
-	['nmap'] = nmap,
-	['vmap'] = vmap,
-	['tmap'] = tmap,
-	['imap'] = imap,
+	n = nmap,
+	v = vmap,
+	t = tmap,
+	i = imap,
 }
 
-for k, f in next, map_fields do
-	local tbl = map_tbl[k] or nil
-	if tbl ~= nil then
-		local func = f
+for k, func in next, map_fields do
+	local tbl = map_tbl[k]
+	if tbl then
 		for _, v in next, tbl do
 			func(v.lhs, v.rhs, v.opts or s_noremap)
 		end
+	end
+end
+
+for k, func in next, Pkg do
+	if k ~= 'colorschemes' and k ~= 'cmp' then
+		func()
 	end
 end
 
@@ -166,3 +148,5 @@ vim.cmd[[
 filetype plugin indent on
 syntax on
 ]]
+
+Pkg.cmp()
