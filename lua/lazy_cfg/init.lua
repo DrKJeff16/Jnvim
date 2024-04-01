@@ -151,7 +151,6 @@ Lazy.setup({
 		},
 	},
 	{ 'onsails/lspkind.nvim', lazy = true, priority = 1000 },
-
 	{ 'hrsh7th/cmp-nvim-lsp', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lua', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lsp-document-symbol', lazy = true },
@@ -242,7 +241,6 @@ Lazy.setup({
 
 	{
 		'folke/which-key.nvim',
-		-- lazy = true,
 		event = 'VeryLazy',
 		priority = 1000,
 		init = function()
@@ -262,8 +260,7 @@ Lazy.setup({
 		'akinsho/toggleterm.nvim',
 		lazy = true,
 		priority = 1000,
-		name = 'toggleterm',
-		version = '*',
+		name = 'ToggleTerm',
 	},
 })
 

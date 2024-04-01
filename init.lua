@@ -24,10 +24,8 @@ local imap = map.i
 local tmap = map.t
 local vmap = map.v
 
-User.opts()
-
----@type ApiMapOpts
-local ns_noremap = { noremap = true, silent = false, nowait = true }
+_G.vimopts = User.opts
+vimopts()
 
 nmap('<Space>', '<Nop>')
 let.mapleader = ' '
@@ -59,33 +57,33 @@ end
 ---@field t? MapTbl[]
 local map_tbl = {
 	n = {
-		{ lhs = '<Leader>fn', rhs = ':edit ', opts = ns_noremap },
+		{ lhs = '<Leader>fn', rhs = ':edit ', opts = { silent = false } },
 		{ lhs = '<Leader>fs', rhs = ':w<CR>' },
-		{ lhs = '<Leader>fS', rhs = ':w ', opts = ns_noremap },
-		{ lhs = '<Leader>ff', rhs = ':ed ', opts = ns_noremap },
+		{ lhs = '<Leader>fS', rhs = ':w ', opts = { silent = false } },
+		{ lhs = '<Leader>ff', rhs = ':ed ', opts = { silent = false } },
 
 		{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
 		{ lhs = '<Leader>fvl', rhs = ':luafile %<CR>' },
 		{ lhs = '<Leader>fvv', rhs = ':so %<CR>' },
-		{ lhs = '<Leader>fvV', rhs = ':so ', opts = ns_noremap },
-		{ lhs = '<Leader>fvL', rhs = ':luafile ', opts = ns_noremap },
-		{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = ns_noremap },
+		{ lhs = '<Leader>fvV', rhs = ':so ', opts = { silent = false } },
+		{ lhs = '<Leader>fvL', rhs = ':luafile ', opts = { silent = false } },
+		{ lhs = '<Leader>fve', rhs = ':tabnew $MYVIMRC<CR>', opts = { silent = false } },
 
 		{ lhs = '<Leader>wss', rhs = ':split<CR>' },
 		{ lhs = '<Leader>wsv', rhs = ':vsplit<CR>' },
-		{ lhs = '<Leader>wsS', rhs = ':split ', opts = ns_noremap },
-		{ lhs = '<Leader>wsV', rhs = ':vsplit ', opts = ns_noremap },
+		{ lhs = '<Leader>wsS', rhs = ':split ', opts = { silent = false } },
+		{ lhs = '<Leader>wsV', rhs = ':vsplit ', opts = { silent = false } },
 
 		{ lhs = '<Leader>qq', rhs = ':qa<CR>' },
 		{ lhs = '<Leader>qQ', rhs = ':qa!<CR>' },
 
-		{ lhs = '<Leader>tn', rhs = ':tabN<CR>', opts = ns_noremap },
-		{ lhs = '<Leader>tp', rhs = ':tabp<CR>', opts = ns_noremap },
+		{ lhs = '<Leader>tn', rhs = ':tabN<CR>', opts = { silent = false } },
+		{ lhs = '<Leader>tp', rhs = ':tabp<CR>', opts = { silent = false } },
 		{ lhs = '<Leader>td', rhs = ':tabc<CR>' },
 		{ lhs = '<Leader>tD', rhs = ':tabc!<CR>' },
 		{ lhs = '<Leader>tf', rhs = ':tabfirst<CR>' },
 		{ lhs = '<Leader>tl', rhs = ':tablast<CR>' },
-		{ lhs = '<Leader>ta', rhs = ':tabnew ', opts = ns_noremap },
+		{ lhs = '<Leader>ta', rhs = ':tabnew ', opts = { silent = false } },
 		{ lhs = '<Leader>tA', rhs = ':tabnew<CR>' },
 
 		{ lhs = '<Leader>bn', rhs = ':bNext<CR>' },
@@ -98,7 +96,7 @@ local map_tbl = {
 		{ lhs = '<Leader>fir', rhs = ':%retab<CR>' },
 
 		{ lhs = '<Leader>Ll', rhs = ':Lazy<CR>' },
-		{ lhs = '<Leader>LL', rhs = ':Lazy ', opts = ns_noremap },
+		{ lhs = '<Leader>LL', rhs = ':Lazy ', opts = { silent = false } },
 		{ lhs = '<Leader>Ls', rhs = ':Lazy sync<CR>' },
 		{ lhs = '<Leader>Lx', rhs = ':Lazy clean<CR>' },
 		{ lhs = '<Leader>Lc', rhs = ':Lazy check<CR>' },
@@ -117,7 +115,7 @@ local map_tbl = {
 		{ lhs = '<Leader>prk', rhs = ':lua Pkg.which_key()<cr>' },
 	},
 	v = {
-		{ lhs = '<Leader>is', rhs = ':sort<CR>', opts = ns_noremap },
+		{ lhs = '<Leader>is', rhs = ':sort<CR>' },
 	},
 	t = {
 		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },
@@ -135,13 +133,15 @@ for k, func in next, map_fields do
 	local tbl = map_tbl[k]
 	if tbl then
 		for _, v in next, tbl do
-			func(v.lhs, v.rhs, v.opts or s_noremap)
+			func(v.lhs, v.rhs, v.opts or {})
 		end
 	end
 end
 
 for k, func in next, Pkg do
-	if k ~= 'colorschemes' and k ~= 'cmp' then
+	local exclude = { 'cmp', 'colorschemes' }
+
+	if not vim.tbl_contains(exclude, k) then
 		func()
 	end
 end

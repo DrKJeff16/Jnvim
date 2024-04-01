@@ -16,64 +16,64 @@ local bo = vim.bo
 ---@type OptsTbl
 local opt_tbl = {
 	opt = {
-		['completeopt'] = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
-		['termguicolors'] = true,
+		completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
+		termguicolors = true,
 	},
 	set = {
-		['hid'] = true,
-		['hlg'] = 'en',  -- `helplang`
-		['spell'] = false,
-		['mouse'] = '',
-		['bs'] = 'indent,eol,start',  -- `backspace`
-		['formatoptions'] = 'orq',
-		['enc'] = 'utf-8',
-		['fenc'] = 'utf-8',
-		['ff'] = 'unix',
-		['wrap'] = true,
+		hid = true,  -- `hidden`
+		hlg = 'en',  -- `helplang`
+		spell = false,
+		mouse = '',
+		bs = 'indent,eol,start',  -- `backspace`
+		formatoptions = 'orq',
+		enc = 'utf-8',  -- `encoding`
+		fenc = 'utf-8',  -- `fileencoding`
+		ff = 'unix',  -- `fileformat`
+		wrap = true,
 
-		['completeopt'] = 'menu,menuone,noselect,noinsert,preview',
+		completeopt = 'menu,menuone,noselect,noinsert,preview',
 
-		['errorbells'] = false,
-		['visualbell'] = false,
-		['belloff'] = 'all',
+		errorbells = false,
+		visualbell = false,
+		belloff = 'all',
 
-		['nu'] = true,
-		['relativenumber'] = false,
-		['signcolumn'] = 'yes',
+		nu = true,  -- `number`
+		relativenumber = false,
+		signcolumn = 'yes',
 
-		['ts'] = 4,
-		['sts'] = 4,
-		['sw'] = 4,
-		['ai'] = true,
-		['si'] = true,
-		['sta'] = true,
-		['ci'] = true,
-		['pi'] = true,
-		['et'] = false,
+		ts = 4,  -- `tabstop`
+		sts = 4,  -- `softtabstop`
+		sw = 4,  -- `shiftwidth`
+		ai = true,  -- `autoindent`
+		si = true,  -- `smartindent`
+		sta = true,  -- `smarttab`
+		ci = true,  -- `copyindent`
+		pi = true,  -- `preserveindent`
+		et = false,  -- `expandtab`
 
-		['bg'] = 'dark',
-		['tgc'] = true,  -- `termguicolors`
+		bg = 'dark',  -- `background`
+		tgc = true,  -- `termguicolors`
 
-		['splitbelow'] = true,
-		['splitright'] = true,
+		splitbelow = true,
+		splitright = true,
 
-		['ru'] = true,
-		['stal'] = 2,
-		['ls'] = 2,
-		['title'] = true,
-		['showcmd'] = true,
-		['wildmenu'] = true,
-		['showmode'] = false,
+		ru = true,  -- `ruler`
+		stal = 2,  -- `showtabline`
+		ls = 2,  -- `laststatus`
+		title = true,
+		showcmd = true,
+		wildmenu = true,
+		showmode = false,
 
-		['ar'] = true,
-		['confirm'] = true,
+		ar = true,  -- `autoread`
+		confirm = true,
 
-		['smartcase'] = true,
-		['ignorecase'] = false,
+		smartcase = true,
+		ignorecase = false,
 
-		['hlsearch'] = true,
-		['incsearch'] = true,
-		['showmatch'] = true,
+		hlsearch = true,
+		incsearch = true,
+		showmatch = true,
 	},
 }
 

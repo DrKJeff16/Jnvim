@@ -25,6 +25,7 @@ local M = {
 		return res
 	end,
 
+	--- TODO: Refactor using Lua API.
 	assoc = function()
 		vim.cmd[[
 		au BufNewFile,BufReadPre *.org set ft=org
