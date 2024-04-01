@@ -54,6 +54,12 @@ Lazy.setup({
 			'PlenaryBustedDirectory',
 		},
 	},
+	{
+		'nvim-lua/popup.nvim',
+		lazy = true,
+		priority = 1000,
+		dependencies = { 'nvim-lua/plenary.nvim' },
+	},
 
 	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000 },
 
