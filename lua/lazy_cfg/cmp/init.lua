@@ -58,11 +58,8 @@ local tab_map = {
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
 			cmp.complete()
-			if cmp.visible() then
-				cmp.select_next_item(opts)
-			end
 		else
-		fallback()
+			fallback()
 		end
 	end,
 	s = function(fallback)
@@ -74,24 +71,18 @@ local tab_map = {
 			Luasnip.expand_or_jump()
 		elseif has_words_before() then
 			cmp.complete()
-			if cmp.visible() then
-				cmp.select_next_item(opts)
-			end
 		else
-		fallback()
+			fallback()
 		end
 	end,
 	c = function(fallback)
-		local opts = { behavior = cmp.SelectBehavior.Replace }
+		local opts = { behavior = cmp.SelectBehavior.Insert }
 		if cmp.visible() then
 			cmp.select_next_item(opts)
 		elseif has_words_before() then
 			cmp.complete()
-			if cmp.visible() then
-				cmp.select_next_item(opts)
-			end
 		else
-		fallback()
+			fallback()
 		end
 	end,
 }
@@ -189,8 +180,8 @@ cmp.setup({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
-		}, {
-			{ name = 'buffer' },
+	}, {
+		{ name = 'buffer' },
 	}),
 })
 
@@ -200,8 +191,8 @@ cmp.setup.filetype({ 'bash', 'sh', 'zsh' }, {
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 		{ name = 'path' },
-		}, {
-			{ name = 'buffer' },
+	}, {
+		{ name = 'buffer' },
 	}),
 })
 
@@ -209,9 +200,9 @@ if exists('orgmode') then
 	cmp.setup.filetype({ 'org', 'orgagenda', 'orghelp' }, {
 		sources = Config.sources({
 			{ name = 'path' },
-			}, {
-				{ name = 'orgmode' },
-				{ name = 'buffer' },
+		}, {
+			{ name = 'orgmode' },
+			{ name = 'buffer' },
 		}),
 	})
 end
@@ -221,8 +212,8 @@ cmp.setup.filetype('gitcommit', {
 		{ name = 'luasnip' },
 		{ name = 'conventionalcommits' },
 		{ name = 'buffer' },
-		}, {
-			{ name = 'git' },
+	}, {
+		{ name = 'git' },
 	}),
 })
 cmp.setup.cmdline({ '/', '?' }, {
@@ -236,8 +227,8 @@ cmp.setup.cmdline(':', {
 	mapping = map.preset.cmdline(),
 	sources = Config.sources({
 		{ name = 'path' }
-		}, {
-			{ name = 'cmdline' }
+	}, {
+		{ name = 'cmdline' }
 	})
 })
 
