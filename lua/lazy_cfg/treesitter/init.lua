@@ -17,7 +17,6 @@ local TSUtils = require('nvim-treesitter.ts_utils')
 
 Install.prefer_git = true
 
----@type string[]
 local ensure = {
 	'asm',
 	'bash',
@@ -62,14 +61,14 @@ local ensure = {
 	'yaml',
 }
 
-local add_org = function()
+local function add_org()
 	local Orgmode = require('orgmode')
 	local org_dir = '~/.org'
 	Orgmode.setup_ts_grammar()
 
 	table.insert(ensure, 'org')
 
-	Orgmode.setup({
+	return Orgmode.setup({
 		org_agenda_files = org_dir..'/agenda/*',
 		org_default_notes_file = org_dir..'/notes/default.org'
 	})
@@ -79,18 +78,13 @@ if exists('orgmode') then
 	add_org()
 end
 
----@return string[]|table|boolean
+---@return string[]
 local additional_hl = function()
-	---@type table<string>|table|boolean
-	local res
-	res = {}
+	---@type string[]
+	local res = {}
 
 	if exists('orgmode') then
 		table.insert(res, 'org')
-	end
-
-	if #res == 0 or res == {} then
-		res = false
 	end
 
 	return res
@@ -121,8 +115,7 @@ local TSConfig = {
 		additional_vim_regex_highlighting = additional_hl(),
 	},
 
-	indent = { enable = true, disable = { 'lua' } },
-
+	indent = { enable = true, disable = { 'lua', 'bash' } },
 	incremental_selection = { enable = false },
 }
 
@@ -131,22 +124,22 @@ if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
 end
 
 ---@type string[]
-local Modules = {
+local modules = {
 	'context',
+	'rainbow',
 }
 
----@type table<string, any>
-local M = {}
-
-for _, s in next, Modules do
+for _, s in next, modules do
 	local mod = pfx..s
 	if exists(mod) then
-		M[s] = require(mod)
+		require(mod)
 	end
 end
 
-require('ts_context_commentstring').setup({
-  enable_autocmd = false,
-})
-
 Cfg.setup(TSConfig)
+
+if exists('ts_context_commentstring') then
+	require('ts_context_commentstring').setup({
+		enable_autocmd = false,
+	})
+end
