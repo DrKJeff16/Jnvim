@@ -5,3 +5,4 @@
 *.gz
 *.xz
 .mypy_cache/
+*.list
