@@ -122,6 +122,11 @@ local map_tbl = {
 	},
 }
 
+---@class MapFields
+---@field n fun(lhs: string, rhs: string, opts?: ApiMapOpts)
+---@field i fun(lhs: string, rhs: string, opts?: ApiMapOpts)
+---@field v fun(lhs: string, rhs: string, opts?: ApiMapOpts)
+---@field t fun(lhs: string, rhs: string, opts?: ApiMapOpts)
 local map_fields = {
 	n = nmap,
 	v = vmap,
