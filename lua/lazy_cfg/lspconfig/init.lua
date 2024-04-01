@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types')
+require('user.types.user.highlight')
 
 local User = require('user')
 local exists = User.exists

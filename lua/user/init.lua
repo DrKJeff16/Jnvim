@@ -3,6 +3,7 @@
 
 require('user.types')
 require('user.types.user.maps')
+require('user.types.user.highlight')
 
 -- Prefix to use in `require(...)` calls.
 local pfx = 'user.'
@@ -15,6 +16,9 @@ local M = {
 	end,
 	maps = function()
 		return require('user.maps')
+	end,
+	highlight = function()
+		return require('user.highlight')
 	end,
 	exists = function(mod)
 		---@type boolean

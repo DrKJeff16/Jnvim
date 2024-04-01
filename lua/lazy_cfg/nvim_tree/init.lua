@@ -1,6 +1,10 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types')
+require('user.types.user.maps')
+require('user.types.user.highlight')
+
 local User = require('user')
 local exists = User.exists
 local kmap = User.maps().kmap
@@ -42,8 +46,6 @@ local win_list = api.nvim_tabpage_list_wins
 local close_win = api.nvim_win_close
 local list_wins = api.nvim_list_wins
 
----@alias KeyOpts vim.keymap.set.Opts
-
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')
 local Tapi = Api.tree
@@ -74,7 +76,7 @@ local collapse_all = Tapi.collapse_all
 ---@class TreeCustomKeys
 ---@field lhs string
 ---@field rhs string|fun(...): any
----@field opts? KeyOpts
+---@field opts? KeyMapOpts
 
 ---@param keys TreeCustomKeys[]
 local map_lft = function(keys)
@@ -268,9 +270,9 @@ end
 ---@param bufn integer
 local on_attach = function(bufn)
 	---@param desc string
-	---@return KeyOpts
+	---@return KeyMapOpts
 	local opts = function(desc)
-		---@type KeyOpts
+		---@type KeyMapOpts
 		local res = {
 			desc = 'nvim tree: '..desc,
 			buffer = bufn,
@@ -303,7 +305,6 @@ Tree.setup({
 	filters = { dotfiles = false },
 })
 
----@alias HlOpts vim.api.keyset.highlight
 ---@alias AuOpts vim.api.keyset.create_autocmd
 
 ---@class HlGroups

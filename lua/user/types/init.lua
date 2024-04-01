@@ -68,6 +68,7 @@
 ---|table
 
 require('user.types.user.maps')
+require('user.types.user.highlight')
 
 ---@class UserMod
 ---@field pfx string
@@ -75,6 +76,7 @@ require('user.types.user.maps')
 ---@field exists fun(mod: string): boolean
 ---@field assoc fun()
 ---@field maps fun(): UserMaps
+---@field highlight fun(): UserHl
 
 local pfx = 'user.types.'
 
