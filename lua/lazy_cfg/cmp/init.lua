@@ -232,4 +232,5 @@ cmp.setup.cmdline(':', {
 	})
 })
 
+-- For debugging.
 print('cmp loaded.')

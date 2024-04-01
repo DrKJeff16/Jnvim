@@ -41,9 +41,13 @@ local function src()
 	---@type LspSubMods
 	local subs = {}
 
+	-- Iterate for each submodule and
+	-- create a caller function in its
+	-- respective table field.
 	for _, v in next, { 'clangd', 'kinds' } do
 		local path = prefix..v
 
+		-- If submodule exists.
 		if exists(path) then
 			---@return any
 			subs[v] = function()

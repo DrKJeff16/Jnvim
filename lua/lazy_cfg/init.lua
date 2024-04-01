@@ -15,11 +15,13 @@ local fs_stat = vim.loop.fs_stat
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
+-- Set installation dir for `Lazy`.
 local lazypath = fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 local User = require('user')
 local exists = User.exists
 
+-- Install `Lazy` automatically.
 if not exists('lazy') or not fs_stat(lazypath) then
 	fn.system({
 		'git',
@@ -31,6 +33,7 @@ if not exists('lazy') or not fs_stat(lazypath) then
 	})
 end
 
+-- Add `Lazy` to `stdpath`
 rtp:prepend(lazypath)
 
 local pfx = 'lazy_cfg.'
@@ -65,10 +68,12 @@ Lazy.setup({
 		},
 	},
 
+	-- Tpope is god.
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive' },
 	{ 'tpope/vim-speeddating', lazy = true, enabled = false },
 
+	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
 		lazy = true,
@@ -85,6 +90,7 @@ Lazy.setup({
 	{ 'HiPhish/nvim-ts-rainbow2', lazy = true },
 	{ 'JoosepAlviste/nvim-ts-context-commentstring', lazy = true },
 
+	-- LSP
 	{
 		'neovim/nvim-lspconfig',
 		lazy = true,
@@ -95,6 +101,7 @@ Lazy.setup({
 			'p00f/clangd_extensions.nvim',
 		},
 	},
+	-- Essenyial for Nvim Lua files.
 	{
 		'folke/neodev.nvim',
 		lazy = true,
@@ -104,6 +111,7 @@ Lazy.setup({
 	{ 'b0o/SchemaStore.nvim', lazy = true },
 	{ 'p00f/clangd_extensions.nvim', lazy = true },
 
+	-- Colorschemes
 	{
 		'pineapplegiant/spaceduck',
 		lazy = false,
@@ -129,6 +137,7 @@ Lazy.setup({
 		},
 	},
 
+	-- Completion Engine
 	{
 		'hrsh7th/nvim-cmp',
 		lazy = true,
@@ -162,14 +171,17 @@ Lazy.setup({
 	{ 'FelipeLema/cmp-async-path', lazy = true },
 	{ 'hrsh7th/cmp-cmdline', lazy = true },
 	{ 'saadparwaiz1/cmp_luasnip', lazy = true, dependencies = { 'L3MON4D3/LuaSnip' } },
+	-- Snippet Engine
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
 		dependencies = { 'rafamadriz/friendly-snippets' },
 		build = 'verbose make install_jsregexp',
 	},
+	-- Various Snippets
 	{ 'rafamadriz/friendly-snippets', lazy = true },
 
+	--- TODO: Set-up Telescope.
 	{
 		'nvim-telescope/telescope.nvim',
 		lazy = true,
@@ -191,6 +203,7 @@ Lazy.setup({
 		enabled = false,
 	},
 
+	-- Statusline
 	{
 		'nvim-lualine/lualine.nvim',
 		lazy = true,
@@ -206,6 +219,7 @@ Lazy.setup({
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 	},
 
+	-- Auto-pairing (**BROKEN**)
 	{ 'windwp/nvim-autopairs', lazy = true, name = 'AutoPairs', enabled = false },
 
 	{
@@ -222,6 +236,7 @@ Lazy.setup({
 		enabled = false,
 	},
 
+	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
 		lazy = true,

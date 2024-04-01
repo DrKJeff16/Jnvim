@@ -1,6 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+-- Import docstrings and annotations.
 require('user.types')
 
 local set = vim.o
@@ -16,7 +17,7 @@ local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
 local User = require('user')
-local exists = User.exists
+local exists = User.exists  -- Checks for missing modules
 local map = User.maps().map
 
 local nmap = map.n
@@ -24,21 +25,29 @@ local imap = map.i
 local tmap = map.t
 local vmap = map.v
 
+-- Vim `:set ...` global options setter.
 _G.vimopts = User.opts
 vimopts()
 
+-- Set `<Space>` as Leader Key.
 nmap('<Space>', '<Nop>')
 let.mapleader = ' '
 let.maplocalleader = ' '
 
+-- Disable `netrw` regardless of whether Nvim Tree exists
+-- Or not
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
+-- Make the package list globsl.
 _G.Pkg = require('lazy_cfg')
 
+-- If colorschemes calker table exists.
 if Pkg.colorschemes then
+	-- Global color schemes table.
 	_G.Csc = Pkg.colorschemes()
 
+	-- Reorder to your liking.
 	if Csc.nightfox then
 		Csc.nightfox.setup()
 	elseif Csc.catppuccin then
@@ -50,6 +59,10 @@ if Pkg.colorschemes then
 	end
 end
 
+--- Table of mappings for each mode `(normal|insert|visual|terminal)`.
+---
+--- Each mode contains its respective mappings.
+--- `map_tbl.[n|i|v|t].opts` is an **API** option table.
 ---@class Maps
 ---@field n? MapTbl[]
 ---@field i? MapTbl[]
@@ -134,8 +147,11 @@ local map_fields = {
 	i = imap,
 }
 
+-- Set the keymaps previously stated.
 for k, func in next, map_fields do
 	local tbl = map_tbl[k]
+
+	-- If `tbl` exists, apply the mapping.
 	if tbl then
 		for _, v in next, tbl do
 			func(v.lhs, v.rhs, v.opts or {})
@@ -143,14 +159,18 @@ for k, func in next, map_fields do
 	end
 end
 
+-- Configure the plugins.
 for k, func in next, Pkg do
+	-- List of excluded packages (**in this stage**).
 	local exclude = { 'cmp', 'colorschemes' }
 
+	-- Call every plugin except `cmp` and the colorschemes.
 	if not vim.tbl_contains(exclude, k) then
 		func()
 	end
 end
 
+-- Call the user file associations.
 User.assoc()
 
 vim.cmd[[
@@ -158,4 +178,5 @@ filetype plugin indent on
 syntax on
 ]]
 
+-- Call `cmp` last 'cause this plugin is a headache.
 Pkg.cmp()

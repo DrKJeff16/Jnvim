@@ -4,6 +4,7 @@
 require('user.types')
 require('user.types.user.maps')
 
+-- Prefix to use in `require(...)` calls.
 local pfx = 'user.'
 
 ---@type UserMod
