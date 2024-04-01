@@ -3,134 +3,250 @@
 
 require('user.types.user.highlight')
 local User = require('user')
-local exists = User.exists
-
-local t = require('cmp.types')
-local Config = require('cmp').config
 
 require('cmp.types')
 require('cmp.types.cmp')
 
-local pfx = 'lazy_cfg.cmp.'
-
 local api = vim.api
 
-local hi = api.nvim_set_hl
+local cmp = require('cmp')
+local LspKind = require('lspkind')
 
----@param name string
----@param opts HlOpts
-local hl = function(name, opts)
-	hi(0, name, opts)
-end
+local hl = User.highlight().hl
 
----@class CmpKindMod
-local M = {}
+---@class FmtKindIcons
+---@field Class? string
+---@field Color? string
+---@field Constant? string
+---@field Constructor? string
+---@field Enum? string
+---@field EnumMember? string
+---@field Event? string
+---@field Field? string
+---@field File? string
+---@field Folder? string
+---@field Function? string
+---@field Interface? string
+---@field Keyword? string
+---@field Method? string
+---@field Module? string
+---@field Operator? string
+---@field Property? string
+---@field Reference? string
+---@field Snippet? string
+---@field Struct? string
+---@field Text? string
+---@field TypeParameter? string
+---@field Unit? string
+---@field Value? string
+---@field Variable? string
 
-function M.lspkind()
-	return require('lspkind')
-end
-
-M.formatting = {
-	fields = { 'kind', 'menu', 'abbr' }
+---@type FmtKindIcons
+local kind_icons = {
+	Class =				"󰠱",
+	Color =				"󰏘",
+	Constant =			"󰏿",
+	Constructor =		"",
+	Enum =				"",
+	EnumMember =		"",
+	Event =				"",
+	Field =				"󰇽",
+	File =				"󰈙",
+	Folder =			"󰉋",
+	Function =			"󰊕",
+	Interface =			"",
+	Keyword =			"󰌋",
+	Method =			"󰆧",
+	Module =			"",
+	Operator =			"󰆕",
+	Property =			"󰜢",
+	Reference =			"",
+	Snippet =			"",
+	Struct =			"",
+	Text =				"",
+	TypeParameter =		"󰅲",
+	Unit =				"",
+	Value =				"󰎠",
+	Variable =			"󰂡",
 }
 
-M.window = {
-	documentation = Config.window.bordered(),
-	completion = Config.window.bordered(),
+---@type FmtKindIcons
+local kind_codicons = {
+	Class = '  ',
+	Color = '  ',
+	Constant = '  ',
+	Constructor = '  ',
+	Enum = '  ',
+	EnumMember = '  ',
+	Event = '  ',
+	Field = '  ',
+	File = '  ',
+	Folder = '  ',
+	Function = '  ',
+	Interface = '  ',
+	Keyword = '  ',
+	Method = '  ',
+	Module = '  ',
+	Operator = '  ',
+	Property = '  ',
+	Reference = '  ',
+	Snippet = '  ',
+	Struct = '  ',
+	Text = '  ',
+	TypeParameter = '  ',
+	Unit = '  ',
+	Value = '  ',
+	Variable = '  ',
 }
 
----@param toggle? boolean
-function M.setup(toggle)
-	toggle = toggle or false
-
-	local res = {
-		lspkind = M.lspkind,
-		window = M.window,
-		formatting = M.formatting,
+local function vscode()
+	---@type HlDict
+	local vscode_hls = {
+		-- gray
+		CmpItemAbbrDeprecated = { bg='NONE', strikethrough=true, fg='#808080' },
+		-- blue
+		CmpItemAbbrMatch = { bg='NONE', fg='#569CD6' },
+		CmpItemAbbrMatchFuzzy = { link='CmpIntemAbbrMatch' },
+		-- light blue
+		CmpItemKindVariable = { bg='NONE', fg='#9CDCFE' },
+		CmpItemKindInterface = { link='CmpItemKindVariable' },
+		CmpItemKindText = { link='CmpItemKindVariable' },
+		-- pink
+		CmpItemKindFunction = { bg='NONE', fg='#C586C0' },
+		CmpItemKindMethod = { link='CmpItemKindFunction' },
+		-- front
+		CmpItemKindKeyword = { bg='NONE', fg='#D4D4D4' },
+		CmpItemKindProperty = { link='CmpItemKindKeyword' },
+		CmpItemKindUnit = { link='CmpItemKindKeyword' },
 	}
 
-	if toggle then
-		res.window.completion = {
-			completion = {
-				winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
-				col_offset = -3,
-				side_padding = 0,
-			},
-		}
+	for n, o in next, vscode_hls do
+		hl(n, o)
+	end
+end
 
-		res.formatting.fields = { 'kind', 'abbr', 'menu' }
-		res.formatting.fortmat = function(entry, vim_item)
-			local kind = M.lspkind().cmp_format({
-				with_text = false,
-				mode = 'symbol_text',
-				maxwidth = 20,
-			})(entry, vim_item)
+---@param entry cmp.Entry
+---@param vim_item vim.CompletedItem
+local function vscode_fmt(entry, vim_item)
+	vim_item.kind = kind_codicons[vim_item.kind] or ''
+	return vim_item
+end
 
-			local strings = vim.split(kind.kind, '%s', { trimempty = true })
-			kind.kind = ' ' .. (strings[1] or '') .. ' '
-			kind.menu = '    (' .. (strings[2] or '') .. ')'
-			-- Customization for Pmenu
-			hl("PmenuSel", { bg = "#282C34", fg = "NONE" })
-			hl("Pmenu", { fg = "#C5CDD9", bg = "#22252A" })
+---@class FmtOptsMenu
+---@field buffer? string
+---@field nvim_lsp? string
+---@field luasnip? string
+---@field nvim_lua? string
+---@field latex_symbols? string
 
-			hl("CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
-			hl("CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
-			hl("CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
-			hl("CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true })
+---@alias FmtOpts vim.CompletedItem
 
-			hl("CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" })
-			hl("CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" })
-			hl("CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" })
+---@type FmtOpts
+local FmtOpts = {
+	mode = 'symbol_text',
+	menu = ({
+		buffer = "[BUF]",
+		nvim_lsp = "[LSP]",
+		luasnip = "[SNIP]",
+		nvim_lua = "[LUA]",
+		latex_symbols = "[TeX]",
+	}),
+}
 
-			hl("CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" })
-			hl("CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" })
-			hl("CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" })
+---@class CmpKindMod
+---@field protected kind_icons FmtKindIcons
+---@field protected kind_codicons FmtKindIcons
+---@field formatting cmp.FormattingConfig
+---@field window cmp.WindowConfig
+---@field view cmp.ViewConfig
+---@field vscode fun()
 
-			hl("CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" })
-			hl("CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" })
-			hl("CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" })
+---@type CmpKindMod
+local M = {
+	---@protected
+	kind_icons = kind_icons,
+	kind_codicons = kind_codicons,
+	formatting = {
+		fields = { 'kind', 'abbr' },
+		format = vscode_fmt,
+	},
+	window = {
+		documentation = cmp.config.window.bordered(),
+		-- completion = cmp.config.window.bordered(),
+		completion = {
+			winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
+			col_offset = -3,
+			side_padding = 0,
+		},
+	},
+	view = {
+		entries = { name = 'custom', selection_order = 'near_cursor' },
+		docs = { auto_open = true },
+	},
+	vscode = vscode,
+}
 
-			hl("CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" })
-			hl("CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" })
-			hl("CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" })
-			hl("CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" })
-			hl("CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" })
-
-			hl("CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" })
-			hl("CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" })
-
-			hl("CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" })
-			hl("CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" })
-			hl("CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" })
-
-			hl("CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" })
-			hl("CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" })
-			hl("CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" })
-
-			hl("CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
-			hl("CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
-			hl("CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
-			-- gray
-			hl('CmpItemAbbrDeprecated', { bg='NONE', strikethrough=true, fg='#808080' })
-			-- -- blue
-			hl('CmpItemAbbrMatch', { bg='NONE', fg='#569CD6' })
-			hl('CmpItemAbbrMatchFuzzy', { link='CmpIntemAbbrMatch' })
-			-- -- light blue
-			hl('CmpItemKindVariable', { bg='NONE', fg='#9CDCFE' })
-			hl('CmpItemKindInterface', { link='CmpItemKindVariable' })
-			hl('CmpItemKindText', { link='CmpItemKindVariable' })
-			-- -- pink
-			hl('CmpItemKindFunction', { bg='NONE', fg='#C586C0' })
-			hl('CmpItemKindMethod', { link='CmpItemKindFunction' })
-			-- -- front
-			hl('CmpItemKindKeyword', { bg='NONE', fg='#D4D4D4' })
-			hl('CmpItemKindProperty', { link='CmpItemKindKeyword' })
-			hl('CmpItemKindUnit', { link='CmpItemKindKeyword' })
-			return kind
+---@param entry cmp.Entry
+---@param vim_item vim.CompletedItem
+local function fmt(entry, vim_item)
+	if not vim.tbl_contains({ 'path' }, entry.source.name) then
+		local devicons = require('nvim-web-devicons')
+		local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
+		if icon then
+			vim_item.kind = icon
+			vim_item.kind_hl_group = hl_group
+			return vim_item
 		end
 	end
+	return LspKind.cmp_format({ with_text = false })
+end
 
-	return res
+---@type HlDict
+local extra_hls = {
+	PmenuSel = { bg = "#282C34", fg = "NONE" },
+	Pmenu = { fg = "#C5CDD9", bg = "#22252A" },
+
+	CmpItemAbbrDeprecated = { fg = "#7E8294", bg = "NONE", strikethrough = true },
+	CmpItemAbbrMatch = { fg = "#82AAFF", bg = "NONE", bold = true },
+	CmpItemAbbrMatchFuzzy = { fg = "#82AAFF", bg = "NONE", bold = true },
+	CmpItemMenu = { fg = "#C792EA", bg = "NONE", italic = true },
+
+	CmpItemKindField = { fg = "#EED8DA", bg = "#B5585F" },
+	CmpItemKindProperty = { fg = "#EED8DA", bg = "#B5585F" },
+	CmpItemKindEvent = { fg = "#EED8DA", bg = "#B5585F" },
+
+	CmpItemKindText = { fg = "#C3E88D", bg = "#9FBD73" },
+	CmpItemKindEnum = { fg = "#C3E88D", bg = "#9FBD73" },
+	CmpItemKindKeyword = { fg = "#C3E88D", bg = "#9FBD73" },
+
+	CmpItemKindConstant = { fg = "#FFE082", bg = "#D4BB6C" },
+	CmpItemKindConstructor = { fg = "#FFE082", bg = "#D4BB6C" },
+	CmpItemKindReference = { fg = "#FFE082", bg = "#D4BB6C" },
+
+	CmpItemKindFunction = { fg = "#EADFF0", bg = "#A377BF" },
+	CmpItemKindStruct = { fg = "#EADFF0", bg = "#A377BF" },
+	CmpItemKindClass = { fg = "#EADFF0", bg = "#A377BF" },
+	CmpItemKindModule = { fg = "#EADFF0", bg = "#A377BF" },
+	CmpItemKindOperator = { fg = "#EADFF0", bg = "#A377BF" },
+
+	CmpItemKindVariable = { fg = "#C5CDD9", bg = "#7E8294" },
+	CmpItemKindFile = { fg = "#C5CDD9", bg = "#7E8294" },
+
+	CmpItemKindUnit = { fg = "#F5EBD9", bg = "#D4A959" },
+	CmpItemKindSnippet = { fg = "#F5EBD9", bg = "#D4A959" },
+	CmpItemKindFolder = { fg = "#F5EBD9", bg = "#D4A959" },
+
+	CmpItemKindMethod = { fg = "#DDE5F5", bg = "#6C8ED4" },
+	CmpItemKindValue = { fg = "#DDE5F5", bg = "#6C8ED4" },
+	CmpItemKindEnumMember = { fg = "#DDE5F5", bg = "#6C8ED4" },
+
+	CmpItemKindInterface = { fg = "#D8EEEB", bg = "#58B5A8" },
+	CmpItemKindColor = { fg = "#D8EEEB", bg = "#58B5A8" },
+	CmpItemKindTypeParameter = { fg = "#D8EEEB", bg = "#58B5A8" },
+}
+
+for n, o in next, extra_hls do
+	hl(n, o)
 end
 
 return M
