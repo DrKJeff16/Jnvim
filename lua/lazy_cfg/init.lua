@@ -104,6 +104,14 @@ Lazy.setup({
 	{ 'b0o/SchemaStore.nvim', lazy = true },
 	{ 'p00f/clangd_extensions.nvim', lazy = true },
 
+	{
+		'pineapplegiant/spaceduck',
+		lazy = false,
+		priority = 1000,
+		init = function()
+			vim.g.installed_spaceduck = 1
+		end,
+	},
 	{ 'catppuccin/nvim', lazy = true, priority = 1000, name = 'catppuccin' },
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000, name = 'tokyonight' },
 	{ 'vigoux/oak', lazy = true, priority = 1000 },

@@ -40,12 +40,15 @@ _G.Pkg = require('lazy_cfg')
 
 if Pkg.colorschemes then
 	_G.Csc = Pkg.colorschemes()
+
 	if Csc.nightfox then
 		Csc.nightfox.setup()
 	elseif Csc.catppuccin then
 		Csc.catppuccin.setup()
 	elseif Csc.tokyonight then
 		Csc.tokyonight.setup()
+	elseif Csc.spaceduck then
+		Csc.spaceduck.setup()
 	end
 end
 
