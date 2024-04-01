@@ -1,6 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types')
+
 local User = require('user')
 local exists = User.exists
 local maps = User.maps()
@@ -11,7 +13,6 @@ end
 
 require('user.types.lspconfig')
 
----@type 'lazy_cfg.lspconfig.'
 local pfx = 'lazy_cfg.lspconfig.'
 
 local api = vim.api
@@ -25,49 +26,45 @@ local kmap = maps.kmap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
+local hi = api.nvim_set_hl
 
 local nmap = kmap.n
 
----@class SubCaller
+---@class LspSubMods
 ---@field clangd? fun(): any
 ---@field kinds? fun(): LspKindsMod
 
----@param subs string[]
----@param prefix? string
----@return SubCaller res
-local src = function(subs, prefix)
-	prefix = prefix or pfx
+---@return LspSubMods subs
+local function src()
+	local prefix = 'lazy_cfg.lspconfig.'
 
-	---@type SubCaller
-	local res = {}
+	---@type LspSubMods
+	local subs = {}
 
-	for _, v in next, subs do
+	for _, v in next, { 'clangd', 'kinds' } do
 		local path = prefix..v
 
 		if exists(path) then
 			---@return any
-			res[v] = function()
+			subs[v] = function()
 				return require(path)
 			end
 		end
 	end
 
-	return res
+	return subs
 end
 
-local submods = {
-	'clangd',
-	'kinds',
-}
-
-local sub_call = src(submods)
-sub_call.clangd()
-sub_call.kinds().setup()
-
-vim.cmd[[
-au! ColorScheme * highlight NormalFloat guibg=#1f2335
-au! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335
-]]
+local submods = src()
+if submods.clangd then
+	submods.clangd()
+end
+if submods.kinds then
+	submods.kinds().setup()
+end
+---@class LspAu
+---@field event string|string[]
+---@field opts AuOpts
 
 local border = {
 	{"🭽", "FloatBorder"},
@@ -82,8 +79,8 @@ local border = {
 
 -- LSP settings (for overriding per client)
 local handlers =  {
-	["textDocument/hover"] =  lsp.with(lsp.handlers.hover, {border = border}),
-	["textDocument/signatureHelp"] =  lsp.with(lsp.handlers.signature_help, {border = border }),
+	["textDocument/hover"] =  lsp.with(lsp.handlers.hover, { border = border }),
+	["textDocument/signatureHelp"] =  lsp.with(lsp.handlers.signature_help, { border = border  }),
 }
 
 local Neodev = require('neodev')
@@ -101,13 +98,7 @@ Neodev.setup({
 	pathStrict = true,
 })
 
--- if exists('neoconf') then
--- 	require('neoconf').setup({})
--- end
-
-if exists(pfx..'kinds') then
-	require('lazy_cfg.lspconfig.kinds').setup()
-end
+--- TODO: Redo the annotation below.
 
 ---@alias SrvTbl { [string]: table }
 
@@ -374,6 +365,36 @@ diag.config({
 	update_in_insert = false,
 	severity_sort = false,
 })
+
+---@type LspAu[]
+local aus = {
+	{
+		event = 'ColorScheme',
+		opts = {
+			pattern = '*',
+			callback = function()
+				---@type HlOpts
+				local opts = { bg = '#2c1a3a' }
+				hi(0, 'NormalFloat', opts)
+			end,
+		},
+	},
+	{
+		event = 'ColorScheme',
+		opts = {
+			pattern = '*',
+			callback = function()
+				---@type HlOpts
+				local opts = { fg = '#f0efbf', bg = '#2c1a3a' }
+				hi(0, 'FloatBorder', opts)
+			end,
+		},
+	},
+}
+
+for _, t in next, aus do
+	au(t.event, t.opts)
+end
 
 local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
 for type, icon in pairs(signs) do
