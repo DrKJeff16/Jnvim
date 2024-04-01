@@ -20,7 +20,7 @@ if exists(pfx..'luasnip') then
 end
 
 local sks = require(sub_kinds)
-local sk = sks.setup(true)
+local sk = sks.setup(false)
 
 local hi = api.nvim_set_hl
 local get_mode = api.nvim_get_mode
@@ -47,17 +47,10 @@ local Select = cmp.SelectBehavior
 
 local map = cmp.mapping
 
-local map_close = function(fallback)
-	if cmp.visible() then
-		cmp.close()
-	end
-	fallback()
-end
-
 local tab_map = {
 	i = function(fallback)
 		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
+		local opts = { behavior = cmp.SelectBehaviorReplsce }
 		-- local num_entries = #cmp.get_entries()
 		if cmp.visible() then
 			cmp.select_next_item(opts)
@@ -69,12 +62,12 @@ local tab_map = {
 				cmp.select_next_item(opts)
 			end
 		else
-			fallback()
+		fallback()
 		end
 	end,
 	s = function(fallback)
 		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
+		local opts = { behavior = cmp.SelectBehaviorReplsce }
 		if cmp.visible() then
 			cmp.select_next_item(opts)
 		elseif jumpable() then
@@ -85,11 +78,11 @@ local tab_map = {
 				cmp.select_next_item(opts)
 			end
 		else
-			fallback()
+		fallback()
 		end
 	end,
 	c = function(fallback)
-		local opts = { behavior = cmp.SelectBehavior.Insert }
+		local opts = { behavior = cmp.SelectBehavior.Replace }
 		if cmp.visible() then
 			cmp.select_next_item(opts)
 		elseif has_words_before() then
@@ -98,42 +91,41 @@ local tab_map = {
 				cmp.select_next_item(opts)
 			end
 		else
-			fallback()
+		fallback()
 		end
 	end,
 }
 
-
 local cr_map = {
-	---@param fallback fun(...)
+	---@param fallback fun()
 	i = function(fallback)
 		local opts = { select = false }
 
 		if cmp.visible() and cmp.get_selected_entry() then
-				cmp.confirm(opts)
-			else
-				fallback()
-			end
+			cmp.confirm(opts)
+		else
+			fallback()
+		end
 	end,
 	---@param fallback fun(...)
 	s = function(fallback)
 		local opts = { select = false }
 
 		if cmp.visible() and cmp.get_selected_entry() then
-				cmp.confirm(opts)
-			else
-				fallback()
-			end
+			cmp.confirm(opts)
+		else
+			fallback()
+		end
 	end,
 	---@param fallback fun(...)
 	c = function(fallback)
 		local opts = { select = true }
 
 		if cmp.visible() and cmp.get_selected_entry() then
-				cmp.confirm(opts)
-			else
-				fallback()
-			end
+			cmp.confirm(opts)
+		else
+			fallback()
+		end
 	end,
 }
 
@@ -197,19 +189,19 @@ cmp.setup({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
-		-- { name = 'path' },
-	}, {
-		{ name = 'buffer' },
+		}, {
+			{ name = 'buffer' },
 	}),
 })
 
 cmp.setup.filetype({ 'bash', 'sh', 'zsh' }, {
 	sources = Config.sources({
 		{ name = 'nvim_lsp' },
+		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip' },
 		{ name = 'path' },
-	}, {
-		{ name = 'buffer' },
+		}, {
+			{ name = 'buffer' },
 	}),
 })
 
@@ -217,27 +209,20 @@ if exists('orgmode') then
 	cmp.setup.filetype({ 'org', 'orgagenda', 'orghelp' }, {
 		sources = Config.sources({
 			{ name = 'path' },
-		}, {
-			{ name = 'orgmode' },
-			{ name = 'buffer' },
+			}, {
+				{ name = 'orgmode' },
+				{ name = 'buffer' },
 		}),
 	})
 end
 
-cmp.setup.filetype('lua', {
-	sources = Config.sources({
-		{ name = 'nvim_lsp' },
-		{ name = 'nvim_lsp_signature_help' },
-	}, {
-		{ name = 'buffer' },
-	})
-})
-
 cmp.setup.filetype('gitcommit', {
 	sources = Config.sources({
+		{ name = 'luasnip' },
 		{ name = 'conventionalcommits' },
-	}, {
-		{ name = 'git' },
+		{ name = 'buffer' },
+		}, {
+			{ name = 'git' },
 	}),
 })
 cmp.setup.cmdline({ '/', '?' }, {
@@ -251,8 +236,8 @@ cmp.setup.cmdline(':', {
 	mapping = map.preset.cmdline(),
 	sources = Config.sources({
 		{ name = 'path' }
-	}, {
-		{ name = 'cmdline' }
+		}, {
+			{ name = 'cmdline' }
 	})
 })
 

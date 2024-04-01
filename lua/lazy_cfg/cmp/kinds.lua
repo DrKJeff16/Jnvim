@@ -16,17 +16,18 @@ local api = vim.api
 
 local hi = api.nvim_set_hl
 
----@alias HlTbl vim.api.keyset.highlight
-
 ---@param name string
----@param tbl HlTbl
-local hl = function(name, tbl)
-	hi(0, name, tbl)
+---@param opts HlOpts
+local hl = function(name, opts)
+	hi(0, name, opts)
 end
 
+---@class CmpKindMod
 local M = {}
 
-M.lspkind = require('lspkind')
+function M.lspkind()
+	return require('lspkind')
+end
 
 M.formatting = {
 	fields = { 'kind', 'menu', 'abbr' }
@@ -63,6 +64,7 @@ function M.setup(toggle)
 				mode = 'symbol_text',
 				maxwidth = 20,
 			})(entry, vim_item)
+
 			local strings = vim.split(kind.kind, '%s', { trimempty = true })
 			kind.kind = ' ' .. (strings[1] or '') .. ' '
 			kind.menu = '    (' .. (strings[2] or '') .. ')'
