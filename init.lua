@@ -39,26 +39,6 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
--- Make the package list globsl.
-_G.Pkg = require('lazy_cfg')
-
--- If colorschemes calker table exists.
-if Pkg.colorschemes then
-	-- Global color schemes table.
-	_G.Csc = Pkg.colorschemes()
-
-	-- Reorder to your liking.
-	if Csc.nightfox then
-		Csc.nightfox.setup()
-	elseif Csc.catppuccin then
-		Csc.catppuccin.setup()
-	elseif Csc.tokyonight then
-		Csc.tokyonight.setup()
-	elseif Csc.spaceduck then
-		Csc.spaceduck.setup()
-	end
-end
-
 --- Table of mappings for each mode `(normal|insert|visual|terminal)`.
 ---
 --- Each mode contains its respective mappings.
@@ -156,6 +136,26 @@ for k, func in next, map_fields do
 		for _, v in next, tbl do
 			func(v.lhs, v.rhs, v.opts or {})
 		end
+	end
+end
+
+-- Make the package list globsl.
+_G.Pkg = require('lazy_cfg')
+
+-- If colorschemes calker table exists.
+if Pkg.colorschemes then
+	-- Global color schemes table.
+	_G.Csc = Pkg.colorschemes()
+
+	-- Reorder to your liking.
+	if Csc.nightfox then
+		Csc.nightfox.setup()
+	elseif Csc.catppuccin then
+		Csc.catppuccin.setup()
+	elseif Csc.tokyonight then
+		Csc.tokyonight.setup()
+	elseif Csc.spaceduck then
+		Csc.spaceduck.setup()
 	end
 end
 
