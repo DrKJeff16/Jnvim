@@ -197,26 +197,29 @@ Lazy.setup({
 	-- Various Snippets
 	{ 'rafamadriz/friendly-snippets', lazy = true },
 
-	--- TODO: Set-up Telescope.
+	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
 		lazy = true,
 		priority = 1000,
 		cmd = 'Telescope',
-		dependencies = { 'nvim-telescope/telescope-fzf-native.nvim' },
-		enabled = false,
+		dependencies = {
+			'nvim-telescope/telescope-fzf-native.nvim',
+			'nvim-treesitter/nvim-treesitter',
+			'neovim/nvim-lspconfig',
+			'nvim-lua/plenary.nvim',
+		},
 	},
 	{
 		'nvim-telescope/telescope-fzf-native.nvim',
 		lazy = true,
-		build = 'verbose make',
-		enabled = false,
+		build = 'make -j4',
 	},
+	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
 		lazy = true,
 		priority = 1000,
-		enabled = false,
 	},
 
 	-- Statusline
@@ -330,7 +333,10 @@ local M = {
 	lualine = function()
 		return require('lazy_cfg.lualine')
 	end,
-	--- NOTE: Must be last call
+	telescope = function()
+		return require('lazy_cfg.telescope')
+	end,
+	-- NOTE: Must be last call
 	which_key = function()
 		return require('lazy_cfg.which_key')
 	end,
