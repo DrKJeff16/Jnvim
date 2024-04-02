@@ -12,13 +12,20 @@
 ---@field v fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 ---@field t fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 ---@field i fun(lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field o fun(lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field x fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 
 ---@class UserKeyMaps
 ---@field n fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 ---@field v fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 ---@field t fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 ---@field i fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
+---@field o? fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
+---@field x? fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
+
+---@class UserBufMaps: UserApiMaps
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps
 ---@field map UserApiMaps
+---@field buf_map UserBufMaps
