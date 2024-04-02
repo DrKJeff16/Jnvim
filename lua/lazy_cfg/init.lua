@@ -155,7 +155,7 @@ Lazy.setup({
 	-- Completion Engine
 	{
 		'hrsh7th/nvim-cmp',
-		lazy = true,
+		event = { 'InsertEnter', 'CmdlineEnter' },
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter',
 			'neovim/nvim-lspconfig',
@@ -173,29 +173,15 @@ Lazy.setup({
 			'hrsh7th/cmp-cmdline',
 			'saadparwaiz1/cmp_luasnip',
 		},
+		config = function()
+			return require('lazy_cfg.cmp')
+		end,
 	},
-	{ 'onsails/lspkind.nvim', lazy = true },
-	{ 'hrsh7th/cmp-nvim-lsp', lazy = true },
-	{ 'hrsh7th/cmp-nvim-lua', lazy = true },
-	{ 'hrsh7th/cmp-nvim-lsp-document-symbol', lazy = true },
-	{ 'hrsh7th/cmp-nvim-lsp-signature-help', lazy = true },
-	{ 'hrsh7th/cmp-buffer', lazy = true },
-	{ 'hrsh7th/cmp-path', lazy = true },
-	-- Git Completion
-	{ 'petertriho/cmp-git', lazy = true },
-	{ 'davidsierradz/cmp-conventionalcommits', lazy = true },
-	{ 'FelipeLema/cmp-async-path', lazy = true },
-	{ 'hrsh7th/cmp-cmdline', lazy = true },
-	-- Snippet Engine
-	{ 'saadparwaiz1/cmp_luasnip', lazy = true, dependencies = { 'L3MON4D3/LuaSnip' } },
 	{
 		'L3MON4D3/LuaSnip',
-		lazy = true,
 		dependencies = { 'rafamadriz/friendly-snippets' },
 		build = 'make install_jsregexp',
 	},
-	-- Various Snippets
-	{ 'rafamadriz/friendly-snippets', lazy = true },
 
 	-- Telescope
 	{
@@ -309,9 +295,9 @@ local M = {
 	lspconfig = function()
 		return require('lazy_cfg.lspconfig')
 	end,
-	cmp = function()
-		return require('lazy_cfg.cmp')
-	end,
+	-- cmp = function()
+	-- 	return require('lazy_cfg.cmp')
+	-- end,
 	Comment = function()
 		return require('lazy_cfg.Comment')
 	end,
