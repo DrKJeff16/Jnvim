@@ -159,17 +159,6 @@ for k, func in next, map_fields do
 	end
 end
 
--- Configure the plugins.
-for k, func in next, Pkg do
-	-- List of excluded packages (**in this stage**).
-	local exclude = { 'cmp', 'colorschemes' }
-
-	-- Call every plugin except `cmp` and the colorschemes.
-	if not vim.tbl_contains(exclude, k) then
-		func()
-	end
-end
-
 -- Call the user file associations.
 User.assoc()
 
@@ -177,8 +166,3 @@ vim.cmd[[
 filetype plugin indent on
 syntax on
 ]]
-
--- Call `cmp` last 'cause this plugin is a headache.
-if Pkg.cmp then
-	Pkg.cmp()
-end
