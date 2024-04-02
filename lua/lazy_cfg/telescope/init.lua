@@ -26,14 +26,35 @@ local nmap = kmap.n
 
 local Telescope = require('telescope')
 local Builtin = require('telescope.builtin')
+local Themes = require('telescope.themes')
+local Actions = require('telescope.actions')
+local ActionLayout = require('telescope.actions.layout')
 
 Telescope.setup({
 	defaults = {
+		layout_strategy = 'flex',
+		layout_config = {
+			horizontal = {
+				size = { width = '90%', height = '80%' },
+			},
+			vertical = {
+				size = { width = '80%', height = '80%' },
+			},
+		},
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
+				['<C-u>'] = false,
+				['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
+				['<esc>'] = Actions.close,
 			},
 		},
+	},
+	pickers = {
+		colorscheme = { theme = 'dropdown' },
+		find_files = { theme = 'dropdown' },
+		lsp_definitions = { theme = 'dropdown' },
+		pickers = { theme = 'dropdown' },
 	},
 })
 
@@ -43,16 +64,20 @@ Telescope.setup({
 ---@field opts? KeyMapOpts
 
 ---@class KeyMapModeDict
----@field n? KeyMapArgs[]
----@field i? KeyMapArgs[]
----@field v? KeyMapArgs[]
----@field t? KeyMapArgs[]
+---@field n KeyMapArgs[]
 local maps = {
 	n = {
-		{ lhs = '<leader>fTf', rhs = Builtin.find_files },
-		{ lhs = '<leader>fTg', rhs = Builtin.live_grep },
-		{ lhs = '<leader>fTb', rhs = Builtin.buffers },
-		{ lhs = '<leader>fTh', rhs = Builtin.help_tags },
+		{ lhs = '<leader>fTbb', rhs = Builtin.buffers },
+		{ lhs = '<leader>fTbc', rhs = Builtin.colorscheme },
+		{ lhs = '<leader>fTbd', rhs = Builtin.diagnostics },
+		{ lhs = '<leader>fTbf', rhs = Builtin.find_files },
+		{ lhs = '<leader>fTbg', rhs = Builtin.live_grep },
+		{ lhs = '<leader>fTbh', rhs = Builtin.help_tags },
+		{ lhs = '<leader>fTbk', rhs = Builtin.keymaps },
+		{ lhs = '<leader>fTbld', rhs = Builtin.lsp_definitions },
+		{ lhs = '<leader>fTblD', rhs = Builtin.lsp_document_symbols },
+		{ lhs = '<leader>fTbp', rhs = Builtin.pickers },
+		{ lhs = '<leader>fTbP', rhs = Builtin.planets },
 	},
 }
 
