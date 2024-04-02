@@ -179,4 +179,6 @@ syntax on
 ]]
 
 -- Call `cmp` last 'cause this plugin is a headache.
-Pkg.cmp()
+if Pkg.cmp then
+	Pkg.cmp()
+end
