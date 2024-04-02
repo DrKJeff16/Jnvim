@@ -21,7 +21,6 @@ local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
 local kmap = User.maps().kmap
-
 local nmap = kmap.n
 
 local Telescope = require('telescope')
@@ -33,14 +32,15 @@ local ActionLayout = require('telescope.actions.layout')
 Telescope.setup({
 	defaults = {
 		layout_strategy = 'flex',
-		layout_config = {
-			horizontal = {
-				size = { width = '90%', height = '80%' },
-			},
-			vertical = {
-				size = { width = '80%', height = '80%' },
-			},
-		},
+		-- FIXME: Make this actually work.
+		-- layout_config = {
+		-- 	horizontal = {
+		-- 		size = { width = '90%', height = '80%' },
+		-- 	},
+		-- 	vertical = {
+		-- 		size = { width = '80%', height = '80%' },
+		-- 	},
+		-- },
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
