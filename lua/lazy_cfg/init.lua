@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types')
+require('user.types.lazy')
 require('user.types.colorschemes')
 
 local fn = vim.fn
@@ -36,8 +37,6 @@ end
 
 -- Add `Lazy` to `stdpath`
 rtp:prepend(lazypath)
-
-local pfx = 'lazy_cfg.'
 
 local Lazy = require('lazy')
 
@@ -78,7 +77,7 @@ Lazy.setup({
 	-- Tpope is god.
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive' },
-	{ 'tpope/vim-speeddating', lazy = true, enabled = false },
+	{ 'tpope/vim-speeddating', lazy = true },
 
 	-- Treesitter.
 	{
@@ -94,7 +93,7 @@ Lazy.setup({
 	},
 	{ 'nvim-treesitter/nvim-treesitter-context', lazy = true },
 	{ 'nvim-orgmode/orgmode', lazy = true },
-	{ 'HiPhish/nvim-ts-rainbow2', lazy = true },
+	{ 'HiPhish/nvim-ts-rainbow2', lazy = true, enabled = false },
 	{ 'JoosepAlviste/nvim-ts-context-commentstring', lazy = true },
 
 	-- LSP
@@ -113,16 +112,19 @@ Lazy.setup({
 		'folke/neodev.nvim',
 		lazy = true,
 		priority = 1000,
+		enabled = fn.executable('lua-language-server') == 1
 	},
-	{ 'folke/neoconf.nvim', lazy = true },
+	{ 'folke/neoconf.nvim', lazy = true, enabled = false },
 	{ 'b0o/SchemaStore.nvim', lazy = true },
-	{ 'p00f/clangd_extensions.nvim', lazy = true },
+	{ 'p00f/clangd_extensions.nvim', lazy = true, enabled = fn.executable('clangd') == 1 },
 
 	-- Colorschemes
 	{
 		'pineapplegiant/spaceduck',
 		lazy = false,
 		priority = 1000,
+		-- Set the global condition for a later
+		-- submodule call.
 		init = function()
 			vim.g.installed_spaceduck = 1
 		end,
@@ -172,19 +174,20 @@ Lazy.setup({
 			'saadparwaiz1/cmp_luasnip',
 		},
 	},
-	{ 'onsails/lspkind.nvim', lazy = true, priority = 1000 },
+	{ 'onsails/lspkind.nvim', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lsp', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lua', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lsp-document-symbol', lazy = true },
 	{ 'hrsh7th/cmp-nvim-lsp-signature-help', lazy = true },
 	{ 'hrsh7th/cmp-buffer', lazy = true },
 	{ 'hrsh7th/cmp-path', lazy = true },
+	-- Git Completion
 	{ 'petertriho/cmp-git', lazy = true },
 	{ 'davidsierradz/cmp-conventionalcommits', lazy = true },
 	{ 'FelipeLema/cmp-async-path', lazy = true },
 	{ 'hrsh7th/cmp-cmdline', lazy = true },
-	{ 'saadparwaiz1/cmp_luasnip', lazy = true, dependencies = { 'L3MON4D3/LuaSnip' } },
 	-- Snippet Engine
+	{ 'saadparwaiz1/cmp_luasnip', lazy = true, dependencies = { 'L3MON4D3/LuaSnip' } },
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
@@ -292,20 +295,8 @@ Lazy.setup({
 	},
 })
 
----@class LazyMods
----@field colorschemes? fun(): CscMod
----@field treesitter? fun()
----@field lspconfig? fun()
----@field cmp? fun()
----@field Comment? fun()
----@field colorizer? fun()
----@field todo_comments? fun()
----@field nvim_tree? fun()
----@field gitsigns? fun()
----@field toggleterm? fun()
----@field lualine? fun()
----@field which_key? fun()
-local submods = {
+---@type LazyMods
+local M = {
 	colorschemes = function()
 		return require('lazy_cfg.colorschemes')
 	end,
@@ -345,4 +336,4 @@ local submods = {
 	end,
 }
 
-return submods
+return M
