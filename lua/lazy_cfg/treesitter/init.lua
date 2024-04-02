@@ -64,7 +64,7 @@ local ensure = {
 local function add_org()
 	local Orgmode = require('orgmode')
 	local org_dir = '~/.org'
-	Orgmode.setup_ts_grammar()
+	-- Orgmode.setup_ts_grammar()
 
 	table.insert(ensure, 'org')
 
