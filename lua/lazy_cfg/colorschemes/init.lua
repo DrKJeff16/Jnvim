@@ -26,6 +26,7 @@ local submods = {
 	'nightfox',
 	'spaceduck',
 	'dracula',
+	'gloombuddy'
 }
 
 src(submods)

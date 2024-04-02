@@ -1,6 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types')
 require('user.types.colorschemes')
 
 local fn = vim.fn
@@ -129,7 +130,13 @@ Lazy.setup({
 	{ 'catppuccin/nvim', lazy = true, priority = 1000, name = 'catppuccin' },
 	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000, name = 'tokyonight' },
 	{ 'vigoux/oak', lazy = true, priority = 1000 },
-	{ 'bkegley/gloombuddy', lazy = true, priority = 1000 },
+	{
+		'bkegley/gloombuddy',
+		lazy = true,
+		priority = 1000,
+		dependencies = { 'tjdevries/colorbuddy.vim' },
+	},
+	{ 'tjdevries/colorbuddy.vim', lazy = true, priority = 1000, name = 'colorbuddy' },
 	{ 'EdenEast/nightfox.nvim', lazy = true, priority = 1000, name = 'nightfox' },
 
 	{

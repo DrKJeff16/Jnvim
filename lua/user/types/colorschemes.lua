@@ -11,3 +11,4 @@
 ---@field nightfox? CscSubMod
 ---@field spaceduck? CscSubMod
 ---@field dracula? CscSubMod
+---@field gloombuddy CscSubMod
