@@ -115,7 +115,7 @@ local TSConfig = {
 		additional_vim_regex_highlighting = additional_hl(),
 	},
 
-	indent = { enable = true, disable = { 'lua', 'bash' } },
+	indent = { enable = false },
 	incremental_selection = { enable = false },
 }
 
@@ -123,7 +123,6 @@ if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
 	TSConfig.rainbow = require('lazy_cfg.treesitter.rainbow').rainbow
 end
 
----@type string[]
 local modules = {
 	'context',
 	'rainbow',
