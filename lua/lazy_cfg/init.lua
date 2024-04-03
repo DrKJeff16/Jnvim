@@ -41,7 +41,7 @@ rtp:prepend(lazypath)
 local Lazy = require('lazy')
 
 Lazy.setup({
-	{ 'folke/lazy.nvim', event = 'VimEnter', priority = 1000 },
+	{ 'folke/lazy.nvim', priority = 1000 },
 
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 
@@ -96,7 +96,6 @@ Lazy.setup({
 	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
-		event = 'VimEnter',
 		priority = 1000,
 		build = ':verbose TSUpdate',
 		dependencies = {
@@ -206,7 +205,6 @@ Lazy.setup({
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
-		event = 'VimEnter',
 		priority = 1000,
 		cmd = 'Telescope',
 		dependencies = {
@@ -230,7 +228,6 @@ Lazy.setup({
 	-- Statusline
 	{
 		'nvim-lualine/lualine.nvim',
-		event = 'VimEnter',
 		priority = 1000,
 		name = 'LuaLine',
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -276,7 +273,6 @@ Lazy.setup({
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
-		event = 'VimEnter',
 		priority = 1000,
 		dependencies = {
 			'nvim-tree/nvim-web-devicons',
@@ -322,7 +318,6 @@ Lazy.setup({
 	{
 		'akinsho/toggleterm.nvim',
 		priority = 1000,
-		event = 'VimEnter',
 		name = 'ToggleTerm',
 		config = function()
 			return require('lazy_cfg.toggleterm')
