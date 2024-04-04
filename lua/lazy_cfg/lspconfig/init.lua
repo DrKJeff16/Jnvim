@@ -1,7 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 require('user.types.user.highlight')
 require('user.types.user.autocmd')
 
@@ -125,151 +124,89 @@ end
 local lspconfig = require('lspconfig')
 
 ---@type LspServers
-local srv = {
-	['lua_ls'] = {
-		settings = {
-			Lua = {
-				runtime = { version = 'LuaJIT' },
-				workspace = { checkThirdParty = false },
-				completion = {
-					enable = true,
-					autoRequire = false,
-					callSnippet = 'Replace',
-					displayContext = 5,
-					showParams = false,
-				},
-				diagnostics = {
-					enable = true,
-					globals = { 'vim' },
-					workspaceRate = 70,
-				},
-				hint = {
-					arrayIndex = 'Enable',
-					enable = true,
-					paramName = 'All',
-					paramType = true,
-					setType = true,
-				},
-				hover = { enable = true },
-				semantic = {
-					enable = true,
-					annotation = true,
-					keyword = true,
-					variable = true,
-				},
-				signatureHelp = { enable = true },
-			},
+local srv = {}
+srv.lua_ls = {
+	settings = {
+		Lua = {
+			completion = { callSnippet = 'Replace' },
 		},
 	},
+}
 
-	['bashls'] = {},
-	['clangd'] = {},
-	['cmake'] = {},
-	['css_variables'] = {},
-	['html'] = {},
-	['jsonls'] = {},
-	['yamlls'] = {},
-	['pylsp'] = {
-		settings = {
-			configurationSources = { 'flake8' },
-
-			plugins = {
-				autopep8 = {
-					enabled = true,
-				},
-				flake8 = {
-					enabled = true,
-					hangClosing = true,
-					maxLineLength = 100,
-					indentSize = 4,
-					ignore = {
-						'F400',
-						'F401',
-					},
-				},
-				jedi = {
-					auto_import_modules = {
-						'argparse',
-						'os',
-						're',
-						'sys',
-						'typing',
-					},
-				},
-				jedi_completion = {
-					enabled = true,
-					include_params = false,
-					include_class_objects = true,
-					include_function_objects = true,
-					fuzzy = false,
-					eager = true,
-					resolve_at_most = 30,
-					cache_for = {
-						'argparse',
-						'math',
-						'matplotlib',
-						'numpy',
-						'os',
-						'pandas',
-						're',
-						'setuptools',
-						'string',
-						'sys',
-						'typing',
-						'wheel',
-					},
-				},
-				jedi_definition = {
-					enabled = true,
-					follow_imports = true,
-					follow_builtin_imports = true,
-					follow_builtin_definitions = true,
-				},
-				jedi_hover = { enabled = true },
-				jedi_references = { enabled = true },
-				jedi_signature_help = { enabled = true },
-				jedi_symbols = {
-					enabled = true,
-					all_scopes = false,
-					include_import_symbols = true,
-				},
-				mccabe = { enabled = true, threshold = 15 },
-				preload = {
-					enabled = true,
-					modules = {
-						'argparse',
-						'math',
-						'numpy',
-						'os',
-						're',
-						'string',
-						'sys',
-						'typing',
-					},
-				},
-				pycodestyle = { enabled = false },
-				pydocstyle = {
-					enabled = true,
-					convention = 'numpy',
-					addIgnore = { 'D400', 'D401' },
-					ignore = { 'D400', 'D401' },
-					match = "(?!test_).*\\.py",
-					matchDir = "[^\\.].*",
-				},
-				pyflakes = { enabled = false },
-				pylint = { enabled = false },
-				rope_autoimport = {
-					enabled = true,
-					completions = { enabled = true },
-					code_actions = { enabled = true },
-					memory = true,
-				},
-				rope_completion = { enabled = true, eager = true },
-				yapf = { enabled = false },
+srv.bashls = {}
+srv.clangd = {}
+srv.cmake = {}
+srv.css_variables = {}
+srv.html = {}
+srv.jsonls = {}
+srv.yamlls = {}
+srv.pylsp = {
+	settings = {
+		configurationSources = { 'flake8' },
+		plugins = {
+			autopep8 = {
+				enabled = true,
 			},
-
-			rope = {
-				extensionModules = {
+			flake8 = {
+				enabled = true,
+				hangClosing = true,
+				maxLineLength = 100,
+				indentSize = 4,
+				ignore = {
+					'F400',
+					'F401',
+				},
+			},
+			jedi = {
+				auto_import_modules = {
+					'argparse',
+					'os',
+					're',
+					'sys',
+					'typing',
+				},
+			},
+			jedi_completion = {
+				enabled = true,
+				include_params = false,
+				include_class_objects = true,
+				include_function_objects = true,
+				fuzzy = false,
+				eager = true,
+				resolve_at_most = 30,
+				cache_for = {
+					'argparse',
+					'math',
+					'matplotlib',
+					'numpy',
+					'os',
+					'pandas',
+					're',
+					'setuptools',
+					'string',
+					'sys',
+					'typing',
+					'wheel',
+				},
+			},
+			jedi_definition = {
+				enabled = true,
+				follow_imports = true,
+				follow_builtin_imports = true,
+				follow_builtin_definitions = true,
+			},
+			jedi_hover = { enabled = true },
+			jedi_references = { enabled = true },
+			jedi_signature_help = { enabled = true },
+			jedi_symbols = {
+				enabled = true,
+				all_scopes = false,
+				include_import_symbols = true,
+			},
+			mccabe = { enabled = true, threshold = 15 },
+			preload = {
+				enabled = false,
+				modules = {
 					'argparse',
 					'math',
 					'numpy',
@@ -279,8 +216,39 @@ local srv = {
 					'sys',
 					'typing',
 				},
-				ropeFolder = nil,
 			},
+			pycodestyle = { enabled = false },
+			pydocstyle = {
+				enabled = true,
+				convention = 'numpy',
+				addIgnore = { 'D400', 'D401' },
+				ignore = { 'D400', 'D401' },
+				match = "(?!test_).*\\.py",
+				matchDir = "[^\\.].*",
+			},
+			pyflakes = { enabled = false },
+			pylint = { enabled = false },
+			rope_autoimport = {
+				enabled = true,
+				completions = { enabled = true },
+				code_actions = { enabled = true },
+				memory = true,
+			},
+			rope_completion = { enabled = true, eager = true },
+			yapf = { enabled = false },
+		},
+		rope = {
+			extensionModules = {
+				'argparse',
+				'math',
+				'numpy',
+				'os',
+				're',
+				'string',
+				'sys',
+				'typing',
+			},
+			ropeFolder = nil,
 		},
 	},
 }
@@ -291,14 +259,12 @@ for k, v in next, srv do
 	lspconfig[k].setup(v)
 end
 
-local map_opts = { noremap = true, silent = true }
+nmap('<Leader>le', diag.open_float)
+nmap('<Leader>l[', diag.goto_prev)
+nmap('<Leader>l]', diag.goto_next)
+nmap('<Leader>lq', diag.setloclist)
 
-nmap('<Leader>le', diag.open_float, map_opts)
-nmap('<Leader>l[', diag.goto_prev, map_opts)
-nmap('<Leader>l]', diag.goto_next, map_opts)
-nmap('<Leader>lq', diag.setloclist, map_opts)
-
-lsp.set_log_level('TRACE')
+lsp.set_log_level('DEBUG')
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
@@ -327,19 +293,18 @@ au('LspAttach', {
 })
 
 diag.config({
-	virtual_text = { source = 'if_many' },
+	virtual_text = true,
 	float = false,
 	signs = true,
-	underline = true,
+	underline = false,
 	update_in_insert = false,
 	severity_sort = false,
 })
 
----@type AuPair[]
+---@type AuRepeat
 local aus = {
-	{
-		event = 'ColorScheme',
-		opts = {
+	['ColorScheme'] = {
+		{
 			pattern = '*',
 			callback = function()
 				---@type HlOpts
@@ -347,10 +312,7 @@ local aus = {
 				hi(0, 'NormalFloat', opts)
 			end,
 		},
-	},
-	{
-		event = 'ColorScheme',
-		opts = {
+		{
 			pattern = '*',
 			callback = function()
 				---@type HlOpts
@@ -361,28 +323,17 @@ local aus = {
 	},
 }
 
-for _, t in next, aus do
-	au(t.event, t.opts)
+-- TODO: Do this using the API.
+for event, opts_arr in next, aus do
+	for _, opts in next, opts_arr do
+		au(event, opts)
+	end
 end
 
 local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
-for type, icon in pairs(signs) do
+for type, icon in next, signs do
 	local hlite = "DiagnosticSign" .. type
 	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
 end
 
 vim.o.updatetime = 250
--- api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
--- 	group = api.nvim_create_augroup("float_diagnostic", { clear = true }),
--- 	callback = function()
--- 		diag.open_float(nil, {focus=false, scope = 'cursor'})
--- 	end
--- })
-
--- -- To instead override globally
--- local orig_util_open_floating_preview = lsp.util.open_floating_preview
--- function lsp.util.open_floating_preview(contents, syntax, opts, ...)
--- 	opts = opts or {}
--- 	opts.border = opts.border or border
--- 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
--- end
