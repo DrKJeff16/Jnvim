@@ -42,92 +42,37 @@
 ---@field opts fun(): any|unknown
 
 ---@class UserSubTypes
----@field maps any
----@field highlight any
----@field autocmd any
----@field opts any
+---@field maps table
+---@field highlight table
+---@field autocmd table
+---@field opts table
 
 ---@class UserTypes
----@field lspconfig? any
----@field cmp? any
----@field gitsigns? any
----@field colorschemes? any
----@field treesitter? any
----@field opts? any
----@field nvim_tree? any
----@field todo_comments? any
----@field which_key? any
----@field user? UserSubTypes
+---@field lspconfig table
+---@field lazy table
+---@field cmp table
+---@field gitsigns table
+---@field colorschemes table
+---@field treesitter table
+---@field nvim_tree table
+---@field todo_comments table
+---@field which_key table
+---@field user UserSubTypes
 
 ---@type UserTypes
 local M = {}
-
----@param str
----|string
----|table<integer, string>
----@param prefix string
----@return UserSubTypes res
-local function filter_sub_src(str, prefix)
-	if type(str) == 'string' then
-		error('String exception in `user.types.init`.')
-	end
-
-	---@type UserSubTypes
-	local res = {}
-
-	for _, s in next, str do
-		local path = prefix..s
-		local exists, m = pcall(require, path)
-		if exists then
-			res[s] = m
-		end
-	end
-
-	return res
-end
-
----@param str
----|table<integer, string>
----|table<string, table<integer, string>>
----@return UserTypes res
-local function filter_src(str)
-	local prefix = 'user.types.'
-
-	---@type UserTypes
-	local res = {}
-	for k, s in next, str do
-		if type(k) == 'integer' then
-			local path = prefix..s
-			local exists, m = pcall(require, path)
-			if exists then
-				res[s] = m
-			end
-		elseif type(k) == 'string' then
-			res[k] = filter_sub_src(s, prefix..k..'.')
-		end
-	end
-
-	return res
-end
-
-local submods = {
-	user = {
-		'maps',
-		'highlight',
-		'autocmd',
-		'opts',
-	},
-	'lspconfig',
-	'cmp',
-	'gitsigns',
-	'colorschemes',
-	'treesitter',
-	'opts',
-	'nvim_tree',
-	'todo_comments',
-	'which_key'
-}
-
-M = filter_src(submods)
+M.colorschemes = require('user.types.colorschemes')
+M.lazy = require('user.types.lazy')
+M.which_key = require('user.types.which_key')
+-- M.nvim_tree = require('user.types.nvim_tree')
+-- M.todo_comments = require('user.types.todo_comments')
+-- M.gitsigns = require('user.types.gitsigns')
+-- M.treesitter = require('user.types.treesitter')
+-- M.cmp = require('user.types.cmp')
+M.user = {}
+M.user.maps = require('user.types.user.maps')
+M.user.opts = require('user.types.user.opts')
+M.user.autocmd = require('user.types.user.autocmd')
+M.user.highlight = require('user.types.user.highlight')
 
 return M

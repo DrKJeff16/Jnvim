@@ -1,7 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 require('user.types.lazy')
 require('user.types.colorschemes')
 
@@ -13,19 +12,24 @@ local api = vim.api
 
 local rtp = opt.rtp
 local fs_stat = vim.loop.fs_stat
+local stdpath = fn.stdpath
+local system = fn.system
+local has = fn.has
+local vim_exists = fn.exists
+local executable = fn.executable
 
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
 -- Set installation dir for `Lazy`.
-local lazypath = fn.stdpath('data') .. '/lazy/lazy.nvim'
+local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
 local User = require('user')
 local exists = User.exists
 
 -- Install `Lazy` automatically.
 if not exists('lazy') or not fs_stat(lazypath) then
-	fn.system({
+	system({
 		'git',
 		'clone',
 		'--filter=blob:none',
@@ -49,6 +53,7 @@ Lazy.setup({
 		'nvim-lua/plenary.nvim',
 		lazy = true,
 		priority = 1000,
+		name = 'Plenary',
 		cmd = {
 			'PlenaryBustedFile',
 			'PlenaryBustedDirectory',
@@ -58,16 +63,17 @@ Lazy.setup({
 		'nvim-lua/popup.nvim',
 		lazy = true,
 		priority = 1000,
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		name = 'Popup',
+		dependencies = { 'Plenary' },
 	},
 
-	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000 },
+	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000, name = 'web-devicons' },
 
 	{
 		'numToStr/Comment.nvim',
 		name = 'Comment',
 		dependencies = {
-			'nvim-treesitter/nvim-treesitter',
+			'treesitter',
 			'JoosepAlviste/nvim-ts-context-commentstring',
 		},
 		init = function()
@@ -90,13 +96,14 @@ Lazy.setup({
 		end
 	},
 	{ 'tpope/vim-endwise', lazy = false },
-	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive' },
+	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') == 1 },
 	{ 'tpope/vim-speeddating', enabled = false },
 
 	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
 		priority = 1000,
+		name = 'treesitter',
 		build = ':verbose TSUpdate',
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-context',
@@ -114,8 +121,9 @@ Lazy.setup({
 	{
 		'neovim/nvim-lspconfig',
 		priority = 1000,
+		name = 'lspconfig',
 		dependencies = {
-			'folke/neodev.nvim',
+			'neodev',
 			-- 'folke/neoconf.nvim',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
@@ -129,9 +137,10 @@ Lazy.setup({
 		'folke/neodev.nvim',
 		lazy = true,
 		priority = 1000,
-		enabled = fn.executable('lua-language-server') == 1 
+		name = 'neodev',
+		enabled = executable('lua-language-server') == 1 
 	},
-	{ 'p00f/clangd_extensions.nvim', enabled = fn.executable('clangd') == 1 },
+	{ 'p00f/clangd_extensions.nvim', enabled = executable('clangd') == 1 },
 
 	-- Colorschemes
 	{
@@ -150,18 +159,28 @@ Lazy.setup({
 		'bkegley/gloombuddy',
 		lazy = true,
 		priority = 1000,
-		dependencies = { 'tjdevries/colorbuddy.vim' },
+		dependencies = { 'colorbuddy' },
 	},
-	{ 'tjdevries/colorbuddy.vim', lazy = true, priority = 1000, name = 'colorbuddy' },
-	{ 'EdenEast/nightfox.nvim', lazy = true, priority = 1000, name = 'nightfox' },
+	{
+		'tjdevries/colorbuddy.vim',
+		lazy = true,
+		priority = 1000,
+		name = 'colorbuddy',
+	},
+	{
+		'EdenEast/nightfox.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'nightfox',
+	},
 
 	{
 		'folke/todo-comments.nvim',
 		priority = 1000,
 		name = 'todo-comments',
 		dependencies = {
-			'nvim-treesitter/nvim-treesitter',
-			'nvim-lua/plenary.nvim',
+			'treesitter',
+			'Plenary',
 		},
 		config = function()
 			return require('lazy_cfg.todo_comments')
@@ -171,9 +190,10 @@ Lazy.setup({
 	-- Completion Engine
 	{
 		'hrsh7th/nvim-cmp',
+		name = 'cmp',
 		dependencies = {
-			'nvim-treesitter/nvim-treesitter',
-			'neovim/nvim-lspconfig',
+			'treesitter',
+			'lspconfig',
 			'onsails/lspkind.nvim',
 			'hrsh7th/cmp-nvim-lsp',
 			'hrsh7th/cmp-nvim-lua',
@@ -186,6 +206,7 @@ Lazy.setup({
 			'FelipeLema/cmp-async-path',
 			'hrsh7th/cmp-cmdline',
 			'saadparwaiz1/cmp_luasnip',
+			'LuaSnip',
 		},
 		init = function()
 			set.completeopt = 'menu,menuone,noinsert,noselect,preview'
@@ -206,23 +227,31 @@ Lazy.setup({
 	{
 		'nvim-telescope/telescope.nvim',
 		priority = 1000,
+		name = 'Telescope',
 		cmd = 'Telescope',
 		dependencies = {
-			'nvim-telescope/telescope-fzf-native.nvim',
-			'nvim-treesitter/nvim-treesitter',
-			'neovim/nvim-lspconfig',
-			'nvim-lua/plenary.nvim',
+			'Telescope-fzf',
+			'treesitter',
+			'lspconfig',
+			'Plenary',
+			'Project',
 		},
 		config = function()
 			return require('lazy_cfg.telescope')
 		end,
 	},
-	{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make -j4' },
+	{
+		'nvim-telescope/telescope-fzf-native.nvim',
+		name = 'Telescope-fzf',
+		build = 'make -j"$(nproc)"',
+		enabled = executable('fzf') == 1,
+	},
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
 		lazy = true,
 		priority = 1000,
+		name = 'Project',
 	},
 
 	-- Statusline
@@ -230,7 +259,7 @@ Lazy.setup({
 		'nvim-lualine/lualine.nvim',
 		priority = 1000,
 		name = 'LuaLine',
-		dependencies = { 'nvim-tree/nvim-web-devicons' },
+		dependencies = { 'web-devicons' },
 		config = function()
 			return require('lazy_cfg.lualine')
 		end,
@@ -240,7 +269,7 @@ Lazy.setup({
 		lazy = true,
 		priority = 1000,
 		name = 'BufferLine',
-		dependencies = { 'nvim-tree/nvim-web-devicons' },
+		dependencies = { 'web-devicons' },
 	},
 
 	-- Auto-pairing (**BROKEN**)
@@ -257,8 +286,8 @@ Lazy.setup({
 	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
-		name = 'indent-blankline',
-		dependencies = { 'https://gitlab.com/HiPhish/rainbow-delimiters.nvim' },
+		name = 'ibl',
+		dependencies = { 'rainbow-delimiters' },
 		config = function()
 			return require('lazy_cfg.blank_line')
 		end,
@@ -267,6 +296,8 @@ Lazy.setup({
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
 		lazy = true,
+		priority = 1000,
+		name = 'rainbow-delimiters',
 		enabled = false,
 	},
 
@@ -274,8 +305,9 @@ Lazy.setup({
 	{
 		'nvim-tree/nvim-tree.lua',
 		priority = 1000,
+		name = 'nvim-tree',
 		dependencies = {
-			'nvim-tree/nvim-web-devicons',
+			'web-devicons',
 			'antosha417/nvim-lsp-file-operations',
 			'echasnovski/mini.base16',
 		},
@@ -297,6 +329,7 @@ Lazy.setup({
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
+		name = 'WhickKey',
 		priority = 1000,
 		init = function()
 			set.timeout = true
@@ -322,6 +355,25 @@ Lazy.setup({
 		config = function()
 			return require('lazy_cfg.toggleterm')
 		end,
+	},
+
+	{
+		'vhyrro/luarocks.nvim',
+		priority = 1000,
+		name = 'luarocks',
+		config = true,
+		enabled = false,
+	},
+	{
+		'nvim-neorg/neorg',
+		lazy = false,
+		dependencies = {
+			'luarocks',
+			'treesitter',
+		},
+		verdion = '*',
+		config = true,
+		enabled = false,
 	},
 })
 

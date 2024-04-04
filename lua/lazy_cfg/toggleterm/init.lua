@@ -9,7 +9,6 @@ local exists = User.exists
 local maps = User.maps
 
 local map = maps.map
-
 local tmap = map.t
 local nmap = map.n
 local imap = map.i
