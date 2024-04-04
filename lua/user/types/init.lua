@@ -99,6 +99,8 @@ local M = {}
 local submods = {
 	['user'] = {
 		'maps',
+		'highlight',
+		'autocmd',
 	},
 	'lspconfig',
 	'cmp',
