@@ -1,75 +1,10 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias VimOption
----|string
----|number
----|boolean
----|table
-
 ---@alias ModTbl
 ---|string[]
 ---|{ [string]: string }
 ---|table<string, boolean>
-
----@class OptionPairs
----@field hid? boolean
----@field hlg? string
----@field spell? boolean
----@field mouse? string
----@field bs? string
----@field formatoptions? string
----@field enc? string
----@field fenc? string
----@field ff? 'unix'|'dos'
----@field wrap? boolean
----@field completeopt? string
----@field errorbells? boolean
----@field visualbell? boolean
----@field belloff? string
----@field nu? boolean
----@field relativenumber? boolean
----@field signcolumn? 'yes'|'no'|'auto'|'number'
----@field ts? integer
----@field sts? integer
----@field sw? integer
----@field ai? boolean
----@field si? boolean
----@field sta? boolean
----@field ci? boolean
----@field pi? boolean
----@field et? boolean
----@field bg? string
----@field tgc? boolean
----@field splitbelow? boolean
----@field splitright? boolean
----@field ru? boolean
----@field stal? integer
----@field ls? integer
----@field title? boolean
----@field showcmd? boolean
----@field wildmenu? boolean
----@field showmode? boolean
----@field ar? boolean
----@field confirm? boolean
----@field smartcase? boolean
----@field ignorecase? boolean
----@field hlsearch? boolean
----@field incsearch? boolean
----@field showmatch? boolean
----@field shellslash? boolean
-
----@class OptionPairsOpt: OptionPairs
----@field completeopt? string[]
----@field termguicolors? boolean
-
----@class OptsTbl
----@field set? OptionPairs
----@field opt? OptionPairsOpt
-
-require('user.types.user.maps')
-require('user.types.user.highlight')
-require('user.types.user.autocmd')
 
 ---@class CheckerOpts
 
@@ -110,6 +45,7 @@ require('user.types.user.autocmd')
 ---@field maps any
 ---@field highlight any
 ---@field autocmd any
+---@field opts any
 
 ---@class UserTypes
 ---@field lspconfig? any
@@ -124,7 +60,7 @@ require('user.types.user.autocmd')
 ---@field user? UserSubTypes
 
 ---@type UserTypes
-local M
+local M = {}
 
 ---@param str
 ---|string
@@ -175,10 +111,11 @@ local function filter_src(str)
 end
 
 local submods = {
-	['user'] = {
+	user = {
 		'maps',
 		'highlight',
 		'autocmd',
+		'opts',
 	},
 	'lspconfig',
 	'cmp',

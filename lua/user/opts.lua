@@ -1,9 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local types = require('user.types')
---- TODO: Create type module.
--- require('user.types.user.opts')
+-- local types = require('user.types')
+require('user.types.user.opts')
 
 local set = vim.o
 local opt = vim.opt

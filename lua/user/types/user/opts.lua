@@ -1,0 +1,54 @@
+---@class OptionPairs
+---@field hid? boolean
+---@field hlg? string
+---@field spell? boolean
+---@field mouse? string
+---@field bs? string
+---@field formatoptions? string
+---@field enc? string
+---@field fenc? string
+---@field ff? 'unix'|'dos'
+---@field wrap? boolean
+---@field completeopt? string
+---@field errorbells? boolean
+---@field visualbell? boolean
+---@field belloff? string
+---@field nu? boolean
+---@field relativenumber? boolean
+---@field signcolumn? 'yes'|'no'|'auto'|'number'
+---@field ts? integer
+---@field sts? integer
+---@field sw? integer
+---@field ai? boolean
+---@field si? boolean
+---@field sta? boolean
+---@field ci? boolean
+---@field pi? boolean
+---@field et? boolean
+---@field bg? string
+---@field tgc? boolean
+---@field splitbelow? boolean
+---@field splitright? boolean
+---@field ru? boolean
+---@field stal? integer
+---@field ls? integer
+---@field title? boolean
+---@field showcmd? boolean
+---@field wildmenu? boolean
+---@field showmode? boolean
+---@field ar? boolean
+---@field confirm? boolean
+---@field smartcase? boolean
+---@field ignorecase? boolean
+---@field hlsearch? boolean
+---@field incsearch? boolean
+---@field showmatch? boolean
+---@field shellslash? boolean
+
+---@class OptionPairsOpt: OptionPairs
+---@field completeopt? string[]
+---@field termguicolors? boolean
+
+---@class OptsTbl
+---@field set? OptionPairs
+---@field opt? OptionPairsOpt
