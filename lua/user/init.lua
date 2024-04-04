@@ -1,12 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local types = require('user.types')
+require('user.types')
+
+local api = vim.api
 
 ---@type UserMod
 local M = {}
 
-M.opts = function()
+function M.opts()
 	return require('user.opts')
 end
 M.maps = require('user.maps')
@@ -16,9 +18,7 @@ M.highlight = require('user.highlight')
 function M.exists(mod)
 	---@type boolean
 	local res
-	if mod and type(mod) == 'string' then
-		res, _ = pcall(require, mod)
-	end
+	res, _ = pcall(require, mod)
 
 	return res
 end
@@ -46,7 +46,7 @@ function M.assoc()
 
 	for _, v in next, aus do
 		for _, o in next, v.opts_tbl do
-			vim.api.nvim_create_autocmd(v.events, o)
+			api.nvim_create_autocmd(v.events, o)
 		end
 	end
 end
