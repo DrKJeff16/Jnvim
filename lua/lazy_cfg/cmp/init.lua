@@ -13,6 +13,7 @@ local bo = vim.bo
 
 local get_mode = api.nvim_get_mode
 
+---@return boolean
 local has_words_before = function()
 	unpack = unpack or table.unpack
 	local buf_lines = api.nvim_buf_get_lines
@@ -21,49 +22,57 @@ local has_words_before = function()
 	return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local Luasnip = require('luasnip')
+local Luasnip = require('lazy_cfg.cmp.luasnip')
 local cmp = require('cmp')
-
-require('lazy_cfg.cmp.luasnip')
 local sks = require('lazy_cfg.cmp.kinds')
 
+---@param fallback fun()
+local n_select = function(fallback)
+	local jumpable = Luasnip.expand_or_locally_jumpable
+	---@type cmp.SelectOption
+	local opts = { behavior = cmp.SelectBehavior.Insert }
+
+	if cmp.visible() then
+		cmp.select_next_item(opts)
+	elseif jumpable() then
+		Luasnip.expand_or_jump()
+	elseif has_words_before() then
+		cmp.complete()
+		if cmp.visible() then
+			cmp.select_next_item(opts)
+		end
+	else
+		fallback()
+	end
+end
+
+---@param opts? cmp.ConfirmOption
+---@return fun(fallback: fun())
+local complete = function(opts)
+	if not opts or vim.tbl_isempty(opts) then
+		opts = { behavior = cmp.ConfirmBehavior.Insert, select = false }
+	end
+	return function(fallback)
+		if cmp.visible() and cmp.get_selected_entry() then
+			cmp.confirm(opts)
+		else
+			fallback()
+		end
+	end
+end
+
+---@class CmpMap
+---@field i? fun(fallback: fun())
+---@field s? fun(fallback: fun())
+---@field c? fun(fallback: fun())
+
+---@class TabMap: CmpMap
+---@class CrMap: CmpMap
+
+---@type TabMap
 local tab_map = {
-	---@param fallback fun()
-	i = function(fallback)
-		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
-
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		elseif jumpable() then
-			Luasnip.expand_or_jump()
-		elseif has_words_before() then
-			cmp.complete()
-			if cmp.visible() then
-				cmp.select_next_item(opts)
-			end
-		else
-			fallback()
-		end
-	end,
-	---@param fallback fun()
-	s = function(fallback)
-		local jumpable = Luasnip.expand_or_locally_jumpable
-		local opts = { behavior = cmp.SelectBehavior.Select }
-
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		elseif jumpable() then
-			Luasnip.expand_or_jump()
-		elseif has_words_before() then
-			cmp.complete()
-			if cmp.visible() then
-				cmp.select_next_item(opts)
-			end
-		else
-			fallback()
-		end
-	end,
+	i = n_select,
+	s = n_select,
 	---@param fallback fun()
 	c = function(fallback)
 		local opts = { behavior = cmp.SelectBehavior.Insert }
@@ -78,43 +87,17 @@ local tab_map = {
 	end,
 }
 
+---@type CrMap
 local cr_map = {
-	---@param fallback fun()
-	i = function(fallback)
-		local opts = { behavior = cmp.ConfirmBehavior.Replace, select = false }
-
-		if cmp.visible() and cmp.get_selected_entry() then
-			cmp.confirm(opts)
-		else
-			fallback()
-		end
-	end,
-	---@param fallback fun()
-	s = function(fallback)
-		local opts = { select = true }
-
-		if cmp.visible() and cmp.get_selected_entry() then
-			cmp.confirm(opts)
-		else
-			fallback()
-		end
-	end,
-	---@param fallback fun()
-	c = function(fallback)
-		local opts = { cmp.ConfirmBehavior.Replace, select = true }
-
-		if cmp.visible() and cmp.get_selected_entry() then
-			cmp.confirm(opts)
-		else
-			fallback()
-		end
-	end,
+	i = complete({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+	s = complete({ behavior = cmp.ConfirmBehavior.Insert, select = true }),
+	c = complete({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
 }
 
 ---@param fallback fun()
 local bs_map = function(fallback)
 	if cmp.visible() then
-		cmp.close()
+		cmp.abort()
 	end
 	fallback()
 end
@@ -122,25 +105,42 @@ end
 cmp.setup({
 	---@return boolean
 	enabled = function()
+		local opt_val = api.nvim_get_option_value
+
+		---@type string
+		local ft = opt_val('ft', { scope = 'local' })
+		local enable_comments = {
+			'lua',
+			'c',
+			'cpp',
+			'python',
+			'gitcommit',
+			'gitignore',
+		}
+
+		if vim.tbl_contains(enable_comments, ft) then
+			return true
+		end
+
 		local Context = require('cmp.config.context')
 
 		if get_mode().mode == 'c' then
 			return true
 		end
 
-		local grammar_check = (not Context.in_treesitter_capture('comment') and not Context.in_syntax_group)
-		return grammar_check
+		return not Context.in_treesitter_capture('comment') and not Context.in_syntax_group('Comment')
 	end,
 
 	snippet = {
+		---@param args cmp.SnippetExpansionParams
 		expand = function(args)
 			Luasnip.lsp_expand(args.body)
 		end,
 	},
 
 	view = sks.view,
-
 	formatting = sks.formatting,
+	window = sks.window,
 
 	matching = {
 		disallow_fuzzy_matching = true,
@@ -148,9 +148,8 @@ cmp.setup({
 		disallow_prefix_unmatching = false,
 		disallow_partial_matching = false,
 		disallow_partial_fuzzy_matching = true,
+		disallow_symbol_nonprefix_matching = false,
 	},
-
-	window = sks.window,
 
 	mapping = cmp.mapping.preset.insert({
 		['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -167,16 +166,6 @@ cmp.setup({
 		['<Up>'] = cmp.config.disable,
 	}),
 
-	sources = cmp.config.sources({
-		{ name = 'nvim_lsp' },
-		{ name = 'nvim_lsp_signature_help' },
-	}, {
-		{ name = 'luasnip' },
-		{ name = 'buffer' },
-	}),
-})
-
-cmp.setup.filetype({ 'bash', 'sh' }, {
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },

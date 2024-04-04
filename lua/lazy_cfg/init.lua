@@ -332,9 +332,7 @@ Lazy.setup({
 
 ---@type LazyMods
 local M = {
-	colorschemes = function()
-		return require('lazy_cfg.colorschemes')
-	end,
+	colorschemes = require('lazy_cfg.colorschemes'),
 }
 
 return M

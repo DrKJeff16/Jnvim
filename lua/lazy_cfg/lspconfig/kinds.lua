@@ -1,5 +1,7 @@
 require('user.types.lspconfig')
 
+local lsp = vim.lsp
+
 ---@type LspKindsMod
 local M = {
 	icons = {
@@ -28,7 +30,7 @@ local M = {
 }
 
 function M.setup()
-	local ptc = vim.lsp.protocol
+	local ptc = lsp.protocol
 
 	---@type table<string, string>
 	local kinds = ptc.CompletionItemKind

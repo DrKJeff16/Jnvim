@@ -8,14 +8,12 @@ if not exists('clangd_extensions') then
 	return
 end
 
-local pfx = 'lazy_cfg.lspconfig.'
-
 local fn = vim.fn
 
-local ClangdExts = require('clangd_extensions')
-local ClangdInlay = require('clangd_extensions.inlay_hints')
+local Exts = require('clangd_extensions')
+local Inlay = require('clangd_extensions.inlay_hints')
 
-ClangdExts.setup({
+Exts.setup({
 	inlay_hints = {
 		inline = fn.has("nvim-0.10") == 1,
 		-- Options other than `highlight' and `priority' only work
@@ -74,5 +72,5 @@ ClangdExts.setup({
 	symbol_info = { border = "none" },
 })
 
-ClangdInlay.setup_autocmd()
-ClangdInlay.set_inlay_hints()
+Inlay.setup_autocmd()
+Inlay.set_inlay_hints()

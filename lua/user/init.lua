@@ -2,42 +2,58 @@
 ---@diagnostic disable:unused-function
 
 require('user.types')
-require('user.types.user.maps')
-require('user.types.user.highlight')
-
--- Prefix to use in `require(...)` calls.
-local pfx = 'user.'
 
 ---@type UserMod
-local M = {
-	pfx = pfx,
-	opts = function()
-		return require('user.opts')
-	end,
-	maps = function()
-		return require('user.maps')
-	end,
-	highlight = function()
-		return require('user.highlight')
-	end,
-	exists = function(mod)
-		---@type boolean
-		local res
-		if mod and type(mod) == 'string' and mod ~= '' then
-			res, _ = pcall(require, mod)
+local M = {}
+
+function M.opts()
+	return require('user.opts')
+end
+
+function M.maps()
+	return require('user.maps')
+end
+
+function M.highlight()
+	return require('user.highlight')
+end
+
+function M.exists(mod)
+	---@type boolean
+	local res
+	if mod and type(mod) == 'string' then
+		res, _ = pcall(require, mod)
+	end
+
+	return res
+end
+
+---@param s string
+---@return fun()
+local ft = function(s)
+	return function() vim.cmd('setlocal ft='..s) end
+end
+
+--- DONE: Refactor using Lua API.
+--- TODO: Refactor using own API modules.
+function M.assoc()
+	---@type AuRepeatEvents[]
+	local aus = {
+		{
+			events = { 'BufNewFile', 'BufReadPre' },
+			opts_tbl = {
+				{ pattern = '*.org', callback = ft('org') },
+				{ pattern = '.spacemacs', callback = ft('lisp') },
+				{ pattern = '.clangd', callback = ft('yaml') },
+			},
+		},
+	}
+
+	for _, v in next, aus do
+		for _, o in next, v.opts_tbl do
+			vim.api.nvim_create_autocmd(v.events, o)
 		end
-
-		return res
-	end,
-
-	--- TODO: Refactor using Lua API.
-	assoc = function()
-		vim.cmd[[
-		au BufNewFile,BufReadPre *.org set ft=org
-		au BufNewFile,BufReadPre *.clangd set ft=yaml
-		au BufNewFile,BufReadPre .spacemacs set ft=lisp
-		]]
-	end,
-}
+	end
+end
 
 return M

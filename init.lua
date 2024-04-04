@@ -21,13 +21,9 @@ local exists = User.exists  -- Checks for missing modules
 local map = User.maps().map
 
 local nmap = map.n
-local imap = map.i
-local tmap = map.t
-local vmap = map.v
 
 -- Vim `:set ...` global options setter.
-_G.vimopts = User.opts
-vimopts()
+User.opts()
 
 -- Set `<Space>` as Leader Key.
 nmap('<Space>', '<Nop>')
@@ -95,17 +91,6 @@ local map_tbl = {
 		{ lhs = '<Leader>Lc', rhs = ':Lazy check<CR>' },
 		{ lhs = '<Leader>Li', rhs = ':Lazy install<CR>' },
 		{ lhs = '<Leader>Lr', rhs = ':Lazy reload<CR>' },
-
-		{ lhs = '<Leader>prc', rhs = ':lua Pkg.cmp()<cr>' },
-		{ lhs = '<Leader>prl', rhs = ':lua Pkg.lspconfig()<cr>' },
-		{ lhs = '<Leader>prL', rhs = ':lua Pkg.lualine()<cr>' },
-		{ lhs = '<Leader>prT', rhs = ':lua Pkg.treesitter()<cr>' },
-		{ lhs = '<Leader>prC', rhs = ':lua Pkg.Comment()<cr>' },
-		{ lhs = '<Leader>prt', rhs = ':lua Pkg.nvim_tree()<cr>' },
-		{ lhs = '<Leader>prg', rhs = ':lua Pkg.gitsigns()<cr>' },
-		{ lhs = '<Leader>prh', rhs = ':lua Pkg.colorizer()<cr>' },
-		{ lhs = '<Leader>prs', rhs = ':lua Pkg.toggleterm()<cr>' },
-		{ lhs = '<Leader>prk', rhs = ':lua Pkg.which_key()<cr>' },
 	},
 	v = {
 		{ lhs = '<Leader>is', rhs = ':sort<CR>' },
@@ -115,20 +100,8 @@ local map_tbl = {
 	},
 }
 
----@class MapFields
----@field n fun(lhs: string, rhs: string, opts?: ApiMapOpts)
----@field i fun(lhs: string, rhs: string, opts?: ApiMapOpts)
----@field v fun(lhs: string, rhs: string, opts?: ApiMapOpts)
----@field t fun(lhs: string, rhs: string, opts?: ApiMapOpts)
-local map_fields = {
-	n = nmap,
-	v = vmap,
-	t = tmap,
-	i = imap,
-}
-
 -- Set the keymaps previously stated.
-for k, func in next, map_fields do
+for k, func in next, map do
 	local tbl = map_tbl[k]
 
 	-- If `tbl` exists, apply the mapping.
@@ -140,23 +113,20 @@ for k, func in next, map_fields do
 end
 
 -- Make the package list globsl.
-_G.Pkg = require('lazy_cfg')
+local Pkg = require('lazy_cfg')
 
--- If colorschemes calker table exists.
-if Pkg.colorschemes then
-	-- Global color schemes table.
-	_G.Csc = Pkg.colorschemes()
+-- Global color schemes table.
+local Csc = Pkg.colorschemes
 
-	-- Reorder to your liking.
-	if Csc.nightfox then
-		Csc.nightfox.setup()
-	elseif Csc.catppuccin then
-		Csc.catppuccin.setup()
-	elseif Csc.tokyonight then
-		Csc.tokyonight.setup()
-	elseif Csc.spaceduck then
-		Csc.spaceduck.setup()
-	end
+-- Reorder to your liking.
+if Csc.nightfox then
+	Csc.nightfox.setup()
+elseif Csc.catppuccin then
+	Csc.catppuccin.setup()
+elseif Csc.tokyonight then
+	Csc.tokyonight.setup()
+elseif Csc.spaceduck then
+	Csc.spaceduck.setup()
 end
 
 -- Call the user file associations.

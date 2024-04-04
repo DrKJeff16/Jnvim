@@ -13,8 +13,6 @@ local set = vim.o
 set.timeout = true
 set.timeoutlen = 300
 
-local pfx = 'lazy_cfg.which_key.'
-
 local WK = require('which-key')
 local presets = require('which-key.plugins.presets')
 
@@ -60,9 +58,9 @@ WK.setup({
 		scroll_up = "<c-u>", -- binding to scroll up inside the popup
 	},
 	window = {
-		border = "double", -- none, single, double, shadow
+		border = "shadow", -- none, single, double, shadow
 		position = "top", -- bottom, top
-		margin = { 2, 4, 2, 4 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
+		margin = { 4, 4, 4, 4 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
 		padding = { 1, 2, 1, 2 }, -- extra window padding [top, right, bottom, left]
 		winblend = 15, -- value between 0-100 0 for fully opaque and 100 for fully transparent
 		zindex = 1000, -- positive value to position WhichKey above other floating windows.
@@ -70,7 +68,7 @@ WK.setup({
 	layout = {
 		height = { min = 4, max = 20 }, -- min and max height of the columns
 		width = { min = 25, max = 60 }, -- min and max width of the columns
-		spacing = 2, -- spacing between columns
+		spacing = 1, -- spacing between columns
 		align = "center", -- align columns left, center or right
 	},
 	ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
@@ -89,6 +87,7 @@ WK.setup({
 		-- registers
 		'"',
 		"<c-r>",
+		'<leader>',
 		-- -- spelling
 		-- "z=",
 	},
@@ -96,8 +95,8 @@ WK.setup({
 		-- list of mode / prefixes that should never be hooked by WhichKey
 		-- this is mostly relevant for keymaps that start with a native binding
 		i = { "j", "k" },
-		v = { "j", "k", "v" },
-		n = { "j", "k", "v" },
+		v = { "j", "k", "v", 'y', 'c', 'd' },
+		n = { "j", "k", "v", 'y', 'c', 'd' },
 	},
 	-- disable the WhichKey popup for certain buf types and file types.
 	-- Disabled by default for Telescope

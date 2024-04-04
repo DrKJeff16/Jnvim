@@ -10,12 +10,12 @@ local exists = User.exists
 local fn = vim.fn
 
 ---@type CscSubMod
-local M = {}
+local M = {
+	mod_pfx = pfx..'nightfox',
+	mod_cmd = 'colorscheme carbonfox',
+}
 
 if exists('nightfox') then
-	M.mod_pfx = pfx..'nightfox'
-	M.mod_cmd = 'carbonfox'
-
 	function M.setup()
 		local Nf = require('nightfox')
 
@@ -63,7 +63,7 @@ if exists('nightfox') then
 			groups = {},
 		})
 
-		vim.cmd('colorscheme '..M.mod_cmd)
+		vim.cmd(M.mod_cmd)
 	end
 end
 

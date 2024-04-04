@@ -1,29 +1,35 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 require('user.types.user.highlight')
 
 local User = require('user')
 local exists = User.exists
+local hl = User.highlight()
 
 if not exists('treesitter-context') then
 	return
 end
 
-local api = vim.api
-
-local hi = api.nvim_set_hl
+local hi = hl.hl
 
 local Context = require('treesitter-context')
+local Config = require('treesitter-context.config')
 
-Context.setup({})
+---@type TSContext.UserConfig
+local Options = {
+	mode = 'cursor',
+	trim_scope = 'outer',
+	line_numbers = true,
+	min_window_height = 3,
+	zindex = 30,
+	enable = true,
+	max_lines = 4,
+}
 
----@class TSHlArr
----@field name string
----@field opts HlOpts
+Context.setup(Options)
 
----@type TSHlArr[]
+---@type HlPair[]
 local hls = {
 	{
 		name = 'TreesitterContextBottom',
@@ -35,11 +41,6 @@ local hls = {
 	},
 }
 
----@param hi_tbl TSHlArr[]
-local hl = function(hi_tbl)
-	for _, t in next, hi_tbl do
-		hi(0, t.name, t.opts)
-	end
+for _, v in next, hls do
+	hi(v.name, v.opts)
 end
-
-hl(hls)

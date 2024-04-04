@@ -15,7 +15,7 @@
 ---@field o fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 ---@field x fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 
----@class UserKeyMaps
+---@class UserKeyMaps: UserApiMaps
 ---@field n fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 ---@field v fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 ---@field t fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
@@ -24,6 +24,12 @@
 ---@field x? fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
 
 ---@class UserBufMaps: UserApiMaps
+---@field n fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field v fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field t fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field i fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field o fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field x fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps

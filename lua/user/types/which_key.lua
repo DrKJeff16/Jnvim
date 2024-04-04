@@ -13,17 +13,23 @@
 ---| 'v'
 ---| 'i'
 ---| 't'
+---| 'o'
+---| 'x'
 
 ---@class RegPfx
 ---@field name? string
+---@field noremap? boolean
+---@field nowait? boolean
+---@field silent? boolean
 
 ---@alias RegKeysTbl table<string, RegPfx|RegKey>
 
 ---@class RegOpts
 ---@field mode? ModeEnum
----@field prefix string
----@field buffer? nil|integer
+---@field prefix? string
+---@field buffer? integer
 ---@field silent? boolean
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field expr? boolean
+---@field desc? boolean

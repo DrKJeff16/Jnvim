@@ -5,7 +5,6 @@ local User = require('user')
 local exists = User.exists
 
 require('user.types.colorschemes')
-local pfx = 'lazy_cfg.colorschemes.'
 
 ---@type CscMod
 local M = {}
@@ -13,7 +12,7 @@ local M = {}
 ---@param subs string[]
 local src = function(subs)
 	for _, v in next, subs do
-		local path = pfx..v
+		local path = 'lazy_cfg.colorschemes.'..v
 		if exists(path) then
 			M[v] = require(path)
 		end
@@ -26,7 +25,7 @@ local submods = {
 	'nightfox',
 	'spaceduck',
 	'dracula',
-	'gloombuddy'
+	'gloombuddy',
 }
 
 src(submods)

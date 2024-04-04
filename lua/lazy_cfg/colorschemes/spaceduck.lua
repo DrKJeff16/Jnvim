@@ -3,19 +3,18 @@
 
 require('user.types.colorschemes')
 
-local g = vim.g
-
-if not g.installed_spaceduck then
-	return
-end
+local let = vim.g
 
 ---@type CscSubMod
 local M = {
 	mod_cmd = 'colorscheme spaceduck',
 	mod_pfx = 'spaceduck',
-	setup = function()
-		vim.cmd('colorscheme spaceduck')
-	end
 }
+
+if let.installed_spaceduck == 1 then
+	function M.setup()
+		vim.cmd(M.mod_cmd)
+	end
+end
 
 return M

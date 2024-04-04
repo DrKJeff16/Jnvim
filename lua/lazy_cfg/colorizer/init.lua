@@ -40,7 +40,7 @@ html.css_fn = true
 html.hsl_fn = true
 
 local css = html
-html.mode = 'background'
+css.mode = 'background'
 
 Colorizer.setup({
 	['*'] = DEFAULT,

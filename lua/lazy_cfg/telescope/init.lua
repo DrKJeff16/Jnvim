@@ -1,8 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 require('user.types.user.maps')
+require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
@@ -87,11 +87,7 @@ for mode, m in next, maps do
 	end
 end
 
----@class AuPair
----@field event string|string?
----@field opts AuOpts
-
----@class TelArgs
+---@class TelescopeArgs
 ---@field title? string
 ---@field filetype? string
 ---@field bufname? string

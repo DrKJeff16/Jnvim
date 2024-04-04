@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.maps')
+require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
@@ -46,14 +47,10 @@ Tt.setup({
 	},
 })
 
----@class AuArr
----@field [1] string|string[]
----@field opts vim.api.keyset.create_autocmd
-
----@type AuArr[]
+---@type AuPair[]
 local aus = {
 	{
-		'TermEnter',
+		event = 'TermEnter',
 		opts = {
 			pattern = { 'term://*toggleterm#*' },
 			callback = function()
@@ -64,7 +61,7 @@ local aus = {
 }
 
 for _, v in next, aus do
-	au(v[1], v.opts)
+	au(v.event, v.opts)
 end
 
 ---@class ApiMapArgs
@@ -102,8 +99,6 @@ local map_tbl = {
 
 for k, v in next, map_tbl do
 	for _, args in next, v do
-		if args.lhs and args.rhs then
-			map[k](args.lhs, args.rhs, args.opts or {})
-		end
+		map[k](args.lhs, args.rhs, args.opts or {})
 	end
 end

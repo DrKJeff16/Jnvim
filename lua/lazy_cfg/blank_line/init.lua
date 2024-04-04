@@ -1,6 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.user.highlight')
+
 local User = require('user')
 local exists = User.exists
 
@@ -9,44 +11,50 @@ if not exists('ibl') then
 end
 
 local api = vim.api
+local let = vim.g
 
-local hi = api.nvim_set_hl
+local hi = User.highlight().hl
 
-local Mod = 'lazy_cfg.blank_line.'
-
-Ibl = require('ibl')
+local Ibl = require('ibl')
 local hooks = require('ibl.hooks')
 
+---@type HlDict
 local highlight = {
-	"RainbowRed",
-	"RainbowYellow",
-	"RainbowBlue",
-	"RainbowOrange",
-	"RainbowGreen",
-	"RainbowViolet",
-	"RainbowCyan",
+	['RainbowRed'] = { fg = '#E06C75' },
+	['RainbowYellow'] = { fg = '#E5C07B' },
+	['RainbowBlue'] = { fg = '#61AFEF' },
+	['RainbowOrange'] = { fg = '#D19A66' },
+	['RainbowGreen'] = { fg = '#98C379' },
+	['RainbowViolet'] = { fg = '#C678DD' },
+	['RainbowCyan'] = { fg = '#56B6C2' },
 }
+---@type string[]
+local names = {}
+---@type HlOpts[]
+local options = {}
+
+for k, v in next, highlight do
+	table.insert(names, k)
+	table.insert(options, v)
+end
 local bg_hl = {
 	'CursorColumn',
 	'Whitespace'
 }
 
 hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-	hi(0, "RainbowRed", { fg = "#E06C75" })
-	hi(0, "RainbowYellow", { fg = "#E5C07B" })
-	hi(0, "RainbowBlue", { fg = "#61AFEF" })
-	hi(0, "RainbowOrange", { fg = "#D19A66" })
-	hi(0, "RainbowGreen", { fg = "#98C379" })
-	hi(0, "RainbowViolet", { fg = "#C678DD" })
-	hi(0, "RainbowCyan", { fg = "#56B6C2" })
+	for k, v in next, highlight do
+		hi(k, v)
+	end
 end)
 
 if exists('rainbow-delimiters.setup') then
-	local full_path = Mod..'rainbow_delims'
-	if exists(full_path) then
-		require(full_path).setup(highlight)
+	local path = 'lazy_cfg.blank_line.rainbow_delims'
+
+	if exists('lazy_cfg.blank_line.rainbow_delims') then
+		require('lazy_cfg.blank_line.rainbow_delims').setup(names, options)
 	else
-		vim.g.rainbow_delimiters = { highlight = highlight }
+		let.rainbow_delimiters = { highlight = names }
 	end
 end
 

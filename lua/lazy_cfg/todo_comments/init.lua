@@ -12,8 +12,6 @@ if not exists('todo-comments') then
 	return
 end
 
-local pfx = 'lazy_cfg.todo_comments.'
-
 local Todo = require('todo-comments')
 
 Todo.setup({

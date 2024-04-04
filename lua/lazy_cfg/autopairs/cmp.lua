@@ -10,9 +10,11 @@ end
 
 local insp = vim.inspect
 
-local Cmp = require('cmp')
+local cmp = require('cmp')
 local cmp_ap = require('nvim-autopairs.completion.cmp')
 local handlers = require('nvim-autopairs.completion.handlers')
+
+local cmp_lsp = cmp.lsp
 
 local ft_handles = {
 	filetypes = {
@@ -20,32 +22,27 @@ local ft_handles = {
 		["*"] = {
 			["("] = {
 				kind = {
-					Cmp.lsp.CompletionItemKind.Function,
-					Cmp.lsp.CompletionItemKind.Method,
+					cmp_lsp.CompletionItemKind.Function,
+					cmp_lsp.CompletionItemKind.Method,
 				},
-				handler = handlers["*"]
-			}
-		},
-		lua = {
-			["("] = {
-				kind = {
-					Cmp.lsp.CompletionItemKind.Function,
-					Cmp.lsp.CompletionItemKind.Method
-				},
+				handler = handlers["*"],
 			},
 		},
+		lua = false,
 		tex = false,
 		markdown = false,
 	}
 }
 
+---@class APCmp
+---@field on fun()
 local M = {
 	on = function()
-		Cmp.event:on(
+		cmp.event:on(
 		'confirm_done',
 		cmp_ap.on_confirm_done(ft_handles)
 		)
-	end
+	end,
 }
 
 return M

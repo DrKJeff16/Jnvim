@@ -1,44 +1,24 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.user.highlight')
+
 local User = require('user')
 local exists = User.exists
+local hi = User.highlight().hl
 
-local api = vim.api
-
-local hi = api.nvim_set_hl
-
-local Mod = 'lazy_cfg.blank_line.rainbow_delims'
 local Bl = require('rainbow-delimiters')
-
-Ibl = require('ibl')
+local Ibl = require('ibl')
 local hooks = require('ibl.hooks')
 
 ---@class BlCfgMod
----@field default table<string[]>
-local M = {
-	default = {
-		hlts = {
-			"RainbowRed",
-			"RainbowYellow",
-			"RainbowBlue",
-			"RainbowOrange",
-			"RainbowGreen",
-			"RainbowViolet",
-			"RainbowCyan",
-		},
-	},
+---@field setup? fun(hilites: string[]?, opts: table?): any
+local M = {}
 
-	---@param hilites? string[]
-	---@param opts? table
-	setup = function(hilites, opts)
-		hilites = hilites or self.default.hlts
-		if not opts or not type(opts) == 'table' or #opts == 0 then
-			opts = require('rainbow-delimiters.types')
-		end
+function M.setup(hilites, opts)
+	opts = opts or require('rainbow-delimiters.types')
 
-		return Bl.setup()
-	end,
-}
+	return Bl.setup()
+end
 
 return M
