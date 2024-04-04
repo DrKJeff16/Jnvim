@@ -25,13 +25,16 @@ local augroup = api.nvim_create_augroup
 local Tt = require('toggleterm')
 
 Tt.setup({
+	---@param term Terminal
+	---@return number res
 	size = function(term)
 		local FACTOR = 0.4
-		if term.direction == 'horizontal' then
-			return 15
-		elseif term.direction == 'vertical' then
-			return vim.o.columns * FACTOR
+		local res = 15
+		if term.direction == 'vertical' then
+			res = vim.o.columns * FACTOR
 		end
+
+		return res
 	end,
 
 	autochdir = true,
@@ -43,6 +46,40 @@ Tt.setup({
 		border = 'double',
 		title_pos = 'center',
 		width = vim.o.columns * 0.4,
+	},
+
+	highlights = {
+		Normal = { guibg = '#291d3f' },
+		NormalFloat = { link = 'Normal' },
+		FloatBorder = {
+			guifg = '#c5c7a1',
+			guibg = '#21443d',
+		},
+	},
+	shade_terminals = true,
+
+	start_in_insert = true,
+	insert_mappings = true,
+	shell = vim.o.shell,
+	auto_scroll = true,
+
+	persist_size = true,
+	persist_mode = true,
+
+	float_opts = {
+		border = 'double',
+		title_pos = 'center',
+		zindex = 100,
+		winblend = 3,
+	},
+
+	winbar = {
+		enabled = true,
+		---@param term Terminal
+		---@return string
+		name_formatter = function(term)
+			return term.name
+		end,
 	},
 })
 
