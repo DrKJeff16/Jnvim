@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
+local types = require('user.types')
 
 ---@type UserMod
 local M = {}

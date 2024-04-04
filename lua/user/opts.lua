@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
+local types = require('user.types')
 --- TODO: Create type module.
 -- require('user.types.user.opts')
 
@@ -69,7 +69,7 @@ local opt_tbl = {
 		title = true,
 		showcmd = true,
 		wildmenu = true,
-		showmode = set.ls == 2,
+		showmode = false,
 
 		ar = true,  -- `autoread`
 		confirm = true,
@@ -88,15 +88,27 @@ local opt_tbl = {
 }
 
 ---@param opts OptionPairs|OptionPairsOpt
----@param vim_tbl? table
-local optset = function(opts, vim_tbl)
-	vim_tbl = vim_tbl or vim.o
+---@param target?
+---|'o'
+---|'set'
+---|'opt'
+local optset = function(opts, target)
+	if not target or not vim.tbl_contains({ 'o', 'set', 'opt' }, target) then
+		target = 'o'
+	end
+
 	for k, v in next, opts do
-		if vim_tbl[k] then
-			vim_tbl[k] = v
+		local vim_tbl = {}
+
+		if vim.tbl_contains({'o', 'set'}, target) then
+			vim_tbl = vim.o
+		elseif vim.tbl_contains({'opt'}, target) then
+			vim_tbl = vim.opt
 		end
+
+		vim_tbl[k] = v
 	end
 end
 
-optset(opt_tbl.set, set)
-optset(opt_tbl.opt, opt)
+optset(opt_tbl.set, 'set')
+optset(opt_tbl.opt, 'opt')
