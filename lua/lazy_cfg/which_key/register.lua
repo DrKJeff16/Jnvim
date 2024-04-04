@@ -6,21 +6,31 @@ require('user.types.which_key')
 local User = require('user')
 local exists = User.exists
 
-if not exists('which-key') then
-	return
-end
-
-local pfx = 'lazy_cfg.which_key.'
-
 local WK = require('which-key')
 local presets = require('which-key.plugins.presets')
+
+local register = WK.register
 
 ---@param maps RegKeysTbl
 ---@param opts? RegOpts
 local reg = function(maps, opts)
-	opts = opts or { noremap = true, nowait = true }
-	local register = WK.register
+	local valid_modes = { 'n', 'i', 'v', 't', 'x', 'o' }
 
+	opts = opts or {}
+	if not opts.noremap then
+		opts.noremap = true
+	end
+	if not opts.nowait then
+		opts.nowait = true
+	end
+	if not opts.silent then
+		opts.silent = true
+	end
+	if not opts.mode or type(opts.mode) ~= 'string' or string.len(opts.mode) ~= 1 then
+		opts.mode = 'n'
+	elseif not vim.tbl_contains(valid_modes, opts.mode) then
+		opts.mode = 'n'
+	end
 	---@type RegKeysTbl
 	local filtered = {}
 
@@ -37,6 +47,8 @@ local reg = function(maps, opts)
 			if not tbl.silent then
 				tbl.silent = true
 			end
+		else
+			opts.nowait = false
 		end
 
 		filtered[s] = tbl

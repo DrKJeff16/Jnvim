@@ -3,6 +3,7 @@
 
 require('user.types')
 require('user.types.user.highlight')
+require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
@@ -13,8 +14,6 @@ if not exists('lspconfig') or not exists('neodev') then
 end
 
 require('user.types.lspconfig')
-
-local pfx = 'lazy_cfg.lspconfig.'
 
 local api = vim.api
 local bo = vim.bo
@@ -31,45 +30,14 @@ local hi = api.nvim_set_hl
 
 local nmap = kmap.n
 
----@class LspSubMods
----@field clangd? fun(): any
----@field kinds? fun(): LspKindsMod
-
----@return LspSubMods subs
-local function src()
-	local prefix = 'lazy_cfg.lspconfig.'
-
-	---@type LspSubMods
-	local subs = {}
-
-	-- Iterate for each submodule and
-	-- create a caller function in its
-	-- respective table field.
-	for _, v in next, { 'clangd', 'kinds' } do
-		local path = prefix..v
-
-		-- If submodule exists.
-		if exists(path) then
-			---@return any
-			subs[v] = function()
-				return require(path)
-			end
-		end
-	end
-
-	return subs
-end
-
-local submods = src()
-if submods.clangd then
-	submods.clangd()
-end
-if submods.kinds then
-	submods.kinds().setup()
-end
----@class LspAu
----@field event string|string[]
----@field opts AuOpts
+local submods = {
+	clangd = function()
+		return require('lazy_cfg.lspconfig.clangd')
+	end,
+	kinds = require('lazy_cfg.lspconfig.kinds')
+}
+submods.clangd()
+submods.kinds.setup()
 
 local border = {
 	{"🭽", "FloatBorder"},
@@ -103,14 +71,10 @@ Neodev.setup({
 	pathStrict = true,
 })
 
---- TODO: Redo the annotation below.
-
----@alias SrvTbl { [string]: table }
-
----@param srv_tbl SrvTbl
----@return SrvTbl res
+---@param srv_tbl LspServers
+---@return LspServers res
 local add_caps = function(srv_tbl)
-	---@type SrvTbl
+	---@type LspServers
 	local res = {}
 
 	for k, v in next, srv_tbl do
@@ -160,7 +124,7 @@ end
 
 local lspconfig = require('lspconfig')
 
----@type SrvTbl
+---@type LspServers
 local srv = {
 	['lua_ls'] = {
 		settings = {
@@ -371,7 +335,7 @@ diag.config({
 	severity_sort = false,
 })
 
----@type LspAu[]
+---@type AuPair[]
 local aus = {
 	{
 		event = 'ColorScheme',

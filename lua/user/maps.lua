@@ -167,7 +167,7 @@ local M = {
 		end,
 	},
 	buf_map = {
-		n = function(lhs, rhs, opts)
+		n = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -180,9 +180,9 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 'n', lhs, rhs, opts)
+			bmap(b, 'n', lhs, rhs, opts)
 		end,
-		i = function(lhs, rhs, opts)
+		i = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -195,9 +195,9 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 'i', lhs, rhs, opts)
+			bmap(b, 'i', lhs, rhs, opts)
 		end,
-		t = function(lhs, rhs, opts)
+		t = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -210,9 +210,9 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 't', lhs, rhs, opts)
+			bmap(b, 't', lhs, rhs, opts)
 		end,
-		v = function(lhs, rhs, opts)
+		v = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -225,9 +225,9 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 'v', lhs, rhs, opts)
+			bmap(b, 'v', lhs, rhs, opts)
 		end,
-		o = function(lhs, rhs, opts)
+		o = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -240,9 +240,9 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 'o', lhs, rhs, opts)
+			bmap(b, 'o', lhs, rhs, opts)
 		end,
-		x = function(lhs, rhs, opts)
+		x = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
 			if not opts.noremap then
@@ -255,7 +255,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(0, 'x', lhs, rhs, opts)
+			bmap(b, 'x', lhs, rhs, opts)
 		end,
 	},
 }

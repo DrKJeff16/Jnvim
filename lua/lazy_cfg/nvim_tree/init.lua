@@ -1,13 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 require('user.types.user.maps')
 require('user.types.user.highlight')
+require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
 local kmap = User.maps().kmap
+local hl = User.highlight()
 
 local nmap = kmap.n
 
@@ -15,7 +16,7 @@ if not exists('nvim-tree') then
 	return
 end
 
-local pfx = 'lazy_cfg.tree.'
+local hi = hl.hl
 
 local api = vim.api
 local fn = vim.fn
@@ -31,15 +32,9 @@ local empty = vim.tbl_isempty
 local filter_tbl = vim.tbl_filter
 local tbl_map = vim.tbl_map
 
-set.termguicolors = true
-opt.termguicolors = true
-
-let.loaded_netrw = 1
-let.loaded_netrwPlugin = 1
-
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
-local hi = api.nvim_set_hl
+-- local hi = api.nvim_set_hl
 local get_tabpage = api.nvim_win_get_tabpage
 local get_bufn = api.nvim_win_get_buf
 local win_list = api.nvim_tabpage_list_wins
@@ -167,8 +162,6 @@ local tree_open = function(data)
 	if not in_tbl(noignore, ft) then
 		return
 	end
-
-
 
 	---@class TreeToggleOpts
 	---@field focus? boolean Defaults to `true`
@@ -305,17 +298,7 @@ Tree.setup({
 	filters = { dotfiles = false },
 })
 
----@alias AuOpts vim.api.keyset.create_autocmd
-
----@class HlGroups
----@field name string 
----@field opts HlOpts
-
----@class AuCmds
----@field event string|string[]
----@field opts AuOpts
-
----@type HlGroups[]
+---@type HlPair[]
 local hl_groups = {
 	{ name = 'NvimTreeExecFile', opts = { fg = '#ffa0a0' } },
 	{ name = 'NvimTreeSpecialFile', opts = { fg = '#ff80ff', underline = true } },
@@ -323,7 +306,7 @@ local hl_groups = {
 	{ name = 'NvimTreeImageFile', opts = { link = 'Title' } },
 }
 
----@type AuCmds[]
+---@type AuPair[]
 local au_cmds = {
 	{ event = 'VimEnter', opts = { callback = tree_open } },
 	{
@@ -350,5 +333,5 @@ for _, v in next, au_cmds do
 end
 
 for _, v in next, hl_groups do
-	hi(0, v.name, v.opts)
+	hi(v.name, v.opts)
 end

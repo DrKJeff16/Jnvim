@@ -24,3 +24,9 @@
 ---@class LspKindsMod
 ---@field icons LspKindsIconsMod
 ---@field setup fun()
+
+---@class LspSubMods
+---@field clangd? fun(): any
+---@field kinds? LspKindsMod
+
+---@alias LspServers { [string]: table }

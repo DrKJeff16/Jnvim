@@ -4,4 +4,4 @@
 require('user.types.colorschemes')
 
 ---@class LazyMods
----@field colorschemes fun(): CscMod
+---@field colorschemes CscMod

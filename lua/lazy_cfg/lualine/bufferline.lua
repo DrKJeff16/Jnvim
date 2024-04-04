@@ -8,8 +8,6 @@ if not exists('bufferline') then
 	return
 end
 
-local pfx = 'lazy_cfg.lualine.'
-
 local BLine = require('bufferline')
 
 ---@param count integer
@@ -37,7 +35,7 @@ BLine.setup({
 
 		indicator = {
 			icon = '▎',
-			style = 'underline',
+			style = 'icon',
 		},
         buffer_close_icon = '󰅖',
         modified_icon = '●',
@@ -60,9 +58,9 @@ BLine.setup({
 		show_tab_indicators = true,
 
 		show_duplicate_prefix = true,
-		duplicates_across_groups = true,
+		duplicates_across_groups = false,
 
-		persist_buffer_sort = true,
+		persist_buffer_sort = false,
 
 		-- TODO: Configurate further.
 	},

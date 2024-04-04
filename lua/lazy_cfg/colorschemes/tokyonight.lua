@@ -8,15 +8,12 @@ require('user.types.colorschemes')
 local User = require('user')
 local exists = User.exists
 
----@type CscSubMod|nil
-local M = nil
+local M = {
+	mod_pfx = pfx..'tokyonight',
+	mod_cmd = 'colorscheme tokyonight',
+}
 
 if exists('tokyonight') then
-	M = {
-		mod_pfx = pfx..'tokyonight',
-		mod_cmd = 'tokyonight-night',
-	}
-
 	function M.setup()
 		local Tokyonight = require('tokyonight')
 
@@ -35,7 +32,7 @@ if exists('tokyonight') then
 			},
 		})
 
-		vim.cmd('colorscheme '..M.mod_cmd)
+		vim.cmd(M.mod_cmd)
 	end
 end
 

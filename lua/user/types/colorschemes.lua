@@ -1,9 +1,7 @@
----@alias CmdVal string|string[]
-
 ---@class CscSubMod
 ---@field setup? fun(...)
----@field mod_pfx? string
----@field mod_cmd CmdVal
+---@field mod_pfx string
+---@field mod_cmd string|string[]
 
 ---@class CscMod
 ---@field tokyonight? CscSubMod
@@ -11,4 +9,4 @@
 ---@field nightfox? CscSubMod
 ---@field spaceduck? CscSubMod
 ---@field dracula? CscSubMod
----@field gloombuddy CscSubMod
+---@field gloombuddy? CscSubMod

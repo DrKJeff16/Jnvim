@@ -1,17 +1,23 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-if not vim then
-	return
-end
-
-local pfx = 'user.'
-
 require('user.types')
+--- TODO: Create type module.
+-- require('user.types.user.opts')
 
 local set = vim.o
 local opt = vim.opt
 local bo = vim.bo
+local let = vim.g
+local fn = vim.fn
+local api = vim.api
+
+local has = fn.has
+local exists = fn.exists
+
+let.is_windows = has('win32')
+
+_G.is_windows = let.is_windows == 1
 
 ---@type OptsTbl
 local opt_tbl = {
@@ -52,7 +58,7 @@ local opt_tbl = {
 		et = false,  -- `expandtab`
 
 		bg = 'dark',  -- `background`
-		tgc = true,  -- `termguicolors`
+		tgc = exists('+termguicolors') == 1,  -- `termguicolors`
 
 		splitbelow = true,
 		splitright = true,
@@ -63,7 +69,7 @@ local opt_tbl = {
 		title = true,
 		showcmd = true,
 		wildmenu = true,
-		showmode = false,
+		showmode = set.ls == 2,
 
 		ar = true,  -- `autoread`
 		confirm = true,
@@ -71,18 +77,24 @@ local opt_tbl = {
 		smartcase = true,
 		ignorecase = false,
 
+		fileignorecase = is_windows,
+
 		hlsearch = true,
 		incsearch = true,
 		showmatch = true,
+
+		-- shellslash = is_windows,
 	},
 }
 
----@param opts OptPairTbl
+---@param opts OptionPairs|OptionPairsOpt
 ---@param vim_tbl? table
 local optset = function(opts, vim_tbl)
 	vim_tbl = vim_tbl or vim.o
 	for k, v in next, opts do
-		vim_tbl[k] = v
+		if vim_tbl[k] then
+			vim_tbl[k] = v
+		end
 	end
 end
 

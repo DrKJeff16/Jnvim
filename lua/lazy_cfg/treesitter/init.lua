@@ -8,8 +8,6 @@ if not exists('nvim-treesitter') then
 	return
 end
 
-local pfx = 'lazy_cfg.treesitter.'
-
 local Ts = require('nvim-treesitter')
 local Cfg = require('nvim-treesitter.configs')
 local Install = require('nvim-treesitter.install')
@@ -94,6 +92,7 @@ end
 local TSConfig = {
 	auto_install = true,
 	sync_install = false,
+	ignore_install = {},
 	ensure_installed = ensure,
 
 	highlight = {
@@ -117,6 +116,7 @@ local TSConfig = {
 
 	indent = { enable = false },
 	incremental_selection = { enable = false },
+	modules = {},
 }
 
 if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
@@ -129,9 +129,9 @@ local modules = {
 }
 
 for _, s in next, modules do
-	local mod = pfx..s
-	if exists(mod) then
-		require(mod)
+	local path = 'lazy_cfg.treesitter.'..s
+	if exists(path) then
+		require(path)
 	end
 end
 
@@ -139,6 +139,6 @@ Cfg.setup(TSConfig)
 
 if exists('ts_context_commentstring') then
 	require('ts_context_commentstring').setup({
-		enable_autocmd = false,
+		enable_autocmd = true,
 	})
 end

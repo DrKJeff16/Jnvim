@@ -1,11 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+local api = vim.api
+
 local Ap = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
 local Conds = require('nvim-autopairs.conds')
 local Handlers = require('nvim-autopairs.completion.handlers')
 
+---@type string[][]
 local bpairs = {
 	{ '(', ')' },
 	{ '[', ']' },
@@ -19,14 +22,14 @@ local rule2 = function(a1, ins, a2, lang)
 	:with_move(Conds.none())
 	:sith_cr(Conds.none())
 	:wkth_del(function(opts)
-		local col = vim.api.nvim_win_get_cursor(0)[2]
+		local col = api.nvim_win_get_cursor(0)[2]
 		return a1..ins..ins..a2 == opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2) -- insert only works for #ins == 1 anyway
 	end)
 	)
 end
 
 Ap.clear_rules()
-for _, bracket in pairs(bpairs) do
+for _, bracket in next, bpairs do
 	Ap.add_rules {
 		Rule(bracket[1], bracket[2])
 		:end_wise(function() return true end)
@@ -46,7 +49,7 @@ Ap.add_rules({
 	:with_move(Conds.none())
 	:with_cr(Conds.none())
 	:with_del(function(opts)
-		local col = vim.api.nvim_win_get_cursor(0)[2]
+		local col = api.nvim_win_get_cursor(0)[2]
 		local context = opts.line:sub(col - 1, col + 2)
 		return vim.tbl_contains({
 			bpairs[1][1] .. '  ' .. bpairs[1][2],
@@ -55,7 +58,7 @@ Ap.add_rules({
 		}, context)
 	end)
 })
-for _, bracket in pairs(bpairs) do
+for _, bracket in next, bpairs do
 	Ap.add_rules {
 		-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
 		Rule(bracket[1] .. ' ', ' ' .. bracket[2])

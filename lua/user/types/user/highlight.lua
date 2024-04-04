@@ -2,6 +2,12 @@
 ---@diagnostic disable:unused-function
 
 ---@alias HlOpts vim.api.keyset.highlight
+
+---@class HlPair
+---@field name string
+---@field opts HlOpts
+
+---@alias HlDict table<string, HlOpts>
 ---@alias HlRepeat table<string, HlOpts[]>
 
 ---@class HlHex
@@ -28,10 +34,10 @@
 ---@field normal? HlHex
 ---@field dark? HlHexDark
 
----@alias HlDict table<string, HlOpts>
-
 ---@class UserHl
 ---@field hl fun(name: string, opts: HlOpts)
+---@field hl_from_arr fun(arr: HlPair[])
+---@field hl_from_dict fun(dict: HlDict)
 ---@field hl_repeat fun(t: HlRepeat)
 ---@field colors_hex? HlColorsHex
 ---@field current_palette? fun()

@@ -15,3 +15,5 @@ local Luasnip = require('luasnip')
 if exists("luasnip.loaders.from_vscode") then
 	require('luasnip.loaders.from_vscode').lazy_load()
 end
+
+return Luasnip

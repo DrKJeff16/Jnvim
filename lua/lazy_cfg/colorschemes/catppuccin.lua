@@ -8,12 +8,12 @@ local User = require('user')
 local exists = User.exists
 
 ---@type CscSubMod
-local M = {}
+local M = {
+	mod_pfx = pfx..'catppuccin',
+	mod_cmd = 'catppuccin',
+}
 
 if exists('catppuccin') then
-	M.mod_pfx = pfx..'catppuccin'
-	M.mod_cmd = 'catppuccin'
-
 	function M.setup()
 		local Cppc = require('catppuccin')
 

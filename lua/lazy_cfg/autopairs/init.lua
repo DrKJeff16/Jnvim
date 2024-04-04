@@ -4,15 +4,13 @@
 local User = require('user')
 local exists = User.exists
 
-local mod = "nvim-autopairs"
-if not exists(mod) then
+if not exists('nvim-autopairs') then
 	return
 end
 
 local pfix = 'lazy_cfg.autopairs.'
 
 local Ap = require('nvim-autopairs')
-
 local Rule = require('nvim-autopairs.rule')
 local Conds = require('nvim-autopairs.conds')
 local Handlers = require('nvim-autopairs.completion.handlers')
@@ -25,6 +23,9 @@ Ap.setup({
 		'checkhealth',
 		'help',
 		'lazy',
+		'markdown',
+		'gitconfig',
+		'gitcommit',
 	},
 
 	disable_in_macro = false,  -- disable when recording or executing a macro
@@ -32,8 +33,8 @@ Ap.setup({
 	disable_in_replace_mode = true,
 
 	enable_moveright = true,
-	enable_afterquote = true,  -- add bracket pairs after quote
-	enable_check_bracket_line = false,  --- check bracket in same line
+	enable_afterquote = false,  -- add bracket pairs after quote
+	enable_check_bracket_line = true,  --- check bracket in same line
 	enable_bracket_in_quote = false,  --
 	enable_abbr = false,  -- trigger abbreviation
 
@@ -49,15 +50,13 @@ Ap.setup({
 	ignored_next_char = string.gsub([[ [%w%%%'%[%"%.] ]], "%s+", ""),
 	-- ignored_next_char = '[%w%.]',
 
-	map_cr = false,
+	map_cr = true,
 	map_bs = true,  -- map the <BS> key
 	-- map_c_h = false,  -- Map the <C-h> key to delete a pair
-	map_c_w = false,  -- map <c-w> to delete a pair if possible
+	map_c_w = true,  -- map <c-w> to delete a pair if possible
 	map_char = {
 		all = '(',
 		tex = '{',
-		bash = '{',
-		lua = '{',
 	},
 
 	fast_wrap = {
@@ -81,28 +80,27 @@ Ap.add_rules({
 	:with_pair(ts_conds.is_not_ts_node({'function'}))
 })
 
----@alias str_arr string[]
----@alias dict {[string]:string}
----@alias filter_ret dict|str_arr
+---@alias FilterTbl table<string, string>|string[]
 
----@class APMod
+---@class AP
+---@field cmp? table
+---@field rules? any
 local M = {}
 
----@param subms str_arr The submodule string array.
----@param pfx? string The module's prefix path in case they aren't already joined in `subms`.
----@return filter_ret res
-local sub_filter = function(subms, pfx)
-	local cond = pfx and type(pfx) == 'string'
-	pfx = cond and pfx or nil
+---@param subms string[] The submodule string array.
+---@param prefix? string The module's prefix path in case they aren't already joined in `subms`.
+---@return FilterTbl res
+local sub_filter = function(subms, prefix)
+	prefix = prefix or 'lazy_cfg.autopairs.'
 
+	---@type FilterTbl
 	local res = {}
 
-	local full_path
 	for _, v in ipairs(subms) do
-		if pfx ~= nil then
-			full_path = pfx..v
-			if exists(full_path) then
-				res[v] = full_path
+		if prefix ~= nil then
+			local path = prefix..v
+			if exists(path) then
+				res[v] = path
 			end
 		elseif exists(v) then
 			table.insert(res, v)
@@ -112,13 +110,13 @@ local sub_filter = function(subms, pfx)
 	return res
 end
 
----@type str_arr
+---@type string[]
 local submods = {
 	'rules',
 	'cmp',
 }
 
-for k, v in next, sub_filter(submods, pfix) do
+for _, v in next, sub_filter(submods, pfix) do
 	require(v)
 end
 
