@@ -4,7 +4,7 @@
 require('user.types')
 local User = require('user')
 local exists = User.exists
-local kmap = User.maps().kmap
+local kmap = User.maps.kmap
 
 local nmap = kmap.n
 

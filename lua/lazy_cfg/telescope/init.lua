@@ -20,7 +20,7 @@ local empty = vim.tbl_isempty
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
-local kmap = User.maps().kmap
+local kmap = User.maps.kmap
 local nmap = kmap.n
 
 local Telescope = require('telescope')

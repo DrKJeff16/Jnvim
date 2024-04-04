@@ -7,8 +7,8 @@ require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
-local kmap = User.maps().kmap
-local hl = User.highlight()
+local kmap = User.maps.kmap
+local hl = User.highlight
 
 local nmap = kmap.n
 

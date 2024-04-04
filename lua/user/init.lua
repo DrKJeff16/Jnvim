@@ -6,17 +6,12 @@ local types = require('user.types')
 ---@type UserMod
 local M = {}
 
-function M.opts()
+M.opts = function()
 	return require('user.opts')
 end
+M.maps = require('user.maps')
 
-function M.maps()
-	return require('user.maps')
-end
-
-function M.highlight()
-	return require('user.highlight')
-end
+M.highlight = require('user.highlight')
 
 function M.exists(mod)
 	---@type boolean

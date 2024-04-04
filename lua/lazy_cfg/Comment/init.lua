@@ -3,7 +3,7 @@
 
 local User = require('user')
 local exists = User.exists
-local maps = User.maps()
+local maps = User.maps
 
 local map = maps.map
 local kmap = maps.kmap

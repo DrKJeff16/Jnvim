@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 
 -- Import docstrings and annotations.
-require('user.types')
+local types = require('user.types')
 
 local set = vim.o
 local opt = vim.opt
@@ -18,7 +18,7 @@ local augroup = api.nvim_create_augroup
 
 local User = require('user')
 local exists = User.exists  -- Checks for missing modules
-local map = User.maps().map
+local map = User.maps.map
 
 local nmap = map.n
 

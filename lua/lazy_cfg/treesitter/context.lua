@@ -5,7 +5,7 @@ require('user.types.user.highlight')
 
 local User = require('user')
 local exists = User.exists
-local hl = User.highlight()
+local hl = User.highlight
 
 if not exists('treesitter-context') then
 	return

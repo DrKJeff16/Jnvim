@@ -13,7 +13,7 @@ end
 local api = vim.api
 local let = vim.g
 
-local hi = User.highlight().hl
+local hi = User.highlight.hl
 
 local Ibl = require('ibl')
 local hooks = require('ibl.hooks')

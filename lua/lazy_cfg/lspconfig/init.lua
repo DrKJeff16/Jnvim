@@ -7,7 +7,7 @@ require('user.types.user.autocmd')
 
 local User = require('user')
 local exists = User.exists
-local maps = User.maps()
+local maps = User.maps
 
 if not exists('lspconfig') or not exists('neodev') then
 	return

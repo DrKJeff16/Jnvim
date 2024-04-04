@@ -5,7 +5,7 @@ require('user.types.user.highlight')
 
 local User = require('user')
 local exists = User.exists
-local hi = User.highlight().hl
+local hi = User.highlight.hl
 
 local Bl = require('rainbow-delimiters')
 local Ibl = require('ibl')

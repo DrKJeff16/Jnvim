@@ -10,7 +10,7 @@ end
 
 local Gsig = require('gitsigns')
 
-local bmap = User.maps().buf_map
+local bmap = User.maps.buf_map
 local nmap = bmap.n
 local vmap = bmap.v
 local omap = bmap.o

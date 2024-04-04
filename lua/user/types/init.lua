@@ -100,15 +100,16 @@ require('user.types.user.autocmd')
 ---@field dry_run fun(f: fun(), ...): any
 
 ---@class UserMod
----@field opts fun(): any
 ---@field exists fun(mod: string): boolean
 ---@field assoc fun()
----@field maps fun(): UserMaps
----@field highlight fun(): UserHl
+---@field maps UserMaps
+---@field highlight UserHl
+---@field opts fun(): any|unknown
 
 ---@class UserSubTypes
 ---@field maps any
 ---@field highlight any
+---@field autocmd any
 
 ---@class UserTypes
 ---@field lspconfig? any

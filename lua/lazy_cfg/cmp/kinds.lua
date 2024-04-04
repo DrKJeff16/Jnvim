@@ -12,7 +12,7 @@ local api = vim.api
 local cmp = require('cmp')
 local LspKind = require('lspkind')
 
-local hl = User.highlight().hl
+local hl = User.highlight.hl
 
 ---@class FmtKindIcons
 ---@field Class? string
