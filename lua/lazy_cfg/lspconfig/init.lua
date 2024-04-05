@@ -12,6 +12,7 @@ if not exists('lspconfig') or not exists('neodev') then
 	return
 end
 
+-- NOTE: This MUST go after plugin check.
 require('user.types.lspconfig')
 
 local api = vim.api
@@ -29,14 +30,21 @@ local hi = api.nvim_set_hl
 
 local nmap = kmap.n
 
-local submods = {
-	clangd = function()
-		return require('lazy_cfg.lspconfig.clangd')
-	end,
-	kinds = require('lazy_cfg.lspconfig.kinds')
-}
-submods.clangd()
-submods.kinds.setup()
+local Sub = {}
+
+function Sub.neoconf()
+	return require('lazy_cfg.lspconfig.neoconf')
+end
+function Sub.clangd()
+	return require('lazy_cfg.lspconfig.clangd')
+end
+
+Sub.kinds = require('lazy_cfg.lspconfig.kinds')
+
+-- Now call each.
+Sub.neoconf()
+Sub.clangd()
+Sub.kinds.setup()
 
 local border = {
 	{"🭽", "FloatBorder"},
