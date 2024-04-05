@@ -44,6 +44,9 @@ rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
 
+---@type LazyConfig
+local opts = require('lazy_cfg.lazy.opts')
+
 Lazy.setup({
 	{ 'folke/lazy.nvim', priority = 1000 },
 
@@ -74,7 +77,7 @@ Lazy.setup({
 		name = 'Comment',
 		dependencies = {
 			'treesitter',
-			'JoosepAlviste/nvim-ts-context-commentstring',
+			'ts-commentstring',
 		},
 		init = function()
 			let.Comment_installed = 1
@@ -85,6 +88,11 @@ Lazy.setup({
 		enabled = function()
 			return not let.commentary_installed and let.commentary_installed ~= 1
 		end
+	},
+	{
+		'JoosepAlviste/nvim-ts-context-commentstring',
+		lazy = true,
+		name = 'ts-commentstring',
 	},
 
 	-- Tpope is god.
@@ -115,16 +123,17 @@ Lazy.setup({
 			return require('lazy_cfg.treesitter')
 		end,
 	},
-	{ 'nvim-orgmode/orgmode', ft = 'org' },
+	{ 'nvim-orgmode/orgmode', lazy = true, ft = 'org' },
 
 	-- LSP
 	{
 		'neovim/nvim-lspconfig',
+		lazy = false,
 		priority = 1000,
 		name = 'lspconfig',
 		dependencies = {
 			'neodev',
-			-- 'folke/neoconf.nvim',
+			'NeoConf',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
 		},
@@ -138,13 +147,21 @@ Lazy.setup({
 		lazy = true,
 		priority = 1000,
 		name = 'neodev',
-		enabled = executable('lua-language-server') == 1 
+		dependencies = { 'NeoConf' },
+		enabled = executable('lua-language-server') == 1,
 	},
-	{ 'p00f/clangd_extensions.nvim', enabled = executable('clangd') == 1 },
+	{
+		'folke/neoconf.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'NeoConf',
+	},
+	{ 'p00f/clangd_extensions.nvim', lazy = true, enabled = executable('clangd') == 1 },
 
 	-- Colorschemes
 	{
 		'pineapplegiant/spaceduck',
+		lazy = false,
 		priority = 1000,
 		-- Set the global condition for a later
 		-- submodule call.
@@ -321,6 +338,7 @@ Lazy.setup({
 	{
 		'lewis6991/gitsigns.nvim',
 		name = 'GitSigns',
+		version = '*',
 		config = function()
 			return require('lazy_cfg.gitsigns')
 		end,
@@ -375,7 +393,8 @@ Lazy.setup({
 		config = true,
 		enabled = false,
 	},
-})
+}, opts
+)
 
 ---@type LazyMods
 local M = {

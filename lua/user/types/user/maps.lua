@@ -1,35 +1,51 @@
 ---@alias ApiMapOpts vim.api.keyset.keymap
 ---@alias KeyMapOpts vim.keymap.set.Opts
----@alias Rhs string|fun(...)
+---@alias Rhs string|fun()
 
 ---@class MapTbl
 ---@field lhs string
 ---@field rhs string
 ---@field opts? ApiMapOpts
 
+---@class KeyMapTbl: MapTbl
+---@field rhs string|fun()
+---@field opts? KeyMapOpts
+
+---@alias ApiMapFunction fun(lhs: string, rhs: string, opts?: ApiMapOpts)
+---@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts?: KeyMapOpts)
+---@alias BufMapFunction fun(b: integer, lhs: string, rhs: string, opts?: ApiMapOpts)
+
 ---@class UserApiMaps
----@field n fun(lhs: string, rhs: string, opts: ApiMapOpts?)
----@field v fun(lhs: string, rhs: string, opts: ApiMapOpts?)
----@field t fun(lhs: string, rhs: string, opts: ApiMapOpts?)
----@field i fun(lhs: string, rhs: string, opts: ApiMapOpts?)
----@field o fun(lhs: string, rhs: string, opts: ApiMapOpts?)
----@field x fun(lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field n  ApiMapFunction
+---@field v  ApiMapFunction
+---@field t  ApiMapFunction
+---@field i  ApiMapFunction
+---@field o? ApiMapFunction
+---@field x? ApiMapFunction
 
 ---@class UserKeyMaps: UserApiMaps
----@field n fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
----@field v fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
----@field t fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
----@field i fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
----@field o? fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
----@field x? fun(lhs: string, rhs: Rhs, opts: KeyMapOpts?)
+---@field n  KeyMapFunction
+---@field v  KeyMapFunction
+---@field t  KeyMapFunction
+---@field i  KeyMapFunction
+---@field o? KeyMapFunction
+---@field x? KeyMapFunction
 
 ---@class UserBufMaps: UserApiMaps
----@field n fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
----@field v fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
----@field t fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
----@field i fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
----@field o fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
----@field x fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@field n BufMapFunction
+---@field v BufMapFunction
+---@field t BufMapFunction
+---@field i BufMapFunction
+---@field o BufMapFunction
+---@field x BufMapFunction
+
+---@class UserBufModeKeys
+---@field n? MapTbl[]
+---@field i? MapTbl[]
+---@field v? MapTbl[]
+---@field t? MapTbl[]
+---@field o? MapTbl[]
+---@field x? MapTbl[]
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps

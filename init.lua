@@ -2,7 +2,6 @@
 ---@diagnostic disable:unused-function
 
 -- Import docstrings and annotations.
-local types = require('user.types')
 
 local set = vim.o
 local opt = vim.opt
@@ -12,18 +11,14 @@ local let = vim.g
 local lsp = vim.lsp
 local bo = vim.bo
 
-local hi = api.nvim_set_hl
-local au = api.nvim_create_autocmd
-local augroup = api.nvim_create_augroup
-
 local User = require('user')
 local exists = User.exists  -- Checks for missing modules
+
+require('user.types.user.maps')
+
 local map = User.maps.map
 
 local nmap = map.n
-
--- Vim `:set ...` global options setter.
-User.opts()
 
 -- Set `<Space>` as Leader Key.
 nmap('<Space>', '<Nop>')
@@ -35,15 +30,16 @@ let.maplocalleader = ' '
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
+let.lazy_file = fn.stdpath('config') .. '/lazy_cfg/init.lua'
+
+-- Vim `:set ...` global options setter.
+User.opts()
+
 --- Table of mappings for each mode `(normal|insert|visual|terminal)`.
 ---
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t].opts` is an **API** option table.
----@class Maps
----@field n? MapTbl[]
----@field i? MapTbl[]
----@field v? MapTbl[]
----@field t? MapTbl[]
+---@type ApiMapTbl
 local map_tbl = {
 	n = {
 		{ lhs = '<Leader>fn', rhs = ':edit ', opts = { silent = false } },
@@ -94,6 +90,7 @@ local map_tbl = {
 	},
 	v = {
 		{ lhs = '<Leader>is', rhs = ':sort<CR>' },
+		{ lhs = '<Leader>iS', rhs = ':sort!<CR>' },
 	},
 	t = {
 		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },

@@ -136,7 +136,6 @@ srv.lua_ls = {
 srv.bashls = {}
 srv.clangd = {}
 srv.cmake = {}
-srv.css_variables = {}
 srv.html = {}
 srv.jsonls = {}
 srv.yamlls = {}

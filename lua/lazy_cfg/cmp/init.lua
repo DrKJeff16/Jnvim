@@ -30,7 +30,7 @@ local sks = require('lazy_cfg.cmp.kinds')
 local n_select = function(fallback)
 	local jumpable = Luasnip.expand_or_locally_jumpable
 	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Insert }
+	local opts = { behavior = cmp.SelectBehavior.Replace }
 
 	if cmp.visible() then
 		cmp.select_next_item(opts)

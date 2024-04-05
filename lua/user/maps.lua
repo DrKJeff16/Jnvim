@@ -8,7 +8,7 @@ local keymap = vim.keymap
 
 local kmap = keymap.set
 local map = api.nvim_set_keymap
-local bmap = api.nvim_buf_set_keymap
+local bufmap = api.nvim_buf_set_keymap
 
 ---@type UserMaps
 local M = {
@@ -180,7 +180,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 'n', lhs, rhs, opts)
+			bufmap(b, 'n', lhs, rhs, opts)
 		end,
 		i = function(b, lhs, rhs, opts)
 			opts = opts or {}
@@ -195,7 +195,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 'i', lhs, rhs, opts)
+			bufmap(b, 'i', lhs, rhs, opts)
 		end,
 		t = function(b, lhs, rhs, opts)
 			opts = opts or {}
@@ -210,7 +210,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 't', lhs, rhs, opts)
+			bufmap(b, 't', lhs, rhs, opts)
 		end,
 		v = function(b, lhs, rhs, opts)
 			opts = opts or {}
@@ -225,7 +225,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 'v', lhs, rhs, opts)
+			bufmap(b, 'v', lhs, rhs, opts)
 		end,
 		o = function(b, lhs, rhs, opts)
 			opts = opts or {}
@@ -240,7 +240,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 'o', lhs, rhs, opts)
+			bufmap(b, 'o', lhs, rhs, opts)
 		end,
 		x = function(b, lhs, rhs, opts)
 			opts = opts or {}
@@ -255,7 +255,7 @@ local M = {
 				opts.silent = true
 			end
 
-			bmap(b, 'x', lhs, rhs, opts)
+			bufmap(b, 'x', lhs, rhs, opts)
 		end,
 	},
 }
