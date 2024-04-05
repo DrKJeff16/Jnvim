@@ -59,6 +59,7 @@ end
 
 ---@type RegKeysTbl
 local regs = {
+	-- File Handling
 	['<leader>f'] = { name = '+File' },
 	['<leader>fs'] = {
 		'<CMD>w<cr>',
@@ -70,6 +71,7 @@ local regs = {
 		'Retab',
 	},
 
+	--- Source File Handling
 	['<leader>fv'] = { name = '+Vim Files' },
 	['<leader>fvs'] = {
 		'<CMD>luafile $MYVIMRC<cr>',
@@ -88,27 +90,33 @@ local regs = {
 		'Source The Current File With Vimscript',
 	},
 
+	--- NvimTree
 	['<leader>ft'] = { name = '+NvimTree' },
-	['<leader>ftt'] = {
+	['<leader>fto'] = {
 		'<CMD>NvimTreeOpen<cr>',
-		'Open NvimTree',
+		'Open',
+	},
+	['<leader>ftt'] = {
+		'<CMD>NvimTreeToggle<cr>',
+		'Toggle',
 	},
 	['<leader>ftf'] = {
 		'<CMD>NvimTreeFocus<cr>',
-		'Focus NvimTree',
+		'Focus',
 	},
 	['<leader>ftd'] = {
 		'<CMD>NvimTreeClose<cr>',
-		'Close NvimTree',
+		'Close',
 	},
 
+	-- Tabs Handling
 	['<leader>t'] = { name = '+Tabs' },
 	['<leader>td'] = {
-		'<CMD>tabclose<cr>',
+		'<CMD>tabc<cr>',
 		'Close Tab',
 	},
 	['<leader>tD'] = {
-		'<CMD>tabclose!<cr>',
+		'<CMD>tabc!<cr>',
 		'Close Tab (Forcefully)',
 	},
 	['<leader>tA'] = {
@@ -124,46 +132,50 @@ local regs = {
 		'Go To Last Tab',
 	},
 	['<leader>tn'] = {
-		'<CMD>tabNext<cr>',
+		'<CMD>tabN<cr>',
 		'Go To Next Tab',
 	},
 	['<leader>tp'] = {
-		'<CMD>tabprev<cr>',
+		'<CMD>tabp<cr>',
 		'Go To Previous Tab',
 	},
 
+	-- Buffer Handling
 	['<leader>b'] = { name = '+Buffer' },
 	['<leader>bd'] = {
 		'<CMD>bdel<cr>',
-		'Close Buffer',
+		'Close',
 	},
 	['<leader>bD'] = {
 		'<CMD>bdel!<cr>',
-		'Close Buffer (Forcefully)',
+		'Close (Forcefully)',
 	},
 	['<leader>bf'] = {
 		'<CMD>bfirst<cr>',
-		'Go To First Buffer',
+		'First',
 	},
 	['<leader>bl'] = {
 		'<CMD>blast<cr>',
-		'Go To Last Buffer',
+		'Last',
 	},
 	['<leader>bn'] = {
-		'<CMD>bNext<cr>',
-		'Go To Next Buffer',
+		'<CMD>bN<cr>',
+		'Next',
 	},
 	['<leader>bp'] = {
-		'<CMD>bprevious<cr>',
-		'Go To Previous Buffer',
+		'<CMD>bp<cr>',
+		'Previous',
 	},
 
+	-- TODO: Expand these keys.
+	-- GitSigns
 	['<leader>h'] = { name = '+GitSigns' },
 
+	-- Lazy
 	['<leader>L'] = { name = '+Lazy' },
 	['<leader>Ll'] = {
 		'<CMD>Lazy<cr>',
-		'Lazy',
+		'Open Float',
 	},
 	['<leader>Lx'] = {
 		'<CMD>Lazy clean<cr>',
@@ -196,56 +208,64 @@ local regs = {
 		'Org Capture',
 	},
 
+	-- Window Handling
 	['<leader>w'] = { name = '+Window' },
+	-- Window Splitting
 	['<leader>ws'] = { name = '+Split' },
 	['<leader>wss'] = {
 		'<CMD>split<cr>',
-		'Split Window Horizontally',
+		'Split Horizontally',
 	},
 	['<leader>wsv'] = {
 		'<CMD>vsplit<cr>',
-		'Split Window Vertically',
+		'Split Vertically',
 	},
 
-	['<leader>q'] = { name = '+Quitting Nvim' },
+	-- Exiting
+	['<leader>q'] = { name = '+Quit Nvim' },
 	['<leader>qq'] = {
 		'<CMD>qa<cr>',
-		'Quit All Of Nvim Tabs',
+		'Quit All',
 	},
 	['<leader>qQ'] = {
 		'<CMD>qa!<cr>',
-		'Quit All Of Nvim Tabs (Forcefully)',
+		'Quit All (Forcefully)',
 	},
 
+	-- TODO Comments
 	['<leader>c'] = { name = '+TODO Comments' },
+	-- `TODO` Handling
 	['<leader>ct'] = { name = '+TODO' },
 	['<leader>ctn'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next()<cr>',
-		'Next \'TODO\' Comment',
+		'Next \'TODO\'',
 	},
 	['<leader>ctp'] = {
 		'<CMD>lua require(\'todo-comments\').jump_prev()<cr>',
-		'Previous \'TODO\' Comment',
+		'Previous \'TODO\'',
 	},
+	-- `ERROR` Handling
 	['<leader>ce'] = { name = '+ERROR' },
 	['<leader>cen'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'ERROR\' } })<cr>',
-		'Next \'ERROR\' Comment',
+		'Next \'ERROR\'',
 	},
 	['<leader>cep'] = {
 		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'ERROR\' } })<cr>',
-		'Previous \'ERROR\' Comment',
+		'Previous \'ERROR\'',
 	},
+	-- `ERROR` Handling
 	['<leader>cw'] = { name = '+WARNING' },
 	['<leader>cwn'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'WARNING\' } })<cr>',
-		'Next \'WARNING\' Comment',
+		'Next \'WARNING\'',
 	},
 	['<leader>cwp'] = {
 		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'WARNING\' } })<cr>',
-		'Previous \'WARNING\' Comment',
+		'Previous \'WARNING\'',
 	},
 
+	-- ToggleTerm
 	['<leader>T'] = { name = '+ToggleTerm' },
 }
 
