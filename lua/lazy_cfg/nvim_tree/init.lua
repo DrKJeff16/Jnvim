@@ -289,36 +289,38 @@ local on_attach = function(bufn)
 			opts = key_opts('Help', bufn),
 		},
 		{
-			lhs = 'fef',
+			lhs = '<C-f>',
 			rhs = edit_or_open,
 			opts = key_opts('Edit Or Open', bufn),
 		},
 		{
-			lhs = 'fPv',
+			lhs = 'P',
 			rhs = vsplit_preview,
 			opts = key_opts('Vsplit Preview', bufn),
 		},
 		{
-			lhs = 'fdf',
+			lhs = 'c',
 			rhs = close,
 			opts = key_opts('Close', bufn),
 		},
 		{
-			lhs = 'fHA',
+			lhs = 'HA',
 			rhs = collapse_all,
 			opts = key_opts('Collapse All', bufn),
 		},
 		{
-			lhs = 'fga',
+			lhs = 'ga',
 			rhs = git_add,
 			opts = key_opts('Git Add...', bufn),
 		},
 		{
-			lhs = 'fta',
+			lhs = 't',
 			rhs = swap_then_open_tab,
 			opts = key_opts('Open Tab', bufn),
 		},
 	}
+
+	map_lft(keys)
 end
 
 Tree.setup({
