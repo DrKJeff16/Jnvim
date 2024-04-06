@@ -16,7 +16,6 @@ local TSUtils = require('nvim-treesitter.ts_utils')
 Install.prefer_git = true
 
 local ensure = {
-	'asm',
 	'bash',
 	'c',
 	'cmake',
@@ -32,7 +31,6 @@ local ensure = {
 	'gpg',
 	'html',
 	'ini',
-	'java',
 	'json',
 	'json5',
 	'jsonc',
@@ -59,33 +57,29 @@ local ensure = {
 	'yaml',
 }
 
-local function add_org()
+---@param ens string[]
+---@param t TSConfig
+---@return string[], TSConfig
+local function add_org(ens, t)
 	local Orgmode = require('orgmode')
 	local org_dir = '~/.org'
-	Orgmode.setup_ts_grammar()
+	-- Orgmode.setup_ts_grammar()
 
-	table.insert(ensure, 'org')
+	table.insert(ens, 'org')
 
-	return Orgmode.setup({
+	---@type OrgDefaultConfig
+	local org_opts = {
 		org_agenda_files = org_dir..'/agenda/*',
-		org_default_notes_file = org_dir..'/notes/default.org'
-	})
-end
+		org_default_notes_file = org_dir..'/notes/default.org',
+		org_hide_emphasis_markers = false,
+	}
 
-if exists('orgmode') then
-	add_org()
-end
+	Orgmode.setup()
 
----@return string[]
-local additional_hl = function()
-	---@type string[]
-	local res = {}
+	t.highlight = t.highlight or { enable = true }
+	t.highlight.additional_vim_regex_highlighting = { 'org' }
 
-	if exists('orgmode') then
-		table.insert(res, 'org')
-	end
-
-	return res
+	return ens, t
 end
 
 ---@type TSConfig
@@ -111,7 +105,7 @@ local TSConfig = {
 
 			return false
 		end,
-		additional_vim_regex_highlighting = additional_hl(),
+		additional_vim_regex_highlighting = false,
 	},
 
 	indent = { enable = false },
@@ -121,6 +115,10 @@ local TSConfig = {
 
 if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
 	TSConfig.rainbow = require('lazy_cfg.treesitter.rainbow').rainbow
+end
+
+if exists('orgmode') then
+	ensure, TSConfig = add_org(ensure, TSConfig)
 end
 
 local modules = {
@@ -135,10 +133,10 @@ for _, s in next, modules do
 	end
 end
 
-Cfg.setup(TSConfig)
-
 if exists('ts_context_commentstring') then
 	require('ts_context_commentstring').setup({
 		enable_autocmd = true,
 	})
 end
+
+Cfg.setup(TSConfig)
