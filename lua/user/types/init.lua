@@ -1,14 +1,18 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias ModTbl
----|string[]
----|{ [string]: string }
----|table<string, boolean>
-
 ---@class CheckerOpts
+---@field type? 'union'|'intersection'
+---@field recursive? boolean
+---@field callback? fun(...)
+---@field fail? boolean|fun(...): boolean
+---@field case_sensitive? boolean
+---@field dir? string|string[]|nil
+---@field essential? boolean|fun(...): boolean
 
 ---@class CheckerOptsExtended: CheckerOpts
+
+---@alias ChkModFun fun(mod: string|string[]|table, opts: CheckerOpts?): boolean|boolean[]|table<string, boolean>
 
 ---@class VimExistance
 ---@field global fun(g: string|string[]): boolean
@@ -32,14 +36,24 @@
 ---@class UserCheck
 ---@field exists ExistanceCheck
 ---@field value ValueCheck
----@field dry_run fun(f: fun(), ...): any
+---@field dry_run? fun(f: fun(), ...): any
+---@field new? fun(): UserCheck
+---@field __index? UserCheck
+
+---@class UserPlugTmpl
+
+---@class UserCmp: UserPlugTmpl
+
+---@class UserPlugin
+---@field cmp? UserCmp
 
 ---@class UserMod
 ---@field exists fun(mod: string): boolean
+---@field check? UserCheck
 ---@field assoc fun()
 ---@field maps UserMaps
 ---@field highlight UserHl
----@field opts fun(): any|unknown
+---@field opts fun()
 
 ---@class UserSubTypes
 ---@field maps table

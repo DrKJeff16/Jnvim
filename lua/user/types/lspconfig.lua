@@ -1,3 +1,16 @@
+---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
+
+local ok, Lspconfig = pcall(require, 'lspconfig')
+
+if not ok then
+	return
+end
+
+local Util = require('lspconfig.util')
+
+local root = Util.root_pattern()
+
 ---@class LspKindsIconsMod
 ---@field Class? string
 ---@field Color? string
@@ -29,4 +42,20 @@
 ---@field clangd? fun(): any
 ---@field kinds? LspKindsMod
 
----@alias LspServers { [string]: table }
+---@class LspServerOpts
+---@field capabilities? table
+---@field cmd? string|string[]
+---@field cmd_env? table<string, any>|nil
+---@field filetypes? string|string[]
+---@field handlers? table<string, fun(...): any>
+---@field init_options? table<string, any>
+---@field name? string
+---@field log_level? number|nil
+---@field on_attach? fun(client: table?): any
+---@field on_new_config? any
+---@field onset_encoding? any
+---@field root_dir? any
+---@field settings? table
+---@field single_file_support? boolean
+
+---@alias LspServers table<string, LspServerOpts>

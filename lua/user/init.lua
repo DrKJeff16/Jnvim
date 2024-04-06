@@ -4,6 +4,7 @@
 require('user.types')
 
 local api = vim.api
+local fn = vim.fn
 
 ---@type UserMod
 local M = {}

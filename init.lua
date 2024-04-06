@@ -10,6 +10,7 @@ local lsp = vim.lsp
 local bo = vim.bo
 
 -- Import docstrings and annotations.
+require('user.types')
 require('user.types.user.maps')
 
 local User = require('user')

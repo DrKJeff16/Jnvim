@@ -343,4 +343,4 @@ for type, icon in next, signs do
 	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
 end
 
-vim.o.updatetime = 250
+-- vim.o.updatetime = 250
