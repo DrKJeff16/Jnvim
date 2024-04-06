@@ -1,4 +1,5 @@
-*.lua @DrKJeff16
+/lua/user @DrKJeff16
+/lua/user/types @DrKJeff16
 .gitignore @DrKJeff16
 *.md @DrKJeff16
 *.org @DrKJeff16
