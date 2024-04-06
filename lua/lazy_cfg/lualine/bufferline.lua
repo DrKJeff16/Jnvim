@@ -37,14 +37,15 @@ BLine.setup({
 			icon = '▎',
 			style = 'icon',
 		},
+
         buffer_close_icon = '󰅖',
         modified_icon = '●',
         close_icon = '',
         left_trunc_marker = '',
         right_trunc_marker = '',
 
-		max_name_length = 16,
-		max_prefix_length = 12,
+		max_name_length = 20,
+		max_prefix_length = 15,
 		truncate_names = true,
 		tab_size = 20,
 

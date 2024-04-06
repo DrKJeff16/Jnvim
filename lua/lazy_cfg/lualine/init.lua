@@ -8,31 +8,6 @@ if not exists('lualine') then
 	return
 end
 
----@type string[]
-local submodules = {
-	'bufferline',
-}
-
----@param subs string[]
----@return table<string, fun(...): any> res
-local src = function(subs)
-	local prefix = 'lazy_cfg.lualine.'
-
-	---@type table<string, any>
-	local res = {}
-
-	for _, v in next, subs do
-		local path = prefix..v
-		if exists(path) then
-			res[path] = function()
-				require(path)
-			end
-		end
-	end
-
-	return res
-end
-
 local Lualine = require('lualine')
 
 Lualine.setup({
@@ -46,7 +21,7 @@ Lualine.setup({
             winbar = {},
         },
         ignore_focus = {},
-        always_divide_middle = false,
+        always_divide_middle = true,
         globalstatus = true,
         refresh = {
             statusline = 500,
@@ -121,8 +96,3 @@ Lualine.setup({
     inactive_winbar = {},
     extensions = {}
 })
-
-local subs = src(submodules)
-if subs.bufferline then
-	subs.bufferline()
-end

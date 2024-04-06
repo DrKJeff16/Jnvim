@@ -2,7 +2,6 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.lazy')
-require('user.types.colorschemes')
 
 local fn = vim.fn
 local opt = vim.opt
@@ -283,9 +282,18 @@ Lazy.setup({
 	},
 	{
 		'akinsho/bufferline.nvim',
-		lazy = true,
 		priority = 1000,
 		name = 'BufferLine',
+		init = function()
+			opt.termguicolors = true
+		end,
+		config = function()
+			if exists('lazy_cfg.lualine.bufferline') then
+				return require('lazy_cfg.lualine.bufferline')
+			end
+
+			return require('lazy_cfg.bufferline')
+		end,
 		dependencies = { 'web-devicons' },
 	},
 
