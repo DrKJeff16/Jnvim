@@ -1,8 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
--- Import docstrings and annotations.
-
 local set = vim.o
 local opt = vim.opt
 local fn = vim.fn
@@ -11,11 +9,11 @@ local let = vim.g
 local lsp = vim.lsp
 local bo = vim.bo
 
-local User = require('user')
-local exists = User.exists  -- Checks for missing modules
-
+-- Import docstrings and annotations.
 require('user.types.user.maps')
 
+local User = require('user')
+local exists = User.exists  -- Checks for missing modules
 local map = User.maps.map
 
 local nmap = map.n
@@ -25,12 +23,10 @@ nmap('<Space>', '<Nop>')
 let.mapleader = ' '
 let.maplocalleader = ' '
 
--- Disable `netrw` regardless of whether Nvim Tree exists
--- Or not
+-- Disable `netrw` regardless of whether
+-- Nvim Tree exists or not
 let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
-
-let.lazy_file = fn.stdpath('config') .. '/lazy_cfg/init.lua'
 
 -- Vim `:set ...` global options setter.
 User.opts()
