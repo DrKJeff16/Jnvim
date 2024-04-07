@@ -28,19 +28,11 @@ local Builtin = require('telescope.builtin')
 local Themes = require('telescope.themes')
 local Actions = require('telescope.actions')
 local ActionLayout = require('telescope.actions.layout')
+local Extensions = Telescope.extensions
 
 Telescope.setup({
 	defaults = {
 		layout_strategy = 'flex',
-		-- FIXME: Make this actually work.
-		-- layout_config = {
-		-- 	horizontal = {
-		-- 		size = { width = '90%', height = '80%' },
-		-- 	},
-		-- 	vertical = {
-		-- 		size = { width = '80%', height = '80%' },
-		-- 	},
-		-- },
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
@@ -67,6 +59,7 @@ Telescope.setup({
 ---@field n KeyMapArgs[]
 local maps = {
 	n = {
+		{ lhs = '<leader>fTbP', rhs = Builtin.planets },
 		{ lhs = '<leader>fTbb', rhs = Builtin.buffers },
 		{ lhs = '<leader>fTbc', rhs = Builtin.colorscheme },
 		{ lhs = '<leader>fTbd', rhs = Builtin.diagnostics },
@@ -74,10 +67,11 @@ local maps = {
 		{ lhs = '<leader>fTbg', rhs = Builtin.live_grep },
 		{ lhs = '<leader>fTbh', rhs = Builtin.help_tags },
 		{ lhs = '<leader>fTbk', rhs = Builtin.keymaps },
-		{ lhs = '<leader>fTbld', rhs = Builtin.lsp_definitions },
 		{ lhs = '<leader>fTblD', rhs = Builtin.lsp_document_symbols },
+		{ lhs = '<leader>fTbld', rhs = Builtin.lsp_definitions },
 		{ lhs = '<leader>fTbp', rhs = Builtin.pickers },
-		{ lhs = '<leader>fTbP', rhs = Builtin.planets },
+
+		{ lhs = '<leader>fTeN', rhs = Extensions.notify.notify },
 	},
 }
 
