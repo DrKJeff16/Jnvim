@@ -42,8 +42,6 @@ end
 rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
-
----@type LazyConfig
 local opts = require('lazy_cfg.lazy.opts')
 
 Lazy.setup({
@@ -135,6 +133,7 @@ Lazy.setup({
 			'NeoConf',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
+			'nlsp-settings',
 		},
 		config = function()
 			return require('lazy_cfg.lspconfig')
@@ -143,7 +142,7 @@ Lazy.setup({
 	-- Essenyial for Nvim Lua files.
 	{
 		'folke/neodev.nvim',
-		lazy = true,
+		lazy = false,
 		priority = 1000,
 		name = 'neodev',
 		dependencies = { 'NeoConf' },
@@ -151,11 +150,38 @@ Lazy.setup({
 	},
 	{
 		'folke/neoconf.nvim',
-		lazy = true,
+		lazy = false,
 		priority = 1000,
 		name = 'NeoConf',
 	},
 	{ 'p00f/clangd_extensions.nvim', lazy = true, enabled = executable('clangd') == 1 },
+	{
+		'tamago324/nlsp-settings.nvim',
+		lazy = true,
+		main = 'nlsp',
+		name = 'nlsp-settings',
+		dependencies = {
+			'MasonLSP',
+			'Notify',
+		},
+	},
+	{
+		'rcarriga/nvim-notify',
+		lazy = true,
+		name = 'Notify',
+		priority = 1000,
+	},
+	{
+		'williamboman/mason-lspconfig.nvim',
+		lazy = true,
+		name = 'MasonLSP',
+		dependencies = { 'Mason' },
+	},
+	{
+		'williamboman/mason.nvim',
+		lazy = true,
+		name = 'Mason',
+	},
 
 	-- Colorschemes
 	{
