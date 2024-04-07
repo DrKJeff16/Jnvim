@@ -158,15 +158,15 @@ local M = {
 	},
 	window = {
 		documentation = cmp.config.window.bordered(),
-		-- completion = cmp.config.window.bordered(),
-		completion = {
-			winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
-			col_offset = -3,
-			side_padding = 0,
-		},
+		completion = cmp.config.window.bordered(),
+		-- completion = {
+		-- 	winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
+		-- 	col_offset = -3,
+		-- 	side_padding = 0,
+		-- },
 	},
 	view = {
-		entries = { name = 'custom', selection_order = 'near_cursor' },
+		entries = { name = 'custom', selection_order = 'top_down' },
 		docs = { auto_open = true },
 	},
 	vscode = vscode,
