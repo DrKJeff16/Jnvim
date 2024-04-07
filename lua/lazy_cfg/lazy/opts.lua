@@ -24,18 +24,18 @@ local M = {
 	install = { missing = true },
 	ui = {
 		size = {
-			width = 0.75,
-			height = 0.75,
+			width = 0.85,
+			height = 0.70,
 		},
 		wrap = set.wrap,
 		border = exists('+termguicolors') == 1 and 'double' or 'none',
-		backdrop = 65,  -- Opacity
+		backdrop = 70,  -- Opacity
 		title = 'L   A   Z   Y',
 		title_pos = 'center',
 		pills = true,
 
 		browser = nil,
-		throttle = 15,
+		throttle = 20,
 
 		icons	= {
 			cmd = " ",
@@ -81,7 +81,7 @@ local M = {
 		},
 	},
 
-	dkff = { cmd = 'git', },
+	diff = { cmd = 'git' },
 
 	checker = {
 		enabled = true,
