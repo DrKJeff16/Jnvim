@@ -13,7 +13,6 @@ function M.opts()
 	return require('user.opts')
 end
 M.maps = require('user.maps')
-
 M.highlight = require('user.highlight')
 
 function M.exists(mod)
