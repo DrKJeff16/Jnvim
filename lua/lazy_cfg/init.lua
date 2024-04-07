@@ -45,7 +45,7 @@ local Lazy = require('lazy')
 local opts = require('lazy_cfg.lazy.opts')
 
 Lazy.setup({
-	{ 'folke/lazy.nvim', priority = 1000 },
+	{ 'folke/lazy.nvim', lazy = false, priority = 1000 },
 
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 
@@ -96,9 +96,7 @@ Lazy.setup({
 	{
 		'tpope/vim-commentary',
 		lazy = false,
-		enabled = function()
-			return not let.Comment_installed and let.Comment_installed ~= 1
-		end
+		enabled = false,
 	},
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') == 1 },
@@ -126,14 +124,12 @@ Lazy.setup({
 	{
 		'neovim/nvim-lspconfig',
 		lazy = false,
-		priority = 1000,
 		name = 'lspconfig',
 		dependencies = {
 			'neodev',
 			'NeoConf',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
-			'nlsp-settings',
 		},
 		config = function()
 			return require('lazy_cfg.lspconfig')
@@ -153,12 +149,14 @@ Lazy.setup({
 		lazy = false,
 		priority = 1000,
 		name = 'NeoConf',
+		dependencies = {
+			'nlsp-settings',
+		},
 	},
 	{ 'p00f/clangd_extensions.nvim', lazy = true, enabled = executable('clangd') == 1 },
 	{
 		'tamago324/nlsp-settings.nvim',
 		lazy = true,
-		main = 'nlsp',
 		name = 'nlsp-settings',
 		dependencies = {
 			'MasonLSP',
@@ -167,9 +165,15 @@ Lazy.setup({
 	},
 	{
 		'rcarriga/nvim-notify',
-		lazy = true,
 		name = 'Notify',
 		priority = 1000,
+		dependencies = { 'Plenary' },
+		init = function()
+			vim.opt.termguicolors = true
+		end,
+		config = function()
+			return require('lazy_cfg.notify')
+		end,
 	},
 	{
 		'williamboman/mason-lspconfig.nvim',
