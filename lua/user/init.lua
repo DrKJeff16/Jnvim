@@ -1,10 +1,15 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
+local types = require('user.types')
 
 local api = vim.api
 local fn = vim.fn
+local set = vim.o
+local let = vim.g
+local opt = vim.opt
+local bo = vim.bo
+local cmd = vim.cmd
 
 ---@type UserMod
 local M = {}
@@ -50,5 +55,7 @@ function M.assoc()
 		end
 	end
 end
+
+M.types = require('user.types')
 
 return M

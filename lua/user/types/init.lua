@@ -43,17 +43,11 @@
 ---@class UserPlugTmpl
 
 ---@class UserCmp: UserPlugTmpl
+---@class UserNotify: UserPlugTmpl
 
 ---@class UserPlugin
 ---@field cmp? UserCmp
-
----@class UserMod
----@field exists fun(mod: string): boolean
----@field check? UserCheck
----@field assoc fun()
----@field maps UserMaps
----@field highlight UserHl
----@field opts fun()
+---@field notify? UserNotify
 
 ---@class UserSubTypes
 ---@field maps table
@@ -72,6 +66,15 @@
 ---@field todo_comments table
 ---@field which_key table
 ---@field user UserSubTypes
+
+---@class UserMod
+---@field exists fun(mod: string): boolean
+---@field check? UserCheck
+---@field assoc fun()
+---@field maps UserMaps
+---@field highlight UserHl
+---@field opts fun()
+---@field types UserTypes
 
 ---@type UserTypes
 local M = {}
