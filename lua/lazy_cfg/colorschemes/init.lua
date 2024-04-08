@@ -2,21 +2,23 @@
 ---@diagnostic disable: unused-function
 
 local User = require('user')
+local types = User.types
+local csc_m = types.colorschemes
 local exists = User.exists
 
-require('user.types.colorschemes')
-
----@type CscMod
-local M = {}
-
 ---@param subs string[]
+---@return CscMod
 local src = function(subs)
+	---@type CscMod
+	local res = {}
 	for _, v in next, subs do
 		local path = 'lazy_cfg.colorschemes.'..v
 		if exists(path) then
-			M[v] = require(path)
+			res[v] = require(path)
 		end
 	end
+
+	return res
 end
 
 local submods = {
@@ -28,6 +30,6 @@ local submods = {
 	'gloombuddy',
 }
 
-src(submods)
+local M = src(submods)
 
 return M

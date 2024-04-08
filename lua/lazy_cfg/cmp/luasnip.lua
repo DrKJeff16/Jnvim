@@ -8,8 +8,6 @@ if not exists('luasnip') then
 	return
 end
 
-local pfx = 'lazy_cfg.cmp.'
-
 local Luasnip = require('luasnip')
 
 if exists("luasnip.loaders.from_vscode") then

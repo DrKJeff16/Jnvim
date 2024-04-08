@@ -1,7 +1,7 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-require('user.types.colorschemes')
+local types = require('user').types.colorschemes
 
 local User = require('user')
 local exists = User.exists

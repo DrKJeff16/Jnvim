@@ -1,15 +1,15 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.maps')
-
 local User = require('user')
 local exists = User.exists
-local bufmap = User.maps.buf_map
 
 if not exists('gitsigns') then
 	return
 end
+
+local types = User.types.gitsigns
+local bufmap = User.maps.buf_map
 
 local Gsig = require('gitsigns')
 
@@ -19,7 +19,6 @@ local keys = {
 		-- Navigati7on
 		{ lhs = '<leader>G]c', rhs = "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'", opts = { expr = true } },
 		{ lhs = '<leader>G[c', rhs = "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'", opts = { expr = true } },
-
 		-- Actions
 		{ lhs = '<leader>Ghs', rhs = ':Gitsigns stage_hunk<CR>' },
 		{ lhs = '<leader>Ghr', rhs = ':Gitsigns reset_hunk<CR>' },
@@ -61,7 +60,7 @@ local signs = {
 	untracked    = { text = '┆' },
 }
 
-Gsig.setup({
+local opts= {
 	---@param bufnr integer
 	on_attach = function(bufnr)
 		for mode, v in next, keys do
@@ -81,15 +80,15 @@ Gsig.setup({
 	linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
 	word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
 	watch_gitdir = { follow_files = true },
-	auto_attach = true,
+	-- auto_attach = true,
 	attach_to_untracked = true,
 	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 	current_line_blame_opts = {
 		virt_text = false,
-		virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
 		delay = 5000,
 		ignore_whitespace = false,
-		virt_text_priority = 100,
+		virt_text_priority = 25,
 	},
 	current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
 	sign_priority = 4,
@@ -103,9 +102,6 @@ Gsig.setup({
 		row = 0,
 		col = 1,
 	},
+}
 
-	-- WARN: This causes a VERY annoying warning
-	--		 each time Neovim starts.
-	--		 See: [https://github.com/lewis6991/gitsigns.nvim/issues/965](this issue).
-	-- yadm = { enable = false },
-})
+Gsig.setup(opts)

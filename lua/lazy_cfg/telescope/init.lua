@@ -30,9 +30,14 @@ local Actions = require('telescope.actions')
 local ActionLayout = require('telescope.actions.layout')
 local Extensions = Telescope.extensions
 
-Telescope.setup({
+local load_ext = Telescope.load_extension
+
+local opts = {
 	defaults = {
 		layout_strategy = 'flex',
+		layout_config = {
+			vertical = { width = 0.5 },
+		},
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
@@ -48,7 +53,7 @@ Telescope.setup({
 		lsp_definitions = { theme = 'dropdown' },
 		pickers = { theme = 'dropdown' },
 	},
-})
+}
 
 ---@class KeyMapArgs
 ---@field lhs string
@@ -75,16 +80,13 @@ local maps = {
 	},
 }
 
-for mode, m in next, maps do
-	for _, v in next, m do
-		kmap[mode](v.lhs, v.rhs, v.opts or {})
-	end
-end
-
----@class TelescopeArgs
+---@class TelAuData
 ---@field title? string
 ---@field filetype? string
 ---@field bufname? string
+
+---@class TelAuArgs
+---@field data? TelAuData
 
 ---@type AuPair[]
 local au_tbl = {
@@ -92,16 +94,62 @@ local au_tbl = {
 		event = 'User',
 		opts = {
 			pattern = 'TelescopePreviewerLoaded',
+			---@param args TelAuArgs
 			callback = function(args)
-				if args.data.filetype ~= 'help' then
+				if not args.data or not args.data.filetype or args.data.filetype ~= 'help' then
 					wo.number = true
 				else
-					wo.wrap = true
+					wo.wrap = false
 				end
 			end,
 		},
 	},
 }
+
+---@class TelExtension
+---@field [1] string
+---@field keys? fun(...): KeyMapArgs[]
+
+---@type table<string, TelExtension>
+local known_exts = {
+	['project_nvim'] = {
+		'projects',
+		---@return KeyMapArgs[]
+		keys = function()
+			local pfx = Extensions.projects
+			return {
+				{ lhs = '<leader>fTep', rhs = pfx.projects },
+			}
+		end,
+	},
+	['notify'] = {
+		'notify',
+		---@return KeyMapArgs[]
+		keys = function()
+			local pfx = Extensions.notify
+			return {
+				{ lhs = '<leader>fTeN', rhs = pfx.notify },
+			}
+		end,
+	},
+}
+
+Telescope.setup(opts)
+
+for mod, ext in next, known_exts do
+	if exists(mod) then
+		load_ext(ext[1])
+		for _, v in next, ext.keys() do
+			table.insert(maps.n, v)
+		end
+	end
+end
+
+for mode, m in next, maps do
+	for _, v in next, m do
+		kmap[mode](v.lhs, v.rhs, v.opts or {})
+	end
+end
 
 for _, t in next, au_tbl do
 	au(t.event, t.opts)

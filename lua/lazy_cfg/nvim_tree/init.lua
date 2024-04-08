@@ -8,7 +8,7 @@ if not exists('nvim-tree') then
 	return
 end
 
-local types = require('user.types').nvim_tree
+local types = require('user').types.nvim_tree
 
 local kmap = User.maps.kmap
 local hl = User.highlight
@@ -330,6 +330,14 @@ Tree.setup({
 	view = { width = 18 },
 	renderer = { group_empty = true },
 	filters = { dotfiles = false },
+	
+	-- NOTE: Useful for `project.nvim`.
+	sync_root_with_cwd = true,
+	respect_buf_cwd = true,
+	update_focused_file = {
+		enable = true,
+		update_root = true,
+	},
 })
 
 ---@type HlDict

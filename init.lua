@@ -1,6 +1,13 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+local User = require('user')
+-- Import docstrings and annotations.
+local types = User.types
+local maps_t = types.user.maps
+local exists = User.exists  -- Checks for missing modules
+local map = User.maps.map
+
 local set = vim.o
 local opt = vim.opt
 local fn = vim.fn
@@ -8,14 +15,6 @@ local api = vim.api
 local let = vim.g
 local lsp = vim.lsp
 local bo = vim.bo
-
--- Import docstrings and annotations.
-local types = require('user.types')
-require('user.types.user.maps')
-
-local User = require('user')
-local exists = User.exists  -- Checks for missing modules
-local map = User.maps.map
 
 local nmap = map.n
 

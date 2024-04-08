@@ -1,7 +1,9 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.lazy')
+local User = require('user')
+local exists = User.exists
+local types = User.types.lazy
 
 local fn = vim.fn
 local opt = vim.opt
@@ -23,9 +25,6 @@ local augroup = api.nvim_create_augroup
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
-local User = require('user')
-local exists = User.exists
-
 -- Install `Lazy` automatically.
 if not exists('lazy') or not fs_stat(lazypath) then
 	system({
@@ -42,7 +41,7 @@ end
 rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
-local opts = require('lazy_cfg.lazy.opts')
+local Opts = require('lazy_cfg.lazy.opts')
 
 Lazy.setup({
 	{ 'folke/lazy.nvim', lazy = false, priority = 1000 },
@@ -274,7 +273,6 @@ Lazy.setup({
 		'nvim-telescope/telescope.nvim',
 		priority = 1000,
 		name = 'Telescope',
-		cmd = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
 			'treesitter',
@@ -290,14 +288,18 @@ Lazy.setup({
 		'nvim-telescope/telescope-fzf-native.nvim',
 		name = 'Telescope-fzf',
 		build = 'make -j"$(nproc)"',
-		enabled = executable('fzf') == 1,
+		enabled = function()
+			return executable('fzf') == 1
+		end,
 	},
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
-		lazy = true,
 		priority = 1000,
 		name = 'Project',
+		config = function()
+			return require('lazy_cfg.project')
+		end,
 	},
 
 	-- Statusline
@@ -385,7 +387,7 @@ Lazy.setup({
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
-		name = 'WhickKey',
+		name = 'which_key',
 		priority = 1000,
 		init = function()
 			set.timeout = true
@@ -415,6 +417,7 @@ Lazy.setup({
 
 	{
 		'vhyrro/luarocks.nvim',
+		lazy = true,
 		priority = 1000,
 		name = 'luarocks',
 		config = true,
@@ -422,16 +425,16 @@ Lazy.setup({
 	},
 	{
 		'nvim-neorg/neorg',
-		lazy = false,
+		lazy = true,
 		dependencies = {
 			'luarocks',
 			'treesitter',
 		},
-		verdion = '*',
+		version = '*',
 		config = true,
 		enabled = false,
 	},
-}, opts
+}, Opts
 )
 
 ---@type LazyMods
