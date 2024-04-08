@@ -8,7 +8,6 @@
 ---@field opts HlOpts
 
 ---@alias HlDict table<string, HlOpts>
----@alias HlRepeat table<string, HlOpts[]>
 
 ---@class HlHex
 ---@field black '#000000'
@@ -38,6 +37,5 @@
 ---@field hl fun(name: string, opts: HlOpts)
 ---@field hl_from_arr fun(arr: HlPair[])
 ---@field hl_from_dict fun(dict: HlDict)
----@field hl_repeat fun(t: HlRepeat)
 ---@field colors_hex? HlColorsHex
----@field current_palette? fun()
+---@field current_palette fun(): string

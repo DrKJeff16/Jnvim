@@ -1,8 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types')
 local User = require('user')
+local types = require('user').types.user.maps
 local exists = User.exists
 local kmap = User.maps.kmap
 
@@ -115,13 +115,7 @@ Todo.setup({
 	},
 })
 
----@class RhsOpts
----@field [1] string|fun()
----@field [2]? vim.keymap.set.Opts
-
----@alias TodoKeys table<string, RhsOpts>
-
----@type TodoKeys
+---@type KeyMapDict
 local maps = {
 	-- `TODO`
 	['<leader>ctn'] = {

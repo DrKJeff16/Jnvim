@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.highlight')
+local tupes = require('user.types').user.highlight
 
 local hi = vim.api.nvim_set_hl
 
@@ -18,18 +18,29 @@ function M.hl_from_arr(arr)
 	end
 end
 
+--- Set hl groups based on u.
+--- ---
+--- Example of a valid table:
+--- ```lua
+--- local T = {
+---		['HlGroup'] = { fg = '...', ... },
+---		['HlGroupAlt'] = { ... },
+--- }
+--- ```
+--- Which equals to:
+--- ```vim
+---	hi HlGroup ctermfg=... ...
+---	hi HlGroupAlt ...
+--- ```
+--- See more at `:h nvim_set_hl`
 function M.hl_from_dict(dict)
 	for k, v in next, dict do
 		hi(0, k, v)
 	end
 end
 
-function M.hl_repeat(t)
-	for name, opts_arr in next, t do
-		for _, opts in next, opts_arr do
-			hi(0, name, opts)
-		end
-	end
+M.current_palette = function()
+	return vim.cmd('colorscheme')
 end
 
 return M

@@ -1,10 +1,9 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.maps')
-require('user.types.user.autocmd')
-
 local User = require('user')
+local au_t = User.types.user.autocmd
+local maps_t = User.types.user.maps
 local exists = User.exists
 local maps = User.maps
 
@@ -100,16 +99,7 @@ for _, v in next, aus do
 	au(v.event, v.opts)
 end
 
----@class ApiMapArgs
----@field lhs string
----@field rhs string
----@field opts? ApiMapOpts
-
----@class ApiMapTbl
----@field n? ApiMapArgs[]
----@field i? ApiMapArgs[]
----@field t? ApiMapArgs[]
----@field v? ApiMapArgs[]
+-- TODO: Annotate.
 local map_tbl = {
 	n = {
 		{
