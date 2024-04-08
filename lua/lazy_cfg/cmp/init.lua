@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local u_types = User.types
 local exists = User.exists
 
 local types = require('cmp.types')
@@ -211,7 +212,9 @@ cmp.setup.cmdline(':', {
 	})
 })
 
-sks.vscode()
+-- sks.vscode()
 
 -- For debugging.
-print('cmp loaded.')
+if vim.notify then
+	vim.notify('cmp loaded.')
+end
