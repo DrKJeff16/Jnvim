@@ -175,8 +175,8 @@ local tree_open = function(data)
 		-- 'sh',
 		'codeowners',
 		'gitignore',
-		'lua',
-		'yaml',
+		-- 'lua',
+		-- 'yaml',
 	}
 
 	if not in_tbl(noignore, ft) then
