@@ -91,12 +91,6 @@ Lazy.setup({
 		name = 'ts-commentstring',
 	},
 
-	-- Tpope is god.
-	{
-		'tpope/vim-commentary',
-		lazy = false,
-		enabled = false,
-	},
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') == 1 },
 	{ 'tpope/vim-speeddating', enabled = false },
@@ -108,16 +102,16 @@ Lazy.setup({
 		name = 'treesitter',
 		build = ':verbose TSUpdate',
 		dependencies = {
-			'nvim-treesitter/nvim-treesitter-context',
-			'nvim-orgmode/orgmode',
-			'JoosepAlviste/nvim-ts-context-commentstring',
+			-- 'nvim-orgmode/orgmode',
 			-- 'HiPhish/nvim-ts-rainbow2',
+			'nvim-treesitter/nvim-treesitter-context',
+			'JoosepAlviste/nvim-ts-context-commentstring',
 		},
 		config = function()
 			return require('lazy_cfg.treesitter')
 		end,
 	},
-	{ 'nvim-orgmode/orgmode', lazy = true, ft = 'org' },
+	-- { 'nvim-orgmode/orgmode', lazy = true, ft = 'org' },
 
 	-- LSP
 	{
@@ -125,7 +119,7 @@ Lazy.setup({
 		lazy = false,
 		name = 'lspconfig',
 		dependencies = {
-			'neodev',
+			'NeoDev',
 			'NeoConf',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
@@ -139,7 +133,7 @@ Lazy.setup({
 		'folke/neodev.nvim',
 		lazy = false,
 		priority = 1000,
-		name = 'neodev',
+		name = 'NeoDev',
 		dependencies = { 'NeoConf' },
 		enabled = executable('lua-language-server') == 1,
 	},
@@ -152,7 +146,13 @@ Lazy.setup({
 			'nlsp-settings',
 		},
 	},
-	{ 'p00f/clangd_extensions.nvim', lazy = true, enabled = executable('clangd') == 1 },
+	{
+		'p00f/clangd_extensions.nvim',
+		ft = { 'c', 'cpp' },
+		enabled = function()
+			return executable('clangd') == 1
+		end,
+	},
 	{
 		'tamago324/nlsp-settings.nvim',
 		lazy = true,
@@ -182,7 +182,7 @@ Lazy.setup({
 	},
 	{
 		'williamboman/mason.nvim',
-		lazy = true,
+		cmd = { 'Mason' },
 		name = 'Mason',
 	},
 
@@ -219,6 +219,7 @@ Lazy.setup({
 		name = 'nightfox',
 	},
 
+	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
 		priority = 1000,
@@ -235,6 +236,7 @@ Lazy.setup({
 	-- Completion Engine
 	{
 		'hrsh7th/nvim-cmp',
+		priority = 1000,
 		name = 'cmp',
 		dependencies = {
 			'treesitter',
@@ -271,7 +273,7 @@ Lazy.setup({
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
-		priority = 1000,
+		-- priority = 1000,
 		name = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
@@ -286,6 +288,7 @@ Lazy.setup({
 	},
 	{
 		'nvim-telescope/telescope-fzf-native.nvim',
+		lazy = true,
 		name = 'Telescope-fzf',
 		build = 'make -j"$(nproc)"',
 		enabled = function()
@@ -332,7 +335,6 @@ Lazy.setup({
 	-- Auto-pairing (**BROKEN**)
 	{
 		'windwp/nvim-autopairs',
-		lazy = true,
 		name = 'AutoPairs',
 		config = function()
 			return require('lazy_cfg.autopairs')
@@ -348,14 +350,14 @@ Lazy.setup({
 		config = function()
 			return require('lazy_cfg.blank_line')
 		end,
-		enabled = false,
+		-- enabled = false,
 	},
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
 		lazy = true,
 		priority = 1000,
 		name = 'rainbow-delimiters',
-		enabled = false,
+		-- enabled = false,
 	},
 
 	-- File Tree
@@ -365,18 +367,28 @@ Lazy.setup({
 		name = 'nvim-tree',
 		dependencies = {
 			'web-devicons',
-			'antosha417/nvim-lsp-file-operations',
-			'echasnovski/mini.base16',
+			'Lsp_FileOps',
+			'mini.base16',
 		},
 		config = function()
 			return require('lazy_cfg.nvim_tree')
 		end,
+	},
+	{
+		'antosha417/nvim-lsp-file-operations',
+		lazy = true,
+		name = 'Lsp_FileOps',
+	},
+	{
+		'echasnovski/mini.base16',
+		lazy = true,
 	},
 
 	{ 'rhysd/vim-syntax-codeowners', lazy = false, name = 'codeowners-syntax' },
 
 	{
 		'lewis6991/gitsigns.nvim',
+		priority = 1000,
 		name = 'GitSigns',
 		version = '*',
 		config = function()
