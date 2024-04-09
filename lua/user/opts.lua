@@ -1,7 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
--- local types = require('user.types')
 require('user.types.user.opts')
 
 local set = vim.o
@@ -14,6 +13,7 @@ local api = vim.api
 local has = fn.has
 local exists = fn.exists
 
+---@type 0|1
 let.is_windows = has('win32')
 
 _G.is_windows = let.is_windows == 1
@@ -86,7 +86,11 @@ local opt_tbl = {
 	},
 }
 
----@param opts OptionPairs|OptionPairsOpt
+if is_windows then
+	opt_tbl.opt.shellslash = true
+end
+
+---@param opts UserO|UserOpt
 ---@param target?
 ---|'o'
 ---|'set'
