@@ -33,7 +33,9 @@ local nmap = kmap.n
 local Sub = {}
 
 function Sub.neoconf()
-	return require('lazy_cfg.lspconfig.neoconf')
+	if exists('lazy_cfg.lspconfig.neoconf') then
+		return require('lazy_cfg.lspconfig.neoconf')
+	end
 end
 function Sub.clangd()
 	return require('lazy_cfg.lspconfig.clangd')
@@ -111,8 +113,7 @@ local add_caps = function(srv_tbl)
 						validate = { enable = true },
 					},
 				}
-			end
-			if k == 'yamlls' then
+			elseif k == 'yamlls' then
 				res[k].settings = {
 					yaml = {
 						schemaStore = {

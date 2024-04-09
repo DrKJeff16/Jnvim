@@ -3,9 +3,8 @@
 
 local Lspconfig = require('lspconfig')
 
-require('user.types.lspconfig')
-
 local User = require('user')
+local types = User.types.lspconfig
 local exists = User.exists
 
 if not exists('neoconf') then
@@ -13,10 +12,12 @@ if not exists('neoconf') then
 end
 
 if neoconf_configured and neoconf_configured == 1 then
+	vim.notify('Neoconf can\'t be re-sourced.')
 	return
+else
+	_G.neoconf_configured = 1
 end
 
-_G.neoconf_configured = 1
 local NC = require('neoconf')
 
 local opts = {
@@ -27,9 +28,9 @@ local opts = {
 	global_settings = "neoconf.json",
 	-- import existing settings from other plugins
 	import = {
-		vscode = false, -- local .vscode/settings.json
+		vscode = true, -- local .vscode/settings.json
 		coc = false, -- global/local coc-settings.json
-		nlsp = true, -- global/local nlsp-settings.nvim json settings
+		nlsp = false, -- global/local nlsp-settings.nvim json settings
 	},
 	-- send new configuration to lsp clients when changing json settings
 	live_reload = true,
@@ -48,7 +49,7 @@ local opts = {
 		jsonls = {
 			enabled = true,
 			-- only show completion in json settings for configured lsp servers
-			configured_servers_only = false,
+			configured_servers_only = true,
 		},
 		-- configures lua_ls to get completion of lspconfig server settings
 		lua_ls = {
@@ -59,4 +60,5 @@ local opts = {
 		},
 	},
 }
+
 NC.setup(opts)

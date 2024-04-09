@@ -4,11 +4,13 @@
 local User = require('user')
 local exists = User.exists
 
-if not exists('clangd_extensions') then
+local fn = vim.fn
+
+local executable = fn.executable
+
+if not exists('clangd_extensions') or executable('clangd') ~= 1 then
 	return
 end
-
-local fn = vim.fn
 
 local Exts = require('clangd_extensions')
 local Inlay = require('clangd_extensions.inlay_hints')
