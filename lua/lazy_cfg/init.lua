@@ -60,7 +60,7 @@ Lazy.setup({
 	},
 	{
 		'nvim-lua/popup.nvim',
-		lazy = true,
+		lazy = false,
 		priority = 1000,
 		name = 'Popup',
 		dependencies = { 'Plenary' },
@@ -161,18 +161,7 @@ Lazy.setup({
 			'MasonLSP',
 			'Notify',
 		},
-	},
-	{
-		'rcarriga/nvim-notify',
-		name = 'Notify',
-		priority = 1000,
-		dependencies = { 'Plenary' },
-		init = function()
-			vim.opt.termguicolors = true
-		end,
-		config = function()
-			return require('lazy_cfg.notify')
-		end,
+		enabled = false,
 	},
 	{
 		'williamboman/mason-lspconfig.nvim',
@@ -184,6 +173,18 @@ Lazy.setup({
 		'williamboman/mason.nvim',
 		cmd = { 'Mason' },
 		name = 'Mason',
+	},
+
+	{
+		'rcarriga/nvim-notify',
+		name = 'Notify',
+		dependencies = { 'Plenary' },
+		init = function()
+			vim.opt.termguicolors = true
+		end,
+		config = function()
+			return require('lazy_cfg.notify')
+		end,
 	},
 
 	-- Colorschemes
@@ -222,7 +223,6 @@ Lazy.setup({
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		priority = 1000,
 		name = 'todo-comments',
 		dependencies = {
 			'treesitter',
@@ -242,6 +242,7 @@ Lazy.setup({
 			'treesitter',
 			'lspconfig',
 			'onsails/lspkind.nvim',
+
 			'hrsh7th/cmp-nvim-lsp',
 			'hrsh7th/cmp-nvim-lua',
 			'hrsh7th/cmp-nvim-lsp-document-symbol',
@@ -266,9 +267,10 @@ Lazy.setup({
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
-		dependencies = { 'rafamadriz/friendly-snippets' },
+		dependencies = { 'friendly-snippets' },
 		build = 'make -j"$(nproc)" install_jsregexp',
 	},
+	{ 'rafamadriz/friendly-snippets', lazy = false },
 
 	-- Telescope
 	{
