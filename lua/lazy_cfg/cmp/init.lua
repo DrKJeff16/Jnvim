@@ -2,16 +2,18 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local u_types = User.types
+local u_types = User.types.cmp
 local exists = User.exists
 
-local types = require('cmp.types')
+local Types = require('cmp.types')
+local CmpTypes = require('cmp.types.cmp')
 
 local api = vim.api
 local set = vim.o
 local opt = vim.opt
 local bo = vim.bo
 
+local tbl_contains = vim.tbl_contains
 local get_mode = api.nvim_get_mode
 
 ---@return boolean
@@ -31,7 +33,7 @@ local sks = require('lazy_cfg.cmp.kinds')
 local n_select = function(fallback)
 	local jumpable = Luasnip.expand_or_locally_jumpable
 	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Replace }
+	local opts = { behavior = cmp.SelectBehavior.Insert }
 
 	if cmp.visible() then
 		cmp.select_next_item(opts)
@@ -51,8 +53,9 @@ end
 ---@return fun(fallback: fun())
 local complete = function(opts)
 	if not opts or vim.tbl_isempty(opts) then
-		opts = { behavior = cmp.ConfirmBehavior.Insert, select = false }
+		opts = { behavior = cmp.ConfirmBehavior.Replace, select = false }
 	end
+
 	return function(fallback)
 		if cmp.visible() and cmp.get_selected_entry() then
 			cmp.confirm(opts)
@@ -61,14 +64,6 @@ local complete = function(opts)
 		end
 	end
 end
-
----@class CmpMap
----@field i? fun(fallback: fun())
----@field s? fun(fallback: fun())
----@field c? fun(fallback: fun())
-
----@class TabMap: CmpMap
----@class CrMap: CmpMap
 
 ---@type TabMap
 local tab_map = {
@@ -91,14 +86,14 @@ local tab_map = {
 ---@type CrMap
 local cr_map = {
 	i = complete({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-	s = complete({ behavior = cmp.ConfirmBehavior.Insert, select = true }),
+	s = complete({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
 	c = complete({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
 }
 
 ---@param fallback fun()
 local bs_map = function(fallback)
 	if cmp.visible() then
-		cmp.abort()
+		cmp.close()
 	end
 	fallback()
 end
@@ -111,15 +106,20 @@ cmp.setup({
 		---@type string
 		local ft = opt_val('ft', { scope = 'local' })
 		local enable_comments = {
-			'lua',
+			'bash',
 			'c',
 			'cpp',
-			'python',
+			'css',
 			'gitcommit',
-			'gitignore',
+			'html',
+			'java',
+			'lua',
+			'markdown',
+			'python',
+			'sh',
 		}
 
-		if vim.tbl_contains(enable_comments, ft) then
+		if tbl_contains(enable_comments, ft) then
 			return true
 		end
 
@@ -144,17 +144,15 @@ cmp.setup({
 	window = sks.window,
 
 	matching = {
-		disallow_fuzzy_matching = true,
-		disallow_fullfuzzy_matching = false,
+		disallow_fuzzy_matching = false,
+		disallow_fullfuzzy_matching = true,
 		disallow_prefix_unmatching = false,
 		disallow_partial_matching = false,
 		disallow_partial_fuzzy_matching = true,
-		disallow_symbol_nonprefix_matching = false,
+		disallow_symbol_nonprefix_matching = true,
 	},
 
 	mapping = cmp.mapping.preset.insert({
-		['<C-b>'] = cmp.mapping.scroll_docs(-4),
-		['<C-f>'] = cmp.mapping.scroll_docs(4),
 		['<C-j>'] = cmp.mapping.scroll_docs(-4),
 		['<C-k>'] = cmp.mapping.scroll_docs(4),
 		['<C-e>'] = cmp.mapping.abort(),
@@ -165,12 +163,16 @@ cmp.setup({
 		['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 		['<Down>'] = cmp.config.disable,
 		['<Up>'] = cmp.config.disable,
+		['<Right>'] = cmp.mapping(bs_map, { 'i', 's' }),
+		['<Left>'] = cmp.mapping(
+		bs_map,
+		{ 'i', 's' }
+		),
 	}),
 
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
-		{ name = 'path' },
 	}, {
 		{ name = 'luasnip' },
 		{ name = 'buffer' },
@@ -180,7 +182,6 @@ cmp.setup({
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
 		{ name = 'conventionalcommits' },
-		{ name = 'buffer' },
 	}, {
 		{ name = 'luasnip' },
 		{ name = 'git' },
@@ -199,6 +200,7 @@ cmp.setup.filetype({ 'org', 'orgagenda', 'orghelp' }, {
 cmp.setup.cmdline({ '/', '?' }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
+		{ name = 'nvim_lsp_document_symbol' },
 		{ name = 'buffer' },
 	}),
 })
@@ -208,7 +210,12 @@ cmp.setup.cmdline(':', {
 	sources = cmp.config.sources({
 		{ name = 'path' }
 	}, {
-		{ name = 'cmdline' }
+		{
+			name = 'cmdline',
+			option = {
+				treat_trailing_slash = false,
+			},
+		},
 	})
 })
 

@@ -1,11 +1,11 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.highlight')
 local User = require('user')
+local utypes = User.types.cmp
 
-require('cmp.types')
-require('cmp.types.cmp')
+local Types = require('cmp.types')
+local CmpTypes = require('cmp.types.cmp')
 
 local api = vim.api
 
@@ -13,33 +13,6 @@ local cmp = require('cmp')
 local LspKind = require('lspkind')
 
 local hl = User.highlight.hl
-
----@class FmtKindIcons
----@field Class? string
----@field Color? string
----@field Constant? string
----@field Constructor? string
----@field Enum? string
----@field EnumMember? string
----@field Event? string
----@field Field? string
----@field File? string
----@field Folder? string
----@field Function? string
----@field Interface? string
----@field Keyword? string
----@field Method? string
----@field Module? string
----@field Operator? string
----@field Property? string
----@field Reference? string
----@field Snippet? string
----@field Struct? string
----@field Text? string
----@field TypeParameter? string
----@field Unit? string
----@field Value? string
----@field Variable? string
 
 ---@type FmtKindIcons
 local kind_icons = {
@@ -132,28 +105,14 @@ local function vscode_fmt(entry, vim_item)
 	return vim_item
 end
 
----@class FmtOptsMenu
----@field buffer? string
----@field nvim_lsp? string
----@field luasnip? string
----@field nvim_lua? string
----@field latex_symbols? string
-
----@class CmpKindMod
----@field protected kind_icons FmtKindIcons
----@field protected kind_codicons FmtKindIcons
----@field formatting cmp.FormattingConfig
----@field window cmp.WindowConfig
----@field view cmp.ViewConfig
----@field vscode fun()
-
 ---@type CmpKindMod
 local M = {
 	---@protected
 	kind_icons = kind_icons,
 	kind_codicons = kind_codicons,
 	formatting = {
-		fields = { 'kind', 'abbr' },
+		expandable_indicator = true,
+		fields = { 'abbr', 'kind', 'menu' },
 		format = vscode_fmt,
 	},
 	window = {

@@ -8,6 +8,7 @@ if not exists('luasnip') then
 	return
 end
 
+local types = require('luasnip.util.types')
 local ls = require('luasnip')
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -31,7 +32,6 @@ local fmt = require('luasnip.extras.fmt').fmt
 local fmta = require('luasnip.extras.fmt').fmta
 local conds = require('luasnip.extras.expand_conditions')
 local postfix = require('luasnip.extras.postfix').postfix
-local types = require('luasnip.util.types')
 local parse = require('luasnip.util.parser').parse_snippet
 local ms = ls.multi_snippet
 local k = require('luasnip.nodes.key_indexer').new_key
