@@ -93,6 +93,40 @@
 
 		"lua_ls": {
 			"Lua.completion.callSnippet": "Replace"
+		},
+		"bashls": {
+			"bashIde.backgroundAnalysisMaxFiles": 500,
+			"bashIde.enableSourceErrorDiagnostics": false,
+			"bashIde.includeAllWorkspaceSymbols": true,
+			"bashIde.globPattern": "**/*@(.sh|.inc|.bash|.command)",
+			"bashIde.logLevel": "debug"
+		},
+		"jsonls": {
+			"json.format.enable": true,
+			"json.validate.enable": true,
+			"json.format.keepLines": true,
+			"json.maxItemsComputed": 5000,
+			"json.schemaDownload.enable": true
+		}
+	},
+	"neoconf": {
+		"import": {
+			"coc": true,
+			"nlsp": true,
+			"vscode": true
+		},
+		"plugins": {
+			"jsonls": {
+				"enabled": true,
+				"configured_servers_only": false
+			},
+			"lua_ls": {
+				"enabled": true,
+				"enabled_for_neovim_config": true
+			},
+			"lspconfig": {
+				"enabled": true
+			}
 		}
 	}
 }
