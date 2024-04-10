@@ -19,6 +19,17 @@ Todo.setup({
 	sign_priority = 5, -- sign priority
 	-- keywords recognized as todo comments
 	keywords = {
+		TITLE = {
+			icon = '! ',
+			color = '#00886d',
+			alt = {
+				"SECTION",
+				"BLOCK",
+				"CODESECTION",
+				"SECTIONTITLE",
+				"CODETITLE",
+			},
+		},
 		FIX = {
 			icon = ' ', -- icon used for the sign, and in search results
 			color = 'error', -- can be a hex color, or a named color (see below)
