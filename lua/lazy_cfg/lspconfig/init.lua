@@ -72,9 +72,7 @@ Neodev.setup({
 		types = true,
 		plugins = true,
 	},
-
 	setup_jsonls = true,
-
 	lspconfig = true,
 	pathStrict = true,
 })

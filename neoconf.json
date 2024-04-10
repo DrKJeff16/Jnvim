@@ -103,10 +103,10 @@
 		},
 		"jsonls": {
 			"json.format.enable": true,
-			"json.validate.enable": true,
 			"json.format.keepLines": true,
 			"json.maxItemsComputed": 5000,
-			"json.schemaDownload.enable": true
+			"json.schemaDownload.enable": true,
+			"json.validate.enable": true
 		}
 	},
 	"neoconf": {
