@@ -1,19 +1,18 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.highlight')
-require('user.types.user.autocmd')
-
 local User = require('user')
 local exists = User.exists
 local maps = User.maps
+local au_t = User.types.user.autocmd
+local hl_t = User.types.user.highlight
 
 if not exists('lspconfig') or not exists('neodev') then
 	return
 end
 
 -- NOTE: This MUST go after plugin check.
-require('user.types.lspconfig')
+local types = User.types.lspconfig
 
 local api = vim.api
 local bo = vim.bo

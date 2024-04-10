@@ -1,15 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.which_key')
-
 local User = require('user')
 local exists = User.exists
+local types = User.types.which_key
 
 local WK = require('which-key')
-local presets = require('which-key.plugins.presets')
+local Presets = require('which-key.plugins.presets')
 
-local register = WK.register
+local Register = WK.register
 
 ---@param maps RegKeysTbl
 ---@param opts? RegOpts
@@ -54,7 +53,7 @@ local reg = function(maps, opts)
 		filtered[s] = tbl
 	end
 
-	register(filtered, opts)
+	Register(filtered, opts)
 end
 
 ---@type RegKeysTbl
