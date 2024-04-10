@@ -5,9 +5,11 @@ local User = require('user')
 -- Import docstrings and annotations.
 local types = User.types
 local maps_t = types.user.maps
+local hl_t = types.user.highlight
 local exists = User.exists  -- Checks for missing modules
 local map = User.maps.map
 local kmap = User.maps.kmap
+local hl = User.highlight.hl
 
 local set = vim.o
 local opt = vim.opt
@@ -20,7 +22,7 @@ local bo = vim.bo
 local nmap = map.n
 
 -- Set `<Space>` as Leader Key.
-nmap('<space>', '<Nop>')
+nmap('<space>', '<Nop>', { nowait = false })
 let.mapleader = ' '
 let.maplocalleader = ' '
 
@@ -110,14 +112,14 @@ local Pkg = require('lazy_cfg')
 local Csc = Pkg.colorschemes
 
 -- Reorder to your liking.
-if Csc.tokyonight and Csc.tokyonight.setup then
-	Csc.tokyonight.setup()
-elseif Csc.nightfox and Csc.nightfox.setup then
+if Csc.nightfox and Csc.nightfox.setup then
 	Csc.nightfox.setup()
-elseif Csc.catppuccin and Csc.catppuccin.setup then
-	Csc.catppuccin.setup()
+elseif Csc.tokyonight and Csc.tokyonight.setup then
+	Csc.tokyonight.setup()
 elseif Csc.spaceduck and Csc.spaceduck.setup then
 	Csc.spaceduck.setup()
+elseif Csc.catppuccin and Csc.catppuccin.setup then
+	Csc.catppuccin.setup()
 end
 
 -- Call the user file associations.
