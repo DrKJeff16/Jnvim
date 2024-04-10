@@ -50,8 +50,6 @@ local M = {}
 
 ---@type LazyPlugs
 M.ESSENTIAL = {
-	{ 'folke/lazy.nvim', lazy = false, priority = 1000 },
-
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 
 	{
@@ -73,10 +71,6 @@ M.ESSENTIAL = {
 		lazy = true,
 		priority = 1000,
 		name = 'Plenary',
-		cmd = {
-			'PlenaryBustedFile',
-			'PlenaryBustedDirectory',
-		},
 	},
 	{
 		'nvim-lua/popup.nvim',
