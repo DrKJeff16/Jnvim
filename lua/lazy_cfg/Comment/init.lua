@@ -14,13 +14,11 @@ end
 
 local bo = vim.bo
 local set = vim.o
-local fn = vim.fn
-local api = vim.api
-local let = vim.g
 
 local Comment = require('Comment')
 
-Comment.setup({
+---@type CommentConfig
+local opts = {
 	---Function to call before (un)comment
 	---@return string
 	pre_hook = function(c)
@@ -30,8 +28,6 @@ Comment.setup({
 	padding = true,
 	---Whether the cursor should stay at its position
 	sticky = true,
-	---Lines to be ignored while (un)comment
-	ignore = nil,
 	---LHS of toggle mappings in NORMAL mode
 	toggler = {
 		---Line-comment toggle keymap
@@ -63,6 +59,6 @@ Comment.setup({
 		---Extra mapping; `gco`, `gcO`, `gcA`
 		extra = true,
 	},
-	---Function to call after (un)comment
-	post_hook = nil,
-})
+}
+
+Comment.setup(opts)
