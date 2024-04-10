@@ -8,8 +8,6 @@ if not exists('nvim-autopairs') then
 	return
 end
 
-local pfix = 'lazy_cfg.autopairs.'
-
 local Ap = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
 local Conds = require('nvim-autopairs.conds')
@@ -30,7 +28,7 @@ Ap.setup({
 
 	disable_in_macro = false,  -- disable when recording or executing a macro
 	disable_in_visualblock = false,  -- disable when insert after visual block mode
-	disable_in_replace_mode = true,
+	disable_in_replace_mode = false,
 
 	enable_moveright = true,
 	enable_afterquote = false,  -- add bracket pairs after quote
@@ -88,10 +86,9 @@ Ap.add_rules({
 local M = {}
 
 ---@param subms string[] The submodule string array.
----@param prefix? string The module's prefix path in case they aren't already joined in `subms`.
 ---@return FilterTbl res
-local sub_filter = function(subms, prefix)
-	prefix = prefix or 'lazy_cfg.autopairs.'
+local sub_filter = function(subms)
+	local prefix = 'lazy_cfg.autopairs.'
 
 	---@type FilterTbl
 	local res = {}
@@ -116,7 +113,7 @@ local submods = {
 	'cmp',
 }
 
-for _, v in next, sub_filter(submods, pfix) do
+for _, v in next, sub_filter(submods) do
 	require(v)
 end
 

@@ -105,10 +105,10 @@ for k, func in next, map do
 	end
 end
 
--- Make the package list globsl.
+--- List of manually-called, non-lazy
+--- plugins. 
 local Pkg = require('lazy_cfg')
 
--- Global color schemes table.
 local Csc = Pkg.colorschemes
 
 -- Reorder to your liking.

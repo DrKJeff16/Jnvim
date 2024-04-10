@@ -10,7 +10,7 @@ local CmpTypes = require('cmp.types.cmp')
 local api = vim.api
 
 local cmp = require('cmp')
-local LspKind = require('lspkind')
+local LK = require('lspkind')
 
 local hl = User.highlight.hl
 
@@ -105,45 +105,10 @@ local function vscode_fmt(entry, vim_item)
 	return vim_item
 end
 
----@type CmpKindMod
-local M = {
-	---@protected
-	kind_icons = kind_icons,
-	kind_codicons = kind_codicons,
-	formatting = {
-		expandable_indicator = true,
-		fields = { 'abbr', 'kind', 'menu' },
-		format = vscode_fmt,
-	},
-	window = {
-		documentation = cmp.config.window.bordered(),
-		completion = cmp.config.window.bordered(),
-		-- completion = {
-		-- 	winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None',
-		-- 	col_offset = -3,
-		-- 	side_padding = 0,
-		-- },
-	},
-	view = {
-		entries = { name = 'custom', selection_order = 'top_down' },
-		docs = { auto_open = true },
-	},
-	vscode = vscode,
-}
-
 ---@param entry cmp.Entry
 ---@param vim_item vim.CompletedItem
 local function fmt(entry, vim_item)
-	if not vim.tbl_contains({ 'path' }, entry.source.name) then
-		local devicons = require('nvim-web-devicons')
-		local icon, hl_group = devicons.get_icon(entry:get_completion_item().label)
-		if icon then
-			vim_item.kind = icon
-			vim_item.kind_hl_group = hl_group
-			return vim_item
-		end
-	end
-	return LspKind.cmp_format({ with_text = false })
+	return LK.cmp_format({ with_text = false })(entry, vim_item)
 end
 
 ---@type HlDict
@@ -190,8 +155,31 @@ local extra_hls = {
 	CmpItemKindTypeParameter = { fg = "#D8EEEB", bg = "#58B5A8" },
 }
 
-for n, o in next, extra_hls do
-	hl(n, o)
+---@type CmpKindMod
+local M = {
+	---@protected
+	kind_icons = kind_icons,
+	kind_codicons = kind_codicons,
+	formatting = {
+		expandable_indicator = true,
+		fields = { 'abbr', 'kind', 'menu' },
+		format = fmt,
+	},
+	window = {
+		documentation = cmp.config.window.bordered(),
+		completion = cmp.config.window.bordered(),
+	},
+	view = {
+		entries = { name = 'custom', selection_order = 'top_down' },
+		docs = { auto_open = true },
+	},
+	vscode = vscode,
+	extra_hls = extra_hls,
+}
+function M:hilite()
+	for n, o in next, self.extra_hls do
+		hl(n, o)
+	end
 end
 
 return M

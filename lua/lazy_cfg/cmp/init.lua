@@ -219,7 +219,7 @@ cmp.setup.cmdline(':', {
 	})
 })
 
--- sks.vscode()
+sks.vscode()
 
 -- For debugging.
 if vim.notify then

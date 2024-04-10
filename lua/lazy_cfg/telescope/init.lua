@@ -1,11 +1,10 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.maps')
-require('user.types.user.autocmd')
-
 local User = require('user')
 local exists = User.exists
+local maps_t = User.types.user.maps
+local au_t = User.types.user.autocmd
 
 if not exists('telescope') then
 	return
@@ -112,6 +111,9 @@ local au_tbl = {
 
 ---@type table<string, TelExtension>
 local known_exts = {
+	['scope'] = {
+		'scope',
+	},
 	['project_nvim'] = {
 		'projects',
 		---@return KeyMapArgs[]
@@ -139,8 +141,11 @@ Telescope.setup(opts)
 for mod, ext in next, known_exts do
 	if exists(mod) then
 		load_ext(ext[1])
-		for _, v in next, ext.keys() do
-			table.insert(maps.n, v)
+
+		if ext.keys then
+			for _, v in next, ext.keys() do
+				table.insert(maps.n, v)
+			end
 		end
 	end
 end

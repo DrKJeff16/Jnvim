@@ -70,4 +70,4 @@ local opts = {
 	datapath = stdpath("data"),
 }
 
-Project.setup()
+Project.setup(opts)

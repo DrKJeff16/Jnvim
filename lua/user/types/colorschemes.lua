@@ -1,8 +1,22 @@
+--- A loadable color schemes table.
+--- ---
+--- Each colorscheme is a table with **three** items:
+--- * `mod_pfx`: A **protected** string for internal calls
+--- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
+--- * `setup`: A function to setup and set the colorscheme.
+---
+--- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
 ---@class CscSubMod
 ---@field setup? fun(...)
 ---@field mod_pfx string
 ---@field mod_cmd string|string[]
 
+--- NOTE: Must check for `nil` value.
+--- ---
+--- A table for each **explicitly** configured colorscheme.
+--- ---
+--- The colorschemes must comply with the `CscSubMod` type specifications.
+--- ---
 ---@class CscMod
 ---@field tokyonight? CscSubMod
 ---@field catppuccin? CscSubMod

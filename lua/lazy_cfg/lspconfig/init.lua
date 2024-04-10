@@ -272,7 +272,7 @@ nmap('<Leader>l[', diag.goto_prev)
 nmap('<Leader>l]', diag.goto_next)
 nmap('<Leader>lq', diag.setloclist)
 
-lsp.set_log_level('DEBUG')
+lsp.set_log_level('INFO')
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),

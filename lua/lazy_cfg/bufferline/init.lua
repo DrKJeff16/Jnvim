@@ -11,20 +11,35 @@ end
 local BLine = require('bufferline')
 
 ---@param count integer
----@param level 'error'|'warning'
----@param diagnostics_dict? table<string, any>
+---@param lvl 'error'|'warning'
+---@param diags? table<string, any>
 ---@param context? table
 ---@return string
-local diagnostics_indicator = function(count, level, diagnostics_dict, context)
-	local icon = level:match("error") and " " or " "
-	return " " .. icon .. count
+local diagnostics_indicator = function(count, lvl, diags, context)
+	if not context.buffer:current() then
+		return ''
+	end
+
+	local s = " "
+
+	for e, n in next, diags do
+		local sym = e == "error" and " "
+		or (e == "warning" and " " or "" )
+		s = s .. n .. sym
+	end
+
+	return s
 end
 
-BLine.setup({
+---@type bufferline.UserConfig
+local opts = {
 	options = {
 		mode = 'buffers',
 
-		style_preset = BLine.style_preset.default,
+		style_preset = {
+			BLine.style_preset.no_italic,
+			BLine.style_preset.minimal,
+		},
 		themable = true,
 
 		numbers = 'buffer_id',
@@ -65,4 +80,6 @@ BLine.setup({
 
 		-- TODO: Configurate further.
 	},
-})
+}
+
+BLine.setup(opts)

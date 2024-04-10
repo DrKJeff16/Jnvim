@@ -32,7 +32,7 @@ if not exists('lazy') or not fs_stat(lazypath) then
 		'clone',
 		'--filter=blob:none',
 		'https://github.com/folke/lazy.nvim.git',
-		'--branch=stable',
+		-- '--branch=stable',
 		lazypath,
 	})
 end
@@ -43,10 +43,30 @@ rtp:prepend(lazypath)
 local Lazy = require('lazy')
 local Opts = require('lazy_cfg.lazy.opts')
 
-Lazy.setup({
+---@alias LazyPlugs (string|LazyConfig|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport[][])[]
+
+---@type table<string, LazyPlugs>
+local M = {}
+
+---@type LazyPlugs
+M.ESSENTIAL = {
 	{ 'folke/lazy.nvim', lazy = false, priority = 1000 },
 
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
+
+	{
+		'tiagovla/scope.nvim',
+		lazy = false,
+		priority = 1000,
+		name = 'Scope',
+		init = function()
+			vim.opt.stal = 2
+			vim.o.stal = 2
+		end,
+		config = function()
+			return require('lazy_cfg.scope')
+		end,
+	},
 
 	{
 		'nvim-lua/plenary.nvim',
@@ -67,7 +87,30 @@ Lazy.setup({
 	},
 
 	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000, name = 'web-devicons' },
-
+}
+---@type LazyPlugs
+M.TS = {
+	-- Treesitter.
+	{
+		'nvim-treesitter/nvim-treesitter',
+		priority = 1000,
+		name = 'treesitter',
+		build = ':verbose TSUpdate',
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter-context',
+			'JoosepAlviste/nvim-ts-context-commentstring',
+		},
+		config = function()
+			return require('lazy_cfg.treesitter')
+		end,
+	},
+	{
+		'JoosepAlviste/nvim-ts-context-commentstring',
+		name = 'ts-commentstring',
+	},
+}
+---@type LazyPlugs
+M.EDITING = {
 	{
 		'numToStr/Comment.nvim',
 		name = 'Comment',
@@ -85,34 +128,41 @@ Lazy.setup({
 			return not let.commentary_installed and let.commentary_installed ~= 1
 		end
 	},
-	{
-		'JoosepAlviste/nvim-ts-context-commentstring',
-		lazy = true,
-		name = 'ts-commentstring',
-	},
 
 	{ 'tpope/vim-endwise', lazy = false },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') == 1 },
 	{ 'tpope/vim-speeddating', enabled = false },
-
-	-- Treesitter.
+	-- TODO COMMENTS
 	{
-		'nvim-treesitter/nvim-treesitter',
-		priority = 1000,
-		name = 'treesitter',
-		build = ':verbose TSUpdate',
+		'folke/todo-comments.nvim',
+		name = 'todo-comments',
 		dependencies = {
-			-- 'nvim-orgmode/orgmode',
-			-- 'HiPhish/nvim-ts-rainbow2',
-			'nvim-treesitter/nvim-treesitter-context',
-			'JoosepAlviste/nvim-ts-context-commentstring',
+			'treesitter',
+			'Plenary',
 		},
 		config = function()
-			return require('lazy_cfg.treesitter')
+			return require('lazy_cfg.todo_comments')
 		end,
 	},
-	-- { 'nvim-orgmode/orgmode', lazy = true, ft = 'org' },
-
+	{
+		'windwp/nvim-autopairs',
+		name = 'AutoPairs',
+		config = function()
+			return require('lazy_cfg.autopairs')
+		end,
+		enabled = false,
+	},
+	{
+		'lewis6991/gitsigns.nvim',
+		name = 'GitSigns',
+		version = '*',
+		config = function()
+			return require('lazy_cfg.gitsigns')
+		end,
+	},
+}
+---@type LazyPlugs
+M.LSP = {
 	-- LSP
 	{
 		'neovim/nvim-lspconfig',
@@ -174,19 +224,14 @@ Lazy.setup({
 		cmd = { 'Mason' },
 		name = 'Mason',
 	},
-
 	{
-		'rcarriga/nvim-notify',
-		name = 'Notify',
-		dependencies = { 'Plenary' },
-		init = function()
-			vim.opt.termguicolors = true
-		end,
-		config = function()
-			return require('lazy_cfg.notify')
-		end,
+		'antosha417/nvim-lsp-file-operations',
+		lazy = true,
+		name = 'Lsp_FileOps',
 	},
-
+}
+---@type LazyPlugs
+M.COLORSCHEMES = {
 	-- Colorschemes
 	{
 		'pineapplegiant/spaceduck',
@@ -198,9 +243,25 @@ Lazy.setup({
 			let.installed_spaceduck = 1
 		end,
 	},
-	{ 'catppuccin/nvim', lazy = true, priority = 1000, name = 'catppuccin' },
-	{ 'folke/tokyonight.nvim', lazy = true, priority = 1000, name = 'tokyonight' },
-	{ 'vigoux/oak', lazy = true, priority = 1000 },
+	{
+		'catppuccin/nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'catppuccin',
+		main = 'catppuccin',
+	},
+	{
+		'folke/tokyonight.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'tokyonight',
+		main = 'tokyonight',
+	},
+	{
+		'vigoux/oak',
+		lazy = true,
+		priority = 1000,
+	},
 	{
 		'bkegley/gloombuddy',
 		lazy = true,
@@ -219,23 +280,13 @@ Lazy.setup({
 		priority = 1000,
 		name = 'nightfox',
 	},
-
-	-- TODO COMMENTS
-	{
-		'folke/todo-comments.nvim',
-		name = 'todo-comments',
-		dependencies = {
-			'treesitter',
-			'Plenary',
-		},
-		config = function()
-			return require('lazy_cfg.todo_comments')
-		end,
-	},
-
+}
+---@type LazyPlugs
+M.CMP = {
 	-- Completion Engine
 	{
 		'hrsh7th/nvim-cmp',
+		event = { 'InsertEnter', 'CmdlineEnter' },
 		priority = 1000,
 		name = 'cmp',
 		dependencies = {
@@ -271,11 +322,13 @@ Lazy.setup({
 		build = 'make -j"$(nproc)" install_jsregexp',
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = false },
-
+}
+---@type LazyPlugs
+M.TELESCOPE = {
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
-		-- priority = 1000,
+		priority = 1000,
 		name = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
@@ -302,11 +355,29 @@ Lazy.setup({
 		'ahmedkhalf/project.nvim',
 		priority = 1000,
 		name = 'Project',
+		init = function()
+			vim.opt.ls = 2
+			vim.o.ls = 2
+		end,
 		config = function()
 			return require('lazy_cfg.project')
 		end,
 	},
-
+}
+---@type LazyPlugs
+M.UI = {
+	{
+		'rcarriga/nvim-notify',
+		lazy = false,
+		name = 'Notify',
+		dependencies = { 'Plenary' },
+		init = function()
+			vim.opt.termguicolors = true
+		end,
+		config = function()
+			return require('lazy_cfg.notify')
+		end,
+	},
 	-- Statusline
 	{
 		'nvim-lualine/lualine.nvim',
@@ -321,6 +392,10 @@ Lazy.setup({
 		'akinsho/bufferline.nvim',
 		priority = 1000,
 		name = 'BufferLine',
+		dependencies = {
+			'web-devicons',
+			'Scope',
+		},
 		init = function()
 			opt.termguicolors = true
 		end,
@@ -331,19 +406,7 @@ Lazy.setup({
 
 			return require('lazy_cfg.bufferline')
 		end,
-		dependencies = { 'web-devicons' },
 	},
-
-	-- Auto-pairing (**BROKEN**)
-	{
-		'windwp/nvim-autopairs',
-		name = 'AutoPairs',
-		config = function()
-			return require('lazy_cfg.autopairs')
-		end,
-		enabled = false,
-	},
-
 	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
@@ -359,9 +422,7 @@ Lazy.setup({
 		lazy = true,
 		priority = 1000,
 		name = 'rainbow-delimiters',
-		-- enabled = false,
 	},
-
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
@@ -376,28 +437,21 @@ Lazy.setup({
 			return require('lazy_cfg.nvim_tree')
 		end,
 	},
+	{ 'echasnovski/mini.base16', lazy = true },
 	{
-		'antosha417/nvim-lsp-file-operations',
-		lazy = true,
-		name = 'Lsp_FileOps',
-	},
-	{
-		'echasnovski/mini.base16',
-		lazy = true,
-	},
-
-	{ 'rhysd/vim-syntax-codeowners', lazy = false, name = 'codeowners-syntax' },
-
-	{
-		'lewis6991/gitsigns.nvim',
-		priority = 1000,
-		name = 'GitSigns',
-		version = '*',
+		'norcalli/nvim-colorizer.lua',
+		name = 'colorizer',
 		config = function()
-			return require('lazy_cfg.gitsigns')
+			return require('lazy_cfg.colorizer')
 		end,
 	},
-
+	{
+		'akinsho/toggleterm.nvim',
+		name = 'ToggleTerm',
+		config = function()
+			return require('lazy_cfg.toggleterm')
+		end,
+	},
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
@@ -411,49 +465,31 @@ Lazy.setup({
 			return require('lazy_cfg.which_key')
 		end,
 	},
+}
 
+---@type LazyPlugs
+M.SYNTAX = {
 	{
-		'norcalli/nvim-colorizer.lua',
-		name = 'colorizer',
-		config = function()
-			return require('lazy_cfg.colorizer')
-		end,
+		'rhysd/vim-syntax-codeowners',
+		lazy = false,
+		name = 'codeowners-syntax'
 	},
+}
 
-	{
-		'akinsho/toggleterm.nvim',
-		priority = 1000,
-		name = 'ToggleTerm',
-		config = function()
-			return require('lazy_cfg.toggleterm')
-		end,
-	},
+---@type LazyPlugs
+local T = {}
 
-	{
-		'vhyrro/luarocks.nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'luarocks',
-		config = true,
-		enabled = false,
-	},
-	{
-		'nvim-neorg/neorg',
-		lazy = true,
-		dependencies = {
-			'luarocks',
-			'treesitter',
-		},
-		version = '*',
-		config = true,
-		enabled = false,
-	},
-}, Opts
-)
+--- INFO: Setup.
+for _, plugs in next, M do
+	for _, p in next, plugs do
+		table.insert(T, p)
+	end
+end
+Lazy.setup(T)
 
 ---@type LazyMods
-local M = {
+local P = {
 	colorschemes = require('lazy_cfg.colorschemes'),
 }
 
-return M
+return P
