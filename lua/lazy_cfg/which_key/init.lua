@@ -72,7 +72,7 @@ WK.setup({
 		align = "center", -- align columns left, center or right
 	},
 	ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-	hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
+	hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", '<space>', "^:", "^ ", "^call ", "^lua " }, -- hide mapping boilerplate
 	show_help = true, -- show a help message in the command line for using WhichKey
 	show_keys = true, -- show the currently pressed key and its label as a message in the command line
 	triggers = "auto", -- automatically setup triggers
@@ -94,9 +94,9 @@ WK.setup({
 	triggers_blacklist = {
 		-- list of mode / prefixes that should never be hooked by WhichKey
 		-- this is mostly relevant for keymaps that start with a native binding
-		i = { "j", "k" },
-		v = { "j", "k", "v", 'y', 'c', 'd' },
-		n = { "j", "k", "v", 'y', 'c', 'd' },
+		i = { "j", "k", '<space>', '<leader>' },
+		v = { "j", "k", "v" },
+		n = { "j", "k", "v" },
 	},
 	-- disable the WhichKey popup for certain buf types and file types.
 	-- Disabled by default for Telescope

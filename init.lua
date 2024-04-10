@@ -7,6 +7,7 @@ local types = User.types
 local maps_t = types.user.maps
 local exists = User.exists  -- Checks for missing modules
 local map = User.maps.map
+local kmap = User.maps.kmap
 
 local set = vim.o
 local opt = vim.opt
@@ -19,7 +20,7 @@ local bo = vim.bo
 local nmap = map.n
 
 -- Set `<Space>` as Leader Key.
-nmap('<Space>', '<Nop>')
+nmap('<space>', '<Nop>')
 let.mapleader = ' '
 let.maplocalleader = ' '
 
@@ -32,17 +33,16 @@ let.loaded_netrwPlugin = 1
 User.opts()
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal)`.
----
+--- ---
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t].opts` is an **API** option table.
----@type ApiMapTbl
+---@type ApiMapModeDicts
 local map_tbl = {
 	n = {
 		{ lhs = '<Leader>fn', rhs = ':edit ', opts = { silent = false } },
 		{ lhs = '<Leader>fs', rhs = ':w<CR>' },
 		{ lhs = '<Leader>fS', rhs = ':w ', opts = { silent = false } },
 		{ lhs = '<Leader>ff', rhs = ':ed ', opts = { silent = false } },
-
 		{ lhs = '<Leader>fvs', rhs = ':luafile $MYVIMRC<CR>' },
 		{ lhs = '<Leader>fvl', rhs = ':luafile %<CR>' },
 		{ lhs = '<Leader>fvv', rhs = ':so %<CR>' },
@@ -105,20 +105,18 @@ for k, func in next, map do
 	end
 end
 
---- List of manually-called, non-lazy
---- plugins. 
+--- List of manually-called, plugins.
 local Pkg = require('lazy_cfg')
-
 local Csc = Pkg.colorschemes
 
 -- Reorder to your liking.
-if Csc.nightfox then
-	Csc.nightfox.setup()
-elseif Csc.catppuccin then
-	Csc.catppuccin.setup()
-elseif Csc.tokyonight then
+if Csc.tokyonight and Csc.tokyonight.setup then
 	Csc.tokyonight.setup()
-elseif Csc.spaceduck then
+elseif Csc.nightfox and Csc.nightfox.setup then
+	Csc.nightfox.setup()
+elseif Csc.catppuccin and Csc.catppuccin.setup then
+	Csc.catppuccin.setup()
+elseif Csc.spaceduck and Csc.spaceduck.setup then
 	Csc.spaceduck.setup()
 end
 

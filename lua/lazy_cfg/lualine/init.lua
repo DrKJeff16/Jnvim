@@ -22,11 +22,11 @@ Lualine.setup({
         },
         ignore_focus = {},
         always_divide_middle = true,
-        globalstatus = true,
+        globalstatus = false,
         refresh = {
-            statusline = 500,
-            tabline = 500,
-            winbar = 500,
+            statusline = 1000,
+            tabline = 1000,
+            winbar = 1000,
         },
     },
     sections = {
@@ -40,9 +40,67 @@ Lualine.setup({
 				end,
 			},
         },
-        lualine_b = {
-			'branch',
-			-- 'diff',
+        lualine_b = {},
+        lualine_c = {},
+        lualine_x = {
+			'encoding',
+			'fileformat',
+			'filetype',
+        },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' }
+    },
+    inactive_sections = {
+    	lualine_a = {},
+        lualine_b = {},
+        lualine_c = {},
+        lualine_x = {},
+        lualine_y = {'progress'},
+        lualine_z = {}
+    },
+    tabline = {
+		lualine_a = { 'tabs' },
+		lualine_b = {
+			'buffers'
+		},
+		lualine_c = { 'branch' },
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = {{
+			'datetime',
+			style = 'uk'
+		}},
+    },
+    winbar = {
+		lualine_a = {{
+			'diff',
+			colored = true,
+			diff_color = {
+				-- Same color values as the general color option can be used here.
+				added    = 'LuaLineDiffAdd',    -- Changes the diff's added color
+				modified = 'LuaLineDiffChange', -- Changes the diff's modified color
+				removed  = 'LuaLineDiffDelete', -- Changes the diff's removed color you
+			},
+			symbols = {added = '+', modified = '~', removed = '-'}, -- Changes the symbols used by the diff.
+		}},
+		lualine_b = {
+			{
+				'filename',
+				file_status = true,
+				newfile_status = true,
+				path = 4,
+				shorting_target = 15,
+				symbold = {
+					modified = '[+]',
+					readonly = '[RO]',
+					unnamed = '[NONAME]',
+					newfile = '[NEW]'
+				},
+			},
+		},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {
 			{
 				'diagnostics',
 				sources = { 'nvim_lsp' },
@@ -54,13 +112,17 @@ Lualine.setup({
 					hint = '?'
 				},
 			},
-        },
-        lualine_c = {
+		},
+		lualine_z = {},
+    },
+    inactive_winbar = {
+		lualine_a = {},
+		lualine_b = {
 			{
 				'filename',
 				file_status = true,
 				newfile_status = true,
-				path = 1,
+				path = 4,
 				shorting_target = 15,
 				symbold = {
 					modified = '[+]',
@@ -70,29 +132,10 @@ Lualine.setup({
 				},
 			},
 		},
-        lualine_x = {
-			'encoding',
-			'fileformat',
-			{
-				'filetype',
-				icon_only = false,
-				icon = { '', align = 'right' },
-			}
-		},
-        lualine_y = {
-			'progress',
-			-- { 'searchcount', timeout = 10 }
-        },
-        lualine_z = {'location'}
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = { 'progress' },
+		lualine_z = {},
     },
-    inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = {'filename'},
-        lualine_x = {},
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
-    },
-    inactive_winbar = {},
     extensions = {}
 })

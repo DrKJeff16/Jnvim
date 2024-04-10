@@ -17,8 +17,13 @@
 *.out
 *.i
 *.s
+*.a
+*.as
+
+/.env
 
 .mypy_cache/
-.ropeproject
+.ropeproject/
 
 *.list
+*.log

@@ -1,28 +1,25 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.highlight')
-
 local User = require('user')
 local exists = User.exists
-local hl = User.highlight
+local types = User.types.user.highlight
+local hi = User.highlight.hl
 
 if not exists('treesitter-context') then
 	return
 end
-
-local hi = hl.hl
 
 local Context = require('treesitter-context')
 local Config = require('treesitter-context.config')
 
 ---@type TSContext.UserConfig
 local Options = {
-	mode = 'cursor',
+	mode = 'topline',
 	trim_scope = 'outer',
-	line_numbers = true,
+	line_numbers = false,
 	min_window_height = 3,
-	zindex = 30,
+	zindex = 15,
 	enable = true,
 	max_lines = 4,
 }
