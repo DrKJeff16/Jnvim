@@ -168,7 +168,28 @@ local regs = {
 
 	-- TODO: Expand these keys.
 	-- GitSigns
-	['<leader>h'] = { name = '+GitSigns' },
+	['<leader>G'] = { name = '+GitSigns' },
+	['<leader>Gh'] = { name = '+Hunks' },
+	['<leader>Ghd'] = {
+		'<CMD>Gitsigns diffthis<cr>',
+		'Diffthis',
+	},
+	['<leader>Ghp'] = {
+		'<CMD>Gitsigns preview_hunk<cr>',
+		'Preview Current Hunk',
+	},
+	['<leader>Ghs'] = {
+		'<CMD>Gitsigns stage_hunk<cr>',
+		'Stage Current Hunk',
+	},
+	['<leader>GhS'] = {
+		'<CMD>Gitsigns stage_buffer<cr>',
+		'Stage Current Buffer',
+	},
+	['<leader>Ghu'] = {
+		'<CMD>Gitsigns undo_stage_hunk<cr>',
+		'Un-Stage Current Hunk',
+	},
 
 	-- Lazy
 	['<leader>L'] = { name = '+Lazy' },
