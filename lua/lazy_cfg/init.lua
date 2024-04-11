@@ -4,6 +4,7 @@
 local User = require('user')
 local exists = User.exists
 local types = User.types.lazy
+local nmap = User.maps.kmap.n
 
 local fn = vim.fn
 local opt = vim.opt
@@ -87,6 +88,7 @@ M.TS = {
 	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
+		lazy = false,
 		priority = 1000,
 		name = 'treesitter',
 		build = ':verbose TSUpdate',
@@ -235,6 +237,59 @@ M.COLORSCHEMES = {
 		-- submodule call.
 		init = function()
 			let.installed_spaceduck = 1
+		end,
+	},
+	{
+		'dracula/vim',
+		lazy = false,
+		priority = 1000,
+		name = 'dracula',
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			let.installed_dracula = 1
+		end,
+	},
+	{
+		'liuchengxu/space-vim-dark',
+		lazy = false,
+		priority = 1000,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			let.installed_space_vim_dark = 1
+		end,
+	},
+	{
+		'tomasr/molokai',
+		lazy = false,
+		priority = 1000,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			let.installed_molokai = 1
+		end,
+	},
+	{
+		'colepeters/spacemacs-theme.vim',
+		lazy = false,
+		priority = 1000,
+		name = 'spacemacs',
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			let.installed_spacemacs = 1
+		end,
+	},
+	{
+		'joshdick/onedark.vim',
+		lazy = false,
+		priority = 1000,
+		name = 'onedark',
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			let.installed_onedark = 1
 		end,
 	},
 	{
@@ -485,5 +540,11 @@ Lazy.setup(T)
 local P = {
 	colorschemes = require('lazy_cfg.colorschemes'),
 }
+
+nmap('<leader>Le', function()
+	local path = stdpath('config') .. '/lua/lazy_cfg/init.lua'
+
+	vim.cmd('tabnew ' .. path)
+end)
 
 return P

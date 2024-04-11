@@ -10,6 +10,9 @@ end
 
 local Lualine = require('lualine')
 
+local Winbar = require('lazy_cfg.lualine.winbar')
+local Tabline = require('lazy_cfg.lualine.tabline')
+
 Lualine.setup({
 	options = {
 		icons_enabled = true,
@@ -78,10 +81,10 @@ Lualine.setup({
     },
     inactive_sections = {
     	lualine_a = {},
-        lualine_b = {},
+        lualine_b = { 'buffers' },
         lualine_c = {},
         lualine_x = {},
-        lualine_y = {'progress'},
+        lualine_y = {'windows'},
         lualine_z = {}
     },
     tabline = {
@@ -119,81 +122,10 @@ Lualine.setup({
 
 			},
 		},
-		lualine_z = {{
-			'datetime',
-			style = 'uk'
-		}},
-    },
-  --   winbar = {
-		-- lualine_a = {
-		-- 	{
-		-- 		'filename',
-		-- 		file_status = true,
-		-- 		newfile_status = true,
-		-- 		path = 0,
-		-- 		shorting_target = 15,
-		-- 		symbold = {
-		-- 			modified = '[+]',
-		-- 			readonly = '[RO]',
-		-- 			unnamed = '[NONAME]',
-		-- 			newfile = '[NEW]'
-		-- 		},
-		-- 	},
-		-- },
-		-- lualine_b = {
-		-- 	{
-		-- 		'diff',
-		-- 		colored = true,
-		-- 		diff_color = {
-		-- 			-- Same color values as the general color option can be used here.
-		-- 			added    = 'LuaLineDiffAdd',    -- Changes the diff's added color
-		-- 			modified = 'LuaLineDiffChange', -- Changes the diff's modified color
-		-- 			removed  = 'LuaLineDiffDelete', -- Changes the diff's removed color you
-		-- 		},
-		-- 		symbols = {added = '+', modified = '~', removed = '-'}, -- Changes the symbols used by the diff.
-		-- 	},
-		-- },
-		-- lualine_c = {},
-		-- lualine_x = {
-		-- 	{
-		-- 		'diagnostics',
-		-- 		sources = { 'nvim_lsp' },
-		-- 		sections = { 'error', 'warn' },
-		-- 		symbols = {
-		-- 			error = 'E',
-		-- 			warn = 'W',
-		-- 			info = 'I',
-		-- 			hint = '?'
-		-- 		},
-		-- 	},
-		-- },
-		-- lualine_y = {},
-		-- lualine_z = {
-		-- 	'encoding',
-		-- },
-  --   },
-    inactive_winbar = {
-		lualine_a = {},
-		lualine_b = {
-			{
-				'filename',
-				file_status = true,
-				newfile_status = true,
-				path = 4,
-				shorting_target = 15,
-				symbold = {
-					modified = '[+]',
-					readonly = '[RO]',
-					unnamed = '[NONAME]',
-					newfile = '[NEW]'
-				},
-			},
-		},
-		lualine_c = {},
-		lualine_x = {},
-		lualine_y = { 'progress' },
 		lualine_z = {},
     },
+    winbar = {},
+    inactive_winbar = {},
 
     extensions = {
 		'lazy',
