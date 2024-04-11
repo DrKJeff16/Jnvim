@@ -16,18 +16,12 @@ local reg = function(maps, opts)
 	local valid_modes = { 'n', 'i', 'v', 't', 'x', 'o' }
 
 	opts = opts or {}
-	if not opts.noremap then
-		opts.noremap = true
+	for _, o in next, { 'noremap', 'nowait', 'silent' } do
+		if not opts[o] then
+			opts[o] = true
+		end
 	end
-	if not opts.nowait then
-		opts.nowait = true
-	end
-	if not opts.silent then
-		opts.silent = true
-	end
-	if not opts.mode or type(opts.mode) ~= 'string' or string.len(opts.mode) ~= 1 then
-		opts.mode = 'n'
-	elseif not vim.tbl_contains(valid_modes, opts.mode) then
+	if not opts.mode or type(opts.mode) ~= 'string' or string.len(opts.mode) ~= 1 or not vim.tbl_contains(valid_modes, opts.mode) then
 		opts.mode = 'n'
 	end
 	---@type RegKeysTbl
@@ -37,14 +31,10 @@ local reg = function(maps, opts)
 		---@type RegKey|RegPfx
 		local tbl = v
 		if not tbl.name then
-			if not tbl.noremap then
-				tbl.noremap = true
-			end
-			if not tbl.nowait then
-				tbl.nowait = true
-			end
-			if not tbl.silent then
-				tbl.silent = true
+			for _, o in next, { 'noremap', 'nowait', 'silent' } do
+				if not tbl[o] then
+					tbl[o] = true
+				end
 			end
 		else
 			opts.nowait = false
