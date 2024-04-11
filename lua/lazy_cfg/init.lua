@@ -545,6 +545,6 @@ nmap('<leader>Le', function()
 	local path = stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
 	vim.cmd('tabnew ' .. path)
-end)
+end, { desc = 'Open `Lazy` File' })
 
 return P
