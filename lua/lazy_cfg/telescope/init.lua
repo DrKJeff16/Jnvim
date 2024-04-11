@@ -35,14 +35,15 @@ local opts = {
 	defaults = {
 		layout_strategy = 'flex',
 		layout_config = {
-			vertical = { width = 0.5 },
+			vertical = { width = 0.85 },
 		},
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
 				['<C-u>'] = false,
 				['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
-				['<esc>'] = Actions.close,
+				['<ESC>'] = Actions.close,
+				['<C-e>'] = Actions.close,
 			},
 		},
 	},
@@ -51,8 +52,13 @@ local opts = {
 		find_files = { theme = 'dropdown' },
 		lsp_definitions = { theme = 'dropdown' },
 		pickers = { theme = 'dropdown' },
+		notify = { theme = 'dropdown' },
 	},
 }
+
+local function open()
+	vim.cmd('Telescope')
+end
 
 ---@class KeyMapArgs
 ---@field lhs string
@@ -63,19 +69,18 @@ local opts = {
 ---@field n KeyMapArgs[]
 local maps = {
 	n = {
-		{ lhs = '<leader>fTbP', rhs = Builtin.planets },
+		{ lhs = '<leader><leader>', rhs = open, opts = { desc = 'Open Telescope' } },
+		{ lhs = '<leader>fTbP', rhs = Builtin.planets, opts = { desc = 'Planets' } },
 		{ lhs = '<leader>fTbb', rhs = Builtin.buffers },
-		{ lhs = '<leader>fTbc', rhs = Builtin.colorscheme },
-		{ lhs = '<leader>fTbd', rhs = Builtin.diagnostics },
-		{ lhs = '<leader>fTbf', rhs = Builtin.find_files },
-		{ lhs = '<leader>fTbg', rhs = Builtin.live_grep },
-		{ lhs = '<leader>fTbh', rhs = Builtin.help_tags },
-		{ lhs = '<leader>fTbk', rhs = Builtin.keymaps },
-		{ lhs = '<leader>fTblD', rhs = Builtin.lsp_document_symbols },
-		{ lhs = '<leader>fTbld', rhs = Builtin.lsp_definitions },
-		{ lhs = '<leader>fTbp', rhs = Builtin.pickers },
-
-		{ lhs = '<leader>fTeN', rhs = Extensions.notify.notify },
+		{ lhs = '<leader>fTbc', rhs = Builtin.colorscheme, opts = { desc = 'Colorschemes' } },
+		{ lhs = '<leader>fTbd', rhs = Builtin.diagnostics, opts = { desc = 'Diagnostics' } },
+		{ lhs = '<leader>fTbf', rhs = Builtin.find_files, opts = { desc = 'File Picker' } },
+		{ lhs = '<leader>fTbg', rhs = Builtin.live_grep, opts = { desc = 'Live Grep' } },
+		{ lhs = '<leader>fTbh', rhs = Builtin.help_tags, opts = { desc = 'Help Tags' } },
+		{ lhs = '<leader>fTbk', rhs = Builtin.keymaps, opts = { desc = 'Keymaps' } },
+		{ lhs = '<leader>fTblD', rhs = Builtin.lsp_document_symbols, opts = { desc = 'Document Symbols' } },
+		{ lhs = '<leader>fTbld', rhs = Builtin.lsp_definitions, opts = { desc = 'Definitions' } },
+		{ lhs = '<leader>fTbp', rhs = Builtin.pickers, opts = { desc = 'Pickers' } },
 	},
 }
 
@@ -87,11 +92,10 @@ local maps = {
 ---@class TelAuArgs
 ---@field data? TelAuData
 
----@type AuPair[]
+---@type AuRepeat
 local au_tbl = {
-	{
-		event = 'User',
-		opts = {
+	['User'] = {
+		{
 			pattern = 'TelescopePreviewerLoaded',
 			---@param args TelAuArgs
 			callback = function(args)
@@ -120,7 +124,7 @@ local known_exts = {
 		keys = function()
 			local pfx = Extensions.projects
 			return {
-				{ lhs = '<leader>fTep', rhs = pfx.projects },
+				{ lhs = '<leader>fTep', rhs = pfx.projects, opts = { desc = 'Project Picker' } },
 			}
 		end,
 	},
@@ -129,15 +133,20 @@ local known_exts = {
 		---@return KeyMapArgs[]
 		keys = function()
 			local pfx = Extensions.notify
-			return {
-				{ lhs = '<leader>fTeN', rhs = pfx.notify },
+
+			---@type KeyMapArgs[]
+			local res = {
+				{ lhs = '<leader>fTeN', rhs = pfx.notify, opts = { desc = 'Notify Picker' } },
 			}
+
+			return res
 		end,
 	},
 }
 
 Telescope.setup(opts)
 
+--- Load and Set Keymaps for available extensions.
 for mod, ext in next, known_exts do
 	if exists(mod) then
 		load_ext(ext[1])
@@ -156,6 +165,8 @@ for mode, m in next, maps do
 	end
 end
 
-for _, t in next, au_tbl do
-	au(t.event, t.opts)
+for event, v in next, au_tbl do
+	for _, au_opts in next, v do
+		au(event, au_opts)
+	end
 end

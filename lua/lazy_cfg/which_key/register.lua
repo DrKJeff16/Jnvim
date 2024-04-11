@@ -108,6 +108,11 @@ local regs = {
 		'Close',
 	},
 
+	-- Telescope
+	['<leader>fT'] = { name = '+Telescope' },
+	['<leader>fTb'] = { name = '+Builtins' },
+	['<leader>fTe'] = { name = '+Extensions' },
+
 	-- Tabs Handling
 	['<leader>t'] = { name = '+Tabs' },
 	['<leader>td'] = {
