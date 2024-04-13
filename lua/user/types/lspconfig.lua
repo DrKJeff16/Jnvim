@@ -59,3 +59,9 @@ local root = Util.root_pattern()
 ---@field single_file_support? boolean
 
 ---@alias LspServers table<string, LspServerOpts>
+
+---@class LspSubs
+---@field neoconf? fun(): any
+---@field trouble? fun(): any
+---@field clangd? fun(): any
+---@field kinds LspKindsMod

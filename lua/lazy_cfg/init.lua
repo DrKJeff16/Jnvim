@@ -167,6 +167,7 @@ M.LSP = {
 		dependencies = {
 			'NeoDev',
 			'NeoConf',
+			'Trouble',
 			'b0o/SchemaStore.nvim',
 			'p00f/clangd_extensions.nvim',
 		},
@@ -191,6 +192,12 @@ M.LSP = {
 		dependencies = {
 			'nlsp-settings',
 		},
+	},
+	{
+		'folke/trouble.nvim',
+		lazy = true,
+		name = 'Trouble',
+		dependencies = { 'web-devicons' },
 	},
 	{
 		'p00f/clangd_extensions.nvim',

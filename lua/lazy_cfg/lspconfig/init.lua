@@ -29,6 +29,7 @@ local hi = api.nvim_set_hl
 
 local nmap = kmap.n
 
+---@type LspSubs
 local Sub = {}
 
 function Sub.neoconf()
@@ -37,7 +38,14 @@ function Sub.neoconf()
 	end
 end
 function Sub.clangd()
-	return require('lazy_cfg.lspconfig.clangd')
+	if exists('lazy_cfg.lspconfig.clangd') then
+		return require('lazy_cfg.lspconfig.clangd')
+	end
+end
+function Sub.trouble()
+	if exists('lazy_cfg.lspconfig.trouble') then
+		return require('lazy_cfg.lspconfig.trouble')
+	end
 end
 
 Sub.kinds = require('lazy_cfg.lspconfig.kinds')
@@ -45,6 +53,7 @@ Sub.kinds = require('lazy_cfg.lspconfig.kinds')
 -- Now call each.
 Sub.neoconf()
 Sub.clangd()
+Sub.trouble()
 Sub.kinds.setup()
 
 local border = {
