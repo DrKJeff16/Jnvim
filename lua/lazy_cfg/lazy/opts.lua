@@ -1,7 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.lazy')
+local User = require('user')
+local types = User.types.lazy
 
 local fn = vim.fn
 local set = vim.o
