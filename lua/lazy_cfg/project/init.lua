@@ -42,6 +42,8 @@ local opts = {
 		'Pipfile',
 		'Pipfile.lock',
 		'tox.ini',
+		'stylua.toml',
+		'neoconf.json',
 	},
 
 	-- Table of lsp clients to ignore by name
@@ -50,20 +52,25 @@ local opts = {
 
 	-- Don't calculate root dir on specific directories
 	-- Ex: { "~/.cargo/*", ... }
-	exclude_dirs = {},
+	exclude_dirs = {
+		'~/.emacs.d/',
+		'~/',
+		'~/.build/*',
+		'~/Templates/',
+	},
 
 	-- Show hidden files in telescope
 	show_hidden = true,
 
 	-- When set to false, you will get a message when project.nvim changes your
 	-- directory.
-	silent_chdir = false,
+	silent_chdir = true,
 
 	-- What scope to change the directory, valid options are
 	-- * global (default)
 	-- * tab
 	-- * win
-	scope_chdir = 'tab',
+	scope_chdir = 'global',
 
 	-- Path where project.nvim will store the project history for use in
 	-- telescope

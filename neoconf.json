@@ -92,13 +92,50 @@
 		},
 
 		"lua_ls": {
-			"Lua.completion.callSnippet": "Replace"
+			"Lua.codeLens.enable": false,
+			"Lua.completion.callSnippet": "Replace",
+			"Lua.completion.enable": true,
+			"Lua.completion.postfix": "@",
+			"Lua.completion.showParams": false,
+			"Lua.completion.showWord": "Enable",
+			"Lua.diagnostics.enable": true,
+			"Lua.format.enable": true,
+			"Lua.hint.arrayIndex": "Disable",
+			"Lua.hint.enable": true,
+			"Lua.hint.paramName": "All",
+			"Lua.hint.paramType": true,
+			"Lua.hint.semicolon": "SameLine",
+			"Lua.hint.setType": true,
+			"Lua.hover.enable": true,
+			"Lua.hover.enumsLimit": 20,
+			"Lua.hover.expandAlias": true,
+			"Lua.hover.previewFields": 50,
+			"Lua.hover.viewNumber": true,
+			"Lua.hover.viewString": true,
+			"Lua.hover.viewStringMax": 1000,
+			"Lua.runtime.fileEncoding": "utf8",
+			"Lua.runtime.pathStrict": true,
+			"Lua.semantic.annotation": true,
+			"Lua.semantic.enable": true,
+			"Lua.semantic.keyword": true,
+			"Lua.semantic.variable": true,
+			"Lua.signatureHelp.enable": true,
+			"Lua.type.weakNilCheck": true,
+			"Lua.type.weakUnionCheck": true,
+			"Lua.window.progressBar": true,
+			"Lua.window.statusBar": true,
+			"Lua.workspace.useGitIgnore": true,
+			"Lua.diagnostics.disable": [
+				"unused-local",
+				"unused-function",
+				"inject-field"
+			]
 		},
 		"bashls": {
 			"bashIde.backgroundAnalysisMaxFiles": 500,
 			"bashIde.enableSourceErrorDiagnostics": false,
-			"bashIde.includeAllWorkspaceSymbols": true,
 			"bashIde.globPattern": "**/*@(.sh|.inc|.bash|.command)",
+			"bashIde.includeAllWorkspaceSymbols": true,
 			"bashIde.logLevel": "debug"
 		},
 		"jsonls": {
@@ -127,6 +164,10 @@
 			"lspconfig": {
 				"enabled": true
 			}
-		}
+		},
+		"live_reload": true,
+		"filetype_jsonc": true,
+		"global_settings": "neoconf.json",
+		"local_settings": ".neoconf.json"
 	}
 }
