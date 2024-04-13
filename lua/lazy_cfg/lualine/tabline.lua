@@ -3,76 +3,11 @@
 
 local User = require('user')
 local exists = User.exists
+local types = User.types.lualine
 
 if not exists('lualine') then
 	return
 end
-
----@class TabLine.Comps.Diag.Spec
----@field error? any
----@field warn? any
----@field info? any
----@field hint? any
-
----@class TabLine.Comps.Diag.Src: TabLine.Comps.Diag.Spec
----@field error? integer
----@field warn? integer
----@field info? integer
----@field hint? integer
-
----@alias DiagOpt ('nvim_lsp'|'nvim_diagnostic'|'nvim_workspace_diagnostic'|'coc'|'ale'|'vim_lsp')[]|fun(): TabLine.Comps.Diag.Src
---
----@alias DiagLvls ('error'|'warn'|'info'|'hint')[]
-
----@class TabLine.Comps.Diag.Colors: TabLine.Comps.Diag.Spec
----@field error? string
----@field warn? string
----@field info? string
----@field hint? string
-
----@class TabLine.Comps.Diag.Symbols: TabLine.Comps.Diag.Colors
-
----@class TabLine.Comps.Spec
----@field icons_enabled? boolean
-
----@class TabLine.Comps.Buffer: TabLine.Comps.Spec
----@class TabLine.Comps.DateTime: TabLine.Comps.Spec
----@class TabLine.Comps.Diag: TabLine.Comps.Spec
-
----@class TabLine.Comps.Buffer.Colors
----@field active? string
----@field inactive? string
-
----@class TabLine.Comps.Buffer.Symbols
----@field modified? string
----@field alternate_file? string
----@field directory? string
-
----@class TabLine.Comps
----@field basic? TabLine.Comps.Spec
----@field buffers? TabLine.Comps.Buffer
----@field datetime? TabLine.Comps.DateTime
----@field diagnostics? TabLine.Comps.Diag
-
----@class TabLine
----@field components TabLine.Comps
----@field public new fun(): TabLine
----@field protected __index? TabLine
----@field public __call fun(self: TabLine)
-
----@class TabLine.Comps.Diff.Colors
----@field added? string
----@field modified? string
----@field removed? string
-
----@class TabLine.Comps.Diff.Symbols: TabLine.Comps.Diff.Colors
----@field added? integer
----@field modified? integer
----@field removed? integer
-
----@alias Tabline.Comps.DateTime.style 'default'|'us'|'uk'|'iso'|string
-
----@class TabLine.Comps.Diff.Src: TabLine.Comps.Diff.Colors
 
 ---@type TabLine
 local M = {}
@@ -89,11 +24,7 @@ M.components = {
 		draw_empty = false,
 
 		color = nil,
-
-		---@type 'lua_expr'|'vim_fun'|nil
 		type = nil,
-
-		---@type nil|fun(...): any
 		on_click = nil,
 	},
 	buffers = {
@@ -151,10 +82,6 @@ M.components = {
 
 	---@type TabLine.Comps.Diag
 	diagnostics = {
-		-- Table of diagnostic sources, available sources are:
-		--   'nvim_lsp', 'nvim_diagnostic', 'nvim_workspace_diagnostic', 'coc', 'ale', 'vim_lsp'.
-		-- or a function that returns a table as such:
-		--   { error=error_cnt, warn=warn_cnt, info=info_cnt, hint=hint_cnt }
 		---@type DiagOpt
 		sources = {
 			'nvim_lsp',
@@ -162,7 +89,6 @@ M.components = {
 			'nvim_workspace_diagnostic'
 		},
 
-		-- Displays diagnostics for the defined severity types
 		---@type DiagLvls
 		sections = {
 			'error',
@@ -207,13 +133,14 @@ M.components = {
 			modified = '~',
 			removed = '-',
 		}, -- Changes the symbols used by the diff.
-		---@type TqbLine.Comps.Diff.Src|nil
+		---@type TabLine.Comps.Diff.Src|nil
 		source = nil, -- A function that works as a data source for diff.
 		-- It must return a table as such:
 		--   { added = add_count, modified = modified_count, removed = removed_count }
 		-- or nil on failure. count <= 0 won't be displayed.
 	},
 
+	---@type TabLine.Comps.FF
 	fileformat = {
 		symbols = {
 			unix = '', -- e712
@@ -222,6 +149,7 @@ M.components = {
 		},
 	},
 
+	---@type TabLine.Comps.File
 	filename = {
 		file_status = true,      -- Displays file status (readonly status, modified status)
 		newfile_status = false,  -- Display new file status (new file means no write after created)
@@ -241,6 +169,7 @@ M.components = {
 		}
 	},
 
+	---@type TabLine.Comps.FT
 	filetype = {
 		colored = true,   -- Displays filetype icon in color if set to true
 		icon_only = false, -- Display only an icon for filetype
@@ -249,6 +178,7 @@ M.components = {
 		-- Icon string ^ in table is ignored in filetype component
 	},
 
+	---@type TabLine.Comps.SC
 	searchcount = {
 		maxcount = 999,
 		timeout = 500,
