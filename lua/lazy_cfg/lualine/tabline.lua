@@ -256,6 +256,7 @@ M.components = {
 	},
 }
 
+---@type TabLine.Sections
 M.sections = {
 	active = {
     	lualine_a = {},

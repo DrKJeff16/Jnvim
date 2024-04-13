@@ -88,6 +88,30 @@
 ---@field maxcount? integer
 ---@field timeout? number
 
+---@alias TabLine.AllComps
+---|TabLine.Comps.Buffer
+---|TabLine.Comps.Diag
+---|TabLine.Comps.Diff
+---|TabLine.Comps.FF
+---|TabLine.Comps.FT
+---|TabLine.Comps.File
+---|TabLine.Comps.SC
+---|TabLine.Comps.Spec
+---|string
+---|table
+
+---@class TabLine.Sections.Spec
+---@field lualine_a? table|TabLine.AllComps[]
+---@field lualine_b? table|TabLine.AllComps[]
+---@field lualine_c? table|TabLine.AllComps[]
+---@field lualine_x? table|TabLine.AllComps[]
+---@field lualine_y? table|TabLine.AllComps[]
+---@field lualine_z? table|TabLine.AllComps[]
+
+---@class TabLine.Sections
+---@field active TabLine.Sections.Spec
+---@field inactive TabLine.Sections.Spec
+
 ---@class TabLine.Comps
 ---@field basic? TabLine.Comps.Spec
 ---@field buffers? TabLine.Comps.Buffer
