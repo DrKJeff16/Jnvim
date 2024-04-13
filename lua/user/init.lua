@@ -12,7 +12,9 @@ local bo = vim.bo
 local cmd = vim.cmd
 
 ---@type UserMod
-local M = {}
+local M = {
+	types = require('user.types'),
+}
 
 function M.opts()
 	return require('user.opts')
@@ -56,6 +58,6 @@ function M.assoc()
 	end
 end
 
-M.types = require('user.types')
+M.check = require('user.check')
 
 return M
