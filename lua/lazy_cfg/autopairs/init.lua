@@ -24,6 +24,7 @@ Ap.setup({
 		'markdown',
 		'gitconfig',
 		'gitcommit',
+		'text',
 	},
 
 	disable_in_macro = false,  -- disable when recording or executing a macro

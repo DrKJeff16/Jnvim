@@ -13,7 +13,6 @@ local insp = vim.inspect
 local cmp = require('cmp')
 local cmp_ap = require('nvim-autopairs.completion.cmp')
 local handlers = require('nvim-autopairs.completion.handlers')
-
 local cmp_lsp = cmp.lsp
 
 local ft_handles = {
@@ -31,6 +30,8 @@ local ft_handles = {
 		lua = false,
 		tex = false,
 		markdown = false,
+		text = false,
+		org = false,
 	}
 }
 
