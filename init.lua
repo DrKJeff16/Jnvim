@@ -79,7 +79,7 @@ local map_tbl = {
 		{ lhs = '<Leader>bf', rhs = '<CMD>bfirst<CR>' },
 		{ lhs = '<Leader>bl', rhs = '<CMD>blast<CR>' },
 
-		{ lhs = '<Leader>fir', rhs = '<CMD>%retab<CR>' },
+		-- { lhs = '<Leader>fir', rhs = '<CMD>%retab<CR>' },
 
 		{ lhs = '<Leader>Ll', rhs = '<CMD>Lazy<CR>' },
 		{ lhs = '<Leader>LL', rhs = ':Lazy ', opts = { silent = false } },
@@ -88,6 +88,13 @@ local map_tbl = {
 		{ lhs = '<Leader>Lc', rhs = '<CMD>Lazy check<CR>' },
 		{ lhs = '<Leader>Li', rhs = '<CMD>Lazy install<CR>' },
 		{ lhs = '<Leader>Lr', rhs = '<CMD>Lazy reload<CR>' },
+
+		-- Avoid entering visual while using `<leader>` sequences.
+		{ lhs = '<Leader>v', rhs = '<Nop>', opts = { nowait = false } },
+		-- Avoid entering insert while using `<leader>` sequences.
+		{ lhs = '<Leader>i', rhs = '<Nop>', opts = { nowait = false } },
+		{ lhs = '<Leader>"', rhs = '<Nop>', opts = { nowait = false } },
+		{ lhs = '<Leader>\'', rhs = '<Nop>', opts = { nowait = false } },
 	},
 	v = {
 		{ lhs = '<Leader>is', rhs = '<CMD>sort<CR>' },
