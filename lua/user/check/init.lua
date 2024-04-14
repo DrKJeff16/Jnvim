@@ -4,6 +4,11 @@ local types = require('user.types.user.check')
 
 ---@type UserCheck
 local M = {}
+M.value = {}
+function M.dry_run(f, ...)
+	local res, _ = pcall(f, ...)
+	return res
+end
 M.exists = {
 	data = function(v)
 		if not v or v == nil then
@@ -58,8 +63,8 @@ end
 
 function M.new()
 	local self = setmetatable({}, { __index = M })
-	self.exists = {}
-	self.exists.executable = M.executable
+	self.exists = M.exists
+	self.value = M.value
 
 	return self
 end
