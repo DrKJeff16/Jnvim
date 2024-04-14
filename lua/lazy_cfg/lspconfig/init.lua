@@ -154,118 +154,7 @@ srv.cmake = {}
 srv.html = {}
 srv.jsonls = {}
 srv.yamlls = {}
-srv.pylsp = {
-	settings = {
-		configurationSources = { 'flake8' },
-		plugins = {
-			autopep8 = {
-				enabled = true,
-			},
-			flake8 = {
-				enabled = true,
-				hangClosing = true,
-				maxLineLength = 100,
-				indentSize = 4,
-				ignore = {
-					'F400',
-					'F401',
-				},
-			},
-			jedi = {
-				auto_import_modules = {
-					'argparse',
-					'os',
-					're',
-					'sys',
-					'typing',
-				},
-			},
-			jedi_completion = {
-				enabled = true,
-				include_params = false,
-				include_class_objects = true,
-				include_function_objects = true,
-				fuzzy = false,
-				eager = true,
-				resolve_at_most = 30,
-				cache_for = {
-					'argparse',
-					'math',
-					'matplotlib',
-					'numpy',
-					'os',
-					'pandas',
-					're',
-					'setuptools',
-					'string',
-					'sys',
-					'typing',
-					'wheel',
-				},
-			},
-			jedi_definition = {
-				enabled = true,
-				follow_imports = true,
-				follow_builtin_imports = true,
-				follow_builtin_definitions = true,
-			},
-			jedi_hover = { enabled = true },
-			jedi_references = { enabled = true },
-			jedi_signature_help = { enabled = true },
-			jedi_symbols = {
-				enabled = true,
-				all_scopes = false,
-				include_import_symbols = true,
-			},
-			mccabe = { enabled = true, threshold = 15 },
-			preload = {
-				enabled = false,
-				modules = {
-					'argparse',
-					'math',
-					'numpy',
-					'os',
-					're',
-					'string',
-					'sys',
-					'typing',
-				},
-			},
-			pycodestyle = { enabled = false },
-			pydocstyle = {
-				enabled = true,
-				convention = 'numpy',
-				addIgnore = { 'D400', 'D401' },
-				ignore = { 'D400', 'D401' },
-				match = "(?!test_).*\\.py",
-				matchDir = "[^\\.].*",
-			},
-			pyflakes = { enabled = false },
-			pylint = { enabled = false },
-			rope_autoimport = {
-				enabled = true,
-				completions = { enabled = true },
-				code_actions = { enabled = true },
-				memory = true,
-			},
-			rope_completion = { enabled = true, eager = true },
-			yapf = { enabled = false },
-		},
-		rope = {
-			extensionModules = {
-				'argparse',
-				'math',
-				'numpy',
-				'os',
-				're',
-				'string',
-				'sys',
-				'typing',
-			},
-			ropeFolder = nil,
-		},
-	},
-}
+srv.pylsp = {}
 
 srv = add_caps(srv)
 
@@ -298,7 +187,13 @@ au('LspAttach', {
 		nmap('<Leader>lwa', lsp_buf.add_workspace_folder, opts)
 		nmap('<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
 		nmap('<Leader>lwl', function()
-			print(insp(lsp_buf.list_workspace_folders()))
+			local out = insp(lsp_buf.list_workspace_folders())
+			-- Try doing it with `notify` plugin.
+			if exists('notify') then
+				vim.notify(out)
+			else
+				print(out)
+			end
 		end, opts)
 		nmap('<Leader>lD', lsp_buf.type_definition, opts)
 		nmap('<Leader>lrn', lsp_buf.rename, opts)
