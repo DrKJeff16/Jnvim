@@ -12,10 +12,11 @@ local api = vim.api
 
 local has = fn.has
 local exists = fn.exists
+local executable = fn.executable
 
 ---@type 0|1
 let.is_windows = has('win32')
-
+---@type boolean
 _G.is_windows = let.is_windows == 1
 
 ---@type OptsTbl
@@ -23,6 +24,7 @@ local opt_tbl = {
 	opt = {
 		completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 		termguicolors = true,
+		fileignorecase = _G.is_windows,
 	},
 	set = {
 		hid = true,  -- `hidden`
@@ -76,7 +78,7 @@ local opt_tbl = {
 		smartcase = true,
 		ignorecase = false,
 
-		fileignorecase = is_windows,
+		fileignorecase = _G.is_windows,
 
 		hlsearch = true,
 		incsearch = true,
@@ -88,13 +90,17 @@ local opt_tbl = {
 
 if is_windows then
 	opt_tbl.opt.shellslash = true
+	if executable('mingw32-make') == 1 then
+		opt_tbl.opt.makeprg = 'mingw32-make'
+	elseif executable('make') == 1 then
+		opt_tbl.opt.makeprg = 'make'
+	else
+		opt_tbl.makeprg = ''
+	end
 end
 
 ---@param opts UserO|UserOpt
----@param target?
----|'o'
----|'set'
----|'opt'
+---@param target? 'o'|'set'|'opt'
 local optset = function(opts, target)
 	if not target or not vim.tbl_contains({ 'o', 'set', 'opt' }, target) then
 		target = 'o'

@@ -73,10 +73,8 @@ M.ESSENTIAL = {
 		priority = 1000,
 		name = 'Scope',
 		init = function()
-			vim.opt.stal = 2
-			vim.o.stal = 2
-			vim.opt.ls = 2
-			vim.o.ls = 2
+			opt.ls = 2
+			opt.stal = 2
 		end,
 		config = source('lazy_cfg.scope'),
 	},
@@ -375,7 +373,8 @@ M.CMP = {
 		'L3MON4D3/LuaSnip',
 		lazy = true,
 		dependencies = { 'friendly-snippets' },
-		build = 'make -j"$(nproc)" install_jsregexp',
+		-- TODO: Check whether `nproc` exists in `PATH`.
+		build = (_G.is_windows and 'mingw32-make -j"$(nproc)" install_jsregexp' or 'make -j"$(nproc)" install_jsregexp'),
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = false },
 }
@@ -384,7 +383,6 @@ M.TELESCOPE = {
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
-		priority = 1000,
 		name = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
@@ -399,7 +397,8 @@ M.TELESCOPE = {
 		'nvim-telescope/telescope-fzf-native.nvim',
 		lazy = true,
 		name = 'Telescope-fzf',
-		build = 'make -j"$(nproc)"',
+		-- TODO: Check whether `nproc` exists in `PATH`.
+		build = (_G.is_windows and 'mingw32-make -j"$(nproc)"' or 'make -j"$(nproc)"'),
 		enabled = function()
 			return executable('fzf') == 1
 		end,
@@ -410,8 +409,8 @@ M.TELESCOPE = {
 		priority = 1000,
 		name = 'Project',
 		init = function()
-			vim.opt.ls = 2
-			vim.o.ls = 2
+			opt.ls = 2
+			opt.stal = 2
 		end,
 		config = source('lazy_cfg.project'),
 	},
@@ -424,7 +423,7 @@ M.UI = {
 		name = 'Notify',
 		dependencies = { 'Plenary' },
 		init = function()
-			vim.opt.termguicolors = true
+			opt.termguicolors = true
 		end,
 		config = source('lazy_cfg.notify'),
 	},
