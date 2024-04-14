@@ -479,6 +479,11 @@ M.UI = {
 			'Lsp_FileOps',
 			'mini.base16',
 		},
+			-- Disable `netrw`.
+		init = function()
+			let.loaded_netrw = 1
+			let.loaded_netrwPlugin = 1
+		end,
 		config = source('lazy_cfg.nvim_tree'),
 	},
 	{ 'echasnovski/mini.base16', lazy = true },

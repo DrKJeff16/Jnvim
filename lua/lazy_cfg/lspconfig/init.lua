@@ -282,6 +282,10 @@ lsp.set_log_level('INFO')
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
+	---@class EvBuf
+	---@field buf integer
+
+	---@param ev EvBuf
 	callback = function(ev)
 		bo[ev.buf].omnifunc = 'v:lua.lsp.omnifunc'
 		local opts = { buffer = ev.buf }
@@ -310,9 +314,9 @@ diag.config({
 	virtual_text = true,
 	float = false,
 	signs = true,
-	underline = false,
+	underline = true,
 	update_in_insert = false,
-	severity_sort = false,
+	severity_sort = true,
 })
 
 ---@type AuRepeat

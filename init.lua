@@ -119,9 +119,12 @@ end
 
 --- List of manually-called, plugins.
 local Pkg = require('lazy_cfg')
-local Csc = Pkg.colorschemes
 
+-- SECTION: Colorschemes
+-- Sourced from `lua/lazy_cfg/colorschemes/*`.
+--
 -- Reorder to your liking.
+local Csc = Pkg.colorschemes
 if Csc.nightfox and Csc.nightfox.setup then
 	Csc.nightfox.setup()
 elseif Csc.tokyonight and Csc.tokyonight.setup then
