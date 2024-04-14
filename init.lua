@@ -22,7 +22,7 @@ local bo = vim.bo
 local nmap = map.n
 
 -- Set `<Space>` as Leader Key.
-nmap('<space>', '<Nop>', {
+nmap('<Space>', '<Nop>', {
 	nowait = false,
 	desc = 'Leader Key.'
 })
