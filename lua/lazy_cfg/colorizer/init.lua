@@ -42,8 +42,17 @@ html.hsl_fn = true
 local css = html
 css.mode = 'background'
 
+local sh = DEFAULT
+for k, _ in next, sh do
+	if k ~= 'mode' then
+		sh[k] = false
+	end
+end
+
 Colorizer.setup({
 	['*'] = DEFAULT,
 	['css'] = css,
 	['html'] = html,
+	['sh'] = sh,
+	['bash'] = sh,
 })
