@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local u_types = User.types.cmp
+local types = User.types.cmp
 local exists = User.exists
 
 local Types = require('cmp.types')
@@ -49,11 +49,35 @@ local n_select = function(fallback)
 	end
 end
 
+---@param fallback fun()
+local n_shift_select = function(fallback)
+	local jumpable = Luasnip.jumpable(-1)
+	---@type cmp.SelectOption
+	local opts = { behavior = cmp.SelectBehavior.Select }
+
+	if cmp.visible() then
+		cmp.select_prev_item(opts)
+	elseif jumpable() then
+		Luasnip.jump(-1)
+	elseif has_words_before() then
+		cmp.complete()
+		if cmp.visible() then
+			cmp.select_prev_item(opts)
+		end
+	else
+		fallback()
+	end
+end
+
 ---@param opts? cmp.ConfirmOption
 ---@return fun(fallback: fun())
 local complete = function(opts)
-	if not opts or vim.tbl_isempty(opts) then
-		opts = { behavior = cmp.ConfirmBehavior.Replace, select = false }
+	opts = opts or {}
+	if not opts.behavior then
+		opts.behavior = cmp.ConfirmBehavior.Insert
+	end
+	if not opts.select then
+		opts.select = false
 	end
 
 	return function(fallback)
@@ -85,9 +109,9 @@ local tab_map = {
 
 ---@type CrMap
 local cr_map = {
-	i = complete({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-	s = complete({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-	c = complete({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+	i = complete(),
+	s = complete(),
+	c = complete({ select = true }),
 }
 
 ---@param fallback fun()
@@ -173,8 +197,8 @@ cmp.setup({
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
 		{ name = 'nvim_lsp_signature_help' },
-	}, {
 		{ name = 'luasnip' },
+	}, {
 		{ name = 'buffer' },
 	}),
 })
@@ -182,18 +206,9 @@ cmp.setup({
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
 		{ name = 'conventionalcommits' },
-	}, {
 		{ name = 'luasnip' },
-		{ name = 'git' },
-	}),
-})
-
-cmp.setup.filetype({ 'org', 'orgagenda', 'orghelp' }, {
-	sources = cmp.config.sources({
-		{ name = 'path' },
 	}, {
-		{ name = 'orgmode' },
-		{ name = 'buffer' },
+		{ name = 'git' },
 	}),
 })
 
@@ -201,6 +216,7 @@ cmp.setup.cmdline({ '/', '?' }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp_document_symbol' },
+	}, {
 		{ name = 'buffer' },
 	}),
 })
@@ -219,7 +235,7 @@ cmp.setup.cmdline(':', {
 	})
 })
 
-sks.vscode()
+-- sks.vscode()
 
 -- For debugging.
 if vim.notify then
