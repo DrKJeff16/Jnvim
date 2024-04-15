@@ -18,18 +18,10 @@ local M = {
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
-	exists = function(mod, warn)
-		if warn == nil then
-			warn = false
-		end
-
+	exists = function(mod)
 		---@type boolean
 		local res
 		res, _ = pcall(require, mod)
-
-		if warn then
-			vim.notify('Tried to source unavailable module `'..mod..'`.', 'warn')
-		end
 
 		return res
 	end,

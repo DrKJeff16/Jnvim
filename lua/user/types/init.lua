@@ -29,7 +29,7 @@
 ---@class UserOpts
 
 ---@class UserMod
----@field exists fun(mod: string, warn: boolean?): boolean
+---@field exists fun(mod: string): boolean
 ---@field check? UserCheck
 ---@field assoc fun()
 ---@field maps UserMaps
