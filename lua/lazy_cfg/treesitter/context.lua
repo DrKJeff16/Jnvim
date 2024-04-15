@@ -2,9 +2,15 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local types = User.types
+local hl_t = User.types.user.highlight
+local map_t = User.types.user.maps
 local exists = User.exists
-local types = User.types.user.highlight
+local kmap = User.maps.kmap
+
 local hi = User.highlight.hl
+
+local nmap = kmap.n
 
 if not exists('treesitter-context') then
 	return
@@ -29,14 +35,26 @@ Context.setup(Options)
 ---@type HlPair[]
 local hls = {
 	{
-		name = 'TreesitterContextBottom',
-		opts = { underline = true, sp = 'Grey' },
-	},
-	{
 		name = 'TreesitterContextLineNumberBottom',
 		opts = { underline = true, sp = 'Grey' },
 	},
 }
+
+local goto_context = Context.go_to_context
+
+---@type KeyMapDict
+local keys = {
+	['<leader>Cn'] = {
+		function()
+			goto_context(vim.v.count1)
+		end,
+		{ desc = 'Previous Context' },
+	},
+}
+
+for k, tuple in next, keys do
+	nmap(k, tuple[1], tuple[2] or {})
+end
 
 for _, v in next, hls do
 	hi(v.name, v.opts)

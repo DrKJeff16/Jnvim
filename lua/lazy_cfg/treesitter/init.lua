@@ -34,7 +34,6 @@ local ensure = {
 	'json',
 	'json5',
 	'jsonc',
-	'latex',
 	'lua',
 	'luadoc',
 	'luap',
@@ -113,13 +112,13 @@ local TSConfig = {
 	modules = {},
 }
 
-if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
-	TSConfig.rainbow = require('lazy_cfg.treesitter.rainbow').rainbow
-end
+-- if exists('ts-rainbow') and exists('lazy_cfg.treesitter.rainbow') then
+-- 	TSConfig.rainbow = require('lazy_cfg.treesitter.rainbow').rainbow
+-- end
 
-if exists('orgmode') then
-	ensure, TSConfig = add_org(ensure, TSConfig)
-end
+-- if exists('orgmode') then
+-- 	ensure, TSConfig = add_org(ensure, TSConfig)
+-- end
 
 local modules = {
 	'context',
