@@ -101,6 +101,7 @@ local map_tbl = {
 		{ lhs = '<Leader>iS', rhs = ':sort!<CR>' },
 	},
 	t = {
+		-- Escape terminl by pressing `<Esc>`
 		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },
 	},
 }
