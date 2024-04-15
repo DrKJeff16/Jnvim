@@ -56,7 +56,12 @@ local M = {}
 
 M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
-
+	{
+		'echasnovski/mini.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'Mini',
+	},
 	{
 		'tiagovla/scope.nvim',
 		lazy = false,
@@ -65,6 +70,7 @@ M.ESSENTIAL = {
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
+			vim.opt.hid = true
 		end,
 		config = source('lazy_cfg.scope'),
 	},
@@ -85,25 +91,37 @@ M.ESSENTIAL = {
 		dependencies = { 'Plenary' },
 	},
 
-	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000, name = 'web-devicons' },
+	{
+		'nvim-tree/nvim-web-devicons',
+		lazy = true,
+		priority = 1000,
+		name = 'web-devicons',
+		version = false,
+	},
 }
 M.TS = {
 	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
 		lazy = false,
+		build = ':verbose TSUpdate',
 		priority = 1000,
 		name = 'treesitter',
 		version = false,
-		build = ':verbose TSUpdate',
 		dependencies = {
-			'nvim-treesitter/nvim-treesitter-context',
-			'JoosepAlviste/nvim-ts-context-commentstring',
+			'ts-context',
+			'ts-commentstring',
 		},
 		config = source('lazy_cfg.treesitter'),
 	},
 	{
+		'nvim-treesitter/nvim-treesitter-context',
+		lazy = true,
+		name = 'ts-context',
+	},
+	{
 		'JoosepAlviste/nvim-ts-context-commentstring',
+		lazy = true,
 		name = 'ts-commentstring',
 	},
 }
@@ -161,6 +179,7 @@ M.LSP = {
 	{
 		'neovim/nvim-lspconfig',
 		lazy = false,
+		priority = 1000,
 		name = 'lspconfig',
 		version = false,
 		dependencies = {
@@ -206,6 +225,7 @@ M.LSP = {
 	},
 	{
 		'p00f/clangd_extensions.nvim',
+		lazy = true,
 		ft = { 'c', 'cpp' },
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
@@ -374,7 +394,6 @@ M.CMP = {
 			'LuaSnip',
 		},
 		init = function()
-			vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
 			vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
 		end,
 		config = source('lazy_cfg.cmp')
@@ -420,6 +439,7 @@ M.TELESCOPE = {
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
+			vim.opt.autochdir = false
 		end,
 		config = source('lazy_cfg.project'),
 	},
@@ -493,7 +513,7 @@ M.UI = {
 		dependencies = {
 			'web-devicons',
 			'Lsp_FileOps',
-			'mini.base16',
+			'Mini',
 		},
 		-- Disable `netrw`.
 		init = function()
@@ -502,7 +522,6 @@ M.UI = {
 		end,
 		config = source('lazy_cfg.nvim_tree'),
 	},
-	{ 'echasnovski/mini.base16', lazy = true },
 	{
 		'norcalli/nvim-colorizer.lua',
 		name = 'colorizer',
@@ -518,9 +537,9 @@ M.UI = {
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
+		priority = 1000,
 		name = 'which_key',
 		version = false,
-		priority = 1000,
 		init = function()
 			vim.opt.timeout = true
 			vim.opt.timeoutlen = 300
