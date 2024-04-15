@@ -26,13 +26,15 @@
 ---@field user UserSubTypes
 ---@field which_key table
 
+---@class UserOpts
+
 ---@class UserMod
----@field exists fun(mod: string): boolean
+---@field exists fun(mod: string, warn: boolean?): boolean
 ---@field check? UserCheck
 ---@field assoc fun()
 ---@field maps UserMaps
 ---@field highlight UserHl
----@field opts fun()
+---@field opts UserOpts
 ---@field types UserTypes
 
 ---@type UserTypes

@@ -13,22 +13,27 @@ local cmd = vim.cmd
 
 ---@type UserMod
 local M = {
-	types = require('user.types'),
+	types = types,
+	check = require('user.check'),
+	maps = require('user.maps'),
+	highlight = require('user.highlight'),
+	opts = require('user.opts'),
+	exists = function(mod, warn)
+		if warn == nil then
+			warn = false
+		end
+
+		---@type boolean
+		local res
+		res, _ = pcall(require, mod)
+
+		if warn then
+			vim.notify('Tried to source unavailable module `'..mod..'`.', 'warn')
+		end
+
+		return res
+	end,
 }
-
-function M.opts()
-	return require('user.opts')
-end
-M.maps = require('user.maps')
-M.highlight = require('user.highlight')
-
-function M.exists(mod)
-	---@type boolean
-	local res
-	res, _ = pcall(require, mod)
-
-	return res
-end
 
 ---@param s string
 ---@return fun()
@@ -57,7 +62,5 @@ function M.assoc()
 		end
 	end
 end
-
-M.check = require('user.check')
 
 return M

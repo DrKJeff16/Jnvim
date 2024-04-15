@@ -35,10 +35,9 @@ let.loaded_netrw = 1
 let.loaded_netrwPlugin = 1
 
 -- Vim `:set ...` global options setter.
-User.opts()
+local opts = User.opts
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal)`.
---- ---
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t].opts` is an **API** option table.
 ---@type ApiMapModeDicts
