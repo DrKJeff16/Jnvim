@@ -25,6 +25,7 @@ local opt_tbl = {
 	belloff = { 'all' },
 	bg = 'dark',  -- `background`
 	ci = true,  -- `copyindent`
+	colorcolumn = { '+1' },
 	completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 	confirm = true,
 	enc = 'utf-8',  -- `encoding`
@@ -34,16 +35,28 @@ local opt_tbl = {
 	fenc = 'utf-8',  -- `fileencoding`
 	ff = 'unix',  -- `fileformat`
 	fileignorecase = _G.is_windows,
+	formatoptions = 'oqwnbljp',
 	hid = true,  -- `hidden`
 	hlg = { 'en' },  -- `helplang`
 	hlsearch = true,
 	ignorecase = false,
 	incsearch = true,
 	ls = 2,  -- `laststatus`
+	mps = {
+		'(:)',
+		'[:]',
+		'{:}',
+		'<:>',
+	},  -- `matchpairs`
+	mat = 30,  -- `matchtime`
+	mis = 40,  -- `menuitems`
+	mouse = '',
 	nu = true,  -- `number`
 	pi = true,  -- `preserveindent`
 	rnu = false,
 	ru = true,  -- `ruler`
+	sh = (is_windows and 'cmd.exe' or 'bash'),  -- `shell`
+	so = 1,  -- `scrolloff`
 	showcmd = true,
 	showmatch = true,
 	showmode = false,
@@ -56,10 +69,12 @@ local opt_tbl = {
 	sta = true,  -- `smarttab`
 	stal = 2,  -- `showtabline`
 	sts = 4,  -- `softtabstop`
-	sw = 4,  -- `shiftwidth`
+	sw = 0,  -- `shiftwidth`
 	tgc = exists('+termguicolors') == 1,  -- `termguicolors`
 	title = true,
 	ts = 4,  -- `tabstop`
+	uc = 100,  -- `updatecount`
+	ut = 1000,  -- `updatetime`
 	visualbell = false,
 	wildmenu = true,
 	wrap = true,
@@ -68,7 +83,7 @@ local opt_tbl = {
 if is_windows then
 	opt_tbl.shellslash = true
 	if executable('mingw32-make') == 1 then
-		opt_tbl.opt.makeprg = 'mingw32-make'
+		opt_tbl.makeprg = 'mingw32-make'
 	elseif executable('make') == 1 then
 		opt_tbl.makeprg = 'make'
 	else
