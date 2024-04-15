@@ -97,6 +97,12 @@
 ---@field x KeyMapFunction
 
 ---@class UserBufMaps: UserApiMaps
+---@field n BufMapFunction
+---@field v BufMapFunction
+---@field t BufMapFunction
+---@field i BufMapFunction
+---@field o BufMapFunction
+---@field x BufMapFunction
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps

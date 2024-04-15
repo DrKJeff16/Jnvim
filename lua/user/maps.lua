@@ -10,253 +10,80 @@ local kmap = keymap.set
 local map = api.nvim_set_keymap
 local bufmap = api.nvim_buf_set_keymap
 
+---@param mode string|string[]
+---@param func fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@param with_buf? boolean
+---@return KeyMapFunction|ApiMapFunction|BufMapFunction
+local variant = function(mode, func, with_buf)
+	if with_buf == nil then
+		with_buf = false
+	end
+	local res
+
+	if with_buf == false then
+		---@type ApiMapFunction|KeyMapFunction
+		res = function(lhs, rhs, opts)
+			opts = opts or {}
+
+			if not opts.noremap then
+				opts.noremap = true
+			end
+			if not opts.nowait then
+				opts.nowait = true
+			end
+			if not opts.silent then
+				opts.silent = true
+			end
+
+			func(mode, lhs, rhs, opts)
+		end
+	elseif with_buf == true then
+		---@type BufMapFunction
+		res = function(b, lhs, rhs, opts)
+			opts = opts or {}
+
+			if not opts.noremap then
+				opts.noremap = true
+			end
+			if not opts.nowait then
+				opts.nowait = true
+			end
+			if not opts.silent then
+				opts.silent = true
+			end
+
+			func(b, mode, lhs, rhs, opts)
+		end
+	end
+
+	return res
+end
+
 ---@type UserMaps
 local M = {
 	kmap = {
-		n = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			kmap('n', lhs, rhs, opts)
-		end,
-		i = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			kmap('i', lhs, rhs, opts)
-		end,
-		t = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			kmap('t', lhs, rhs, opts)
-		end,
-		v = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			kmap('v', lhs, rhs, opts)
-		end,
+		n = variant('n', kmap),
+		i = variant('i', kmap),
+		v = variant('v', kmap),
+		t = variant('t', kmap),
+		o = variant('o', kmap),
+		x = variant('x', kmap),
 	},
 	map = {
-		n = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('n', lhs, rhs, opts)
-		end,
-		i = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('i', lhs, rhs, opts)
-		end,
-		t = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('t', lhs, rhs, opts)
-		end,
-		v = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('v', lhs, rhs, opts)
-		end,
-		o = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('o', lhs, rhs, opts)
-		end,
-		x = function(lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			map('x', lhs, rhs, opts)
-		end,
+		n = variant('n', map),
+		i = variant('i', map),
+		v = variant('v', map),
+		t = variant('t', map),
+		o = variant('o', map),
+		x = variant('x', map),
 	},
 	buf_map = {
-		n = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 'n', lhs, rhs, opts)
-		end,
-		i = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 'i', lhs, rhs, opts)
-		end,
-		t = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 't', lhs, rhs, opts)
-		end,
-		v = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 'v', lhs, rhs, opts)
-		end,
-		o = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 'o', lhs, rhs, opts)
-		end,
-		x = function(b, lhs, rhs, opts)
-			opts = opts or {}
-
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
-			end
-
-			bufmap(b, 'x', lhs, rhs, opts)
-		end,
+		n = variant('n', bufmap, true),
+		i = variant('i', bufmap, true),
+		v = variant('v', bufmap, true),
+		t = variant('t', bufmap, true),
+		o = variant('o', bufmap, true),
+		x = variant('x', bufmap, true),
 	},
 }
 
