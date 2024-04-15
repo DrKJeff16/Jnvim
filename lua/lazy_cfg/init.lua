@@ -163,10 +163,15 @@ M.LSP = {
 			'NeoDev',
 			'NeoConf',
 			'Trouble',
-			'b0o/SchemaStore.nvim',
-			'p00f/clangd_extensions.nvim',
+			'b0o/SchemaStore',
+			'clangd_exts',
 		},
 		config = source('lazy_cfg.lspconfig'),
+	},
+	{
+		'b0o/SchemaStore',
+		lazy = true,
+		name = 'SchemaStore',
 	},
 	-- Essenyial for Nvim Lua files.
 	{
@@ -195,6 +200,8 @@ M.LSP = {
 	{
 		'p00f/clangd_extensions.nvim',
 		ft = { 'c', 'cpp' },
+		name = 'clangd_exts',
+		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = function()
 			return executable('clangd') == 1
 		end,
