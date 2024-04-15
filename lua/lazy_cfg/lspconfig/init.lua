@@ -37,11 +37,6 @@ function Sub.neoconf()
 		return require('lazy_cfg.lspconfig.neoconf')
 	end
 end
-function Sub.clangd()
-	if exists('lazy_cfg.lspconfig.clangd') then
-		return require('lazy_cfg.lspconfig.clangd')
-	end
-end
 function Sub.trouble()
 	if exists('lazy_cfg.lspconfig.trouble') then
 		return require('lazy_cfg.lspconfig.trouble')
@@ -52,7 +47,6 @@ Sub.kinds = require('lazy_cfg.lspconfig.kinds')
 
 -- Now call each.
 Sub.neoconf()
-Sub.clangd()
 Sub.trouble()
 Sub.kinds.setup()
 

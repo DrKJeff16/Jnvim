@@ -28,13 +28,7 @@ local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
 -- Install `Lazy` automatically.
 if not exists('lazy') or not fs_stat(lazypath) then
-	system({
-		'git',
-		'clone',
-		'--filter=blob:none',
-		'https://github.com/folke/lazy.nvim.git',
-		lazypath,
-	})
+	system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
 end
 
 -- Add `Lazy` to `stdpath`
@@ -69,8 +63,8 @@ M.ESSENTIAL = {
 		priority = 1000,
 		name = 'Scope',
 		init = function()
-			opt.ls = 2
-			opt.stal = 2
+			vim.opt.ls = 2
+			vim.opt.stal = 2
 		end,
 		config = source('lazy_cfg.scope'),
 	},
@@ -80,12 +74,14 @@ M.ESSENTIAL = {
 		lazy = true,
 		priority = 1000,
 		name = 'Plenary',
+		version = false,
 	},
 	{
 		'nvim-lua/popup.nvim',
 		lazy = false,
 		priority = 1000,
 		name = 'Popup',
+		version = false,
 		dependencies = { 'Plenary' },
 	},
 
@@ -98,6 +94,7 @@ M.TS = {
 		lazy = false,
 		priority = 1000,
 		name = 'treesitter',
+		version = false,
 		build = ':verbose TSUpdate',
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-context',
@@ -149,7 +146,7 @@ M.EDITING = {
 	{
 		'lewis6991/gitsigns.nvim',
 		name = 'GitSigns',
-		version = '*',
+		version = false,
 		config = source('lazy_cfg.gitsigns'),
 	},
 	{
@@ -165,6 +162,7 @@ M.LSP = {
 		'neovim/nvim-lspconfig',
 		lazy = false,
 		name = 'lspconfig',
+		version = false,
 		dependencies = {
 			'NeoDev',
 			'NeoConf',
@@ -185,6 +183,7 @@ M.LSP = {
 		lazy = false,
 		priority = 1000,
 		name = 'NeoDev',
+		version = false,
 		dependencies = { 'NeoConf' },
 		enabled = executable('lua-language-server') == 1,
 	},
@@ -193,6 +192,7 @@ M.LSP = {
 		lazy = false,
 		priority = 1000,
 		name = 'NeoConf',
+		version = false,
 		dependencies = {
 			'nlsp-settings',
 		},
@@ -201,6 +201,7 @@ M.LSP = {
 		'folke/trouble.nvim',
 		lazy = true,
 		name = 'Trouble',
+		version = false,
 		dependencies = { 'web-devicons' },
 	},
 	{
@@ -237,6 +238,7 @@ M.LSP = {
 		'antosha417/nvim-lsp-file-operations',
 		lazy = true,
 		name = 'Lsp_FileOps',
+		enabled = false,
 	},
 }
 M.COLORSCHEMES = {
@@ -310,6 +312,7 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'catppuccin',
 		main = 'catppuccin',
+		version = false,
 	},
 	{
 		'folke/tokyonight.nvim',
@@ -317,6 +320,7 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'tokyonight',
 		main = 'tokyonight',
+		version = false,
 	},
 	{
 		'vigoux/oak',
@@ -340,6 +344,7 @@ M.COLORSCHEMES = {
 		lazy = true,
 		priority = 1000,
 		name = 'nightfox',
+		version = false,
 	},
 }
 M.CMP = {
@@ -349,6 +354,7 @@ M.CMP = {
 		event = { 'InsertEnter', 'CmdlineEnter' },
 		priority = 1000,
 		name = 'cmp',
+		version = false,
 		dependencies = {
 			'treesitter',
 			'lspconfig',
@@ -368,8 +374,8 @@ M.CMP = {
 			'LuaSnip',
 		},
 		init = function()
-			set.completeopt = 'menu,menuone,noinsert,noselect,preview'
-			opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
+			vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
+			vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
 		end,
 		config = source('lazy_cfg.cmp')
 	},
@@ -412,8 +418,8 @@ M.TELESCOPE = {
 		priority = 1000,
 		name = 'Project',
 		init = function()
-			opt.ls = 2
-			opt.stal = 2
+			vim.opt.ls = 2
+			vim.opt.stal = 2
 		end,
 		config = source('lazy_cfg.project'),
 	},
@@ -425,7 +431,7 @@ M.UI = {
 		name = 'Notify',
 		dependencies = { 'Plenary' },
 		init = function()
-			opt.termguicolors = true
+			vim.opt.termguicolors = true
 		end,
 		config = source('lazy_cfg.notify'),
 	},
@@ -434,11 +440,12 @@ M.UI = {
 		'nvim-lualine/lualine.nvim',
 		priority = 1000,
 		name = 'LuaLine',
+		version = false,
 		dependencies = { 'web-devicons' },
 		init = function()
-			opt.ls = 2
-			opt.stal = 2
-			opt.showmode = false
+			vim.opt.ls = 2
+			vim.opt.stal = 2
+			vim.opt.showmode = false
 		end,
 		config = source('lazy_cfg.lualine'),
 	},
@@ -451,7 +458,7 @@ M.UI = {
 			'Scope',
 		},
 		init = function()
-			opt.termguicolors = true
+			vim.opt.termguicolors = true
 		end,
 		config = function()
 			if exists('lazy_cfg.lualine.bufferline') then
@@ -466,6 +473,7 @@ M.UI = {
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		name = 'ibl',
+		version = false,
 		dependencies = { 'rainbow-delimiters' },
 		config = source('lazy_cfg.blank_line'),
 		-- enabled = false,
@@ -473,20 +481,21 @@ M.UI = {
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
 		lazy = true,
-		priority = 1000,
 		name = 'rainbow-delimiters',
+		version = false,
 	},
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
 		priority = 1000,
-		name = 'nvim-tree',
+		name = 'nvim_tree',
+		version = false,
 		dependencies = {
 			'web-devicons',
 			'Lsp_FileOps',
 			'mini.base16',
 		},
-			-- Disable `netrw`.
+		-- Disable `netrw`.
 		init = function()
 			let.loaded_netrw = 1
 			let.loaded_netrwPlugin = 1
@@ -497,21 +506,24 @@ M.UI = {
 	{
 		'norcalli/nvim-colorizer.lua',
 		name = 'colorizer',
+		version = false,
 		config = source('lazy_cfg.colorizer'),
 	},
 	{
 		'akinsho/toggleterm.nvim',
 		name = 'ToggleTerm',
+		version = false,
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
 		name = 'which_key',
+		version = false,
 		priority = 1000,
 		init = function()
-			set.timeout = true
-			set.timeoutlen = 300
+			vim.opt.timeout = true
+			vim.opt.timeoutlen = 300
 		end,
 		config = source('lazy_cfg.which_key'),
 	},
