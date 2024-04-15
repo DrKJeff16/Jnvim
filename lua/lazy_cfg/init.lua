@@ -33,7 +33,6 @@ if not exists('lazy') or not fs_stat(lazypath) then
 		'clone',
 		'--filter=blob:none',
 		'https://github.com/folke/lazy.nvim.git',
-		-- '--branch=stable',
 		lazypath,
 	})
 end
@@ -44,8 +43,6 @@ rtp:prepend(lazypath)
 local Lazy = require('lazy')
 local Opts = require('lazy_cfg.lazy.opts')
 
----@alias LazyPlugs (string|LazyConfig|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport[][])[]
-
 --- A `config` function to call your plugins.
 --- ---
 ---
@@ -55,7 +52,7 @@ local Opts = require('lazy_cfg.lazy.opts')
 --- ```
 --- ---
 ---@param mod_str string
----@return fun(): any
+---@return fun()
 local source = function(mod_str)
 	return function() require(mod_str) end
 end
@@ -63,7 +60,6 @@ end
 ---@type table<string, LazyPlugs>
 local M = {}
 
----@type LazyPlugs
 M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 
@@ -95,7 +91,6 @@ M.ESSENTIAL = {
 
 	{ 'nvim-tree/nvim-web-devicons', lazy = true, priority = 1000, name = 'web-devicons' },
 }
----@type LazyPlugs
 M.TS = {
 	-- Treesitter.
 	{
@@ -115,7 +110,6 @@ M.TS = {
 		name = 'ts-commentstring',
 	},
 }
----@type LazyPlugs
 M.EDITING = {
 	{
 		'numToStr/Comment.nvim',
@@ -159,7 +153,6 @@ M.EDITING = {
 		config = source('lazy_cfg.gitsigns'),
 	},
 }
----@type LazyPlugs
 M.LSP = {
 	-- LSP
 	{
@@ -233,7 +226,6 @@ M.LSP = {
 		name = 'Lsp_FileOps',
 	},
 }
----@type LazyPlugs
 M.COLORSCHEMES = {
 	-- Colorschemes
 	{
@@ -337,7 +329,6 @@ M.COLORSCHEMES = {
 		name = 'nightfox',
 	},
 }
----@type LazyPlugs
 M.CMP = {
 	-- Completion Engine
 	{
@@ -378,7 +369,6 @@ M.CMP = {
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = false },
 }
----@type LazyPlugs
 M.TELESCOPE = {
 	-- Telescope
 	{
@@ -415,7 +405,6 @@ M.TELESCOPE = {
 		config = source('lazy_cfg.project'),
 	},
 }
----@type LazyPlugs
 M.UI = {
 	{
 		'rcarriga/nvim-notify',
@@ -433,6 +422,11 @@ M.UI = {
 		priority = 1000,
 		name = 'LuaLine',
 		dependencies = { 'web-devicons' },
+		init = function()
+			opt.ls = 2
+			opt.stal = 2
+			opt.showmode = false
+		end,
 		config = source('lazy_cfg.lualine'),
 	},
 	{
@@ -510,7 +504,6 @@ M.UI = {
 	},
 }
 
----@type LazyPlugs
 M.SYNTAX = {
 	{
 		'rhysd/vim-syntax-codeowners',
@@ -519,7 +512,6 @@ M.SYNTAX = {
 	},
 }
 
----@type LazyPlugs
 local T = {}
 
 --- INFO: Setup.
