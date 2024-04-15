@@ -96,8 +96,9 @@ local map_tbl = {
 		{ lhs = '<Leader>\'', rhs = '<Nop>', opts = { nowait = false } },
 	},
 	v = {
-		{ lhs = '<Leader>is', rhs = '<CMD>sort<CR>' },
-		{ lhs = '<Leader>iS', rhs = '<CMD>sort!<CR>' },
+		--- WARNING: DO NOT USE `<CMD>`!!!
+		{ lhs = '<Leader>is', rhs = ':sort<CR>' },
+		{ lhs = '<Leader>iS', rhs = ':sort!<CR>' },
 	},
 	t = {
 		{ lhs = '<Esc>', rhs = '<C-\\><C-n>' },
