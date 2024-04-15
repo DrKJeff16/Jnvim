@@ -152,6 +152,12 @@ M.EDITING = {
 		version = '*',
 		config = source('lazy_cfg.gitsigns'),
 	},
+	{
+		'sindrets/diffview.nvim',
+		lazy = false,
+		name = 'DiffView',
+		config = source('lazy_cfg.diffview'),
+	},
 }
 M.LSP = {
 	-- LSP
