@@ -58,7 +58,6 @@ M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 	{
 		'echasnovski/mini.nvim',
-		lazy = true,
 		priority = 1000,
 		name = 'Mini',
 	},
@@ -566,7 +565,7 @@ M.SYNTAX = {
 	},
 }
 
----@type LazySpec
+---@type LazyPlugs
 local T = {}
 
 --- INFO: Setup.
