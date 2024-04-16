@@ -10,8 +10,10 @@ local kmap = keymap.set
 local map = api.nvim_set_keymap
 local bufmap = api.nvim_buf_set_keymap
 
+---@alias MapFuncs fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+
 ---@param mode string|string[]
----@param func fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+---@param func MapFuncs
 ---@param with_buf? boolean
 ---@return KeyMapFunction|ApiMapFunction|BufMapFunction
 local variant = function(mode, func, with_buf)
@@ -20,36 +22,30 @@ local variant = function(mode, func, with_buf)
 	end
 	local res
 
-	if with_buf == false then
+	local DEFAULTS = { 'noremap', 'nowait', 'silent' }
+
+	if not with_buf then
 		---@type ApiMapFunction|KeyMapFunction
 		res = function(lhs, rhs, opts)
 			opts = opts or {}
 
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
+			for _, v in next, DEFAULTS do
+				if opts[v] == nil then
+					opts[v] = true
+				end
 			end
 
 			func(mode, lhs, rhs, opts)
 		end
-	elseif with_buf == true then
+	else
 		---@type BufMapFunction
 		res = function(b, lhs, rhs, opts)
 			opts = opts or {}
 
-			if not opts.noremap then
-				opts.noremap = true
-			end
-			if not opts.nowait then
-				opts.nowait = true
-			end
-			if not opts.silent then
-				opts.silent = true
+			for _, v in next, DEFAULTS do
+				if opts[v] == nil then
+					opts[v] = true
+				end
 			end
 
 			func(b, mode, lhs, rhs, opts)
