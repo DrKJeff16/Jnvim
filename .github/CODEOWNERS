@@ -3,3 +3,5 @@
 .gitignore @DrKJeff16
 *.md @DrKJeff16
 *.org @DrKJeff16
+neoconf.json @DrKJeff16
+.neoconf.json @DrKJeff16
