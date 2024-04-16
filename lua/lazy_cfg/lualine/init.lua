@@ -10,9 +10,6 @@ end
 
 local Lualine = require('lualine')
 
-local Winbar = require('lazy_cfg.lualine.winbar')
-local Tabline = require('lazy_cfg.lualine.tabline')
-
 Lualine.setup({
 	options = {
 		icons_enabled = true,
