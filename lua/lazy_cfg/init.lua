@@ -490,6 +490,16 @@ M.UI = {
 		enabled = false,
 	},
 	{
+		'romgrk/barbar.nvim',
+		priority = 1000,
+		name = 'BarBar',
+		dependencies = {
+			'GitSigns',
+			'web-devicons',
+		},
+		config = source('lazy_cfg.barbar'),
+	},
+	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		name = 'ibl',

@@ -87,43 +87,8 @@ Lualine.setup({
         lualine_y = {'windows'},
         lualine_z = {}
     },
-    tabline = {
-		lualine_a = {
-			{
-				'tabs',
-				tab_max_length = vim.o.columns * 2 / 3,
-				mode = 0,
-				path = 0,
-				use_mode_colors = false,
-				show_modified_status = true,
-				symbols = {
-					modified = '[+]',
-				},
-
-				fmt = function(name, context)
-					-- Show + if buffer is modified in tab
-					local buflist = vim.fn.tabpagebuflist(context.tabnr)
-					local winnr = vim.fn.tabpagewinnr(context.tabnr)
-					local bufnr = buflist[winnr]
-					local mod = vim.fn.getbufvar(bufnr, '&mod')
-
-					return name .. (mod == 1 and ' +' or '')
-				end
-			},
-		},
-		lualine_b = { 'branch' },
-		lualine_c = {},
-		lualine_x = {},
-		lualine_y = {
-			{
-				'windows',
-				show_filename_only = true,
-				show_modified_status = true,
-
-			},
-		},
-		lualine_z = {},
-    },
+    tabline = {},
+    inactive_tabline = {},
     winbar = {},
     inactive_winbar = {},
 
