@@ -24,7 +24,7 @@ M.exists = {
 		return res
 	end,
 	field = function(field, t)
-		if not t[field] or t[field] == nil then
+		if not t[field] and t[field] == nil then
 			return false
 		end
 		return true
@@ -61,10 +61,42 @@ function M.exists.executable(exe, fallback)
 	return res
 end
 
+function M.exists.modules(mod, need_all)
+	if need_all == nil then
+		need_all = true
+	end
+
+	---@type boolean|table<string, boolean>
+	local res = false
+
+	if type(mod) == 'string' then
+		res = M.exists.module(mod)
+	elseif type(mod) == 'table' and not vim.tbl_isempty(mod) then
+		res = {}
+
+		for _, v in next, mod do
+			local r = M.exists.module(v)
+			if need_all then
+				res[v] = r
+			elseif not need_all and r then
+				res = r
+			elseif not need_all and not r then
+				res = r
+				break
+			end
+		end
+	else
+		error('`(user.check.exists.modules)`: Input not a string nor a string array.')
+	end
+
+	return res
+end
+
 function M.new()
 	local self = setmetatable({}, { __index = M })
 	self.exists = M.exists
 	self.value = M.value
+	self.dry_run = M.dry_run
 
 	return self
 end
