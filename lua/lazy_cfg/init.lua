@@ -556,6 +556,7 @@ M.SYNTAX = {
 	},
 }
 
+---@type LazySpec
 local T = {}
 
 --- INFO: Setup.
@@ -572,9 +573,9 @@ local P = {
 }
 
 nmap('<leader>Le', function()
-	local path = stdpath('config') .. '/lua/lazy_cfg/init.lua'
+	local cmd = 'tabnew ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
-	vim.cmd('tabnew ' .. path)
+	vim.cmd(cmd)
 end, { desc = 'Open `Lazy` File' })
 
 return P
