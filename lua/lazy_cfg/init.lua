@@ -35,7 +35,7 @@ end
 rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
-local Opts = require('lazy_cfg.lazy.opts')
+-- local Opts = require('lazy_cfg.lazy.opts')
 
 --- A `config` function to call your plugins.
 --- ---
@@ -58,6 +58,7 @@ M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 	{
 		'echasnovski/mini.nvim',
+		lazy = false,
 		priority = 1000,
 		name = 'Mini',
 	},
@@ -215,12 +216,13 @@ M.LSP = {
 			'nlsp-settings',
 		},
 	},
+	-- TODO: Make submodule.
 	{
 		'folke/trouble.nvim',
-		lazy = true,
 		name = 'Trouble',
 		version = false,
 		dependencies = { 'web-devicons' },
+		opts = {},
 	},
 	{
 		'p00f/clangd_extensions.nvim',
@@ -228,9 +230,7 @@ M.LSP = {
 		ft = { 'c', 'cpp' },
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = function()
-			return executable('clangd') == 1
-		end,
+		enabled = executable('clangd') == 1,
 	},
 	{
 		'tamago324/nlsp-settings.nvim',
@@ -479,13 +479,7 @@ M.UI = {
 		init = function()
 			vim.opt.termguicolors = true
 		end,
-		config = function()
-			if exists('lazy_cfg.lualine.bufferline') then
-				return require('lazy_cfg.lualine.bufferline')
-			end
-
-			return require('lazy_cfg.bufferline')
-		end,
+		config = source('lazy_cfg.bufferline'),
 		enabled = false,
 	},
 	{
@@ -526,8 +520,8 @@ M.UI = {
 		},
 		-- Disable `netrw`.
 		init = function()
-			let.loaded_netrw = 1
-			let.loaded_netrwPlugin = 1
+			vim.g.loaded_netrw = 1
+			vim.g.loaded_netrwPlugin = 1
 		end,
 		config = source('lazy_cfg.nvim_tree'),
 	},
@@ -561,7 +555,7 @@ M.SYNTAX = {
 	{
 		'rhysd/vim-syntax-codeowners',
 		lazy = false,
-		name = 'codeowners-syntax'
+		name = 'codeowners-syntax',
 	},
 }
 
