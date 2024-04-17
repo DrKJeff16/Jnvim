@@ -11,6 +11,16 @@ local opt = vim.opt
 local bo = vim.bo
 local cmd = vim.cmd
 
+local au = api.nvim_create_autocmd
+
+local old_exists = function(mod)
+	---@type boolean
+	local res
+	res, _ = pcall(require, mod)
+
+	return res
+end
+
 ---@type UserMod
 local M = {
 	types = types,
@@ -18,14 +28,10 @@ local M = {
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
-	exists = function(mod)
-		---@type boolean
-		local res
-		res, _ = pcall(require, mod)
-
-		return res
-	end,
 }
+
+--- Revert to legacy function if errors occur.
+M.exists = (M.check.exists.module ~= nil and M.check.exists.module or old_exists)
 
 ---@param s string
 ---@return fun()
@@ -50,7 +56,7 @@ function M.assoc()
 
 	for _, v in next, aus do
 		for _, o in next, v.opts_tbl do
-			api.nvim_create_autocmd(v.events, o)
+			au(v.events, o)
 		end
 	end
 end
