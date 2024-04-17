@@ -74,7 +74,7 @@ end
 local complete = function(opts)
 	opts = opts or {}
 	if not opts.behavior then
-		opts.behavior = cmp.ConfirmBehavior.Insert
+		opts.behavior = cmp.ConfirmBehavior.Replace
 	end
 	if not opts.select then
 		opts.select = false
@@ -137,6 +137,7 @@ cmp.setup({
 			'gitcommit',
 			'html',
 			'java',
+			'lisp',
 			'lua',
 			'markdown',
 			'python',
