@@ -549,6 +549,12 @@ M.UI = {
 		end,
 		config = source('lazy_cfg.which_key'),
 	},
+	{
+		'LudoPinelli/comment-box.nvim',
+		lazy = false,
+		name = 'CommentBox',
+		config = source('lazy_cfg.commentbox'),
+	},
 }
 
 M.SYNTAX = {
