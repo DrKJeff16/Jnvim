@@ -10,8 +10,6 @@ local kmap = keymap.set
 local map = api.nvim_set_keymap
 local bufmap = api.nvim_buf_set_keymap
 
----@alias MapFuncs fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
-
 ---@param mode string|string[]
 ---@param func MapFuncs
 ---@param with_buf? boolean
@@ -55,32 +53,28 @@ local variant = function(mode, func, with_buf)
 	return res
 end
 
+---@param field 'api'|'key'|'buf'
+---@return UserKeyMaps|UserApiMaps|UserBufMaps res
+local mode_funcs = function(field)
+	local VALID = { api = { 'map', map, false }, key = { 'kmap', kmap, false }, buf = { 'buf_map', bufmap, true } }
+	local MODES =  { 'n', 'i', 'v', 't', 'o', 'x' }
+	if VALID[field] == nil then
+		error('Invalid variant ID!')
+	else
+		local res = {}
+		for _, mode in next, MODES do
+			res[mode] = variant(mode, VALID[field][2], VALID[field][3])
+		end
+
+		return res
+	end
+end
+
 ---@type UserMaps
 local M = {
-	kmap = {
-		n = variant('n', kmap),
-		i = variant('i', kmap),
-		v = variant('v', kmap),
-		t = variant('t', kmap),
-		o = variant('o', kmap),
-		x = variant('x', kmap),
-	},
-	map = {
-		n = variant('n', map),
-		i = variant('i', map),
-		v = variant('v', map),
-		t = variant('t', map),
-		o = variant('o', map),
-		x = variant('x', map),
-	},
-	buf_map = {
-		n = variant('n', bufmap, true),
-		i = variant('i', bufmap, true),
-		v = variant('v', bufmap, true),
-		t = variant('t', bufmap, true),
-		o = variant('o', bufmap, true),
-		x = variant('x', bufmap, true),
-	},
+	kmap = mode_funcs('key'),
+	map = mode_funcs('api'),
+	buf_map = mode_funcs('buf'),
 }
 
 return M

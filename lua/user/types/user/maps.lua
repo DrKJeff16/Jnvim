@@ -80,6 +80,8 @@
 ---@field o? BufMapTbl[]
 ---@field x? BufMapTbl[]
 
+---@alias MapFuncs fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
+
 ---@class UserApiMaps
 ---@field n ApiMapFunction
 ---@field v ApiMapFunction
