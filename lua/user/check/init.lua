@@ -29,13 +29,10 @@ M.exists = {
 		end
 		return true
 	end,
-
-	-- TODO: Do this table
-	vim = {},
 }
 
 function M.exists.executable(exe, fallback)
-	if not exe or vim.tbl_contains({ 'string', 'table' }, type(exe)) then
+	if exe == nil or not vim.tbl_contains({ 'string', 'table' }, type(exe)) then
 		vim.notify('Argument type is not string nor table!!', 'error')
 		return false
 	end
@@ -78,11 +75,9 @@ function M.exists.modules(mod, need_all)
 			local r = M.exists.module(v)
 			if need_all then
 				res[v] = r
-			elseif not need_all and r then
+			elseif not need_all then
 				res = r
-			elseif not need_all and not r then
-				res = r
-				break
+				if not r then break end
 			end
 		end
 	else
