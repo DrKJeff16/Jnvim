@@ -186,13 +186,10 @@ cmp.setup({
 		['<Tab>'] = cmp.mapping(tab_map),
 		['<S-Tab>'] = cmp.config.disable,
 		['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-		['<Down>'] = cmp.config.disable,
-		['<Up>'] = cmp.config.disable,
+		['<Down>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
+		['<Up>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 		['<Right>'] = cmp.mapping(bs_map, { 'i', 's' }),
-		['<Left>'] = cmp.mapping(
-		bs_map,
-		{ 'i', 's' }
-		),
+		['<Left>'] = cmp.mapping(bs_map, { 'i', 's' }),
 	}),
 
 	sources = cmp.config.sources({
@@ -206,10 +203,11 @@ cmp.setup({
 
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
+		{ name = 'git' },
 		{ name = 'conventionalcommits' },
 		{ name = 'luasnip' },
 	}, {
-		{ name = 'git' },
+		{ name = 'buffer' },
 	}),
 })
 
@@ -225,7 +223,7 @@ cmp.setup.cmdline({ '/', '?' }, {
 cmp.setup.cmdline(':', {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
-		{ name = 'path' }
+		{ name = 'path' },
 	}, {
 		{
 			name = 'cmdline',
