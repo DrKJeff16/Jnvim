@@ -11,13 +11,8 @@ local map = User.maps.map
 local kmap = User.maps.kmap
 local hl = User.highlight.hl
 
-local set = vim.o
-local opt = vim.opt
 local fn = vim.fn
-local api = vim.api
 local let = vim.g
-local lsp = vim.lsp
-local bo = vim.bo
 
 local nmap = map.n
 
