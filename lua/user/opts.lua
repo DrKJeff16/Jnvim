@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.opts')
+local Check = require('user.check')
 
 local opt = vim.opt
 local let = vim.g
@@ -9,7 +10,7 @@ local fn = vim.fn
 
 local has = fn.has
 local exists = fn.exists
-local executable = fn.executable
+local executable = Check.exists.executable
 
 ---@type 0|1
 let.is_windows = has('win32')
@@ -82,9 +83,9 @@ local opt_tbl = {
 
 if is_windows then
 	opt_tbl.shellslash = true
-	if executable('mingw32-make') == 1 then
+	if executable('mingw32-make') then
 		opt_tbl.makeprg = 'mingw32-make'
-	elseif executable('make') == 1 then
+	elseif executable('make') then
 		opt_tbl.makeprg = 'make'
 	else
 		opt_tbl.makeprg = ''

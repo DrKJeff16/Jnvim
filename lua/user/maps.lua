@@ -61,6 +61,7 @@ local mode_funcs = function(field)
 	if VALID[field] == nil then
 		error('Invalid variant ID!')
 	else
+		---@type UserKeyMaps|UserApiMaps|UserBufMaps
 		local res = {}
 		for _, mode in next, MODES do
 			res[mode] = variant(mode, VALID[field][2], VALID[field][3])
