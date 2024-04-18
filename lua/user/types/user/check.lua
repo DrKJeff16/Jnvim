@@ -3,7 +3,7 @@
 
 ---@class ExistanceCheck
 ---@field module fun(mod: string): boolean
----@field modules? fun(mod: string|string[], need_all: boolean?): (boolean|table<string, boolean>)
+---@field modules fun(mod: string|string[], need_all: boolean?): (boolean|table<string, boolean>)
 ---@field executable fun(exe: string|string[], fallback: (nil|fun(): unknown)?): boolean
 ---@field data fun(v: any): boolean
 ---@field field fun(field: string|integer, t: table<string, any>): boolean

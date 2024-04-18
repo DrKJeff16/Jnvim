@@ -30,7 +30,7 @@
 
 ---@class UserMod
 ---@field exists fun(mod: string): boolean
----@field check? UserCheck
+---@field check UserCheck
 ---@field assoc fun()
 ---@field maps UserMaps
 ---@field highlight UserHl
