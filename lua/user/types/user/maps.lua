@@ -119,4 +119,4 @@
 ---@field map UserApiMaps
 ---@field buf_map UserBufMaps
 ---@field nop fun(T: string|string[], opts: ApiMapOpts?, mode: MapModes?)
----@field private modes Modes
+---@field modes Modes
