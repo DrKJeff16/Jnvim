@@ -3,7 +3,7 @@
 
 local User = require('user')
 local types = User.types.cmp
-local exists = User.exists
+local exists = User.check.exists.module
 
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
@@ -29,98 +29,13 @@ local Luasnip = require('lazy_cfg.cmp.luasnip')
 local cmp = require('cmp')
 local sks = require('lazy_cfg.cmp.kinds')
 
----@param fallback fun()
-local n_select = function(fallback)
-	local jumpable = Luasnip.expand_or_locally_jumpable
-	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Insert }
-
-	if cmp.visible() then
-		cmp.select_next_item(opts)
-	elseif jumpable() then
-		Luasnip.expand_or_jump()
-	elseif has_words_before() then
-		cmp.complete()
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		end
-	else
-		fallback()
-	end
-end
-
----@param fallback fun()
-local n_shift_select = function(fallback)
-	local jumpable = Luasnip.jumpable(-1)
-	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Select }
-
-	if cmp.visible() then
-		cmp.select_prev_item(opts)
-	elseif jumpable() then
-		Luasnip.jump(-1)
-	elseif has_words_before() then
-		cmp.complete()
-		if cmp.visible() then
-			cmp.select_prev_item(opts)
-		end
-	else
-		fallback()
-	end
-end
-
----@param opts? cmp.ConfirmOption
----@return fun(fallback: fun())
-local complete = function(opts)
-	opts = opts or {}
-	if not opts.behavior then
-		opts.behavior = cmp.ConfirmBehavior.Replace
-	end
-	if not opts.select then
-		opts.select = false
-	end
-
-	return function(fallback)
-		if cmp.visible() and cmp.get_selected_entry() then
-			cmp.confirm(opts)
-		else
-			fallback()
-		end
-	end
-end
-
----@type TabMap
-local tab_map = {
-	i = n_select,
-	s = n_select,
-	---@param fallback fun()
-	c = function(fallback)
-		local opts = { behavior = cmp.SelectBehavior.Insert }
-
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		elseif has_words_before() then
-			cmp.complete()
-		else
-			fallback()
-		end
-	end,
-}
-
----@type CrMap
-local cr_map = {
-	i = complete(),
-	s = complete(),
-	c = complete({ select = true }),
-}
-
----@param fallback fun()
-local bs_map = function(fallback)
-	if cmp.visible() then
-		cmp.close()
-	end
-	fallback()
-end
+local Util = require('lazy_cfg.cmp.util')
+local n_select = Util.n_select
+local n_shift_select = Util.n_shift_select
+local tab_map = Util.tab_map
+local s_tab_map = Util.s_tab_map
+local cr_map = Util.cr_map
+local bs_map = Util.bs_map
 
 cmp.setup({
 	---@return boolean
@@ -184,7 +99,7 @@ cmp.setup({
 		['<C-Space>'] = cmp.mapping.complete(),
 		['<CR>'] = cmp.mapping(cr_map),
 		['<Tab>'] = cmp.mapping(tab_map),
-		['<S-Tab>'] = cmp.config.disable,
+		['<S-Tab>'] = cmp.mapping(s_tab_map),
 		['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 		['<Down>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 		['<Up>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
