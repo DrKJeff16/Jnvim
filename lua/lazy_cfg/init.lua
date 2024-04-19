@@ -2,17 +2,14 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 local types = User.types.lazy
 local nmap = User.maps.kmap.n
 
 local fn = vim.fn
-local opt = vim.opt
-local let = vim.g
-local set = vim.o
 local api = vim.api
 
-local rtp = opt.rtp
+local rtp = vim.opt.rtp
 local fs_stat = vim.loop.fs_stat
 local stdpath = fn.stdpath
 local system = fn.system
@@ -35,11 +32,9 @@ end
 rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
--- local Opts = require('lazy_cfg.lazy.opts')
 
 --- A `config` function to call your plugins.
 --- ---
----
 --- Param `mod_str` must comply with this format:
 --- ```lua
 --- 'lazy_cfg.<plugin_name>[.<...>]'
@@ -47,7 +42,7 @@ local Lazy = require('lazy')
 --- ---
 ---@param mod_str string
 ---@return fun()
-local source = function(mod_str)
+local function source(mod_str)
 	return function() require(mod_str) end
 end
 
@@ -133,13 +128,7 @@ M.EDITING = {
 			'treesitter',
 			'ts-commentstring',
 		},
-		init = function()
-			let.Comment_installed = 1
-		end,
 		config = source('lazy_cfg.Comment'),
-		enabled = function()
-			return not let.commentary_installed and let.commentary_installed ~= 1
-		end
 	},
 
 	{ 'tpope/vim-endwise', lazy = false },
@@ -166,10 +155,10 @@ M.EDITING = {
 		name = 'GitSigns',
 		version = false,
 		config = source('lazy_cfg.gitsigns'),
+		enabled = executable('git') == 1,
 	},
 	{
 		'sindrets/diffview.nvim',
-		lazy = false,
 		name = 'DiffView',
 		config = source('lazy_cfg.diffview'),
 	},
@@ -223,6 +212,7 @@ M.LSP = {
 		version = false,
 		dependencies = { 'web-devicons' },
 		opts = {},
+		enabled = false,
 	},
 	{
 		'p00f/clangd_extensions.nvim',
@@ -247,11 +237,13 @@ M.LSP = {
 		lazy = true,
 		name = 'MasonLSP',
 		dependencies = { 'Mason' },
+		enabled = false,
 	},
 	{
 		'williamboman/mason.nvim',
 		cmd = { 'Mason' },
 		name = 'Mason',
+		enabled = false,
 	},
 	{
 		'antosha417/nvim-lsp-file-operations',
@@ -269,7 +261,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_spaceduck = 1
+			vim.g.installed_spaceduck = 1
 		end,
 	},
 	{
@@ -280,7 +272,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_dracula = 1
+			vim.g.installed_dracula = 1
 		end,
 	},
 	{
@@ -290,7 +282,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_space_vim_dark = 1
+			vim.g.installed_space_vim_dark = 1
 		end,
 	},
 	{
@@ -300,7 +292,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_molokai = 1
+			vim.g.installed_molokai = 1
 		end,
 	},
 	{
@@ -311,7 +303,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_spacemacs = 1
+			vim.g.installed_spacemacs = 1
 		end,
 	},
 	{
@@ -322,7 +314,7 @@ M.COLORSCHEMES = {
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
-			let.installed_onedark = 1
+			vim.g.installed_onedark = 1
 		end,
 	},
 	{
@@ -433,6 +425,7 @@ M.TELESCOPE = {
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
+		laxy = false,
 		priority = 1000,
 		name = 'Project',
 		init = function()
@@ -447,6 +440,7 @@ M.UI = {
 	{
 		'rcarriga/nvim-notify',
 		lazy = false,
+		priority = 1000,
 		name = 'Notify',
 		dependencies = { 'Plenary' },
 		init = function()
@@ -489,6 +483,7 @@ M.UI = {
 		dependencies = {
 			'GitSigns',
 			'web-devicons',
+			'Scope',
 		},
 		config = source('lazy_cfg.barbar'),
 	},
@@ -499,7 +494,6 @@ M.UI = {
 		version = false,
 		dependencies = { 'rainbow-delimiters' },
 		config = source('lazy_cfg.blank_line'),
-		-- enabled = false,
 	},
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
@@ -528,13 +522,13 @@ M.UI = {
 	{
 		'norcalli/nvim-colorizer.lua',
 		name = 'colorizer',
-		version = false,
+		version = '*',
 		config = source('lazy_cfg.colorizer'),
 	},
 	{
 		'akinsho/toggleterm.nvim',
 		name = 'ToggleTerm',
-		version = false,
+		version = '*',
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
