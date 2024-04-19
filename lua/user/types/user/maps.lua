@@ -3,6 +3,14 @@
 ---@alias BufMapOpts ApiMapOpts
 ---@alias KeyRhs string|fun()
 ---@alias ApiRhs string
+---@alias MapModes
+---|'n'
+---|'i'
+---|'v'
+---|'t'
+---|'o'
+---|'x'
+---@alias Modes ('n'|'i'|'v'|'t'|'o'|'x')[]
 
 ---@class ApiMapRhsOptsArr
 ---@field [1] ApiRhs
@@ -110,3 +118,5 @@
 ---@field kmap UserKeyMaps
 ---@field map UserApiMaps
 ---@field buf_map UserBufMaps
+---@field nop fun(T: string|string[], opts: ApiMapOpts?, mode: MapModes?)
+---@field private modes Modes

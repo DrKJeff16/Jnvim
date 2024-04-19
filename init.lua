@@ -2,13 +2,16 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local Check = User.check
 -- Import docstrings and annotations.
 local types = User.types
 local maps_t = types.user.maps
 local hl_t = types.user.highlight
-local exists = User.exists  -- Checks for missing modules
+
+local exists = Check.exists.module  -- Checks for missing modules
 local map = User.maps.map
 local kmap = User.maps.kmap
+local nop = User.maps.nop
 local hl = User.highlight.hl
 
 local fn = vim.fn
@@ -31,6 +34,19 @@ let.loaded_netrwPlugin = 1
 
 -- Vim `:set ...` global options setter.
 local opts = User.opts
+
+-- Avoid executing Normal mode keys when attempting `<leader>` sequences.
+local NOP = {
+	'<leader>"',
+	'<leader>\'',
+	'<leader>c',
+	'<leader>d',
+	'<leader>i',
+	'<leader>p',
+	'<leader>v',
+	'<leader>z',
+}
+nop(NOP, { nowait = false })
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal)`.
 --- Each mode contains its respective mappings.
@@ -79,12 +95,6 @@ local map_tbl = {
 		['<Leader>Lc'] = { rhs = '<CMD>Lazy check<CR>' },
 		['<Leader>Li'] = { rhs = '<CMD>Lazy install<CR>' },
 		['<Leader>Lr'] = { rhs = '<CMD>Lazy reload<CR>' },
-		-- Avoid entering visual while using `<leader>` sequences.
-		['<Leader>v'] = { rhs = '<Nop>', opts = { nowait = false } },
-		-- Avoid entering insert while using `<leader>` sequences.
-		['<Leader>i'] = { rhs = '<Nop>', opts = { nowait = false } },
-		['<Leader>"'] = { rhs = '<Nop>', opts = { nowait = false } },
-		['<Leader>\''] = { rhs = '<Nop>', opts = { nowait = false } },
 	},
 	v = {
 		--- WARNING: DO NOT USE `<CMD>`!!!
