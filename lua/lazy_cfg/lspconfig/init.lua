@@ -3,12 +3,16 @@
 
 local User = require('user')
 local exists = User.check.exists.module
+local modules = User.check.exists.modules
 local executable = User.check.exists.executable
 local maps = User.maps
 local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
+local kmap = maps.kmap
 
-if not exists('lspconfig') or not exists('neodev') then
+local nmap = kmap.n
+
+if not modules({'neoconf', 'neodev', 'lspconfig'}) then
 	return
 end
 
@@ -22,13 +26,10 @@ local lsp_buf = lsp.buf
 local diag = vim.diagnostic
 local insp = vim.inspect
 
-local kmap = maps.kmap
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
 local hi = api.nvim_set_hl
-
-local nmap = kmap.n
 
 ---@type LspSubs
 local Sub = {}
@@ -88,48 +89,46 @@ local add_caps = function(srv_tbl)
 	local res = {}
 
 	for k, v in next, srv_tbl do
-		if v == nil then
-			goto continue
-		end
-		res[k] = v
+		if v ~= nil then
+			res[k] = v
 
-		if handlers then
-			res[k].handlers = handlers
-		end
+			if handlers then
+				res[k].handlers = handlers
+			end
 
-		if exists('cmp_nvim_lsp') then
-			local caps = require('cmp_nvim_lsp').default_capabilities()
-			res[k].capabilities = caps
-		end
+			if exists('cmp_nvim_lsp') then
+				local caps = require('cmp_nvim_lsp').default_capabilities()
+				res[k].capabilities = caps
+			end
 
-		if exists('schemastore') then
-			local SchSt = require('schemastore')
+			if exists('schemastore') then
+				local SchSt = require('schemastore')
 
-			if k == 'jsonls' then
-				res[k].settings = {
-					json = {
-						schemas = SchSt.json.schemas({
-							select = {
-								'.eslintrc',
-								'package.json',
-							},
-						}),
-						validate = { enable = true },
-					},
-				}
-			elseif k == 'yamlls' then
-				res[k].settings = {
-					yaml = {
-						schemaStore = {
-							enable = false,
-							url = '',
+				if k == 'jsonls' then
+					res[k].settings = {
+						json = {
+							schemas = SchSt.json.schemas({
+								select = {
+									'.eslintrc',
+									'package.json',
+								},
+							}),
+							validate = { enable = true },
 						},
-						schemas = SchSt.yaml.schemas({}),
-					},
-				}
+					}
+				elseif k == 'yamlls' then
+					res[k].settings = {
+						yaml = {
+							schemaStore = {
+								enable = false,
+								url = '',
+							},
+							schemas = SchSt.yaml.schemas({}),
+						},
+					}
+				end
 			end
 		end
-	    ::continue::
 	end
 
 	return res
