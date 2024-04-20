@@ -1,22 +1,28 @@
 ---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
+---@diagnostic disable:need-check-nil
+---@diagnostic disable:missing-fields
 
 local types = require('user.types.user.check')
 
 ---@type UserCheck
-local M = {}
-M.value = {}
+local M = {
+	value = {
+		---Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
+		is_nil = function(var)
+			return not var and var == nil
+		end,
+	},
+}
+-- NOTE: We define `is_nil` first as it's used by the other checkers.
 
 local type_funcs = {
-	{ 'is_str', 'string' },
-	{ 'is_bool', 'boolean' },
-	{ 'is_fun', 'function' },
-	{ 'is_num', 'number' },
-	{ 'is_tbl', 'table' },
+	['is_str'] = 'string',
+	['is_bool'] = 'boolean',
+	['is_fun'] = 'function',
+	['is_num'] = 'number',
+	['is_tbl'] = 'table',
 }
-
-function M.value.is_nil(var)
-	return not var and var == nil
-end
 
 ---@param t Types
 ---@return ValueFunc
@@ -26,8 +32,8 @@ local function type_fun(t)
 	end
 end
 
-for _, v in next, type_funcs do
-	M.value[v[1]] = type_fun(v[2])
+for k, v in next, type_funcs do
+	M.value[k] = type_fun(v)
 end
 
 function M.dry_run(f, ...)
@@ -35,14 +41,13 @@ function M.dry_run(f, ...)
 
 	return (ok and res or nil)
 end
+
 M.exists = {
 	data = function(v)
 		return M.value.is_nil(v)
 	end,
 	module = function(mod, return_mod)
-		if M.value.is_nil(return_mod) then
-			return_mod = false
-		end
+		return_mod = not M.value.is_nil(return_mod) and false or return_mod
 
 		---@type boolean
 		local res
@@ -95,17 +100,19 @@ function M.exists.modules(mod, need_all)
 	---@type boolean|table<string, boolean>
 	local res = false
 
-	if type(mod) == 'string' then
+	if M.value.is_str(mod) then
 		res = M.exists.module(mod)
-	elseif type(mod) == 'table' and not vim.tbl_isempty(mod) then
+	elseif M.value.is_tbl(mod) and not vim.tbl_isempty(mod) then
 		res = {}
 
 		for _, v in next, mod do
 			local r = M.exists.module(v)
 			if need_all then
 				res[v] = r
-			elseif not need_all then
+			else
 				res = r
+
+				-- Break when a single module is not found.
 				if not r then break end
 			end
 		end
