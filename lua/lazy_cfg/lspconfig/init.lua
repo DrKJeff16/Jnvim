@@ -2,7 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
+local executable = User.check.exists.executable
 local maps = User.maps
 local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
@@ -87,6 +88,9 @@ local add_caps = function(srv_tbl)
 	local res = {}
 
 	for k, v in next, srv_tbl do
+		if v == nil then
+			goto continue
+		end
 		res[k] = v
 
 		if handlers then
@@ -125,6 +129,7 @@ local add_caps = function(srv_tbl)
 				}
 			end
 		end
+	    ::continue::
 	end
 
 	return res
@@ -142,13 +147,13 @@ srv.lua_ls = {
 	},
 }
 
-srv.bashls = {}
-srv.clangd = {}
-srv.cmake = {}
+srv.bashls = (executable('bash-language-server') and {} or nil)
+srv.clangd = (executable('clangd') and {} or nil)
+srv.cmake = (executable('cmake-languqge-server') and {} or nil)
 srv.html = {}
 srv.jsonls = {}
 srv.yamlls = {}
-srv.pylsp = {}
+srv.pylsp = (executable('pylsp') and {} or nil)
 
 srv = add_caps(srv)
 
