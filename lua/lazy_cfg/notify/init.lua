@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 local hl = User.highlight.hl_from_arr
 local types = User.types.user.highlight
 

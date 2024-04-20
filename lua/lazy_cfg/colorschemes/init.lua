@@ -4,7 +4,7 @@
 local User = require('user')
 local types = User.types
 local csc_m = types.colorschemes
-local exists = User.exists
+local exists = User.check.exists.module
 
 ---@param subs string[]
 ---@return CscMod

@@ -3,7 +3,7 @@
 
 local User = require('user')
 local types = require('user').types.user.maps
-local exists = User.exists
+local exists = User.check.exists.module
 local kmap = User.maps.kmap
 
 local nmap = kmap.n

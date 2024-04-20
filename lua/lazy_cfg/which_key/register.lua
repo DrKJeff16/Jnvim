@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 local types = User.types.which_key
 
 local WK = require('which-key')

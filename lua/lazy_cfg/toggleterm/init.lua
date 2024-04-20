@@ -4,7 +4,7 @@
 local User = require('user')
 local au_t = User.types.user.autocmd
 local maps_t = User.types.user.maps
-local exists = User.exists
+local exists = User.check.exists.module
 local maps = User.maps
 
 local map = maps.map

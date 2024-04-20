@@ -4,7 +4,7 @@
 local pfx = ''
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 local types = User.types.colorschemes
 
 local M = {

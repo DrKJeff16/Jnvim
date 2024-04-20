@@ -5,7 +5,7 @@ local User = require('user')
 local types = User.types
 local hl_t = User.types.user.highlight
 local map_t = User.types.user.maps
-local exists = User.exists
+local exists = User.check.exists.module
 local kmap = User.maps.kmap
 
 local hi = User.highlight.hl

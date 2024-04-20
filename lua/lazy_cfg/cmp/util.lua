@@ -2,10 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local Check = User.check
+local exists = User.check.exists.module
 local types = User.types.cmp
-
-local exists = Check.exists.module
 
 if not exists('cmp') then
 	error('No `cmp` module!')

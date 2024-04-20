@@ -4,7 +4,7 @@
 local types = require('user').types.colorschemes
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 
 local Colorbuddy = require('colorbuddy')
 

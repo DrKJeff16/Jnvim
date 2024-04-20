@@ -5,7 +5,7 @@ local Lspconfig = require('lspconfig')
 
 local User = require('user')
 local types = User.types.lspconfig
-local exists = User.exists
+local exists = User.check.exists.module
 
 if not exists('neoconf') then
 	return

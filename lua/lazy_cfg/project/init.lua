@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-local
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 
 if not exists('project_nvim') then
 	return

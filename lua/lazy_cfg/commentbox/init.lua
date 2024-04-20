@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.exists
+local exists = User.check.exists.module
 
 if not exists('comment-box') then
 	return
