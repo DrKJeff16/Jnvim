@@ -16,7 +16,6 @@ local system = fn.system
 local has = fn.has
 local vim_exists = fn.exists
 local executable = fn.executable
-
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
@@ -41,9 +40,13 @@ local Lazy = require('lazy')
 --- ```
 --- ---
 ---@param mod_str string
----@return fun()
+---@return true|fun()
 local function source(mod_str)
-	return function() require(mod_str) end
+	return function()
+		if exists(mod_str) then
+			require(mod_str)
+		end
+	end
 end
 
 ---@type table<string, LazyPlugs>
@@ -56,6 +59,8 @@ M.ESSENTIAL = {
 		lazy = false,
 		priority = 1000,
 		name = 'Mini',
+		version = false,
+		config = source('lazy_cfg.mini'),
 	},
 	{
 		'tiagovla/scope.nvim',
@@ -425,7 +430,7 @@ M.TELESCOPE = {
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
-		laxy = false,
+		lazy = false,
 		priority = 1000,
 		name = 'Project',
 		init = function()
@@ -471,6 +476,7 @@ M.UI = {
 			'Scope',
 		},
 		init = function()
+			vim.opt.stal = 2
 			vim.opt.termguicolors = true
 		end,
 		config = source('lazy_cfg.bufferline'),
@@ -485,6 +491,10 @@ M.UI = {
 			'web-devicons',
 			'Scope',
 		},
+		init = function()
+			vim.opt.stal = 2
+			vim.opt.termguicolors = true
+		end,
 		config = source('lazy_cfg.barbar'),
 	},
 	{
