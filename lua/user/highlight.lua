@@ -2,23 +2,26 @@
 ---@diagnostic disable:unused-function
 
 local tupes = require('user.types').user.highlight
-
-local hi = vim.api.nvim_set_hl
+local Check = require('user.check')
 
 ---@type UserHl
-local M = {}
+local M = {
+	hl = function(name, opts)
+		local hi = vim.api.nvim_set_hl
 
-function M.hl(name, opts)
-	hi(0, name, opts)
-end
+		if Check.value.is_str(name) and Check.value.is_tbl(opts) then
+			hi(0, name, opts)
+		end
+	end,
+}
 
 function M.hl_from_arr(arr)
 	for _, t in next, arr do
-		hi(0, t.name, t.opts)
+		M.hl(t.name, t.opts)
 	end
 end
 
---- Set hl groups based on u.
+--- Set hl groups based on a dict input.
 --- ---
 --- Example of a valid table:
 --- ```lua
@@ -32,10 +35,11 @@ end
 ---	hi HlGroup ctermfg=... ...
 ---	hi HlGroupAlt ...
 --- ```
+---
 --- See more at `:h nvim_set_hl`
 function M.hl_from_dict(dict)
 	for k, v in next, dict do
-		hi(0, k, v)
+		M.hl(k, v)
 	end
 end
 
