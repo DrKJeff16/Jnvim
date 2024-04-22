@@ -27,7 +27,7 @@ Tt.setup({
 	---@param term Terminal
 	---@return number res
 	size = function(term)
-		local FACTOR = 0.4
+		local FACTOR = 0.5
 		local res = 15
 		if term.direction == 'vertical' then
 			res = vim.o.columns * FACTOR
@@ -44,7 +44,7 @@ Tt.setup({
 	opts = {
 		border = 'double',
 		title_pos = 'center',
-		width = vim.o.columns * 0.4,
+		width = vim.o.columns * 0.55,
 	},
 
 	highlights = {
