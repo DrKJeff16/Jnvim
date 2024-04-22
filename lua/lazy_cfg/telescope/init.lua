@@ -2,9 +2,13 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 local maps_t = User.types.user.maps
 local au_t = User.types.user.autocmd
+local kmap = User.maps.kmap
+
+local nmap = kmap.n
 
 if not exists('telescope') then
 	return
@@ -18,9 +22,6 @@ local empty = vim.tbl_isempty
 
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
-
-local kmap = User.maps.kmap
-local nmap = kmap.n
 
 local Telescope = require('telescope')
 local Builtin = require('telescope.builtin')
@@ -55,6 +56,8 @@ local opts = {
 		notify = { theme = 'dropdown' },
 	},
 }
+
+Telescope.setup(opts)
 
 local function open()
 	vim.cmd('Telescope')
@@ -123,9 +126,11 @@ local known_exts = {
 		---@return KeyMapArgs[]
 		keys = function()
 			local pfx = Extensions.projects
-			return {
+			local res = {
 				{ lhs = '<leader>fTep', rhs = pfx.projects, opts = { desc = 'Project Picker' } },
 			}
+
+			return res
 		end,
 	},
 	['notify'] = {
@@ -144,17 +149,12 @@ local known_exts = {
 	},
 }
 
-Telescope.setup(opts)
-
 --- Load and Set Keymaps for available extensions.
 for mod, ext in next, known_exts do
-	if exists(mod) then
-		load_ext(ext[1])
-
-		if ext.keys then
-			for _, v in next, ext.keys() do
-				table.insert(maps.n, v)
-			end
+	load_ext(ext[1])
+	if not Check.value.is_nil(ext.keys) then
+		for _, v in next, ext.keys() do
+			table.insert(maps.n, v)
 		end
 	end
 end
