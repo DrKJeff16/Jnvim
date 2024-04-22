@@ -1,6 +1,6 @@
 {
 	"neodev": {
-		"debug": true,
+		"debug": false,
 		"library": {
 			"types": true,
 			"enabled": true,
