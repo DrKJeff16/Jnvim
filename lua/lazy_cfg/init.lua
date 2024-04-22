@@ -2,8 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
 local types = User.types.lazy
+local Check = User.check
+local exists = Check.exists.module
+local executable = Check.exists.executable
 local nmap = User.maps.kmap.n
 
 local fn = vim.fn
@@ -14,10 +16,13 @@ local fs_stat = vim.loop.fs_stat
 local stdpath = fn.stdpath
 local system = fn.system
 local has = fn.has
-local vim_exists = fn.exists
-local executable = fn.executable
 local au = api.nvim_create_autocmd
-local augroup = api.nvim_create_augroup
+
+---@param str string
+---@return boolean
+local function vim_exists(str)
+	return vim.fn.exists(str) == 1
+end
 
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
@@ -38,14 +43,13 @@ local Lazy = require('lazy')
 --- ```lua
 --- 'lazy_cfg.<plugin_name>[.<...>]'
 --- ```
---- ---
+--- If the module is not found, a warninr is raised
+--- and returns `true`.
 ---@param mod_str string
----@return true|fun()
+---@return fun()
 local function source(mod_str)
 	return function()
-		if exists(mod_str) then
-			require(mod_str)
-		end
+		require(mod_str)
 	end
 end
 
@@ -56,7 +60,6 @@ M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
 	{
 		'echasnovski/mini.nvim',
-		lazy = false,
 		priority = 1000,
 		name = 'Mini',
 		version = false,
@@ -64,7 +67,6 @@ M.ESSENTIAL = {
 	},
 	{
 		'tiagovla/scope.nvim',
-		lazy = false,
 		priority = 1000,
 		name = 'Scope',
 		init = function()
@@ -78,14 +80,12 @@ M.ESSENTIAL = {
 	{
 		'nvim-lua/plenary.nvim',
 		lazy = true,
-		priority = 1000,
 		name = 'Plenary',
 		version = false,
 	},
 	{
 		'nvim-lua/popup.nvim',
 		lazy = false,
-		priority = 1000,
 		name = 'Popup',
 		version = false,
 		dependencies = { 'Plenary' },
@@ -94,7 +94,6 @@ M.ESSENTIAL = {
 	{
 		'nvim-tree/nvim-web-devicons',
 		lazy = true,
-		priority = 1000,
 		name = 'web-devicons',
 		version = false,
 	},
@@ -103,9 +102,7 @@ M.TS = {
 	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
-		lazy = false,
-		build = ':verbose TSUpdate',
-		priority = 1000,
+		build = ':TSUpdate',
 		name = 'treesitter',
 		version = false,
 		dependencies = {
@@ -137,11 +134,12 @@ M.EDITING = {
 	},
 
 	{ 'tpope/vim-endwise', lazy = false },
-	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') == 1 },
+	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
 	{ 'tpope/vim-speeddating', enabled = false },
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
+		event = { 'User FileOpened', 'BufWinEnter' },
 		name = 'todo-comments',
 		dependencies = {
 			'treesitter',
@@ -160,20 +158,19 @@ M.EDITING = {
 		name = 'GitSigns',
 		version = false,
 		config = source('lazy_cfg.gitsigns'),
-		enabled = executable('git') == 1,
+		enabled = executable('git'),
 	},
 	{
 		'sindrets/diffview.nvim',
 		name = 'DiffView',
 		config = source('lazy_cfg.diffview'),
+		enabled = executable('git'),
 	},
 }
 M.LSP = {
 	-- LSP
 	{
 		'neovim/nvim-lspconfig',
-		lazy = false,
-		priority = 1000,
 		name = 'lspconfig',
 		version = false,
 		dependencies = {
@@ -189,26 +186,40 @@ M.LSP = {
 		'b0o/SchemaStore',
 		lazy = true,
 		name = 'SchemaStore',
+		enabled = executable('vscode-json-language-server'),
 	},
 	-- Essenyial for Nvim Lua files.
 	{
 		'folke/neodev.nvim',
-		lazy = false,
-		priority = 1000,
 		name = 'NeoDev',
 		version = false,
 		dependencies = { 'NeoConf' },
-		enabled = executable('lua-language-server') == 1,
+		enabled = executable('lua-language-server',
+		function()
+			local msg = 'No `lua-language-server` in `PATH`!'
+			if exists('notify') then
+				vim.notify(msg, 'warn')
+			else
+				print(msg)
+			end
+		end
+			),
 	},
 	{
 		'folke/neoconf.nvim',
 		lazy = false,
-		priority = 1000,
 		name = 'NeoConf',
 		version = false,
-		dependencies = {
-			'nlsp-settings',
-		},
+		enabled = executable('vscode-json-language-server',
+		function()
+			local msg = 'No `vscode-json-language-server` in `PATH`!'
+			if exists('notify') then
+				vim.notify(msg, 'warn')
+			else
+				print(msg)
+			end
+		end
+			),
 	},
 	-- TODO: Make submodule.
 	{
@@ -221,11 +232,10 @@ M.LSP = {
 	},
 	{
 		'p00f/clangd_extensions.nvim',
-		lazy = true,
-		ft = { 'c', 'cpp' },
+		event = 'VeryLazy',
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = executable('clangd') == 1,
+		enabled = executable('clangd'),
 	},
 	{
 		'tamago324/nlsp-settings.nvim',
@@ -327,7 +337,6 @@ M.COLORSCHEMES = {
 		lazy = true,
 		priority = 1000,
 		name = 'catppuccin',
-		main = 'catppuccin',
 		version = false,
 	},
 	{
@@ -335,7 +344,6 @@ M.COLORSCHEMES = {
 		lazy = true,
 		priority = 1000,
 		name = 'tokyonight',
-		main = 'tokyonight',
 		version = false,
 	},
 	{
@@ -368,7 +376,6 @@ M.CMP = {
 	{
 		'hrsh7th/nvim-cmp',
 		event = { 'InsertEnter', 'CmdlineEnter' },
-		priority = 1000,
 		name = 'cmp',
 		version = false,
 		dependencies = {
@@ -399,7 +406,17 @@ M.CMP = {
 		lazy = true,
 		dependencies = { 'friendly-snippets' },
 		-- TODO: Check whether `nproc` exists in `PATH`.
-		build = (_G.is_windows and 'mingw32-make -j"$(nproc)" install_jsregexp' or 'make -j"$(nproc)" install_jsregexp'),
+		build = function()
+			local nproc = (exists('nproc') and { 'make', '-j"$(nproc)"', 'install_jsregexp' } or { 'make', 'install_jsregexp' })
+
+			if _G.is_windows and executable('mingw32-make') then
+				nproc[1] = 'mingw32-'..nproc[1]
+			elseif _G.is_windows and not executable('mingw32-make') then
+				return
+			end
+
+			system(nproc)
+		end,
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = false },
 }
@@ -407,6 +424,7 @@ M.TELESCOPE = {
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
+		priority = 1000,
 		name = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
@@ -423,20 +441,17 @@ M.TELESCOPE = {
 		name = 'Telescope-fzf',
 		-- TODO: Check whether `nproc` exists in `PATH`.
 		build = (_G.is_windows and 'mingw32-make -j"$(nproc)"' or 'make -j"$(nproc)"'),
-		enabled = function()
-			return executable('fzf') == 1
-		end,
+		enabled = executable({ 'fzf', 'nproc' }),
 	},
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
 		lazy = false,
-		priority = 1000,
 		name = 'Project',
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
-			vim.opt.autochdir = false
+			-- vim.opt.autochdir = false
 		end,
 		config = source('lazy_cfg.project'),
 	},
@@ -447,9 +462,10 @@ M.UI = {
 		lazy = false,
 		priority = 1000,
 		name = 'Notify',
+		version = false,
 		dependencies = { 'Plenary' },
 		init = function()
-			vim.opt.termguicolors = true
+			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
 		end,
 		config = source('lazy_cfg.notify'),
 	},
@@ -477,7 +493,7 @@ M.UI = {
 		},
 		init = function()
 			vim.opt.stal = 2
-			vim.opt.termguicolors = true
+			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
 		end,
 		config = source('lazy_cfg.bufferline'),
 		enabled = false,
@@ -493,7 +509,7 @@ M.UI = {
 		},
 		init = function()
 			vim.opt.stal = 2
-			vim.opt.termguicolors = true
+			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
 		end,
 		config = source('lazy_cfg.barbar'),
 	},
@@ -514,7 +530,6 @@ M.UI = {
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
-		priority = 1000,
 		name = 'nvim_tree',
 		version = false,
 		dependencies = {
@@ -532,19 +547,19 @@ M.UI = {
 	{
 		'norcalli/nvim-colorizer.lua',
 		name = 'colorizer',
-		version = '*',
+		version = false,
 		config = source('lazy_cfg.colorizer'),
 	},
 	{
 		'akinsho/toggleterm.nvim',
+		priority = 1000,
 		name = 'ToggleTerm',
-		version = '*',
+		version = false,
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
-		priority = 1000,
 		name = 'which_key',
 		version = false,
 		init = function()
@@ -558,6 +573,7 @@ M.UI = {
 		lazy = false,
 		name = 'CommentBox',
 		config = source('lazy_cfg.commentbox'),
+		enabled = false,
 	},
 }
 
