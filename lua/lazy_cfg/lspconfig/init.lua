@@ -2,17 +2,17 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
-local modules = User.check.exists.modules
-local executable = User.check.exists.executable
-local maps = User.maps
+local Check = User.check
+local kmap = User.maps.kmap
 local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
-local kmap = maps.kmap
 
+local exists = Check.exists.module
+local modules = Check.exists.modules
+local executable = Check.exists.executable
 local nmap = kmap.n
 
-if not modules({'neoconf', 'neodev', 'lspconfig'}) then
+if not exists('lspconfig') then
 	return
 end
 
@@ -39,13 +39,14 @@ function Sub.neoconf()
 		return require('lazy_cfg.lspconfig.neoconf')
 	end
 end
+
 function Sub.trouble()
 	if exists('lazy_cfg.lspconfig.trouble') then
 		return require('lazy_cfg.lspconfig.trouble')
 	end
 end
 
-Sub.kinds = require('lazy_cfg.lspconfig.kinds')
+Sub.kinds = exists('lazy_cfg.lspconfig.kinds', true)
 
 -- Now call each.
 Sub.neoconf()
@@ -53,20 +54,20 @@ Sub.trouble()
 Sub.kinds.setup()
 
 local border = {
-	{"🭽", "FloatBorder"},
-	{"▔", "FloatBorder"},
-	{"🭾", "FloatBorder"},
-	{"▕", "FloatBorder"},
-	{"🭿", "FloatBorder"},
-	{"▁", "FloatBorder"},
-	{"🭼", "FloatBorder"},
-	{"▏", "FloatBorder"},
+	{ "🭽", "FloatBorder" },
+	{ "▔", "FloatBorder" },
+	{ "🭾", "FloatBorder" },
+	{ "▕", "FloatBorder" },
+	{ "🭿", "FloatBorder" },
+	{ "▁", "FloatBorder" },
+	{ "🭼", "FloatBorder" },
+	{ "▏", "FloatBorder" },
 }
 
 -- LSP settings (for overriding per client)
-local handlers =  {
-	["textDocument/hover"] =  lsp.with(lsp.handlers.hover, { border = border }),
-	["textDocument/signatureHelp"] =  lsp.with(lsp.handlers.signature_help, { border = border  }),
+local handlers = {
+	["textDocument/hover"] = lsp.with(lsp.handlers.hover, { border = border }),
+	["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, { border = border }),
 }
 
 local Neodev = require('neodev')
@@ -146,12 +147,12 @@ srv.lua_ls = {
 	},
 }
 
-srv.bashls = (executable('bash-language-server') and {} or nil)
+srv.bashls = (executable({ 'bash-language-server', 'shellcheck' }) and {} or nil)
 srv.clangd = (executable('clangd') and {} or nil)
 srv.cmake = (executable('cmake-languqge-server') and {} or nil)
-srv.html = {}
-srv.jsonls = {}
-srv.yamlls = {}
+srv.html = (executable('vscode-html-language-server') and {} or nil)
+srv.jsonls = (executable('vscode-json-language-server') and {} or nil)
+srv.yamlls = (executable('yaml-language-server') and {} or nil)
 srv.pylsp = (executable('pylsp') and {} or nil)
 
 srv = add_caps(srv)
@@ -160,10 +161,10 @@ for k, v in next, srv do
 	lspconfig[k].setup(v)
 end
 
-nmap('<Leader>le', diag.open_float)
-nmap('<Leader>l[', diag.goto_prev)
-nmap('<Leader>l]', diag.goto_next)
-nmap('<Leader>lq', diag.setloclist)
+nmap('<Leader>le', diag.open_float, { desc = 'Diagnostics Float' })
+nmap('<Leader>l[', diag.goto_prev, { desc = 'Previous Diagnostic' })
+nmap('<Leader>l]', diag.goto_next, { desc = 'Previous Diagnostic' })
+nmap('<Leader>lq', diag.setloclist, { desc = 'Add Loclist (Diagnostics)' })
 
 lsp.set_log_level('INFO')
 
@@ -176,14 +177,22 @@ au('LspAttach', {
 	callback = function(ev)
 		bo[ev.buf].omnifunc = 'v:lua.lsp.omnifunc'
 		local opts = { buffer = ev.buf }
+		opts.desc = 'Declaration'
 		nmap('<Leader>lgD', lsp_buf.declaration, opts)
+		opts.desc = 'Definition'
 		nmap('<Leader>lgd', lsp_buf.definition, opts)
+		opts.desc = 'Hover'
 		nmap('<Leader>lk', lsp_buf.hover, opts)
 		nmap('K', lsp_buf.hover, opts)
+		opts.desc = 'Implementation'
 		nmap('<Leader>lgi', lsp_buf.implementation, opts)
+		opts.desc = 'Signature Help'
 		nmap('<Leader>lS', lsp_buf.signature_help, opts)
+		opts.desc = 'Add Workspace Folder'
 		nmap('<Leader>lwa', lsp_buf.add_workspace_folder, opts)
+		opts.desc = 'Remove Workspace Folder'
 		nmap('<Leader>lwr', lsp_buf.remove_workspace_folder, opts)
+		opts.desc = 'List Workspace Folders'
 		nmap('<Leader>lwl', function()
 			local out = insp(lsp_buf.list_workspace_folders())
 			-- Try doing it with `notify` plugin.
@@ -193,10 +202,15 @@ au('LspAttach', {
 				print(out)
 			end
 		end, opts)
+		opts.desc = 'Type Definition'
 		nmap('<Leader>lD', lsp_buf.type_definition, opts)
+		opts.desc = 'Rename...'
 		nmap('<Leader>lrn', lsp_buf.rename, opts)
+		opts.desc = 'Code Actions'
 		vim.keymap.set({ 'n', 'v' }, '<Leader>lca', lsp_buf.code_action, opts)
+		opts.desc = 'References'
 		nmap('<Leader>lgr', lsp_buf.references, opts)
+		opts.desc = 'Format File'
 		nmap('<Leader>lf', function()
 			lsp_buf.format({ async = true })
 		end, opts)
