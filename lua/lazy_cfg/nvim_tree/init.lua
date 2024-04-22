@@ -2,13 +2,14 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 
 if not exists('nvim-tree') then
 	return
 end
 
-local types = require('user').types.nvim_tree
+local types = User.types.nvim_tree
 
 local kmap = User.maps.kmap
 local hl = User.highlight
@@ -41,7 +42,7 @@ local list_wins = api.nvim_list_wins
 ---@type OptSetterFun
 local function key_opts(desc, bufn)
 	bufn = bufn or 0
-	bufn = (bufn >= 0 and bufn or 0)
+	bufn = (bufn > 0 and bufn or 0)
 
 	---@type KeyMapOpts
 	local res = {
@@ -85,7 +86,7 @@ local collapse_all = Tapi.collapse_all
 
 ---@param keys KeyMapArgs[]
 local map_lft = function(keys)
-	if not keys or type(keys) ~= 'table' or empty(keys) then
+	if not Check.value.is_tbl(keys) or empty(keys) then
 		return
 	end
 
@@ -168,15 +169,8 @@ local tree_open = function(data)
 
 	local ft = bo[nbuf].ft
 	local noignore = {
-		-- 'bash',
-		-- 'c',
-		-- 'cpp',
-		-- 'python',
-		-- 'sh',
 		'codeowners',
 		'gitignore',
-		-- 'lua',
-		-- 'yaml',
 	}
 
 	if not in_tbl(noignore, ft) then
@@ -206,7 +200,7 @@ local edit_or_open = function()
 
 	edit()
 
-	if not nodes == nil then
+	if not Check.value.is_nil(nodes) then
 		close()
 	end
 end
@@ -219,7 +213,7 @@ local vsplit_preview = function()
 	local edit = Tnode.open.edit
 	local vert = Tnode.open.vertical
 
-	if nodes ~= nil then
+	if not Check.value.is_nil(nodes) then
 		edit()
 	else
 		vert()
@@ -238,9 +232,9 @@ local git_add = function()
 	local gs = ngsf or ''
 
 	if gs == '' then
-		if ngs.dir.direct ~= nil then
+		if not Check.value.is_nil(ngs.dir.direct) then
 			gs = ngs.dir.direct[1]
-		elseif ngs.dir.indirect ~= nil then
+		elseif not Check.value.is_nil(ngs.dir.indirect) then
 			gs = ngs.dir.indirect[1]
 		end
 	end
@@ -327,10 +321,10 @@ Tree.setup({
 	on_attach = on_attach,
 
 	sort = { sorter = 'case_sensitive' },
-	view = { width = 18 },
+	view = { width = 15 },
 	renderer = { group_empty = true },
 	filters = { dotfiles = false },
-	
+
 	-- NOTE: Useful for `project.nvim`.
 	sync_root_with_cwd = true,
 	respect_buf_cwd = true,
