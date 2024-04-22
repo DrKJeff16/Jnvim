@@ -219,7 +219,7 @@ au('LspAttach', {
 
 diag.config({
 	virtual_text = true,
-	float = false,
+	float = true,
 	signs = true,
 	underline = true,
 	update_in_insert = false,
