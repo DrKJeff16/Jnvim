@@ -2,9 +2,11 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
+local executable = Check.exists.executable
 
-if not exists('gitsigns') then
+if not exists('gitsigns') or not executable('git') then
 	return
 end
 
@@ -76,13 +78,13 @@ local opts= {
 	signs = signs,
 
 	signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
-	numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
+	numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
 	linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
 	word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
 	watch_gitdir = { follow_files = true },
 	-- auto_attach = true,
 	attach_to_untracked = true,
-	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
 	current_line_blame_opts = {
 		virt_text = false,
 		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
