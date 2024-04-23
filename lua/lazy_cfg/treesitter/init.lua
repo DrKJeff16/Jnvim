@@ -2,7 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
+
+local is_nil = Check.value.is_nil
 
 if not exists('nvim-treesitter') then
 	return
@@ -98,11 +101,7 @@ local TSConfig = {
 			local max_fs = 512 * 1024
 			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
 
-			if ok and stats and stats.size > max_fs then
-				return true
-			end
-
-			return false
+			return ok and not is_nil(stats) and stats.size > max_fs
 		end,
 		additional_vim_regex_highlighting = false,
 	},

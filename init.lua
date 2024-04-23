@@ -53,7 +53,6 @@ nop(NOP, { nowait = false })
 --- `map_tbl.[n|i|v|t]['<YOUR_KEY>'].opts` is an **API** option table.
 local map_tbl = {
 	n = {
-		['<Leader>fn'] = { rhs = ':edit ', opts = { silent = false } },
 		['<Leader>fs'] = { rhs = '<CMD>w<CR>' },
 		['<Leader>fS'] = { rhs = ':w ', opts = { silent = false } },
 		['<Leader>ff'] = { rhs = ':ed ', opts = { silent = false } },

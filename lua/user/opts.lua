@@ -100,3 +100,5 @@ local optset = function(opts)
 end
 
 optset(opt_tbl)
+
+vim.o.relativenumber = false

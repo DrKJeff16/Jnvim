@@ -13,14 +13,6 @@ local cmd = vim.cmd
 
 local au = api.nvim_create_autocmd
 
-local old_exists = function(mod)
-	---@type boolean
-	local res
-	res, _ = pcall(require, mod)
-
-	return res
-end
-
 ---@type UserMod
 local M = {
 	types = types,
@@ -29,9 +21,6 @@ local M = {
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
 }
-
---- Revert to legacy function if errors occur.
-M.exists = (M.check.exists.module ~= nil and M.check.exists.module or old_exists)
 
 ---@param s string
 ---@return fun()

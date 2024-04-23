@@ -18,6 +18,7 @@
 ---@field executable fun(exe: string|string[], fallback: (nil|fun())?): boolean
 ---@field data fun(v: any): boolean
 ---@field field fun(field: string|integer, t: table<string, any>): boolean
+---@field vim_exists fun(expr: string|string[]): boolean
 
 ---@class ValueCheck
 ---@field is_nil ValueFunc

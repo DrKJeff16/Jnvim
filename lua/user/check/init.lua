@@ -66,6 +66,31 @@ M.exists = {
 	end,
 }
 
+function M.exists.vim_exists(expr)
+	local exists = vim.fn.exists
+	local is_str = M.value.is_str
+	local is_tbl = M.value.is_tbl
+
+	if is_str(expr) then
+		return exists(expr) == 1
+	end
+
+	if is_tbl(expr) and not vim.tbl_isempty(expr) then
+		local res = false
+		for _, v in next, expr do
+			res = M.exists.vim_exists(expr)
+
+			if not res then
+				return false
+			end
+		end
+
+		return true
+	end
+
+	return false
+end
+
 function M.exists.executable(exe, fallback)
 	if not vim.tbl_contains({ 'string', 'table' }, type(exe)) then
 		error('Argument type is not string nor table!!')
