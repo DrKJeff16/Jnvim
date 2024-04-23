@@ -1,16 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local ok, Lspconfig = pcall(require, 'lspconfig')
-
-if not ok then
-	return
-end
-
-local Util = require('lspconfig.util')
-
-local root = Util.root_pattern()
-
 ---@class LspKindsIconsMod
 ---@field Class? string
 ---@field Color? string
@@ -61,7 +51,8 @@ local root = Util.root_pattern()
 ---@alias LspServers table<string, LspServerOpts>
 
 ---@class LspSubs
----@field neoconf? fun(): any
----@field trouble? fun(): any
----@field clangd? fun(): any
+---@field neoconf? fun()
+---@field neodev? fun()
+---@field trouble? fun()
+---@field clangd? fun()
 ---@field kinds LspKindsMod

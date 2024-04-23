@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local kmap = User.maps.kmap
+local types = User.types.lspconfig
 local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
 
@@ -16,27 +17,33 @@ if not exists('lspconfig') then
 	return
 end
 
--- NOTE: This MUST go after plugin check.
-local types = User.types.lspconfig
-
 local api = vim.api
 local bo = vim.bo
 local lsp = vim.lsp
 local lsp_buf = lsp.buf
 local diag = vim.diagnostic
 local insp = vim.inspect
+local fn = vim.fn
 
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
 local hi = api.nvim_set_hl
+local sign_define = fn.sign_define
 
 ---@type LspSubs
-local Sub = {}
+local Sub = {
+	kinds = exists('lazy_cfg.lspconfig.kinds', true),
+}
 
 function Sub.neoconf()
 	if exists('lazy_cfg.lspconfig.neoconf') then
 		return require('lazy_cfg.lspconfig.neoconf')
+	end
+end
+function Sub.neodev()
+	if exists('lazy_cfg.lspconfig.neodev') then
+		return require('lazy_cfg.lspconfig.neodev')
 	end
 end
 
@@ -46,11 +53,10 @@ function Sub.trouble()
 	end
 end
 
-Sub.kinds = exists('lazy_cfg.lspconfig.kinds', true)
-
 -- Now call each.
 Sub.neoconf()
-Sub.trouble()
+Sub.neodev()
+-- Sub.trouble()
 Sub.kinds.setup()
 
 local border = {
@@ -70,19 +76,6 @@ local handlers = {
 	["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, { border = border }),
 }
 
-local Neodev = require('neodev')
-Neodev.setup({
-	library = {
-		enabled = true,
-		runtime = true,
-		types = true,
-		plugins = true,
-	},
-	setup_jsonls = true,
-	lspconfig = true,
-	pathStrict = true,
-})
-
 ---@param srv_tbl LspServers
 ---@return LspServers res
 local add_caps = function(srv_tbl)
@@ -90,7 +83,7 @@ local add_caps = function(srv_tbl)
 	local res = {}
 
 	for k, v in next, srv_tbl do
-		if v ~= nil then
+		if not Check.value.is_nil(v) then
 			res[k] = v
 
 			if handlers then
@@ -261,4 +254,4 @@ for type, icon in next, signs do
 	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
 end
 
--- vim.o.updatetime = 250
+vim.o.updatetime = 250
