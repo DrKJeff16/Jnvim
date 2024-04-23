@@ -7,10 +7,12 @@ local Check = User.check
 local types = User.types
 local maps_t = types.user.maps
 local hl_t = types.user.highlight
-
-local exists = Check.exists.module  -- Checks for missing modules
 local map = User.maps.map
 local kmap = User.maps.kmap
+
+local exists = Check.exists.module  -- Checks for missing modules
+local is_nil = Check.value.is_nil
+local is_tbl = Check.value.is_tbl
 local nop = User.maps.nop
 local hl = User.highlight.hl
 
@@ -53,56 +55,56 @@ nop(NOP, { nowait = false })
 --- `map_tbl.[n|i|v|t]['<YOUR_KEY>'].opts` is an **API** option table.
 local map_tbl = {
 	n = {
-		['<Leader>fs'] = { rhs = '<CMD>w<CR>' },
-		['<Leader>fS'] = { rhs = ':w ', opts = { silent = false } },
-		['<Leader>ff'] = { rhs = ':ed ', opts = { silent = false } },
-		['<Leader>fvs'] = { rhs = '<CMD>luafile $MYVIMRC<CR>' },
-		['<Leader>fvl'] = { rhs = '<CMD>luafile %<CR>' },
-		['<Leader>fvv'] = { rhs = '<CMD>so %<CR>' },
-		['<Leader>fvV'] = { rhs = ':so ', opts = { silent = false } },
-		['<Leader>fvL'] = { rhs = ':luafile ', opts = { silent = false } },
-		['<Leader>fve'] = { rhs = '<CMD>tabnew $MYVIMRC<CR>', opts = { silent = false } },
+		['<Leader>fs'] = { '<CMD>w<CR>' },
+		['<Leader>fS'] = { ':w ', { silent = false } },
+		['<Leader>ff'] = { ':ed ', { silent = false } },
+		['<Leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
+		['<Leader>fvl'] = { '<CMD>luafile %<CR>' },
+		['<Leader>fvv'] = { '<CMD>so %<CR>' },
+		['<Leader>fvV'] = { ':so ', { silent = false } },
+		['<Leader>fvL'] = { ':luafile ', { silent = false } },
+		['<Leader>fve'] = { '<CMD>tabnew $MYVIMRC<CR>', { silent = false } },
 
-		['<Leader>wss'] = { rhs = '<CMD>split<CR>' },
-		['<Leader>wsv'] = { rhs = '<CMD>vsplit<CR>' },
-		['<Leader>wsS'] = { rhs = ':split ', opts = { silent = false } },
-		['<Leader>wsV'] = { rhs = ':vsplit ', opts = { silent = false } },
+		['<Leader>wss'] = { '<CMD>split<CR>' },
+		['<Leader>wsv'] = { '<CMD>vsplit<CR>' },
+		['<Leader>wsS'] = { ':split ', { silent = false } },
+		['<Leader>wsV'] = { ':vsplit ', { silent = false } },
 
-		['<Leader>qq'] = { rhs = '<CMD>qa<CR>' },
-		['<Leader>qQ'] = { rhs = '<CMD>qa!<CR>' },
+		['<Leader>qq'] = { '<CMD>qa<CR>' },
+		['<Leader>qQ'] = { '<CMD>qa!<CR>' },
 
-		['<Leader>tn'] = { rhs = '<CMD>tabN<CR>', opts = { silent = false } },
-		['<Leader>tp'] = { rhs = '<CMD>tabp<CR>', opts = { silent = false } },
-		['<Leader>td'] = { rhs = '<CMD>tabc<CR>' },
-		['<Leader>tD'] = { rhs = '<CMD>tabc!<CR>' },
-		['<Leader>tf'] = { rhs = '<CMD>tabfirst<CR>' },
-		['<Leader>tl'] = { rhs = '<CMD>tablast<CR>' },
-		['<Leader>ta'] = { rhs = ':tabnew ', opts = { silent = false } },
-		['<Leader>tA'] = { rhs = '<CMD>tabnew<CR>' },
+		['<Leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
+		['<Leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
+		['<Leader>td'] = { '<CMD>tabc<CR>' },
+		['<Leader>tD'] = { '<CMD>tabc!<CR>' },
+		['<Leader>tf'] = { '<CMD>tabfirst<CR>' },
+		['<Leader>tl'] = { '<CMD>tablast<CR>' },
+		['<Leader>ta'] = { ':tabnew ', { silent = false } },
+		['<Leader>tA'] = { '<CMD>tabnew<CR>' },
 
-		['<Leader>bn'] = { rhs = '<CMD>bNext<CR>' },
-		['<Leader>bp'] = { rhs = '<CMD>bprevious<CR>' },
-		['<Leader>bd'] = { rhs = '<CMD>bdel<CR>' },
-		['<Leader>bD'] = { rhs = '<CMD>bdel!<CR>' },
-		['<Leader>bf'] = { rhs = '<CMD>bfirst<CR>' },
-		['<Leader>bl'] = { rhs = '<CMD>blast<CR>' },
+		['<Leader>bn'] = { '<CMD>bNext<CR>' },
+		['<Leader>bp'] = { '<CMD>bprevious<CR>' },
+		['<Leader>bd'] = { '<CMD>bdel<CR>' },
+		['<Leader>bD'] = { '<CMD>bdel!<CR>' },
+		['<Leader>bf'] = { '<CMD>bfirst<CR>' },
+		['<Leader>bl'] = { '<CMD>blast<CR>' },
 
-		['<Leader>Ll'] = { rhs = '<CMD>Lazy<CR>' },
-		['<Leader>LL'] = { rhs = ':Lazy ', opts = { silent = false } },
-		['<Leader>Ls'] = { rhs = '<CMD>Lazy sync<CR>' },
-		['<Leader>Lx'] = { rhs = '<CMD>Lazy clean<CR>' },
-		['<Leader>Lc'] = { rhs = '<CMD>Lazy check<CR>' },
-		['<Leader>Li'] = { rhs = '<CMD>Lazy install<CR>' },
-		['<Leader>Lr'] = { rhs = '<CMD>Lazy reload<CR>' },
+		['<Leader>Ll'] = { '<CMD>Lazy<CR>' },
+		['<Leader>LL'] = { ':Lazy ', { silent = false } },
+		['<Leader>Ls'] = { '<CMD>Lazy sync<CR>' },
+		['<Leader>Lx'] = { '<CMD>Lazy clean<CR>' },
+		['<Leader>Lc'] = { '<CMD>Lazy check<CR>' },
+		['<Leader>Li'] = { '<CMD>Lazy install<CR>' },
+		['<Leader>Lr'] = { '<CMD>Lazy reload<CR>' },
 	},
 	v = {
 		--- WARNING: DO NOT USE `<CMD>`!!!
-		['<Leader>is'] = { rhs = ':sort<CR>' },
-		['<Leader>iS'] = { rhs = ':sort!<CR>' },
+		['<Leader>is'] = { ':sort<CR>' },
+		['<Leader>iS'] = { ':sort!<CR>' },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
-		['<Esc>'] = { rhs = '<C-\\><C-n>' },
+		['<Esc>'] = { '<C-\\><C-n>' },
 	},
 }
 
@@ -111,9 +113,9 @@ for k, func in next, map do
 	local tbl = map_tbl[k]
 
 	-- If `tbl` exists, apply the mapping.
-	if tbl ~= nil and not vim.tbl_isempty(tbl) then
+	if is_tbl(tbl) and not vim.tbl_isempty(tbl) then
 		for lhs, v in next, tbl do
-			func(lhs, v.rhs, v.opts or {})
+			func(lhs, v[1], v[2] or {})
 		end
 	end
 end
