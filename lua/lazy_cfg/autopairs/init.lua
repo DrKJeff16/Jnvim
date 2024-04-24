@@ -23,16 +23,15 @@ Ap.setup({
 		'lazy',
 		'markdown',
 		'gitconfig',
-		'gitcommit',
 		'text',
 	},
 
 	disable_in_macro = false,  -- disable when recording or executing a macro
-	disable_in_visualblock = false,  -- disable when insert after visual block mode
-	disable_in_replace_mode = false,
+	disable_in_visualblock = true,  -- disable when insert after visual block mode
+	disable_in_replace_mode = true,
 
 	enable_moveright = true,
-	enable_afterquote = false,  -- add bracket pairs after quote
+	enable_afterquote = true,  -- add bracket pairs after quote
 	enable_check_bracket_line = true,  --- check bracket in same line
 	enable_bracket_in_quote = false,  --
 	enable_abbr = false,  -- trigger abbreviation
@@ -56,6 +55,7 @@ Ap.setup({
 	map_char = {
 		all = '(',
 		tex = '{',
+		lua = '{',
 	},
 
 	fast_wrap = {

@@ -18,6 +18,6 @@ end
 src('mini.doc')
 -- src('mini.hues')
 src('mini.hipatterns')
-src('mini.pairs')
+-- src('mini.pairs')
 src('mini.trailspace')
 -- src('mini.move')

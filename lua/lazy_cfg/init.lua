@@ -149,9 +149,9 @@ M.EDITING = {
 	},
 	{
 		'windwp/nvim-autopairs',
+		event = 'InsertEnter',
 		name = 'AutoPairs',
 		config = source('lazy_cfg.autopairs'),
-		enabled = false,
 	},
 	{
 		'lewis6991/gitsigns.nvim',
