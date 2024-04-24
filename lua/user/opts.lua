@@ -3,13 +3,13 @@
 
 require('user.types.user.opts')
 local Check = require('user.check')
+local exists = Check.exists.vim_exists
 
 local opt = vim.opt
 local let = vim.g
 local fn = vim.fn
 
 local has = fn.has
-local exists = fn.exists
 local executable = Check.exists.executable
 
 ---@type 0|1
@@ -71,7 +71,7 @@ local opt_tbl = {
 	stal = 2,  -- `showtabline`
 	sts = 4,  -- `softtabstop`
 	sw = 0,  -- `shiftwidth`
-	tgc = exists('+termguicolors') == 1,  -- `termguicolors`
+	tgc = exists('+termguicolors'),  -- `termguicolors`
 	title = true,
 	ts = 4,  -- `tabstop`
 	uc = 100,  -- `updatecount`
