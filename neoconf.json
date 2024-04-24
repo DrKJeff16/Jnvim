@@ -16,7 +16,6 @@
 	"lspconfig": {
 		"pylsp": {
 			"pylsp.rope.ropeFolder": null,
-			"pylsp.plugins.pylint.args": [],
 			"pylsp.configurationSources": [
 				"flake8"
 			],
@@ -35,12 +34,11 @@
 				"os",
 				"re",
 				"argparse",
-				"math",
 				"string",
 				"typing"
 			],
 			"pylsp.plugins.autopep8.enabled": true,
-			"pylsp.plugins.mccabe.threshold": 12,
+			"pylsp.plugins.mccabe.threshold": 10,
 			"pylsp.plugins.pyflakes.enabled": false,
 			"pylsp.plugins.jedi_hover.enabled": true,
 			"pylsp.plugins.jedi_symbols.enabled": true,
@@ -70,17 +68,17 @@
 			"pylsp.plugins.jedi_completion.cache_for": [
 				"pandas",
 				"numpy",
-				"tensorflow",
 				"matplotlib",
 				"typing",
 				"sys",
-				"mezzanine"
+				"os",
+				"argparse"
 			],
-			"pylsp.plugins.jedi_completion.include_params": false,
+			"pylsp.plugins.jedi_completion.include_params": true,
 			"pylsp.plugins.jedi_definition.follow_imports": true,
 			"pylsp.plugins.jedi_symbols.include_import_symbols": true,
 			"pylsp.plugins.jedi_completion.resolve_at_most": 30,
-			"pylsp.plugins.jedi_completion.include_class_objects": false,
+			"pylsp.plugins.jedi_completion.include_class_objects": true,
 			"pylsp.plugins.jedi_definition.follow_builtin_imports": true,
 			"pylsp.plugins.jedi_completion.include_function_objects": false,
 			"pylsp.plugins.jedi_definition.follow_builtin_definitions": true,
@@ -100,14 +98,14 @@
 			"Lua.completion.showWord": "Enable",
 			"Lua.diagnostics.enable": true,
 			"Lua.format.enable": true,
-			"Lua.hint.arrayIndex": "Disable",
+			"Lua.hint.arrayIndex": "Auto",
 			"Lua.hint.enable": true,
 			"Lua.hint.paramName": "All",
 			"Lua.hint.paramType": true,
 			"Lua.hint.semicolon": "SameLine",
 			"Lua.hint.setType": true,
 			"Lua.hover.enable": true,
-			"Lua.hover.enumsLimit": 20,
+			"Lua.hover.enumsLimit": 30,
 			"Lua.hover.expandAlias": true,
 			"Lua.hover.previewFields": 50,
 			"Lua.hover.viewNumber": true,
@@ -128,7 +126,8 @@
 			"Lua.diagnostics.disable": [
 				"unused-local",
 				"unused-function",
-				"inject-field"
+				"inject-field",
+				"need-check-nil"
 			]
 		},
 		"bashls": {
