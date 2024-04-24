@@ -31,27 +31,29 @@ local rt_file = api.nvim_get_runtime_file
 local hi = api.nvim_set_hl
 local sign_define = fn.sign_define
 
+---@param path string
+---@return nil|fun()
+local sub_fun = function(path)
+	if not Check.value.is_str(path) or path == '' then
+		error('Cannot generate function from type `'..type(path)..'`')
+		return nil
+	end
+
+	return function()
+		if exists(path) then
+			return require(path)
+		end
+	end
+end
+
 ---@type LspSubs
 local Sub = {
 	kinds = exists('lazy_cfg.lspconfig.kinds', true),
 }
 
-function Sub.neoconf()
-	if exists('lazy_cfg.lspconfig.neoconf') then
-		return require('lazy_cfg.lspconfig.neoconf')
-	end
-end
-function Sub.neodev()
-	if exists('lazy_cfg.lspconfig.neodev') then
-		return require('lazy_cfg.lspconfig.neodev')
-	end
-end
-
-function Sub.trouble()
-	if exists('lazy_cfg.lspconfig.trouble') then
-		return require('lazy_cfg.lspconfig.trouble')
-	end
-end
+Sub.neoconf = sub_fun('lazy_cfg.lspconfig.neoconf')
+Sub.neodev = sub_fun('lazy_cfg.lspconfig.neodev')
+-- Sub.trouble = sub_fun('lazy_cfg.lspconfig.trouble')
 
 -- Now call each.
 Sub.neoconf()
@@ -158,8 +160,6 @@ nmap('<Leader>le', diag.open_float, { desc = 'Diagnostics Float' })
 nmap('<Leader>l[', diag.goto_prev, { desc = 'Previous Diagnostic' })
 nmap('<Leader>l]', diag.goto_next, { desc = 'Previous Diagnostic' })
 nmap('<Leader>lq', diag.setloclist, { desc = 'Add Loclist (Diagnostics)' })
-
-lsp.set_log_level('INFO')
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
