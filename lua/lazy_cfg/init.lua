@@ -4,9 +4,11 @@
 local User = require('user')
 local types = User.types.lazy
 local Check = User.check
+local kmap = User.maps.kmap
+
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local nmap = User.maps.kmap.n
+local nmap = kmap.n
 
 local fn = vim.fn
 local api = vim.api
