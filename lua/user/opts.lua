@@ -26,6 +26,7 @@ local opt_tbl = {
 	belloff = { 'all' },
 	bg = 'dark',  -- `background`
 	ci = true,  -- `copyindent`
+	cmdwinheight = 4,
 	colorcolumn = { '+1' },
 	completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 	confirm = true,
