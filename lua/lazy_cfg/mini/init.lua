@@ -2,22 +2,43 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 
-local src = function(mini_mod)
+---@param mini_mod string
+---@param opts? table
+local function src(mini_mod, opts)
+	mini_mod = 'mini.' .. mini_mod
 	if not exists(mini_mod) then
 		return
 	end
+
 	local M = require(mini_mod)
 
-	M.setup()
+	if not Check.value.is_tbl(opts) then
+		opts = {}
+	end
+
+	if Check.value.is_fun(M.setup) then
+		M.setup(opts)
+	end
 end
 
--- src('mini.basics')
--- src('mini.extra')
-src('mini.doc')
--- src('mini.hues')
-src('mini.hipatterns')
--- src('mini.pairs')
-src('mini.trailspace')
--- src('mini.move')
+---@class MiniModule
+---@field [1] string
+---@field [2]? table
+
+---@type MiniModule[]
+local modules = {
+	{ 'starter', {} },
+	{ 'basics', {} },
+	{ 'cursorword', {} },
+	{ 'doc', {} },
+	{ 'hipatterns', {} },
+	{ 'trailspace', {} },
+	{ 'move', {} },
+}
+
+for _, t in next, modules do
+	src(t[1], t[2] or nil)
+end
