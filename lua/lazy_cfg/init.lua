@@ -71,6 +71,11 @@ M.ESSENTIAL = {
 			vim.opt.ls = 2
 			vim.opt.stal = 2
 			vim.opt.hid = true
+			vim.opt.sessionoptions = { -- required
+				"buffers",
+				"tabpages",
+				"globals",
+			}
 		end,
 		config = source('lazy_cfg.scope'),
 	},
@@ -426,7 +431,7 @@ M.CMP = {
 			local nproc = (exists('nproc') and { 'make', '-j"$(nproc)"', 'install_jsregexp' } or { 'make', 'install_jsregexp' })
 
 			if _G.is_windows and executable('mingw32-make') then
-				nproc[1] = 'mingw32-'..nproc[1]
+				nproc[1] = 'mingw32-' .. nproc[1]
 			elseif _G.is_windows and not executable('mingw32-make') then
 				return
 			end
