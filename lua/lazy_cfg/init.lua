@@ -385,12 +385,15 @@ M.CMP = {
 			'hrsh7th/cmp-nvim-lua',
 			'hrsh7th/cmp-nvim-lsp-document-symbol',
 			'hrsh7th/cmp-nvim-lsp-signature-help',
+
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'petertriho/cmp-git',
 			'davidsierradz/cmp-conventionalcommits',
+			'HiPhish/nvim-cmp-vlime',
 			'FelipeLema/cmp-async-path',
 			'hrsh7th/cmp-cmdline',
+
 			'saadparwaiz1/cmp_luasnip',
 			'LuaSnip',
 		},
@@ -417,6 +420,17 @@ M.CMP = {
 		end,
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = false },
+	{
+		'HiPhish/nvim-cmp-vlime',
+		ft = 'lisp',
+		dependencies = { 'VLime' },
+	},
+
+	{
+		'vlime/vlime',
+		ft = 'lisp',
+		name = 'VLime',
+	},
 }
 M.TELESCOPE = {
 	-- Telescope

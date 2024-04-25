@@ -116,13 +116,20 @@ cmp.setup({
 	}),
 })
 
+cmp.setup.filetype('lisp', {
+	sources = cmp.config.sources({
+		{ name = 'buffer' },
+		{ name = 'vlime' },
+	})
+})
+
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
-		{ name = 'git' },
 		{ name = 'conventionalcommits' },
 		{ name = 'luasnip' },
 	}, {
 		{ name = 'buffer' },
+		{ name = 'git' },
 	}),
 })
 
