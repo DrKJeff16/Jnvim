@@ -3,6 +3,13 @@
 
 require('user.types.user.maps')
 
+local Check = require('user.check')
+
+local is_nil = Check.value.is_nil
+local is_tbl = Check.value.is_tbl
+local is_str = Check.value.is_str
+local is_num = Check.value.is_num
+
 local kmap = vim.keymap.set
 local map = vim.api.nvim_set_keymap
 local bufmap = vim.api.nvim_buf_set_keymap
@@ -15,7 +22,7 @@ local MODES =  { 'n', 'i', 'v', 't', 'o', 'x' }
 ---@param with_buf? boolean
 ---@return KeyMapFunction|ApiMapFunction|BufMapFunction
 local variant = function(mode, func, with_buf)
-	if with_buf == nil then
+	if is_nil(with_buf) then
 		with_buf = false
 	end
 	local res
@@ -30,7 +37,7 @@ local variant = function(mode, func, with_buf)
 			end
 
 			for _, v in next, DEFAULTS do
-				if opts[v] == nil then
+				if is_nil(opts[v]) then
 					opts[v] = true
 				end
 			end
@@ -40,12 +47,12 @@ local variant = function(mode, func, with_buf)
 	else
 		---@type BufMapFunction
 		res = function(b, lhs, rhs, opts)
-			if opts == nil or type(opts) ~= 'table' then
+			if not is_tbl(opts) then
 				opts = {}
 			end
 
 			for _, v in next, DEFAULTS do
-				if opts[v] == nil then
+				if is_nil(opts[v]) then
 					opts[v] = true
 				end
 			end
@@ -61,7 +68,7 @@ end
 ---@return UserKeyMaps|UserApiMaps|UserBufMaps res
 local mode_funcs = function(field)
 	local VALID = { api = { 'map', map, false }, key = { 'kmap', kmap, false }, buf = { 'buf_map', bufmap, true } }
-	if VALID[field] == nil then
+	if is_nil(VALID[field]) then
 		error('Invalid variant ID!')
 	else
 		---@type UserKeyMaps|UserApiMaps|UserBufMaps
@@ -85,13 +92,13 @@ local M = {
 
 function M.nop(T, opts, mode)
 	opts = opts or {}
-	if mode == nil or not vim.tbl_contains(M.modes, mode) then
+	if is_nil(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
 	end
 
-	if type(T) == 'string' then
+	if is_str(T) then
 		M.map[mode](T, '<Nop>', opts)
-	elseif type(T) == 'table' then
+	elseif is_tbl(T) then
 		for _, v in next, T do
 			M.map[mode](v, '<Nop>', opts)
 		end
@@ -101,7 +108,7 @@ end
 function M.map_tbl(T, func, bufnr, mode)
 	local f	= M.map
 
-	if mode == nil or not vim.tbl_contains(M.modes, mode) then
+	if is_nil(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
 	end
 	if func == 'buf' then
@@ -112,14 +119,14 @@ function M.map_tbl(T, func, bufnr, mode)
 	end
 
 	for k, v in next, T do
-		if type(k) == 'integer' and v.lhs ~= nil and v.rhs ~= nil then
+		if is_num(k) and not is_nil(v.lhs) and not is_nil(v.rhs) then
 			f[mode](v.lhs, v.rhs, v.opts or {})
-		elseif type(k) == 'integer' and v[1] ~= nil and v[2] ~= nil then
+		elseif is_num(k) and not is_nil(v[1]) and not is_nil(v[2]) then
 			f[mode](v[1], v[2], v[3] or {})
-		elseif type(k) == 'string' then
-			if v.rhs ~= nil then
+		elseif is_str(k) then
+			if not is_nil(v.rhs) then
 				f[mode](k, v.rhs, v.opts or {})
-			elseif v[1] ~= nil and type(v[1]) ~= 'table' then
+			elseif not is_tbl(v[1]) then
 				f[mode](k, v[1], v[2] or {})
 			end
 		else
