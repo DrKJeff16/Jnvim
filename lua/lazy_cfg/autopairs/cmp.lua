@@ -27,11 +27,10 @@ local ft_handles = {
 				handler = handlers["*"],
 			},
 		},
-		lua = false,
 		tex = false,
 		markdown = false,
 		text = false,
-		org = false,
+		sh = false,
 	}
 }
 
@@ -39,10 +38,8 @@ local ft_handles = {
 ---@field on fun()
 local M = {
 	on = function()
-		cmp.event:on(
-		'confirm_done',
-		cmp_ap.on_confirm_done(ft_handles)
-		)
+		cmp.event:on('confirm_done',
+			cmp_ap.on_confirm_done(ft_handles))
 	end,
 }
 

@@ -9,6 +9,7 @@ local kmap = User.maps.kmap
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local nmap = kmap.n
+local vim_exists = Check.exists.vim_exists
 
 local fn = vim.fn
 local api = vim.api
@@ -20,11 +21,6 @@ local system = fn.system
 local has = fn.has
 local au = api.nvim_create_autocmd
 
----@param str string
----@return boolean
-local function vim_exists(str)
-	return vim.fn.exists(str) == 1
-end
 
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
