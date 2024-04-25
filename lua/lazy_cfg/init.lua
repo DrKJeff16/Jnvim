@@ -96,6 +96,21 @@ M.ESSENTIAL = {
 		version = false,
 	},
 }
+
+M.NVIM = {
+	{
+		'startup-nvim/startup.nvim',
+		lazy = false,
+		priority = 1000,
+		name = 'Startup',
+		dependencies = {
+			'Telescope',
+			'Plenary',
+		},
+		config = source('lazy_cfg.startup'),
+	}
+}
+
 M.TS = {
 	-- Treesitter.
 	{

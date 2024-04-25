@@ -30,7 +30,6 @@ end
 
 ---@type MiniModule[]
 local modules = {
-	{ 'starter', {} },
 	{ 'basics', {} },
 	{ 'cursorword', {} },
 	{ 'doc', {} },
