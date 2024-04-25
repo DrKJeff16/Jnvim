@@ -437,13 +437,13 @@ M.CMP = {
 	{ 'rafamadriz/friendly-snippets', lazy = false },
 	{
 		'HiPhish/nvim-cmp-vlime',
-		ft = 'lisp',
+		lazy = true,
 		dependencies = { 'VLime' },
 	},
 
 	{
 		'vlime/vlime',
-		ft = 'lisp',
+		lazy = true,
 		name = 'VLime',
 	},
 }
