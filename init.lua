@@ -57,7 +57,6 @@ local map_tbl = {
 	n = {
 		['<Leader>fs'] = { '<CMD>w<CR>' },
 		['<Leader>fS'] = { ':w ', { silent = false } },
-		['<Leader>ff'] = { ':ed ', { silent = false } },
 		['<Leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
 		['<Leader>fvl'] = { '<CMD>luafile %<CR>' },
 		['<Leader>fvv'] = { '<CMD>so %<CR>' },

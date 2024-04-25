@@ -72,6 +72,7 @@ end
 ---@field n KeyMapArgs[]
 local maps = {
 	n = {
+		{ lhs = '<leader>ff', rhs = Builtin.find_files, opts = { desc = 'File Picker' } },
 		{ lhs = '<leader><leader>', rhs = open, opts = { desc = 'Open Telescope' } },
 		{ lhs = '<leader>fTbP', rhs = Builtin.planets, opts = { desc = 'Planets' } },
 		{ lhs = '<leader>fTbb', rhs = Builtin.buffers },
