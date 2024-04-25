@@ -2,6 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local types = require('user.types')
+local Check = require('user.check')
+
+local is_tbl = Check.value.is_tbl
+local is_str = Check.value.is_str
 
 local api = vim.api
 local fn = vim.fn
@@ -16,7 +20,7 @@ local au = api.nvim_create_autocmd
 ---@type UserMod
 local M = {
 	types = types,
-	check = require('user.check'),
+	check = Check,
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
@@ -24,7 +28,7 @@ local M = {
 
 ---@param s string
 ---@return fun()
-local ft = function(s)
+local function ft(s)
 	return function() vim.cmd('setlocal ft='..s) end
 end
 
@@ -45,7 +49,9 @@ function M.assoc()
 
 	for _, v in next, aus do
 		for _, o in next, v.opts_tbl do
-			au(v.events, o)
+			if is_tbl(v.events) or is_str(v.events) then
+				au(v.events, o)
+			end
 		end
 	end
 end

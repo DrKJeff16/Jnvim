@@ -1,23 +1,33 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local tupes = require('user.types').user.highlight
+local types = require('user.types.user.highlight')
 local Check = require('user.check')
+
+local is_nil = Check.value.is_nil
+local is_str = Check.value.is_str
+local is_tbl = Check.value.is_tbl
 
 ---@type UserHl
 local M = {
 	hl = function(name, opts)
 		local hi = vim.api.nvim_set_hl
 
-		if Check.value.is_str(name) and Check.value.is_tbl(opts) then
+		if is_str(name) and is_tbl(opts) then
 			hi(0, name, opts)
+		else
+			error('A highlight value is not permitted!')
 		end
 	end,
 }
 
 function M.hl_from_arr(arr)
 	for _, t in next, arr do
-		M.hl(t.name, t.opts)
+		if is_str(t.name) and is_tbl(t.opts) then
+			M.hl(t.name, t.opts)
+		else
+			error('A highlight value is not permitted!')
+		end
 	end
 end
 
@@ -44,7 +54,7 @@ function M.hl_from_dict(dict)
 end
 
 M.current_palette = function()
-	return vim.cmd('colorscheme')
+	vim.cmd('colorscheme')
 end
 
 return M
