@@ -114,6 +114,7 @@ M.NVIM = {
 			'Plenary',
 		},
 		config = source('lazy_cfg.startup'),
+		enabled = false,
 	}
 }
 
