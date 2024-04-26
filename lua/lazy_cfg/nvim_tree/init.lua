@@ -3,19 +3,21 @@
 
 local User = require('user')
 local Check = User.check
+local kmap = User.maps.kmap
+local hl = User.highlight
+
+local nmap = kmap.n
+local hi = hl.hl
 local exists = Check.exists.module
+local is_nil = Check.value.is_nil
+local is_tbl = Check.value.is_tbl
+local is_str = Check.value.is_str
 
 if not exists('nvim-tree') then
 	return
 end
 
 local types = User.types.nvim_tree
-
-local kmap = User.maps.kmap
-local hl = User.highlight
-
-local nmap = kmap.n
-local hi = hl.hl
 
 local api = vim.api
 local fn = vim.fn
@@ -86,12 +88,12 @@ local collapse_all = Tapi.collapse_all
 
 ---@param keys KeyMapArgs[]
 local map_lft = function(keys)
-	if not Check.value.is_tbl(keys) or empty(keys) then
+	if is_tbl(keys) or empty(keys) then
 		return
 	end
 
 	for _, args in next, keys do
-		if args.lhs and args.rhs then
+		if not is_nil(args.lhs) and not is_nil(args.rhs) then
 			nmap(args.lhs, args.rhs, args.opts or {})
 		end
 	end
@@ -200,7 +202,7 @@ local edit_or_open = function()
 
 	edit()
 
-	if not Check.value.is_nil(nodes) then
+	if not is_nil(nodes) then
 		close()
 	end
 end
@@ -213,7 +215,7 @@ local vsplit_preview = function()
 	local edit = Tnode.open.edit
 	local vert = Tnode.open.vertical
 
-	if not Check.value.is_nil(nodes) then
+	if not is_nil(nodes) then
 		edit()
 	else
 		vert()
@@ -232,9 +234,9 @@ local git_add = function()
 	local gs = ngsf or ''
 
 	if gs == '' then
-		if not Check.value.is_nil(ngs.dir.direct) then
+		if not is_nil(ngs.dir.direct) then
 			gs = ngs.dir.direct[1]
-		elseif not Check.value.is_nil(ngs.dir.indirect) then
+		elseif not is_nil(ngs.dir.indirect) then
 			gs = ngs.dir.indirect[1]
 		end
 	end
@@ -360,13 +362,13 @@ local au_cmds = {
 }
 
 for k, v in next, au_cmds do
-	if k and v then
+	if is_str(k) and is_tbl(v) then
 		au(k, v)
 	end
 end
 
 for k, v in next, hl_groups do
-	if k and v then
+	if is_str(k) and is_tbl(v) then
 		hi(k, v)
 	end
 end
