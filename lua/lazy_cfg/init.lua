@@ -65,6 +65,7 @@ M.ESSENTIAL = {
 	},
 	{
 		'tiagovla/scope.nvim',
+		lszy = false,
 		priority = 1000,
 		name = 'Scope',
 		init = function()
@@ -151,13 +152,13 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise', lazy = false },
+	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
 	{ 'tpope/vim-speeddating', enabled = false },
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		event = { 'User FileOpened', 'BufWinEnter' },
+		event =  'BufWinEnter',
 		name = 'todo-comments',
 		dependencies = {
 			'treesitter',
@@ -180,6 +181,7 @@ M.EDITING = {
 	},
 	{
 		'sindrets/diffview.nvim',
+		lazy = true,
 		name = 'DiffView',
 		config = source('lazy_cfg.diffview'),
 		enabled = executable('git'),
@@ -204,6 +206,7 @@ M.LSP = {
 		'b0o/SchemaStore',
 		lazy = true,
 		name = 'SchemaStore',
+		version = false,
 		enabled = executable('vscode-json-language-server'),
 	},
 	-- Essenyial for Nvim Lua files.
@@ -216,7 +219,7 @@ M.LSP = {
 		function()
 			local msg = 'No `lua-language-server` in `PATH`!'
 			if exists('notify') then
-				vim.notify(msg, 'warn')
+				require('notify')(msg, 'warn')
 			else
 				print(msg)
 			end
@@ -225,14 +228,13 @@ M.LSP = {
 	},
 	{
 		'folke/neoconf.nvim',
-		lazy = false,
 		name = 'NeoConf',
 		version = false,
 		enabled = executable('vscode-json-language-server',
 		function()
 			local msg = 'No `vscode-json-language-server` in `PATH`!'
 			if exists('notify') then
-				vim.notify(msg, 'warn')
+				require('notify')(msg, 'warn')
 			else
 				print(msg)
 			end
@@ -263,20 +265,17 @@ M.LSP = {
 			'MasonLSP',
 			'Notify',
 		},
-		enabled = false,
 	},
 	{
 		'williamboman/mason-lspconfig.nvim',
 		lazy = true,
 		name = 'MasonLSP',
 		dependencies = { 'Mason' },
-		enabled = false,
 	},
 	{
 		'williamboman/mason.nvim',
 		cmd = { 'Mason' },
 		name = 'Mason',
-		enabled = false,
 	},
 	{
 		'antosha417/nvim-lsp-file-operations',
@@ -420,7 +419,7 @@ M.CMP = {
 		init = function()
 			vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
 		end,
-		config = source('lazy_cfg.cmp')
+		config = source('lazy_cfg.cmp'),
 	},
 	{
 		'L3MON4D3/LuaSnip',
@@ -497,7 +496,7 @@ M.UI = {
 		version = false,
 		dependencies = { 'Plenary' },
 		init = function()
-			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
+			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.notify'),
 	},
@@ -525,7 +524,7 @@ M.UI = {
 		},
 		init = function()
 			vim.opt.stal = 2
-			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
+			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.bufferline'),
 		enabled = false,
@@ -541,7 +540,7 @@ M.UI = {
 		},
 		init = function()
 			vim.opt.stal = 2
-			vim.opt.termguicolors = (vim_exists('+termguicolors') and true or false)
+			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.barbar'),
 	},
@@ -549,7 +548,7 @@ M.UI = {
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		name = 'ibl',
-		version = false,
+		version = '*',
 		dependencies = { 'rainbow-delimiters' },
 		config = source('lazy_cfg.blank_line'),
 	},
@@ -592,6 +591,7 @@ M.UI = {
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
+		priority = 1000,
 		name = 'which_key',
 		version = false,
 		init = function()
@@ -630,7 +630,7 @@ Lazy.setup(T)
 
 ---@type LazyMods
 local P = {
-	colorschemes = require('lazy_cfg.colorschemes'),
+	colorschemes = exists('lazy_cfg.colorschemes', true),
 }
 
 nmap('<leader>Le', function()
