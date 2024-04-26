@@ -119,50 +119,50 @@ local regs = {
 	},
 	['<leader>tA'] = {
 		'<CMD>tabnew<cr>',
-		'Open New Tab',
+		'New Tab',
 	},
 	['<leader>tf'] = {
 		'<CMD>tabfirst<cr>',
-		'Go To First Tab',
+		'First Tab',
 	},
 	['<leader>tl'] = {
 		'<CMD>tablast<cr>',
-		'Go To Last Tab',
+		'Last Tab',
 	},
 	['<leader>tn'] = {
 		'<CMD>tabN<cr>',
-		'Go To Next Tab',
+		'Next Tab',
 	},
 	['<leader>tp'] = {
 		'<CMD>tabp<cr>',
-		'Go To Previous Tab',
+		'Previous Tab',
 	},
 
 	-- Buffer Handling
 	['<leader>b'] = { name = '+Buffer' },
 	['<leader>bd'] = {
 		'<CMD>bdel<cr>',
-		'Close',
+		'Close Buffer',
 	},
 	['<leader>bD'] = {
 		'<CMD>bdel!<cr>',
-		'Close (Forcefully)',
+		'Close Buffer (Forcefully)',
 	},
 	['<leader>bf'] = {
 		'<CMD>bfirst<cr>',
-		'First',
+		'First Buffer',
 	},
 	['<leader>bl'] = {
 		'<CMD>blast<cr>',
-		'Last',
+		'Last Buffer',
 	},
 	['<leader>bn'] = {
 		'<CMD>bN<cr>',
-		'Next',
+		'Next Buffer',
 	},
 	['<leader>bp'] = {
 		'<CMD>bp<cr>',
-		'Previous',
+		'Previous Buffer',
 	},
 
 	-- TODO: Expand these keys.
@@ -194,7 +194,7 @@ local regs = {
 	['<leader>L'] = { name = '+Lazy' },
 	['<leader>Ll'] = {
 		'<CMD>Lazy<cr>',
-		'Open Float',
+		'Open Floating Window',
 	},
 	['<leader>Lx'] = {
 		'<CMD>Lazy clean<cr>',
@@ -215,16 +215,6 @@ local regs = {
 	['<leader>Lr'] = {
 		'<CMD>Lazy reload<cr>',
 		'Reload',
-	},
-
-	['<leader>o'] = { name = '+Orgmode' },
-	['<leader>oa'] = {
-		'<CMD>org agenda<cr>',
-		'Org Agenda',
-	},
-	['<leader>oc'] = {
-		'<CMD>org capture<cr>',
-		'Org Capture',
 	},
 
 	-- Window Handling
@@ -286,6 +276,9 @@ local regs = {
 
 	-- ToggleTerm
 	['<leader>T'] = { name = '+ToggleTerm' },
+
+	['<leader>l'] = { name = '+LSP' },
+	['<leader>lw'] = { name = '+Workspace' },
 }
 
 reg(regs)
