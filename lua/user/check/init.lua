@@ -9,8 +9,30 @@ local types = require('user.types.user.check')
 local M = {
 	value = {
 		---Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
-		is_nil = function(var)
-			return not var and var == nil
+		is_nil = function(var, multiple)
+			if multiple == nil or type(multiple) ~= 'boolean' then
+				multiple = false
+			end
+
+			if not multiple then
+				return var == nil
+			else
+				if var == nil or type(var) ~= 'table' then
+					return false
+				end
+
+				local res = false
+
+				for _, v in next, var do
+					res = v ==  nil
+
+					if not res then
+						break
+					end
+				end
+
+				return res
+			end
 		end,
 	},
 }
@@ -27,8 +49,30 @@ local type_funcs = {
 ---@param t Types
 ---@return ValueFunc
 local function type_fun(t)
-	return function(var)
-		return var ~= nil and type(var) == t
+	return function(var, multiple)
+		if M.value.is_nil(multiple) then
+			multiple = false
+		end
+
+		if not multiple then
+			return not M.value.is_nil(var) and type(var) == t
+		else
+			if not M.value.is_nil(var) and type(var) ~= 'table' then
+				return false
+			end
+
+			local res = false
+
+			for _, v in next, var do
+				res = not M.value.is_nil(t) and type(v) ==  t
+
+				if not res then
+					break
+				end
+			end
+
+			return res
+		end
 	end
 end
 

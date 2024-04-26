@@ -10,7 +10,7 @@
 ---|'function'
 ---|'boolean'
 ---|'table'
----@alias ValueFunc fun(var: unknown): boolean
+---@alias ValueFunc fun(var: unknown|table, multiple: boolean?): boolean
 
 ---@class ExistanceCheck
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown
