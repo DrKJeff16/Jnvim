@@ -1,3 +1,7 @@
+---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
+---@diagnostic disable:missing-fields
+
 require('user.types.lspconfig')
 
 local lsp = vim.lsp
@@ -36,7 +40,7 @@ function M.setup()
 	local kinds = ptc.CompletionItemKind
 
 	for s, kind in next, kinds do
-		kinds[s] = M.icons[kind] or kind
+		kinds[s] =  M.icons[s] or kind
 	end
 end
 

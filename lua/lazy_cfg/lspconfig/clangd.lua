@@ -2,13 +2,14 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+
+local exists = Check.exists.module
+local executable = Check.exists.executable
 
 local fn = vim.fn
 
-local executable = fn.executable
-
-if not exists('clangd_extensions') or executable('clangd') ~= 1 then
+if not exists('clangd_extensions') or not executable('clangd') then
 	return
 end
 
@@ -39,9 +40,9 @@ Exts.setup({
 		-- padding from the left if max_len_align is true
 		max_len_align_padding = 1,
 		-- whether to align to the extreme right or not
-		right_align = false,
+		right_align = true,
 		-- padding from the right if right_align is true
-		right_align_padding = 7,
+		right_align_padding = 4,
 		-- The color of the hints
 		highlight = "Comment",
 		-- The highlight group priority for extmark

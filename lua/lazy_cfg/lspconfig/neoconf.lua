@@ -4,15 +4,24 @@
 local Lspconfig = require('lspconfig')
 
 local User = require('user')
+local Check = User.check
 local types = User.types.lspconfig
-local exists = User.check.exists.module
+
+local exists = Check.exists.module
+local is_num = Check.value.is_num
 
 if not exists('neoconf') then
 	return
 end
 
-if neoconf_configured and neoconf_configured == 1 then
-	vim.notify('Neoconf can\'t be re-sourced.')
+if is_num(neoconf_configured) and neoconf_configured == 1 then
+	local msg = 'Neoconf can\'t be re-sourced.'
+	if exists('notify') then
+		require('notify')(msg, 'warn')
+	else
+		print(msg)
+	end
+
 	return
 else
 	_G.neoconf_configured = 1
@@ -21,7 +30,6 @@ end
 local NC = require('neoconf')
 
 local opts = {
-
 	-- name of the local settings files
 	local_settings = ".neoconf.json",
 	-- name of the global settings file in your Neovim config directory
@@ -30,7 +38,7 @@ local opts = {
 	import = {
 		vscode = true, -- local .vscode/settings.json
 		coc = false, -- global/local coc-settings.json
-		nlsp = false, -- global/local nlsp-settings.nvim json settings
+		nlsp = true, -- global/local nlsp-settings.nvim json settings
 	},
 	-- send new configuration to lsp clients when changing json settings
 	live_reload = true,

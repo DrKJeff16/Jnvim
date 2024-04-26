@@ -8,8 +8,8 @@ local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local nmap = kmap.n
 local vim_exists = Check.exists.vim_exists
+local nmap = kmap.n
 
 local fn = vim.fn
 local api = vim.api
@@ -47,7 +47,7 @@ local Lazy = require('lazy')
 ---@return fun()
 local function source(mod_str)
 	return function()
-		require(mod_str)
+		exists(mod_str, true)
 	end
 end
 
@@ -115,7 +115,7 @@ M.NVIM = {
 		},
 		config = source('lazy_cfg.startup'),
 		enabled = false,
-	}
+	},
 }
 
 M.TS = {
@@ -145,6 +145,7 @@ M.TS = {
 M.EDITING = {
 	{
 		'numToStr/Comment.nvim',
+		event = 'InsertEnter',
 		name = 'Comment',
 		dependencies = {
 			'treesitter',
@@ -185,7 +186,8 @@ M.EDITING = {
 		lazy = true,
 		name = 'DiffView',
 		config = source('lazy_cfg.diffview'),
-		enabled = executable('git'),
+		enabled = false,
+		-- enabled = executable('git'),
 	},
 }
 M.LSP = {

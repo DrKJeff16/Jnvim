@@ -12,6 +12,8 @@ local exists = Check.exists.module
 local modules = Check.exists.modules
 local executable = Check.exists.executable
 local nmap = kmap.n
+local is_str = Check.value.is_str
+local is_nil = Check.value.is_nil
 
 if not exists('lspconfig') then
 	return
@@ -34,7 +36,7 @@ local sign_define = fn.sign_define
 ---@param path string
 ---@return nil|fun()
 local sub_fun = function(path)
-	if not Check.value.is_str(path) or path == '' then
+	if not is_str(path) or path == '' then
 		error('Cannot generate function from type `'..type(path)..'`')
 		return nil
 	end
@@ -85,10 +87,10 @@ local add_caps = function(srv_tbl)
 	local res = {}
 
 	for k, v in next, srv_tbl do
-		if not Check.value.is_nil(v) then
+		if not is_nil(v) then
 			res[k] = v
 
-			if handlers then
+			if not is_nil(handlers) then
 				res[k].handlers = handlers
 			end
 
@@ -159,7 +161,7 @@ end
 nmap('<Leader>le', diag.open_float, { desc = 'Diagnostics Float' })
 nmap('<Leader>l[', diag.goto_prev, { desc = 'Previous Diagnostic' })
 nmap('<Leader>l]', diag.goto_next, { desc = 'Previous Diagnostic' })
-nmap('<Leader>lq', diag.setloclist, { desc = 'Add Loclist (Diagnostics)' })
+nmap('<Leader>lq', diag.setloclist, { desc = 'Add Loclist' })
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
@@ -190,7 +192,7 @@ au('LspAttach', {
 			local out = insp(lsp_buf.list_workspace_folders())
 			-- Try doing it with `notify` plugin.
 			if exists('notify') then
-				vim.notify(out)
+				require('notify')(out)
 			else
 				print(out)
 			end
@@ -216,7 +218,7 @@ diag.config({
 	signs = true,
 	underline = true,
 	update_in_insert = false,
-	severity_sort = true,
+	severity_sort = false,
 })
 
 ---@type AuRepeat
@@ -249,9 +251,11 @@ for event, opts_arr in next, aus do
 end
 
 local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+
 for type, icon in next, signs do
 	local hlite = "DiagnosticSign" .. type
+
 	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
 end
 
-vim.o.updatetime = 250
+vim.o.updatetime = 300

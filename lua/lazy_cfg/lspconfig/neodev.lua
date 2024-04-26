@@ -3,14 +3,27 @@
 
 local User = require('user')
 local Check = User.check
-local modules = Check.exists.modules
-local executable = Check.exists.executable
 local types = User.types.lspconfig
+
+local executable = Check.exists.executable
+local modules = Check.exists.modules
+local exists = Check.exists.module
 
 if not modules({ 'neodev', 'lspconfig' }) or not executable({
 	'lua-language-server',
 	'vscode-json-language-server'
 }) then
+	local msg = [[Missing any of the following:
+	- `neodev`
+	- `lspconfig`
+	- `lua-language-server`
+	- `vscode-json-language-server`
+	]]
+	if exists('notify') then
+		require('notify')(msg, 'error')
+	else
+		error(msg)
+	end
 	return
 end
 
