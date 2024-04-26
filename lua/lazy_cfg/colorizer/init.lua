@@ -25,7 +25,7 @@ local Colorizer = require('colorizer')
 local DEFAULT = {
 	RGB      = true,		-- #RGB hex codes
 	RRGGBB   = true,		-- #RRGGBB hex codes
-	names    = true,			-- "Name" codes like Blue
+	names    = false,			-- "Name" codes like Blue
 	RRGGBBAA = true,		-- #RRGGBBAA hex codes
 	rgb_fn   = false,		-- CSS rgb() and rgba() functions
 	hsl_fn   = true,		-- CSS hsl() and hsla() functions
@@ -40,6 +40,7 @@ html.mode = 'foreground'
 html.css = true
 html.css_fn = true
 html.hsl_fn = true
+html.name = true
 
 local css = html
 css.mode = 'background'
