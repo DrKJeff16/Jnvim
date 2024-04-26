@@ -2,9 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
 local maps = User.maps
 
+local exists = Check.exists.module
 local map = maps.map
 local kmap = maps.kmap
 
@@ -22,7 +23,7 @@ local opts = {
 	---Function to call before (un)comment
 	---@return string
 	pre_hook = function(c)
-		return bo.commentstring
+		return vim.bo.commentstring
 	end,
 	---Add a space b/w comment and the line
 	padding = true,

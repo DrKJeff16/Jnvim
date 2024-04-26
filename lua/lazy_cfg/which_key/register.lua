@@ -2,8 +2,12 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 local types = User.types.which_key
+
+local is_nil = Check.value.is_nil
+local is_str = Check.value.is_str
 
 local WK = require('which-key')
 local Presets = require('which-key.plugins.presets')
@@ -17,11 +21,11 @@ local reg = function(maps, opts)
 
 	opts = opts or {}
 	for _, o in next, { 'noremap', 'nowait', 'silent' } do
-		if not opts[o] then
+		if is_nil(opts[o]) then
 			opts[o] = true
 		end
 	end
-	if not opts.mode or type(opts.mode) ~= 'string' or string.len(opts.mode) ~= 1 or not vim.tbl_contains(valid_modes, opts.mode) then
+	if not is_str(opts.mode) or not vim.tbl_contains(valid_modes, opts.mode) then
 		opts.mode = 'n'
 	end
 	---@type RegKeysTbl
@@ -30,9 +34,9 @@ local reg = function(maps, opts)
 	for s, v in next, maps do
 		---@type RegKey|RegPfx
 		local tbl = v
-		if not tbl.name then
+		if is_nil(tbl.name) then
 			for _, o in next, { 'noremap', 'nowait', 'silent' } do
-				if not tbl[o] then
+				if is_nil(tbl[o]) then
 					tbl[o] = true
 				end
 			end

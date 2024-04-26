@@ -2,10 +2,12 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local types = require('user').types.user.maps
-local exists = User.check.exists.module
+local Check = User.check
+local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
 
+local exists = Check.exists.module
+local executable = Check.exists.executable
 local nmap = kmap.n
 
 if not exists('todo-comments') then
@@ -111,14 +113,14 @@ Todo.setup({
 		test = { 'Identifier', '#FF00FF' }
 	},
 	search = {
-		command = 'rg',
-		args = {
+		command = executable('rg') and 'rg' or 'grep',
+		args = executable('rg') and {
 			'--color=never',
 			'--no-heading',
 			'--with-filename',
 			'--line-number',
 			'--column',
-		},
+		} or {},
 		-- regex that will be used to match keywords.
 		-- don't replace the (KEYWORDS) placeholder
 		pattern = [[\b(KEYWORDS):]], -- ripgrep regex

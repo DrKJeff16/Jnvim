@@ -2,16 +2,15 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 
 if not exists('which-key') then
 	return
 end
 
-local set = vim.o
-
-set.timeout = true
-set.timeoutlen = 300
+vim.opt.timeout = true
+vim.opt.timeoutlen = 300
 
 local WK = require('which-key')
 local presets = require('which-key.plugins.presets')
@@ -106,8 +105,6 @@ WK.setup({
 	},
 })
 
-if exists('lazy_cfg.which_key.register') then
-	require('lazy_cfg.which_key.register')
-end
-
 presets.operators['v'] = nil
+
+exists('lazy_cfg.which_key.register', true)

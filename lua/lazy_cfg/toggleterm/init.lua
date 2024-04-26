@@ -2,9 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local Check = User.check
 local au_t = User.types.user.autocmd
 local maps_t = User.types.user.maps
-local exists = User.check.exists.module
+local exists = Check.exists.module
 local maps = User.maps
 
 local map = maps.map

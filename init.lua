@@ -3,26 +3,27 @@
 
 local User = require('user')
 local Check = User.check
+local Maps = User.maps
+
 -- Import docstrings and annotations.
 local types = User.types
 local maps_t = types.user.maps
 local hl_t = types.user.highlight
-local map = User.maps.map
-local kmap = User.maps.kmap
+local map = Maps.map
+local kmap = Maps.kmap
 
 local exists = Check.exists.module  -- Checks for missing modules
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
+local is_fun = Check.value.is_fun
 local nop = User.maps.nop
 local hl = User.highlight.hl
 
 local fn = vim.fn
 local let = vim.g
 
-local nmap = map.n
-
 -- Set `<Space>` as Leader Key.
-nmap('<Space>', '<Nop>', {
+nop('<Space>', {
 	nowait = false,
 	desc = 'Leader Key.'
 })
@@ -127,18 +128,20 @@ local Pkg = require('lazy_cfg')
 --
 -- Reorder to your liking.
 local Csc = Pkg.colorschemes
-if Csc.nightfox and Csc.nightfox.setup then
+if is_tbl(Csc.nightfox) and is_fun(Csc.nightfox.setup) then
 	Csc.nightfox.setup()
-elseif Csc.tokyonight and Csc.tokyonight.setup then
+elseif is_tbl(Csc.tokyonight) and is_fun(Csc.tokyonight.setup) then
 	Csc.tokyonight.setup()
-elseif Csc.spaceduck and Csc.spaceduck.setup then
+elseif is_tbl(Csc.spaceduck) and is_fun(Csc.spaceduck.setup) then
 	Csc.spaceduck.setup()
-elseif Csc.catppuccin and Csc.catppuccin.setup then
+elseif is_tbl(Csc.catppuccin) and is_fun(Csc.catppuccin.setup) then
 	Csc.catppuccin.setup()
 end
 
 -- Call the user file associations.
-User.assoc()
+if is_fun(User.assoc) then
+	User.assoc()
+end
 
 vim.cmd[[
 filetype plugin indent on
