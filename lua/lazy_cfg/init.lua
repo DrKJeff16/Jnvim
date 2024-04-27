@@ -105,6 +105,14 @@ M.ESSENTIAL = {
 
 M.NVIM = {
 	{
+		'nvimdev/dashboard-nvim',
+		event = 'VimEnter',
+		priority = 1000,
+		name = 'Dashboard',
+		dependencies = { 'web-devicons' },
+		config = source('lazy_cfg.dashboard'),
+	},
+	{
 		'startup-nvim/startup.nvim',
 		lazy = false,
 		priority = 1000,
