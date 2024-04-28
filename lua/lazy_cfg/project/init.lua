@@ -2,7 +2,14 @@
 ---@diagnostic disable:unused-local
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local maps_t = User.types.user.maps
+local Maps = User.maps
+
+local kmap = Maps.kmap
+
+local exists = Check.exists.module
+local nmap = kmap.n
 
 if not exists('project_nvim') then
 	return
@@ -14,6 +21,8 @@ local stdpath = fn.stdpath
 
 local Project = require('project_nvim')
 local Config = require('project_nvim.config')
+
+local recent_proj = Project.get_recent_projects
 
 local opts = {
 	-- Manual mode doesn't automatically change your root directory, so you have
@@ -46,13 +55,11 @@ local opts = {
 		'neoconf.json',
 	},
 
-	-- Table of lsp clients to ignore by name
-	-- eg: { "efm", ... }
-	ignore_lsp = {},
-
 	-- Don't calculate root dir on specific directories
 	-- Ex: { "~/.cargo/*", ... }
-	exclude_dirs = {},
+	exclude_dirs = {
+		'~/Templates/^'
+	},
 
 	-- Show hidden files in telescope
 	show_hidden = true,
@@ -65,11 +72,28 @@ local opts = {
 	-- * global (default)
 	-- * tab
 	-- * win
-	scope_chdir = 'global',
+	scope_chdir = 'tab',
 
 	-- Path where project.nvim will store the project history for use in
 	-- telescope
 	datapath = stdpath("data"),
 }
+
+---@type KeyMapDict
+local keys = {
+	['<leader>pr'] = {
+		function()
+			if exists('notify') then
+				require('notify')(vim.inspect(recent_proj()), 'info')
+			else
+				print(vim.inspect(recent_proj()))
+			end
+		end,
+	}
+}
+
+for key, v in next, keys do
+	nmap(key, v[1], v[2] or {})
+end
 
 Project.setup(opts)
