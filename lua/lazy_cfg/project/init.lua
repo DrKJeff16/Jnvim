@@ -39,7 +39,6 @@ local opts = {
 	-- detection_methods
 	patterns = {
 		".git",
-		'.github',
 		"_darcs",
 		".hg",
 		".bzr",
@@ -83,12 +82,20 @@ local opts = {
 local keys = {
 	['<leader>pr'] = {
 		function()
+			local msg = '\n'
+
+			for _, v in next, recent_proj() do
+				msg = msg .. '- ' .. v .. '\n'
+			end
 			if exists('notify') then
-				require('notify')(vim.inspect(recent_proj()), 'info')
+				require('notify')(msg, 'info')
 			else
-				print(vim.inspect(recent_proj()))
+				print(msg)
 			end
 		end,
+		{
+			desc = 'Print Recent Projects',
+		}
 	}
 }
 
