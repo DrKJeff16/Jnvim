@@ -87,19 +87,19 @@ local regs = {
 	['<leader>ft'] = { name = '+NvimTree' },
 	['<leader>fto'] = {
 		'<CMD>NvimTreeOpen<cr>',
-		'Open',
+		'Open Tree',
 	},
 	['<leader>ftt'] = {
 		'<CMD>NvimTreeToggle<cr>',
-		'Toggle',
+		'Toggle Tree',
 	},
 	['<leader>ftf'] = {
 		'<CMD>NvimTreeFocus<cr>',
-		'Focus',
+		'Focus Tree',
 	},
 	['<leader>ftd'] = {
 		'<CMD>NvimTreeClose<cr>',
-		'Close',
+		'Close Tree',
 	},
 
 	-- Telescope

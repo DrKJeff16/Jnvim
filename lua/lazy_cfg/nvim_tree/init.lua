@@ -4,12 +4,12 @@
 local User = require('user')
 local Check = User.check
 local kmap = User.maps.kmap
-local hl = User.highlight
 
 local nmap = kmap.n
-local hi = hl.hl
+local hi = User.highlight.hl
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
+local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 
@@ -43,12 +43,13 @@ local list_wins = api.nvim_list_wins
 
 ---@type OptSetterFun
 local function key_opts(desc, bufn)
-	bufn = bufn or 0
-	bufn = (bufn > 0 and bufn or 0)
+	if not is_num(bufn) or bufn < 0 then
+		bufn = 0
+	end
 
 	---@type KeyMapOpts
 	local res = {
-		desc = 'NvimTree: '..desc,
+		desc = 'NvimTree: ' .. desc,
 		buffer = bufn,
 		noremap = true,
 		silent = true,
@@ -59,6 +60,7 @@ local function key_opts(desc, bufn)
 end
 
 local Tree = require('nvim-tree')
+local View = require('nvim-tree.view')
 local Api = require('nvim-tree.api')
 
 local Tapi = Api.tree
@@ -131,7 +133,9 @@ local tab_win_close = function(nwin)
 	local nbuf = get_bufn(nwin)
 	local buf_info = fn.getbufinfo(nbuf)[1]
 
-	local tab_wins = filter_tbl(function(w) return w - nwin end, win_list(ntab))
+	local tab_wins = filter_tbl(function(w)
+		return w - nwin
+	end, win_list(ntab))
 	local tab_bufs = tbl_map(get_bufn, tab_wins)
 
 	if buf_info.name:match('.*NvimTree_%d*$') and not empty(tab_bufs) then
@@ -180,10 +184,15 @@ local tree_open = function(data)
 	end
 
 	---@type TreeToggleOpts
-	local toggle_opts = { focus = false, find_file = true }
+	local toggle_opts = {
+		focus = false,
+		find_file = true,
+	}
 
 	---@type TreeOpenOpts
-	local open_opts = { find_file = true }
+	local open_opts = {
+		find_file = true,
+	}
 
 	if dir then
 		cd(name)
@@ -248,23 +257,21 @@ local git_add = function()
 	}
 
 	if in_tbl(conds.add, gs) then
-		vim.cmd('silent !git add'..abs)
+		vim.cmd('silent !git add ' .. abs)
 	elseif in_tbl(conds.restore, gs) then
-		vim.cmd('silent !git restore --staged'..abs)
+		vim.cmd('silent !git restore --staged ' .. abs)
 	end
 
 	reload()
 end
 
 local swap_then_open_tab = function()
-	local cmd = vim.cmd
-
 	local tab = Tnode.open.tab
 
 	---@type TreeNode
 	local node = get_node()
 
-	cmd('wincmd l')
+	vim.cmd('wincmd l')
 	tab(node)
 end
 
@@ -323,15 +330,103 @@ Tree.setup({
 	on_attach = on_attach,
 
 	sort = { sorter = 'case_sensitive' },
-	view = { width = 15 },
+	view = { width = 20 },
 	renderer = { group_empty = true },
 	filters = { dotfiles = false },
-
-	update_focused_file = {
-		enable = true,
-		update_root = true,
+	live_filter = {
+		prefix = '[FILTER]: ',
+		always_show_folders = true,
 	},
 })
+
+if exists('telescope') then
+	local tree_actions = {
+		{
+			name = "Create node",
+			handler = Api.fs.create,
+		},
+		{
+			name = "Remove node",
+			handler = Api.fs.remove,
+		},
+		{
+			name = "Trash node",
+			handler = Api.fs.trash,
+		},
+		{
+			name = "Rename node",
+			handler = Api.fs.rename,
+		},
+		{
+			name = "Fully rename node",
+			handler = Api.fs.rename_sub,
+		},
+		{
+			name = "Copy",
+			handler = Api.fs.copy.node,
+		},
+
+		-- ... other custom actions you may want to display in the menu
+	}
+
+	local function tree_actions_menu(node)
+		local Finders = require('telescope.finders')
+		local Pickers = require('telescope.pickers')
+		local Sorters = require('telescope.sorters')
+		local entry_maker = function(menu_item)
+			return {
+				value = menu_item,
+				ordinal = menu_item.name,
+				display = menu_item.name,
+			}
+		end
+
+		local finder = Finders.new_table({
+			results = tree_actions,
+			entry_maker = entry_maker,
+		})
+
+		local sorter = Sorters.get_generic_fuzzy_sorter()
+
+		local default_options = {
+			finder = finder,
+			sorter = sorter,
+			attach_mappings = function(prompt_buffer_number)
+				local actions = require("telescope.actions")
+
+				-- On item select
+				actions.select_default:replace(function()
+					local state = require("telescope.actions.state")
+					local selection = state.get_selected_entry()
+					-- Closing the picker
+					actions.close(prompt_buffer_number)
+					-- Executing the callback
+					selection.value.handler(node)
+				end)
+
+				-- The following actions are disabled in this example
+				-- You may want to map them too depending on your needs though
+				-- actions.add_selection:replace(function() end)
+				-- actions.remove_selection:replace(function() end)
+				-- actions.toggle_selection:replace(function() end)
+				-- actions.select_all:replace(function() end)
+				-- actions.drop_all:replace(function() end)
+				-- actions.toggle_all:replace(function() end)
+
+				return true
+			end,
+		}
+
+		-- Opening the menu
+		Pickers.new({
+			prompt_title = "Tree Menu" }, default_options
+			):find()
+	end
+end
+
+Api.events.subscribe(Api.events.Event.FileCreated, function(file)
+  vim.cmd("edit " .. file.fname)
+end)
 
 ---@type HlDict
 local hl_groups = {
@@ -356,8 +451,37 @@ local au_cmds = {
 		end,
 		nested = true,
 	},
+	['VimResized'] = {
+		group = "NvimTreeResize",
+		callback = function()
+			if View.is_visible() then
+				View.close()
+				Tapi.open()
+			end
+		end,
+	},
+	['BufEnter'] = {
+		nested = true,
+  		callback = function()
+    		-- Only 1 window with nvim-tree left: we probably closed a file buffer
+    		if api.nvim_list_wins() == 1 and Api.tree.is_tree_buf() then
+      			-- Required to let the close event complete. An error is thrown without this.
+      			vim.defer_fn(function()
+        			-- close nvim-tree: will go to the last hidden buffer used before closing
+        			Api.tree.toggle({find_file = true, focus = true})
+        			-- re-open nivm-tree
+        			Api.tree.toggle({find_file = true, focus = true})
+        			-- nvim-tree is still the active window. Go to the previous window.
+        			vim.cmd("wincmd p")
+      			end, 0)
+    		end
+  		end,
+	}
 }
 
+augroup('NvimTreeResize', {
+	clear = true,
+})
 for k, v in next, au_cmds do
 	if is_str(k) and is_tbl(v) then
 		au(k, v)
