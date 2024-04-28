@@ -70,7 +70,10 @@ local map_tbl = {
 			silent = false,
 			desc = 'Source Lua File (Prompt)',
 		} },
-		['<leader>fve'] = { '<CMD>tabnew $MYVIMRC<CR>', { silent = false } },
+		['<leader>fvet'] = { '<CMD>tabnew $MYVIMRC<CR>' },
+		['<leader>fvee'] = { '<CMD>ed $MYVIMRC<CR>' },
+		['<leader>fves'] = { '<CMD>split $MYVIMRC<CR>' },
+		['<leader>fvev'] = { '<CMD>vsplit $MYVIMRC<CR>' },
 
 		['<leader>wss'] = { '<CMD>split<CR>' },
 		['<leader>wsv'] = { '<CMD>vsplit<CR>' },

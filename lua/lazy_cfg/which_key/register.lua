@@ -3,51 +3,57 @@
 
 local User = require('user')
 local Check = User.check
-local exists = Check.exists.module
 local types = User.types.which_key
 
+local exists = Check.exists.module
 local is_nil = Check.value.is_nil
+local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 
 local WK = require('which-key')
 local Presets = require('which-key.plugins.presets')
 
-local Register = WK.register
+local register = WK.register
 
 ---@param maps RegKeysTbl
 ---@param opts? RegOpts
 local reg = function(maps, opts)
-	local valid_modes = { 'n', 'i', 'v', 't', 'x', 'o' }
+	local MODES = { 'n', 'i', 'v', 't', 'x', 'o' }
+	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
 
-	opts = opts or {}
-	for _, o in next, { 'noremap', 'nowait', 'silent' } do
-		if is_nil(opts[o]) then
+	if not is_tbl(opts) then
+		opts = {}
+	end
+
+	for _, o in next, DEFAULT_OPTS do
+		if is_nil(opts[o]) and o ~= 'nowait' then
 			opts[o] = true
 		end
 	end
-	if not is_str(opts.mode) or not vim.tbl_contains(valid_modes, opts.mode) then
+
+	if not is_str(opts.mode) or not vim.tbl_contains(MODES, opts.mode) then
 		opts.mode = 'n'
 	end
+
 	---@type RegKeysTbl
 	local filtered = {}
 
 	for s, v in next, maps do
 		---@type RegKey|RegPfx
 		local tbl = v
+
 		if is_nil(tbl.name) then
-			for _, o in next, { 'noremap', 'nowait', 'silent' } do
+			for _, o in next, DEFAULT_OPTS do
 				if is_nil(tbl[o]) then
 					tbl[o] = true
 				end
 			end
-		else
-			opts.nowait = false
 		end
 
 		filtered[s] = tbl
 	end
 
-	Register(filtered, opts)
+	register(filtered, opts)
 end
 
 ---@type RegKeysTbl
@@ -58,29 +64,36 @@ local regs = {
 		'<CMD>w<cr>',
 		'Save File',
 	},
-	['<leader>fi'] = { name = '+Indent' },
-	['<leader>fir'] = {
-		'<CMD>%retab<cr>',
-		'Retab',
-	},
-
 	--- Source File Handling
 	['<leader>fv'] = { name = '+Vim Files' },
 	['<leader>fvs'] = {
 		'<CMD>luafile $MYVIMRC<cr>',
 		'Source Neovim\'s `init.lua`',
 	},
-	['<leader>fve'] = {
-		'<CMD>tabnew $MYVIMRC<cr>',
-		'Open A New Neovim\'s `init.lua` Tab',
-	},
 	['<leader>fvl'] = {
 		'<CMD>luafile %<cr>',
-		'Source The Current File With Lua',
+		'Source Current Lua File',
 	},
 	['<leader>fvv'] = {
 		'<CMD>so %<cr>',
-		'Source The Current File With Vimscript',
+		'Source Current Vimscript File',
+	},
+	['<leader>fve'] = { name = '+Edit `init`' },
+	['<leader>fvee'] = {
+		'<CMD>ed $MYVIMRC<cr>',
+		'Open `$MYVIMRC`',
+	},
+	['<leader>fvet'] = {
+		'<CMD>tabnew $MYVIMRC<cr>',
+		'Open `$MYVIMRC` in new Tab',
+	},
+	['<leader>fves'] = {
+		'<CMD>split $MYVIMRC<cr>',
+		'Open `$MYVIMRC` in Horizontal Window',
+	},
+	['<leader>fvev'] = {
+		'<CMD>vsplit $MYVIMRC<cr>',
+		'Open `$MYVIMRC` in Vertical Window',
 	},
 
 	--- NvimTree
@@ -216,6 +229,10 @@ local regs = {
 		'<CMD>Lazy reload<cr>',
 		'Reload',
 	},
+	['<leader>Lp'] = {
+		'<CMD>Lazy profile<cr>',
+		'Profile',
+	},
 
 	-- Window Handling
 	['<leader>w'] = { name = '+Window' },
@@ -277,8 +294,15 @@ local regs = {
 	-- ToggleTerm
 	['<leader>T'] = { name = '+ToggleTerm' },
 
+	-- LSP
 	['<leader>l'] = { name = '+LSP' },
 	['<leader>lw'] = { name = '+Workspace' },
+
+	-- Project
+	['<leader>p'] = { name = '+Project' },
+
+	-- Context
+	['<leader>C'] = { name = '+Context' },
 }
 
 reg(regs)
