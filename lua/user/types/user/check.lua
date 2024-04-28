@@ -16,7 +16,6 @@
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown
 ---@field modules fun(mod: string|string[], need_all: boolean?): (boolean|table<string, boolean>)
 ---@field executable fun(exe: string|string[], fallback: (nil|fun())?): boolean
----@field data fun(v: any): boolean
 ---@field field fun(field: string|integer, t: table<string, any>): boolean
 ---@field vim_exists fun(expr: string|string[]): boolean
 

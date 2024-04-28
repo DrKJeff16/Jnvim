@@ -16,15 +16,13 @@ local M = {
 
 			if not multiple then
 				return var == nil
+			elseif  type(var) ~= 'table' then
+				return false
 			else
-				if var == nil or type(var) ~= 'table' then
-					return false
-				end
-
 				local res = false
 
 				for _, v in next, var do
-					res = v ==  nil
+					res = v == nil
 
 					if not res then
 						break
@@ -56,15 +54,13 @@ local function type_fun(t)
 
 		if not multiple then
 			return not M.value.is_nil(var) and type(var) == t
+		elseif M.value.is_nil(var) or type(var) ~= 'table' then
+			return false
 		else
-			if not M.value.is_nil(var) and type(var) ~= 'table' then
-				return false
-			end
-
 			local res = false
 
 			for _, v in next, var do
-				res = not M.value.is_nil(t) and type(v) ==  t
+				res = not M.value.is_nil(t) and type(v) == t
 
 				if not res then
 					break
@@ -87,9 +83,6 @@ function M.dry_run(f, ...)
 end
 
 M.exists = {
-	data = function(v)
-		return M.value.is_nil(v)
-	end,
 	module = function(mod, return_mod)
 		return_mod = not M.value.is_nil(return_mod) and false or return_mod
 
@@ -125,11 +118,11 @@ function M.exists.vim_exists(expr)
 			res = M.exists.vim_exists(expr)
 
 			if not res then
-				return false
+				break
 			end
 		end
 
-		return true
+		return res
 	end
 
 	return false
