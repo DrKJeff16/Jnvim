@@ -4,11 +4,9 @@
 local User = require('user')
 local Check = User.check
 local Maps = User.maps
-
--- Import docstrings and annotations.
-local types = User.types
-local maps_t = types.user.maps
-local hl_t = types.user.highlight
+local Types = User.types  -- Import docstrings and annotations.
+local maps_t = Types.user.maps
+local hl_t = Types.user.highlight
 local map = Maps.map
 local kmap = Maps.kmap
 
@@ -20,20 +18,19 @@ local nop = User.maps.nop
 local hl = User.highlight.hl
 
 local fn = vim.fn
-local let = vim.g
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', {
 	nowait = false,
 	desc = 'Leader Key.'
 })
-let.mapleader = ' '
-let.maplocalleader = ' '
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
 -- Disable `netrw` regardless of whether
 -- Nvim Tree exists or not
-let.loaded_netrw = 1
-let.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Vim `:set ...` global options setter.
 local opts = User.opts
@@ -48,6 +45,7 @@ local NOP = {
 	'<leader>p',
 	'<leader>v',
 	'<leader>z',
+	'<leader>x',
 }
 nop(NOP, { nowait = false })
 
@@ -56,51 +54,60 @@ nop(NOP, { nowait = false })
 --- `map_tbl.[n|i|v|t]['<YOUR_KEY>'].opts` is an **API** option table.
 local map_tbl = {
 	n = {
-		['<Leader>fs'] = { '<CMD>w<CR>' },
-		['<Leader>fS'] = { ':w ', { silent = false } },
-		['<Leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
-		['<Leader>fvl'] = { '<CMD>luafile %<CR>' },
-		['<Leader>fvv'] = { '<CMD>so %<CR>' },
-		['<Leader>fvV'] = { ':so ', { silent = false } },
-		['<Leader>fvL'] = { ':luafile ', { silent = false } },
-		['<Leader>fve'] = { '<CMD>tabnew $MYVIMRC<CR>', { silent = false } },
+		['<leader>fs'] = { '<CMD>w<CR>' },
+		['<leader>fS'] = { ':w ', {
+			silent = false,
+			desc = 'Save File (Prompt)',
+		} },
+		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
+		['<leader>fvl'] = { '<CMD>luafile %<CR>' },
+		['<leader>fvv'] = { '<CMD>so %<CR>' },
+		['<leader>fvV'] = { ':so ', {
+			silent = false,
+			desc = 'Source VimScript File (Prompt)',
+		} },
+		['<leader>fvL'] = { ':luafile ', {
+			silent = false,
+			desc = 'Source Lua File (Prompt)',
+		} },
+		['<leader>fve'] = { '<CMD>tabnew $MYVIMRC<CR>', { silent = false } },
 
-		['<Leader>wss'] = { '<CMD>split<CR>' },
-		['<Leader>wsv'] = { '<CMD>vsplit<CR>' },
-		['<Leader>wsS'] = { ':split ', { silent = false } },
-		['<Leader>wsV'] = { ':vsplit ', { silent = false } },
+		['<leader>wss'] = { '<CMD>split<CR>' },
+		['<leader>wsv'] = { '<CMD>vsplit<CR>' },
+		['<leader>wsS'] = { ':split ', { silent = false } },
+		['<leader>wsV'] = { ':vsplit ', { silent = false } },
 
-		['<Leader>qq'] = { '<CMD>qa<CR>' },
-		['<Leader>qQ'] = { '<CMD>qa!<CR>' },
+		['<leader>qq'] = { '<CMD>qa<CR>' },
+		['<leader>qQ'] = { '<CMD>qa!<CR>' },
 
-		['<Leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
-		['<Leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
-		['<Leader>td'] = { '<CMD>tabc<CR>' },
-		['<Leader>tD'] = { '<CMD>tabc!<CR>' },
-		['<Leader>tf'] = { '<CMD>tabfirst<CR>' },
-		['<Leader>tl'] = { '<CMD>tablast<CR>' },
-		['<Leader>ta'] = { ':tabnew ', { silent = false } },
-		['<Leader>tA'] = { '<CMD>tabnew<CR>' },
+		['<leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
+		['<leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
+		['<leader>td'] = { '<CMD>tabc<CR>' },
+		['<leader>tD'] = { '<CMD>tabc!<CR>' },
+		['<leader>tf'] = { '<CMD>tabfirst<CR>' },
+		['<leader>tl'] = { '<CMD>tablast<CR>' },
+		['<leader>ta'] = { ':tabnew ', { silent = false } },
+		['<leader>tA'] = { '<CMD>tabnew<CR>' },
 
-		['<Leader>bn'] = { '<CMD>bNext<CR>' },
-		['<Leader>bp'] = { '<CMD>bprevious<CR>' },
-		['<Leader>bd'] = { '<CMD>bdel<CR>' },
-		['<Leader>bD'] = { '<CMD>bdel!<CR>' },
-		['<Leader>bf'] = { '<CMD>bfirst<CR>' },
-		['<Leader>bl'] = { '<CMD>blast<CR>' },
+		['<leader>bn'] = { '<CMD>bNext<CR>' },
+		['<leader>bp'] = { '<CMD>bprevious<CR>' },
+		['<leader>bd'] = { '<CMD>bdel<CR>' },
+		['<leader>bD'] = { '<CMD>bdel!<CR>' },
+		['<leader>bf'] = { '<CMD>bfirst<CR>' },
+		['<leader>bl'] = { '<CMD>blast<CR>' },
 
-		['<Leader>Ll'] = { '<CMD>Lazy<CR>' },
-		['<Leader>LL'] = { ':Lazy ', { silent = false } },
-		['<Leader>Ls'] = { '<CMD>Lazy sync<CR>' },
-		['<Leader>Lx'] = { '<CMD>Lazy clean<CR>' },
-		['<Leader>Lc'] = { '<CMD>Lazy check<CR>' },
-		['<Leader>Li'] = { '<CMD>Lazy install<CR>' },
-		['<Leader>Lr'] = { '<CMD>Lazy reload<CR>' },
+		['<leader>Ll'] = { '<CMD>Lazy<CR>' },
+		['<leader>LL'] = { ':Lazy ', { silent = false } },
+		['<leader>Ls'] = { '<CMD>Lazy sync<CR>' },
+		['<leader>Lx'] = { '<CMD>Lazy clean<CR>' },
+		['<leader>Lc'] = { '<CMD>Lazy check<CR>' },
+		['<leader>Li'] = { '<CMD>Lazy install<CR>' },
+		['<leader>Lr'] = { '<CMD>Lazy reload<CR>' },
 	},
 	v = {
 		--- WARNING: DO NOT USE `<CMD>`!!!
-		['<Leader>is'] = { ':sort<CR>' },
-		['<Leader>iS'] = { ':sort!<CR>' },
+		['<leader>is'] = { ':sort<CR>' },
+		['<leader>iS'] = { ':sort!<CR>' },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
@@ -125,16 +132,22 @@ local Pkg = require('lazy_cfg')
 
 -- SECTION: Colorschemes
 -- Sourced from `lua/lazy_cfg/colorschemes/*`.
---
+
+---@param csc CscSubMod
+---@return boolean
+local csc_check = function(csc)
+	return is_tbl(csc) and is_fun(csc.setup)
+end
+
 -- Reorder to your liking.
 local Csc = Pkg.colorschemes
-if is_tbl(Csc.nightfox) and is_fun(Csc.nightfox.setup) then
+if csc_check(Csc.nightfox) then
 	Csc.nightfox.setup()
-elseif is_tbl(Csc.tokyonight) and is_fun(Csc.tokyonight.setup) then
+elseif csc_check(Csc.tokyonight) then
 	Csc.tokyonight.setup()
-elseif is_tbl(Csc.spaceduck) and is_fun(Csc.spaceduck.setup) then
+elseif csc_check(Csc.spaceduck) then
 	Csc.spaceduck.setup()
-elseif is_tbl(Csc.catppuccin) and is_fun(Csc.catppuccin.setup) then
+elseif csc_check(Csc.catppuccin) then
 	Csc.catppuccin.setup()
 end
 

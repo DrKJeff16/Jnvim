@@ -2,9 +2,9 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local types = User.types.lazy
 local Check = User.check
 local kmap = User.maps.kmap
+local types = User.types.lazy
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -13,8 +13,8 @@ local nmap = kmap.n
 
 local fn = vim.fn
 local api = vim.api
-
 local rtp = vim.opt.rtp
+
 local fs_stat = vim.loop.fs_stat
 local stdpath = fn.stdpath
 local system = fn.system
@@ -26,7 +26,7 @@ local au = api.nvim_create_autocmd
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
 -- Install `Lazy` automatically.
-if not exists('lazy') or not fs_stat(lazypath) then
+if not fs_stat(lazypath) or not exists('lazy')  then
 	system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
 end
 
@@ -56,6 +56,15 @@ local M = {}
 
 M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
+	-- WARN: `checkhealth` issues.
+	-- TODO: Solve config issues down the line.
+	{
+		'anuvyklack/hydra.nvim',
+		lazy = false,
+		priority = 1000,
+		name = 'Hydra',
+		enabled = false,
+	},
 	{
 		'echasnovski/mini.nvim',
 		priority = 1000,
@@ -65,14 +74,16 @@ M.ESSENTIAL = {
 	},
 	{
 		'tiagovla/scope.nvim',
-		lszy = false,
+		lazy = false,
 		priority = 1000,
 		name = 'Scope',
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
 			vim.opt.hid = true
-			vim.opt.sessionoptions = { -- required
+
+			-- NOTE: Required for `scope`
+			vim.opt.sessionoptions = {
 				"buffers",
 				"tabpages",
 				"globals",
@@ -104,6 +115,7 @@ M.ESSENTIAL = {
 }
 
 M.NVIM = {
+	{ 'tpope/vim-sensible', enabled = false },
 	{
 		'nvimdev/dashboard-nvim',
 		event = 'VimEnter',
@@ -199,7 +211,6 @@ M.EDITING = {
 	},
 }
 M.LSP = {
-	-- LSP
 	{
 		'neovim/nvim-lspconfig',
 		name = 'lspconfig',
@@ -230,9 +241,9 @@ M.LSP = {
 		function()
 			local msg = 'No `lua-language-server` in `PATH`!'
 			if exists('notify') then
-				require('notify')(msg, 'warn')
+				require('notify')(msg, 'error')
 			else
-				print(msg)
+				error(msg)
 			end
 		end
 			),
@@ -245,9 +256,9 @@ M.LSP = {
 		function()
 			local msg = 'No `vscode-json-language-server` in `PATH`!'
 			if exists('notify') then
-				require('notify')(msg, 'warn')
+				require('notify')(msg, 'error')
 			else
-				print(msg)
+				error(msg)
 			end
 		end
 			),
@@ -266,7 +277,16 @@ M.LSP = {
 		event = 'VeryLazy',
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = executable('clangd'),
+		enabled = executable('clangd',
+		function()
+			local msg = 'No `clangd` in `PATH`!'
+			if exists('notify') then
+				require('notify')(msg, 'warn')
+			else
+				print(msg)
+			end
+		end
+		),
 	},
 	{
 		'tamago324/nlsp-settings.nvim',
@@ -285,6 +305,7 @@ M.LSP = {
 	},
 	{
 		'williamboman/mason.nvim',
+		lazy = true,
 		cmd = { 'Mason' },
 		name = 'Mason',
 	},
@@ -482,7 +503,17 @@ M.TELESCOPE = {
 		lazy = true,
 		name = 'Telescope-fzf',
 		-- TODO: Check whether `nproc` exists in `PATH`.
-		build = (_G.is_windows and 'mingw32-make -j"$(nproc)"' or 'make -j"$(nproc)"'),
+		build = function()
+			local nproc = (exists('nproc') and { 'make', '-j"$(nproc)"' } or { 'make' })
+
+			if _G.is_windows and executable('mingw32-make') then
+				nproc[1] = 'mingw32-' .. nproc[1]
+			elseif _G.is_windows and not executable('mingw32-make') then
+				return
+			end
+
+			system(nproc)
+		end,
 		enabled = executable({ 'fzf', 'nproc' }),
 	},
 	-- Project Manager
@@ -493,7 +524,7 @@ M.TELESCOPE = {
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
-			-- vim.opt.autochdir = false
+			vim.o.autochdir = true
 		end,
 		config = source('lazy_cfg.project'),
 	},
@@ -578,11 +609,14 @@ M.UI = {
 			'web-devicons',
 			'Lsp_FileOps',
 			'Mini',
+			'Hydra',
 		},
 		-- Disable `netrw`.
 		init = function()
 			vim.g.loaded_netrw = 1
 			vim.g.loaded_netrwPlugin = 1
+
+			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.nvim_tree'),
 	},
