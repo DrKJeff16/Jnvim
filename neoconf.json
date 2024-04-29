@@ -90,6 +90,7 @@
 		},
 
 		"lua_ls": {
+			"Lua.runtime.version": "LuaJIT",
 			"Lua.codeLens.enable": false,
 			"Lua.completion.callSnippet": "Replace",
 			"Lua.completion.enable": true,
@@ -122,6 +123,7 @@
 			"Lua.type.weakUnionCheck": true,
 			"Lua.window.progressBar": true,
 			"Lua.window.statusBar": true,
+			"Lua.workspace.checkThirdParty": false,
 			"Lua.workspace.useGitIgnore": true,
 			"Lua.diagnostics.disable": [
 				"unused-local",
