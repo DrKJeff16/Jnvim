@@ -11,9 +11,10 @@ local hl_t = User.types.user.highlight
 local exists = Check.exists.module
 local modules = Check.exists.modules
 local executable = Check.exists.executable
-local nmap = kmap.n
 local is_str = Check.value.is_str
 local is_nil = Check.value.is_nil
+
+local nmap = kmap.n
 
 if not exists('lspconfig') then
 	return
@@ -24,9 +25,9 @@ local bo = vim.bo
 local lsp = vim.lsp
 local lsp_buf = lsp.buf
 local diag = vim.diagnostic
-local insp = vim.inspect
 local fn = vim.fn
 
+local insp = vim.inspect
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
@@ -37,25 +38,22 @@ local sign_define = fn.sign_define
 ---@return nil|fun()
 local sub_fun = function(path)
 	if not is_str(path) or path == '' then
-		error('Cannot generate function from type `'..type(path)..'`')
+		error('Cannot generate function from type `' .. type(path) .. '`')
 		return nil
 	end
 
 	return function()
-		if exists(path) then
-			return require(path)
-		end
+		exists(path, true)
 	end
 end
 
 ---@type LspSubs
 local Sub = {
 	kinds = exists('lazy_cfg.lspconfig.kinds', true),
+	neoconf = sub_fun('lazy_cfg.lspconfig.neoconf'),
+	neodev = sub_fun('lazy_cfg.lspconfig.neodev'),
+	-- trouble = sub_fun('lazy_cfg.lspconfig.trouble'),
 }
-
-Sub.neoconf = sub_fun('lazy_cfg.lspconfig.neoconf')
-Sub.neodev = sub_fun('lazy_cfg.lspconfig.neodev')
--- Sub.trouble = sub_fun('lazy_cfg.lspconfig.trouble')
 
 -- Now call each.
 Sub.neoconf()
