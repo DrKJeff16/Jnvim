@@ -55,19 +55,17 @@ end
 local M = {}
 
 M.ESSENTIAL = {
-	{ 'vim-scripts/L9', lazy = false, priority = 1000 },
+	{ 'vim-scripts/L9', lazy = false },
 	-- WARN: `checkhealth` issues.
 	-- TODO: Solve config issues down the line.
 	{
 		'anuvyklack/hydra.nvim',
 		lazy = false,
-		priority = 1000,
 		name = 'Hydra',
 		enabled = false,
 	},
 	{
 		'echasnovski/mini.nvim',
-		priority = 1000,
 		name = 'Mini',
 		version = false,
 		config = source('lazy_cfg.mini'),
@@ -75,7 +73,6 @@ M.ESSENTIAL = {
 	{
 		'tiagovla/scope.nvim',
 		lazy = false,
-		priority = 1000,
 		name = 'Scope',
 		init = function()
 			vim.opt.ls = 2
@@ -119,15 +116,13 @@ M.NVIM = {
 	{
 		'nvimdev/dashboard-nvim',
 		event = 'VimEnter',
-		priority = 1000,
 		name = 'Dashboard',
 		dependencies = { 'web-devicons' },
 		config = source('lazy_cfg.dashboard'),
 	},
 	{
 		'startup-nvim/startup.nvim',
-		lazy = false,
-		priority = 1000,
+		event = 'VimEnter',
 		name = 'Startup',
 		dependencies = {
 			'Telescope',
@@ -274,7 +269,6 @@ M.LSP = {
 	},
 	{
 		'p00f/clangd_extensions.nvim',
-		event = 'VeryLazy',
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = executable('clangd',
@@ -487,7 +481,6 @@ M.TELESCOPE = {
 	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
-		priority = 1000,
 		name = 'Telescope',
 		dependencies = {
 			'Telescope-fzf',
@@ -533,7 +526,6 @@ M.UI = {
 	{
 		'rcarriga/nvim-notify',
 		lazy = false,
-		priority = 1000,
 		name = 'Notify',
 		version = false,
 		dependencies = { 'Plenary' },
@@ -628,7 +620,6 @@ M.UI = {
 	},
 	{
 		'akinsho/toggleterm.nvim',
-		priority = 1000,
 		name = 'ToggleTerm',
 		version = false,
 		config = source('lazy_cfg.toggleterm'),
@@ -636,7 +627,6 @@ M.UI = {
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
-		priority = 1000,
 		name = 'which_key',
 		version = false,
 		init = function()
