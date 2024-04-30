@@ -4,7 +4,7 @@
 local User = require('user')
 local Check = User.check
 local kmap = User.maps.kmap
-local types = User.types.lazy
+local lazy_t = User.types.lazy
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -43,8 +43,7 @@ local Lazy = require('lazy')
 --- ```
 --- If the module is not found, a warninr is raised
 --- and returns `true`.
----@param mod_str string
----@return fun()
+---@type fun(mod_str: string): fun()
 local function source(mod_str)
 	return function()
 		exists(mod_str, true)
@@ -526,6 +525,7 @@ M.UI = {
 	{
 		'rcarriga/nvim-notify',
 		lazy = false,
+		priority = 1000,
 		name = 'Notify',
 		version = false,
 		dependencies = { 'Plenary' },
@@ -627,6 +627,7 @@ M.UI = {
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
+		priprity = 1000,
 		name = 'which_key',
 		version = false,
 		init = function()
@@ -668,10 +669,25 @@ local P = {
 	colorschemes = exists('lazy_cfg.colorschemes', true),
 }
 
-nmap('<leader>Le', function()
+nmap('<leader>Let', function()
 	local cmd = 'tabnew ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
 	vim.cmd(cmd)
+end, { desc = 'Open `Lazy` File Tab' })
+nmap('<leader>Lee', function()
+	local cmd = 'ed ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+
+	vim.cmd(cmd)
 end, { desc = 'Open `Lazy` File' })
+nmap('<leader>Les', function()
+	local cmd = 'split ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+
+	vim.cmd(cmd)
+end, { desc = 'Open `Lazy` File Horizontal Window' })
+nmap('<leader>Lev', function()
+	local cmd = 'vsplit ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+
+	vim.cmd(cmd)
+end, { desc = 'Open `Lazy`File Vertical Window' })
 
 return P
