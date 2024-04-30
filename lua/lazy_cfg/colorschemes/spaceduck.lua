@@ -1,9 +1,9 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.colorschemes')
-
-local let = vim.g
+local User = require('user')
+local Check = User.check
+local csc_t = User.types.colorschemes
 
 ---@type CscSubMod
 local M = {
@@ -11,7 +11,7 @@ local M = {
 	mod_pfx = 'spaceduck',
 }
 
-if let.installed_spaceduck == 1 then
+if vim.g.installed_spaceduck == 1 then
 	function M.setup()
 		vim.cmd(M.mod_cmd)
 	end

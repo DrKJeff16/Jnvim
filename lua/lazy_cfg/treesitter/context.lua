@@ -3,7 +3,6 @@
 
 local User = require('user')
 local Check = User.check
-local types = User.types
 local hl_t = User.types.user.highlight
 local map_t = User.types.user.maps
 local kmap = User.maps.kmap
@@ -22,12 +21,12 @@ local Config = require('treesitter-context.config')
 ---@type TSContext.UserConfig
 local Options = {
 	mode = 'topline',
-	trim_scope = 'inner',
+	trim_scope = 'outer',
 	line_numbers = false,
 	min_window_height = 1,
 	zindex = 12,
 	enable = true,
-	max_lines = 3,
+	max_lines = 2,
 }
 
 Context.setup(Options)

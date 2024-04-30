@@ -11,6 +11,11 @@ if not exists('nvim-treesitter') then
 	return
 end
 
+local api = vim.api
+
+local fs_stat = vim.loop.fs_stat
+local buf_name = api.nvim_buf_get_name
+
 local Ts = require('nvim-treesitter')
 local Cfg = require('nvim-treesitter.configs')
 local Install = require('nvim-treesitter.install')
@@ -69,12 +74,12 @@ local TSConfig = {
 	highlight = {
 		enable = true,
 
-		---@param buf integer The bufnumber.
 		---@param lang? string The filetype.
+		---@param buf integer The bufnumber.
 		---@return boolean
 		disable = function(lang, buf)
 			local max_fs = 512 * 1024
-			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+			local ok, stats = pcall(fs_stat, buf_name(buf))
 
 			return ok and not is_nil(stats) and stats.size > max_fs
 		end,
@@ -82,9 +87,11 @@ local TSConfig = {
 	},
 
 	indent = { enable = false },
-	incremental_selection = { enable = false },
+	incremental_selection = { enable = true },
 	modules = {},
 }
+
+Cfg.setup(TSConfig)
 
 local modules = {
 	'context',
@@ -101,5 +108,3 @@ if exists('ts_context_commentstring') then
 		enable_autocmd = false,
 	})
 end
-
-Cfg.setup(TSConfig)

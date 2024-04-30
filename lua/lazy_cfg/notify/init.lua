@@ -2,9 +2,14 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
-local hl = User.highlight.hl_from_arr
+local Check = User.check
 local types = User.types.user.highlight
+
+local is_nil = Check.value.is_nil
+local is_str = Check.value.is_str
+local is_tbl = Check.value.is_tbl
+local exists = Check.exists.module
+local hl = User.highlight.hl_from_arr
 
 if not exists('notify') then
 	return
@@ -24,42 +29,38 @@ local Opts = {
 		WARN = ""
 	},
 	level = 2,
-	minimum_width = 20,
+	minimum_width = 25,
 	render = "compact",
 	stages = "slide",
 	time_formats = {
 		notification = "%T",
 		notification_history = "%FT%T"
 	},
-	timeout = 1000,
+	timeout = 1500,
 	top_down = false,
 }
 
-Notify.setup(Opts)
-
 vim.notify = Notify
+vim.notify.setup(Opts)
 
 ---@param msg string
 ---@param lvl? 'info'|'error'|'warn'
 ---@param opts? table
 function _G.anotify(msg, lvl, opts)
-	local notify = vim.notify
 	local async = require('plenary.async').run
 
-	lvl = lvl or 'warn'
-	if not vim.tbl_contains({ 'info', 'warn', 'ertor' }, lvl) then
+	if not is_str(lvl) or not vim.tbl_contains({ 'info', 'warn', 'ertor' }, lvl) then
 		lvl = 'warn'
 	end
 
-	opts = opts or nil
-	if opts == nil or type(opts) ~= 'table' or vim.tbl_isempty(opts) then
+	if not is_tbl(opts) or not is_str(opts.title) then
 		opts = {
-			title = 'Attention!'
+			title = 'Attention!',
 		}
 	end
 
 	async(function()
-		notify(msg, lvl, opts)
+		Notify(msg, lvl, opts)
 	end)
 end
 

@@ -2,10 +2,10 @@
 ---@diagnostic disable: unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
-local types = User.types.colorschemes
+local Check = User.check
+local csc_t = User.types.colorschemes
 
-local fn = vim.fn
+local exists = Check.exists.module
 
 ---@type CscSubMod
 local M = {
@@ -15,50 +15,47 @@ local M = {
 
 if exists('nightfox') then
 	function M.setup()
-		local Nf = require('nightfox')
+		local NF = require('nightfox')
 
-		Nf.setup({
+		local compile_path = vim.fn.stdpath("cache") .. "/nightfox"
+
+		NF.setup({
 			options = {
 				-- Compiled file's destination location
-				compile_path = fn.stdpath("cache") .. "/nightfox",
+				compile_path = compile_path,
 				compile_file_suffix = "_compiled", -- Compiled file suffix
-				transparent = false,     -- Disable setting background
-				terminal_colors = true,  -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
-				dim_inactive = true,    -- Non focused panes set to alternative background
-				module_default = true,   -- Default enable value for modules
+				transparent = false,   -- Disable setting background
+				terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+				dim_inactive = false,  -- Non focused panes set to alternative background
+				module_default = true, -- Default enable value for modules
 				colorblind = {
-					enable = false,        -- Enable colorblind support
-					simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
-					severity = {
-						protan = 0,          -- Severity [0,1] for protan (red)
-						deutan = 0,          -- Severity [0,1] for deutan (green)
-						tritan = 0,          -- Severity [0,1] for tritan (blue)
-					},
+					enable = false,    -- Enable colorblind support
 				},
-				styles = {               -- Style to be applied to different syntax groups
-					comments = "NONE",     -- Value is any valid attr-list value `:help attr-list`
-					conditionals = "NONE",
+				styles = { -- Style to be applied to different syntax groups
+					comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
+					conditionals = "bold",
 					constants = "bold",
-					functions = "NONE",
-					keywords = "bold",
+					functions = "bold",
+					keywords = "NONE",
 					numbers = "NONE",
 					operators = "NONE",
 					strings = "NONE",
 					types = "bold",
 					variables = "NONE",
 				},
-				inverse = {             -- Inverse highlight for different types
-					match_paren = false,
-					visual = false,
-					search = false,
+				inverse = { -- Inverse highlight for different types
+					match_paren = true,
+					visual = true,
+					search = true,
 				},
-				modules = {             -- List of various plugins and additional options
-					-- ...
-				},
+
+				-- modules = {             -- List of various plugins and additional options
+				-- 	-- ...
+				-- },
 			},
-			palettes = {},
-			specs = {},
-			groups = {},
+			-- palettes = {},
+			-- specs = {},
+			-- groups = {},
 		})
 
 		vim.cmd(M.mod_cmd)

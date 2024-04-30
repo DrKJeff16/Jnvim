@@ -2,16 +2,17 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
-local types = User.types.user.highlight
+local Check = User.check
+local hl_t = User.types.user.highlight
+
+local exists = Check.exists.module
+local is_str = Check.value.is_str
+local is_tbl = Check.value.is_tbl
 local hi = User.highlight.hl
 
 if not exists('ibl') then
 	return
 end
-
-local api = vim.api
-local let = vim.g
 
 local Ibl = require('ibl')
 local Hooks = require('ibl.hooks')
@@ -42,8 +43,12 @@ local names = {}
 local options = {}
 
 for k, v in next, hilite do
-	table.insert(names, k)
-	table.insert(options, v)
+	if is_str(k) and k ~= '' then
+		table.insert(names, k)
+	end
+	if is_tbl(v) and not vim.tbl_isempty(v) then
+		table.insert(options, v)
+	end
 end
 local bg_hl = {
 	'CursorColumn',
@@ -71,5 +76,5 @@ Ibl.setup({
 })
 
 if exists('rainbow-delimiters.setup') then
-	let.rainbow_delimiters = { highlight = names }
+	vim.g.rainbow_delimiters = { highlight = names }
 end

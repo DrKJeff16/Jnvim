@@ -14,6 +14,7 @@ local exists = Check.exists.module  -- Checks for missing modules
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
+
 local nop = User.maps.nop
 local hl = User.highlight.hl
 

@@ -1,22 +1,23 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local types = require('user').types.colorschemes
-
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local csc_t = User.types.colorschemes
 
-local Colorbuddy = require('colorbuddy')
+local exists = Check.exists.module
 
 ---@type CscSubMod
 local M = {
 	mod_cmd = 'colorscheme gloombuddy',
-	mood_pfx = 'lazy_cfg.colorschemes.gloombuddy',
+	mod_pfx = 'lazy_cfg.colorschemes.gloombuddy',
 }
 
 if exists('colorbuddy') then
 	function M.setup()
+		local Colorbuddy = require('colorbuddy')
 		Colorbuddy.colorscheme('gloombuddy')
+
 		vim.cmd(M.mod_cmd)
 	end
 end

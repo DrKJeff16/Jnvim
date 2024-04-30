@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+
+local exists = Check.exists.module
 
 if not exists('lualine') then
 	return
@@ -16,14 +18,6 @@ Lualine.setup({
         theme = 'auto',
         component_separators = { left = '|', right = '|'},
         section_separators = { left = '', right = ''},
-        disabled_filetypes = {
-            statusline = {},
-            winbar = {
-				'checkhealth',
-				'lazy',
-				'help',
-            },
-        },
         ignore_focus = {},
         always_divide_middle = true,
         globalstatus = false,
@@ -44,31 +38,8 @@ Lualine.setup({
 				end,
 			},
         },
-        lualine_b = {
-        	{
-        		'buffers',
-        		show_filename_only = true,
-        		hide_filename_extension = false,
-        		mode = 2,
-        		max_length = vim.o.columns * 1 / 3,
-				filetype_names = {
-					TelescopePrompt = 'Telescope',
-					dashboard = 'Dashboard',
-					packer = 'Packer',
-					fzf = 'FZF',
-					alpha = 'Alpha'
-				}, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
-
-				use_mode_colors = false,
-				symbols = {
-					modified = ' ●',      -- Text to show when the buffer is modified
-					alternate_file = '#', -- Text to show to identify the alternate file
-					directory =  '',     -- Text to show when the buffer is a directory
-				},
-
-        	},
-        },
-        lualine_c = {},
+        lualine_b = { 'filename' },
+        lualine_c = { 'diagnostics' },
         lualine_x = {
 			'fileformat',
 			'filetype',
@@ -78,15 +49,13 @@ Lualine.setup({
     },
     inactive_sections = {
     	lualine_a = {},
-        lualine_b = { 'buffers' },
+        lualine_b = { 'filename' },
         lualine_c = {},
         lualine_x = {},
         lualine_y = {'windows'},
         lualine_z = {}
     },
-    tabline = {},
     inactive_tabline = {},
-    winbar = {},
     inactive_winbar = {},
 
     extensions = {
@@ -94,7 +63,6 @@ Lualine.setup({
 		'fugitive',
 		'man',
 		'nvim-tree',
-		'symbols-outline',
 		'toggleterm',
     },
 })

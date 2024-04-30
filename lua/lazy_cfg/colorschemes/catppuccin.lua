@@ -4,8 +4,10 @@
 local pfx = ''
 
 local User = require('user')
-local exists = User.check.exists.module
-local types = User.types.colorschemes
+local Check = User.check
+local csc_t = User.types.colorschemes
+
+local exists = Check.exists.module
 
 ---@type CscSubMod
 local M = {
@@ -17,12 +19,13 @@ if exists('catppuccin') then
 	function M.setup()
 		local Cppc = require('catppuccin')
 
-		Cppc.setup({
+		---@type CatppuccinOptions
+		local opts = {
 			flavour = "mocha", -- latte, frappe, macchiato, mocha
     		-- flavour = "auto" -- will respect terminal's background
     		background = { -- :h background
         		light = "latte",
-        		dark = "macchiato",
+        		dark = "mocha",
     		},
     		transparent_background = false, -- disables setting the background color.
     		show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
@@ -32,7 +35,7 @@ if exists('catppuccin') then
         		shade = "dark",
         		percentage = 0.10, -- percentage of the shade to apply to the inactive window
     		},
-    		no_italic = false, -- Force no italic
+    		no_italic = true, -- Force no italic
     		no_bold = false, -- Force no bold
     		no_underline = false, -- Force no underline
     		styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
@@ -65,7 +68,9 @@ if exists('catppuccin') then
         		},
         		-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
     		},
-		})
+		}
+
+		Cppc.setup(opts)
 
 		vim.cmd(M.mod_cmd)
 	end
