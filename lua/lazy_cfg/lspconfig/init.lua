@@ -9,9 +9,9 @@ local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
 
 local exists = Check.exists.module
-local modules = Check.exists.modules
 local executable = Check.exists.executable
 local is_str = Check.value.is_str
+local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
 
 local nmap = kmap.n
@@ -23,9 +23,11 @@ end
 local api = vim.api
 local bo = vim.bo
 local lsp = vim.lsp
-local lsp_buf = lsp.buf
-local diag = vim.diagnostic
+local Diag = vim.diagnostic
 local fn = vim.fn
+
+local lsp_buf = lsp.buf
+local lsp_handlers = lsp.handlers
 
 local insp = vim.inspect
 local au = api.nvim_create_autocmd
@@ -74,21 +76,21 @@ local border = {
 
 -- LSP settings (for overriding per client)
 local handlers = {
-	["textDocument/hover"] = lsp.with(lsp.handlers.hover, { border = border }),
-	["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, { border = border }),
+	["textDocument/hover"] = lsp.with(lsp_handlers.hover, { border = border }),
+	["textDocument/signatureHelp"] = lsp.with(lsp_handlers.signature_help, { border = border }),
 }
 
 ---@param srv_tbl LspServers
 ---@return LspServers res
-local add_caps = function(srv_tbl)
+local populate = function(srv_tbl)
 	---@type LspServers
 	local res = {}
 
 	for k, v in next, srv_tbl do
-		if not is_nil(v) then
+		if is_tbl(v) then
 			res[k] = v
 
-			if not is_nil(handlers) then
+			if is_tbl(handlers) and not vim.tbl_isempty(handlers) then
 				res[k].handlers = handlers
 			end
 
@@ -149,17 +151,19 @@ srv.html = (executable('vscode-html-language-server') and {} or nil)
 srv.jsonls = (executable('vscode-json-language-server') and {} or nil)
 srv.yamlls = (executable('yaml-language-server') and {} or nil)
 srv.pylsp = (executable('pylsp') and {} or nil)
+srv.texlab = (executable('texlab') and {} or nil)
+srv.marksman = (executable('marksman') and {} or nil)
 
-srv = add_caps(srv)
+srv = populate(srv)
 
 for k, v in next, srv do
 	lspconfig[k].setup(v)
 end
 
-nmap('<Leader>le', diag.open_float, { desc = 'Diagnostics Float' })
-nmap('<Leader>l[', diag.goto_prev, { desc = 'Previous Diagnostic' })
-nmap('<Leader>l]', diag.goto_next, { desc = 'Previous Diagnostic' })
-nmap('<Leader>lq', diag.setloclist, { desc = 'Add Loclist' })
+nmap('<Leader>le', Diag.open_float, { desc = 'Diagnostics Float' })
+nmap('<Leader>l[', Diag.goto_prev, { desc = 'Previous Diagnostic' })
+nmap('<Leader>l]', Diag.goto_next, { desc = 'Previous Diagnostic' })
+nmap('<Leader>lq', Diag.setloclist, { desc = 'Add Loclist' })
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', {}),
@@ -210,7 +214,7 @@ au('LspAttach', {
 	end,
 })
 
-diag.config({
+Diag.config({
 	virtual_text = true,
 	float = true,
 	signs = true,
@@ -248,12 +252,17 @@ for event, opts_arr in next, aus do
 	end
 end
 
-local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+local signs = {
+	Error = '󰅚 ',
+	Warn = '󰀪 ',
+	Hint = '󰌶 ',
+	Info = ' ',
+}
 
 for type, icon in next, signs do
-	local hlite = "DiagnosticSign" .. type
+	local hlite = 'DiagnosticSign' .. type
 
-	vim.fn.sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
+	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
 end
 
 vim.o.updatetime = 300
