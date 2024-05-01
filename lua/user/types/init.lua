@@ -11,6 +11,7 @@
 ---@field notify? UserNotify
 
 ---@class UserTypes
+---@field autopairs table
 ---@field cmp table
 ---@field colorschemes table
 ---@field comment table
@@ -38,6 +39,7 @@
 
 ---@type UserTypes
 local M = {}
+M.autopairs = require('user.types.autopairs')
 M.cmp = require('user.types.cmp')
 M.comment = require('user.types.comment')
 M.colorschemes = require('user.types.colorschemes')

@@ -2,18 +2,21 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local types = User.types.autopairs
+local Check = User.check
 
-if not exists('cmp') then
+local mods_exist = Check.exists.modules
+
+if not mods_exist({ 'nvim-autopairs', 'cmp' }) then
 	return
 end
-
-local insp = vim.inspect
 
 local cmp = require('cmp')
 local cmp_ap = require('nvim-autopairs.completion.cmp')
 local handlers = require('nvim-autopairs.completion.handlers')
+
 local cmp_lsp = cmp.lsp
+local insp = vim.inspect
 
 local ft_handles = {
 	filetypes = {
@@ -28,14 +31,12 @@ local ft_handles = {
 			},
 		},
 		tex = false,
-		markdown = false,
 		text = false,
 		sh = false,
 	}
 }
 
----@class APCmp
----@field on fun()
+---@type APCmp
 local M = {
 	on = function()
 		cmp.event:on('confirm_done',

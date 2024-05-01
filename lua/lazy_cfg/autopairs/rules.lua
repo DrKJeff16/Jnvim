@@ -1,6 +1,16 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+local User = require('user')
+local Check = User.check
+local types = User.types.autopairs
+
+local exists = Check.exists.module
+
+if not exists('nvim-autopairs') then
+	return
+end
+
 local api = vim.api
 
 local Ap = require('nvim-autopairs')
@@ -137,6 +147,6 @@ for _, punct in next, { ",", ";" } do
 	)
 end
 
-rule2('(', ' ', ')')
-
 Ap.add_rules(Rules)
+
+rule2('(', ' ', ')')

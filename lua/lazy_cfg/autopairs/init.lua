@@ -3,6 +3,8 @@
 
 local User = require('user')
 local Check = User.check
+local types = User.types.autopairs
+
 local exists = Check.exists.module
 
 if not exists('nvim-autopairs') then
@@ -32,7 +34,7 @@ Ap.setup({
 	enable_moveright = true,
 	enable_afterquote = true,      -- add bracket pairs after quote
 	enable_check_bracket_line = true, --- check bracket in same line
-	enable_bracket_in_quote = false, --
+	enable_bracket_in_quote = false,
 	enable_abbr = false,           -- trigger abbreviation
 
 	break_undo = true,             -- switch for basic rule break undo sequence
@@ -54,33 +56,32 @@ Ap.setup({
 	map_char = {
 		all = '(',
 		tex = '{',
+		html = '<',
+		xml = '<',
 	},
 
-	fast_wrap = {
-		map = "<M-e>",
-		chars = { "{", "[", "(", '"', "'" },
-		pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
-		offset = 0, -- Offset from pattern match
-		end_key = "$",
-		keys = "qwertyuiopzxcvbnmasdfghjkl",
-		check_comma = true,
-		highlight = "Search",
-		highlight_grey = "Comment",
-	},
+	-- fast_wrap = {
+	-- 	map = "<M-e>",
+	-- 	chars = { "{", "[", "(", '"', "'" },
+	-- 	pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
+	-- 	offset = 0, -- Offset from pattern match
+	-- 	end_key = "$",
+	-- 	keys = "qwertyuiopzxcvbnmasdfghjkl",
+	-- 	check_comma = true,
+	-- 	highlight = "Search",
+	-- 	highlight_grey = "Comment",
+	-- },
 })
 
----@class APMods
----@field cmp? fun()
----@field rules? fun()
-local M = {}
-
-function M.cmp()
-	return require('lazy_cfg.autopairs.cmp')
-end
-
-function M.rules()
-	return require('lazy_cfg.autopairs.rules')
-end
+---@type APMods
+local M = {
+	cmp = function()
+		return exists('lazy_cfg.autopairs.cmp', true) or nil
+	end,
+	rules = function()
+		return exists('lazy_cfg.autopairs.rules', true) or nil
+	end,
+}
 
 M.rules()
 
