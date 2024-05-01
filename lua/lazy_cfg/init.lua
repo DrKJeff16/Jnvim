@@ -20,7 +20,6 @@ local stdpath = fn.stdpath
 local system = fn.system
 local au = api.nvim_create_autocmd
 
-
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
@@ -91,13 +90,10 @@ M.ESSENTIAL = {
 		'nvim-lua/plenary.nvim',
 		lazy = true,
 		name = 'Plenary',
-		version = false,
 	},
 	{
 		'nvim-lua/popup.nvim',
-		lazy = false,
 		name = 'Popup',
-		version = false,
 		dependencies = { 'Plenary' },
 	},
 
@@ -115,6 +111,7 @@ M.NVIM = {
 		'nvimdev/dashboard-nvim',
 		event = 'VimEnter',
 		name = 'Dashboard',
+		version = false,
 		dependencies = { 'web-devicons' },
 		config = source('lazy_cfg.dashboard'),
 	},
@@ -122,6 +119,7 @@ M.NVIM = {
 		'startup-nvim/startup.nvim',
 		event = 'VimEnter',
 		name = 'Startup',
+		version = false,
 		dependencies = {
 			'Telescope',
 			'Plenary',
@@ -148,6 +146,7 @@ M.TS = {
 		'nvim-treesitter/nvim-treesitter-context',
 		lazy = true,
 		name = 'ts-context',
+		version = false,
 	},
 	{
 		'JoosepAlviste/nvim-ts-context-commentstring',
@@ -185,6 +184,8 @@ M.EDITING = {
 		'windwp/nvim-autopairs',
 		event = 'InsertEnter',
 		name = 'AutoPairs',
+		main = 'nvim-autopairs',
+		version = false,
 		config = source('lazy_cfg.autopairs'),
 	},
 	{
@@ -196,13 +197,14 @@ M.EDITING = {
 	},
 	{
 		'sindrets/diffview.nvim',
-		lazy = true,
 		name = 'DiffView',
+		version = false,
 		config = source('lazy_cfg.diffview'),
 		enabled = false,
 		-- enabled = executable('git'),
 	},
 }
+-- LSP
 M.LSP = {
 	{
 		'neovim/nvim-lspconfig',
@@ -259,14 +261,15 @@ M.LSP = {
 	-- TODO: Make submodule.
 	{
 		'folke/trouble.nvim',
+		lazy = true,
 		name = 'Trouble',
 		version = false,
 		dependencies = { 'web-devicons' },
-		opts = {},
 		enabled = false,
 	},
 	{
 		'p00f/clangd_extensions.nvim',
+		lazy = true,
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = executable('clangd',
@@ -308,12 +311,13 @@ M.LSP = {
 		enabled = false,
 	},
 }
+-- Colorschemes
 M.COLORSCHEMES = {
-	-- Colorschemes
 	{
 		'pineapplegiant/spaceduck',
 		lazy = false,
 		priority = 1000,
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -325,6 +329,7 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		name = 'dracula',
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -335,6 +340,7 @@ M.COLORSCHEMES = {
 		'liuchengxu/space-vim-dark',
 		lazy = false,
 		priority = 1000,
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -345,6 +351,7 @@ M.COLORSCHEMES = {
 		'tomasr/molokai',
 		lazy = false,
 		priority = 1000,
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -356,6 +363,7 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		name = 'spacemacs',
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -367,6 +375,7 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		name = 'onedark',
+		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
 		init = function()
@@ -391,11 +400,13 @@ M.COLORSCHEMES = {
 		'vigoux/oak',
 		lazy = true,
 		priority = 1000,
+		version = false,
 	},
 	{
 		'bkegley/gloombuddy',
 		lazy = true,
 		priority = 1000,
+		version = false,
 		dependencies = { 'colorbuddy' },
 	},
 	{
@@ -403,6 +414,7 @@ M.COLORSCHEMES = {
 		lazy = true,
 		priority = 1000,
 		name = 'colorbuddy',
+		version = false,
 	},
 	{
 		'EdenEast/nightfox.nvim',
@@ -448,6 +460,7 @@ M.CMP = {
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
+		version = false,
 		dependencies = { 'friendly-snippets' },
 		-- TODO: Check whether `nproc` exists in `PATH`.
 		build = function()
@@ -462,7 +475,7 @@ M.CMP = {
 			system(nproc)
 		end,
 	},
-	{ 'rafamadriz/friendly-snippets', lazy = false },
+	{ 'rafamadriz/friendly-snippets', lazy = true, version = false },
 	{
 		'HiPhish/nvim-cmp-vlime',
 		lazy = true,
@@ -480,6 +493,7 @@ M.TELESCOPE = {
 	{
 		'nvim-telescope/telescope.nvim',
 		name = 'Telescope',
+		version = false,
 		dependencies = {
 			'Telescope-fzf',
 			'treesitter',
@@ -493,6 +507,7 @@ M.TELESCOPE = {
 		'nvim-telescope/telescope-fzf-native.nvim',
 		lazy = true,
 		name = 'Telescope-fzf',
+		version = false,
 		-- TODO: Check whether `nproc` exists in `PATH`.
 		build = function()
 			local nproc = (exists('nproc') and { 'make', '-j"$(nproc)"' } or { 'make' })
@@ -512,6 +527,7 @@ M.TELESCOPE = {
 		'ahmedkhalf/project.nvim',
 		lazy = false,
 		name = 'Project',
+		version = false,
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
@@ -551,6 +567,7 @@ M.UI = {
 		'akinsho/bufferline.nvim',
 		priority = 1000,
 		name = 'BufferLine',
+		version = false,
 		dependencies = {
 			'web-devicons',
 			'Scope',
@@ -566,6 +583,7 @@ M.UI = {
 		'romgrk/barbar.nvim',
 		priority = 1000,
 		name = 'BarBar',
+		version = false,
 		dependencies = {
 			'GitSigns',
 			'web-devicons',
@@ -581,7 +599,7 @@ M.UI = {
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		name = 'ibl',
-		version = '*',
+		version = false,
 		dependencies = { 'rainbow-delimiters' },
 		config = source('lazy_cfg.blank_line'),
 	},
