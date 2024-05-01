@@ -52,6 +52,7 @@ end
 ---@type table<string, LazyPlugs>
 local M = {}
 
+-- Essential Plugins
 M.ESSENTIAL = {
 	{ 'vim-scripts/L9', lazy = false },
 	-- WARN: `checkhealth` issues.
@@ -106,6 +107,7 @@ M.ESSENTIAL = {
 	},
 }
 
+-- Nvim Configurations
 M.NVIM = {
 	{ 'tpope/vim-sensible', enabled = false },
 	{
@@ -130,8 +132,8 @@ M.NVIM = {
 	},
 }
 
+-- Treesitter
 M.TS = {
-	-- Treesitter.
 	{
 		'nvim-treesitter/nvim-treesitter',
 		build = ':TSUpdate',
@@ -155,6 +157,7 @@ M.TS = {
 		name = 'ts-commentstring',
 	},
 }
+-- Editing Utils
 M.EDITING = {
 	{
 		'numToStr/Comment.nvim',
@@ -425,8 +428,8 @@ M.COLORSCHEMES = {
 		version = false,
 	},
 }
-M.CMP = {
-	-- Completion Engine
+-- Completion and `cmp` related
+M.COMPLETION = {
 	{
 		'hrsh7th/nvim-cmp',
 		event = { 'InsertEnter', 'CmdlineEnter' },
@@ -489,8 +492,8 @@ M.CMP = {
 		name = 'VLime',
 	},
 }
+-- Telescope
 M.TELESCOPE = {
-	-- Telescope
 	{
 		'nvim-telescope/telescope.nvim',
 		name = 'Telescope',
@@ -537,6 +540,7 @@ M.TELESCOPE = {
 		config = source('lazy_cfg.project'),
 	},
 }
+-- UI Customizations
 M.UI = {
 	{
 		'rcarriga/nvim-notify',
@@ -662,7 +666,7 @@ M.UI = {
 		enabled = false,
 	},
 }
-
+-- File Syntax Plugins
 M.SYNTAX = {
 	{
 		'rhysd/vim-syntax-codeowners',
