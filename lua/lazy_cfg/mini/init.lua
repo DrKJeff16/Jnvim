@@ -3,10 +3,13 @@
 
 local User = require('user')
 local Check = User.check
+
 local exists = Check.exists.module
+local is_tbl = Check.value.is_tbl
+local is_fun = Check.value.is_fun
 
 ---@param mini_mod string
----@param opts? table
+---@param opts table
 local function src(mini_mod, opts)
 	mini_mod = 'mini.' .. mini_mod
 	if not exists(mini_mod) then
@@ -15,29 +18,26 @@ local function src(mini_mod, opts)
 
 	local M = require(mini_mod)
 
-	if not Check.value.is_tbl(opts) then
+	if not is_tbl(opts) then
 		opts = {}
 	end
 
-	if Check.value.is_fun(M.setup) then
+	if is_fun(M.setup) then
 		M.setup(opts)
 	end
 end
 
----@class MiniModule
----@field [1] string
----@field [2]? table
+---@alias MiniModules table<string, table>
 
----@type MiniModule[]
+---@type MiniModules
 local modules = {
-	{ 'basics', {} },
-	{ 'cursorword', {} },
-	{ 'doc', {} },
-	{ 'hipatterns', {} },
-	{ 'trailspace', {} },
-	{ 'move', {} },
+	-- ['basics'] = {},
+	['cursorword'] = {},
+	['doc'] = {},
+	['hipatterns'] = {},
+	['trailspace'] = {},
 }
 
-for _, t in next, modules do
-	src(t[1], t[2] or nil)
+for mod, opts in next, modules do
+	src(mod, opts)
 end
