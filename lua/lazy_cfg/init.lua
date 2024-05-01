@@ -109,7 +109,19 @@ M.ESSENTIAL = {
 
 -- Nvim Configurations
 M.NVIM = {
-	{ 'tpope/vim-sensible', enabled = false },
+	{ 'tpope/vim-sensible', lazy = false, enabled = false },
+	{
+		'folke/which-key.nvim',
+		event = 'VeryLazy',
+		priprity = 1000,
+		name = 'which_key',
+		version = false,
+		init = function()
+			vim.opt.timeout = true
+			vim.opt.timeoutlen = 300
+		end,
+		config = source('lazy_cfg.which_key'),
+	},
 	{
 		'nvimdev/dashboard-nvim',
 		event = 'VimEnter',
@@ -136,9 +148,9 @@ M.NVIM = {
 M.TS = {
 	{
 		'nvim-treesitter/nvim-treesitter',
-		build = ':TSUpdate',
 		name = 'treesitter',
 		version = false,
+		build = ':TSUpdate',
 		dependencies = {
 			'ts-context',
 			'ts-commentstring',
@@ -170,7 +182,7 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
+	{ 'tpope/vim-endwise', event = 'InsertEnter', name = 'EndWise' },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
 	{ 'tpope/vim-speeddating', enabled = false },
 	-- TODO COMMENTS
@@ -645,18 +657,6 @@ M.UI = {
 		name = 'ToggleTerm',
 		version = false,
 		config = source('lazy_cfg.toggleterm'),
-	},
-	{
-		'folke/which-key.nvim',
-		event = 'VeryLazy',
-		priprity = 1000,
-		name = 'which_key',
-		version = false,
-		init = function()
-			vim.opt.timeout = true
-			vim.opt.timeoutlen = 300
-		end,
-		config = source('lazy_cfg.which_key'),
 	},
 	{
 		'LudoPinelli/comment-box.nvim',
