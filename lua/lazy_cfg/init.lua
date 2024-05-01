@@ -9,6 +9,7 @@ local lazy_t = User.types.lazy
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
+local is_str = Check.value.is_str
 local nmap = kmap.n
 
 local fn = vim.fn
@@ -686,25 +687,29 @@ local P = {
 	colorschemes = exists('lazy_cfg.colorschemes', true),
 }
 
-nmap('<leader>Let', function()
-	local cmd = 'tabnew ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+---@type fun(cmd: string): fun()
+local key_variant = function(cmd)
+	local CMDS = {
+		'ed',
+		'split',
+		'vsplit',
+		'tabnew',
+	}
 
-	vim.cmd(cmd)
-end, { desc = 'Open `Lazy` File Tab' })
-nmap('<leader>Lee', function()
-	local cmd = 'ed ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+	if not is_str(cmd) or not vim.tbl_contains(CMDS, cmd) then
+		cmd = 'ed'
+	end
 
-	vim.cmd(cmd)
-end, { desc = 'Open `Lazy` File' })
-nmap('<leader>Les', function()
-	local cmd = 'split ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+	return function()
+		local full_cmd = cmd .. ' ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
-	vim.cmd(cmd)
-end, { desc = 'Open `Lazy` File Horizontal Window' })
-nmap('<leader>Lev', function()
-	local cmd = 'vsplit ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+		vim.cmd(cmd)
+	end
+end
 
-	vim.cmd(cmd)
-end, { desc = 'Open `Lazy`File Vertical Window' })
+nmap('<leader>Let', key_variant('tabnew'), { desc = 'Open `Lazy` File Tab' })
+nmap('<leader>Lee', key_variant('ed'), { desc = 'Open `Lazy` File' })
+nmap('<leader>Les', key_variant('split'), { desc = 'Open `Lazy` File Horizontal Window' })
+nmap('<leader>Lev', key_variant('vsplit'), { desc = 'Open `Lazy`File Vertical Window' })
 
 return P
