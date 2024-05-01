@@ -6,7 +6,6 @@ local Check = User.check
 local Maps = User.maps
 local Types = User.types  -- Import docstrings and annotations.
 local maps_t = Types.user.maps
-local hl_t = Types.user.highlight
 local map = Maps.map
 local kmap = Maps.kmap
 
@@ -16,9 +15,6 @@ local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 
 local nop = User.maps.nop
-local hl = User.highlight.hl
-
-local fn = vim.fn
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', {
@@ -143,20 +139,24 @@ local csc_check = function(csc)
 	return is_tbl(csc) and is_fun(csc.setup)
 end
 
--- Reorder to your liking.
-local Csc = Pkg.colorschemes
-if csc_check(Csc.nightfox) then
-	Csc.nightfox.setup()
-elseif csc_check(Csc.tokyonight) then
-	Csc.tokyonight.setup()
-elseif csc_check(Csc.spaceduck) then
-	Csc.spaceduck.setup()
-elseif csc_check(Csc.catppuccin) then
-	Csc.catppuccin.setup()
+if is_tbl(Pkg.colorschemes) then
+	-- A table containing various possible colorschemes.
+	local Csc = Pkg.colorschemes
+
+	-- Reorder to your liking.
+	if csc_check(Csc.nightfox) then
+		Csc.nightfox.setup()
+	elseif csc_check(Csc.tokyonight) then
+		Csc.tokyonight.setup()
+	elseif csc_check(Csc.catppuccin) then
+		Csc.catppuccin.setup()
+	elseif csc_check(Csc.spaceduck) then
+		Csc.spaceduck.setup()
+	end
 end
 
--- Call the user file associations.
 if is_fun(User.assoc) then
+	--- Call the user file associations.
 	User.assoc()
 end
 

@@ -18,7 +18,6 @@ local rtp = vim.opt.rtp
 local fs_stat = vim.loop.fs_stat
 local stdpath = fn.stdpath
 local system = fn.system
-local has = fn.has
 local au = api.nvim_create_autocmd
 
 
