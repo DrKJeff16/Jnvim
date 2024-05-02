@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local kmap = User.maps.kmap
+local types = User.types.nvim_tree
 
 local nmap = kmap.n
 local hi = User.highlight.hl
@@ -16,8 +17,6 @@ local is_str = Check.value.is_str
 if not exists('nvim-tree') then
 	return
 end
-
-local types = User.types.nvim_tree
 
 local api = vim.api
 local fn = vim.fn
@@ -142,6 +141,7 @@ local tab_win_close = function(nwin)
 		close()
 	elseif #tab_bufs == 1 then
 		local lbuf_info = fn.getbufinfo(tab_bufs[1])[1]
+
 		if lbuf_info.name:match('.*NvimTree_%d*$') then
 			sched(function()
 				if #list_wins() == 1 then
@@ -329,7 +329,7 @@ end
 Tree.setup({
 	on_attach = on_attach,
 
-	sort = { sorter = 'case_sensitive' },
+	-- sort = { sorter = 'case_sensitive' },
 	view = { width = 20 },
 	renderer = { group_empty = true },
 	filters = { dotfiles = false },
@@ -340,30 +340,31 @@ Tree.setup({
 })
 
 if exists('telescope') then
+	local Fs = Api.fs
 	local tree_actions = {
 		{
 			name = "Create node",
-			handler = Api.fs.create,
+			handler = Fs.create,
 		},
 		{
 			name = "Remove node",
-			handler = Api.fs.remove,
+			handler = Fs.remove,
 		},
 		{
 			name = "Trash node",
-			handler = Api.fs.trash,
+			handler = Fs.trash,
 		},
 		{
 			name = "Rename node",
-			handler = Api.fs.rename,
+			handler = Fs.rename,
 		},
 		{
 			name = "Fully rename node",
-			handler = Api.fs.rename_sub,
+			handler = Fs.rename_sub,
 		},
 		{
 			name = "Copy",
-			handler = Api.fs.copy.node,
+			handler = Fs.copy.node,
 		},
 
 		-- ... other custom actions you may want to display in the menu
@@ -373,6 +374,7 @@ if exists('telescope') then
 		local Finders = require('telescope.finders')
 		local Pickers = require('telescope.pickers')
 		local Sorters = require('telescope.sorters')
+
 		local entry_maker = function(menu_item)
 			return {
 				value = menu_item,
@@ -419,13 +421,13 @@ if exists('telescope') then
 
 		-- Opening the menu
 		Pickers.new({
-			prompt_title = "Tree Menu" }, default_options
-			):find()
+			prompt_title = "Tree Menu" }, default_options)
+			:find()
 	end
 end
 
 Api.events.subscribe(Api.events.Event.FileCreated, function(file)
-  vim.cmd("edit " .. file.fname)
+	vim.cmd("edit " .. file.fname)
 end)
 
 ---@type HlDict
@@ -462,20 +464,22 @@ local au_cmds = {
 	},
 	['BufEnter'] = {
 		nested = true,
-  		callback = function()
-    		-- Only 1 window with nvim-tree left: we probably closed a file buffer
-    		if api.nvim_list_wins() == 1 and Api.tree.is_tree_buf() then
-      			-- Required to let the close event complete. An error is thrown without this.
-      			vim.defer_fn(function()
-        			-- close nvim-tree: will go to the last hidden buffer used before closing
-        			Api.tree.toggle({find_file = true, focus = true})
-        			-- re-open nivm-tree
-        			Api.tree.toggle({find_file = true, focus = true})
-        			-- nvim-tree is still the active window. Go to the previous window.
-        			vim.cmd("wincmd p")
-      			end, 0)
-    		end
-  		end,
+		callback = function()
+			local ATree = Api.tree
+
+			-- Only 1 window with nvim-tree left: we probably closed a file buffer
+			if api.nvim_list_wins() == 1 and ATree.is_tree_buf() then
+				-- Required to let the close event complete. An error is thrown without this.
+				vim.defer_fn(function()
+					-- close nvim-tree: will go to the last hidden buffer used before closing
+					ATree.toggle({ find_file = true, focus = true })
+					-- re-open nivm-tree
+					ATree.toggle({ find_file = true, focus = true })
+					-- nvim-tree is still the active window. Go to the previous window.
+					vim.cmd("wincmd p")
+				end, 0)
+			end
+		end,
 	}
 }
 
