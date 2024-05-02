@@ -3,13 +3,14 @@
 
 local User = require('user')
 local Check = User.check
-local types = User.types.user.highlight
+local hl_t = User.types.user.highlight
+local Highlight = User.highlight
 
 local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local hl = User.highlight.hl_from_arr
+local hl = Highlight.hl_from_arr
 
 if not exists('notify') then
 	return
@@ -29,7 +30,7 @@ local Opts = {
 		WARN = ""
 	},
 	level = 2,
-	minimum_width = 25,
+	minimum_width = 20,
 	render = "compact",
 	stages = "slide",
 	time_formats = {
@@ -40,8 +41,8 @@ local Opts = {
 	top_down = false,
 }
 
+Notify.setup(Opts)
 vim.notify = Notify
-vim.notify.setup(Opts)
 
 ---@param msg string
 ---@param lvl? 'info'|'error'|'warn'
