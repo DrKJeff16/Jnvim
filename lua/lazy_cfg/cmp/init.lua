@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local Check = User.check
 local types = User.types.cmp
+
 local exists = User.check.exists.module
 
 local Types = require('cmp.types')
@@ -28,13 +30,14 @@ end
 local Luasnip = require('lazy_cfg.cmp.luasnip')
 local cmp = require('cmp')
 local sks = require('lazy_cfg.cmp.kinds')
-
 local Util = require('lazy_cfg.cmp.util')
-local n_select = Util.n_select
-local n_shift_select = Util.n_shift_select
+
 local tab_map = Util.tab_map
 local s_tab_map = Util.s_tab_map
 local cr_map = Util.cr_map
+
+local n_select = Util.n_select
+local n_shift_select = Util.n_shift_select
 local bs_map = Util.bs_map
 
 cmp.setup({
@@ -63,11 +66,11 @@ cmp.setup({
 			return true
 		end
 
-		local Context = require('cmp.config.context')
-
 		if get_mode().mode == 'c' then
 			return true
 		end
+
+		local Context = require('cmp.config.context')
 
 		return not Context.in_treesitter_capture('comment') and not Context.in_syntax_group('Comment')
 	end,
@@ -118,18 +121,18 @@ cmp.setup({
 
 cmp.setup.filetype('lisp', {
 	sources = cmp.config.sources({
-		{ name = 'buffer' },
 		{ name = 'vlime' },
+		{ name = 'buffer' },
 	})
 })
 
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
+		{ name = 'git' },
 		{ name = 'conventionalcommits' },
 		{ name = 'luasnip' },
 	}, {
 		{ name = 'buffer' },
-		{ name = 'git' },
 	}),
 })
 
@@ -159,6 +162,10 @@ cmp.setup.cmdline(':', {
 -- sks.vscode()
 
 -- For debugging.
-if vim.notify then
-	vim.notify('cmp loaded.')
+if exists('notify') then
+	require('notify')('cmp loaded.', 'info', {
+		title = 'nvim-cmp',
+	})
+else
+	print('cmp loaded.')
 end

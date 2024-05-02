@@ -2,17 +2,19 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local Check = User.check
 local utypes = User.types.cmp
+
+local mods_exist = Check.exists.modules
+local hl = User.highlight.hl
+
+local api = vim.api
 
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
 
-local api = vim.api
-
 local cmp = require('cmp')
 local LK = require('lspkind')
-
-local hl = User.highlight.hl
 
 ---@type FmtKindIcons
 local kind_icons = {
@@ -176,8 +178,9 @@ local M = {
 	vscode = vscode,
 	extra_hls = extra_hls,
 }
-function M:hilite()
-	for n, o in next, self.extra_hls do
+
+function M.hilite()
+	for n, o in next, M.extra_hls do
 		hl(n, o)
 	end
 end

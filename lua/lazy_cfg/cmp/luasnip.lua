@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+
+local exists = Check.exists.module
 
 if not exists('luasnip') then
 	return
