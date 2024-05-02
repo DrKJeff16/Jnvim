@@ -3,6 +3,7 @@
 
 require('user.types.user.opts')
 local Check = require('user.check')
+
 local exists = Check.exists.vim_exists
 
 local opt = vim.opt
@@ -57,6 +58,11 @@ local opt_tbl = {
 	pi = true,  -- `preserveindent`
 	rnu = false,
 	ru = true,  -- `ruler`
+	sessionoptions = {
+		"buffers",
+		"tabpages",
+		"globals",
+	},
 	sh = (is_windows and 'cmd.exe' or 'bash'),  -- `shell`
 	so = 1,  -- `scrolloff`
 	showcmd = true,
