@@ -12,14 +12,12 @@ local vim_exists = Check.exists.vim_exists
 local is_str = Check.value.is_str
 local nmap = kmap.n
 
-local fn = vim.fn
-local api = vim.api
 local rtp = vim.opt.rtp
 
 local fs_stat = vim.loop.fs_stat
-local stdpath = fn.stdpath
-local system = fn.system
-local au = api.nvim_create_autocmd
+local stdpath = vim.fn.stdpath
+local system = vim.fn.system
+local au = vim.api.nvim_create_autocmd
 
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
