@@ -66,6 +66,14 @@ cmp.setup({
 			return true
 		end
 
+		local disable_ft = {
+			'TelescopePrompt',
+		}
+
+		if tbl_contains(disable_ft, ft) then
+			return false
+		end
+
 		if get_mode().mode == 'c' then
 			return true
 		end
