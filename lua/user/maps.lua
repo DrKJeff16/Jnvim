@@ -9,6 +9,7 @@ local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_num = Check.value.is_num
+local is_bool = Check.value.is_bool
 
 local kmap = vim.keymap.set
 local map = vim.api.nvim_set_keymap
@@ -52,7 +53,7 @@ local variant = function(mode, func, with_buf)
 			end
 
 			for _, v in next, DEFAULTS do
-				if is_nil(opts[v]) then
+				if not is_bool(opts[v]) then
 					opts[v] = true
 				end
 			end
@@ -91,8 +92,11 @@ local M = {
 }
 
 function M.nop(T, opts, mode)
-	opts = opts or {}
-	if is_nil(mode) or not vim.tbl_contains(M.modes, mode) then
+	if not is_tbl(opts) then
+		opts = {}
+	end
+
+	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
 	end
 

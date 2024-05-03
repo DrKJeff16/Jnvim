@@ -13,8 +13,9 @@ local exists = Check.exists.module  -- Checks for missing modules
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
-
 local nop = User.maps.nop
+
+local empty = vim.tbl_isempty
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', {
@@ -120,21 +121,24 @@ for k, func in next, map do
 	local tbl = map_tbl[k]
 
 	-- If `tbl` exists, apply the mapping.
-	if is_tbl(tbl) and not vim.tbl_isempty(tbl) then
-		for lhs, v in next, tbl do
-			func(lhs, v[1], v[2] or {})
-		end
+	if not is_tbl(tbl) or empty(tbl) then
+		goto continue
 	end
+
+	for lhs, v in next, tbl do
+		func(lhs, v[1], v[2] or {})
+	end
+
+    ::continue::
 end
 
---- List of manually-called, plugins.
+--- List of manually-callable plugins.
 local Pkg = require('lazy_cfg')
 
 -- SECTION: Colorschemes
 -- Sourced from `lua/lazy_cfg/colorschemes/*`.
 
----@param csc CscSubMod
----@return boolean
+---@type fun(csc: CscSubMod): boolean
 local csc_check = function(csc)
 	return is_tbl(csc) and is_fun(csc.setup)
 end
@@ -160,7 +164,7 @@ if is_fun(User.assoc) then
 	User.assoc()
 end
 
-vim.cmd[[
+vim.cmd([[
 filetype plugin indent on
 syntax on
-]]
+]])
