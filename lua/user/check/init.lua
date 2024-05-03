@@ -16,21 +16,23 @@ local M = {
 
 			if not multiple then
 				return var == nil
-			elseif  type(var) ~= 'table' then
-				return false
-			else
-				local res = false
-
-				for _, v in next, var do
-					res = v == nil
-
-					if not res then
-						break
-					end
-				end
-
-				return res
 			end
+			if  type(var) ~= 'table' then
+				return false
+			end
+
+			---@type boolean
+			local res
+
+			for _, v in next, var do
+				res = v == nil
+
+				if res then
+					break
+				end
+			end
+
+			return res
 		end,
 	},
 }
@@ -48,27 +50,31 @@ local type_funcs = {
 ---@return ValueFunc
 local function type_fun(t)
 	return function(var, multiple)
-		if M.value.is_nil(multiple) then
+		local is_nil = M.value.is_nil
+
+		if is_nil(multiple) then
 			multiple = false
 		end
 
 		if not multiple then
-			return not M.value.is_nil(var) and type(var) == t
-		elseif M.value.is_nil(var) or type(var) ~= 'table' then
-			return false
-		else
-			local res = false
-
-			for _, v in next, var do
-				res = not M.value.is_nil(t) and type(v) == t
-
-				if not res then
-					break
-				end
-			end
-
-			return res
+			return not is_nil(var) and type(var) == t
 		end
+		if is_nil(var) or type(var) ~= 'table' then
+			return false
+		end
+
+		---@type boolean
+		local res
+
+		for _, v in next, var do
+			res = not is_nil(t) and type(v) == t
+
+			if not res then
+				break
+			end
+		end
+
+		return res
 	end
 end
 
@@ -84,7 +90,9 @@ end
 
 M.exists = {
 	module = function(mod, return_mod)
-		return_mod = not M.value.is_nil(return_mod) and false or return_mod
+		local is_nil = M.value.is_nil
+
+		return_mod = not is_nil(return_mod) and false or return_mod
 
 		---@type boolean
 		local res
@@ -157,7 +165,7 @@ function M.exists.executable(exe, fallback)
 end
 
 function M.exists.modules(mod, need_all)
-	need_all = M.value.is_nil(need_all)
+	need_all = M.value.is_bool(need_all) and need_all or false
 
 	---@type boolean|table<string, boolean>
 	local res = false
