@@ -691,21 +691,14 @@ local P = {
 
 ---@type fun(cmd: string): fun()
 local key_variant = function(cmd)
-	local CMDS = {
-		'ed',
-		'split',
-		'vsplit',
-		'tabnew',
-	}
-
-	if not is_str(cmd) or not vim.tbl_contains(CMDS, cmd) then
+	if not is_str(cmd) then
 		cmd = 'ed'
 	end
 
 	return function()
 		local full_cmd = cmd .. ' ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
-		vim.cmd(cmd)
+		vim.cmd(full_cmd)
 	end
 end
 
