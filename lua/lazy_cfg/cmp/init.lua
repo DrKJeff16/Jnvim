@@ -55,6 +55,7 @@ cmp.setup({
 			'gitcommit',
 			'html',
 			'java',
+			'jsonc',
 			'lisp',
 			'lua',
 			'markdown',
@@ -90,6 +91,10 @@ cmp.setup({
 		end,
 	},
 
+	completion = {
+		completeopt = 'menu,menuone,noselect,noinsert,preview',
+	},
+
 	view = sks.view,
 	formatting = sks.formatting,
 	window = sks.window,
@@ -97,7 +102,7 @@ cmp.setup({
 	matching = {
 		disallow_fuzzy_matching = false,
 		disallow_fullfuzzy_matching = true,
-		disallow_prefix_unmatching = false,
+		disallow_prefix_unmatching = true,
 		disallow_partial_matching = false,
 		disallow_partial_fuzzy_matching = true,
 		disallow_symbol_nonprefix_matching = true,
@@ -136,30 +141,33 @@ cmp.setup.filetype('lisp', {
 
 cmp.setup.filetype('gitcommit', {
 	sources = cmp.config.sources({
-		{ name = 'git' },
-		{ name = 'conventionalcommits' },
-		{ name = 'luasnip' },
+		{ name = 'git', priority = 2 },
+		{ name = 'conventionalcommits', priority = 1 },
+		{ name = 'luasnip', priority = 3 },
 	}, {
-		{ name = 'buffer' },
+		{ name = 'buffer', priority = 4 },
 	}),
 })
+
+require('cmp_git').setup()
 
 cmp.setup.cmdline({ '/', '?' }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
-		{ name = 'nvim_lsp_document_symbol' },
+		{ name = 'nvim_lsp_document_symbol', priority = 1 },
 	}, {
-		{ name = 'buffer' },
+		{ name = 'buffer', priority = 2 },
 	}),
 })
 
 cmp.setup.cmdline(':', {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
-		{ name = 'path' },
+		{ name = 'async_path', priority = 2 },
 	}, {
 		{
 			name = 'cmdline',
+			priority = 1,
 			option = {
 				treat_trailing_slash = false,
 			},
