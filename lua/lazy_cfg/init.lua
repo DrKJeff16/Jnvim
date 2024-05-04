@@ -471,6 +471,7 @@ M.COMPLETION = {
 		end,
 		config = source('lazy_cfg.cmp'),
 	},
+	{ 'hrsh7th/cmp-nvim-lsp', lazy = true, main = 'cmp_nvim_lsp' },
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
