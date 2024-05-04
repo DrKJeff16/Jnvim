@@ -19,17 +19,15 @@ if not exists('nvim-tree') then
 end
 
 local api = vim.api
-local fn = vim.fn
-local let = vim.g
-local set = vim.o
 local opt = vim.opt
+local fn = vim.fn
 local bo = vim.bo
 
 local sched = vim.schedule
 local sched_wp = vim.schedule_wrap
 local in_tbl = vim.tbl_contains
 local empty = vim.tbl_isempty
-local filter_tbl = vim.tbl_filter
+local filter = vim.tbl_filter
 local tbl_map = vim.tbl_map
 
 local au = api.nvim_create_autocmd
@@ -39,6 +37,8 @@ local get_bufn = api.nvim_win_get_buf
 local win_list = api.nvim_tabpage_list_wins
 local close_win = api.nvim_win_close
 local list_wins = api.nvim_list_wins
+
+local floor = math.floor
 
 ---@type OptSetterFun
 local function key_opts(desc, bufn)
@@ -132,7 +132,7 @@ local tab_win_close = function(nwin)
 	local nbuf = get_bufn(nwin)
 	local buf_info = fn.getbufinfo(nbuf)[1]
 
-	local tab_wins = filter_tbl(function(w)
+	local tab_wins = filter(function(w)
 		return w - nwin
 	end, win_list(ntab))
 	local tab_bufs = tbl_map(get_bufn, tab_wins)
@@ -156,12 +156,6 @@ end
 
 ---@param data BufData
 local tree_open = function(data)
-	local cmd = vim.cmd
-
-	local cd = cmd.cd
-	local enew = cmd.enew
-	local bw = cmd.bw
-
 	local nbuf = data.buf
 	local name = data.file
 
@@ -195,7 +189,7 @@ local tree_open = function(data)
 	}
 
 	if dir then
-		cd(name)
+		vim.cmd('cd ' .. name)
 		open()
 	else
 		toggle(toggle_opts)
@@ -203,11 +197,12 @@ local tree_open = function(data)
 end
 
 local edit_or_open = function()
+	---@type AnyFunc)
+	local edit = Tnode.open.edit
+
 	---@type TreeNode
 	local node = get_node()
 	local nodes = node.nodes or nil
-
-	local edit = Tnode.open.edit
 
 	edit()
 
@@ -221,7 +216,9 @@ local vsplit_preview = function()
 	local node = get_node()
 	local nodes = node.nodes or nil
 
+	---@type AnyFunc
 	local edit = Tnode.open.edit
+	---@type AnyFunc
 	local vert = Tnode.open.vertical
 
 	if not is_nil(nodes) then
@@ -257,22 +254,25 @@ local git_add = function()
 	}
 
 	if in_tbl(conds.add, gs) then
-		vim.cmd('silent !git add ' .. abs)
+		fn.system('git add ' .. abs)
 	elseif in_tbl(conds.restore, gs) then
-		vim.cmd('silent !git restore --staged ' .. abs)
+		fn.system('git restore --staged ' .. abs)
 	end
 
 	reload()
 end
 
 local swap_then_open_tab = function()
+	---@type AnyFunc
 	local tab = Tnode.open.tab
 
 	---@type TreeNode
 	local node = get_node()
 
-	vim.cmd('wincmd l')
-	tab(node)
+	if not is_nil(node) then
+		vim.cmd('wincmd l')
+		tab(node)
+	end
 end
 
 ---@param bufn integer
@@ -326,11 +326,39 @@ local on_attach = function(bufn)
 	map_lft(keys)
 end
 
+local HEIGHT_RATIO = 0.8
+local WIDTH_RATIO = 0.5
+
 Tree.setup({
 	on_attach = on_attach,
 
-	-- sort = { sorter = 'case_sensitive' },
-	view = { width = 20 },
+	view = {
+		float = {
+			enable = true,
+			open_win_config = function()
+				local screen_w = opt.columns:get()
+				local screen_h = opt.lines:get() - opt.cmdheight:get()
+				local window_w = screen_w * WIDTH_RATIO
+				local window_h = screen_h * HEIGHT_RATIO
+				local window_w_int = math.floor(window_w)
+				local window_h_int = math.floor(window_h)
+				local center_x = (screen_w - window_w) / 2
+				local center_y = ((opt.lines:get() - window_h) / 2)
+				- opt.cmdheight:get()
+				return {
+					border = 'rounded',
+					relative = 'editor',
+					row = center_y,
+					col = center_x,
+					width = window_w_int,
+					height = window_h_int,
+				}
+			end,
+		},
+		width = function()
+      		return floor(opt.columns:get() * WIDTH_RATIO)
+    	end,
+	},
 	renderer = { group_empty = true },
 	filters = { dotfiles = false },
 	live_filter = {
@@ -427,7 +455,7 @@ if exists('telescope') then
 end
 
 Api.events.subscribe(Api.events.Event.FileCreated, function(file)
-	vim.cmd("edit " .. file.fname)
+	vim.cmd('ed ' .. file.fname)
 end)
 
 ---@type HlDict
@@ -467,14 +495,16 @@ local au_cmds = {
 		callback = function()
 			local ATree = Api.tree
 
+			local togg = ATree.toggle
+
 			-- Only 1 window with nvim-tree left: we probably closed a file buffer
 			if api.nvim_list_wins() == 1 and ATree.is_tree_buf() then
 				-- Required to let the close event complete. An error is thrown without this.
 				vim.defer_fn(function()
 					-- close nvim-tree: will go to the last hidden buffer used before closing
-					ATree.toggle({ find_file = true, focus = true })
+					togg({ find_file = true, focus = true })
 					-- re-open nivm-tree
-					ATree.toggle({ find_file = true, focus = true })
+					togg({ find_file = true, focus = true })
 					-- nvim-tree is still the active window. Go to the previous window.
 					vim.cmd("wincmd p")
 				end, 0)
@@ -493,7 +523,7 @@ for k, v in next, au_cmds do
 end
 
 for k, v in next, hl_groups do
-	if is_str(k) and is_tbl(v) then
+	if is_str(k) and is_tbl(v) and not empty(v) then
 		hi(k, v)
 	end
 end

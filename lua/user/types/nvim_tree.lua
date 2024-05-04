@@ -2,14 +2,9 @@ require('user.types.user.maps')
 require('user.types.user.highlight')
 require('user.types.user.autocmd')
 
----@alias AnyFunc fun(...): any
+---@alias AnyFunc fun(...)
 ---@alias TreeApi table<string, string|AnyFunc|table>
 ---@alias OptSetterFun fun(desc: string, bufn: integer?): KeyMapOpts
-
----@class TreeCustomKeys
----@field lhs string
----@field rhs string|fun(...): any
----@field opts? KeyMapOpts
 
 ---@class BufData
 ---@field file string
