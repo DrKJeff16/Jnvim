@@ -1,20 +1,16 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.user.maps')
+
 ---@class RegKey
----@field [1] string
+---@field [1] string|fun()
 ---@field [2]? string
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field silent? boolean
 
----@alias ModeEnum
----| 'n'
----| 'v'
----| 'i'
----| 't'
----| 'o'
----| 'x'
+---@alias ModeEnum MapModes
 
 ---@class RegPfx
 ---@field name? string

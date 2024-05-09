@@ -9,6 +9,7 @@ local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
 
 local WK = require('which-key')
 local Presets = require('which-key.plugins.presets')
@@ -26,7 +27,7 @@ local reg = function(maps, opts)
 	end
 
 	for _, o in next, DEFAULT_OPTS do
-		if is_nil(opts[o]) and o ~= 'nowait' then
+		if not is_bool(opts[o]) and o ~= 'nowait' then
 			opts[o] = true
 		end
 	end
@@ -40,7 +41,7 @@ local reg = function(maps, opts)
 
 	for s, v in next, maps do
 		---@type RegKey|RegPfx
-		local tbl = v
+		local tbl = vim.deepcopy(v)
 
 		if is_nil(tbl.name) then
 			for _, o in next, DEFAULT_OPTS do
@@ -303,6 +304,9 @@ local regs = {
 
 	-- Context
 	['<leader>C'] = { name = '+Context' },
+
+	-- Barbar
+	['<leader>B'] = { name = '+Barbar' },
 }
 
 reg(regs)
