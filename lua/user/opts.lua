@@ -5,12 +5,10 @@ require('user.types.user.opts')
 local Check = require('user.check')
 
 local exists = Check.exists.vim_exists
-
-local opt = vim.opt
-local fn = vim.fn
-
-local has = fn.has
 local executable = Check.exists.executable
+local is_nil = Check.value.is_nil
+
+local has = vim.fn.has
 
 ---@type 0|1
 vim.g.is_windows = has('win32')
@@ -44,6 +42,7 @@ local opt_tbl = {
 	ignorecase = false,
 	incsearch = true,
 	ls = 2,  -- `laststatus`
+	makeprg = 'make',
 	mps = {
 		'(:)',
 		'[:]',
@@ -99,9 +98,13 @@ if is_windows then
 end
 
 ---@param opts UserOpt
-local optset = function(opts)
+local function optset(opts)
 	for k, v in next, opts do
-		vim.opt[k] = v
+		if not is_nil(vim.opt[k]) then
+			vim.opt[k] = v
+		elseif not is_nil(vim.o[k]) then
+			vim.o[k] = v
+		end
 	end
 end
 
