@@ -13,6 +13,7 @@
 ---@class UserTypes
 ---@field autopairs table
 ---@field cmp table
+---@field colorizer table
 ---@field colorschemes table
 ---@field comment table
 ---@field gitsigns table
@@ -40,9 +41,10 @@
 ---@type UserTypes
 local M = {}
 M.autopairs = require('user.types.autopairs')
+M.colorizer = require('user.types.colorizer')
+M.colorschemes = require('user.types.colorschemes')
 M.cmp = require('user.types.cmp')
 M.comment = require('user.types.comment')
-M.colorschemes = require('user.types.colorschemes')
 M.gitsigns = require('user.types.gitsigns')
 M.lazy = require('user.types.lazy')
 M.lspconfig = require('user.types.lspconfig')

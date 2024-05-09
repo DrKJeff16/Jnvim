@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local types = User.types.colorizer
 
 local exists = Check.exists.module
 
@@ -12,44 +13,47 @@ end
 
 local Colorizer = require('colorizer')
 
----@class ColorizerOpts
----@field RGB? boolean
----@field RRGGBB? boolean
----@field RRGGBBAA? boolean
----@field names? boolean
----@field rgb_fn? boolean
----@field hsl_fn? boolean
----@field css? boolean
----@field css_fn? boolean
----@field mode? 'foreground'|'background'
-
 ---@type ColorizerOpts
 local DEFAULT = {
-	RGB      = true,		-- #RGB hex codes
+	RGB      = false,		-- #RGB hex codes
 	RRGGBB   = true,		-- #RRGGBB hex codes
 	names    = false,			-- "Name" codes like Blue
 	RRGGBBAA = true,		-- #RRGGBBAA hex codes
-	rgb_fn   = true,		-- CSS rgb() and rgba() functions
+	rgb_fn   = false,		-- CSS rgb() and rgba() functions
 	hsl_fn   = false,		-- CSS hsl() and hsla() functions
 	css      = false,		-- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
 	css_fn   = false,		-- Enable all CSS *functions*: rgb_fn, hsl_fn
 	-- Available modes: foreground, background
-	mode     = 'background'; -- Set the display mode.
+	mode     = 'background', -- Set the display mode.
 }
+function DEFAULT.new()
+	local self = setmetatable({}, { __index = DEFAULT })
 
-local html = DEFAULT
-html.mode = 'foreground'
-html.css = true
-html.css_fn = true
-html.hsl_fn = true
-html.name = true
+	for k, _ in next, DEFAULT do
+		if k ~= '__index' then
+			self[k] = DEFAULT[k]
+		end
+	end
 
-local css = html
-css.mode = 'background'
+	return self
+end
+
+
+local Html = DEFAULT.new()
+Html.css = true
+Html.css_fn = true
+Html.hsl_fn = true
+Html.rgb_fn = true
+Html.name = true
+
+local Lua = DEFAULT.new()
+Lua.names = true
+Lua.rgb = true
 
 Colorizer.setup({
-	['*'] = DEFAULT,
-	['css'] = css,
-	['html'] = html,
-	['markdown'] = css,
+	['*'] = DEFAULT.new(),
+	['css'] = Html,
+	['html'] = Html,
+	['markdown'] = Html,
+	['lua'] = Lua,
 })
