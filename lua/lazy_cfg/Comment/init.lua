@@ -4,10 +4,10 @@
 local User = require('user')
 local Check = User.check
 local maps = User.maps
-
-local exists = Check.exists.module
 local map = maps.map
 local kmap = maps.kmap
+
+local exists = Check.exists.module
 
 if not exists('Comment') then
 	return
