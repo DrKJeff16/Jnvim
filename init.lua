@@ -124,6 +124,9 @@ local map_tbl = {
 	},
 }
 
+--- List of manually-callable plugins.
+local Pkg = require('lazy_cfg')
+
 -- Set the keymaps previously stated.
 for mode, t in next, map_tbl do
 	---@type KeyMapFunction
@@ -138,18 +141,15 @@ for mode, t in next, map_tbl do
 	end
 end
 
---- List of manually-callable plugins.
-local Pkg = require('lazy_cfg')
-
 -- SECTION: Colorschemes
 -- Sourced from `lua/lazy_cfg/colorschemes/*`.
 
 ---@type fun(csc: CscSubMod): boolean
-local csc_check = function(csc)
+local function csc_check(csc)
 	return is_tbl(csc) and is_fun(csc.setup)
 end
 
-if is_tbl(Pkg.colorschemes) then
+if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
