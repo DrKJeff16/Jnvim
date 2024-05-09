@@ -81,6 +81,7 @@ local map_tbl = {
 		['<leader>fves'] = { '<CMD>split $MYVIMRC<CR>' },
 		['<leader>fvev'] = { '<CMD>vsplit $MYVIMRC<CR>' },
 
+		['<leader>wn'] = { '<C-w>w', { desc = 'Next Window' } },
 		['<leader>wss'] = { '<CMD>split<CR>' },
 		['<leader>wsv'] = { '<CMD>vsplit<CR>' },
 		['<leader>wsS'] = { ':split ', { silent = false, desc = 'Horizontal Split (Interactively)' } },

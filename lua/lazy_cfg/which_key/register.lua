@@ -237,6 +237,7 @@ local regs = {
 
 	-- Window Handling
 	['<leader>w'] = { name = '+Window' },
+	['<leader>wn'] = { '<C-w>w', 'Next Window' },
 	-- Window Splitting
 	['<leader>ws'] = { name = '+Split' },
 	['<leader>wss'] = {
