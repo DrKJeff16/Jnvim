@@ -30,7 +30,9 @@ local bpairs = {
 local rule2 = function(a1, ins, a2, lang)
 	Ap.add_rules({
 		Rule(ins, ins, lang)
-			:with_pair(function(opts) return a1 .. a2 == opts.line:sub(opts.col - #a1, opts.col + #a2 - 1) end)
+			:with_pair(function(opts)
+				return a1 .. a2 == opts.line:sub(opts.col - #a1, opts.col + #a2 - 1)
+			end)
 			:with_move(Conds.none())
 			:with_cr(Conds.none())
 			:with_del(function(opts)
@@ -61,65 +63,9 @@ local Rules = {
 			return vim.tbl_contains({
 				bpairs[1][1] .. '  ' .. bpairs[1][2],
 				bpairs[2][1] .. '  ' .. bpairs[2][2],
-				bpairs[3][1] .. '  ' .. bpairs[3][2]
+				bpairs[3][1] .. '  ' .. bpairs[3][2],
 			}, context)
 		end),
-
-	Rule('=', '')
-		:with_pair(Conds.not_inside_quote())
-		:with_pair(function(opts)
-			local last_char = opts.line:sub(opts.col - 1, opts.col - 1)
-			if last_char:match('[%w%=%s]') then
-				return true
-			end
-			return false
-		end)
-		:replace_endpair(function(opts)
-			local prev_2char = opts.line:sub(opts.col - 2, opts.col - 1)
-			local next_char = opts.line:sub(opts.col, opts.col)
-			next_char = next_char == ' ' and '' or ' '
-			if prev_2char:match('%w$') then
-				return '<bs> =' .. next_char
-			end
-			if prev_2char:match('%=$') then
-				return next_char
-			end
-			if prev_2char:match('=') then
-				return '<bs><bs>=' .. next_char
-			end
-			return ''
-		end)
-		:set_end_pair_length(0)
-		:with_move(Conds.none())
-		:with_del(Conds.none()),
-
-	Rule('=', '')
-		:with_pair(Conds.not_inside_quote())
-		:with_pair(function(opts)
-			local last_char = opts.line:sub(opts.col - 1, opts.col - 1)
-			if last_char:match('[%w%=%s]') then
-				return true
-			end
-			return false
-		end)
-		:replace_endpair(function(opts)
-			local prev_2char = opts.line:sub(opts.col - 2, opts.col - 1)
-			local next_char = opts.line:sub(opts.col, opts.col)
-			next_char = next_char == ' ' and '' or ' '
-			if prev_2char:match('%w$') then
-				return '<bs> =' .. next_char
-			end
-			if prev_2char:match('%=$') then
-				return next_char
-			end
-			if prev_2char:match('=') then
-				return '<bs><bs>=' .. next_char
-			end
-			return ''
-		end)
-		:set_end_pair_length(0)
-		:with_move(Conds.none())
-		:with_del(Conds.none()),
 }
 
 
@@ -127,26 +73,28 @@ for _, bracket in next, bpairs do
 	table.insert(Rules,
 		-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
 		Rule(bracket[1] .. ' ', ' ' .. bracket[2])
-			:with_pair(Conds.none())
-			:with_move(function(opts) return opts.char == bracket[2] end)
-			:with_del(Conds.none())
-			:use_key(bracket[2])
-		-- Removes the trailing whitespace that can occur without this
-		-- :replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
+		:with_pair(Conds.none())
+		:with_move(function(opts) return opts.char == bracket[2] end)
+		:with_del(Conds.none())
+		:use_key(bracket[2])
+	-- Removes the trailing whitespace that can occur without this
+	-- :replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
 	)
 end
 
 for _, punct in next, { ",", ";" } do
 	table.insert(Rules,
 		Rule('', punct)
-			:with_move(function(opts) return opts.char == punct end)
-			:with_pair(function() return false end)
-			:with_del(function() return false end)
-			:with_cr(function() return false end)
-			:use_key(punct)
+		:with_move(function(opts) return opts.char == punct end)
+		:with_pair(function() return false end)
+		:with_del(function() return false end)
+		:with_cr(function() return false end)
+		:use_key(punct)
 	)
 end
 
 Ap.add_rules(Rules)
 
 rule2('(', ' ', ')')
+
+Ap.add_rules(require('nvim-autopairs.rules.endwise-lua'))
