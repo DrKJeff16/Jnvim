@@ -2,9 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+local exists = Check.exists.module
 
-if not exists('bufferline') then
+if not exists('bufferline') or exists('barbar') then
 	return
 end
 
@@ -59,7 +60,7 @@ local opts = {
         left_trunc_marker = '',
         right_trunc_marker = '',
 
-		max_name_length = 20,
+		max_name_length = 25,
 		max_prefix_length = 15,
 		truncate_names = true,
 		tab_size = 20,
