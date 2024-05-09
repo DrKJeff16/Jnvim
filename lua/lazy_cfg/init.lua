@@ -30,6 +30,23 @@ end
 -- Add `Lazy` to `stdpath`
 rtp:prepend(lazypath)
 
+---@return string|nil
+local luasnip_build = function()
+	if not executable('make') or not executable('mingw32-make') then
+		return nil
+	end
+
+	local cmd = (executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp' )
+
+	if _G.is_windows and executable('mingw32-make') then
+		cmd = 'mingw32-' .. cmd
+	elseif _G.is_windows and not executable('mingw32-make') then
+		return nil
+	end
+
+	return cmd
+end
+
 local Lazy = require('lazy')
 
 --- A `config` function to call your plugins.
@@ -111,7 +128,7 @@ M.NVIM = {
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
-		priprity = 1000,
+		priority = 1000,
 		name = 'which_key',
 		version = false,
 		init = function()
@@ -180,7 +197,7 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise', event = 'InsertEnter', name = 'EndWise' },
+	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
 	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
 	{ 'tpope/vim-speeddating', enabled = false },
 	-- TODO COMMENTS
@@ -261,16 +278,6 @@ M.LSP = {
 		'folke/neoconf.nvim',
 		name = 'NeoConf',
 		version = false,
-		enabled = executable('vscode-json-language-server',
-		function()
-			local msg = 'No `vscode-json-language-server` in `PATH`!'
-			if exists('notify') then
-				require('notify')(msg, 'error')
-			else
-				error(msg)
-			end
-		end
-			),
 	},
 	-- TODO: Make submodule.
 	{
@@ -477,18 +484,7 @@ M.COMPLETION = {
 		lazy = true,
 		version = false,
 		dependencies = { 'friendly-snippets' },
-		-- TODO: Check whether `nproc` exists in `PATH`.
-		build = function()
-			local nproc = (exists('nproc') and { 'make', '-j"$(nproc)"', 'install_jsregexp' } or { 'make', 'install_jsregexp' })
-
-			if _G.is_windows and executable('mingw32-make') then
-				nproc[1] = 'mingw32-' .. nproc[1]
-			elseif _G.is_windows and not executable('mingw32-make') then
-				return
-			end
-
-			system(nproc)
-		end,
+		build = luasnip_build() or '',
 	},
 	{ 'rafamadriz/friendly-snippets', lazy = true, version = false },
 	{
