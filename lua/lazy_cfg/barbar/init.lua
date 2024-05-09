@@ -2,10 +2,11 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
 local map_t = User.types.user.maps
 local map = User.maps.map
 
+local exists = Check.exists.module
 local nmap = map.n
 
 if not exists('barbar') then
