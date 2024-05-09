@@ -72,7 +72,8 @@
 				"typing",
 				"sys",
 				"os",
-				"argparse"
+				"argparse",
+				"re"
 			],
 			"pylsp.plugins.jedi_completion.include_params": true,
 			"pylsp.plugins.jedi_definition.follow_imports": true,
@@ -91,13 +92,16 @@
 
 		"lua_ls": {
 			"Lua.runtime.version": "LuaJIT",
-			"Lua.codeLens.enable": false,
+			"Lua.codeLens.enable": true,
 			"Lua.completion.callSnippet": "Replace",
 			"Lua.completion.enable": true,
 			"Lua.completion.postfix": "@",
-			"Lua.completion.showParams": false,
+			"Lua.completion.showParams": true,
 			"Lua.completion.showWord": "Enable",
 			"Lua.diagnostics.enable": true,
+			"Lua.diagnostics.globals": [
+				"vim"
+			],
 			"Lua.format.enable": true,
 			"Lua.hint.arrayIndex": "Auto",
 			"Lua.hint.enable": true,
@@ -125,6 +129,7 @@
 			"Lua.window.statusBar": true,
 			"Lua.workspace.checkThirdParty": false,
 			"Lua.workspace.useGitIgnore": true,
+			"Lua.workspace.ignoreSubmodules": false,
 			"Lua.diagnostics.disable": [
 				"unused-local",
 				"unused-function",
