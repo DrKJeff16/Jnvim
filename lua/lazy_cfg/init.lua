@@ -668,6 +668,12 @@ M.SYNTAX = {
 		lazy = false,
 		name = 'codeowners-syntax',
 	},
+
+	{
+		'vim-scripts/DoxygenToolkit.vim',
+		lazy = false,
+		name = 'DoxygenToolkit',
+	},
 }
 
 ---@type LazyPlugs
