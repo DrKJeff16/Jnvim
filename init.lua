@@ -3,25 +3,21 @@
 
 local User = require('user')
 local Check = User.check
-local Maps = User.maps
-local Types = User.types  -- Import docstrings and annotations.
+local Types = User.types -- Import docstrings and annotations.
 local maps_t = Types.user.maps
-local map = Maps.map
-local kmap = Maps.kmap
+local Kmap = User.maps.kmap
 
-local exists = Check.exists.module  -- Checks for missing modules
+local nop = User.maps.nop
+local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
+local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
-local nop = User.maps.nop
 
 local empty = vim.tbl_isempty
 
 -- Set `<Space>` as Leader Key.
-nop('<Space>', {
-	nowait = false,
-	desc = 'Leader Key.'
-})
+nop('<Space>', { nowait = false, desc = 'Leader Key' })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -33,41 +29,53 @@ vim.g.loaded_netrwPlugin = 1
 -- Vim `:set ...` global options setter.
 local opts = User.opts
 
+-- Use clipboard
+vim.o.clipboard = 'unnamedplus'
+
 -- Avoid executing Normal mode keys when attempting `<leader>` sequences.
 local NOP = {
-	'<leader>"',
 	'<leader>\'',
+	'<leader>"',
+	'<leader>!',
+	'<leader>b',
 	'<leader>c',
 	'<leader>d',
 	'<leader>i',
 	'<leader>p',
+	'<leader>o',
+	'<leader>s',
+	'<leader>S',
 	'<leader>v',
 	'<leader>z',
 	'<leader>x',
 }
-nop(NOP, { nowait = false })
+for _, mode in next, User.maps.modes do
+	if mode ~= 'i' then
+		nop(NOP, { nowait = false }, mode)
+	end
+end
 
---- Table of mappings for each mode `(normal|insert|visual|terminal)`.
+--- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
---- `map_tbl.[n|i|v|t]['<YOUR_KEY>'].opts` is an **API** option table.
+--- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
+---@class Maps
+---@field n table<string, KeyMapRhsOptsArr>
+---@field i? table<string, KeyMapRhsOptsArr>
+---@field v table<string, KeyMapRhsOptsArr>
+---@field t table<string, KeyMapRhsOptsArr>
+---@field o? table<string, KeyMapRhsOptsArr>
+---@field x? table<string, KeyMapRhsOptsArr>
+
+---@type Maps
 local map_tbl = {
 	n = {
 		['<leader>fs'] = { '<CMD>w<CR>' },
-		['<leader>fS'] = { ':w ', {
-			silent = false,
-			desc = 'Save File (Prompt)',
-		} },
+		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
 		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
 		['<leader>fvl'] = { '<CMD>luafile %<CR>' },
 		['<leader>fvv'] = { '<CMD>so %<CR>' },
-		['<leader>fvV'] = { ':so ', {
-			silent = false,
-			desc = 'Source VimScript File (Prompt)',
-		} },
-		['<leader>fvL'] = { ':luafile ', {
-			silent = false,
-			desc = 'Source Lua File (Prompt)',
-		} },
+		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
+		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
 		['<leader>fvet'] = { '<CMD>tabnew $MYVIMRC<CR>' },
 		['<leader>fvee'] = { '<CMD>ed $MYVIMRC<CR>' },
 		['<leader>fves'] = { '<CMD>split $MYVIMRC<CR>' },
@@ -75,19 +83,19 @@ local map_tbl = {
 
 		['<leader>wss'] = { '<CMD>split<CR>' },
 		['<leader>wsv'] = { '<CMD>vsplit<CR>' },
-		['<leader>wsS'] = { ':split ', { silent = false } },
-		['<leader>wsV'] = { ':vsplit ', { silent = false } },
+		['<leader>wsS'] = { ':split ', { silent = false, desc = 'Horizontal Split (Interactively)' } },
+		['<leader>wsV'] = { ':vsplit ', { silent = false, desc = 'Vertical Split (Interactively)' } },
 
 		['<leader>qq'] = { '<CMD>qa<CR>' },
 		['<leader>qQ'] = { '<CMD>qa!<CR>' },
 
-		['<leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
-		['<leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
+		['<leader>tn'] = { '<CMD>tabN<CR>' },
+		['<leader>tp'] = { '<CMD>tabp<CR>' },
 		['<leader>td'] = { '<CMD>tabc<CR>' },
 		['<leader>tD'] = { '<CMD>tabc!<CR>' },
 		['<leader>tf'] = { '<CMD>tabfirst<CR>' },
 		['<leader>tl'] = { '<CMD>tablast<CR>' },
-		['<leader>ta'] = { ':tabnew ', { silent = false } },
+		['<leader>ta'] = { ':tabnew ', { silent = false, desc = 'New Tab (Interactively)' } },
 		['<leader>tA'] = { '<CMD>tabnew<CR>' },
 
 		['<leader>bn'] = { '<CMD>bNext<CR>' },
@@ -98,7 +106,7 @@ local map_tbl = {
 		['<leader>bl'] = { '<CMD>blast<CR>' },
 
 		['<leader>Ll'] = { '<CMD>Lazy<CR>' },
-		['<leader>LL'] = { ':Lazy ', { silent = false } },
+		['<leader>LL'] = { ':Lazy ', { silent = false, desc = 'Select `Lazy` Operation (Interactively)' } },
 		['<leader>Ls'] = { '<CMD>Lazy sync<CR>' },
 		['<leader>Lx'] = { '<CMD>Lazy clean<CR>' },
 		['<leader>Lc'] = { '<CMD>Lazy check<CR>' },
@@ -117,19 +125,17 @@ local map_tbl = {
 }
 
 -- Set the keymaps previously stated.
-for k, func in next, map do
-	local tbl = map_tbl[k]
+for mode, t in next, map_tbl do
+	---@type KeyMapFunction
+	local func = Kmap[mode]
 
-	-- If `tbl` exists, apply the mapping.
-	if not is_tbl(tbl) or empty(tbl) then
-		goto continue
+	for lhs, v in next, t do
+		if not is_tbl(v[2]) then
+			v[2] = {}
+		end
+
+		func(lhs, v[1], v[2])
 	end
-
-	for lhs, v in next, tbl do
-		func(lhs, v[1], v[2] or {})
-	end
-
-    ::continue::
 end
 
 --- List of manually-callable plugins.
