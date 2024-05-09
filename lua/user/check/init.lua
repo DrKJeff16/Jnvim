@@ -46,13 +46,12 @@ local type_funcs = {
 	['is_tbl'] = 'table',
 }
 
----@param t Types
----@return ValueFunc
+---@type fun(t: Types): ValueFunc
 local function type_fun(t)
 	return function(var, multiple)
 		local is_nil = M.value.is_nil
 
-		if is_nil(multiple) then
+		if is_nil(multiple) or type(multiple) ~= 'boolean' then
 			multiple = false
 		end
 
@@ -83,7 +82,12 @@ for k, v in next, type_funcs do
 end
 
 function M.dry_run(f, ...)
-	local ok, res = pcall(f, ...)
+	---@type boolean
+	local ok
+	---@type unknown
+	local res
+
+	ok, res = pcall(f, ...)
 
 	return (ok and res or nil)
 end
@@ -103,11 +107,21 @@ M.exists = {
 		return (return_mod and m or res)
 	end,
 	field = function(field, t)
-		if not M.value.is_tbl(t) then
+		local is_nil = M.value.is_nil
+		local is_num = M.value.is_num
+		local is_str = M.value.is_str
+		local is_tbl = M.value.is_tbl
+
+		if not is_tbl(t) then
 			error('Cannot look up a field in the following type: ' .. type(t))
 		end
 
-		return M.value.is_nil(t[field])
+		if not is_str(field) and not is_num(field) then
+			error('Field type `' .. type(t) .. '` not parseable.')
+			return false
+		end
+
+		return is_nil(t[field])
 	end,
 }
 
@@ -137,27 +151,33 @@ function M.exists.vim_exists(expr)
 end
 
 function M.exists.executable(exe, fallback)
+	local is_nil = M.value.is_nil
+	local is_tbl = M.value.is_tbl
+	local is_str = M.value.is_str
+	local is_fun = M.value.is_fun
+	local vexecutable = vim.fn.executable
+
 	if not vim.tbl_contains({ 'string', 'table' }, type(exe)) then
 		error('Argument type is not string nor table!!')
 		return false
 	end
 
-	fallback = (M.value.is_nil(fallback) and nil or fallback)
+	fallback = (is_nil(fallback) and nil or fallback)
 
 	local res = false
 
-	if M.value.is_tbl(exe) then
+	if is_tbl(exe) then
 		for _, v in next, exe do
 			res = M.exists.executable(v)
 			if not res then
 				break
 			end
 		end
-	elseif M.value.is_str(exe) then
-		res = vim.fn.executable(exe)
+	elseif is_str(exe) then
+		res = vexecutable(exe) == 1
 	end
 
-	if not res and M.value.is_fun(fallback) then
+	if not res and is_fun(fallback) then
 		fallback()
 	end
 
@@ -165,18 +185,23 @@ function M.exists.executable(exe, fallback)
 end
 
 function M.exists.modules(mod, need_all)
-	need_all = M.value.is_bool(need_all) and need_all or false
+	local is_bool = M.value.is_bool
+	local is_tbl = M.value.is_tbl
+	local is_str = M.value.is_str
+	local exists = M.exists.module
+
+	need_all = is_bool(need_all) and need_all or false
 
 	---@type boolean|table<string, boolean>
 	local res = false
 
-	if M.value.is_str(mod) then
-		res = M.exists.module(mod)
-	elseif M.value.is_tbl(mod) and not vim.tbl_isempty(mod) then
+	if is_str(mod) then
+		res = exists(mod)
+	elseif is_tbl(mod) and not vim.tbl_isempty(mod) then
 		res = {}
 
 		for _, v in next, mod do
-			local r = M.exists.module(v)
+			local r = exists(v)
 			if need_all then
 				res[v] = r
 			else
@@ -187,7 +212,7 @@ function M.exists.modules(mod, need_all)
 			end
 		end
 	else
-		error('`(user.check.exists.modules)`: Input not a string nor a string array.')
+		error('`(user.check.exists.modules)`: Input is neither a string nor a string array.')
 	end
 
 	return res
@@ -198,6 +223,7 @@ function M.new()
 	self.exists = M.exists
 	self.value = M.value
 	self.dry_run = M.dry_run
+	self.new = M.new
 
 	return self
 end
