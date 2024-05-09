@@ -70,7 +70,7 @@ Ibl.setup({
 	},
 	whitespace = {
 		highlight = highlight,
-		remove_blankline_trail = false,
+		remove_blankline_trail = true,
 	},
 	scope = { enabled = true },
 })
