@@ -7,16 +7,15 @@ local Check = require('user.check')
 local exists = Check.exists.vim_exists
 
 local opt = vim.opt
-local let = vim.g
 local fn = vim.fn
 
 local has = fn.has
 local executable = Check.exists.executable
 
 ---@type 0|1
-let.is_windows = has('win32')
+vim.g.is_windows = has('win32')
 ---@type boolean
-_G.is_windows = let.is_windows == 1
+_G.is_windows = vim.g.is_windows == 1
 
 ---@type OptsTbl
 local opt_tbl = {
@@ -37,7 +36,7 @@ local opt_tbl = {
 	et = false,  -- `expandtab`
 	fenc = 'utf-8',  -- `fileencoding`
 	ff = 'unix',  -- `fileformat`
-	fileignorecase = _G.is_windows,
+	fileignorecase = is_windows,
 	formatoptions = 'oqwnbljp',
 	hid = true,  -- `hidden`
 	hlg = { 'en' },  -- `helplang`
@@ -56,7 +55,7 @@ local opt_tbl = {
 	mouse = '',
 	nu = true,  -- `number`
 	pi = true,  -- `preserveindent`
-	rnu = false,
+	rnu = false,  -- `relativenumber`
 	ru = true,  -- `ruler`
 	sessionoptions = {
 		"buffers",
@@ -99,7 +98,7 @@ if is_windows then
 	end
 end
 
----@param opts UserO|UserOpt
+---@param opts UserOpt
 local optset = function(opts)
 	for k, v in next, opts do
 		vim.opt[k] = v

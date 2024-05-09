@@ -92,8 +92,16 @@ local M = {
 }
 
 function M.nop(T, opts, mode)
+	local map_tbl = M.map
+
 	if not is_tbl(opts) then
 		opts = {}
+	end
+
+	for _, v in next, { 'nowait', 'silent' } do
+		if not is_bool(opts[v]) then
+			opts[v] = true
+		end
 	end
 
 	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
@@ -101,10 +109,10 @@ function M.nop(T, opts, mode)
 	end
 
 	if is_str(T) then
-		M.map[mode](T, '<Nop>', opts)
+		map_tbl[mode](T, '<Nop>', opts)
 	elseif is_tbl(T) then
 		for _, v in next, T do
-			M.map[mode](v, '<Nop>', opts)
+			map_tbl[mode](v, '<Nop>', opts)
 		end
 	end
 end
@@ -134,7 +142,8 @@ function M.map_tbl(T, func, bufnr, mode)
 				f[mode](k, v[1], v[2] or {})
 			end
 		else
-			error('Some mapping failed!')
+			error('Mapping failed!')
+			return
 		end
 	end
 end
