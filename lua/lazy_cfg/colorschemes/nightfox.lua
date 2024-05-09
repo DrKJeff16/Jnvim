@@ -17,45 +17,53 @@ if exists('nightfox') then
 	function M.setup()
 		local NF = require('nightfox')
 
-		local compile_path = vim.fn.stdpath("cache") .. "/nightfox"
+		local compile_path = vim.fn.stdpath('cache') .. '/nightfox'
 
 		NF.setup({
 			options = {
 				-- Compiled file's destination location
 				compile_path = compile_path,
-				compile_file_suffix = "_compiled", -- Compiled file suffix
+				compile_file_suffix = '_compiled', -- Compiled file suffix
 				transparent = false,   -- Disable setting background
 				terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
 				dim_inactive = false,  -- Non focused panes set to alternative background
 				module_default = true, -- Default enable value for modules
-				colorblind = {
-					enable = false,    -- Enable colorblind support
-				},
+				colorblind = { enable = false },  -- Disable colorblind support
 				styles = { -- Style to be applied to different syntax groups
-					comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
-					conditionals = "bold",
-					constants = "bold",
-					functions = "bold",
-					keywords = "NONE",
-					numbers = "NONE",
-					operators = "NONE",
-					strings = "NONE",
-					types = "bold",
-					variables = "NONE",
+					comments = 'NONE', -- Value is any valid attr-list value `:help attr-list`
+					conditionals = 'bold',
+					constants = 'bold',
+					functions = 'bold',
+					keywords = 'NONE',
+					numbers = 'NONE',
+					operators = 'NONE',
+					strings = 'NONE',
+					types = 'bold',
+					variables = 'NONE',
 				},
 				inverse = { -- Inverse highlight for different types
-					match_paren = true,
+					match_paren = false,
 					visual = true,
-					search = true,
+					search = false,
 				},
 
-				-- modules = {             -- List of various plugins and additional options
-				-- 	-- ...
-				-- },
+				modules = {             -- List of various plugins and additional options
+					diagnostic = { enable = true, background = true },
+					native_lsp = { enable = true, background = true },
+					treesitter = exists('treesitter'),
+					lsp_semantic_tokens = true,
+					barbar = true,
+					cmp = true,
+					dashboard = true,
+					gitsigns = true,
+					indent_blankline = true,
+					lazy = true,
+					notify = true,
+					nvimtree = true,
+					telescope = true,
+					whichkey = true,
+				},
 			},
-			-- palettes = {},
-			-- specs = {},
-			-- groups = {},
 		})
 
 		vim.cmd(M.mod_cmd)

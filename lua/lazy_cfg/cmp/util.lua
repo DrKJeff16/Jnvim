@@ -6,6 +6,9 @@ local Check = User.check
 local types = User.types.cmp
 
 local exists = Check.exists.module
+local is_nil = Check.value.is_nil
+local is_bool = Check.value.is_bool
+local is_tbl = Check.value.is_tbl
 
 if not exists('cmp') then
 	error('No `cmp` module!')
@@ -18,20 +21,21 @@ local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
 
 local api = vim.api
-local set = vim.o
-local opt = vim.opt
-local bo = vim.bo
 
 local tbl_contains = vim.tbl_contains
 local get_mode = api.nvim_get_mode
+local buf_lines = api.nvim_buf_get_lines
+local win_cursor = api.nvim_win_get_cursor
 
 local M = {}
 
 ---@return boolean
 function M.has_words_before()
 	unpack = unpack or table.unpack
-	local buf_lines = api.nvim_buf_get_lines
-	local win_cursor = api.nvim_win_get_cursor
+
+	-- local buf_lines = api.nvim_buf_get_lines
+	-- local win_cursor = api.nvim_win_get_cursor
+
 	local line, col = unpack(win_cursor(0))
 	return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
@@ -60,7 +64,7 @@ end
 function M.n_shift_select(fallback)
 	local jumpable = Luasnip.jumpable(-1)
 	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Select }
+	local opts = { behavior = cmp.SelectBehavior.Replace }
 
 	if cmp.visible() then
 		cmp.select_prev_item(opts)
@@ -78,12 +82,15 @@ end
 
 ---@param opts? cmp.ConfirmOption
 ---@return fun(fallback: fun())
-function M.complete(opts)
-	opts = opts or {}
-	if not opts.behavior then
+function M.confirm(opts)
+	if not is_tbl(opts) then
+		opts = {}
+	end
+
+	if is_nil(opts.behavior) then
 		opts.behavior = cmp.ConfirmBehavior.Replace
 	end
-	if not opts.select then
+	if not is_bool(opts.select) then
 		opts.select = false
 	end
 
@@ -133,9 +140,9 @@ M.s_tab_map = {
 
 ---@type CrMap
 M.cr_map = {
-	i = M.complete(),
-	s = M.complete(),
-	c = M.complete({ select = true }),
+	i = M.confirm(),
+	s = M.confirm(),
+	c = M.confirm({ select = true }),
 }
 
 ---@param fallback fun()
