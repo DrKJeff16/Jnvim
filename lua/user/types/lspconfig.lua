@@ -1,6 +1,9 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+---@class EvBuf
+---@field buf integer
+
 ---@class LspKindsIconsMod
 ---@field Class? string
 ---@field Color? string
@@ -28,10 +31,6 @@
 ---@field icons LspKindsIconsMod
 ---@field setup fun()
 
----@class LspSubMods
----@field clangd? fun(): any
----@field kinds? LspKindsMod
-
 ---@class LspServerOpts
 ---@field capabilities? table
 ---@field cmd? string|string[]
@@ -51,8 +50,8 @@
 ---@alias LspServers table<string, LspServerOpts>
 
 ---@class LspSubs
----@field neoconf? fun()
----@field neodev? fun()
----@field trouble? fun()
----@field clangd? fun()
+---@field neoconf fun()|nil
+---@field neodev fun()|nil
+---@field trouble? fun()|nil
+---@field clangd? fun()|nil
 ---@field kinds LspKindsMod
