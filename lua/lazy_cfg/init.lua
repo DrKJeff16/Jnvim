@@ -30,18 +30,18 @@ end
 -- Add `Lazy` to `stdpath`
 rtp:prepend(lazypath)
 
----@return string|nil
+---@return string
 local luasnip_build = function()
 	if not executable('make') or not executable('mingw32-make') then
-		return nil
+		return ''
 	end
 
 	local cmd = (executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp' )
 
-	if _G.is_windows and executable('mingw32-make') then
+	if is_windows and executable('mingw32-make') then
 		cmd = 'mingw32-' .. cmd
-	elseif _G.is_windows and not executable('mingw32-make') then
-		return nil
+	elseif is_windows and not executable('mingw32-make') then
+		return ''
 	end
 
 	return cmd
@@ -144,6 +144,7 @@ M.NVIM = {
 		version = false,
 		dependencies = { 'web-devicons' },
 		config = source('lazy_cfg.dashboard'),
+		enabled = false,
 	},
 	{
 		'startup-nvim/startup.nvim',
@@ -692,7 +693,7 @@ local P = {
 	colorschemes = exists('lazy_cfg.colorschemes', true),
 }
 
----@type fun(cmd: string): fun()
+---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
 local key_variant = function(cmd)
 	if not is_str(cmd) then
 		cmd = 'ed'
