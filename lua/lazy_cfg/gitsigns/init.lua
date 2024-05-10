@@ -27,19 +27,20 @@ local keys = {
 		{ '<leader>G]c', "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'", { expr = true } },
 		{ '<leader>G[c', "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'", { expr = true } },
 		-- Actions
-		{ '<leader>Ghs', ':Gitsigns stage_hunk<CR>' },
-		{ '<leader>Ghr', ':Gitsigns reset_hunk<CR>' },
+		{ '<leader>Ghs', '<CMD>Gitsigns stage_hunk<CR>' },
+		{ '<leader>Ghr', '<CMD>Gitsigns reset_hunk<CR>' },
 		{ '<leader>GhS', '<CMD>Gitsigns stage_buffer<CR>' },
 		{ '<leader>Ghu', '<CMD>Gitsigns undo_stage_hunk<CR>' },
 		{ '<leader>GhR', '<CMD>Gitsigns reset_buffer<CR>' },
 		{ '<leader>Ghp', '<CMD>Gitsigns preview_hunk<CR>' },
-		{ '<leader>Ghb', '<CMD>lua require"gitsigns".blame_line{full=true}<CR>' },
+		{ '<leader>Ghb', '<CMD>lua require("gitsigns").blame_line{full=true}<CR>' },
 		{ '<leader>Gtb', '<CMD>Gitsigns toggle_current_line_blame<CR>' },
 		{ '<leader>Ghd', '<CMD>Gitsigns diffthis<CR>' },
-		{ '<leader>GhD', '<CMD>lua require"gitsigns".diffthis("~")<CR>' },
+		{ '<leader>GhD', '<CMD>lua require("gitsigns").diffthis("~")<CR>' },
 		{ '<leader>Gtd', '<CMD>Gitsigns toggle_deleted<CR>' },
 	},
 	v = {
+		--- WARNING: Avoid using `<CMD>` at all costs.
 		{ '<leader>Ghs', ':Gitsigns stage_hunk<CR>' },
 		{ '<leader>Ghr', ':Gitsigns reset_hunk<CR>' },
 	},
@@ -92,13 +93,13 @@ local opts= {
 	signs = signs,
 
 	signcolumn = vim.o.signcolumn ==  'yes',  -- Toggle with `:Gitsigns toggle_signs`
-	numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+	numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
 	linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
 	word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
 	watch_gitdir = { follow_files = true },
-	-- auto_attach = true,
+	auto_attach = true,
 	attach_to_untracked = true,
-	current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 	current_line_blame_opts = {
 		virt_text = false,
 		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
