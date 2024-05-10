@@ -6,7 +6,6 @@ local Check = User.check
 local csc_m = User.types.colorschemes
 
 local exists = Check.exists.module
-local vim_exists = Check.exists.vim_exists
 
 local M = {
 	mod_pfx = 'lazy_cfg.colorschemes.tokyonight',
@@ -19,7 +18,40 @@ if exists('tokyonight') then
 
 		---@type Config
 		local opts = {
-			terminal_colors = vim_exists('+termguicolors'),
+			on_colors = function(colors)
+				colors.error = '#df4f4f'
+			end,
+			on_highlights = function(hl, c)
+				local prompt = '#2d3149'
+				hl.TelescopeNormal = {
+					bg = c.bg_dark,
+					fg = c.fg_dark
+				}
+				hl.TelescopeBorder = {
+					bg = c.bg_dark,
+					fg = c.bg_dark,
+				}
+				hl.TelescopePromptNormal = {
+					bg = prompt,
+				}
+				hl.TelescopePromptBorder = {
+					bg = prompt,
+					fg = prompt,
+				}
+				hl.TelescopePromptTitle = {
+					bg = prompt,
+					fg = prompt,
+				}
+				hl.TelescopePreviewTitle = {
+					bg = c.bg_dark,
+					fg = c.bg_dark,
+				}
+				hl.TelescopeResultsTitle = {
+					bg = c.bg_dark,
+					fg = c.bg_dark,
+				}
+			end,
+			terminal_colors = true,
 			transparent = false,
 			sidebars = {
 				'qf',
@@ -29,6 +61,7 @@ if exists('tokyonight') then
 				'terminal',
 				'packer',
 				'TelescopePrompt',
+				'vista_kind',
 			},
 
 			style = 'night',
@@ -36,6 +69,14 @@ if exists('tokyonight') then
 			use_background = true,
 			hide_inactive_statusline = false,
 			lualine_bold = true,
+			styles = {
+				comments = { italic = false },
+				keywords = { italic = false, bold = true },
+				functions = { bold = true, italic = false },
+				variables = {},
+				sidebars = 'dark',
+				floats = 'transparent',
+			},
 		}
 
 		TN.setup(opts)
