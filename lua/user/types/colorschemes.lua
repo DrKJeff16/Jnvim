@@ -11,16 +11,17 @@
 ---@field mod_pfx string
 ---@field mod_cmd string|string[]
 
---- NOTE: Must check for `nil` value.
---- ---
 --- A table for each **explicitly** configured colorscheme.
 --- ---
 --- The colorschemes must comply with the `CscSubMod` type specifications.
 --- ---
 ---@class CscMod
----@field tokyonight? CscSubMod
----@field catppuccin? CscSubMod
----@field nightfox? CscSubMod
----@field spaceduck? CscSubMod
----@field dracula? CscSubMod
----@field gloombuddy? CscSubMod
+---@field tokyonight? CscSubMod|nil
+---@field catppuccin? CscSubMod|nil
+---@field nightfox? CscSubMod|nil
+---@field spaceduck? CscSubMod|nil
+---@field dracula? CscSubMod|nil
+---@field molokai? CscSubMod|nil
+---@field gloombuddy? CscSubMod|nil
+---@field new fun(): CscMod
+---@field __index? CscMod

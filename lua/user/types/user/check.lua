@@ -1,15 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias Types
----|'nil'
----|'string'
----|'number'
----|'userdata'
----|'thread'
----|'function'
----|'boolean'
----|'table'
+---@alias Types 'nil'|'string'|'number'|'userdata'|'thread'|'function'|'boolean'|'table'
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
 ---@class ExistanceCheck
@@ -18,6 +10,7 @@
 ---@field executable fun(exe: string|string[], fallback: fun()?): boolean
 ---@field field fun(field: string|integer, t: table<string|integer, any>): boolean
 ---@field vim_exists fun(expr: string|string[]): boolean
+---@field vim_has fun(expr: string|string[]): boolean
 
 ---@class ValueCheck
 ---@field is_nil ValueFunc

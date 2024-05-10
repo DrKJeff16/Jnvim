@@ -18,10 +18,7 @@ local bufmap = vim.api.nvim_buf_set_keymap
 ---@type Modes
 local MODES =  { 'n', 'i', 'v', 't', 'o', 'x' }
 
----@param mode string|string[]
----@param func MapFuncs
----@param with_buf? boolean
----@return KeyMapFunction|ApiMapFunction|BufMapFunction
+---@type fun(mode: string|string[], func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
 local variant = function(mode, func, with_buf)
 	if is_nil(with_buf) then
 		with_buf = false
@@ -33,12 +30,12 @@ local variant = function(mode, func, with_buf)
 	if not with_buf then
 		---@type ApiMapFunction|KeyMapFunction
 		res = function(lhs, rhs, opts)
-			if opts == nil or type(opts) ~= 'table' then
+			if not is_tbl(opts) then
 				opts = {}
 			end
 
 			for _, v in next, DEFAULTS do
-				if is_nil(opts[v]) then
+				if not is_bool(opts[v]) then
 					opts[v] = true
 				end
 			end
@@ -65,8 +62,7 @@ local variant = function(mode, func, with_buf)
 	return res
 end
 
----@param field 'api'|'key'|'buf'
----@return UserKeyMaps|UserApiMaps|UserBufMaps res
+---@type fun(field: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
 local mode_funcs = function(field)
 	local VALID = { api = { 'map', map, false }, key = { 'kmap', kmap, false }, buf = { 'buf_map', bufmap, true } }
 	if is_nil(VALID[field]) then
@@ -76,7 +72,6 @@ local mode_funcs = function(field)
 		local res = {}
 		for _, mode in next, MODES do
 			res[mode] = variant(mode, VALID[field][2], VALID[field][3])
-
 		end
 
 		return res
@@ -103,6 +98,8 @@ function M.nop(T, opts, mode)
 			opts[v] = true
 		end
 	end
+
+	opts.noremap = false
 
 	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
@@ -131,9 +128,9 @@ function M.map_tbl(T, func, bufnr, mode)
 	end
 
 	for k, v in next, T do
-		if is_num(k) and not is_nil(v.lhs) and not is_nil(v.rhs) then
+		if is_num(k) and is_str(v.lhs) and not is_nil(v.rhs) then
 			f[mode](v.lhs, v.rhs, v.opts or {})
-		elseif is_num(k) and not is_nil(v[1]) and not is_nil(v[2]) then
+		elseif is_num(k) and not is_str(v[1]) and not is_nil(v[2]) then
 			f[mode](v[1], v[2], v[3] or {})
 		elseif is_str(k) then
 			if not is_nil(v.rhs) then

@@ -20,6 +20,7 @@
 ---@field lazy table
 ---@field lspconfig table
 ---@field lualine table
+---@field mini table
 ---@field notify table
 ---@field nvim_tree table
 ---@field telescope table
@@ -39,23 +40,25 @@
 ---@field types UserTypes
 
 ---@type UserTypes
-local M = {}
-M.autopairs = require('user.types.autopairs')
-M.colorizer = require('user.types.colorizer')
-M.colorschemes = require('user.types.colorschemes')
-M.cmp = require('user.types.cmp')
-M.comment = require('user.types.comment')
-M.gitsigns = require('user.types.gitsigns')
-M.lazy = require('user.types.lazy')
-M.lspconfig = require('user.types.lspconfig')
-M.lualine = require('user.types.lualine')
-M.notify = require('user.types.notify')
-M.nvim_tree = require('user.types.nvim_tree')
-M.telescope = require('user.types.telescope')
-M.todo_comments = require('user.types.todo_comments')
-M.treesitter = require('user.types.treesitter')
-M.which_key = require('user.types.which_key')
+local M = {
+	autopairs = require('user.types.autopairs'),
+	colorizer = require('user.types.colorizer'),
+	colorschemes = require('user.types.colorschemes'),
+	cmp = require('user.types.cmp'),
+	comment = require('user.types.comment'),
+	gitsigns = require('user.types.gitsigns'),
+	lazy = require('user.types.lazy'),
+	lspconfig = require('user.types.lspconfig'),
+	lualine = require('user.types.lualine'),
+	mini = require('user.types.mini'),
+	notify = require('user.types.notify'),
+	nvim_tree = require('user.types.nvim_tree'),
+	telescope = require('user.types.telescope'),
+	todo_comments = require('user.types.todo_comments'),
+	treesitter = require('user.types.treesitter'),
+	which_key = require('user.types.which_key'),
 
-M.user = require('user.types.user')
+	user = require('user.types.user'),
+}
 
 return M

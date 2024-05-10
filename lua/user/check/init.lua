@@ -81,6 +81,27 @@ for k, v in next, type_funcs do
 	M.value[k] = type_fun(v)
 end
 
+function M.value.empty(v)
+	local is_str = M.value.is_str
+	local is_tbl = M.value.is_tbl
+	local is_num = M.value.is_num
+
+	if is_str(v) then
+		return v == ''
+	end
+
+	if is_num(v) then
+		return v == 0
+	end
+
+	if is_tbl(v) then
+		return vim.tbl_isempty(v)
+	end
+
+	error('(user.check.value.empty): Incorrect type `' .. type(v) .. '`')
+	return true
+end
+
 function M.dry_run(f, ...)
 	---@type boolean
 	local ok
@@ -121,9 +142,34 @@ M.exists = {
 			return false
 		end
 
-		return is_nil(t[field])
+		return not is_nil(t[field])
 	end,
 }
+
+function M.exists.vim_has(expr)
+	local has = vim.fn.has
+	local is_str = M.value.is_str
+	local is_tbl = M.value.is_tbl
+
+	if is_str(expr) then
+		return has(expr) == 1
+	end
+
+	if is_tbl(expr) and not vim.tbl_isempty(expr) then
+		local res = false
+		for _, v in next, expr do
+			res = M.exists.vim_has(expr)
+
+			if not res then
+				break
+			end
+		end
+
+		return res
+	end
+
+	return false
+end
 
 function M.exists.vim_exists(expr)
 	local exists = vim.fn.exists
