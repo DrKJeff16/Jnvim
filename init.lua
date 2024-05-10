@@ -30,24 +30,25 @@ vim.g.loaded_netrwPlugin = 1
 local opts = User.opts
 
 -- Use clipboard
-vim.o.clipboard = 'unnamedplus'
+-- vim.o.clipboard = 'unnamedplus'
 
 -- Avoid executing Normal mode keys when attempting `<leader>` sequences.
 local NOP = {
-	'<leader>\'',
-	'<leader>"',
+	"<leader>'",
 	'<leader>!',
+	'<leader>"',
+	'<leader>C',
+	'<leader>S',
 	'<leader>b',
 	'<leader>c',
 	'<leader>d',
 	'<leader>i',
-	'<leader>p',
 	'<leader>o',
+	'<leader>p',
 	'<leader>s',
-	'<leader>S',
 	'<leader>v',
-	'<leader>z',
 	'<leader>x',
+	'<leader>z',
 }
 for _, mode in next, User.maps.modes do
 	if mode ~= 'i' then
@@ -90,17 +91,17 @@ local map_tbl = {
 		['<leader>qq'] = { '<CMD>qa<CR>' },
 		['<leader>qQ'] = { '<CMD>qa!<CR>' },
 
-		['<leader>tn'] = { '<CMD>tabN<CR>' },
-		['<leader>tp'] = { '<CMD>tabp<CR>' },
-		['<leader>td'] = { '<CMD>tabc<CR>' },
+		['<leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
+		['<leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
+		['<leader>td'] = { '<CMD>tabc<CR>', { silent = false } },
 		['<leader>tD'] = { '<CMD>tabc!<CR>' },
 		['<leader>tf'] = { '<CMD>tabfirst<CR>' },
 		['<leader>tl'] = { '<CMD>tablast<CR>' },
 		['<leader>ta'] = { ':tabnew ', { silent = false, desc = 'New Tab (Interactively)' } },
-		['<leader>tA'] = { '<CMD>tabnew<CR>' },
+		['<leader>tA'] = { '<CMD>tabnew<CR>', { silent = false } },
 
-		['<leader>bn'] = { '<CMD>bNext<CR>' },
-		['<leader>bp'] = { '<CMD>bprevious<CR>' },
+		['<leader>bn'] = { '<CMD>bNext<CR>', { silent = false } },
+		['<leader>bp'] = { '<CMD>bprevious<CR>', { silent = false } },
 		['<leader>bd'] = { '<CMD>bdel<CR>' },
 		['<leader>bD'] = { '<CMD>bdel!<CR>' },
 		['<leader>bf'] = { '<CMD>bfirst<CR>' },
@@ -116,8 +117,8 @@ local map_tbl = {
 	},
 	v = {
 		--- WARNING: DO NOT USE `<CMD>`!!!
-		['<leader>is'] = { ':sort<CR>' },
-		['<leader>iS'] = { ':sort!<CR>' },
+		['<leader>is'] = { ':sort<CR>', { desc = 'Sort' } },
+		['<leader>iS'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
