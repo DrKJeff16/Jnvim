@@ -103,22 +103,22 @@ end
 ---@type KeyMapArgs[]
 local my_maps = {
 	{
-		lhs = '<Leader>fto',
+		lhs = '<leader>fto',
 		rhs = open,
 		opts = key_opts('Open NvimTree'),
 	},
 	{
-		lhs = '<Leader>ftt',
+		lhs = '<leader>ftt',
 		rhs = toggle,
 		opts = key_opts('Toggle NvimTree'),
 	},
 	{
-		lhs = '<Leader>ftd',
+		lhs = '<leader>ftd',
 		rhs = close,
 		opts = key_opts('Close NvimTree'),
 	},
 	{
-		lhs = '<Leader>ftf',
+		lhs = '<leader>ftf',
 		rhs = focus,
 		opts = key_opts('Focus NvimTree'),
 	},
@@ -178,15 +178,10 @@ local tree_open = function(data)
 	end
 
 	---@type TreeToggleOpts
-	local toggle_opts = {
-		focus = false,
-		find_file = true,
-	}
+	local toggle_opts = { focus = false, find_file = true }
 
 	---@type TreeOpenOpts
-	local open_opts = {
-		find_file = true,
-	}
+	local open_opts = { find_file = true }
 
 	if dir then
 		vim.cmd('cd ' .. name)
