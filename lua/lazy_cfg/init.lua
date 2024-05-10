@@ -232,8 +232,13 @@ M.EDITING = {
 		name = 'DiffView',
 		version = false,
 		config = source('lazy_cfg.diffview'),
+		enabled = executable('git'),
+	},
+	{
+		'glepnir/template.nvim',
+		name = 'Template',
+		config = source('lazy_cfg.template'),
 		enabled = false,
-		-- enabled = executable('git'),
 	},
 }
 -- LSP
