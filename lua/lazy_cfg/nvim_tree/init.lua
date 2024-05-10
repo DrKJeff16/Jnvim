@@ -89,7 +89,7 @@ local collapse_all = Tapi.collapse_all
 
 ---@param keys KeyMapArgs[]
 local map_lft = function(keys)
-	if is_tbl(keys) or empty(keys) then
+	if not is_tbl(keys) or empty(keys) then
 		return
 	end
 
