@@ -1,6 +1,6 @@
 {
 	"neodev": {
-		"debug": false,
+		"debug": true,
 		"library": {
 			"types": true,
 			"enabled": true,
@@ -12,22 +12,53 @@
 		"pathStrict": true,
 		"setup_jsonls": true
 	},
-
 	"lspconfig": {
 		"pylsp": {
-			"pylsp.rope.ropeFolder": null,
 			"pylsp.configurationSources": [
 				"flake8"
 			],
-			"pylsp.plugins.yapf.enabled": false,
+			"pylsp.plugins.autopep8.enabled": true,
+			"pylsp.plugins.flake8.enabled": true,
+			"pylsp.plugins.flake8.executable": "flake8",
+			"pylsp.plugins.flake8.hangClosing": false,
 			"pylsp.plugins.flake8.ignore": [
 				"D400",
 				"D401"
 			],
-			"pylsp.rope.extensionModules": null,
-			"pylsp.plugins.flake8.enabled": true,
+			"pylsp.plugins.flake8.indentSize": 4,
+			"pylsp.plugins.flake8.maxComplexity": 10,
+			"pylsp.plugins.jedi.auto_import_modules": [
+				"typing",
+				"sys",
+				"argparse"
+			],
+			"pylsp.plugins.jedi_completion.cache_for": [
+				"typing",
+				"sys",
+				"os",
+				"argparse",
+				"re",
+				"string"
+			],
+			"pylsp.plugins.jedi_completion.eager": true,
+			"pylsp.plugins.jedi_completion.enabled": true,
+			"pylsp.plugins.jedi_completion.fuzzy": false,
+			"pylsp.plugins.jedi_completion.include_class_objects": true,
+			"pylsp.plugins.jedi_completion.include_function_objects": true,
+			"pylsp.plugins.jedi_completion.include_params": true,
+			"pylsp.plugins.jedi_completion.resolve_at_most": 50,
+			"pylsp.plugins.jedi_definition.enabled": true,
+			"pylsp.plugins.jedi_definition.follow_builtin_definitions": true,
+			"pylsp.plugins.jedi_definition.follow_builtin_imports": true,
+			"pylsp.plugins.jedi_definition.follow_imports": true,
+			"pylsp.plugins.jedi_hover.enabled": true,
+			"pylsp.plugins.jedi_references.enabled": true,
+			"pylsp.plugins.jedi_signature_help.enabled": true,
+			"pylsp.plugins.jedi_symbols.all_scopes": true,
+			"pylsp.plugins.jedi_symbols.enabled": true,
+			"pylsp.plugins.jedi_symbols.include_import_symbols": true,
 			"pylsp.plugins.mccabe.enabled": true,
-			"pylsp.plugins.pylint.enabled": false,
+			"pylsp.plugins.mccabe.threshold": 10,
 			"pylsp.plugins.preload.enabled": true,
 			"pylsp.plugins.preload.modules": [
 				"sys",
@@ -37,67 +68,37 @@
 				"string",
 				"typing"
 			],
-			"pylsp.plugins.autopep8.enabled": true,
-			"pylsp.plugins.mccabe.threshold": 10,
-			"pylsp.plugins.pyflakes.enabled": false,
-			"pylsp.plugins.jedi_hover.enabled": true,
-			"pylsp.plugins.jedi_symbols.enabled": true,
-			"pylsp.plugins.jedi_completion.eager": true,
-			"pylsp.plugins.jedi_completion.enabled": true,
-			"pylsp.plugins.jedi_completion.fuzzy": true,
-			"pylsp.plugins.jedi_definition.enabled": true,
-			"pylsp.plugins.jedi_references.enabled": true,
-			"pylsp.plugins.flake8.executable": "flake8",
-			"pylsp.plugins.flake8.indentSize": 4,
-			"pylsp.plugins.pydocstyle.select": null,
+			"pylsp.plugins.pycodestyle.enabled": false,
+			"pylsp.plugins.pydocstyle.convention": "numpy",
+			"pylsp.plugins.pydocstyle.enabled": true,
 			"pylsp.plugins.pydocstyle.ignore": [
 				"D400",
 				"D401"
 			],
-			"pylsp.plugins.pycodestyle.enabled": false,
-			"pylsp.plugins.pydocstyle.enabled": true,
-			"pylsp.plugins.pydocstyle.convention": "numpy",
-			"pylsp.plugins.rope_completion.eager": true,
-			"pylsp.plugins.rope_autoimport.memory": false,
+			"pylsp.plugins.pydocstyle.select": null,
+			"pylsp.plugins.pyflakes.enabled": false,
+			"pylsp.plugins.pylint.enabled": false,
 			"pylsp.plugins.rope_autoimport.enabled": true,
+			"pylsp.plugins.rope_autoimport.memory": false,
+			"pylsp.plugins.rope_completion.eager": true,
 			"pylsp.plugins.rope_completion.enabled": true,
-			"pylsp.plugins.flake8.maxComplexity": 10,
-			"pylsp.plugins.flake8.hangClosing": false,
-			"pylsp.plugins.jedi_signature_help.enabled": true,
-			"pylsp.plugins.jedi_symbols.all_scopes": true,
-			"pylsp.plugins.jedi_completion.cache_for": [
-				"pandas",
-				"numpy",
-				"matplotlib",
-				"typing",
-				"sys",
-				"os",
-				"argparse",
-				"re"
-			],
-			"pylsp.plugins.jedi_completion.include_params": true,
-			"pylsp.plugins.jedi_definition.follow_imports": true,
-			"pylsp.plugins.jedi_symbols.include_import_symbols": true,
-			"pylsp.plugins.jedi_completion.resolve_at_most": 30,
-			"pylsp.plugins.jedi_completion.include_class_objects": true,
-			"pylsp.plugins.jedi_definition.follow_builtin_imports": true,
-			"pylsp.plugins.jedi_completion.include_function_objects": false,
-			"pylsp.plugins.jedi_definition.follow_builtin_definitions": true,
-			"pylsp.plugins.jedi.auto_import_modules": [
-				"typing",
-				"sys",
-				"argparse"
-			]
+			"pylsp.plugins.yapf.enabled": false,
+			"pylsp.rope.extensionModules": null,
+			"pylsp.rope.ropeFolder": null
 		},
-
 		"lua_ls": {
-			"Lua.runtime.version": "LuaJIT",
 			"Lua.codeLens.enable": true,
 			"Lua.completion.callSnippet": "Replace",
 			"Lua.completion.enable": true,
 			"Lua.completion.postfix": "@",
 			"Lua.completion.showParams": true,
 			"Lua.completion.showWord": "Enable",
+			"Lua.diagnostics.disable": [
+				"unused-local",
+				"unused-function",
+				"inject-field",
+				"need-check-nil"
+			],
 			"Lua.diagnostics.enable": true,
 			"Lua.diagnostics.globals": [
 				"vim"
@@ -118,6 +119,7 @@
 			"Lua.hover.viewStringMax": 1000,
 			"Lua.runtime.fileEncoding": "utf8",
 			"Lua.runtime.pathStrict": true,
+			"Lua.runtime.version": "LuaJIT",
 			"Lua.semantic.annotation": true,
 			"Lua.semantic.enable": true,
 			"Lua.semantic.keyword": true,
@@ -128,52 +130,46 @@
 			"Lua.window.progressBar": true,
 			"Lua.window.statusBar": true,
 			"Lua.workspace.checkThirdParty": false,
-			"Lua.workspace.useGitIgnore": true,
 			"Lua.workspace.ignoreSubmodules": false,
-			"Lua.diagnostics.disable": [
-				"unused-local",
-				"unused-function",
-				"inject-field",
-				"need-check-nil"
-			]
+			"Lua.workspace.useGitIgnore": true
 		},
 		"bashls": {
 			"bashIde.backgroundAnalysisMaxFiles": 500,
-			"bashIde.enableSourceErrorDiagnostics": false,
+			"bashIde.enableSourceErrorDiagnostics": true,
 			"bashIde.globPattern": "**/*@(.sh|.inc|.bash|.command)",
 			"bashIde.includeAllWorkspaceSymbols": true,
-			"bashIde.logLevel": "debug"
+			"bashIde.logLevel": "info"
 		},
 		"jsonls": {
 			"json.format.enable": true,
-			"json.format.keepLines": true,
+			"json.format.keepLines": false,
 			"json.maxItemsComputed": 5000,
 			"json.schemaDownload.enable": true,
 			"json.validate.enable": true
 		}
 	},
 	"neoconf": {
+		"filetype_jsonc": true,
+		"global_settings": "neoconf.json",
 		"import": {
-			"coc": true,
+			"coc": false,
 			"nlsp": true,
 			"vscode": true
 		},
+		"live_reload": true,
+		"local_settings": ".neoconf.json",
 		"plugins": {
 			"jsonls": {
 				"enabled": true,
 				"configured_servers_only": false
 			},
+			"lspconfig": {
+				"enabled": true
+			},
 			"lua_ls": {
 				"enabled": true,
 				"enabled_for_neovim_config": true
-			},
-			"lspconfig": {
-				"enabled": true
 			}
-		},
-		"live_reload": true,
-		"filetype_jsonc": true,
-		"global_settings": "neoconf.json",
-		"local_settings": ".neoconf.json"
+		}
 	}
 }
