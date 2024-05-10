@@ -71,8 +71,8 @@ Exts.setup({
 
 		highlights = { detail = "Comment" },
 	},
-	memory_usage = { border = "none" },
-	symbol_info = { border = "none" },
+	memory_usage = { border = 'single' },
+	symbol_info = { border = 'double' },
 })
 
 Inlay.setup_autocmd()
