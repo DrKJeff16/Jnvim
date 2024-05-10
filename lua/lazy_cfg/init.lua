@@ -30,9 +30,9 @@ end
 -- Add `Lazy` to `stdpath`
 rtp:prepend(lazypath)
 
----@return string
-local luasnip_build = function()
-	if not executable('make') or not executable('mingw32-make') then
+---@type fun(): string
+local function luasnip_build()
+	if not executable('make') and not executable('mingw32-make') then
 		return ''
 	end
 
@@ -41,7 +41,7 @@ local luasnip_build = function()
 	if is_windows and executable('mingw32-make') then
 		cmd = 'mingw32-' .. cmd
 	elseif is_windows and not executable('mingw32-make') then
-		return ''
+		cmd = ''
 	end
 
 	return cmd
@@ -189,7 +189,6 @@ M.TS = {
 M.EDITING = {
 	{
 		'numToStr/Comment.nvim',
-		event = 'InsertEnter',
 		name = 'Comment',
 		dependencies = {
 			'treesitter',
@@ -211,6 +210,7 @@ M.EDITING = {
 			'Plenary',
 		},
 		config = source('lazy_cfg.todo_comments'),
+		enabled = executable('rg'),
 	},
 	{
 		'windwp/nvim-autopairs',
@@ -537,7 +537,7 @@ M.TELESCOPE = {
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
-		lazy = false,
+		event = 'VimEnter',
 		name = 'Project',
 		version = false,
 		init = function()
@@ -652,6 +652,7 @@ M.UI = {
 		'akinsho/toggleterm.nvim',
 		name = 'ToggleTerm',
 		version = false,
+		branch = 'main',
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
