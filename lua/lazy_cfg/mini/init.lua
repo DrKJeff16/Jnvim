@@ -3,13 +3,13 @@
 
 local User = require('user')
 local Check = User.check
+local types = User.types.mini
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 
----@param mini_mod string
----@param opts table
+---@type fun(min_mod: string, opts: table?)
 local function src(mini_mod, opts)
 	mini_mod = 'mini.' .. mini_mod
 	if not exists(mini_mod) then
@@ -27,11 +27,9 @@ local function src(mini_mod, opts)
 	end
 end
 
----@alias MiniModules table<string, table>
-
 ---@type MiniModules
 local modules = {
-	-- ['basics'] = {},
+	['basics'] = {},
 	['cursorword'] = {},
 	['doc'] = {},
 	['hipatterns'] = {},
