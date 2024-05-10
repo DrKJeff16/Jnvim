@@ -27,15 +27,14 @@ local hilite = {
 	['RainbowViolet'] = { fg = '#C678DD' },
 	['RainbowCyan'] = { fg = '#56B6C2' },
 }
-local highlight = {
-	'RainbowRed',
-	'RainbowYellow',
-	'RainbowBlue',
-	'RainbowOrange',
-	'RainbowGreen',
-	'RainbowViolet',
-	'RainbowCyan',
-}
+
+---@type string[]
+local highlight = {}
+for k, _ in next, hilite do
+	if is_str(k) then
+		table.insert(highlight, k)
+	end
+end
 
 ---@type string[]
 local names = {}
@@ -50,16 +49,14 @@ for k, v in next, hilite do
 		table.insert(options, v)
 	end
 end
-local bg_hl = {
-	'CursorColumn',
-	'Whitespace'
-}
 
-Hooks.register(Hooks.type.HIGHLIGHT_SETUP, function()
+local apply_hilite = function()
 	for k, v in next, hilite do
 		hi(k, v)
 	end
-end)
+end
+
+Hooks.register(Hooks.type.HIGHLIGHT_SETUP, apply_hilite)
 
 Hooks.register(Hooks.type.SCOPE_HIGHLIGHT, Hooks.builtin.scope_highlight_from_extmark)
 
