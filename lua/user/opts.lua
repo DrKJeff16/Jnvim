@@ -83,7 +83,7 @@ local opt_tbl = {
 	ut = 1000,  -- `updatetime`
 	visualbell = false,
 	wildmenu = true,
-	wrap = true,
+	wrap = false,
 }
 
 if is_windows then
