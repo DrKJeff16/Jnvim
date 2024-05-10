@@ -6,11 +6,11 @@ local csc_t = User.types.colorschemes
 
 ---@type CscSubMod
 local M = {
-	mod_cmd = 'colorscheme spaceduck',
-	mod_pfx = 'lazy_cfg.colorschemes.spaceduck',
+	mod_cmd = 'colorscheme molokai',
+	mod_pfx = 'lazy_cfg.colorschemes.molokai',
 }
 
-if vim.g.installed_spaceduck == 1 then
+if vim.g.installed_molokai == 1 then
 	function M.setup()
 		vim.cmd(M.mod_cmd)
 	end

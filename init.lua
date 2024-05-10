@@ -153,7 +153,7 @@ end
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
-	local Csc = Pkg.colorschemes
+	local Csc = Pkg.colorschemes.new()
 
 	-- Reorder to your liking.
 	if csc_check(Csc.tokyonight) then
@@ -164,6 +164,10 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 		Csc.nightfox.setup()
 	elseif csc_check(Csc.spaceduck) then
 		Csc.spaceduck.setup()
+	elseif csc_check(Csc.dracula) then
+		Csc.dracula.setup()
+	elseif csc_check(Csc.molokai) then
+		Csc.molokai.setup()
 	end
 end
 

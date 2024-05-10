@@ -22,12 +22,29 @@ local src = function(subs)
 end
 
 local submods = {
-	'nightfox',
 	'tokyonight',
 	'catppuccin',
+	'nightfox',
 	'gloombuddy',
 	'spaceduck',
 	'dracula',
+	'molokai',
 }
 
-return src(submods)
+local M = src(submods)
+function M.new()
+	local self = setmetatable({}, { __index = M })
+
+	self.new = M.new
+	self.nightfox = M.nightfox or nil
+	self.tokyonight = M.tokyonight or nil
+	self.catppuccin = M.catppuccin or nil
+	self.gloombuddy = M.gloombuddy or nil
+	self.spaceduck = M.spaceduck or nil
+	self.dracula = M.dracula or nil
+	self.molokai = M.molokai or nil
+
+	return self
+end
+
+return M
