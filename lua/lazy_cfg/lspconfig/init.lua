@@ -36,8 +36,7 @@ local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
 local sign_define = vim.fn.sign_define
 
----@param path string
----@return nil|fun()
+---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
 	if not is_str(path) or path == '' then
 		error('Cannot generate function from type `' .. type(path) .. '`')
@@ -82,8 +81,7 @@ local handlers = {
 	["textDocument/signatureHelp"] = Lsp.with(lsp_handlers.signature_help, { border = border }),
 }
 
----@param srv_tbl LspServers
----@return LspServers res
+---@type fun(srv_tbl: LspServers): LspServers
 local populate = function(srv_tbl)
 	---@type LspServers
 	local res = {}
@@ -115,10 +113,7 @@ local populate = function(srv_tbl)
 				elseif k == 'yamlls' then
 					res[k].settings = {}
 					res[k].settings.yaml = {
-						schemaStore = {
-							enable = false,
-							url = '',
-						},
+						schemaStore = { enable = false, url = '' },
 						schemas = SchSt.yaml.schemas({}),
 					}
 				end
@@ -164,7 +159,7 @@ for lhs, v in next, keys do
 end
 
 au('LspAttach', {
-	group = augroup('UserLspConfig', {}),
+	group = augroup('UserLspConfig', { clear = true }),
 
 	---@param ev EvBuf
 	callback = function(ev)
@@ -190,32 +185,38 @@ au('LspAttach', {
 		nmap('<leader>lwr', lsp_buf.remove_workspace_folder, opts)
 		opts.desc = 'List Workspace Folders'
 		nmap('<leader>lwl', function()
-			local out = insp(lsp_buf.list_workspace_folders())
+			local out = lsp_buf.list_workspace_folders()
+			local msg = ''
+			for _, v in next, out do
+				msg = msg .. '\n - ' .. v
+			end
+
 			-- Try doing it with `notify` plugin.
 			if exists('notify') then
-				require('notify')(out, 'info', { title = 'Workspace Folders' })
+				local Notify = require('notify')
+
+				Notify(msg, 'info', { title = 'Workspace Folders' })
 			else
-				print(out)
+				print(msg)
 			end
 		end, opts)
 		opts.desc = 'Type Definition'
 		nmap('<leader>lD', lsp_buf.type_definition, opts)
 		opts.desc = 'Rename...'
 		nmap('<leader>lrn', lsp_buf.rename, opts)
-		opts.desc = 'Code Actions'
-		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, opts)
 		opts.desc = 'References'
 		nmap('<leader>lgr', lsp_buf.references, opts)
 		opts.desc = 'Format File'
-		nmap('<leader>lf', function()
-			lsp_buf.format({ async = true })
-		end, opts)
+		nmap('<leader>lf', function() lsp_buf.format({ async = true }) end, opts)
+
+		opts.desc = 'Code Actions'
+		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, opts)
 	end,
 })
 
 Diag.config({
 	virtual_text = true,
-	float = false,
+	float = true,
 	signs = true,
 	underline = true,
 	update_in_insert = false,
