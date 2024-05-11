@@ -52,3 +52,13 @@
 ---@field view cmp.ViewConfig
 ---@field vscode fun()
 
+---@class MultiSources
+---@field [1] string[]
+---@field [2] cmp.ConfigSchema
+
+---@alias SetupSources table<string, cmp.ConfigSchema>|MultiSources[]
+
+---@class Sources
+---@field new fun(): Sources
+---@field __index? Sources
+---@field setup fun(T: SetupSources?)
