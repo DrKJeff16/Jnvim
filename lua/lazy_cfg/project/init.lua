@@ -4,9 +4,7 @@
 local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
-local Maps = User.maps
-
-local kmap = Maps.kmap
+local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local nmap = kmap.n
@@ -15,9 +13,7 @@ if not exists('project_nvim') then
 	return
 end
 
-local fn = vim.fn
-
-local stdpath = fn.stdpath
+local stdpath = vim.fn.stdpath
 
 local Project = require('project_nvim')
 local Config = require('project_nvim.config')
@@ -78,6 +74,8 @@ local opts = {
 	datapath = stdpath("data"),
 }
 
+Project.setup(opts)
+
 ---@type KeyMapDict
 local keys = {
 	['<leader>pr'] = {
@@ -85,22 +83,18 @@ local keys = {
 			local msg = '\n'
 
 			for _, v in next, recent_proj() do
-				msg = msg .. '- ' .. v .. '\n'
+				msg = msg .. '\n- ' .. v
 			end
 			if exists('notify') then
-				require('notify')(msg, 'info')
+				require('notify')(msg, 'info', { title = 'Recent Projects' })
 			else
 				print(msg)
 			end
 		end,
-		{
-			desc = 'Print Recent Projects',
-		}
+		{ desc = 'Print Recent Projects' }
 	}
 }
 
 for key, v in next, keys do
 	nmap(key, v[1], v[2] or {})
 end
-
-Project.setup(opts)
