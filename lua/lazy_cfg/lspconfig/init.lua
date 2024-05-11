@@ -7,16 +7,14 @@ local kmap = User.maps.kmap
 local types = User.types.lspconfig
 local au_t = User.types.user.autocmd
 local hl_t = User.types.user.highlight
-local Highlight = User.highlight
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
-
 local nmap = kmap.n
-local hi = Highlight.hl
+local hi = User.highlight.hl
 
 if not exists('lspconfig') then
 	return
@@ -54,14 +52,14 @@ local Sub = {
 	neoconf = sub_fun('lazy_cfg.lspconfig.neoconf'),
 	neodev = sub_fun('lazy_cfg.lspconfig.neodev'),
 	clangd = sub_fun('lazy_cfg.lspconfig.clangd'),
-	-- trouble = sub_fun('lazy_cfg.lspconfig.trouble'),
+	trouble = sub_fun('lazy_cfg.lspconfig.trouble'),
 }
 
 -- Now call each.
 Sub.neoconf()
 Sub.neodev()
 Sub.clangd()
--- Sub.trouble()
+Sub.trouble()
 Sub.kinds.setup()
 
 local border = {

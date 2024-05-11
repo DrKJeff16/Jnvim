@@ -292,7 +292,6 @@ M.LSP = {
 		name = 'Trouble',
 		version = false,
 		dependencies = { 'web-devicons' },
-		enabled = false,
 	},
 	{
 		'p00f/clangd_extensions.nvim',
