@@ -11,10 +11,8 @@ if not exists('nvim-treesitter') then
 	return
 end
 
-local api = vim.api
-
 local fs_stat = vim.loop.fs_stat
-local buf_name = api.nvim_buf_get_name
+local buf_name = vim.api.nvim_buf_get_name
 
 local Ts = require('nvim-treesitter')
 local Cfg = require('nvim-treesitter.configs')
@@ -74,9 +72,7 @@ local TSConfig = {
 	highlight = {
 		enable = true,
 
-		---@param lang? string The filetype.
-		---@param buf integer The bufnumber.
-		---@return boolean
+		---@type fun(lang: string, buf: integer): boolean
 		disable = function(lang, buf)
 			local max_fs = 512 * 1024
 			local ok, stats = pcall(fs_stat, buf_name(buf))
@@ -93,18 +89,10 @@ local TSConfig = {
 
 Cfg.setup(TSConfig)
 
-local modules = {
-	'context',
-	'rainbow',
-}
-
-for _, s in next, modules do
-	local path = 'lazy_cfg.treesitter.'..s
-	exists(path, true)
-end
+exists('lazy_cfg.treesitter.context', true)
 
 if exists('ts_context_commentstring') then
 	require('ts_context_commentstring').setup({
-		enable_autocmd = false,
+		enable_autocmd = true,
 	})
 end

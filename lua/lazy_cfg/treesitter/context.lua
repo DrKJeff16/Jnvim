@@ -24,9 +24,9 @@ local Options = {
 	trim_scope = 'outer',
 	line_numbers = false,
 	min_window_height = 1,
-	zindex = 12,
+	zindex = 30,
 	enable = true,
-	max_lines = 2,
+	max_lines = 3,
 }
 
 Context.setup(Options)
