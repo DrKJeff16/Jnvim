@@ -31,7 +31,7 @@
 
 ---@class KeyMapArr: ApiMapArr
 ---@field [1] string
----@field [2] string
+---@field [2] string|fun()
 ---@field [3]? KeyMapOpts
 
 ---@alias ApiMapDict table<string, ApiMapRhsOptsArr>

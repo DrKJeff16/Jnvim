@@ -16,11 +16,11 @@ local map = vim.api.nvim_set_keymap
 local bufmap = vim.api.nvim_buf_set_keymap
 
 ---@type Modes
-local MODES =  { 'n', 'i', 'v', 't', 'o', 'x' }
+local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 ---@type fun(mode: string|string[], func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
 local variant = function(mode, func, with_buf)
-	if is_nil(with_buf) then
+	if not is_bool(with_buf) then
 		with_buf = false
 	end
 	local res
@@ -89,6 +89,10 @@ local M = {
 function M.nop(T, opts, mode)
 	local map_tbl = M.map
 
+	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
+		mode = 'n'
+	end
+
 	if not is_tbl(opts) then
 		opts = {}
 	end
@@ -101,10 +105,6 @@ function M.nop(T, opts, mode)
 
 	opts.noremap = false
 
-	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
-		mode = 'n'
-	end
-
 	if is_str(T) then
 		map_tbl[mode](T, '<Nop>', opts)
 	elseif is_tbl(T) then
@@ -115,16 +115,20 @@ function M.nop(T, opts, mode)
 end
 
 function M.map_tbl(T, func, bufnr, mode)
-	local f	= M.map
+	local f = M.map
 
-	if is_nil(mode) or not vim.tbl_contains(M.modes, mode) then
+	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
 	end
 	if func == 'buf' then
-		bufnr = bufnr or 0
+		if not is_num(bufnr) or bufnr < 0 then
+			bufnr = 0
+		end
 		f = M.buf_map
 	elseif func == 'key' then
 		f = M.kmap
+	else
+		f = M.map
 	end
 
 	for k, v in next, T do
@@ -132,12 +136,10 @@ function M.map_tbl(T, func, bufnr, mode)
 			f[mode](v.lhs, v.rhs, v.opts or {})
 		elseif is_num(k) and not is_str(v[1]) and not is_nil(v[2]) then
 			f[mode](v[1], v[2], v[3] or {})
-		elseif is_str(k) then
-			if not is_nil(v.rhs) then
-				f[mode](k, v.rhs, v.opts or {})
-			elseif not is_tbl(v[1]) then
-				f[mode](k, v[1], v[2] or {})
-			end
+		elseif is_str(k) and not is_nil(v.rhs) then
+			f[mode](k, v.rhs, v.opts or {})
+		elseif is_str(k) and not is_tbl(v[1]) then
+			f[mode](k, v[1], v[2] or {})
 		else
 			error('Mapping failed!')
 			return

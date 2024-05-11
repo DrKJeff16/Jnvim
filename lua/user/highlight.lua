@@ -5,21 +5,27 @@ local types = require('user.types.user.highlight')
 local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
+local is_num = Check.value.is_num
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
-
-local empty = vim.tbl_isempty
+local empty = Check.value.empty
 
 ---@type UserHl
 local M = {
-	hl = function(name, opts)
-		local hi = vim.api.nvim_set_hl
-
-		if is_str(name) and is_tbl(opts) and not empty(opts) then
-			hi(0, name, opts)
-		else
+	hl = function(name, opts, bufnr)
+		if not is_str(name) or not is_tbl(opts) or empty(name) or empty(opts) then
 			error('A highlight value is not permitted!')
+			return
 		end
+
+		if not is_num(bufnr) or empty(bufnr) then
+			bufnr = 0
+		end
+
+		vim.api.nvim_set_hl(bufnr, name, opts)
+	end,
+	current_palette = function()
+		vim.cmd('colorscheme')
 	end,
 }
 
@@ -29,13 +35,13 @@ function M.hl_from_arr(arr)
 		return
 	end
 
-	for _, t in next, arr do
-		if is_str(t.name) and is_tbl(t.opts) and not empty(t.opts) then
-			M.hl(t.name, t.opts)
-		else
+	for _, T in next, arr do
+		if not is_str(T.name) or not is_tbl(T.opts) or empty(T.opts) then
 			error('A highlight value is not permitted!')
 			return
 		end
+
+		M.hl(T.name, T.opts)
 	end
 end
 
@@ -62,17 +68,13 @@ function M.hl_from_dict(dict)
 	end
 
 	for k, v in next, dict do
-		if is_str(k) and is_tbl(v) and not empty(v) then
-			M.hl(k, v)
-		else
+		if not is_str(k) or not is_tbl(v) or empty(v) then
 			error('A highlight value is not permitted!')
 			return
 		end
-	end
-end
 
-M.current_palette = function()
-	vim.cmd('colorscheme')
+		M.hl(k, v)
+	end
 end
 
 return M
