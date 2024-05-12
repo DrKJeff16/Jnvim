@@ -22,40 +22,55 @@ local TSUtils = require('nvim-treesitter.ts_utils')
 Install.prefer_git = true
 
 local ensure = {
+	'asm',
+	'arduino',
 	'bash',
 	'c',
 	'cmake',
+	'comment',
+	'commonlisp',
 	'cpp',
 	'css',
 	'csv',
+	'diff',
 	'doxygen',
 	'git_config',
 	'git_rebase',
 	'gitattributes',
 	'gitcommit',
 	'gitignore',
+	'glsl',
 	'gpg',
 	'html',
 	'ini',
 	'json',
 	'json5',
 	'jsonc',
+	'julia',
+	'kconfig',
+	'latex',
 	'lua',
 	'luadoc',
 	'luap',
+	'luau',
 	'markdown',
 	'markdown_inline',
 	'meson',
 	'ninja',
+	'objdump',
 	'passwd',
 	'python',
+	'query',
 	'readline',
 	'regex',
 	'rst',
 	'scss',
 	'ssh_config',
+	'templ',
+	'tmux',
 	'todotxt',
 	'toml',
+	'udev',
 	'vim',
 	'vimdoc',
 	'xml',
@@ -74,7 +89,7 @@ local TSConfig = {
 
 		---@type fun(lang: string, buf: integer): boolean
 		disable = function(lang, buf)
-			local max_fs = 512 * 1024
+			local max_fs = 1024 * 1024
 			local ok, stats = pcall(fs_stat, buf_name(buf))
 
 			return ok and not is_nil(stats) and stats.size > max_fs
@@ -83,7 +98,15 @@ local TSConfig = {
 	},
 
 	indent = { enable = false },
-	incremental_selection = { enable = true },
+	incremental_selection = {
+		enable = true,
+		keymaps = {
+			init_selection = "gnn", -- set to `false` to disable one of the mappings
+			node_incremental = "grn",
+			scope_incremental = "grc",
+			node_decremental = "grm",
+		},
+	},
 	modules = {},
 }
 
