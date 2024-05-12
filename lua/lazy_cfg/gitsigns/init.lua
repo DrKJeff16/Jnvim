@@ -2,8 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local maps_t = User.types.user.maps
 local Check = User.check
+local types = User.types.gitsigns
 local bufmap = User.maps.buf_map
 
 local is_nil = Check.value.is_nil
@@ -16,16 +16,15 @@ if not exists('gitsigns') or not executable('git') then
 	return
 end
 
-local types = User.types.gitsigns
-
 local Gsig = require('gitsigns')
 
 ---@type table<string, BufMapTbl[]|BufMapArr[]>
 local keys = {
 	n = {
 		-- Navigati7on
-		{ '<leader>G]c', "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'", { expr = true } },
-		{ '<leader>G[c', "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'", { expr = true } },
+		{ '<leader>G]c', "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'",          { expr = true } },
+		{ '<leader>G[c', "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'",          { expr = true } },
+
 		-- Actions
 		{ '<leader>Ghs', '<CMD>Gitsigns stage_hunk<CR>' },
 		{ '<leader>Ghr', '<CMD>Gitsigns reset_hunk<CR>' },
@@ -39,25 +38,12 @@ local keys = {
 		{ '<leader>GhD', '<CMD>lua require("gitsigns").diffthis("~")<CR>' },
 		{ '<leader>Gtd', '<CMD>Gitsigns toggle_deleted<CR>' },
 	},
+	-- WARNING: Avoid using `<CMD>` at all costs.
 	v = {
-		--- WARNING: Avoid using `<CMD>` at all costs.
 		{ '<leader>Ghs', ':Gitsigns stage_hunk<CR>' },
 		{ '<leader>Ghr', ':Gitsigns reset_hunk<CR>' },
 	},
 }
-
----@class GitSignOpts
----@field text string
-
----@class GitSigns
----@field add GitSignOpts
----@field change GitSignOpts
----@field delete GitSignOpts
----@field topdelete GitSignOpts
----@field changedelete GitSignOpts
----@field untracked GitSignOpts
-
----@alias GitSignsArr GitSigns[]
 
 ---@type GitSigns
 local signs = {
@@ -69,9 +55,9 @@ local signs = {
 	untracked    = { text = '┆' },
 }
 
-local opts= {
-	---@param bufnr integer
-	on_attach = function(bufnr)
+local opts = {
+	---@type fun(bufnr: integer)
+	on_attach                    = function(bufnr)
 		if not is_num(bufnr) or bufnr < 0 then
 			bufnr = 0
 		end
@@ -90,17 +76,17 @@ local opts= {
 		end
 	end,
 
-	signs = signs,
+	signs                        = signs,
 
-	signcolumn = vim.o.signcolumn ==  'yes',  -- Toggle with `:Gitsigns toggle_signs`
-	numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
-	linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
-	word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
-	watch_gitdir = { follow_files = true },
-	auto_attach = true,
-	attach_to_untracked = true,
-	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-	current_line_blame_opts = {
+	signcolumn                   = vim.o.signcolumn == 'yes', -- Toggle with `:Gitsigns toggle_signs`
+	numhl                        = true,                   -- Toggle with `:Gitsigns toggle_numhl`
+	linehl                       = false,                  -- Toggle with `:Gitsigns toggle_linehl`
+	word_diff                    = false,                  -- Toggle with `:Gitsigns toggle_word_diff`
+	watch_gitdir                 = { follow_files = true },
+	auto_attach                  = true,
+	attach_to_untracked          = true,
+	current_line_blame           = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	current_line_blame_opts      = {
 		virt_text = false,
 		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
 		delay = 5000,
@@ -108,10 +94,10 @@ local opts= {
 		virt_text_priority = 15,
 	},
 	current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
-	sign_priority = 10,
-	update_debounce = 100,
-	max_file_length = 40000, -- Disable if file is longer than this (in lines)
-	preview_config = {
+	sign_priority                = 10,
+	update_debounce              = 100,
+	max_file_length              = 40000, -- Disable if file is longer than this (in lines)
+	preview_config               = {
 		border = 'double',
 		style = 'minimal',
 		relative = 'cursor',
