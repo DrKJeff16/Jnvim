@@ -680,6 +680,19 @@ M.SYNTAX = {
 	},
 }
 
+M.UTILS = {
+	{
+		'iamcco/markdown-preview.nvim',
+		ft = { 'markdown' },
+		name = 'md_preview',
+		build = executable('yarn') and 'cd app && yarn install' or '',
+		init = function()
+			vim.g.mkdp_filetypes = { 'markdown' }
+		end,
+		config = source('lazy_cfg.md_preview'),
+	},
+}
+
 ---@type LazyPlugs
 local T = {}
 
