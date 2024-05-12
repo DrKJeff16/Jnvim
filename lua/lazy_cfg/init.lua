@@ -3,16 +3,14 @@
 
 local User = require('user')
 local Check = User.check
-local kmap = User.maps.kmap
 local lazy_t = User.types.lazy
+local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local is_str = Check.value.is_str
 local nmap = kmap.n
-
-local rtp = vim.opt.rtp
 
 local fs_stat = vim.loop.fs_stat
 local stdpath = vim.fn.stdpath
@@ -23,12 +21,12 @@ local au = vim.api.nvim_create_autocmd
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
 -- Install `Lazy` automatically.
-if not fs_stat(lazypath) or not exists('lazy')  then
+if not fs_stat(lazypath) or not exists('lazy') then
 	system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
 end
 
 -- Add `Lazy` to `stdpath`
-rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazypath)
 
 ---@type fun(): string
 local function luasnip_build()
@@ -36,7 +34,7 @@ local function luasnip_build()
 		return ''
 	end
 
-	local cmd = (executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp' )
+	local cmd = (executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp')
 
 	if is_windows and executable('mingw32-make') then
 		cmd = 'mingw32-' .. cmd
@@ -197,13 +195,13 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
-	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
+	{ 'tpope/vim-endwise',     lazy = false,   name = 'EndWise' },
+	{ 'tpope/vim-fugitive',    lazy = false,   name = 'Fugitive', enabled = executable('git') },
 	{ 'tpope/vim-speeddating', enabled = false },
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		event =  'BufWinEnter',
+		event = 'BufWinEnter',
 		name = 'todo-comments',
 		dependencies = {
 			'treesitter',
@@ -270,15 +268,15 @@ M.LSP = {
 		version = false,
 		dependencies = { 'NeoConf' },
 		enabled = executable('lua-language-server',
-		function()
-			local msg = 'No `lua-language-server` in `PATH`!'
-			if exists('notify') then
-				require('notify')(msg, 'error')
-			else
-				error(msg)
+			function()
+				local msg = 'No `lua-language-server` in `PATH`!'
+				if exists('notify') then
+					require('notify')(msg, 'error')
+				else
+					error(msg)
+				end
 			end
-		end
-			),
+		),
 	},
 	{
 		'folke/neoconf.nvim',
@@ -299,14 +297,14 @@ M.LSP = {
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = executable('clangd',
-		function()
-			local msg = 'No `clangd` in `PATH`!'
-			if exists('notify') then
-				require('notify')(msg, 'warn')
-			else
-				print(msg)
+			function()
+				local msg = 'No `clangd` in `PATH`!'
+				if exists('notify') then
+					require('notify')(msg, 'warn')
+				else
+					print(msg)
+				end
 			end
-		end
 		),
 	},
 	{
@@ -483,7 +481,7 @@ M.COMPLETION = {
 		end,
 		config = source('lazy_cfg.cmp'),
 	},
-	{ 'hrsh7th/cmp-nvim-lsp', lazy = true, main = 'cmp_nvim_lsp' },
+	{ 'hrsh7th/cmp-nvim-lsp',         lazy = true, main = 'cmp_nvim_lsp' },
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
@@ -700,20 +698,29 @@ local P = {
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
 local key_variant = function(cmd)
-	if not is_str(cmd) then
+	if not is_str(cmd) or not vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd) then
 		cmd = 'ed'
 	end
 
+	cmd = cmd .. ' '
+
 	return function()
-		local full_cmd = cmd .. ' ' .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+		local full_cmd = cmd .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
 		vim.cmd(full_cmd)
 	end
 end
 
-nmap('<leader>Let', key_variant('tabnew'), { desc = 'Open `Lazy` File Tab' })
-nmap('<leader>Lee', key_variant('ed'), { desc = 'Open `Lazy` File' })
-nmap('<leader>Les', key_variant('split'), { desc = 'Open `Lazy` File Horizontal Window' })
-nmap('<leader>Lev', key_variant('vsplit'), { desc = 'Open `Lazy`File Vertical Window' })
+---@type KeyMapDict
+local Keys = {
+	['<leader>Lee'] = { key_variant('ed'), { desc = 'Open `Lazy` File' } },
+	['<leader>Les'] = { key_variant('split'), { desc = 'Open `Lazy` File Horizontal Window' } },
+	['<leader>Let'] = { key_variant('tabnew'), { desc = 'Open `Lazy` File Tab' } },
+	['<leader>Lev'] = { key_variant('vsplit'), { desc = 'Open `Lazy`File Vertical Window' } },
+}
+
+for lhs, v in next, Keys do
+	nmap(lhs, v[1], v[2] or {})
+end
 
 return P
