@@ -7,14 +7,14 @@ local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
 
----@param subs string[]
----@return CscMod
-local src = function(subs)
+---@type fun(subs: string[]): CscMod
+local function src(subs)
 	---@type CscMod
 	local res = {}
 
 	for _, v in next, subs do
-		local path = 'lazy_cfg.colorschemes.'..v
+		local path = 'lazy_cfg.colorschemes.' .. v
+
 		res[v] = exists(path, true) or nil
 	end
 

@@ -17,7 +17,7 @@ local is_fun = Check.value.is_fun
 local empty = vim.tbl_isempty
 
 -- Set `<Space>` as Leader Key.
-nop('<Space>', { nowait = false, desc = 'Leader Key' })
+nop('<Space>', { nowait = false, noremap = true, desc = 'Leader Key' })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -68,25 +68,14 @@ for _, mode in next, User.maps.modes do
 	end
 end
 
---- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
---- Each mode contains its respective mappings.
---- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
----@class Maps
----@field n table<string, KeyMapRhsOptsArr>
----@field i? table<string, KeyMapRhsOptsArr>
----@field v table<string, KeyMapRhsOptsArr>
----@field t table<string, KeyMapRhsOptsArr>
----@field o? table<string, KeyMapRhsOptsArr>
----@field x? table<string, KeyMapRhsOptsArr>
-
 ---@type Maps
 local map_tbl = {
 	n = {
-		['<leader>fs'] = { '<CMD>w<CR>' },
+		['<leader>fs'] = { '<CMD>w<CR>', { silent = false } },
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
-		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>' },
-		['<leader>fvl'] = { '<CMD>luafile %<CR>' },
-		['<leader>fvv'] = { '<CMD>so %<CR>' },
+		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>', { silent = false } },
+		['<leader>fvl'] = { '<CMD>luafile %<CR>', { silent = false } },
+		['<leader>fvv'] = { '<CMD>so %<CR>', { silent = false } },
 		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
 		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
 		['<leader>fvet'] = { '<CMD>tabnew $MYVIMRC<CR>' },
@@ -114,8 +103,8 @@ local map_tbl = {
 
 		['<leader>bn'] = { '<CMD>bNext<CR>', { silent = false } },
 		['<leader>bp'] = { '<CMD>bprevious<CR>', { silent = false } },
-		['<leader>bd'] = { '<CMD>bdel<CR>' },
-		['<leader>bD'] = { '<CMD>bdel!<CR>' },
+		['<leader>bd'] = { '<CMD>bdel<CR>', { silent = false } },
+		['<leader>bD'] = { '<CMD>bdel!<CR>', { silent = false } },
 		['<leader>bf'] = { '<CMD>bfirst<CR>' },
 		['<leader>bl'] = { '<CMD>blast<CR>' },
 
@@ -127,8 +116,8 @@ local map_tbl = {
 		['<leader>Li'] = { '<CMD>Lazy install<CR>' },
 		['<leader>Lr'] = { '<CMD>Lazy reload<CR>' },
 	},
+	-- WARNING: DO NOT USE `<CMD>`!!!
 	v = {
-		--- WARNING: DO NOT USE `<CMD>`!!!
 		['<leader>is'] = { ':sort<CR>', { desc = 'Sort' } },
 		['<leader>iS'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
 	},

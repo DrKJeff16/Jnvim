@@ -8,8 +8,8 @@
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
 ---@class CscSubMod
 ---@field setup? fun(...)
----@field mod_pfx string
----@field mod_cmd string|string[]
+---@field protected mod_pfx string
+---@field mod_cmd string
 
 --- A table for each **explicitly** configured colorscheme.
 --- ---
