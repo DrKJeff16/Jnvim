@@ -122,8 +122,6 @@ local populate = function(srv_tbl)
 	return res
 end
 
-local lspconfig = require('lspconfig')
-
 ---@type LspServers
 local srv = {}
 
@@ -132,6 +130,7 @@ srv.bashls = (executable({ 'bash-language-server', 'shellcheck' }) and {} or nil
 srv.clangd = (executable('clangd') and {} or nil)
 srv.cmake = (executable('cmake-languqge-server') and {} or nil)
 srv.html = (executable('vscode-html-language-server') and {} or nil)
+srv.jdtls = (executable('jdtls') and {} or nil)
 srv.jsonls = (executable('vscode-json-language-server') and {} or nil)
 srv.marksman = (executable('marksman') and {} or nil)
 srv.pylsp = (executable('pylsp') and {} or nil)
@@ -139,6 +138,8 @@ srv.texlab = (executable('texlab') and {} or nil)
 srv.yamlls = (executable('yaml-language-server') and {} or nil)
 
 srv = populate(srv)
+
+local lspconfig = require('lspconfig')
 
 for k, v in next, srv do
 	lspconfig[k].setup(v)
@@ -150,6 +151,10 @@ local keys = {
 	['<leader>l['] = { Diag.goto_prev, { desc = 'Previous Diagnostic' } },
 	['<leader>l]'] = { Diag.goto_next, { desc = 'Previous Diagnostic' } },
 	['<leader>lq'] = { Diag.setloclist, { desc = 'Add Loclist' } },
+	['<leader>lC'] = { function() vim.cmd('LspInfo') end, { desc = 'Get LSP Config Info' } },
+	['<leader>lR'] = { function() vim.cmd('LspRestart') end, { desc = 'Restart Server' } },
+	['<leader>lH'] = { function() vim.cmd('LspStop') end, { desc = 'Stop Server' } },
+	['<leader>lI'] = { function() vim.cmd('LspStart') end, { desc = 'Start Server' } },
 }
 
 for lhs, v in next, keys do

@@ -47,7 +47,18 @@
 ---@field settings? table
 ---@field single_file_support? boolean
 
----@alias LspServers table<string, LspServerOpts>
+---@class LspServers
+---@field lua_ls? LspServerOpts|nil
+---@field bashls? LspServerOpts|nil
+---@field clangd? LspServerOpts|nil
+---@field cmake? LspServerOpts|nil
+---@field html? LspServerOpts|nil
+---@field jdtls? LspServerOpts|nil
+---@field jsonls? LspServerOpts|nil
+---@field marksman? LspServerOpts|nil
+---@field pylsp? LspServerOpts|nil
+---@field texlab? LspServerOpts|nil
+---@field yamlls? LspServerOpts|nil
 
 ---@class LspSubs
 ---@field neoconf fun()|nil
