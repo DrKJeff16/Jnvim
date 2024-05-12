@@ -1,3 +1,24 @@
+---@alias OD.style 'dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light'
+
+---@class OD.Diagnostics
+---@field darker? boolean
+---@field undercurl? boolean
+---@field background? boolean
+
+---@class OD
+---@field style? OD.style
+---@field transparent? boolean
+---@field term_colors? boolean
+---@field ending_tildes? boolean
+---@field cmp_itemkind_reverse? boolean
+---@field toggle_style_key? nil|string
+---@field toggle_style_list? string[]
+---@field code_style? table<string, string>
+---@field lualine? table
+---@field colors? table
+---@field highlights? table
+---@field diagnostics? OD.Diagnostics
+
 --- A loadable color schemes table.
 --- ---
 --- Each colorscheme is a table with **three** items:
@@ -11,12 +32,16 @@
 ---@field protected mod_pfx string
 ---@field mod_cmd string
 
+---@class ODSubMod: CscSubMod
+---@field setup? fun(style: OD.style?)
+
 --- A table for each **explicitly** configured colorscheme.
 --- ---
 --- The colorschemes must comply with the `CscSubMod` type specifications.
 --- ---
 ---@class CscMod
 ---@field tokyonight? CscSubMod|nil
+---@field onedark? ODSubMod|nil
 ---@field catppuccin? CscSubMod|nil
 ---@field nightfox? CscSubMod|nil
 ---@field spaceduck? CscSubMod|nil

@@ -157,7 +157,9 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	local Csc = Pkg.colorschemes.new()
 
 	-- Reorder to your liking.
-	if csc_check(Csc.tokyonight) then
+	if csc_check(Csc.onedark) then
+		Csc.onedark.setup()
+	elseif csc_check(Csc.tokyonight) then
 		Csc.tokyonight.setup()
 	elseif csc_check(Csc.catppuccin) then
 		Csc.catppuccin.setup()

@@ -462,6 +462,13 @@ M.COLORSCHEMES = {
 		version = false,
 	},
 	{
+		'navarasu/onedark.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'OneDark',
+		version = false,
+	},
+	{
 		'vigoux/oak',
 		lazy = true,
 		priority = 1000,

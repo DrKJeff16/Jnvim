@@ -22,7 +22,7 @@ local function theme_select(theme)
 	end
 
 	if theme == 'auto' then
-		for _, t in next, { 'catppuccin', 'tokyonight' } do
+		for _, t in next, { 'onedark', 'catppuccin', 'tokyonight' } do
 			if exists(t) then
 				theme = t
 				break

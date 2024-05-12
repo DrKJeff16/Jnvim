@@ -1,0 +1,64 @@
+---@diagnostic disable: unused-local
+---@diagnostic disable: unused-function
+
+local User = require('user')
+local Check = User.check
+local csc_t = User.types.colorschemes
+
+local exists = Check.exists.module
+local is_str = Check.value.is_str
+local empty = Check.value.empty
+
+---@type ODSubMod
+local M = {
+	mod_pfx = 'lazy_cfg.colorschemes.onedark',
+	mod_cmd = 'colorscheme onedark',
+}
+
+if exists('onedark') then
+	function M.setup(style)
+		local OD = require('onedark')
+
+		if not is_str or not vim.tbl_contains(OD.styles_list, style) then
+			style = 'deep'
+		end
+
+		---@type OD
+		local opts = {
+			style = style,
+			transparent = false,
+			term_colors = true,
+			ending_tildes = true,
+			cmp_itemkind_reverse = true,
+
+			toggle_style_key = nil,
+			toggle_style_list = { 'deep', 'warmer', 'darker' },
+
+			code_style = {
+				comments = 'none',
+				keywords = 'bold',
+				functions = 'bold',
+				strings = 'none',
+				variables = 'none',
+			},
+
+			lualine = {
+				transparent = true,
+			},
+
+			colors = {},
+			highlights = {},
+
+			diagnostics = {
+				darker = true,
+				undercurl = true,
+				background = true,
+			},
+		}
+
+		OD.setup(opts)
+		OD.load()
+	end
+end
+
+return M
