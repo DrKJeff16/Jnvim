@@ -67,6 +67,16 @@ local M = {}
 
 -- Essential Plugins
 M.ESSENTIAL = {
+	{
+		"dstein64/vim-startuptime",
+		cmd = "StartupTime",
+		keys = {
+			{ '<leader>vs', function() vim.cmd('StartupTime') end, desc = 'StartupTime' }
+		},
+		config = function()
+			vim.g.startuptime_tries = 10
+		end,
+	},
 	{ 'vim-scripts/L9', lazy = false },
 	-- WARN: `checkhealth` issues.
 	-- TODO: Solve config issues down the line.
@@ -86,6 +96,7 @@ M.ESSENTIAL = {
 		'tiagovla/scope.nvim',
 		lazy = false,
 		name = 'Scope',
+		version = false,
 		init = function()
 			vim.opt.ls = 2
 			vim.opt.stal = 2
@@ -105,6 +116,7 @@ M.ESSENTIAL = {
 		'nvim-lua/plenary.nvim',
 		lazy = true,
 		name = 'Plenary',
+		version = false,
 	},
 	{
 		'nvim-lua/popup.nvim',
@@ -155,6 +167,35 @@ M.NVIM = {
 		},
 		config = source('lazy_cfg.startup'),
 		enabled = false,
+	},
+	{
+		"folke/persistence.nvim",
+		event = "BufReadPre",
+		opts = { options = vim.opt.sessionoptions:get() },
+		-- stylua: ignore
+		keys = {
+			{
+				'<leader>sr',
+				function()
+					require('persistence').load()
+				end,
+				desc = 'Restore Session',
+			},
+			{
+				'<leader>sl',
+				function()
+					require('persistence').load({ last = true })
+				end,
+				desc = 'Restore Last Session',
+			},
+			{
+				'<leader>sd',
+				function()
+					require('persistence').stop()
+				end,
+				desc = 'Don\'t Save Current Session',
+			},
+		},
 	},
 }
 
@@ -552,6 +593,35 @@ M.TELESCOPE = {
 }
 -- UI Customizations
 M.UI = {
+	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		name = 'Noice',
+		version = false,
+		dependencies = {
+			"MunifTanjim/nui.nvim",
+			"Notify",
+			'cmp',
+		},
+		opts = {
+			lsp = {
+				-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+				override = {
+					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+					["vim.lsp.util.stylize_markdown"] = true,
+					["cmp.entry.get_documentation"] = true,
+				},
+			},
+			-- you can enable a preset for easier configuration
+			presets = {
+				bottom_search = true, -- use a classic bottom cmdline for search
+				command_palette = true, -- position the cmdline and popupmenu together
+				long_message_to_split = true, -- long messages will be sent to a split
+				inc_rename = false, -- enables an input dialog for inc-rename.nvim
+				lsp_doc_border = true, -- add a border to hover docs and signature help
+			},
+		},
+	},
 	{
 		'rcarriga/nvim-notify',
 		lazy = false,
