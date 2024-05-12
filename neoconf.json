@@ -7,12 +7,33 @@
 			"runtime": true,
 			"plugins": true
 		},
-		"override": null,
 		"lspconfig": true,
+		"override": null,
 		"pathStrict": true,
 		"setup_jsonls": true
 	},
 	"lspconfig": {
+		"yamlls": {
+			"redhat.telemetry.enabled": false,
+			"yaml.completion": true,
+			"yaml.disableAdditionalProperties": false,
+			"yaml.format.bracketSpacing": true,
+			"yaml.format.enable": true,
+			"yaml.format.printWidth": 100,
+			"yaml.format.proseWrap": "always",
+			"yaml.format.singleQuote": true,
+			"yaml.hover": true,
+			"yaml.maxItemsComputed": 5000,
+			"yaml.schemaStore.enable": true,
+			"yaml.validate": true
+		},
+		"clangd": {
+			"clangd.detectExtensionConflicts": true,
+			"clangd.enableCodeCompletion": true,
+			"clangd.inactiveRegions.useBackgroundHighlight": true,
+			"clangd.restartAfterCrash": true,
+			"clangd.serverCompletionRanking": true
+		},
 		"pylsp": {
 			"pylsp.configurationSources": [
 				"flake8"
