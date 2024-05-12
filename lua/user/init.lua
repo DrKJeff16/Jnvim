@@ -6,16 +6,7 @@ local Check = require('user.check')
 
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
-
----@param s string
----@return fun()
-local function ft(s)
-	return function()
-		if is_str(s) then
-			vim.cmd('setlocal ft=' .. s)
-		end
-	end
-end
+local empty = Check.value.empty
 
 ---@type UserMod
 local M = {
@@ -24,9 +15,17 @@ local M = {
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
-	--- DONE: Refactor using Lua API.
-	--- TODO: Refactor using own API modules.
+
 	assoc = function()
+		---@type fun(s: string): fun()
+		local function ft(s)
+			return function()
+				if is_str(s) then
+					vim.cmd('setlocal ft=' .. s)
+				end
+			end
+		end
+
 		local au = vim.api.nvim_create_autocmd
 
 		---@type AuRepeatEvents[]
@@ -43,9 +42,7 @@ local M = {
 
 		for _, v in next, aus do
 			for _, o in next, v.opts_tbl do
-				if is_tbl(v.events) or is_str(v.events) then
-					au(v.events, o)
-				end
+				au(v.events, o)
 			end
 		end
 	end,

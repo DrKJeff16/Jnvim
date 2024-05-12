@@ -1,11 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@class UserPlugTmpl
-
----@class UserCmp: UserPlugTmpl
----@class UserNotify: UserPlugTmpl
-
 ---@class UserPlugin
 ---@field cmp? UserCmp
 ---@field notify? UserNotify
@@ -41,6 +36,8 @@
 
 ---@type UserTypes
 local M = {
+	user = require('user.types.user'),
+
 	autopairs = require('user.types.autopairs'),
 	colorizer = require('user.types.colorizer'),
 	colorschemes = require('user.types.colorschemes'),
@@ -57,8 +54,6 @@ local M = {
 	todo_comments = require('user.types.todo_comments'),
 	treesitter = require('user.types.treesitter'),
 	which_key = require('user.types.which_key'),
-
-	user = require('user.types.user'),
 }
 
 return M
