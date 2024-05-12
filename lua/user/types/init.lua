@@ -20,6 +20,7 @@
 ---@field nvim_tree table
 ---@field telescope table
 ---@field todo_comments table
+---@field toggleterm table
 ---@field treesitter table
 ---@field user UserSubTypes
 ---@field which_key table
@@ -52,6 +53,7 @@ local M = {
 	nvim_tree = require('user.types.nvim_tree'),
 	telescope = require('user.types.telescope'),
 	todo_comments = require('user.types.todo_comments'),
+	toggleterm = require('user.types.toggleterm'),
 	treesitter = require('user.types.treesitter'),
 	which_key = require('user.types.which_key'),
 }

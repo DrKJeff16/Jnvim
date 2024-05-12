@@ -3,12 +3,12 @@
 
 local User = require('user')
 local Check = User.check
-local au_t = User.types.user.autocmd
-local maps_t = User.types.user.maps
-local exists = Check.exists.module
-local maps = User.maps
+local types = User.types.toggleterm
+local map = User.maps.map
 
-local map = maps.map
+local empty = Check.value.empty
+local is_tbl = Check.value.is_tbl
+local exists = Check.exists.module
 local tmap = map.t
 local nmap = map.n
 local imap = map.i
@@ -22,16 +22,17 @@ local api = vim.api
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
-local Tt = require('toggleterm')
+local TT = require('toggleterm')
 
-Tt.setup({
-	---@param term Terminal
-	---@return number res
+local FACTOR = vim.o.columns * 0.55
+
+TT.setup({
+	---@type fun(term: Terminal): number
 	size = function(term)
-		local FACTOR = 0.5
-		local res = 15
+		local res = 30
+
 		if term.direction == 'vertical' then
-			res = vim.o.columns * FACTOR
+			res = FACTOR
 		end
 
 		return res
@@ -43,9 +44,9 @@ Tt.setup({
 	close_on_exit = true,
 
 	opts = {
-		border = 'double',
+		border = 'none',
 		title_pos = 'center',
-		width = vim.o.columns * 0.55,
+		width = FACTOR,
 	},
 
 	highlights = {
@@ -67,7 +68,7 @@ Tt.setup({
 	persist_mode = true,
 
 	float_opts = {
-		border = 'double',
+		border = 'single',
 		title_pos = 'center',
 		zindex = 100,
 		winblend = 3,
@@ -75,8 +76,8 @@ Tt.setup({
 
 	winbar = {
 		enabled = true,
-		---@param term Terminal
-		---@return string
+
+		---@type fun(term: Terminal): string
 		name_formatter = function(term)
 			return term.name
 		end,
@@ -125,7 +126,9 @@ local map_tbl = {
 }
 
 for k, v in next, map_tbl do
-	for _, args in next, v do
-		map[k](args.lhs, args.rhs, args.opts or {})
+	if is_tbl(v) and not empty(v) then
+		for _, args in next, v do
+			map[k](args.lhs, args.rhs, args.opts or {})
+		end
 	end
 end
