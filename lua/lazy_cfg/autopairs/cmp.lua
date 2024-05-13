@@ -2,8 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local types = User.types.autopairs
 local Check = User.check
+local types = User.types.autopairs
 
 local mods_exist = Check.exists.modules
 
@@ -32,7 +32,6 @@ local ft_handles = {
 		},
 		tex = false,
 		text = false,
-		sh = false,
 	}
 }
 

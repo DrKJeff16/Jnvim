@@ -7,6 +7,7 @@ local types = User.types.telescope
 local kmap = User.maps.kmap
 
 local is_nil = Check.value.is_nil
+local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
@@ -33,7 +34,7 @@ local load_ext = Telescope.load_extension
 local opts = {
 	defaults = {
 		layout_strategy = 'flex',
-		layout_config = { vertical = { width = 0.80 } },
+		layout_config = { vertical = { width = vim.o.columns * 3 / 4 } },
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
@@ -64,9 +65,10 @@ end
 ---@type KeyMapModeDict
 local maps = {
 	n = {
-		{ lhs = '<leader>ff',       rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
-		{ lhs = '<leader><leader>', rhs = open,                         opts = { desc = 'Open Telescope' } },
+		{ lhs = '<leader><leader>', rhs = Builtin.commands,             opts = { desc = 'Open Telescope' } },
 		{ lhs = '<leader>fTT',      rhs = open,                         opts = { desc = 'Open Telescope' } },
+		{ lhs = '<leader>fTbC',     rhs = Builtin.commands,             opts = { desc = 'Colommands' } },
+		{ lhs = '<leader>fTbO',     rhs = Builtin.keymaps,              opts = { desc = 'Vim Options' } },
 		{ lhs = '<leader>fTbP',     rhs = Builtin.planets,              opts = { desc = 'Planets' } },
 		{ lhs = '<leader>fTbb',     rhs = Builtin.buffers,              opts = { desc = 'Buffers' } },
 		{ lhs = '<leader>fTbc',     rhs = Builtin.colorscheme,          opts = { desc = 'Colorschemes' } },
@@ -78,32 +80,13 @@ local maps = {
 		{ lhs = '<leader>fTblD',    rhs = Builtin.lsp_document_symbols, opts = { desc = 'Document Symbols' } },
 		{ lhs = '<leader>fTbld',    rhs = Builtin.lsp_definitions,      opts = { desc = 'Definitions' } },
 		{ lhs = '<leader>fTbp',     rhs = Builtin.pickers,              opts = { desc = 'Pickers' } },
-	},
-}
-
----@type AuRepeat
-local au_tbl = {
-	['User'] = {
-		{
-			pattern = 'TelescopePreviewerLoaded',
-
-			---@type fun(args: TelAuArgs)
-			callback = function(args)
-				if not is_tbl(args.data) or not is_str(args.data.filetype) or args.data.filetype ~= 'help' then
-					vim.wo.number = true
-				else
-					vim.wo.wrap = false
-				end
-			end,
-		},
+		{ lhs = '<leader>ff',       rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
 	},
 }
 
 ---@type table<string, TelExtension>
 local known_exts = {
-	['scope'] = {
-		'scope',
-	},
+	['scope'] = { 'scope' },
 	['project_nvim'] = {
 		'projects',
 		---@type fun(): KeyMapArgs[]
@@ -132,16 +115,37 @@ local known_exts = {
 			return res
 		end,
 	},
+	['noice'] = {
+		'noice',
+		---@type fun(): KeyMapArgs[]
+		keys = exists('noice') and function()
+			local Noice = require('noice')
+
+			---@type KeyMapArgs[]
+			local res = {
+				{ lhs = '<leadec>nl', rhs = function() Noice.cmd('last') end,    opts = { desc = 'NoiceLast' } },
+				{ lhs = '<leadec>nh', rhs = function() Noice.cmd('history') end, opts = { desc = 'NoiceHistory' } },
+			}
+
+			return res
+		end,
+	},
 }
 
 --- Load and Set Keymaps for available extensions.
 for mod, ext in next, known_exts do
+	if not is_str(ext[1]) then
+		goto continue
+	end
+
 	load_ext(ext[1])
-	if not is_nil(ext.keys) then
+	if is_fun(ext.keys) then
 		for _, v in next, ext.keys() do
 			table.insert(maps.n, v)
 		end
 	end
+
+	::continue::
 end
 
 for mode, m in next, maps do
@@ -149,6 +153,24 @@ for mode, m in next, maps do
 		kmap[mode](v.lhs, v.rhs, v.opts or {})
 	end
 end
+
+---@type AuRepeat
+local au_tbl = {
+	['User'] = {
+		{
+			pattern = 'TelescopePreviewerLoaded',
+
+			---@type fun(args: TelAuArgs)
+			callback = function(args)
+				if not is_tbl(args.data) or not is_str(args.data.filetype) or args.data.filetype ~= 'help' then
+					vim.wo.number = true
+				else
+					vim.wo.wrap = false
+				end
+			end,
+		},
+	},
+}
 
 for event, v in next, au_tbl do
 	for _, au_opts in next, v do

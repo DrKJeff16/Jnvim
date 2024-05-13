@@ -42,7 +42,9 @@ local sub_fun = function(path)
 	end
 
 	return function()
-		exists(path, true)
+		if exists(path) then
+			require(path)
+		end
 	end
 end
 
@@ -164,7 +166,7 @@ end
 au('LspAttach', {
 	group = augroup('UserLspConfig', { clear = true }),
 
-	---@param ev EvBuf
+	---@type fun(ev: EvBuf)
 	callback = function(ev)
 		local buf = ev.buf
 
@@ -248,7 +250,6 @@ local aus = {
 	},
 }
 
--- TODO: Do this using the API.
 for event, opts_arr in next, aus do
 	for _, opts in next, opts_arr do
 		au(event, opts)

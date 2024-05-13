@@ -7,80 +7,78 @@ local Check = require('user.check')
 local exists = Check.exists.vim_exists
 local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
-
-local has = vim.fn.has
+local has = Check.exists.vim_has
 
 ---@type 0|1
 vim.g.is_windows = has('win32')
 ---@type boolean
-_G.is_windows = vim.g.is_windows == 1
+_G.is_windows = vim.g.is_windows
 
 ---@type OptsTbl
 local opt_tbl = {
-	ai = true,  -- `autoindent`
-	ar = true,  -- `autoread`
+	autoindent = true,
+	autoread = true,
 	backspace = { 'indent', 'eol', 'start' },
 	backup = false,
 	belloff = { 'all' },
-	bg = 'dark',  -- `background`
-	ci = true,  -- `copyindent`
+	background = 'dark',
+	copyindent = true,
 	cmdwinheight = 4,
-	colorcolumn = { '+1' },
+	-- colorcolumn = { '+1' },
 	completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 	confirm = true,
-	enc = 'utf-8',  -- `encoding`
+	encoding = 'utf-8',
 	equalalways = true,
 	errorbells = false,
-	et = false,  -- `expandtab`
-	fenc = 'utf-8',  -- `fileencoding`
-	ff = 'unix',  -- `fileformat`
+	expandtab = false,
+	fileencoding = 'utf-8',
 	fileignorecase = is_windows,
 	formatoptions = 'oqwnbljp',
-	hid = true,  -- `hidden`
-	hlg = { 'en' },  -- `helplang`
+	hidden = true,
+	helplang = { 'en' },
 	hlsearch = true,
 	ignorecase = false,
 	incsearch = true,
-	ls = 2,  -- `laststatus`
+	laststatus = 2,
 	makeprg = 'make',
-	mps = {
+	matchpairs = {
 		'(:)',
 		'[:]',
 		'{:}',
 		'<:>',
-	},  -- `matchpairs`
-	mat = 30,  -- `matchtime`
-	mis = 40,  -- `menuitems`
+	},
+	matchtime = 30,
+	menuitems = 40,
 	mouse = '',
-	nu = true,  -- `number`
-	pi = true,  -- `preserveindent`
-	rnu = false,  -- `relativenumber`
-	ru = true,  -- `ruler`
+	number = true,
+	preserveindent = true,
+	relativenumber = false,
+	ruler = true,
 	sessionoptions = {
 		"buffers",
 		"tabpages",
 		"globals",
 	},
-	sh = (is_windows and 'cmd.exe' or 'bash'),  -- `shell`
-	so = 1,  -- `scrolloff`
+	shell = (is_windows and 'cmd.exe' or 'bash'),
+	scrolloff = 3,
 	showcmd = true,
 	showmatch = true,
 	showmode = false,
-	si = true,  -- `smartindent`
+	smartindent = true,
 	signcolumn = 'yes',
 	smartcase = true,
 	spell = false,
 	splitbelow = true,
 	splitright = true,
-	sta = true,  -- `smarttab`
-	stal = 2,  -- `showtabline`
-	sts = 4,  -- `softtabstop`
-	sw = 0,  -- `shiftwidth`
-	tgc = exists('+termguicolors'),  -- `termguicolors`
+	smarttab = true,
+	showtabline = 2,
+	softtabstop = 4,
+	shiftwidth = 0,
+	termguicolors = true,
 	title = true,
-	ts = 4,  -- `tabstop`
-	uc = 100,  -- `updatecount`
-	ut = 1000,  -- `updatetime`
+	tabstop = 4,
+	updatecount = 100,
+	updatetime = 1000,
 	visualbell = false,
 	wildmenu = true,
 	wrap = false,
@@ -97,7 +95,7 @@ if is_windows then
 	end
 end
 
----@param opts UserOpt
+---@type fun(opts: OptsTbl)
 local function optset(opts)
 	for k, v in next, opts do
 		if not is_nil(vim.opt[k]) then
@@ -109,5 +107,3 @@ local function optset(opts)
 end
 
 optset(opt_tbl)
-
-vim.o.relativenumber = false

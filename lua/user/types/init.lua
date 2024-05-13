@@ -61,12 +61,6 @@ local M = {
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
----@class Maps
----@field n table<string, KeyMapRhsOptsArr>
----@field i? table<string, KeyMapRhsOptsArr>
----@field v table<string, KeyMapRhsOptsArr>
----@field t table<string, KeyMapRhsOptsArr>
----@field o? table<string, KeyMapRhsOptsArr>
----@field x? table<string, KeyMapRhsOptsArr>
+---@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
 
 return M

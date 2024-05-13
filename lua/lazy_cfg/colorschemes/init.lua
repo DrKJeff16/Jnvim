@@ -15,16 +15,20 @@ local function src(subs)
 	for _, v in next, subs do
 		local path = 'lazy_cfg.colorschemes.' .. v
 
-		res[v] = exists(path, true) or nil
+		if exists(path) then
+			res[v] = exists(path, true)
+		else
+			res[v] = nil
+		end
 	end
 
 	return res
 end
 
 local submods = {
+	'onedark',
 	'tokyonight',
 	'catppuccin',
-	'onedark',
 	'nightfox',
 	'gloombuddy',
 	'spaceduck',

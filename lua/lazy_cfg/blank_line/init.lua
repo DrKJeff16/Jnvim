@@ -8,6 +8,7 @@ local hl_t = User.types.user.highlight
 local exists = Check.exists.module
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local hi = User.highlight.hl
 
 if not exists('ibl') then
@@ -17,8 +18,13 @@ end
 local Ibl = require('ibl')
 local Hooks = require('ibl.hooks')
 
+local HType = Hooks.type
+local Builtin = Hooks.builtin
+
+local register = Hooks.register
+
 ---@type HlDict
-local hilite = {
+local Hilite = {
 	['RainbowRed'] = { fg = '#E06C75' },
 	['RainbowYellow'] = { fg = '#E5C07B' },
 	['RainbowBlue'] = { fg = '#61AFEF' },
@@ -30,7 +36,7 @@ local hilite = {
 
 ---@type string[]
 local highlight = {}
-for k, _ in next, hilite do
+for k, _ in next, Hilite do
 	if is_str(k) then
 		table.insert(highlight, k)
 	end
@@ -41,24 +47,23 @@ local names = {}
 ---@type HlOpts[]
 local options = {}
 
-for k, v in next, hilite do
-	if is_str(k) and k ~= '' then
+for k, v in next, Hilite do
+	if is_str(k) and not empty(k) then
 		table.insert(names, k)
 	end
-	if is_tbl(v) and not vim.tbl_isempty(v) then
+	if is_tbl(v) and not empty(v) then
 		table.insert(options, v)
 	end
 end
 
-local apply_hilite = function()
-	for k, v in next, hilite do
+local apply_Hilite = function()
+	for k, v in next, Hilite do
 		hi(k, v)
 	end
 end
 
-Hooks.register(Hooks.type.HIGHLIGHT_SETUP, apply_hilite)
-
-Hooks.register(Hooks.type.SCOPE_HIGHLIGHT, Hooks.builtin.scope_highlight_from_extmark)
+register(HType.HIGHLIGHT_SETUP, apply_Hilite)
+register(HType.SCOPE_HIGHLIGHT, Builtin.scope_highlight_from_extmark)
 
 Ibl.setup({
 	indent = {
@@ -67,7 +72,7 @@ Ibl.setup({
 	},
 	whitespace = {
 		highlight = highlight,
-		remove_blankline_trail = true,
+		remove_blankline_trail = false,
 	},
 	scope = { enabled = true },
 })

@@ -42,21 +42,15 @@ if exists('onedark') then
 				variables = 'none',
 			},
 
-			lualine = {
-				transparent = true,
-			},
-
-			colors = {},
-			highlights = {},
+			lualine = { transparent = false },
 
 			diagnostics = {
 				darker = true,
 				undercurl = true,
 				background = true,
 			},
-		}
+		})
 
-		OD.setup(opts)
 		OD.load()
 	end
 end

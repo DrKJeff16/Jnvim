@@ -7,7 +7,7 @@ local map_t = User.types.user.maps
 local map = User.maps.map
 
 local exists = Check.exists.module
-local nmap = map.n
+local is_tbl = Check.value.is_tbl
 
 if not exists('barbar') then
 	return
@@ -17,6 +17,84 @@ local Bar = require('barbar')
 
 Bar.setup()
 
+-- TODO: Tweak options
+
+-- vim.g, barbar_auto_setup = 0
+--Bar.setup({
+--	animation = false,
+--	auto_hide = false,
+--	tabpages = false,
+--	clickable = false,
+
+--	exclude_ft = {
+--		'TelescopePrompt',
+--		'lazy',
+--	},
+
+--	focus_on_close = 'previous',
+--	hide = { inactive = false, extensions = false },
+
+--	highlight_alternate = true,
+--	highlight_inactive_file_icons = false,
+--	highlight_visible = true,
+
+--	icons = {
+--		buffer_index = false,
+--		buffer_number = false,
+
+--		diagnostics = {
+--			[vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
+--			[vim.diagnostic.severity.WARN] = { enabled = true },
+--			[vim.diagnostic.severity.INFO] = { enabled = false },
+--			[vim.diagnostic.severity.HINT] = { enabled = false },
+--		},
+
+--		gitsigns = {
+--			added = { enabled = true, icon = '+' },
+--			changed = { enabled = true, icon = '~' },
+--			deleted = { enabled = true, icon = '-' },
+--		},
+
+--		filetype = {
+--			custom_colors = false,
+--			enabled = true,
+--		},
+
+--		separator = { left = '▎', right = '' },
+--		separator_at_end = true,
+
+--		modified = { button = '●' },
+--		pinned = { button = '', filename = true },
+
+--		---@type 'default'|'powerline'|'slanted'
+--		preset = 'default',
+
+--		alternate = { filetype = { enabled = true } },
+--		current = { buffer_index = false },
+--		inactive = { button = '×' },
+--		visible = { modified = { buffer_number = false } },
+--	},
+
+--	insert_at_end = false,
+--	insert_at_start = false,
+
+--	maximum_padding = 2,
+--	minimum_padding = 1,
+--	maximum_length = 32,
+--	minimum_length = 0,
+
+--	semantic_letters = true,
+
+--	sidebar_filetypes = {
+--		NvimTree = true,
+--	},
+
+--	letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+
+--	no_name_title = nil,
+--})
+
+---@type ApiMapDict
 local Keys = {
 	['<leader>B<A-,>'] = { '<CMD>BufferPrevious<CR>' },
 	['<leader>B<A-.>'] = { '<CMD>BufferNext<CR>' },
@@ -43,5 +121,8 @@ local Keys = {
 }
 
 for lhs, v in next, Keys do
-	nmap(lhs, v[1], v[2] or {})
+	if not is_tbl(v[2]) then
+		v[2] = {}
+	end
+	map.n(lhs, v[1], v[2])
 end

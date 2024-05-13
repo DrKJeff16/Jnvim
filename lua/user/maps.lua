@@ -97,13 +97,13 @@ function M.nop(T, opts, mode)
 		opts = {}
 	end
 
-	for _, v in next, { 'nowait', 'silent' } do
+	for _, v in next, { 'nowait', 'noremap' } do
 		if not is_bool(opts[v]) then
-			opts[v] = true
+			opts[v] = false
 		end
 	end
 
-	opts.noremap = false
+	opts.silent = true
 
 	if is_str(T) then
 		map_tbl[mode](T, '<Nop>', opts)

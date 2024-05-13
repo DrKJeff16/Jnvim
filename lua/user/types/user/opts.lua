@@ -1,4 +1,1 @@
----@alias UserO table|vim.bo|vim.go|vim.wo
----@alias UserOpt table|vim.opt
-
----@alias OptsTbl UserOpt
+---@alias OptsTbl table|vim.bo|vim.wo

@@ -65,6 +65,109 @@ end
 ---@type table<string, LazyPlugs>
 local M = {}
 
+-- Colorschemes
+M.COLORSCHEMES = {
+	{
+		'navarasu/onedark.nvim',
+		priority = 1000,
+		name = 'OneDark',
+		version = false,
+	},
+	{
+		'catppuccin/nvim',
+		priority = 1000,
+		name = 'catppuccin',
+		version = false,
+	},
+	{
+		'folke/tokyonight.nvim',
+		priority = 1000,
+		name = 'tokyonight',
+		version = false,
+	},
+	{
+		'vigoux/oak',
+		priority = 1000,
+		version = false,
+	},
+	{
+		'bkegley/gloombuddy',
+		priority = 1000,
+		version = false,
+		dependencies = { 'colorbuddy' },
+	},
+	{
+		'tjdevries/colorbuddy.vim',
+		lazy = true,
+		priority = 1000,
+		name = 'colorbuddy',
+		version = false,
+	},
+	{
+		'EdenEast/nightfox.nvim',
+		lazy = true,
+		priority = 1000,
+		name = 'nightfox',
+		version = false,
+	},
+	{
+		'pineapplegiant/spaceduck',
+		lazy = false,
+		priority = 1000,
+		version = false,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			vim.g.installed_spaceduck = 1
+		end,
+	},
+	{
+		'dracula/vim',
+		lazy = false,
+		priority = 1000,
+		name = 'dracula',
+		version = false,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			vim.g.installed_dracula = 1
+		end,
+	},
+	{
+		'liuchengxu/space-vim-dark',
+		lazy = false,
+		priority = 1000,
+		version = false,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			vim.g.installed_space_vim_dark = 1
+		end,
+	},
+	{
+		'tomasr/molokai',
+		lazy = false,
+		priority = 1000,
+		version = false,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			vim.g.installed_molokai = 1
+		end,
+	},
+	{
+		'colepeters/spacemacs-theme.vim',
+		lazy = false,
+		priority = 1000,
+		name = 'spacemacs',
+		version = false,
+		-- Set the global condition for a later
+		-- submodule call.
+		init = function()
+			vim.g.installed_spacemacs = 1
+		end,
+	},
+}
 -- Essential Plugins
 M.ESSENTIAL = {
 	{
@@ -78,14 +181,6 @@ M.ESSENTIAL = {
 		end,
 	},
 	{ 'vim-scripts/L9', lazy = false },
-	-- WARN: `checkhealth` issues.
-	-- TODO: Solve config issues down the line.
-	{
-		'anuvyklack/hydra.nvim',
-		lazy = false,
-		name = 'Hydra',
-		enabled = false,
-	},
 	{
 		'echasnovski/mini.nvim',
 		name = 'Mini',
@@ -156,6 +251,7 @@ M.NVIM = {
 		init = function()
 			vim.opt.timeout = true
 			vim.opt.timeoutlen = 300
+			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.which_key'),
 	},
@@ -183,7 +279,9 @@ M.NVIM = {
 	{
 		"folke/persistence.nvim",
 		event = "BufReadPre",
-		opts = { options = vim.opt.sessionoptions:get() },
+		opts = {
+			options = vim.opt.sessionoptions:get(),
+		},
 		-- stylua: ignore
 		keys = {
 			{
@@ -248,9 +346,7 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise',     lazy = false,   name = 'EndWise' },
-	{ 'tpope/vim-fugitive',    lazy = false,   name = 'Fugitive', enabled = executable('git') },
-	{ 'tpope/vim-speeddating', enabled = false },
+	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
@@ -265,12 +361,21 @@ M.EDITING = {
 	},
 	{
 		'windwp/nvim-autopairs',
-		event = 'InsertEnter',
 		name = 'AutoPairs',
 		main = 'nvim-autopairs',
 		version = false,
 		config = source('lazy_cfg.autopairs'),
 	},
+	{
+		'glepnir/template.nvim',
+		name = 'Template',
+		config = source('lazy_cfg.template'),
+		enabled = false,
+	},
+}
+-- Version Control
+M.VCS = {
+	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
 	{
 		'lewis6991/gitsigns.nvim',
 		name = 'GitSigns',
@@ -284,12 +389,6 @@ M.EDITING = {
 		version = false,
 		config = source('lazy_cfg.diffview'),
 		enabled = executable('git'),
-	},
-	{
-		'glepnir/template.nvim',
-		name = 'Template',
-		config = source('lazy_cfg.template'),
-		enabled = false,
 	},
 }
 -- LSP
@@ -314,29 +413,19 @@ M.LSP = {
 		version = false,
 		enabled = executable('vscode-json-language-server'),
 	},
-	-- Essenyial for Nvim Lua files.
+	-- Essential for Nvim Lua files.
 	{
 		'folke/neodev.nvim',
 		name = 'NeoDev',
 		version = false,
 		dependencies = { 'NeoConf' },
-		enabled = executable('lua-language-server',
-			function()
-				local msg = 'No `lua-language-server` in `PATH`!'
-				if exists('notify') then
-					require('notify')(msg, 'error')
-				else
-					error(msg)
-				end
-			end
-		),
+		enabled = executable('lua-language-server'),
 	},
 	{
 		'folke/neoconf.nvim',
 		name = 'NeoConf',
 		version = false,
 	},
-	-- TODO: Make submodule.
 	{
 		'folke/trouble.nvim',
 		lazy = true,
@@ -349,16 +438,7 @@ M.LSP = {
 		lazy = true,
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = executable('clangd',
-			function()
-				local msg = 'No `clangd` in `PATH`!'
-				if exists('notify') then
-					require('notify')(msg, 'warn')
-				else
-					print(msg)
-				end
-			end
-		),
+		enabled = executable('clangd'),
 	},
 	{
 		'tamago324/nlsp-settings.nvim',
@@ -386,126 +466,6 @@ M.LSP = {
 		lazy = true,
 		name = 'Lsp_FileOps',
 		enabled = false,
-	},
-}
--- Colorschemes
-M.COLORSCHEMES = {
-	{
-		'pineapplegiant/spaceduck',
-		lazy = false,
-		priority = 1000,
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_spaceduck = 1
-		end,
-	},
-	{
-		'dracula/vim',
-		lazy = false,
-		priority = 1000,
-		name = 'dracula',
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_dracula = 1
-		end,
-	},
-	{
-		'liuchengxu/space-vim-dark',
-		lazy = false,
-		priority = 1000,
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_space_vim_dark = 1
-		end,
-	},
-	{
-		'tomasr/molokai',
-		lazy = false,
-		priority = 1000,
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_molokai = 1
-		end,
-	},
-	{
-		'colepeters/spacemacs-theme.vim',
-		lazy = false,
-		priority = 1000,
-		name = 'spacemacs',
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_spacemacs = 1
-		end,
-	},
-	{
-		'joshdick/onedark.vim',
-		lazy = false,
-		priority = 1000,
-		name = 'onedark',
-		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
-		init = function()
-			vim.g.installed_onedark = 1
-		end,
-	},
-	{
-		'catppuccin/nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'catppuccin',
-		version = false,
-	},
-	{
-		'folke/tokyonight.nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'tokyonight',
-		version = false,
-	},
-	{
-		'navarasu/onedark.nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'OneDark',
-		version = false,
-	},
-	{
-		'vigoux/oak',
-		lazy = true,
-		priority = 1000,
-		version = false,
-	},
-	{
-		'bkegley/gloombuddy',
-		lazy = true,
-		priority = 1000,
-		version = false,
-		dependencies = { 'colorbuddy' },
-	},
-	{
-		'tjdevries/colorbuddy.vim',
-		lazy = true,
-		priority = 1000,
-		name = 'colorbuddy',
-		version = false,
-	},
-	{
-		'EdenEast/nightfox.nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'nightfox',
-		version = false,
 	},
 }
 -- Completion and `cmp` related
@@ -541,21 +501,24 @@ M.COMPLETION = {
 		end,
 		config = source('lazy_cfg.cmp'),
 	},
-	{ 'hrsh7th/cmp-nvim-lsp',         lazy = true, main = 'cmp_nvim_lsp' },
+	{ 'hrsh7th/cmp-nvim-lsp', lazy = true, main = 'cmp_nvim_lsp' },
 	{
 		'L3MON4D3/LuaSnip',
 		lazy = true,
 		version = false,
 		dependencies = { 'friendly-snippets' },
-		build = luasnip_build() or '',
+		build = luasnip_build(),
 	},
-	{ 'rafamadriz/friendly-snippets', lazy = true, version = false },
+	{
+		'rafamadriz/friendly-snippets',
+		lazy = true,
+		version = false
+	},
 	{
 		'HiPhish/nvim-cmp-vlime',
 		lazy = true,
 		dependencies = { 'VLime' },
 	},
-
 	{
 		'vlime/vlime',
 		lazy = true,
@@ -594,12 +557,12 @@ M.TELESCOPE = {
 
 			system(nproc)
 		end,
-		enabled = executable({ 'fzf', 'nproc' }),
+		enabled = executable('fzf'),
 	},
 	-- Project Manager
 	{
 		'ahmedkhalf/project.nvim',
-		event = 'VimEnter',
+		lazy = false,
 		name = 'Project',
 		version = false,
 		init = function()
@@ -612,20 +575,6 @@ M.TELESCOPE = {
 }
 -- UI Customizations
 M.UI = {
-	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
-		priority = 1000,
-		name = 'Noice',
-		version = false,
-		dependencies = {
-			"MunifTanjim/nui.nvim",
-			"Notify",
-			'Mini',
-			'cmp',
-		},
-		config = source('lazy_cfg.noice'),
-	},
 	-- Statusline
 	{
 		'nvim-lualine/lualine.nvim',
@@ -696,7 +645,6 @@ M.UI = {
 			'web-devicons',
 			'Lsp_FileOps',
 			'Mini',
-			'Hydra',
 		},
 		-- Disable `netrw`.
 		init = function()
@@ -721,8 +669,20 @@ M.UI = {
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		name = 'Noice',
+		version = false,
+		dependencies = {
+			"MunifTanjim/nui.nvim",
+			"Notify",
+			'Mini',
+			'cmp',
+		},
+		config = source('lazy_cfg.noice'),
+	},
+	{
 		'LudoPinelli/comment-box.nvim',
-		lazy = false,
 		name = 'CommentBox',
 		config = source('lazy_cfg.commentbox'),
 		enabled = false,
@@ -730,17 +690,9 @@ M.UI = {
 }
 -- File Syntax Plugins
 M.SYNTAX = {
-	{
-		'rhysd/vim-syntax-codeowners',
-		lazy = false,
-		name = 'codeowners-syntax',
-	},
+	{ 'rhysd/vim-syntax-codeowners', name = 'codeowners-syntax' },
 
-	{
-		'vim-scripts/DoxygenToolkit.vim',
-		lazy = false,
-		name = 'DoxygenToolkit',
-	},
+	{ 'vim-scripts/DoxygenToolkit.vim', name = 'DoxygenToolkit' },
 }
 
 M.UTILS = {
@@ -769,7 +721,7 @@ Lazy.setup(T)
 
 ---@type LazyMods
 local P = {
-	colorschemes = exists('lazy_cfg.colorschemes', true),
+	colorschemes = require('lazy_cfg.colorschemes'),
 }
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()

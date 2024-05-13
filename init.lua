@@ -13,16 +13,14 @@ local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
-
-local empty = vim.tbl_isempty
+local empty = Check.value.empty
 
 -- Set `<Space>` as Leader Key.
-nop('<Space>', { nowait = false, noremap = true, desc = 'Leader Key' })
+nop('<Space>', { noremap = true, desc = 'Leader Key' })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Disable `netrw` regardless of whether
--- Nvim Tree exists or not
+-- Disable `netrw` regardless of whether `nvim_tree` exists or not
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -56,26 +54,40 @@ local NOP = {
 	'<leader>l',
 	'<leader>o',
 	'<leader>p',
-	'<leader>s',
 	'<leader>r',
+	'<leader>s',
 	'<leader>v',
 	'<leader>x',
 	'<leader>z',
 }
 for _, mode in next, User.maps.modes do
 	if mode ~= 'i' then
-		nop(NOP, { nowait = false }, mode)
+		nop(NOP, {}, mode)
 	end
 end
 
 ---@type Maps
 local map_tbl = {
 	n = {
+		['<Esc><Esc>'] = { '<CMD>nohls<CR>', { desc = 'Remove Highlights' } },
+
 		['<leader>fs'] = { '<CMD>w<CR>', { silent = false } },
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
 		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>', { silent = false } },
-		['<leader>fvl'] = { '<CMD>luafile %<CR>', { silent = false } },
-		['<leader>fvv'] = { '<CMD>so %<CR>', { silent = false } },
+		['<leader>fvl'] = {
+			function()
+				vim.notify('Sourcing current Lua file.')
+				vim.cmd('luafile %')
+			end,
+			{ silent = false }
+		},
+		['<leader>fvv'] = {
+			function()
+				vim.notify('Sourcing current Vim file.')
+				vim.cmd('so %')
+			end,
+			{ silent = false }
+		},
 		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
 		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
 		['<leader>fvet'] = { '<CMD>tabnew $MYVIMRC<CR>' },
@@ -144,17 +156,14 @@ for mode, t in next, map_tbl do
 	end
 end
 
--- SECTION: Colorschemes
--- Sourced from `lua/lazy_cfg/colorschemes/*`.
-
----@type fun(csc: CscSubMod): boolean
-local function csc_check(csc)
-	return is_tbl(csc) and is_fun(csc.setup)
+---@type fun(T: CscSubMod|ODSubMod): boolean
+local function csc_check(T)
+	return is_tbl(T) and is_fun(T.setup)
 end
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
-	local Csc = Pkg.colorschemes.new()
+	local Csc = Pkg.colorschemes
 
 	-- Reorder to your liking.
 	if csc_check(Csc.onedark) then
@@ -174,8 +183,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	end
 end
 
+-- Call the user file associations
 if is_fun(User.assoc) then
-	--- Call the user file associations.
 	User.assoc()
 end
 

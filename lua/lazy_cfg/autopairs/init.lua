@@ -34,7 +34,7 @@ Ap.setup({
 	enable_moveright = true,
 	enable_afterquote = true,      -- add bracket pairs after quote
 	enable_check_bracket_line = true, --- check bracket in same line
-	enable_bracket_in_quote = false,
+	enable_bracket_in_quote = true,
 	enable_abbr = false,           -- trigger abbreviation
 
 	break_undo = true,             -- switch for basic rule break undo sequence
@@ -79,7 +79,7 @@ local M = {
 		return exists('lazy_cfg.autopairs.cmp', true) or nil
 	end,
 	rules = function()
-		return exists('lazy_cfg.autopairs.rules', true) or nil
+		return exists('lazy_cfg.autopairs.rules', true)
 	end,
 }
 

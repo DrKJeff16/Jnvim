@@ -3,18 +3,14 @@
 
 local User = require('user')
 local Check = User.check
-local maps = User.maps
-local map = maps.map
-local kmap = maps.kmap
+local map = User.maps.map
+local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 
 if not exists('Comment') then
 	return
 end
-
-local bo = vim.bo
-local set = vim.o
 
 local Comment = require('Comment')
 
@@ -58,7 +54,7 @@ local opts = {
 		---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
 		basic = true,
 		---Extra mapping; `gco`, `gcO`, `gcA`
-		extra = true,
+		extra = false,
 	},
 }
 
