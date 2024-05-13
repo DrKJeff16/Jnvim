@@ -8,7 +8,9 @@ local types = require('user.types.user.check')
 ---@type UserCheck
 local M = {
 	value = {
-		---Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
+		-- NOTE: We define `is_nil` first as it's used by the other checkers.
+
+		--- Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
 		is_nil = function(var, multiple)
 			if multiple == nil or type(multiple) ~= 'boolean' then
 				multiple = false
@@ -17,7 +19,7 @@ local M = {
 			if not multiple then
 				return var == nil
 			end
-			if  type(var) ~= 'table' then
+			if type(var) ~= 'table' then
 				return false
 			end
 
@@ -36,7 +38,6 @@ local M = {
 		end,
 	},
 }
--- NOTE: We define `is_nil` first as it's used by the other checkers.
 
 local type_funcs = {
 	['is_str'] = 'string',
@@ -110,14 +111,15 @@ function M.dry_run(f, ...)
 
 	ok, res = pcall(f, ...)
 
-	return (ok and res or nil)
+	return ok and res or nil
 end
 
 M.exists = {
 	module = function(mod, return_mod)
+		local is_bool = M.value.is_bool
 		local is_nil = M.value.is_nil
 
-		return_mod = not is_nil(return_mod) and false or return_mod
+		return_mod = is_bool(return_mod) and return_mod or false
 
 		---@type boolean
 		local res
@@ -125,7 +127,11 @@ M.exists = {
 		local m
 		res, m = pcall(require, mod)
 
-		return (return_mod and m or res)
+		if return_mod and not is_nil(m) then
+			return m
+		else
+			return res
+		end
 	end,
 	field = function(field, t)
 		local is_nil = M.value.is_nil
@@ -150,15 +156,16 @@ function M.exists.vim_has(expr)
 	local has = vim.fn.has
 	local is_str = M.value.is_str
 	local is_tbl = M.value.is_tbl
+	local empty = M.value.empty
 
 	if is_str(expr) then
 		return has(expr) == 1
 	end
 
-	if is_tbl(expr) and not vim.tbl_isempty(expr) then
+	if is_tbl(expr) and not empty(expr) then
 		local res = false
 		for _, v in next, expr do
-			res = M.exists.vim_has(expr)
+			res = M.exists.vim_has(v)
 
 			if not res then
 				break
@@ -175,15 +182,16 @@ function M.exists.vim_exists(expr)
 	local exists = vim.fn.exists
 	local is_str = M.value.is_str
 	local is_tbl = M.value.is_tbl
+	local empty = M.value.empty
 
 	if is_str(expr) then
 		return exists(expr) == 1
 	end
 
-	if is_tbl(expr) and not vim.tbl_isempty(expr) then
+	if is_tbl(expr) and not empty(expr) then
 		local res = false
 		for _, v in next, expr do
-			res = M.exists.vim_exists(expr)
+			res = M.exists.vim_exists(v)
 
 			if not res then
 				break
@@ -201,26 +209,26 @@ function M.exists.executable(exe, fallback)
 	local is_tbl = M.value.is_tbl
 	local is_str = M.value.is_str
 	local is_fun = M.value.is_fun
-	local vexecutable = vim.fn.executable
+	local executable = vim.fn.executable
 
-	if not vim.tbl_contains({ 'string', 'table' }, type(exe)) then
+	if not is_str(exe) and not is_tbl(exe) then
 		error('Argument type is not string nor table!!')
 		return false
 	end
 
-	fallback = (is_nil(fallback) and nil or fallback)
+	fallback = is_fun(fallback) and fallback or nil
 
 	local res = false
 
-	if is_tbl(exe) then
+	if is_str(exe) then
+		res = executable(exe) == 1
+	elseif is_tbl(exe) then
 		for _, v in next, exe do
 			res = M.exists.executable(v)
 			if not res then
 				break
 			end
 		end
-	elseif is_str(exe) then
-		res = vexecutable(exe) == 1
 	end
 
 	if not res and is_fun(fallback) then
@@ -234,6 +242,7 @@ function M.exists.modules(mod, need_all)
 	local is_bool = M.value.is_bool
 	local is_tbl = M.value.is_tbl
 	local is_str = M.value.is_str
+	local empty = M.value.empty
 	local exists = M.exists.module
 
 	need_all = is_bool(need_all) and need_all or false
@@ -243,7 +252,7 @@ function M.exists.modules(mod, need_all)
 
 	if is_str(mod) then
 		res = exists(mod)
-	elseif is_tbl(mod) and not vim.tbl_isempty(mod) then
+	elseif is_tbl(mod) and not empty(mod) then
 		res = {}
 
 		for _, v in next, mod do
