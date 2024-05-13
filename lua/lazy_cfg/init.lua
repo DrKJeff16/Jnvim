@@ -34,7 +34,7 @@ local function luasnip_build()
 		return ''
 	end
 
-	local cmd = (executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp')
+	local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp'
 
 	if is_windows and executable('mingw32-make') then
 		cmd = 'mingw32-' .. cmd
@@ -439,27 +439,6 @@ M.LSP = {
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = executable('clangd'),
-	},
-	{
-		'tamago324/nlsp-settings.nvim',
-		lazy = true,
-		name = 'nlsp-settings',
-		dependencies = {
-			'MasonLSP',
-			'Notify',
-		},
-	},
-	{
-		'williamboman/mason-lspconfig.nvim',
-		lazy = true,
-		name = 'MasonLSP',
-		dependencies = { 'Mason' },
-	},
-	{
-		'williamboman/mason.nvim',
-		lazy = true,
-		cmd = { 'Mason' },
-		name = 'Mason',
 	},
 	{
 		'antosha417/nvim-lsp-file-operations',
