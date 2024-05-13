@@ -144,7 +144,6 @@ local Pkg = require('lazy_cfg')
 
 -- Set the keymaps previously stated.
 for mode, t in next, map_tbl do
-	---@type KeyMapFunction
 	local func = Kmap[mode]
 
 	for lhs, v in next, t do

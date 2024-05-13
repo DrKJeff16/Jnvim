@@ -1,17 +1,10 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@class TabLine.Comps.Diag.Spec
----@field error? any
----@field warn? any
----@field info? any
----@field hint? any
-
----@class TabLine.Comps.Diag.Src: TabLine.Comps.Diag.Spec
----@field error? any
----@field warn? any
----@field info? any
----@field hint? any
+---@alias TabLine.Comps.Diag.Spec table<'error'|'warn'|'info'|'hint', any>
+---@alias TabLine.Comps.Diag.Src table<'error'|'warn'|'info'|'hint', any>
+---@alias TabLine.Comps.Diag.Colors table<'error'|'warn'|'info'|'hint', any>
+---@alias TabLine.Comps.Diag.Symbols table<'error'|'warn'|'info'|'hint', any>
 
 ---@alias Tabline.Comps.DateTime.style 'default'|'us'|'uk'|'iso'|string
 
@@ -30,14 +23,6 @@
 --
 -- Displays diagnostics for the defined severity types
 ---@alias DiagLvls ('error'|'warn'|'info'|'hint')[]
-
----@class TabLine.Comps.Diag.Colors: TabLine.Comps.Diag.Spec
----@field error? string
----@field warn? string
----@field info? string
----@field hint? string
-
----@class TabLine.Comps.Diag.Symbols: TabLine.Comps.Diag.Colors
 
 ---@class TabLine.Comps.Spec
 ---@field icons_enabled? boolean
@@ -101,12 +86,12 @@
 ---|table
 
 ---@class TabLine.Sections.Spec
----@field lualine_a? table|TabLine.AllComps[]
----@field lualine_b? table|TabLine.AllComps[]
----@field lualine_c? table|TabLine.AllComps[]
----@field lualine_x? table|TabLine.AllComps[]
----@field lualine_y? table|TabLine.AllComps[]
----@field lualine_z? table|TabLine.AllComps[]
+---@field lualine_a? table|(TabLine.AllComps)[]
+---@field lualine_b? table|(TabLine.AllComps)[]
+---@field lualine_c? table|(TabLine.AllComps)[]
+---@field lualine_x? table|(TabLine.AllComps)[]
+---@field lualine_y? table|(TabLine.AllComps)[]
+---@field lualine_z? table|(TabLine.AllComps)[]
 
 ---@class TabLine.Sections
 ---@field active TabLine.Sections.Spec

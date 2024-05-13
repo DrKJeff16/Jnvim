@@ -65,11 +65,13 @@ end
 ---@type fun(field: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
 local mode_funcs = function(field)
 	local VALID = { api = { 'map', map, false }, key = { 'kmap', kmap, false }, buf = { 'buf_map', bufmap, true } }
+
 	if is_nil(VALID[field]) then
 		error('Invalid variant ID!')
 	else
 		---@type UserKeyMaps|UserApiMaps|UserBufMaps
 		local res = {}
+
 		for _, mode in next, MODES do
 			res[mode] = variant(mode, VALID[field][2], VALID[field][3])
 		end

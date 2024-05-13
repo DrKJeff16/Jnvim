@@ -16,7 +16,7 @@ local function src(subs)
 		local path = 'lazy_cfg.colorschemes.' .. v
 
 		if exists(path) then
-			res[v] = exists(path, true)
+			res[v] = require(path)
 		else
 			res[v] = nil
 		end

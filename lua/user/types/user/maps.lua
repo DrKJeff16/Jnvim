@@ -1,10 +1,18 @@
 ---@alias ApiMapOpts vim.api.keyset.keymap
 ---@alias KeyMapOpts vim.keymap.set.Opts
 ---@alias BufMapOpts ApiMapOpts
+
+--- `Rhs` for use in `vim.keymap.set`
 ---@alias KeyRhs string|fun()
+
+--- `Rhs` for use in `vim.api.nvim_set_keymap`
 ---@alias ApiRhs string
+
+--- Available modes
 ---@alias MapModes 'n'|'i'|'v'|'t'|'o'|'x'
----@alias Modes MapModes[]
+
+--- Array for available modes
+---@alias Modes (MapModes)[]
 
 ---@class ApiMapRhsOptsArr
 ---@field [1] ApiRhs
@@ -22,6 +30,7 @@
 ---@field rhs KeyRhs
 ---@field opts? KeyMapOpts
 
+--- Array for `vim.api.nvim_set_keymap` arguments
 ---@class ApiMapArr
 ---@field [1] string
 ---@field [2] string
@@ -29,6 +38,7 @@
 
 ---@class BufMapArr: ApiMapArr
 
+--- Array for `vim.keymap.set` arguments
 ---@class KeyMapArr: ApiMapArr
 ---@field [1] string
 ---@field [2] string|fun()
@@ -58,55 +68,17 @@
 ---@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts: KeyMapOpts?)
 ---@alias BufMapFunction fun(b: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
 
----@class ApiMapModeDicts
----@field n? ApiMapTbl[]
----@field i? ApiMapTbl[]
----@field v? ApiMapTbl[]
----@field t? ApiMapTbl[]
----@field o? ApiMapTbl[]
----@field x? ApiMapTbl[]
+---@alias ApiMapModeDicts table<MapModes, ApiMapTbl[]>
+---@alias KeyMapModeDicts table<MapModes, KeyMapTbl[]>
+---@alias BufMapModeDicts table<MapModes, BufMapTbl[]>
 
----@class KeyMapModeDicts
----@field n? KeyMapTbl[]
----@field i? KeyMapTbl[]
----@field v? KeyMapTbl[]
----@field t? KeyMapTbl[]
----@field o? KeyMapTbl[]
----@field x? KeyMapTbl[]
+---@alias MapFuncs
+---|fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
+---|fun(bufnr: integer, lhs: string, rhs: string, opts: BufMapOpts?)
 
----@class BufMapModeDicts: ApiMapModeDicts
----@field n? BufMapTbl[]
----@field i? BufMapTbl[]
----@field v? BufMapTbl[]
----@field t? BufMapTbl[]
----@field o? BufMapTbl[]
----@field x? BufMapTbl[]
-
----@alias MapFuncs fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)|fun(bufnr: integer, lhs: string, rhs: string, opts: ApiMapOpts?)
-
----@class UserApiMaps
----@field n ApiMapFunction
----@field v ApiMapFunction
----@field t ApiMapFunction
----@field i ApiMapFunction
----@field o ApiMapFunction
----@field x ApiMapFunction
-
----@class UserKeyMaps: UserApiMaps
----@field n KeyMapFunction
----@field v KeyMapFunction
----@field t KeyMapFunction
----@field i KeyMapFunction
----@field o KeyMapFunction
----@field x KeyMapFunction
-
----@class UserBufMaps: UserApiMaps
----@field n BufMapFunction
----@field v BufMapFunction
----@field t BufMapFunction
----@field i BufMapFunction
----@field o BufMapFunction
----@field x BufMapFunction
+---@alias UserApiMaps table<MapModes,ApiMapFunction>
+---@alias UserKeyMaps table<MapModes,KeyMapFunction>
+---@alias UserBufMaps table<MapModes,BufMapFunction>
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps

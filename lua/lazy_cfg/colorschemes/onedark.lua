@@ -49,7 +49,7 @@ if exists('onedark') then
 				undercurl = true,
 				background = true,
 			},
-		})
+		}
 
 		OD.load()
 	end
