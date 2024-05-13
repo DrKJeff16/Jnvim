@@ -12,7 +12,9 @@ local is_fun = Check.value.is_fun
 ---@type fun(min_mod: string, opts: table?)
 local function src(mini_mod, opts)
 	mini_mod = 'mini.' .. mini_mod
+
 	if not exists(mini_mod) then
+		error('(lazy_cfg.mini): Unable to import `' .. mini_mod .. '`')
 		return
 	end
 
