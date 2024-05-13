@@ -134,7 +134,6 @@ M.ESSENTIAL = {
 
 -- Nvim Configurations
 M.NVIM = {
-	{ 'tpope/vim-sensible', lazy = false, enabled = false },
 	{
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
@@ -603,11 +602,13 @@ M.UI = {
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
+		priority = 1000,
 		name = 'Noice',
 		version = false,
 		dependencies = {
 			"MunifTanjim/nui.nvim",
 			"Notify",
+			'Mini',
 			'cmp',
 		},
 		opts = {
@@ -704,6 +705,7 @@ M.UI = {
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
+		main = 'nvim-tree',
 		name = 'nvim_tree',
 		version = false,
 		dependencies = {
