@@ -65,22 +65,21 @@ end
 ---@type KeyMapModeDict
 local maps = {
 	n = {
-		{ lhs = '<leader><leader>', rhs = Builtin.commands,             opts = { desc = 'Open Telescope' } },
-		{ lhs = '<leader>fTT',      rhs = open,                         opts = { desc = 'Open Telescope' } },
+		{ lhs = '<leader><leader>', rhs = open,                         opts = { desc = 'Open Telescope' } },
+		{ lhs = '<leader>hH',       rhs = Builtin.help_tags,            opts = { desc = 'Telescope Help Tags' } },
+		{ lhs = '<leader>ff',       rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
+
 		{ lhs = '<leader>fTbC',     rhs = Builtin.commands,             opts = { desc = 'Colommands' } },
 		{ lhs = '<leader>fTbO',     rhs = Builtin.keymaps,              opts = { desc = 'Vim Options' } },
 		{ lhs = '<leader>fTbP',     rhs = Builtin.planets,              opts = { desc = 'Planets' } },
 		{ lhs = '<leader>fTbb',     rhs = Builtin.buffers,              opts = { desc = 'Buffers' } },
 		{ lhs = '<leader>fTbc',     rhs = Builtin.colorscheme,          opts = { desc = 'Colorschemes' } },
 		{ lhs = '<leader>fTbd',     rhs = Builtin.diagnostics,          opts = { desc = 'Diagnostics' } },
-		{ lhs = '<leader>fTbf',     rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
 		{ lhs = '<leader>fTbg',     rhs = Builtin.live_grep,            opts = { desc = 'Live Grep' } },
-		{ lhs = '<leader>fTbh',     rhs = Builtin.help_tags,            opts = { desc = 'Help Tags' } },
 		{ lhs = '<leader>fTbk',     rhs = Builtin.keymaps,              opts = { desc = 'Keymaps' } },
 		{ lhs = '<leader>fTblD',    rhs = Builtin.lsp_document_symbols, opts = { desc = 'Document Symbols' } },
 		{ lhs = '<leader>fTbld',    rhs = Builtin.lsp_definitions,      opts = { desc = 'Definitions' } },
 		{ lhs = '<leader>fTbp',     rhs = Builtin.pickers,              opts = { desc = 'Pickers' } },
-		{ lhs = '<leader>ff',       rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
 	},
 }
 

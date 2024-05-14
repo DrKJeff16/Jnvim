@@ -73,20 +73,47 @@ local map_tbl = {
 
 		['<leader>fs'] = { '<CMD>w<CR>', { silent = false, desc = 'Save File' } },
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
-		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>', { silent = false } },
+		['<leader>fvs'] = {
+			function()
+				vim.notify('Sourcing `init.lua`...')
+				vim.cmd('luafile $MYVIMRC')
+			end, { silent = false } },
 		['<leader>fvl'] = {
 			function()
-				vim.notify('Sourcing current Lua file.')
-				vim.cmd('luafile %')
+				local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+				local err_msg = 'File not sourceable!'
+
+				if ft == 'lua' then
+					vim.notify('Sourcing current Lua file...')
+					vim.cmd('luafile %')
+				elseif not is_nil(_G.Notify) then
+					Notify(err_msg, 'error', { title = 'Lua' })
+				elseif exists('notify') then
+					require('notify')(err_msg, 'error', { title = 'Lua' })
+				else
+					error(err_msg)
+				end
 			end,
-			{ silent = false }
+			{ silent = false, desc = 'Attempt To Source Current Lua File' },
 		},
 		['<leader>fvv'] = {
 			function()
-				vim.notify('Sourcing current Vim file.')
-				vim.cmd('so %')
+				---@type string
+				local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+				local err_msg = 'File not sourceable!'
+
+				if ft == 'vim' then
+					vim.notify('Sourcing current Vim file...')
+					vim.cmd('so %')
+				elseif not is_nil(_G.Notify) then
+					Notify(err_msg, 'error', { title = 'Vim' })
+				elseif exists('notify') then
+					require('notify')(err_msg, 'error', { title = 'Vim' })
+				else
+					error(err_msg)
+				end
 			end,
-			{ silent = false }
+			{ silent = false, desc = 'Attempt To Source Current Vim File' },
 		},
 		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
 		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
@@ -96,6 +123,14 @@ local map_tbl = {
 		['<leader>fvev'] = { '<CMD>vsplit $MYVIMRC<CR>' },
 
 		['<leader>vh'] = { '<CMD>checkhealth<CR>' },
+
+		['<leader>ht'] = { ':tab h ', { silent = false, desc = 'Prompt For Help On New Tab' } },
+		['<leader>hv'] = { ':vertical h ', { silent = false, desc = 'Prompt For Help On Vertical Split' } },
+		['<leader>hs'] = { ':horizontal h ', { silent = false, desc = 'Prompt For Help On Horizontal Split' } },
+		['<leader>hh'] = { ':h ', { silent = false, desc = 'Prompt For Help' } },
+		['<leader>hT'] = { '<CMD>tab h<CR>', { desc = 'Open Help On New Tab' } },
+		['<leader>hV'] = { '<CMD>vertical h<CR>', { desc = 'Open Help On Vertical Split' } },
+		['<leader>hS'] = { '<CMD>horizontal h<CR>', { desc = 'Open Help On Horizontal Split' } },
 
 		['<leader>wn'] = { '<C-w>w', { desc = 'Next Window' } },
 		['<leader>wss'] = { '<CMD>split<CR>', { silent = false } },
@@ -154,11 +189,17 @@ for mode, t in next, map_tbl do
 	local func = Kmap[mode]
 
 	for lhs, v in next, t do
+		if not (is_fun(v[1]) or is_str(v[1])) then
+			goto continue
+		end
+
 		if not is_tbl(v[2]) then
 			v[2] = {}
 		end
 
 		func(lhs, v[1], v[2])
+
+		::continue::
 	end
 end
 

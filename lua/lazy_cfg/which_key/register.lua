@@ -301,6 +301,9 @@ local regs = {
 	-- Barbar
 	['<leader>B'] = { name = '+Barbar' },
 
+	-- Help
+	['<leader>h'] = { name = '+Help' },
+
 	-- Session
 	['<leader>s'] = { name = '+Session' },
 
