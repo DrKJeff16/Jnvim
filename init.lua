@@ -63,9 +63,7 @@ local NOP = {
 	'<leader>z',
 }
 for _, mode in next, User.maps.modes do
-	if mode ~= 'i' then
-		nop(NOP, {}, mode)
-	end
+	nop(NOP, {}, mode)
 end
 
 ---@type Maps

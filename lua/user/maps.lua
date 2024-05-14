@@ -89,10 +89,16 @@ local M = {
 }
 
 function M.nop(T, opts, mode)
+	if not (is_str(T) or is_tbl(T)) then
+		return
+	end
+
 	local map_tbl = M.map
 
 	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
 		mode = 'n'
+	elseif mode == 'i' then
+		return
 	end
 
 	if not is_tbl(opts) then
@@ -105,7 +111,9 @@ function M.nop(T, opts, mode)
 		end
 	end
 
-	opts.silent = true
+	if not is_bool(opts.silent) then
+		opts.silent = true
+	end
 
 	if is_str(T) then
 		map_tbl[mode](T, '<Nop>', opts)
