@@ -4,18 +4,16 @@
 local User = require('user')
 local Check = User.check
 local lazy_t = User.types.lazy
-local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local is_str = Check.value.is_str
-local nmap = kmap.n
+local nmap = User.maps.kmap.n
 
 local fs_stat = vim.loop.fs_stat
 local stdpath = vim.fn.stdpath
 local system = vim.fn.system
-local au = vim.api.nvim_create_autocmd
 
 -- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
@@ -189,7 +187,8 @@ M.ESSENTIAL = {
 	},
 	{
 		'tiagovla/scope.nvim',
-		lazy = false,
+		event = 'VimEnter',
+		priority = 1000,
 		name = 'Scope',
 		version = false,
 		init = function()
@@ -216,6 +215,7 @@ M.ESSENTIAL = {
 	{
 		'nvim-lua/popup.nvim',
 		name = 'Popup',
+		version = false,
 		dependencies = { 'Plenary' },
 	},
 
@@ -224,6 +224,7 @@ M.ESSENTIAL = {
 		lazy = false,
 		priority = 1000,
 		name = 'Notify',
+		main = 'notify',
 		version = false,
 		dependencies = { 'Plenary' },
 		init = function()
@@ -247,6 +248,7 @@ M.NVIM = {
 		event = 'VeryLazy',
 		priority = 1000,
 		name = 'which_key',
+		main = 'which-key',
 		version = false,
 		init = function()
 			vim.opt.timeout = true
