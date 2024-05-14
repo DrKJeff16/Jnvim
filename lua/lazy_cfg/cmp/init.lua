@@ -27,6 +27,7 @@ local s_tab_map = Util.s_tab_map
 local cr_map = Util.cr_map
 
 local bs_map = Util.bs_map
+local buffer = Sources.buffer
 
 ---@type table<string, cmp.MappingClass|fun(fallback: function):nil>
 local Mappings = {
@@ -132,7 +133,7 @@ local opts = {
 		{ name = 'nvim_lsp',                priority = 1 },
 		{ name = 'nvim_lsp_signature_help', priority = 2 },
 		{ name = 'luasnip',                 priority = 3 },
-		{ name = 'buffer',                  priority = 4 },
+		buffer(4),
 	}),
 }
 

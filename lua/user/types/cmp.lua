@@ -44,6 +44,24 @@
 ---@field view cmp.ViewConfig
 ---@field vscode fun()
 
+---@class SourceTypeOpts
+---@field keyword_pattern? string
+---@field keyword_length? integer
+---@field indexing_interval? number
+---@field indexing_branch_size? number
+---@field max_indexed_line_length? number
+
+---@class SourceType
+---@field name string
+---@field option? SourceTypeOpts
+---@field priority? integer
+
+---@class SourceBufOpts: SourceTypeOpts
+---@field get_bufnrs? fun(): table
+
+---@class SourceBuf: SourceType
+---@field option? SourceBufOpts
+
 ---@class MultiSources
 ---@field [1] string[]
 ---@field [2] cmp.ConfigSchema
@@ -54,3 +72,4 @@
 ---@field new fun(): Sources
 ---@field __index? Sources
 ---@field setup fun(T: SetupSources?)
+---@field buffer fun(priority: integer?): SourceBuf

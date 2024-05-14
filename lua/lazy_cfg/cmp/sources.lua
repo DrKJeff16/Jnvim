@@ -10,6 +10,31 @@ local is_str = Check.value.is_str
 
 local cmp = require('cmp')
 
+---@type fun(priority: integer?): SourceBuf
+local buffer = function(priority)
+	---@type SourceBuf
+	local res = {
+		name = 'buffer',
+		option = {
+			-- keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]]
+			keyword_pattern = [[\k\+]],
+			get_bufnrs = function()
+				local bufs = {}
+				for _, win in next, vim.api.nvim_list_wins() do
+					bufs[vim.api.nvim_win_get_buf(win)] = true
+				end
+				return vim.tbl_keys(bufs)
+			end,
+		},
+	}
+
+	if is_num(priority) and priority >= 1 then
+		res.priority = priority
+	end
+
+	return res
+end
+
 ---@type SetupSources
 local ft = {
 	{
@@ -20,7 +45,7 @@ local ft = {
 				{ name = 'async_path',              priority = 2 },
 				{ name = 'luasnip',                 priority = 3 },
 				{ name = 'nvim_lsp_signature_help', priority = 4 },
-				{ name = 'buffer',                  priority = 5 },
+				buffer(5),
 			}),
 		},
 	},
@@ -28,9 +53,9 @@ local ft = {
 		{ 'conf', 'config', 'cfg', 'confini' },
 		{
 			sources = cmp.config.sources({
-				{ name = 'luasnip', priority = 1 },
+				{ name = 'luasnip',    priority = 1 },
 				{ name = 'async_path', priority = 2 },
-				{ name = 'buffer', priority = 2 },
+				buffer(3),
 			}),
 		}
 	},
@@ -38,7 +63,7 @@ local ft = {
 		sources = cmp.config.sources({
 			{ name = 'vlime',   priority = 1 },
 			{ name = 'luasnip', priority = 2 },
-			{ name = 'buffer',  priority = 3 },
+			buffer(3),
 		})
 	},
 	['gitcommit'] = {
@@ -46,7 +71,7 @@ local ft = {
 			{ name = 'git',                 priority = 1 },
 			{ name = 'conventionalcommits', priority = 2 },
 			{ name = 'luasnip',             priority = 3 },
-			{ name = 'buffer',              priority = 4 },
+			buffer(4),
 		}),
 	},
 }
@@ -59,7 +84,7 @@ local cmdline = {
 			mapping = cmp.mapping.preset.cmdline(),
 			sources = cmp.config.sources({
 				{ name = 'nvim_lsp_document_symbol', priority = 1 },
-				{ name = 'buffer',                   priority = 2 },
+				buffer(2),
 			}),
 		}
 	},
@@ -121,6 +146,8 @@ local M = {
 			end
 		end
 	end,
+
+	buffer = buffer,
 }
 
 function M.new()
