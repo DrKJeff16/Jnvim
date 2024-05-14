@@ -36,7 +36,7 @@ end
 Lualine.setup({
 	options = {
 		icons_enabled = true,
-		theme = theme_select(),
+		theme = theme_select('tokyonight'),
 		component_separators = { left = '', right = '' },
 		section_separators = { left = '', right = '' },
 		ignore_focus = {},
