@@ -16,8 +16,7 @@ local Presets = require('which-key.plugins.presets')
 
 local register = WK.register
 
----@param maps RegKeysTbl
----@param opts? RegOpts
+---@type fun(maps: RegKeysTbl, opts: RegOpts?)
 local reg = function(maps, opts)
 	local MODES = { 'n', 'i', 'v', 't', 'x', 'o' }
 	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
@@ -43,11 +42,11 @@ local reg = function(maps, opts)
 		---@type RegKey|RegPfx
 		local tbl = vim.deepcopy(v)
 
-		if is_nil(tbl.name) then
-			for _, o in next, DEFAULT_OPTS do
-				if is_nil(tbl[o]) then
-					tbl[o] = true
-				end
+		for _, o in next, DEFAULT_OPTS do
+			if not is_nil(v.name) and o == 'nowait' and not is_bool(tbl[o]) then
+				tbl[o] = false
+			elseif not is_bool(tbl[o]) then
+				tbl[o] = true
 			end
 		end
 
@@ -71,15 +70,7 @@ local regs = {
 		'<CMD>luafile $MYVIMRC<cr>',
 		'Source Neovim\'s `init.lua`',
 	},
-	['<leader>fvl'] = {
-		'<CMD>luafile %<cr>',
-		'Source Current Lua File',
-	},
-	['<leader>fvv'] = {
-		'<CMD>so %<cr>',
-		'Source Current Vimscript File',
-	},
-	['<leader>fve'] = { name = '+Edit `init`' },
+	['<leader>fve'] = { name = '+Edit `init.lua`' },
 	['<leader>fvee'] = {
 		'<CMD>ed $MYVIMRC<cr>',
 		'Open `$MYVIMRC`',
@@ -206,6 +197,7 @@ local regs = {
 
 	-- Lazy
 	['<leader>L'] = { name = '+Lazy' },
+	['<leader>e'] = { name = '+Edit Lazy Config' },
 	['<leader>Ll'] = {
 		'<CMD>Lazy<cr>',
 		'Open Floating Window',
@@ -308,6 +300,15 @@ local regs = {
 
 	-- Barbar
 	['<leader>B'] = { name = '+Barbar' },
+
+	-- Session
+	['<leader>s'] = { name = '+Session' },
+
+	-- Vim
+	['<leader>v'] = { name = '+Vim' },
+
+	-- Trouble
+	['<leader>x'] = { name = '+Trouble' },
 }
 
 reg(regs)
