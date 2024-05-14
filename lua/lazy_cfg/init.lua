@@ -471,7 +471,7 @@ M.COMPLETION = {
 			'petertriho/cmp-git',
 			'davidsierradz/cmp-conventionalcommits',
 			'HiPhish/nvim-cmp-vlime',
-			'FelipeLema/cmp-async-path',
+			'https://codeberg.org/FelipeLema/cmp-async-path',
 			'hrsh7th/cmp-cmdline',
 
 			'saadparwaiz1/cmp_luasnip',

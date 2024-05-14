@@ -21,6 +21,7 @@ local Sources = require('lazy_cfg.cmp.sources')
 
 local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')
+local Compare = require('cmp.config.compare')
 
 local tab_map = Util.tab_map
 local s_tab_map = Util.s_tab_map
@@ -99,7 +100,7 @@ local opts = {
 		local in_ts_capture = Context.in_treesitter_capture
 		local in_syntax_group = Context.in_syntax_group
 
-		return not in_ts_capture('comment') and not in_syntax_group('Comment')
+		return not (in_ts_capture('comment') or in_syntax_group('Comment'))
 	end,
 
 	snippet = {
@@ -107,6 +108,26 @@ local opts = {
 		expand = function(args)
 			Luasnip.lsp_expand(args.body)
 		end,
+	},
+
+	sorting = {
+		priority_weight = 2,
+		comparators = {
+			Compare.kind,
+			Compare.score,
+			Compare.scopes,
+			Compare.locality,
+			Compare.exact,
+			Compare.offset,
+			Compare.recently_used,
+			Compare.sort_text,
+			Compare.length,
+			Compare.order,
+		},
+	},
+
+	experimental = {
+		ghost_text = true,
 	},
 
 	completion = {
