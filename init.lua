@@ -35,6 +35,7 @@ local NOP = {
 	"<leader>'",
 	'<leader>!',
 	'<leader>"',
+	'<leader>A',
 	'<leader>C',
 	'<leader>I',
 	'<leader>L',
@@ -44,6 +45,7 @@ local NOP = {
 	'<leader>U',
 	'<leader>V',
 	'<leader>X',
+	'<leader>a',
 	'<leader>b',
 	'<leader>c',
 	'<leader>d',
@@ -71,7 +73,7 @@ local map_tbl = {
 	n = {
 		['<Esc><Esc>'] = { '<CMD>nohls<CR>', { desc = 'Remove Highlights' } },
 
-		['<leader>fs'] = { '<CMD>w<CR>', { silent = false } },
+		['<leader>fs'] = { '<CMD>w<CR>', { silent = false, desc = 'Save File' } },
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
 		['<leader>fvs'] = { '<CMD>luafile $MYVIMRC<CR>', { silent = false } },
 		['<leader>fvl'] = {
@@ -95,9 +97,11 @@ local map_tbl = {
 		['<leader>fves'] = { '<CMD>split $MYVIMRC<CR>' },
 		['<leader>fvev'] = { '<CMD>vsplit $MYVIMRC<CR>' },
 
+		['<leader>vh'] = { '<CMD>checkhealth<CR>' },
+
 		['<leader>wn'] = { '<C-w>w', { desc = 'Next Window' } },
-		['<leader>wss'] = { '<CMD>split<CR>' },
-		['<leader>wsv'] = { '<CMD>vsplit<CR>' },
+		['<leader>wss'] = { '<CMD>split<CR>', { silent = false } },
+		['<leader>wsv'] = { '<CMD>vsplit<CR>', { silent = false } },
 		['<leader>wsS'] = { ':split ', { silent = false, desc = 'Horizontal Split (Interactively)' } },
 		['<leader>wsV'] = { ':vsplit ', { silent = false, desc = 'Vertical Split (Interactively)' } },
 
@@ -107,9 +111,9 @@ local map_tbl = {
 		['<leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
 		['<leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
 		['<leader>td'] = { '<CMD>tabc<CR>', { silent = false } },
-		['<leader>tD'] = { '<CMD>tabc!<CR>' },
-		['<leader>tf'] = { '<CMD>tabfirst<CR>' },
-		['<leader>tl'] = { '<CMD>tablast<CR>' },
+		['<leader>tD'] = { '<CMD>tabc!<CR>', { silent = false } },
+		['<leader>tf'] = { '<CMD>tabfirst<CR>', { silent = false } },
+		['<leader>tl'] = { '<CMD>tablast<CR>', { silent = false } },
 		['<leader>ta'] = { ':tabnew ', { silent = false, desc = 'New Tab (Interactively)' } },
 		['<leader>tA'] = { '<CMD>tabnew<CR>', { silent = false } },
 
@@ -117,8 +121,8 @@ local map_tbl = {
 		['<leader>bp'] = { '<CMD>bprevious<CR>', { silent = false } },
 		['<leader>bd'] = { '<CMD>bdel<CR>', { silent = false } },
 		['<leader>bD'] = { '<CMD>bdel!<CR>', { silent = false } },
-		['<leader>bf'] = { '<CMD>bfirst<CR>' },
-		['<leader>bl'] = { '<CMD>blast<CR>' },
+		['<leader>bf'] = { '<CMD>bfirst<CR>', { silent = false } },
+		['<leader>bl'] = { '<CMD>blast<CR>', { silent = false } },
 
 		['<leader>Ll'] = { '<CMD>Lazy<CR>' },
 		['<leader>LL'] = { ':Lazy ', { silent = false, desc = 'Select `Lazy` Operation (Interactively)' } },
@@ -130,8 +134,13 @@ local map_tbl = {
 	},
 	-- WARNING: DO NOT USE `<CMD>`!!!
 	v = {
-		['<leader>is'] = { ':sort<CR>', { desc = 'Sort' } },
-		['<leader>iS'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
+		['<leader>s'] = { ':sort<CR>', { desc = 'Sort' } },
+		['<leader>S'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
+
+		['<leader>f'] = { ':foldopen<CR>', { desc = 'Open Fold' } },
+		['<leader>F'] = { ':foldclose<CR>', { desc = 'Open Fold' } },
+
+		['<leader>r'] = { ':s/', { silent = false, desc = 'Run Search-Replace Interactively' } },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
