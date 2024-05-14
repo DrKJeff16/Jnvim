@@ -14,10 +14,11 @@ if not exists('neoconf') then
 	return
 end
 
-if is_num(_G.neoconf_configured) and _G.neoconf_configured == 1 then
+if is_num(neoconf_configured) and neoconf_configured == 1 then
 	local msg = 'Neoconf can\'t be re-sourced.'
+
 	if exists('notify') then
-		require('notify')(msg, 'warn')
+		require('notify')(msg, 'error', { title = 'NeoConf' })
 	else
 		print(msg)
 	end
@@ -38,7 +39,7 @@ local opts = {
 	import = {
 		vscode = true, -- local .vscode/settings.json
 		coc = false, -- global/local coc-settings.json
-		nlsp = true, -- global/local nlsp-settings.nvim json settings
+		nlsp = false, -- global/local nlsp-settings.nvim json settings
 	},
 	-- send new configuration to lsp clients when changing json settings
 	live_reload = true,

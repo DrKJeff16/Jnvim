@@ -2,7 +2,8 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:missing-fields
 
-require('user.types.lspconfig')
+local User = require('user')
+local types = User.types.lspconfig
 
 local lsp = vim.lsp
 

@@ -7,8 +7,6 @@ local Check = User.check
 local exists = Check.exists.module
 local executable = Check.exists.executable
 
-local fn = vim.fn
-
 if not exists('clangd_extensions') or not executable('clangd') then
 	return
 end
@@ -18,7 +16,7 @@ local Inlay = require('clangd_extensions.inlay_hints')
 
 Exts.setup({
 	inlay_hints = {
-		inline = fn.has("nvim-0.10") == 1,
+		inline = vim.fn.has("nvim-0.10") == 1,
 		-- Options other than `highlight' and `priority' only work
 		-- if `inline' is disabled
 		-- Only show inlay hints for the current line
