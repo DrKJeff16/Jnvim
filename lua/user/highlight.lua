@@ -13,12 +13,12 @@ local empty = Check.value.empty
 ---@type UserHl
 local M = {
 	hl = function(name, opts, bufnr)
-		if not is_str(name) or not is_tbl(opts) or empty(name) or empty(opts) then
+		if not (is_str(name) or is_tbl(opts)) or empty(name) or empty(opts) then
 			error('A highlight value is not permitted!')
 			return
 		end
 
-		if not is_num(bufnr) or empty(bufnr) then
+		if not is_num(bufnr) or bufnr < 0 then
 			bufnr = 0
 		end
 
@@ -36,7 +36,7 @@ function M.hl_from_arr(arr)
 	end
 
 	for _, T in next, arr do
-		if not is_str(T.name) or not is_tbl(T.opts) or empty(T.opts) then
+		if not (is_str(T.name) or is_tbl(T.opts)) or empty(T.name) or empty(T.opts) then
 			error('A highlight value is not permitted!')
 			return
 		end
@@ -68,7 +68,7 @@ function M.hl_from_dict(dict)
 	end
 
 	for k, v in next, dict do
-		if not is_str(k) or not is_tbl(v) or empty(v) then
+		if not (is_str(k) or is_tbl(v)) or empty(v) then
 			error('A highlight value is not permitted!')
 			return
 		end

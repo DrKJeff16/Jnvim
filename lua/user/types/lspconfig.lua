@@ -40,7 +40,7 @@
 ---@field init_options? table<string, any>
 ---@field name? string
 ---@field log_level? number|nil
----@field on_attach? fun(client: table?): any
+---@field on_attach? fun(client: vim.lsp.Client): any
 ---@field on_new_config? any
 ---@field onset_encoding? any
 ---@field root_dir? any

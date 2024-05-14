@@ -62,7 +62,7 @@
 
 --- The same as `ApiMapTbl`, just add `bufnr` as field.
 ---@class BufMapTbl: ApiMapTbl
----@field bufnr? integer
+---@field bufnr integer
 
 ---@alias ApiMapFunction fun(lhs: string, rhs: string, opts: ApiMapOpts?)
 ---@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts: KeyMapOpts?)
@@ -74,7 +74,7 @@
 
 ---@alias MapFuncs
 ---|fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
----|fun(bufnr: integer, lhs: string, rhs: string, opts: BufMapOpts?)
+---|fun(bufnr: integer, lhs: string|string[], rhs: string, opts: BufMapOpts?)
 
 ---@alias UserApiMaps table<MapModes,ApiMapFunction>
 ---@alias UserKeyMaps table<MapModes,KeyMapFunction>
@@ -86,3 +86,4 @@
 ---@field buf_map UserBufMaps
 ---@field nop fun(T: string|string[], opts: ApiMapOpts?, mode: MapModes?)
 ---@field modes Modes
+---@field map_tbl? MapTblFun

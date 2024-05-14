@@ -116,37 +116,4 @@ function M.nop(T, opts, mode)
 	end
 end
 
-function M.map_tbl(T, func, bufnr, mode)
-	local f = M.map
-
-	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
-		mode = 'n'
-	end
-	if func == 'buf' then
-		if not is_num(bufnr) or bufnr < 0 then
-			bufnr = 0
-		end
-		f = M.buf_map
-	elseif func == 'key' then
-		f = M.kmap
-	else
-		f = M.map
-	end
-
-	for k, v in next, T do
-		if is_num(k) and is_str(v.lhs) and not is_nil(v.rhs) then
-			f[mode](v.lhs, v.rhs, v.opts or {})
-		elseif is_num(k) and not is_str(v[1]) and not is_nil(v[2]) then
-			f[mode](v[1], v[2], v[3] or {})
-		elseif is_str(k) and not is_nil(v.rhs) then
-			f[mode](k, v.rhs, v.opts or {})
-		elseif is_str(k) and not is_tbl(v[1]) then
-			f[mode](k, v[1], v[2] or {})
-		else
-			error('Mapping failed!')
-			return
-		end
-	end
-end
-
 return M

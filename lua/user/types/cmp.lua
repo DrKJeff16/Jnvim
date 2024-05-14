@@ -1,14 +1,11 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@class CmpMap
----@field i? fun(fallback: fun())
----@field s? fun(fallback: fun())
----@field c? fun(fallback: fun())
+---@alias CmpMap table<'i'|'s'|'t', fun(fallback: fun())>
 
----@class TabMap: CmpMap
+---@alias TabMap CmpMap
 
----@class CrMap: CmpMap
+---@alias CrMap CmpMap
 
 ---@class FmtKindIcons
 ---@field Class? string
@@ -37,12 +34,7 @@
 ---@field Value? string
 ---@field Variable? string
 
----@class FmtOptsMenu
----@field buffer? string
----@field nvim_lsp? string
----@field luasnip? string
----@field nvim_lua? string
----@field latex_symbols? string
+---@alias FmtOptsMenu table<'buffer'|'nvim_lsp'|'luasnip'|'nvim_lua'|'latex_symbols', string>
 
 ---@class CmpKindMod
 ---@field protected kind_icons FmtKindIcons

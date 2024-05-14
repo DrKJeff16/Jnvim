@@ -2,14 +2,14 @@
 ---@diagnostic disable:unused-function
 
 ---@class ColorizerOpts
----@field RGB boolean
----@field RRGGBB boolean
----@field RRGGBBAA boolean
----@field names boolean
----@field rgb_fn boolean
+---@field RGB? boolean
+---@field RRGGBB? boolean
+---@field RRGGBBAA? boolean
+---@field names? boolean
+---@field rgb_fn? boolean
 ---@field hsl_fn boolean
----@field css boolean
----@field css_fn boolean
----@field mode 'foreground'|'background'
+---@field css? boolean
+---@field css_fn? boolean
+---@field mode? 'foreground'|'background'
 ---@field new? fun(): ColorizerOpts
 ---@field __index? ColorizerOpts
