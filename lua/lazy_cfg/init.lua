@@ -172,7 +172,7 @@ M.ESSENTIAL = {
 		"dstein64/vim-startuptime",
 		cmd = "StartupTime",
 		keys = {
-			{ '<leader>vs', function() vim.cmd('StartupTime') end, desc = 'StartupTime' }
+			{ '<leader>vs', function() vim.cmd('StartupTime') end, desc = 'Run StartupTime' }
 		},
 		config = function()
 			vim.g.startuptime_tries = 10
