@@ -2,14 +2,15 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.opts')
+
 local Check = require('user.check')
 
 local exists = Check.exists.vim_exists
+local has = Check.exists.vim_has
 local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
-local has = Check.exists.vim_has
 
----@type 0|1
+---@type boolean
 vim.g.is_windows = has('win32')
 ---@type boolean
 _G.is_windows = vim.g.is_windows
@@ -40,7 +41,7 @@ local opt_tbl = {
 	ignorecase = false,
 	incsearch = true,
 	laststatus = 2,
-	makeprg = 'make',
+	makeprg = is_windows and 'mingw32-make' or 'make',
 	matchpairs = {
 		'(:)',
 		'[:]',
@@ -90,8 +91,6 @@ if is_windows then
 		opt_tbl.makeprg = 'mingw32-make'
 	elseif executable('make') then
 		opt_tbl.makeprg = 'make'
-	else
-		opt_tbl.makeprg = ''
 	end
 end
 
@@ -102,6 +101,8 @@ local function optset(opts)
 			vim.opt[k] = v
 		elseif not is_nil(vim.o[k]) then
 			vim.o[k] = v
+		else
+			error('Unable to set option `' .. k .. '`')
 		end
 	end
 end

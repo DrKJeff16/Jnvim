@@ -12,10 +12,7 @@ require('user.types.user.autocmd')
 ---@class KeyMapModeDict
 ---@field n KeyMapArgs[]
 
----@class TelAuData
----@field title? string
----@field filetype? string
----@field bufname? string
+---@alias TelAuData table<'title'|'filetype'|'bufname', string>
 
 ---@class TelAuArgs
 ---@field data? TelAuData

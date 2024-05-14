@@ -1,10 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias TabLine.Comps.Diag.Spec table<'error'|'warn'|'info'|'hint', any>
----@alias TabLine.Comps.Diag.Src table<'error'|'warn'|'info'|'hint', any>
----@alias TabLine.Comps.Diag.Colors table<'error'|'warn'|'info'|'hint', any>
----@alias TabLine.Comps.Diag.Symbols table<'error'|'warn'|'info'|'hint', any>
+-- Displays diagnostics for the defined severity types
+---@alias DiagLvl 'error'|'warn'|'info'|'hint'
+---@alias DiagLvls (DiagLvl)[]
+
+---@alias TabLine.Comps.Diag.Spec table<DiagLvl, any>
+---@alias TabLine.Comps.Diag.Src table<DiagLvl, any>
+---@alias TabLine.Comps.Diag.Colors table<DiagLvl, any>
+---@alias TabLine.Comps.Diag.Symbols table<DiagLvl, any>
 
 ---@alias Tabline.Comps.DateTime.style 'default'|'us'|'uk'|'iso'|string
 
@@ -20,9 +24,6 @@
 --- }
 --- ```
 ---@alias DiagOpt ('nvim_lsp'|'nvim_diagnostic'|'nvim_workspace_diagnostic'|'coc'|'ale'|'vim_lsp')[]|fun(): TabLine.Comps.Diag.Src
---
--- Displays diagnostics for the defined severity types
----@alias DiagLvls ('error'|'warn'|'info'|'hint')[]
 
 ---@class TabLine.Comps.Spec
 ---@field icons_enabled? boolean
@@ -32,7 +33,7 @@
 ---@field draw_empty? boolean
 ---@field color? table<string, string>|nil
 ---@field type? 'lua_expr'|'vim_fun'|nil
----@field on_click? nil|fun(...): any
+---@field on_click? nil|fun(...)
 
 ---@class TabLine.Comps.Buffer: TabLine.Comps.Spec
 ---@field show_filename_only? boolean
@@ -66,6 +67,7 @@
 ---@class TabLine.Comps.Diff: TabLine.Comps.Spec
 ---@class TabLine.Comps.File: TabLine.Comps.Spec
 ---@class TabLine.Comps.FT: TabLine.Comps.Spec
+
 ---@class TabLine.Comps.FF: TabLine.Comps.Spec
 ---@field symbols? TabLine.Comps.FF.Symbols
 
@@ -75,6 +77,7 @@
 
 ---@alias TabLine.AllComps
 ---|TabLine.Comps.Buffer
+---|TabLine.Comps.DateTime
 ---|TabLine.Comps.Diag
 ---|TabLine.Comps.Diff
 ---|TabLine.Comps.FF
