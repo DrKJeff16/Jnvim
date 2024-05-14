@@ -24,6 +24,16 @@ local ft = {
 			}),
 		},
 	},
+	{
+		{ 'conf', 'config', 'cfg', 'confini' },
+		{
+			sources = cmp.config.sources({
+				{ name = 'luasnip', priority = 1 },
+				{ name = 'async_path', priority = 2 },
+				{ name = 'buffer', priority = 2 },
+			}),
+		}
+	},
 	['lisp'] = {
 		sources = cmp.config.sources({
 			{ name = 'vlime',   priority = 1 },

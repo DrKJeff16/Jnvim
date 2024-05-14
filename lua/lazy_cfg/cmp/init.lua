@@ -28,6 +28,7 @@ local cr_map = Util.cr_map
 
 local bs_map = Util.bs_map
 
+---@type table<string, cmp.MappingClass|fun(fallback: function):nil>
 local Mappings = {
 	['<C-j>'] = cmp.mapping.scroll_docs(-4),
 	['<C-k>'] = cmp.mapping.scroll_docs(4),
@@ -75,6 +76,7 @@ local opts = {
 			'python',
 			'scss',
 			'sh',
+			'vim',
 			'zsh',
 		}
 
