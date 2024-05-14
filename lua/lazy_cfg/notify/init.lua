@@ -17,7 +17,7 @@ if not exists('notify') then
 	return
 end
 
-local Notify = require('notify')
+local notify = require('notify')
 
 ---@type notify.Config
 local Opts = {
@@ -31,21 +31,21 @@ local Opts = {
 		WARN = ""
 	},
 	level = vim.log.levels.INFO,
-	minimum_width = 44,
-	render = "compact",
-	stages = "slide",
+	minimum_width = 10,
+	render = "default",
+	stages = "fade_in_slide_out",
 	time_formats = {
 		notification = "%T",
 		notification_history = "%FT%T"
 	},
 	timeout = 1750,
-	top_down = false,
-	max_width = vim.o.columns * 0.6,
-	max_height = vim.o.lines * 0.4,
+	top_down = true,
 }
 
-Notify.setup(Opts)
-vim.notify = Notify
+notify.setup(Opts)
+vim.notify = notify
+
+_G.Notify = notify
 
 ---@type fun(msg: string, lvl: ('info'|'error'|'warn')?, opts: table?)
 function _G.anotify(msg, lvl, opts)
