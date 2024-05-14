@@ -15,14 +15,14 @@ local Colorizer = require('colorizer')
 
 ---@type ColorizerOpts
 local DEFAULT = {
-	RGB      = false,		-- #RGB hex codes
-	RRGGBB   = true,		-- #RRGGBB hex codes
-	names    = false,			-- "Name" codes like Blue
-	RRGGBBAA = true,		-- #RRGGBBAA hex codes
-	rgb_fn   = false,		-- CSS rgb() and rgba() functions
-	hsl_fn   = false,		-- CSS hsl() and hsla() functions
-	css      = false,		-- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-	css_fn   = false,		-- Enable all CSS *functions*: rgb_fn, hsl_fn
+	RGB      = true,      -- #RGB hex codes
+	RRGGBB   = true,      -- #RRGGBB hex codes
+	names    = false,     -- "Name" codes like Blue
+	RRGGBBAA = true,      -- #RRGGBBAA hex codes
+	rgb_fn   = false,     -- CSS rgb() and rgba() functions
+	hsl_fn   = false,     -- CSS hsl() and hsla() functions
+	css      = false,     -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+	css_fn   = false,     -- Enable all CSS *functions*: rgb_fn, hsl_fn
 	-- Available modes: foreground, background
 	mode     = 'background', -- Set the display mode.
 }
@@ -38,7 +38,6 @@ function DEFAULT.new()
 	return self
 end
 
-
 local Html = DEFAULT.new()
 Html.css = true
 Html.css_fn = true
@@ -48,10 +47,9 @@ Html.name = true
 
 local Lua = DEFAULT.new()
 Lua.names = true
-Lua.rgb = true
 
 Colorizer.setup({
-	['*'] = DEFAULT.new(),
+	['*'] = DEFAULT,
 	['css'] = Html,
 	['html'] = Html,
 	['markdown'] = Html,
