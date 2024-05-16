@@ -1,6 +1,9 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.user.autocmd')
+require('user.types.user.highlight')
+
 ---@class EvBuf
 ---@field buf integer
 
@@ -59,6 +62,8 @@
 ---@field pylsp? LspServerOpts|nil
 ---@field texlab? LspServerOpts|nil
 ---@field yamlls? LspServerOpts|nil
+---@field new? fun(): LspServers
+---@field __index? LspServers
 
 ---@class LspSubs
 ---@field neoconf fun()|nil

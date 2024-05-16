@@ -3,17 +3,14 @@
 
 local User = require('user')
 local Check = User.check
-local kmap = User.maps.kmap
 local types = User.types.lspconfig
-local au_t = User.types.user.autocmd
-local hl_t = User.types.user.highlight
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
-local nmap = kmap.n
+local nmap = User.maps.kmap.n
 local hi = User.highlight.hl
 
 if not exists('lspconfig') then
@@ -127,19 +124,37 @@ end
 ---@type LspServers
 local srv = {}
 
-srv.lua_ls = (executable('lua-language-server') and {} or nil)
-srv.bashls = (executable({ 'bash-language-server', 'shellcheck' }) and {} or nil)
-srv.clangd = (executable('clangd') and {} or nil)
-srv.cmake = (executable('cmake-languqge-server') and {} or nil)
-srv.html = (executable('vscode-html-language-server') and {} or nil)
-srv.jdtls = (executable('jdtls') and {} or nil)
-srv.jsonls = (executable('vscode-json-language-server') and {} or nil)
-srv.marksman = (executable('marksman') and {} or nil)
-srv.pylsp = (executable('pylsp') and {} or nil)
-srv.texlab = (executable('texlab') and {} or nil)
-srv.yamlls = (executable('yaml-language-server') and {} or nil)
+srv.lua_ls = executable('lua-language-server') and {} or nil
+srv.bashls = executable({ 'bash-language-server', 'shellcheck' }) and {} or nil
+srv.clangd = executable('clangd') and {} or nil
+srv.cmake = executable('cmake-languqge-server') and {} or nil
+srv.html = executable('vscode-html-language-server') and {} or nil
+srv.jdtls = executable('jdtls') and {} or nil
+srv.jsonls = executable('vscode-json-language-server') and {} or nil
+srv.marksman = executable('marksman') and {} or nil
+srv.pylsp = executable('pylsp') and {} or nil
+srv.texlab = executable('texlab') and {} or nil
+srv.yamlls = executable('yaml-language-server') and {} or nil
 
-srv = populate(srv)
+function srv.new()
+	local self = setmetatable({}, { __index = srv })
+
+	self.lua_ls = srv.lua_ls
+	self.bashls = srv.bashls
+	self.clangd = srv.clangd
+	self.cmake = srv.cmake
+	self.html = srv.html
+	self.jdtls = srv.jdtls
+	self.jsonls = srv.jsonls
+	self.marksman = srv.marksman
+	self.pylsp = srv.pylsp
+	self.texlab = srv.texlab
+	self.yamlls = srv.yamlls
+
+	return self
+end
+
+srv = populate(srv.new())
 
 local lspconfig = require('lspconfig')
 
