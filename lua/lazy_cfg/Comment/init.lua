@@ -18,7 +18,7 @@ local Comment = require('Comment')
 local opts = {
 	---Function to call before (un)comment
 	---@return string
-	pre_hook = function(c)
+	pre_hook = exists('ts_context_commentstring') and require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook() or function(c)
 		return vim.bo.commentstring
 	end,
 	---Add a space b/w comment and the line
