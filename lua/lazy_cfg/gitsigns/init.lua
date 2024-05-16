@@ -87,9 +87,9 @@ local opts = {
 	attach_to_untracked          = true,
 	current_line_blame           = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 	current_line_blame_opts      = {
-		virt_text = false,
+		virt_text = true,
 		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
-		delay = 5000,
+		delay = 2000,
 		ignore_whitespace = false,
 		virt_text_priority = 15,
 	},
