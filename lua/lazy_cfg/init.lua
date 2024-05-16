@@ -442,12 +442,6 @@ M.LSP = {
 		config = source('lazy_cfg.lspconfig.clangd'),
 		enabled = executable('clangd'),
 	},
-	{
-		'antosha417/nvim-lsp-file-operations',
-		lazy = true,
-		name = 'Lsp_FileOps',
-		enabled = false,
-	},
 }
 -- Completion and `cmp` related
 M.COMPLETION = {
@@ -624,7 +618,6 @@ M.UI = {
 		version = false,
 		dependencies = {
 			'web-devicons',
-			'Lsp_FileOps',
 			'Mini',
 		},
 		-- Disable `netrw`.
