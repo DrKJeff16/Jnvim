@@ -56,8 +56,17 @@
 ---@field option? SourceTypeOpts
 ---@field priority? integer
 
+---@class SourceAPathOpts: SourceTypeOpts
+---@field trailing_slash? boolean
+---@field label_trailing_slash? boolean
+---@field get_cwd? fun(): string
+---@field show_hidden_files_by_default? boolean
+
 ---@class SourceBufOpts: SourceTypeOpts
 ---@field get_bufnrs? fun(): table
+
+---@class SourceAPath: SourceType
+---@field option? SourceAPathOpts
 
 ---@class SourceBuf: SourceType
 ---@field option? SourceBufOpts
@@ -73,3 +82,4 @@
 ---@field __index? Sources
 ---@field setup fun(T: SetupSources?)
 ---@field buffer fun(priority: integer?): SourceBuf
+---@field async_path? fun(priority: integer?): SourceAPath

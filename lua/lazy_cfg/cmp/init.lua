@@ -17,7 +17,7 @@ local get_mode = vim.api.nvim_get_mode
 
 local Sks = require('lazy_cfg.cmp.kinds')
 local Util = require('lazy_cfg.cmp.util')
-local Sources = require('lazy_cfg.cmp.sources')
+local Sources = require('lazy_cfg.cmp.sources').new()
 
 local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')

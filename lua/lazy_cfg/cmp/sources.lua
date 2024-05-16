@@ -35,6 +35,25 @@ local buffer = function(priority)
 	return res
 end
 
+---@type fun(priority: integer?): SourceAPath
+local async_path = function(priority)
+	---@type SourceAPath
+	local res = {
+		name = 'async_path',
+		option = {
+			trailing_slash = true,
+			label_trailing_slash = true,
+			show_hidden_files_by_default = true,
+		},
+	}
+
+	if is_num(priority) and priority >= 1 then
+		res.priority = priority
+	end
+
+	return res
+end
+
 ---@type SetupSources
 local ft = {
 	{
@@ -42,7 +61,7 @@ local ft = {
 		{
 			sources = cmp.config.sources({
 				{ name = 'nvim_lsp',                priority = 1 },
-				{ name = 'async_path',              priority = 2 },
+				async_path(2),
 				{ name = 'luasnip',                 priority = 3 },
 				{ name = 'nvim_lsp_signature_help', priority = 4 },
 				buffer(5),
@@ -54,7 +73,7 @@ local ft = {
 		{
 			sources = cmp.config.sources({
 				{ name = 'luasnip',    priority = 1 },
-				{ name = 'async_path', priority = 2 },
+				async_path(2),
 				buffer(3),
 			}),
 		}
@@ -71,7 +90,8 @@ local ft = {
 			{ name = 'git',                 priority = 1 },
 			{ name = 'conventionalcommits', priority = 2 },
 			{ name = 'luasnip',             priority = 3 },
-			buffer(4),
+			async_path(4),
+			buffer(5),
 		}),
 	},
 }
@@ -96,7 +116,7 @@ local cmdline = {
 				option = { treat_trailing_slash = false },
 				priority = 1,
 			},
-			{ name = 'async_path', priority = 2 },
+			async_path(2),
 		})
 	},
 }
@@ -148,12 +168,16 @@ local M = {
 	end,
 
 	buffer = buffer,
+	async_path = async_path,
 }
 
 function M.new()
 	local self = setmetatable({}, { __index = M })
+
 	self.new = M.new
 	self.setup = M.setup
+	self.buffer = M.buffer
+	self.async_path = M.async_path
 
 	return self
 end
