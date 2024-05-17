@@ -87,7 +87,7 @@ local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
 
----@param keys KeyMapArgs[]
+---@type fun(keys: KeyMapArgs[])
 local map_lft = function(keys)
 	if not is_tbl(keys) or empty(keys) then
 		return
@@ -126,7 +126,7 @@ local my_maps = {
 
 map_lft(my_maps)
 
----@param nwin number
+---@type fun(nwin: number)
 local tab_win_close = function(nwin)
 	local ntab = get_tabpage(nwin)
 	local nbuf = get_bufn(nwin)
@@ -154,7 +154,7 @@ local tab_win_close = function(nwin)
 	end
 end
 
----@param data BufData
+---@type fun(data: BufData)
 local tree_open = function(data)
 	local nbuf = data.buf
 	local name = data.file
@@ -170,7 +170,6 @@ local tree_open = function(data)
 	local ft = bo[nbuf].ft
 	local noignore = {
 		'codeowners',
-		'gitignore',
 	}
 
 	if not in_tbl(noignore, ft) then
@@ -270,7 +269,7 @@ local swap_then_open_tab = function()
 	end
 end
 
----@param bufn integer
+---@type fun(bufn: integer)
 local on_attach = function(bufn)
 	CfgApi.mappings.default_on_attach(bufn)
 
