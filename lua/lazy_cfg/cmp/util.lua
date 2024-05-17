@@ -15,7 +15,7 @@ if not exists('cmp') then
 	return
 end
 
-local Luasnip = require('lazy_cfg.cmp.luasnip')
+local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
@@ -29,18 +29,15 @@ local win_cursor = api.nvim_win_get_cursor
 
 local M = {}
 
----@return boolean
+---@type fun(): boolean
 function M.has_words_before()
 	unpack = unpack or table.unpack
-
-	-- local buf_lines = api.nvim_buf_get_lines
-	-- local win_cursor = api.nvim_win_get_cursor
 
 	local line, col = unpack(win_cursor(0))
 	return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
----@param fallback fun()
+---@type fun(fallback: fun())
 function M.n_select(fallback)
 	local jumpable = Luasnip.expand_or_locally_jumpable
 	---@type cmp.SelectOption
@@ -60,7 +57,7 @@ function M.n_select(fallback)
 	end
 end
 
----@param fallback fun()
+---@type fun(fallback: fun())
 function M.n_shift_select(fallback)
 	local jumpable = Luasnip.jumpable
 	---@type cmp.SelectOption
@@ -80,8 +77,7 @@ function M.n_shift_select(fallback)
 	end
 end
 
----@param opts? cmp.ConfirmOption
----@return fun(fallback: fun())
+---@type fun(opts: cmp.ConfirmationConfig?): fun(fallback: fun())
 function M.confirm(opts)
 	if not is_tbl(opts) then
 		opts = {}
@@ -94,6 +90,7 @@ function M.confirm(opts)
 		opts.select = false
 	end
 
+	---@type fun(fallback: fun())
 	return function(fallback)
 		if cmp.visible() and cmp.get_selected_entry() then
 			cmp.confirm(opts)
@@ -107,7 +104,8 @@ end
 M.tab_map = {
 	i = M.n_select,
 	s = M.n_select,
-	---@param fallback fun()
+
+	---@type fun(fallback: fun())
 	c = function(fallback)
 		local opts = { behavior = cmp.SelectBehavior.Insert }
 
@@ -124,7 +122,8 @@ M.tab_map = {
 M.s_tab_map = {
 	i = M.n_shift_select,
 	s = M.n_shift_select,
-	---@param fallback fun()
+
+	---@type fun(fallback: fun())
 	c = function(fallback)
 		local opts = { behavior = cmp.SelectBehavior.Select }
 
@@ -145,7 +144,7 @@ M.cr_map = {
 	c = M.confirm({ select = true }),
 }
 
----@param fallback fun()
+---@type fun(fallback: fun())
 function M.bs_map(fallback)
 	if cmp.visible() then
 		cmp.close()
