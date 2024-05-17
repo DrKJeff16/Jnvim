@@ -35,11 +35,19 @@ if exists('onedark') then
 			toggle_style_list = { 'deep', 'warmer', 'darker' },
 
 			code_style = {
-				comments = 'none',
-				keywords = 'bold',
+				comments = 'altfont', -- Change the style of comments
+				conditionals = "bold",
+				loops = 'bold',
 				functions = 'bold',
-				strings = 'none',
-				variables = 'none',
+				keywords = 'bold',
+				strings = 'altfont',
+				variables = 'altfont',
+				numbers = 'altfont',
+				booleans = 'bold',
+				properties = 'bold',
+				types = 'bold',
+				operators = 'altfont',
+				-- miscs = '', -- Uncomment to turn off hard-coded styles
 			},
 
 			lualine = { transparent = false },
