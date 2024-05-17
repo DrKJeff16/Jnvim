@@ -121,6 +121,9 @@ function M.nop(T, opts, mode)
 		for _, v in next, T do
 			map_tbl[mode](v, '<Nop>', opts)
 		end
+	else
+		error('(user.maps.nop): Unable to parse keys.')
+		return
 	end
 end
 
