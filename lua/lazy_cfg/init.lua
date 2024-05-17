@@ -11,7 +11,7 @@ local vim_exists = Check.exists.vim_exists
 local is_str = Check.value.is_str
 local nmap = User.maps.kmap.n
 
-local fs_stat = vim.loop.fs_stat
+local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
 local system = vim.fn.system
 
@@ -28,7 +28,7 @@ vim.opt.rtp:prepend(lazypath)
 
 ---@type fun(): string
 local function luasnip_build()
-	if not executable('make') and not executable('mingw32-make') then
+	if not executable({ 'make', 'mingw32-make' }) then
 		return ''
 	end
 
