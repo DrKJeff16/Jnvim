@@ -11,7 +11,7 @@ if not exists('nvim-treesitter') then
 	return
 end
 
-local fs_stat = vim.loop.fs_stat
+local fs_stat = vim.uv.fs_stat
 local buf_name = vim.api.nvim_buf_get_name
 
 local Ts = require('nvim-treesitter')
