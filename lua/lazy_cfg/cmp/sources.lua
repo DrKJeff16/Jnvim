@@ -62,8 +62,8 @@ local ft = {
 			sources = cmp.config.sources({
 				{ name = 'nvim_lsp',                priority = 1 },
 				async_path(2),
-				{ name = 'luasnip',                 priority = 3 },
-				{ name = 'nvim_lsp_signature_help', priority = 4 },
+				{ name = 'nvim_lsp_signature_help', priority = 3 },
+				{ name = 'luasnip',                 priority = 4 },
 				buffer(5),
 			}),
 		},
@@ -72,11 +72,20 @@ local ft = {
 		{ 'conf', 'config', 'cfg', 'confini' },
 		{
 			sources = cmp.config.sources({
-				{ name = 'luasnip',    priority = 1 },
+				{ name = 'luasnip', priority = 1 },
 				async_path(2),
 				buffer(3),
 			}),
 		}
+	},
+	['lua'] = {
+		sources = cmp.config.sources({
+			{ name = 'nvim_lsp',                priority = 1 },
+			{ name = 'nvim_lsp_signature_help', priority = 2 },
+			{ name = 'nvim_lua',                priority = 3 },
+			{ name = 'luasnip',                 priority = 4 },
+			buffer(5),
+		})
 	},
 	['lisp'] = {
 		sources = cmp.config.sources({
@@ -138,8 +147,6 @@ local M = {
 			end
 		end
 
-		require('cmp_git').setup()
-
 		for k, v in next, ft do
 			if is_num(k) and is_tbl({ v[1], v[2] }, true) then
 				local names = v[1]
@@ -152,6 +159,8 @@ local M = {
 				error('Couldn\'t parse!')
 			end
 		end
+
+		require('cmp_git').setup()
 
 		for k, v in next, cmdline do
 			if is_num(k) and is_tbl({ v[1], v[2] }, true) then
