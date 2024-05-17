@@ -62,13 +62,13 @@ end
 
 ---@param fallback fun()
 function M.n_shift_select(fallback)
-	local jumpable = Luasnip.jumpable(-1)
+	local jumpable = Luasnip.jumpable
 	---@type cmp.SelectOption
 	local opts = { behavior = cmp.SelectBehavior.Replace }
 
 	if cmp.visible() then
 		cmp.select_prev_item(opts)
-	elseif jumpable() then
+	elseif jumpable(-1) then
 		Luasnip.jump(-1)
 	elseif M.has_words_before() then
 		cmp.complete()
