@@ -3,7 +3,7 @@
 ---@diagnostic disable:need-check-nil
 ---@diagnostic disable:missing-fields
 
-local types = require('user.types.user.check')
+require('user.types.user.check')
 
 ---@type UserCheck
 local M = {
@@ -11,6 +11,14 @@ local M = {
 		-- NOTE: We define `is_nil` first as it's used by the other checkers.
 
 		--- Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
+		--- ---
+		--- * `var`: Any data type to be checked if it's nil.
+		--- **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+		--- Otherwise it will be flagged as non-existant and function will return `true`.
+		---
+		--- * `multiple`: Tell the function you're checking multiple values. (Default: `false`).
+		--- If set to `true`, the result will be `false` _unless any item on the table is `nil`_.
+		--- In that case, function will immediately stop checking. The result will be returned regardless.
 		is_nil = function(var, multiple)
 			if multiple == nil or type(multiple) ~= 'boolean' then
 				multiple = false
@@ -19,7 +27,8 @@ local M = {
 			if not multiple then
 				return var == nil
 			end
-			if type(var) ~= 'table' then
+
+			if type(var) ~= 'table' or vim.tbl_isempty(var) then
 				return false
 			end
 
@@ -82,6 +91,12 @@ for k, v in next, type_funcs do
 	M.value[k] = type_fun(v)
 end
 
+--- Returns whether a data value is "empty", including these scenarios:
+--- * Empty string
+--- * Number equal to zero
+--- * Empty table
+--- ---
+--- * `v`: Must be either a string, number or a table. Otherwise you'll get complaints.
 function M.value.empty(v)
 	local is_str = M.value.is_str
 	local is_tbl = M.value.is_tbl
