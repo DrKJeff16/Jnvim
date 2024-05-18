@@ -396,7 +396,10 @@ M.VCS = {
 		name = 'DiffView',
 		version = false,
 		config = source('lazy_cfg.diffview'),
-		enabled = executable('git'),
+		--- NOTE: Disabled to supress warnings from version bump v0.11.0
+		--- until further notice.
+		-- enabled = executable('git'),
+		enabled = false,
 	},
 }
 -- LSP
@@ -446,7 +449,10 @@ M.LSP = {
 		lazy = true,
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = executable('clangd'),
+		--- NOTE: Disabled to supress warnings from version bump v0.11.0
+		--- until further notice.
+		-- enabled = executable('clangd'),
+		enabled = false,
 	},
 }
 -- Completion and `cmp` related
@@ -552,6 +558,9 @@ M.TELESCOPE = {
 			vim.o.autochdir = true
 		end,
 		config = source('lazy_cfg.project'),
+		--- NOTE: Disabled to supress warnings from version bump v0.11.0
+		--- until further notice.
+		enabled = false,
 	},
 }
 -- UI Customizations
