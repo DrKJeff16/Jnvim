@@ -3,9 +3,11 @@
 ---@diagnostic disable:missing-fields
 
 local User = require('user')
+local Check = User.check
 local types = User.types.lspconfig
 
-local lsp = vim.lsp
+local is_str = Check.value.is_str
+local empty = Check.value.empty
 
 ---@type LspKindsMod
 local M = {
@@ -35,13 +37,15 @@ local M = {
 }
 
 function M.setup()
-	local ptc = lsp.protocol
-
 	---@type table<string, string>
-	local kinds = ptc.CompletionItemKind
+	local kinds = vim.lsp.protocol.CompletionItemKind
 
 	for s, kind in next, kinds do
-		kinds[s] =  M.icons[s] or kind
+		if not is_str(M.icons[s]) or empty(M.icons[s]) then
+			kinds[s] = kind
+		else
+			kinds[s] = M.icons[s]
+		end
 	end
 end
 
