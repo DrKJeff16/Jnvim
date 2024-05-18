@@ -7,13 +7,13 @@ local Types = User.types -- Import docstrings and annotations.
 local maps_t = Types.user.maps
 local Kmap = User.maps.kmap
 
-local nop = User.maps.nop
 local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
+local nop = User.maps.nop
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, desc = 'Leader Key' })
@@ -24,12 +24,15 @@ vim.g.maplocalleader = ' '
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Disable the ruby provider
+-- ---
+-- NOTE: Temporary solution
 vim.g.loaded_ruby_provider = 0
 
--- Vim `:set ...` global options setter.
+-- Vim `:set ...` global options setter
 local opts = User.opts
 
--- Use clipboard
+-- Use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
 -- Avoid executing Normal mode keys when attempting `<leader>` sequences.
@@ -77,17 +80,19 @@ local map_tbl = {
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
 		['<leader>fvs'] = {
 			function()
-				vim.notify('Sourcing `init.lua`...')
 				vim.cmd('luafile $MYVIMRC')
-			end, { silent = false } },
+				vim.notify('Sourced `init.lua`')
+			end,
+			{ silent = false }
+		},
 		['<leader>fvl'] = {
 			function()
 				local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'lua' then
-					vim.notify('Sourcing current Lua file...')
 					vim.cmd('luafile %')
+					vim.notify('Sourced current Lua file')
 				elseif not is_nil(_G.Notify) then
 					Notify(err_msg, 'error', { title = 'Lua' })
 				elseif exists('notify') then
@@ -96,7 +101,7 @@ local map_tbl = {
 					error(err_msg)
 				end
 			end,
-			{ silent = false, desc = 'Attempt To Source Current Lua File' },
+			{ silent = false, desc = 'Attempt to source current Lua file' },
 		},
 		['<leader>fvv'] = {
 			function()
@@ -105,8 +110,8 @@ local map_tbl = {
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'vim' then
-					vim.notify('Sourcing current Vim file...')
 					vim.cmd('so %')
+					vim.notify('Sourced current Vim file')
 				elseif not is_nil(_G.Notify) then
 					Notify(err_msg, 'error', { title = 'Vim' })
 				elseif exists('notify') then
@@ -115,7 +120,7 @@ local map_tbl = {
 					error(err_msg)
 				end
 			end,
-			{ silent = false, desc = 'Attempt To Source Current Vim File' },
+			{ silent = false, desc = 'Attempt To source current Vim file' },
 		},
 		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
 		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
@@ -167,7 +172,7 @@ local map_tbl = {
 		['<leader>Li'] = { '<CMD>Lazy install<CR>' },
 		['<leader>Lr'] = { '<CMD>Lazy reload<CR>' },
 	},
-	-- WARNING: DO NOT USE `<CMD>`!!!
+	--- WARNING: DO NOT USE `<CMD>`!!!
 	v = {
 		['<leader>s'] = { ':sort<CR>', { desc = 'Sort' } },
 		['<leader>S'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
