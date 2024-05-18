@@ -234,6 +234,12 @@ M.ESSENTIAL = {
 	},
 
 	{
+		'lewis6991/hover.nvim',
+		name = 'Hover',
+		config = source('lazy_cfg.hover'),
+	},
+
+	{
 		'nvim-tree/nvim-web-devicons',
 		lazy = true,
 		name = 'web-devicons',
