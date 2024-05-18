@@ -5,5 +5,5 @@
 ---@field on fun()
 
 ---@class APMods
----@field cmp fun(): APCmp|nil
----@field rules fun(): unknown|nil
+---@field cmp? fun(): APCmp|nil
+---@field rules? fun(): unknown|nil
