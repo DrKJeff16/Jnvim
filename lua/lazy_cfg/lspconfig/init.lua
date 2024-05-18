@@ -283,8 +283,10 @@ local signs = {
 	Info = ' ',
 }
 
-for type, icon in next, signs do
-	local hlite = 'DiagnosticSign' .. type
-
-	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
-end
+--- FIX: This section causes complaints from nvim due to version bump v0.11.0.
+--
+-- for type, icon in next, signs do
+-- 	local hlite = 'DiagnosticSign' .. type
+--
+-- 	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
+-- end
