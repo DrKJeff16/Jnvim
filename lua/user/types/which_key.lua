@@ -3,14 +3,14 @@
 
 require('user.types.user.maps')
 
+---@alias ModeEnum MapModes
+
 ---@class RegKey
 ---@field [1] string|fun()
 ---@field [2]? string
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field silent? boolean
-
----@alias ModeEnum MapModes
 
 ---@class RegPfx
 ---@field name? string

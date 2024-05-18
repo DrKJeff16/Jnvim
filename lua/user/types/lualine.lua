@@ -2,8 +2,8 @@
 ---@diagnostic disable:unused-function
 
 -- Displays diagnostics for the defined severity types
----@alias DiagLvl 'error'|'warn'|'info'|'hint'
----@alias DiagLvls (DiagLvl)[]
+---@alias DiagLvl ('error'|'warn'|'info'|'hint')
+---@alias DiagLvls DiagLvl[]
 
 ---@alias TabLine.Comps.Diag.Spec table<DiagLvl, any>
 ---@alias TabLine.Comps.Diag.Src table<DiagLvl, any>
@@ -88,13 +88,9 @@
 ---|string
 ---|table
 
----@class TabLine.Sections.Spec
----@field lualine_a? table|(TabLine.AllComps)[]
----@field lualine_b? table|(TabLine.AllComps)[]
----@field lualine_c? table|(TabLine.AllComps)[]
----@field lualine_x? table|(TabLine.AllComps)[]
----@field lualine_y? table|(TabLine.AllComps)[]
----@field lualine_z? table|(TabLine.AllComps)[]
+---@alias Sections ('lualine_a'|'lualine_b'|'lualine_c'|'lualine_x'|'lualine_y'|'lualine_z')
+
+---@alias TabLine.Sections.Spec table<Sections, table|(TabLine.AllComps)[]>
 
 ---@class TabLine.Sections
 ---@field active TabLine.Sections.Spec
@@ -115,7 +111,6 @@
 ---@field default table
 
 ---@class TabLine
----@field public components TabLine.Comps
----@field public new fun(): TabLine
----@field protected __index? TabLine
----@field public __call fun(self: TabLine, preset?: string): TabLine.Preset
+---@field components TabLine.Comps
+---@field new fun(): TabLine
+---@field __index? TabLine

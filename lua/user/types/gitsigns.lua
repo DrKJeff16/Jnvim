@@ -6,12 +6,6 @@ require('user.types.user.maps')
 ---@class GitSignOpts
 ---@field text string
 
----@class GitSigns
----@field add GitSignOpts
----@field change GitSignOpts
----@field delete GitSignOpts
----@field topdelete GitSignOpts
----@field changedelete GitSignOpts
----@field untracked GitSignOpts
+---@alias GitSigns table<'add'|'change'|'delete'|'topdelete'|'changedelete'|'untracked', GitSignOpts>
 
 ---@alias GitSignsArr GitSigns[]

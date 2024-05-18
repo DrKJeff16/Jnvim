@@ -1,10 +1,10 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias CmpMap table<'i'|'s'|'t', fun(fallback: fun())>
+---@alias CmpModes ('i'|'s'|'t')
 
+---@alias CmpMap table<CmpModes, fun(fallback: fun())>
 ---@alias TabMap CmpMap
-
 ---@alias CrMap CmpMap
 
 ---@class FmtKindIcons
