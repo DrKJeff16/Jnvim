@@ -7,6 +7,7 @@ local types = User.types.lspconfig
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
+local empty = Check.value.empty
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
@@ -84,38 +85,42 @@ local populate = function(srv_tbl)
 	local res = {}
 
 	for k, v in next, srv_tbl do
-		if is_tbl(v) then
-			res[k] = vim.deepcopy(v)
+		if not is_tbl(v) then
+			goto continue
+		end
 
-			res[k].handlers = handlers
+		res[k] = vim.deepcopy(v)
 
-			if exists('cmp_nvim_lsp') then
-				res[k].capabilities = require('cmp_nvim_lsp').default_capabilities()
-			end
+		res[k].handlers = handlers
 
-			if exists('schemastore') then
-				local SchSt = require('schemastore')
+		if exists('cmp_nvim_lsp') then
+			res[k].capabilities = require('cmp_nvim_lsp').default_capabilities()
+		end
 
-				if k == 'jsonls' then
-					res[k].settings = {}
-					res[k].settings.json = {
-						schemas = SchSt.json.schemas({
-							select = {
-								'.eslintrc',
-								'package.json',
-							},
-						}),
-						validate = { enable = true },
-					}
-				elseif k == 'yamlls' then
-					res[k].settings = {}
-					res[k].settings.yaml = {
-						schemaStore = { enable = false, url = '' },
-						schemas = SchSt.yaml.schemas({}),
-					}
-				end
+		if exists('schemastore') then
+			local SchSt = require('schemastore')
+
+			if k == 'jsonls' then
+				res[k].settings = {}
+				res[k].settings.json = {
+					schemas = SchSt.json.schemas({
+						select = {
+							'.eslintrc',
+							'package.json',
+						},
+					}),
+					validate = { enable = true },
+				}
+			elseif k == 'yamlls' then
+				res[k].settings = {}
+				res[k].settings.yaml = {
+					schemaStore = { enable = false, url = '' },
+					schemas = SchSt.yaml.schemas({}),
+				}
 			end
 		end
+
+		::continue::
 	end
 
 	return res
