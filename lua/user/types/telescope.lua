@@ -6,11 +6,8 @@ require('user.types.user.autocmd')
 
 ---@class KeyMapArgs
 ---@field lhs string
----@field rhs string|fun(): any
+---@field rhs string|fun()
 ---@field opts? KeyMapOpts
-
----@class KeyMapModeDict
----@field n KeyMapArgs[]
 
 ---@alias TelAuData table<'title'|'filetype'|'bufname', string>
 
@@ -19,4 +16,4 @@ require('user.types.user.autocmd')
 
 ---@class TelExtension
 ---@field [1] string
----@field keys? fun(...): KeyMapArgs[]
+---@field keys? fun(...): KeyMapDict

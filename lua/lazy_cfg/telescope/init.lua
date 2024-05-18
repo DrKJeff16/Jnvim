@@ -62,25 +62,23 @@ local function open()
 	vim.cmd('Telescope')
 end
 
----@type KeyMapModeDict
-local maps = {
-	n = {
-		{ lhs = '<leader><leader>', rhs = open,                         opts = { desc = 'Open Telescope' } },
-		{ lhs = '<leader>hH',       rhs = Builtin.help_tags,            opts = { desc = 'Telescope Help Tags' } },
-		{ lhs = '<leader>ff',       rhs = Builtin.find_files,           opts = { desc = 'File Picker' } },
+---@type KeyMapDict
+local Maps = {
+	['<leader><leader>'] = { open, { desc = 'Open Telescope' } },
+	['<leader>hH'] = { Builtin.help_tags, { desc = 'Telescope Help Tags' } },
+	['<leader>ff'] = { Builtin.find_files, { desc = 'File Picker' } },
 
-		{ lhs = '<leader>fTbC',     rhs = Builtin.commands,             opts = { desc = 'Colommands' } },
-		{ lhs = '<leader>fTbO',     rhs = Builtin.keymaps,              opts = { desc = 'Vim Options' } },
-		{ lhs = '<leader>fTbP',     rhs = Builtin.planets,              opts = { desc = 'Planets' } },
-		{ lhs = '<leader>fTbb',     rhs = Builtin.buffers,              opts = { desc = 'Buffers' } },
-		{ lhs = '<leader>fTbc',     rhs = Builtin.colorscheme,          opts = { desc = 'Colorschemes' } },
-		{ lhs = '<leader>fTbd',     rhs = Builtin.diagnostics,          opts = { desc = 'Diagnostics' } },
-		{ lhs = '<leader>fTbg',     rhs = Builtin.live_grep,            opts = { desc = 'Live Grep' } },
-		{ lhs = '<leader>fTbk',     rhs = Builtin.keymaps,              opts = { desc = 'Keymaps' } },
-		{ lhs = '<leader>fTblD',    rhs = Builtin.lsp_document_symbols, opts = { desc = 'Document Symbols' } },
-		{ lhs = '<leader>fTbld',    rhs = Builtin.lsp_definitions,      opts = { desc = 'Definitions' } },
-		{ lhs = '<leader>fTbp',     rhs = Builtin.pickers,              opts = { desc = 'Pickers' } },
-	},
+	['<leader>fTbC'] = { Builtin.commands, { desc = 'Colommands' } },
+	['<leader>fTbO'] = { Builtin.keymaps, { desc = 'Vim Options' } },
+	['<leader>fTbP'] = { Builtin.planets, { desc = 'Planets' } },
+	['<leader>fTbb'] = { Builtin.buffers, { desc = 'Buffers' } },
+	['<leader>fTbc'] = { Builtin.colorscheme, { desc = 'Colorschemes' } },
+	['<leader>fTbd'] = { Builtin.diagnostics, { desc = 'Diagnostics' } },
+	['<leader>fTbg'] = { Builtin.live_grep, { desc = 'Live Grep' } },
+	['<leader>fTbk'] = { Builtin.keymaps, { desc = 'Keymaps' } },
+	['<leader>fTblD'] = { Builtin.lsp_document_symbols, { desc = 'Document Symbols' } },
+	['<leader>fTbld'] = { Builtin.lsp_definitions, { desc = 'Definitions' } },
+	['<leader>fTbp'] = { Builtin.pickers, { desc = 'Pickers' } },
 }
 
 ---@type table<string, TelExtension>
@@ -88,13 +86,17 @@ local known_exts = {
 	['scope'] = { 'scope' },
 	['project_nvim'] = {
 		'projects',
-		---@type fun(): KeyMapArgs[]
-		keys = function()
+		---@type fun(): KeyMapDict
+		keys = exists('project_nvim') and function()
+			if is_nil(Extensions.projects) then
+				return {}
+			end
+
 			local pfx = Extensions.projects
 
-			---@type KeyMapArgs[]
+			---@type KeyMapDict
 			local res = {
-				{ lhs = '<leader>fTep', rhs = pfx.projects, opts = { desc = 'Project Picker' } },
+				['<leader>fTep'] = { pfx.projects, { desc = 'Project Picker' } },
 			}
 
 			return res
@@ -102,13 +104,13 @@ local known_exts = {
 	},
 	['notify'] = {
 		'notify',
-		---@type fun(): KeyMapArgs[]
-		keys = function()
+		---@type fun(): KeyMapDict
+		keys = exists('notify') and function()
 			local pfx = Extensions.notify
 
-			---@type KeyMapArgs[]
+			---@type KeyMapDict
 			local res = {
-				{ lhs = '<leader>fTeN', rhs = pfx.notify, opts = { desc = 'Notify Picker' } },
+				['<leader>fTeN'] = { pfx.notify, { desc = 'Notify Picker' } },
 			}
 
 			return res
@@ -116,14 +118,14 @@ local known_exts = {
 	},
 	['noice'] = {
 		'noice',
-		---@type fun(): KeyMapArgs[]
+		---@type fun(): KeyMapDict
 		keys = exists('noice') and function()
 			local Noice = require('noice')
 
-			---@type KeyMapArgs[]
+			---@type KeyMapDict
 			local res = {
-				{ lhs = '<leadec>nl', rhs = function() Noice.cmd('last') end,    opts = { desc = 'NoiceLast' } },
-				{ lhs = '<leadec>nh', rhs = function() Noice.cmd('history') end, opts = { desc = 'NoiceHistory' } },
+				['<leadec>nl'] = { function() Noice.cmd('last') end,    { desc = 'NoiceLast' } },
+				['<leadec>nh'] = { function() Noice.cmd('history') end, { desc = 'NoiceHistory' } },
 			}
 
 			return res
@@ -133,24 +135,29 @@ local known_exts = {
 
 --- Load and Set Keymaps for available extensions.
 for mod, ext in next, known_exts do
-	if not is_str(ext[1]) then
+	if not (exists(mod) and is_str(ext[1])) then
 		goto continue
 	end
 
 	load_ext(ext[1])
+
 	if is_fun(ext.keys) then
-		for _, v in next, ext.keys() do
-			table.insert(maps.n, v)
+		for lhs, v in next, ext.keys() do
+			Maps[lhs] = v
 		end
 	end
 
 	::continue::
 end
 
-for mode, m in next, maps do
-	for _, v in next, m do
-		kmap[mode](v.lhs, v.rhs, v.opts or {})
+for lhs, v in next, Maps do
+	if not (is_str(lhs) and is_fun(v[1])) then
+		goto continue
 	end
+
+	nmap(lhs, v[1], v[2] or {})
+
+	::continue::
 end
 
 ---@type AuRepeat
