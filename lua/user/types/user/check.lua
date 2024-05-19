@@ -19,6 +19,7 @@
 ---@field is_num ValueFunc
 ---@field is_fun ValueFunc
 ---@field is_bool ValueFunc
+---@field is_int ValueFunc
 ---@field empty fun(v: string|table|number): boolean
 
 ---@class UserCheck

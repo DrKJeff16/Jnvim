@@ -118,6 +118,39 @@ function M.value.empty(v)
 	return true
 end
 
+function M.value.is_int(var, multiple)
+	local is_nil = M.value.is_nil
+	local is_tbl = M.value.is_tbl
+	local is_bool = M.value.is_bool
+	local is_num = M.value.is_num
+
+	local mtype = math.type
+
+	if is_nil(multiple) or not is_bool(multiple) then
+		multiple = false
+	end
+
+	if not multiple then
+		return is_num(var) and var >= 0 and mtype(var) == 'integer'
+	end
+	if not is_tbl(var) then
+		return false
+	end
+
+	---@type boolean
+	local res
+
+	for _, v in next, var do
+		res = is_num(var) and var >= 0 and mtype(var) == 'integer'
+
+		if not res then
+			break
+		end
+	end
+
+	return res
+end
+
 function M.dry_run(f, ...)
 	---@type boolean
 	local ok
