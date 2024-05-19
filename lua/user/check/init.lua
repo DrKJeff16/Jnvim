@@ -252,6 +252,13 @@ function M.exists.vim_exists(expr)
 	return false
 end
 
+function M.exists.vim_isdir(path)
+	local is_str = M.value.is_str
+	local empty = M.value.empty
+
+	return (is_str(path) and not empty(path)) and vim.fn.isdirectory(path) == 1 or false
+end
+
 function M.exists.executable(exe, fallback)
 	local is_nil = M.value.is_nil
 	local is_tbl = M.value.is_tbl

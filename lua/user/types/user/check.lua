@@ -11,6 +11,7 @@
 ---@field field fun(field: string|integer, t: table<string|integer, any>): boolean
 ---@field vim_exists fun(expr: string|string[]): boolean
 ---@field vim_has fun(expr: string|string[]): boolean
+---@field vim_isdir fun(path: string): boolean
 
 ---@class ValueCheck
 ---@field is_nil ValueFunc
