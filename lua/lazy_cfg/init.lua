@@ -8,6 +8,7 @@ local lazy_t = User.types.lazy
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
+local vim_has = Check.exists.vim_has
 local is_str = Check.value.is_str
 local nmap = User.maps.kmap.n
 
@@ -399,7 +400,7 @@ M.VCS = {
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
 		-- enabled = executable('git'),
-		enabled = false,
+		enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- LSP
@@ -452,7 +453,7 @@ M.LSP = {
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
 		-- enabled = executable('clangd'),
-		enabled = false,
+		enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- Completion and `cmp` related
@@ -560,7 +561,7 @@ M.TELESCOPE = {
 		config = source('lazy_cfg.project'),
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
-		enabled = false,
+		enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- UI Customizations
