@@ -24,11 +24,6 @@ vim.g.maplocalleader = ' '
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Disable the ruby provider
--- ---
--- NOTE: Temporary solution
-vim.g.loaded_ruby_provider = 0
-
 -- Vim `:set ...` global options setter
 local opts = User.opts
 
