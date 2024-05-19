@@ -6,11 +6,12 @@ require('user.types.user.opts')
 local Check = require('user.check')
 
 local exists = Check.exists.vim_exists
-local has = Check.exists.vim_has
-local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
+local executable = Check.exists.executable
+local has = Check.exists.vim_has or function(expr)
+	return vim.fn.has(expr) == 1
+end
 
----@type boolean
 vim.g.is_windows = has('win32')
 ---@type boolean
 _G.is_windows = vim.g.is_windows
@@ -24,7 +25,7 @@ local opt_tbl = {
 	belloff = { 'all' },
 	background = 'dark',
 	copyindent = true,
-	cmdwinheight = 4,
+	cmdwinheight = 3,
 	-- colorcolumn = { '+1' },
 	completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 	confirm = true,
@@ -41,7 +42,7 @@ local opt_tbl = {
 	ignorecase = false,
 	incsearch = true,
 	laststatus = 2,
-	makeprg = is_windows and 'mingw32-make' or 'make',
+	makeprg = 'make',
 	matchpairs = {
 		'(:)',
 		'[:]',
@@ -60,7 +61,7 @@ local opt_tbl = {
 		"tabpages",
 		"globals",
 	},
-	shell = (is_windows and 'cmd.exe' or 'bash'),
+	shell = is_windows and 'cmd.exe' or 'bash',
 	scrolloff = 3,
 	showcmd = true,
 	showmatch = true,
@@ -102,7 +103,7 @@ local function optset(opts)
 		elseif not is_nil(vim.o[k]) then
 			vim.o[k] = v
 		else
-			error('Unable to set option `' .. k .. '`')
+			error('(user.opts): Unable to set option `' .. k .. '`')
 		end
 	end
 end

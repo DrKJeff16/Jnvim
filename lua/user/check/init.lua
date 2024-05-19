@@ -175,8 +175,8 @@ M.exists = {
 		local m
 		res, m = pcall(require, mod)
 
-		if return_mod and not is_nil(m) then
-			return m
+		if return_mod then
+			return not is_nil(m) and m or nil
 		else
 			return res
 		end

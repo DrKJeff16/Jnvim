@@ -73,8 +73,8 @@
 ---@alias BufMapModeDicts table<MapModes, BufMapTbl[]>
 
 ---@alias MapFuncs
----|fun(lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
----|fun(bufnr: integer, lhs: string|string[], rhs: string, opts: BufMapOpts?)
+---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
+---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: BufMapOpts?)
 
 ---@alias UserApiMaps table<MapModes,ApiMapFunction>
 ---@alias UserKeyMaps table<MapModes,KeyMapFunction>

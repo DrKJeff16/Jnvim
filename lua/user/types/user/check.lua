@@ -5,7 +5,7 @@
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
 ---@class ExistanceCheck
----@field module fun(mod: string, return_mod: boolean?): boolean|unknown
+---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string|string[], need_all: boolean?): (boolean|table<string, boolean>)
 ---@field executable fun(exe: string|string[], fallback: fun()?): boolean
 ---@field field fun(field: string|integer, t: table<string|integer, any>): boolean

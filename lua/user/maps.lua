@@ -7,6 +7,7 @@ local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
+local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_num = Check.value.is_num
 local is_bool = Check.value.is_bool
@@ -18,11 +19,15 @@ local bufmap = vim.api.nvim_buf_set_keymap
 ---@type Modes
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
----@type fun(mode: string|string[], func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
-local variant = function(mode, func, with_buf)
-	if not is_bool(with_buf) then
-		with_buf = false
+---@type fun(mode: string, func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
+local function variant(mode, func, with_buf)
+	if not (is_fun(func) and is_str(mode) and vim.tbl_contains(MODES, mode)) then
+		error('(user.maps.variant): Argument of incorrect type.')
 	end
+
+	with_buf = is_bool(with_buf) and with_buf or false
+
+	---@type KeyMapFunction|ApiMapFunction|BufMapFunction
 	local res
 
 	local DEFAULTS = { 'noremap', 'nowait', 'silent' }
@@ -30,14 +35,10 @@ local variant = function(mode, func, with_buf)
 	if not with_buf then
 		---@type ApiMapFunction|KeyMapFunction
 		res = function(lhs, rhs, opts)
-			if not is_tbl(opts) then
-				opts = {}
-			end
+			opts = is_tbl(opts) and opts or {}
 
 			for _, v in next, DEFAULTS do
-				if not is_bool(opts[v]) then
-					opts[v] = true
-				end
+				opts[v] = is_bool(opts[v]) and opts[v] or true
 			end
 
 			func(mode, lhs, rhs, opts)
@@ -45,14 +46,10 @@ local variant = function(mode, func, with_buf)
 	else
 		---@type BufMapFunction
 		res = function(b, lhs, rhs, opts)
-			if not is_tbl(opts) then
-				opts = {}
-			end
+			opts = is_tbl(opts) and opts or {}
 
 			for _, v in next, DEFAULTS do
-				if not is_bool(opts[v]) then
-					opts[v] = true
-				end
+				opts[v] = is_bool(opts[v]) and opts[v] or true
 			end
 
 			func(b, mode, lhs, rhs, opts)
@@ -64,20 +61,21 @@ end
 
 ---@type fun(field: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
 local mode_funcs = function(field)
-	local VALID = { api = { 'map', map, false }, key = { 'kmap', kmap, false }, buf = { 'buf_map', bufmap, true } }
+	---@type table<'api'|'key'|'buf', { integer: fun(...), integer: boolean }>
+	local VALID = { api = { map, false }, key = { kmap, false }, buf = { bufmap, true } }
 
 	if is_nil(VALID[field]) then
-		error('Invalid variant ID!')
-	else
-		---@type UserKeyMaps|UserApiMaps|UserBufMaps
-		local res = {}
-
-		for _, mode in next, MODES do
-			res[mode] = variant(mode, VALID[field][2], VALID[field][3])
-		end
-
-		return res
+		error('(user.maps.mode_funcs): Invalid variant ID `' .. field .. "`\nMust be `'api'|'key'|'buf'`")
 	end
+
+	---@type UserKeyMaps|UserApiMaps|UserBufMaps
+	local res = {}
+
+	for _, mode in next, MODES do
+		res[mode] = variant(mode, VALID[field][1], VALID[field][2])
+	end
+
+	return res
 end
 
 ---@type UserMaps
@@ -90,30 +88,23 @@ local M = {
 
 function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
-		return
+		error('(user.maps.nop): Field is neither a string nor a table.')
 	end
 
 	local map_tbl = M.map
 
-	if not is_str(mode) or not vim.tbl_contains(M.modes, mode) then
-		mode = 'n'
-	elseif mode == 'i' then
+	mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
+	if mode == 'i' then
 		return
 	end
 
-	if not is_tbl(opts) then
-		opts = {}
-	end
+	opts = is_tbl(opts) and opts or {}
 
 	for _, v in next, { 'nowait', 'noremap' } do
-		if not is_bool(opts[v]) then
-			opts[v] = false
-		end
+		opts[v] = is_bool(opts[v]) and opts[v] or false
 	end
 
-	if not is_bool(opts.silent) then
-		opts.silent = true
-	end
+	opts.silent = is_bool(opts.silent) and opts.silent or true
 
 	if is_str(T) then
 		map_tbl[mode](T, '<Nop>', opts)
@@ -123,7 +114,6 @@ function M.nop(T, opts, mode)
 		end
 	else
 		error('(user.maps.nop): Unable to parse keys.')
-		return
 	end
 end
 
