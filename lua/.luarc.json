@@ -21,7 +21,7 @@
 	"diagnostics.globals": [
 		"vim"
 	],
-	"diagnostics.libraryFiles": "Enable",
+	"diagnostics.libraryFiles": "Opened",
 	"format.enable": true,
 	"hint.arrayIndex": "Enable",
 	"hint.await": true,
@@ -78,7 +78,7 @@
 	"type.weakUnionCheck": true,
 	"window.progressBar": true,
 	"window.statusBar": true,
-	"workspace.checkThirdParty": false,
+	"workspace.checkThirdParty": "Disable",
 	"workspace.ignoreDir": [
 		".vscode"
 	],
