@@ -10,6 +10,9 @@ local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local is_str = Check.value.is_str
+local is_fun = Check.value.is_fun
+local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local nmap = User.maps.kmap.n
 
 local fs_stat = vim.uv.fs_stat
@@ -61,6 +64,18 @@ local function source(mod_str)
 	end
 end
 
+---@type fun(field: string): fun()
+local function colorscheme_init(field)
+	if not is_str(field) or empty(field) then
+		error('Unable to initialize colorscheme.')
+	end
+
+	return function()
+		vim.opt.termguicolors = vim_exists('+termguicolors')
+		vim.g[field] = 1
+	end
+end
+
 ---@type table<string, LazyPlugs>
 local M = {}
 
@@ -71,29 +86,41 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'OneDark',
 		version = false,
+		init = colorscheme_init('installed_onedark'),
 	},
 	{
 		'catppuccin/nvim',
 		priority = 1000,
 		name = 'catppuccin',
 		version = false,
+		init = colorscheme_init('installed_catppuccin'),
 	},
 	{
 		'folke/tokyonight.nvim',
 		priority = 1000,
 		name = 'tokyonight',
 		version = false,
+		init = colorscheme_init('installed_tokyonight'),
 	},
 	{
-		'vigoux/oak',
+		'EdenEast/nightfox.nvim',
 		priority = 1000,
+		name = 'nightfox',
 		version = false,
+		init = colorscheme_init('installed_nightfox'),
 	},
 	{
 		'bkegley/gloombuddy',
 		priority = 1000,
 		version = false,
 		dependencies = { 'colorbuddy' },
+		init = colorscheme_init('installed_gloombuddy'),
+	},
+	{
+		'vigoux/oak',
+		priority = 1000,
+		version = false,
+		init = colorscheme_init('installed_oak'),
 	},
 	{
 		'tjdevries/colorbuddy.vim',
@@ -101,13 +128,7 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'colorbuddy',
 		version = false,
-	},
-	{
-		'EdenEast/nightfox.nvim',
-		lazy = true,
-		priority = 1000,
-		name = 'nightfox',
-		version = false,
+		init = colorscheme_init('installed_colorbuddy'),
 	},
 	{
 		'pineapplegiant/spaceduck',
@@ -116,9 +137,7 @@ M.COLORSCHEMES = {
 		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
-		init = function()
-			vim.g.installed_spaceduck = 1
-		end,
+		init = colorscheme_init('installed_spaceduck'),
 	},
 	{
 		'dracula/vim',
@@ -128,9 +147,7 @@ M.COLORSCHEMES = {
 		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
-		init = function()
-			vim.g.installed_dracula = 1
-		end,
+		init = colorscheme_init('installed_dracula'),
 	},
 	{
 		'liuchengxu/space-vim-dark',
@@ -139,9 +156,7 @@ M.COLORSCHEMES = {
 		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
-		init = function()
-			vim.g.installed_space_vim_dark = 1
-		end,
+		init = colorscheme_init('installed_space_vim_dark'),
 	},
 	{
 		'tomasr/molokai',
@@ -150,9 +165,7 @@ M.COLORSCHEMES = {
 		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
-		init = function()
-			vim.g.installed_molokai = 1
-		end,
+		init = colorscheme_init('installed_molokai'),
 	},
 	{
 		'colepeters/spacemacs-theme.vim',
@@ -162,9 +175,7 @@ M.COLORSCHEMES = {
 		version = false,
 		-- Set the global condition for a later
 		-- submodule call.
-		init = function()
-			vim.g.installed_spacemacs = 1
-		end,
+		init = colorscheme_init('installed_spacemacs'),
 	},
 }
 -- Essential Plugins
@@ -216,6 +227,7 @@ M.ESSENTIAL = {
 	{
 		'nvim-lua/popup.nvim',
 		name = 'Popup',
+		main = 'popup',
 		version = false,
 		dependencies = { 'Plenary' },
 	},
@@ -237,6 +249,8 @@ M.ESSENTIAL = {
 	{
 		'lewis6991/hover.nvim',
 		name = 'Hover',
+		main = 'hover',
+		version = false,
 		config = source('lazy_cfg.hover'),
 	},
 
@@ -260,6 +274,8 @@ M.NVIM = {
 		init = function()
 			vim.opt.timeout = true
 			vim.opt.timeoutlen = 300
+			vim.opt.ttimeout = true
+			vim.opt.ttimeoutlen = -1
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.which_key'),
@@ -294,21 +310,21 @@ M.NVIM = {
 		-- stylua: ignore
 		keys = {
 			{
-				'<leader>sr',
+				'<leader>Sr',
 				function()
 					require('persistence').load()
 				end,
 				desc = 'Restore Session',
 			},
 			{
-				'<leader>sl',
+				'<leader>Sl',
 				function()
 					require('persistence').load({ last = true })
 				end,
 				desc = 'Restore Last Session',
 			},
 			{
-				'<leader>sd',
+				'<leader>Sd',
 				function()
 					require('persistence').stop()
 				end,
@@ -323,8 +339,8 @@ M.TS = {
 	{
 		'nvim-treesitter/nvim-treesitter',
 		name = 'treesitter',
-		version = false,
 		build = ':TSUpdate',
+		version = false,
 		dependencies = {
 			'ts-context',
 			'ts-commentstring',
@@ -413,8 +429,7 @@ M.LSP = {
 			'NeoDev',
 			'NeoConf',
 			'Trouble',
-			'b0o/SchemaStore',
-			'clangd_exts',
+			'SchemaStore',
 		},
 		config = source('lazy_cfg.lspconfig'),
 	},
@@ -440,14 +455,14 @@ M.LSP = {
 	},
 	{
 		'folke/trouble.nvim',
-		lazy = true,
+		cmd = { 'Trouble', 'TroubleClose', 'TroubleRefresh', 'TroubleToggle' },
 		name = 'Trouble',
 		version = false,
 		dependencies = { 'web-devicons' },
 	},
 	{
 		'p00f/clangd_extensions.nvim',
-		lazy = true,
+		ft = { 'c', 'cpp' },
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
@@ -617,13 +632,13 @@ M.UI = {
 		main = 'ibl',
 		name = 'ibl',
 		version = false,
-		dependencies = { 'rainbow-delimiters' },
+		dependencies = { 'rainbow_delimiters' },
 		config = source('lazy_cfg.blank_line'),
 	},
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
 		lazy = true,
-		name = 'rainbow-delimiters',
+		name = 'rainbow_delimiters',
 		version = false,
 	},
 	-- File Tree
@@ -636,8 +651,8 @@ M.UI = {
 			'web-devicons',
 			'Mini',
 		},
-		-- Disable `netrw`.
 		init = function()
+			-- Disable `netrw`.
 			vim.g.loaded_netrw = 1
 			vim.g.loaded_netrwPlugin = 1
 
@@ -655,7 +670,6 @@ M.UI = {
 		'akinsho/toggleterm.nvim',
 		name = 'ToggleTerm',
 		version = false,
-		branch = 'main',
 		config = source('lazy_cfg.toggleterm'),
 	},
 	{
@@ -680,9 +694,8 @@ M.UI = {
 }
 -- File Syntax Plugins
 M.SYNTAX = {
-	{ 'rhysd/vim-syntax-codeowners', name = 'codeowners-syntax' },
-
-	{ 'vim-scripts/DoxygenToolkit.vim', name = 'DoxygenToolkit' },
+	{ 'rhysd/vim-syntax-codeowners',    name = 'codeowners-syntax' },
+	{ 'vim-scripts/DoxygenToolkit.vim', name = 'DoxygenToolkit', enabled = executable('doxygen') },
 }
 
 M.UTILS = {
@@ -716,9 +729,7 @@ local P = {
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
 local key_variant = function(cmd)
-	if not is_str(cmd) or not vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd) then
-		cmd = 'ed'
-	end
+	cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
 
 	cmd = cmd .. ' '
 
@@ -738,7 +749,16 @@ local Keys = {
 }
 
 for lhs, v in next, Keys do
-	nmap(lhs, v[1], v[2] or {})
+	if not (is_str(v[1]) or is_fun(v[1])) then
+		goto continue
+	end
+
+	local rhs = v[1]
+	local opts = is_tbl(v[2]) and v[2] or {}
+
+	nmap(lhs, rhs, opts)
+
+	::continue::
 end
 
 return P
