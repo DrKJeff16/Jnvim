@@ -40,16 +40,16 @@ local Opts = {
 		-- NOTE: If you enable messages, then the cmdline is enabled automatically.
 		-- This is a current Neovim limitation.
 		enabled = true,  -- enables the Noice messages UI
-		view = "mini", -- default view for messages
+		view = "mini",   -- default view for messages
 		view_error = "notify", -- view for errors
 		view_warn = "mini", -- view for warnings
-		view_history = false, -- view for :messages
+		view_history = true, -- view for :messages
 		view_search = true, -- view for search count messages. Set to `false` to disable
 	},
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
 		---@type 'nui'|'cmp'
-		backend = 'cmp', -- backend to use to show regular cmdline completions
+		backend = 'nui', -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
 		---@type NoicePopupmenuItemKind|false
 		kind_icons = {}, -- set to `false` to disable icons
@@ -58,8 +58,8 @@ local Opts = {
 	-- see the section on Command Redirection
 	---@type NoiceRouteConfig
 	redirect = {
-		view = "popup",
-		filter = { event = "msg_show" },
+		view = 'popup',
+		filter = { event = 'msg_show' },
 	},
 	commands = {
 		history = {
@@ -175,16 +175,22 @@ local Opts = {
 	-- you can enable a preset for easier configuration
 	presets = {
 		bottom_search = false,  -- use a classic bottom cmdline for search
-		command_palette = false, -- position the cmdline and popupmenu together
+		command_palette = true, -- position the cmdline and popupmenu together
 		long_message_to_split = true, -- long messages will be sent to a split
 		inc_rename = false,     -- enables an input dialog for inc-rename.nvim
 		lsp_doc_border = true,  -- add a border to hover docs and signature help
 	},
-	throttle = 1000 / 30,
+	throttle = 1000 / 50,
 	---@type NoiceConfigViews
 	views = {}, ---@see section on views
 	---@type NoiceRouteConfig
-	routes = {}, ---@see section on routes
+	routes = {
+		view = 'notify',
+		filter = {},
+		opts = {
+			align = 'center',
+		},
+	}, ---@see section on routes
 	---@type table<string, NoiceFilter>
 	status = {}, ---@see section on statusline components
 	---@type NoiceFormatOptions
