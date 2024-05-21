@@ -6,13 +6,13 @@ local Check = User.check
 local kmap = User.maps.kmap
 local types = User.types.nvim_tree
 
-local nmap = kmap.n
-local hi = User.highlight.hl
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
+local nmap = kmap.n
+local hi = User.highlight.hl
 
 if not exists('nvim-tree') then
 	return
@@ -42,9 +42,7 @@ local floor = math.floor
 
 ---@type OptSetterFun
 local function key_opts(desc, bufn)
-	if not is_num(bufn) or bufn < 0 then
-		bufn = 0
-	end
+	bufn = (is_num(bufn) and bufn >= 0) and bufn or 0
 
 	---@type KeyMapOpts
 	local res = {
@@ -95,7 +93,8 @@ local map_lft = function(keys)
 
 	for _, args in next, keys do
 		if not is_nil(args.lhs) and not is_nil(args.rhs) then
-			nmap(args.lhs, args.rhs, args.opts or {})
+			args.opts = is_tbl(args.opts) and args.opts or {}
+			nmap(args.lhs, args.rhs, args.opts)
 		end
 	end
 end
@@ -126,7 +125,7 @@ local my_maps = {
 
 map_lft(my_maps)
 
----@type fun(nwin: number)
+---@type fun(nwin: integer)
 local tab_win_close = function(nwin)
 	local ntab = get_tabpage(nwin)
 	local nbuf = get_bufn(nwin)
@@ -168,11 +167,9 @@ local tree_open = function(data)
 	end
 
 	local ft = bo[nbuf].ft
-	local noignore = {
-		'codeowners',
-	}
+	local noignore = {}
 
-	if not in_tbl(noignore, ft) then
+	if empty(noignore) or not in_tbl(noignore, ft) then
 		return
 	end
 
@@ -191,7 +188,7 @@ local tree_open = function(data)
 end
 
 local edit_or_open = function()
-	---@type AnyFunc)
+	---@type AnyFunc
 	local edit = Tnode.open.edit
 
 	---@type TreeNode
@@ -234,9 +231,9 @@ local git_add = function()
 	local gs = ngsf or ''
 
 	if gs == '' then
-		if not is_nil(ngs.dir.direct) then
+		if is_tbl(ngs.dir.direct) and not empty(ngs.dir.direct) then
 			gs = ngs.dir.direct[1]
-		elseif not is_nil(ngs.dir.indirect) then
+		elseif is_tbl(ngs.dir.indirect) and not empty(ngs.dir.indirect) then
 			gs = ngs.dir.indirect[1]
 		end
 	end
@@ -263,7 +260,7 @@ local swap_then_open_tab = function()
 	---@type TreeNode
 	local node = get_node()
 
-	if not is_nil(node) then
+	if is_tbl(node) and not empty(node) then
 		vim.cmd('wincmd l')
 		tab(node)
 	end
@@ -320,25 +317,53 @@ local on_attach = function(bufn)
 	map_lft(keys)
 end
 
-local HEIGHT_RATIO = 0.8
-local WIDTH_RATIO = 0.5
+local HEIGHT_RATIO = 0.85
+local WIDTH_RATIO = 0.6
 
 Tree.setup({
 	on_attach = on_attach,
 
+	sort = {
+		sorter = 'name',
+		folders_first = false,
+		files_first = false,
+	},
+
+	auto_reload_on_write = true,
+	disable_netrw = true,
+
+	hijack_netrw = true,
+	hijack_cursor = true,
+	hijack_directories = {
+		enable = true,
+		auto_open = false,
+	},
+
+	update_focused_file = {
+		enable = true,
+		update_root = {
+			enable = true,
+			ignore_list = {},
+		},
+		exclude = false,
+	},
+	sync_root_with_cwd = true,
+	reload_on_bufenter = true,
+	respect_buf_cwd = true,
+
 	view = {
 		float = {
 			enable = true,
+			quit_on_focus_loss = true,
 			open_win_config = function()
 				local screen_w = opt.columns:get()
 				local screen_h = opt.lines:get() - opt.cmdheight:get()
 				local window_w = screen_w * WIDTH_RATIO
 				local window_h = screen_h * HEIGHT_RATIO
-				local window_w_int = math.floor(window_w)
-				local window_h_int = math.floor(window_h)
+				local window_w_int = floor(window_w)
+				local window_h_int = floor(window_h)
 				local center_x = (screen_w - window_w) / 2
-				local center_y = ((opt.lines:get() - window_h) / 2)
-				- opt.cmdheight:get()
+				local center_y = ((opt.lines:get() - window_h) / 2) - opt.cmdheight:get()
 				return {
 					border = 'rounded',
 					relative = 'editor',
@@ -350,10 +375,76 @@ Tree.setup({
 			end,
 		},
 		width = function()
-      		return floor(opt.columns:get() * WIDTH_RATIO)
-    	end,
+			return floor(opt.columns:get() * WIDTH_RATIO)
+		end,
 	},
-	renderer = { group_empty = true },
+	renderer = {
+		group_empty = true,
+		add_trailing = false,
+		full_name = false,
+
+		indent_width = 2,
+		indent_markers = {
+			enable = true,
+			inline_arrows = true,
+			icons = {
+				corner = "└",
+				edge = "│",
+				item = "│",
+				bottom = "─",
+				none = " ",
+			},
+		},
+
+		icons = {
+			web_devicons = {
+				file = { enable = true, color = true },
+				folder = { enable = true, color = true },
+			},
+
+			git_placement = 'signcolumn',
+			modified_placement = 'after',
+			diagnostics_placement = 'before',
+			bookmarks_placement = 'after',
+
+
+			symlink_arrow = " ➛ ",
+			show = {
+				file = true,
+				folder = true,
+				folder_arrow = true,
+				git = true,
+				modified = true,
+				diagnostics = true,
+				bookmarks = false,
+			},
+			glyphs = {
+				default = "",
+				symlink = "",
+				bookmark = "󰆤",
+				modified = "●",
+				folder = {
+					arrow_closed = "",
+					arrow_open = "",
+					default = "",
+					open = "",
+					empty = "",
+					empty_open = "",
+					symlink = "",
+					symlink_open = "",
+				},
+				git = {
+					unstaged = "✗",
+					staged = "✓",
+					unmerged = "",
+					renamed = "➜",
+					untracked = "★",
+					deleted = "",
+					ignored = "◌",
+				},
+			},
+		},
+	},
 	filters = { dotfiles = false },
 	live_filter = {
 		prefix = '[FILTER]: ',
@@ -442,15 +533,14 @@ if exists('telescope') then
 		}
 
 		-- Opening the menu
-		Pickers.new({
-			prompt_title = "Tree Menu" }, default_options)
+		Pickers.new({ prompt_title = 'Tree Menu' }, default_options)
 			:find()
 	end
 end
 
-Api.events.subscribe(Api.events.Event.FileCreated, function(file)
+--[[ Api.events.subscribe(Api.events.Event.FileCreated, function(file)
 	vim.cmd('ed ' .. file.fname)
-end)
+end) ]]
 
 ---@type HlDict
 local hl_groups = {
@@ -465,7 +555,7 @@ local au_cmds = {
 	['VimEnter'] = { callback = tree_open },
 	['WinClosed'] = {
 		callback = function()
-			---@type number
+			---@type integer
 			local nwin = tonumber(fn.expand('<amatch>'))
 
 			local tabc = function()

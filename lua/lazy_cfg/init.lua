@@ -665,7 +665,6 @@ M.UI = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.nvim_tree'),
-		enabled = false,
 	},
 	{
 		'nvim-neo-tree/neo-tree.nvim',
@@ -685,6 +684,7 @@ M.UI = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.neo_tree'),
+		enabled = false,
 	},
 	{
 		'norcalli/nvim-colorizer.lua',
