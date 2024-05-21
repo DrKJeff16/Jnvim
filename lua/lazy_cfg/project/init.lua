@@ -35,6 +35,7 @@ local opts = {
 	-- detection_methods
 	patterns = {
 		".git",
+		".github",
 		"_darcs",
 		".hg",
 		".bzr",
@@ -43,11 +44,12 @@ local opts = {
 		"package.json",
 		'pyproject.toml',
 		'.neoconf.json',
+		'neoconf.json',
 		'Pipfile',
 		'Pipfile.lock',
+		'requirements.txt',
 		'tox.ini',
 		'stylua.toml',
-		'neoconf.json',
 	},
 
 	-- Don't calculate root dir on specific directories
