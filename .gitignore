@@ -1,5 +1,6 @@
 /lazy-lock.json
 /src
+/repro.lua
 
 *.rar
 *.cpio
