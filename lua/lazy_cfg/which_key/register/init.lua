@@ -10,29 +10,45 @@ local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
+local empty = Check.value.empty
 
 local WK = require('which-key')
 local Presets = require('which-key.plugins.presets')
 
 local register = WK.register
 
----@type fun(maps: RegKeysTbl, opts: RegOpts?)
-local reg = function(maps, opts)
-	local MODES = { 'n', 'i', 'v', 't', 'x', 'o' }
-	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
+---@type fun(T: RegKeys|RegKeysNamed, mod: string, maps: RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
+local function add_if_module(T, mod, maps)
+	local res = vim.deepcopy(T)
 
-	if not is_tbl(opts) then
-		opts = {}
+	-- If module string is empty or not a string type
+	if not is_str(mod) or empty(mod) then
+		return res
 	end
 
-	for _, o in next, DEFAULT_OPTS do
-		if not is_bool(opts[o]) and o ~= 'nowait' then
-			opts[o] = true
+	-- If module exists and key table is valid
+	if exists(mod) and is_tbl(maps) and not empty(maps) then
+		for key, ops in next, maps do
+			res[key] = ops
 		end
 	end
 
-	if not is_str(opts.mode) or not vim.tbl_contains(MODES, opts.mode) then
-		opts.mode = 'n'
+	return res
+end
+
+---@type fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)
+local function reg(maps, opts)
+	local MODES = { 'n', 'i', 'v', 't', 'x', 'o' }
+	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
+
+	opts = is_tbl(opts) and opts or {}
+
+	opts.mode = is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode) and opts.mode or 'n'
+
+	for _, o in next, DEFAULT_OPTS do
+		if not is_bool(opts[o]) then
+			opts[o] = (o ~= 'nowait') and true or false
+		end
 	end
 
 	---@type RegKeysTbl
@@ -43,10 +59,10 @@ local reg = function(maps, opts)
 		local tbl = vim.deepcopy(v)
 
 		for _, o in next, DEFAULT_OPTS do
-			if not is_nil(v.name) and o == 'nowait' and not is_bool(tbl[o]) then
+			if not is_nil(v.name) and o == 'nowait' then
 				tbl[o] = false
-			elseif not is_bool(tbl[o]) then
-				tbl[o] = true
+			else
+				tbl[o] = is_bool(tbl[o]) and tbl[o] or true
 			end
 		end
 
@@ -56,21 +72,53 @@ local reg = function(maps, opts)
 	register(filtered, opts)
 end
 
----@type RegKeysTbl
-local regs = {
+---@type RegKeysNamed
+local Names = {
 	-- File Handling
 	['<leader>f'] = { name = '+File' },
+	--- Source File Handling
+	['<leader>fv'] = { name = '+Vim Files' },
+	--- `init.lua` Editing
+	['<leader>fve'] = { name = '+Edit `init.lua`' },
+
+	-- Tabs Handling
+	['<leader>t'] = { name = '+Tabs' },
+
+	-- Buffer Handling
+	['<leader>b'] = { name = '+Buffer' },
+
+	-- Window Handling
+	['<leader>w'] = { name = '+Window' },
+
+	-- Window Splitting
+	['<leader>ws'] = { name = '+Split' },
+
+	-- Exiting
+	['<leader>q'] = { name = '+Quit Nvim' },
+
+	-- Help
+	['<leader>h'] = { name = '+Help' },
+
+	-- Session
+	['<leader>S'] = { name = '+Session' },
+
+	-- Vim
+	['<leader>v'] = { name = '+Vim' },
+}
+
+---@type RegKeys
+local Regs = {
+	-- File Handling
 	['<leader>fs'] = {
 		'<CMD>w<cr>',
 		'Save File',
 	},
 	--- Source File Handling
-	['<leader>fv'] = { name = '+Vim Files' },
 	['<leader>fvs'] = {
 		'<CMD>luafile $MYVIMRC<cr>',
 		'Source Neovim\'s `init.lua`',
 	},
-	['<leader>fve'] = { name = '+Edit `init.lua`' },
+	--- `init.lua` Editing
 	['<leader>fvee'] = {
 		'<CMD>ed $MYVIMRC<cr>',
 		'Open `$MYVIMRC`',
@@ -88,32 +136,7 @@ local regs = {
 		'Open `$MYVIMRC` in Vertical Window',
 	},
 
-	--- NvimTree
-	['<leader>ft'] = { name = '+NvimTree' },
-	['<leader>fto'] = {
-		'<CMD>NvimTreeOpen<cr>',
-		'Open Tree',
-	},
-	['<leader>ftt'] = {
-		'<CMD>NvimTreeToggle<cr>',
-		'Toggle Tree',
-	},
-	['<leader>ftf'] = {
-		'<CMD>NvimTreeFocus<cr>',
-		'Focus Tree',
-	},
-	['<leader>ftd'] = {
-		'<CMD>NvimTreeClose<cr>',
-		'Close Tree',
-	},
-
-	-- Telescope
-	['<leader>fT'] = { name = '+Telescope' },
-	['<leader>fTb'] = { name = '+Builtins' },
-	['<leader>fTe'] = { name = '+Extensions' },
-
 	-- Tabs Handling
-	['<leader>t'] = { name = '+Tabs' },
 	['<leader>td'] = {
 		'<CMD>tabc<cr>',
 		'Close Tab',
@@ -144,7 +167,6 @@ local regs = {
 	},
 
 	-- Buffer Handling
-	['<leader>b'] = { name = '+Buffer' },
 	['<leader>bd'] = {
 		'<CMD>bdel<cr>',
 		'Close Buffer',
@@ -170,10 +192,72 @@ local regs = {
 		'Previous Buffer',
 	},
 
-	-- TODO: Expand these keys.
-	-- GitSigns
+	-- Window Handling
+	['<leader>wn'] = { '<C-w>w', 'Next Window' },
+	-- Window Splitting
+	['<leader>wss'] = {
+		'<CMD>split<cr>',
+		'Split Horizontally',
+	},
+	['<leader>wsv'] = {
+		'<CMD>vsplit<cr>',
+		'Split Vertically',
+	},
+
+	-- Exiting
+	['<leader>qq'] = {
+		'<CMD>qa<cr>',
+		'Quit All',
+	},
+	['<leader>qQ'] = {
+		'<CMD>qa!<cr>',
+		'Quit All (Forcefully)',
+	},
+}
+
+-- Context
+Names = add_if_module(Names, 'treesitter-context', {
+	['<leader>C'] = { name = '+Context' },
+})
+
+-- NvimTree
+Names = add_if_module(Names, 'nvim-tree', {
+	['<leader>ft'] = { name = '+NvimTree' },
+})
+Regs = add_if_module(Regs, 'nvim-tree', {
+	['<leader>fto'] = {
+		'<CMD>NvimTreeOpen<cr>',
+		'Open Tree',
+	},
+	['<leader>ftt'] = {
+		'<CMD>NvimTreeToggle<cr>',
+		'Toggle Tree',
+	},
+	['<leader>ftf'] = {
+		'<CMD>NvimTreeFocus<cr>',
+		'Focus Tree',
+	},
+	['<leader>ftd'] = {
+		'<CMD>NvimTreeClose<cr>',
+		'Close Tree',
+	},
+})
+
+-- Telescope
+Names = add_if_module(Names, 'telescope', {
+	['<leader>fT'] = { name = '+Telescope' },
+	['<leader>fTb'] = { name = '+Builtins' },
+	['<leader>fTe'] = { name = '+Extensions' },
+})
+
+-- TODO: Expand these keys.
+--
+-- GitSigns
+Names = add_if_module(Names, 'gitsigns', {
 	['<leader>G'] = { name = '+GitSigns' },
 	['<leader>Gh'] = { name = '+Hunks' },
+})
+Regs = add_if_module(Regs, 'gitsigns', {
 	['<leader>Ghd'] = {
 		'<CMD>Gitsigns diffthis<cr>',
 		'Diffthis',
@@ -194,10 +278,14 @@ local regs = {
 		'<CMD>Gitsigns undo_stage_hunk<cr>',
 		'Un-Stage Current Hunk',
 	},
+})
 
-	-- Lazy
+-- Lazy
+Names = add_if_module(Names, 'lazy', {
 	['<leader>L'] = { name = '+Lazy' },
 	['<leader>e'] = { name = '+Edit Lazy Config' },
+})
+Regs = add_if_module(Regs, 'lazy', {
 	['<leader>Ll'] = {
 		'<CMD>Lazy<cr>',
 		'Open Floating Window',
@@ -226,36 +314,44 @@ local regs = {
 		'<CMD>Lazy profile<cr>',
 		'Profile',
 	},
+})
 
-	-- Window Handling
-	['<leader>w'] = { name = '+Window' },
-	['<leader>wn'] = { '<C-w>w', 'Next Window' },
-	-- Window Splitting
-	['<leader>ws'] = { name = '+Split' },
-	['<leader>wss'] = {
-		'<CMD>split<cr>',
-		'Split Horizontally',
-	},
-	['<leader>wsv'] = {
-		'<CMD>vsplit<cr>',
-		'Split Vertically',
-	},
+-- Trouble
+Names = add_if_module(Names, 'trouble', {
+	['<leader>x'] = { name = '+Trouble' },
+})
 
-	-- Exiting
-	['<leader>q'] = { name = '+Quit Nvim' },
-	['<leader>qq'] = {
-		'<CMD>qa<cr>',
-		'Quit All',
-	},
-	['<leader>qQ'] = {
-		'<CMD>qa!<cr>',
-		'Quit All (Forcefully)',
-	},
+-- Barbar
+Names = add_if_module(Names, 'barbar', {
+	['<leader>B'] = { name = '+Barbar' },
+})
 
+-- Project
+Names = add_if_module(Names, 'project_nvim', {
+	['<leader>p'] = { name = '+Project' },
+})
+
+-- LSP
+Names = add_if_module(Names, 'lspconfig', {
+	['<leader>l'] = { name = '+LSP' },
+	['<leader>lw'] = { name = '+Workspace' },
+})
+
+-- ToggleTerm
+Names = add_if_module(Names, 'toggleterm', {
+	['<leader>T'] = { name = '+ToggleTerm' },
+})
+Names = add_if_module(Names, 'todo-comments', {
 	-- TODO Comments
 	['<leader>c'] = { name = '+TODO Comments' },
 	-- `TODO` Handling
 	['<leader>ct'] = { name = '+TODO' },
+	-- `ERROR` Handling
+	['<leader>ce'] = { name = '+ERROR' },
+	-- `ERROR` Handling
+	['<leader>cw'] = { name = '+WARNING' },
+})
+Regs = add_if_module(Regs, 'todo-comments', {
 	['<leader>ctn'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next()<cr>',
 		'Next \'TODO\'',
@@ -265,7 +361,6 @@ local regs = {
 		'Previous \'TODO\'',
 	},
 	-- `ERROR` Handling
-	['<leader>ce'] = { name = '+ERROR' },
 	['<leader>cen'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'ERROR\' } })<cr>',
 		'Next \'ERROR\'',
@@ -275,7 +370,6 @@ local regs = {
 		'Previous \'ERROR\'',
 	},
 	-- `ERROR` Handling
-	['<leader>cw'] = { name = '+WARNING' },
 	['<leader>cwn'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next({ keywords = { \'WARNING\' } })<cr>',
 		'Next \'WARNING\'',
@@ -284,34 +378,7 @@ local regs = {
 		'<CMD>lua require(\'todo-comments\').jump_prev({ keywords = { \'WARNING\' } })<cr>',
 		'Previous \'WARNING\'',
 	},
+})
 
-	-- ToggleTerm
-	['<leader>T'] = { name = '+ToggleTerm' },
-
-	-- LSP
-	['<leader>l'] = { name = '+LSP' },
-	['<leader>lw'] = { name = '+Workspace' },
-
-	-- Project
-	['<leader>p'] = { name = '+Project' },
-
-	-- Context
-	['<leader>C'] = { name = '+Context' },
-
-	-- Barbar
-	['<leader>B'] = { name = '+Barbar' },
-
-	-- Help
-	['<leader>h'] = { name = '+Help' },
-
-	-- Session
-	['<leader>s'] = { name = '+Session' },
-
-	-- Vim
-	['<leader>v'] = { name = '+Vim' },
-
-	-- Trouble
-	['<leader>x'] = { name = '+Trouble' },
-}
-
-reg(regs)
+reg(Names)
+reg(Regs)

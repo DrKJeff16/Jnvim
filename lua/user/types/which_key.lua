@@ -18,7 +18,8 @@ require('user.types.user.maps')
 ---@field nowait? boolean
 ---@field silent? boolean
 
----@alias RegKeysTbl table<string, RegPfx|RegKey>
+---@alias RegKeys table<string, RegKey>
+---@alias RegKeysNamed table<string, RegPfx>
 
 ---@class RegOpts
 ---@field mode? ModeEnum
