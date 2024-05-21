@@ -13,7 +13,7 @@ require('user.types.user.maps')
 ---@field silent? boolean
 
 ---@class RegPfx
----@field name? string
+---@field name string
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field silent? boolean
@@ -21,12 +21,4 @@ require('user.types.user.maps')
 ---@alias RegKeys table<string, RegKey>
 ---@alias RegKeysNamed table<string, RegPfx>
 
----@class RegOpts
----@field mode? ModeEnum
----@field prefix? string
----@field buffer? integer
----@field silent? boolean
----@field noremap? boolean
----@field nowait? boolean
----@field expr? boolean
----@field desc? boolean
+---@alias RegOpts KeyMapOpts

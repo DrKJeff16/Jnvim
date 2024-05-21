@@ -17,25 +17,6 @@ local Presets = require('which-key.plugins.presets')
 
 local register = WK.register
 
----@type fun(T: RegKeys|RegKeysNamed, mod: string, maps: RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
-local function add_if_module(T, mod, maps)
-	local res = vim.deepcopy(T)
-
-	-- If module string is empty or not a string type
-	if not is_str(mod) or empty(mod) then
-		return res
-	end
-
-	-- If module exists and key table is valid
-	if exists(mod) and is_tbl(maps) and not empty(maps) then
-		for key, ops in next, maps do
-			res[key] = ops
-		end
-	end
-
-	return res
-end
-
 ---@type fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)
 local function reg(maps, opts)
 	local MODES = { 'n', 'i', 'v', 't', 'x', 'o' }
@@ -215,16 +196,34 @@ local Regs = {
 	},
 }
 
+---@type fun(mod: string, names: RegKeysNamed, regs: RegKeys?)
+local function add_if_module(mod, names, regs)
+	if not (is_tbl(names) and not empty(names)) then
+		return
+	end
+
+	-- If module exists and key table is valid
+	if exists(mod) then
+		for key, ops in next, names do
+			Names[key] = ops
+		end
+		if is_tbl(regs) and not empty(regs) then
+			for key, ops in next, regs do
+				Regs[key] = ops
+			end
+		end
+	end
+end
+
 -- Context
-Names = add_if_module(Names, 'treesitter-context', {
+add_if_module('treesitter-context', {
 	['<leader>C'] = { name = '+Context' },
 })
 
 -- NvimTree
-Names = add_if_module(Names, 'nvim-tree', {
+add_if_module('nvim-tree', {
 	['<leader>ft'] = { name = '+NvimTree' },
-})
-Regs = add_if_module(Regs, 'nvim-tree', {
+}, {
 	['<leader>fto'] = {
 		'<CMD>NvimTreeOpen<cr>',
 		'Open Tree',
@@ -244,7 +243,7 @@ Regs = add_if_module(Regs, 'nvim-tree', {
 })
 
 -- Telescope
-Names = add_if_module(Names, 'telescope', {
+add_if_module('telescope', {
 	['<leader>fT'] = { name = '+Telescope' },
 	['<leader>fTb'] = { name = '+Builtins' },
 	['<leader>fTe'] = { name = '+Extensions' },
@@ -253,11 +252,10 @@ Names = add_if_module(Names, 'telescope', {
 -- TODO: Expand these keys.
 --
 -- GitSigns
-Names = add_if_module(Names, 'gitsigns', {
+add_if_module('gitsigns', {
 	['<leader>G'] = { name = '+GitSigns' },
 	['<leader>Gh'] = { name = '+Hunks' },
-})
-Regs = add_if_module(Regs, 'gitsigns', {
+}, {
 	['<leader>Ghd'] = {
 		'<CMD>Gitsigns diffthis<cr>',
 		'Diffthis',
@@ -281,11 +279,10 @@ Regs = add_if_module(Regs, 'gitsigns', {
 })
 
 -- Lazy
-Names = add_if_module(Names, 'lazy', {
+add_if_module('lazy', {
 	['<leader>L'] = { name = '+Lazy' },
 	['<leader>e'] = { name = '+Edit Lazy Config' },
-})
-Regs = add_if_module(Regs, 'lazy', {
+}, {
 	['<leader>Ll'] = {
 		'<CMD>Lazy<cr>',
 		'Open Floating Window',
@@ -317,31 +314,33 @@ Regs = add_if_module(Regs, 'lazy', {
 })
 
 -- Trouble
-Names = add_if_module(Names, 'trouble', {
+add_if_module('trouble', {
 	['<leader>x'] = { name = '+Trouble' },
 })
 
 -- Barbar
-Names = add_if_module(Names, 'barbar', {
+add_if_module('barbar', {
 	['<leader>B'] = { name = '+Barbar' },
 })
 
 -- Project
-Names = add_if_module(Names, 'project_nvim', {
+add_if_module('project_nvim', {
 	['<leader>p'] = { name = '+Project' },
 })
 
 -- LSP
-Names = add_if_module(Names, 'lspconfig', {
+add_if_module('lspconfig', {
 	['<leader>l'] = { name = '+LSP' },
 	['<leader>lw'] = { name = '+Workspace' },
 })
 
 -- ToggleTerm
-Names = add_if_module(Names, 'toggleterm', {
+add_if_module('toggleterm', {
 	['<leader>T'] = { name = '+ToggleTerm' },
 })
-Names = add_if_module(Names, 'todo-comments', {
+
+-- TODO Comments
+add_if_module('todo-comments', {
 	-- TODO Comments
 	['<leader>c'] = { name = '+TODO Comments' },
 	-- `TODO` Handling
@@ -350,8 +349,7 @@ Names = add_if_module(Names, 'todo-comments', {
 	['<leader>ce'] = { name = '+ERROR' },
 	-- `ERROR` Handling
 	['<leader>cw'] = { name = '+WARNING' },
-})
-Regs = add_if_module(Regs, 'todo-comments', {
+}, {
 	['<leader>ctn'] = {
 		'<CMD>lua require(\'todo-comments\').jump_next()<cr>',
 		'Next \'TODO\'',
