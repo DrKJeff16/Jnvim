@@ -8,11 +8,14 @@ local types = User.types.nvim_tree
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
+local is_fun = Check.value.is_fun
 local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
-local nmap = kmap.n
+local empty = Check.value.empty
 local hi = User.highlight.hl
+
+local nmap = kmap.n
 
 if not exists('nvim-tree') then
 	return
@@ -26,7 +29,6 @@ local bo = vim.bo
 local sched = vim.schedule
 local sched_wp = vim.schedule_wrap
 local in_tbl = vim.tbl_contains
-local empty = vim.tbl_isempty
 local filter = vim.tbl_filter
 local tbl_map = vim.tbl_map
 
@@ -85,48 +87,56 @@ local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
 
----@type fun(keys: KeyMapArgs[])
+---@type fun(keys: (KeyMapArr[])|KeyMapDict|(KeyMapArgs[]))
 local map_lft = function(keys)
 	if not is_tbl(keys) or empty(keys) then
 		return
 	end
 
-	for _, args in next, keys do
-		if not is_nil(args.lhs) and not is_nil(args.rhs) then
+	for k, args in next, keys do
+		if is_num(k) and is_str(args.lhs) and (is_str(args.rhs) or is_fun(args.rhs)) then
 			args.opts = is_tbl(args.opts) and args.opts or {}
 			nmap(args.lhs, args.rhs, args.opts)
+		elseif is_num(k) and is_str(args[1]) and (is_str(args[2]) or is_fun(args[2])) then
+			args[3] = is_tbl(args[3]) and args[3] or {}
+			nmap(args[1], args[2], args[3])
+		elseif is_str(k) and (is_str(args[1]) or is_fun(args[1])) then
+			args[2] = is_tbl(args[2]) and args[2] or {}
+			nmap(k, args[1], args[2])
+		elseif is_str(k) and (is_str(args.rhs) or is_fun(args.rhs)) then
+			args.opts = is_tbl(args.opts) and args.opts or {}
+			nmap(k, args[1], args.opts)
+		else
+			error('(lazy_cfg.nvim_tree.map_lft): Invalid key table.')
 		end
 	end
 end
 
----@type KeyMapArgs[]
+---@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
 local my_maps = {
-	{
-		lhs = '<leader>fto',
-		rhs = open,
-		opts = key_opts('Open NvimTree'),
+	['<leader>fto'] = {
+		open,
+		key_opts('Open NvimTree'),
 	},
-	{
-		lhs = '<leader>ftt',
-		rhs = toggle,
-		opts = key_opts('Toggle NvimTree'),
+	['<leader>ftt'] = {
+		toggle,
+		key_opts('Toggle NvimTree'),
 	},
-	{
-		lhs = '<leader>ftd',
-		rhs = close,
-		opts = key_opts('Close NvimTree'),
+	['<leader>ftd'] = {
+		close,
+		key_opts('Close NvimTree'),
 	},
-	{
-		lhs = '<leader>ftf',
-		rhs = focus,
-		opts = key_opts('Focus NvimTree'),
+
+	['<leader>ftf'] = {
+		focus,
+		key_opts('Focus NvimTree'),
 	},
 }
 
 map_lft(my_maps)
 
 ---@type fun(nwin: integer)
-local tab_win_close = function(nwin)
+local function tab_win_close(nwin)
 	local ntab = get_tabpage(nwin)
 	local nbuf = get_bufn(nwin)
 	local buf_info = fn.getbufinfo(nbuf)[1]
@@ -154,19 +164,21 @@ local tab_win_close = function(nwin)
 end
 
 ---@type fun(data: BufData)
-local tree_open = function(data)
+local function tree_open(data)
 	local nbuf = data.buf
 	local name = data.file
 
+	local buf = vim.bo[nbuf]
+
 	local real = fn.filereadable(name) == 1
-	local no_name = name == '' and bo[nbuf].buftype == ''
+	local no_name = name == '' and buf.buftype == ''
 	local dir = fn.isdirectory(name) == 1
 
 	if not real and not no_name then
 		return
 	end
 
-	local ft = bo[nbuf].ft
+	local ft = buf.ft
 	local noignore = {}
 
 	if empty(noignore) or not in_tbl(noignore, ft) then
@@ -187,7 +199,7 @@ local tree_open = function(data)
 	end
 end
 
-local edit_or_open = function()
+local function edit_or_open()
 	---@type AnyFunc
 	local edit = Tnode.open.edit
 
@@ -202,7 +214,7 @@ local edit_or_open = function()
 	end
 end
 
-local vsplit_preview = function()
+local function vsplit_preview()
 	---@type TreeNode
 	local node = get_node()
 	local nodes = node.nodes or nil
@@ -221,7 +233,7 @@ local vsplit_preview = function()
 	focus()
 end
 
-local git_add = function()
+local function git_add()
 	---@type TreeNode
 	local node = get_node()
 
@@ -230,7 +242,7 @@ local git_add = function()
 	local abs = node.absolute_path
 	local gs = ngsf or ''
 
-	if gs == '' then
+	if empty(gs) then
 		if is_tbl(ngs.dir.direct) and not empty(ngs.dir.direct) then
 			gs = ngs.dir.direct[1]
 		elseif is_tbl(ngs.dir.indirect) and not empty(ngs.dir.indirect) then
@@ -253,7 +265,7 @@ local git_add = function()
 	reload()
 end
 
-local swap_then_open_tab = function()
+local function swap_then_open_tab()
 	---@type AnyFunc
 	local tab = Tnode.open.tab
 
@@ -270,55 +282,47 @@ end
 local on_attach = function(bufn)
 	CfgApi.mappings.default_on_attach(bufn)
 
-	---@type KeyMapArgs[]
+	---@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
 	local keys = {
-		{
-			lhs = '<C-t>',
-			rhs = change_root_to_parent,
-			opts = key_opts('Set Root To Upper Dir', bufn),
+		['<C-t>'] = {
+			change_root_to_parent,
+			key_opts('Set Root To Upper Dir', bufn),
 		},
-		{
-			lhs = '?',
-			rhs = toggle_help,
-			opts = key_opts('Help', bufn),
+		['?'] = {
+			toggle_help,
+			key_opts('Help', bufn),
 		},
-		{
-			lhs = '<C-f>',
-			rhs = edit_or_open,
-			opts = key_opts('Edit Or Open', bufn),
+		['<C-f>'] = {
+			edit_or_open,
+			key_opts('Edit Or Open', bufn),
 		},
-		{
-			lhs = 'P',
-			rhs = vsplit_preview,
-			opts = key_opts('Vsplit Preview', bufn),
+		['P'] = {
+			vsplit_preview,
+			key_opts('Vsplit Preview', bufn),
 		},
-		{
-			lhs = 'c',
-			rhs = close,
-			opts = key_opts('Close', bufn),
+		['c'] = {
+			close,
+			key_opts('Close', bufn),
 		},
-		{
-			lhs = 'HA',
-			rhs = collapse_all,
-			opts = key_opts('Collapse All', bufn),
+		['HA'] = {
+			collapse_all,
+			key_opts('Collapse All', bufn),
 		},
-		{
-			lhs = 'ga',
-			rhs = git_add,
-			opts = key_opts('Git Add...', bufn),
+		['ga'] = {
+			git_add,
+			key_opts('Git Add...', bufn),
 		},
-		{
-			lhs = 't',
-			rhs = swap_then_open_tab,
-			opts = key_opts('Open Tab', bufn),
+		['t'] = {
+			swap_then_open_tab,
+			key_opts('Open Tab', bufn),
 		},
 	}
 
 	map_lft(keys)
 end
 
-local HEIGHT_RATIO = 0.85
-local WIDTH_RATIO = 0.6
+local HEIGHT_RATIO = 6 / 7
+local WIDTH_RATIO = 2 / 3
 
 Tree.setup({
 	on_attach = on_attach,
@@ -330,40 +334,34 @@ Tree.setup({
 	},
 
 	auto_reload_on_write = true,
-	disable_netrw = true,
 
+	disable_netrw = true,
 	hijack_netrw = true,
 	hijack_cursor = true,
 	hijack_directories = {
 		enable = true,
-		auto_open = false,
+		auto_open = true,
 	},
 
-	update_focused_file = {
-		enable = true,
-		update_root = {
-			enable = true,
-			ignore_list = {},
-		},
-		exclude = false,
-	},
-	sync_root_with_cwd = true,
 	reload_on_bufenter = true,
-	respect_buf_cwd = true,
 
 	view = {
 		float = {
 			enable = true,
 			quit_on_focus_loss = true,
 			open_win_config = function()
-				local screen_w = opt.columns:get()
-				local screen_h = opt.lines:get() - opt.cmdheight:get()
+				local cols = vim.opt.columns
+				local rows = vim.opt.lines
+				local cmdh = vim.opt.cmdheight
+
+				local screen_w = cols:get()
+				local screen_h = rows:get() - cmdh:get()
 				local window_w = screen_w * WIDTH_RATIO
 				local window_h = screen_h * HEIGHT_RATIO
 				local window_w_int = floor(window_w)
 				local window_h_int = floor(window_h)
 				local center_x = (screen_w - window_w) / 2
-				local center_y = ((opt.lines:get() - window_h) / 2) - opt.cmdheight:get()
+				local center_y = ((rows:get() - window_h) / 2) - cmdh:get()
 				return {
 					border = 'rounded',
 					relative = 'editor',
@@ -375,7 +373,7 @@ Tree.setup({
 			end,
 		},
 		width = function()
-			return floor(opt.columns:get() * WIDTH_RATIO)
+			return floor(vim.opt.columns:get() * WIDTH_RATIO)
 		end,
 	},
 	renderer = {
@@ -403,8 +401,8 @@ Tree.setup({
 			},
 
 			git_placement = 'signcolumn',
-			modified_placement = 'after',
-			diagnostics_placement = 'before',
+			modified_placement = 'before',
+			diagnostics_placement = 'after',
 			bookmarks_placement = 'after',
 
 
@@ -513,6 +511,7 @@ if exists('telescope') then
 				actions.select_default:replace(function()
 					local state = require("telescope.actions.state")
 					local selection = state.get_selected_entry()
+
 					-- Closing the picker
 					actions.close(prompt_buffer_number)
 					-- Executing the callback
@@ -538,6 +537,7 @@ if exists('telescope') then
 	end
 end
 
+-- Auto-open file after creation
 --[[ Api.events.subscribe(Api.events.Event.FileCreated, function(file)
 	vim.cmd('ed ' .. file.fname)
 end) ]]
@@ -561,6 +561,7 @@ local au_cmds = {
 			local tabc = function()
 				return tab_win_close(nwin)
 			end
+
 			sched_wp(tabc)
 		end,
 		nested = true,
