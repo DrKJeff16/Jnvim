@@ -126,7 +126,8 @@ local cmdline = {
 				priority = 1,
 			},
 			async_path(2),
-		})
+		}),
+		matching = { disallow_symbol_nonprefix_matching = false },
 	},
 }
 
