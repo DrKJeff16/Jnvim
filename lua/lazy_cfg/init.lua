@@ -190,6 +190,12 @@ M.ESSENTIAL = {
 			vim.g.startuptime_tries = 10
 		end,
 	},
+	{
+		'LintaoAmons/scratch.nvim',
+		event = 'VeryLazy',
+		name = 'Scratch',
+		version = false,
+	},
 	{ 'vim-scripts/L9', lazy = false },
 	{
 		'echasnovski/mini.nvim',
