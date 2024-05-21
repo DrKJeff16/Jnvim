@@ -9,10 +9,10 @@
 ---@alias ApiRhs string
 
 --- Available modes
----@alias MapModes 'n'|'i'|'v'|'t'|'o'|'x'
+---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
 
 --- Array for available modes
----@alias Modes (MapModes)[]
+---@alias Modes MapModes[]
 
 ---@class ApiMapRhsOptsArr
 ---@field [1] ApiRhs
@@ -76,9 +76,36 @@
 ---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
 ---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: BufMapOpts?)
 
----@alias UserApiMaps table<MapModes,ApiMapFunction>
----@alias UserKeyMaps table<MapModes,KeyMapFunction>
----@alias UserBufMaps table<MapModes,BufMapFunction>
+---@alias ApiDescFun fun(msg: string, ...): ApiMapOpts
+---@alias KeyDescFun fun(msg: string, ...): KeyMapOpts
+---@alias BufDescFun fun(msg: string, ...): BufMapOpts
+
+---@class UserApiMaps
+---@field n ApiMapFunction
+---@field i ApiMapFunction
+---@field v ApiMapFunction
+---@field t ApiMapFunction
+---@field o ApiMapFunction
+---@field x ApiMapFunction
+---@field desc ApiDescFun
+
+---@class UserKeyMaps
+---@field n KeyMapFunction
+---@field i KeyMapFunction
+---@field v KeyMapFunction
+---@field t KeyMapFunction
+---@field o KeyMapFunction
+---@field x KeyMapFunction
+---@field desc KeyDescFun
+
+---@class UserBufMaps
+---@field n BufMapFunction
+---@field i BufMapFunction
+---@field v BufMapFunction
+---@field t BufMapFunction
+---@field o BufMapFunction
+---@field x BufMapFunction
+---@field desc BufDescFun
 
 ---@class UserMaps
 ---@field kmap UserKeyMaps

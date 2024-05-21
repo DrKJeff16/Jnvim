@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.maps')
+require('user.types.user.check')
 
+---@type UserCheck
 local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
@@ -11,6 +13,7 @@ local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_num = Check.value.is_num
 local is_bool = Check.value.is_bool
+local empty = Check.value.empty
 
 local kmap = vim.keymap.set
 local map = vim.api.nvim_set_keymap
@@ -85,6 +88,18 @@ local M = {
 	buf_map = mode_funcs('buf'),
 	modes = MODES,
 }
+
+--[[ function M.kmap.desc(msg, arg)
+	---@type KeyMapOpts
+	local res = { desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key' }
+
+	if #arg >= 1 then
+		-- `noremap`
+		arg[1]
+	end
+
+	return res
+end ]]
 
 function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
