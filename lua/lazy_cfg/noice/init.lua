@@ -42,16 +42,16 @@ local Opts = {
 		enabled = true,  -- enables the Noice messages UI
 		view = "mini", -- default view for messages
 		view_error = "notify", -- view for errors
-		view_warn = "notify", -- view for warnings
+		view_warn = "mini", -- view for warnings
 		view_history = false, -- view for :messages
-		view_search = false, -- view for search count messages. Set to `false` to disable
+		view_search = true, -- view for search count messages. Set to `false` to disable
 	},
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
 		---@type 'nui'|'cmp'
-		backend = "nui", -- backend to use to show regular cmdline completions
-		---@type NoicePopupmenuItemKind|false
+		backend = 'cmp', -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
+		---@type NoicePopupmenuItemKind|false
 		kind_icons = {}, -- set to `false` to disable icons
 	},
 	-- default options for require('noice').redirect
