@@ -665,6 +665,26 @@ M.UI = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.nvim_tree'),
+		enabled = false,
+	},
+	{
+		'nvim-neo-tree/neo-tree.nvim',
+		name = 'NeoTree',
+		version = false,
+		dependencies = {
+			'Plenary',
+			'web-devicons',
+			'MunifTanjim/nui.nvim',
+			-- '3rd/image.nvim',
+		},
+		init = function()
+			-- Disable `netrw`.
+			vim.g.loaded_netrw = 1
+			vim.g.loaded_netrwPlugin = 1
+
+			vim.opt.termguicolors = vim_exists('+termguicolors')
+		end,
+		config = source('lazy_cfg.neo_tree'),
 	},
 	{
 		'norcalli/nvim-colorizer.lua',
