@@ -27,7 +27,7 @@ if not fs_stat(lazypath) or not exists('lazy') then
 	system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
 end
 
--- Add `Lazy` to `stdpath`
+-- Add `Lazy` to runtimepath
 vim.opt.rtp:prepend(lazypath)
 
 ---@type fun(): string
