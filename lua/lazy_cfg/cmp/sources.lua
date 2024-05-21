@@ -1,3 +1,6 @@
+---@diagnostic disable:unused-function
+---@diagnostic disable:unused-local
+
 local User = require('user')
 local Check = User.check
 local types = User.types.cmp
@@ -7,6 +10,7 @@ local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
+local empty = Check.value.empty
 
 local cmp = require('cmp')
 
@@ -57,50 +61,61 @@ end
 ---@type SetupSources
 local ft = {
 	{
-		{ 'sh', 'bash', 'crontab', 'zsh', 'html', 'markdown' },
+		{
+			'sh',
+			'bash',
+			'crontab',
+			'zsh',
+			'html',
+			'markdown',
+			'json',
+			'json5',
+			'jsonc',
+			'yaml',
+		},
 		{
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp',                priority = 1 },
-				async_path(2),
+				{ name = 'nvim_lsp',                priority = 5 },
+				async_path(4),
 				{ name = 'nvim_lsp_signature_help', priority = 3 },
-				{ name = 'luasnip',                 priority = 4 },
-				buffer(5),
+				{ name = 'luasnip',                 priority = 2 },
+				buffer(1),
 			}),
 		},
 	},
 	{
-		{ 'conf', 'config', 'cfg', 'confini' },
+		{ 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
 		{
 			sources = cmp.config.sources({
-				{ name = 'luasnip', priority = 1 },
-				async_path(2),
-				buffer(3),
+				{ name = 'luasnip', priority = 2 },
+				async_path(3),
+				buffer(1),
 			}),
 		}
 	},
 	['lua'] = {
 		sources = cmp.config.sources({
-			{ name = 'nvim_lsp',                priority = 1 },
-			{ name = 'nvim_lsp_signature_help', priority = 2 },
+			{ name = 'nvim_lsp',                priority = 5 },
+			{ name = 'nvim_lsp_signature_help', priority = 4 },
 			{ name = 'nvim_lua',                priority = 3 },
-			{ name = 'luasnip',                 priority = 4 },
-			buffer(5),
+			{ name = 'luasnip',                 priority = 2 },
+			buffer(1),
 		})
 	},
 	['lisp'] = {
 		sources = cmp.config.sources({
-			{ name = 'vlime',   priority = 1 },
+			{ name = 'vlime',   priority = 3 },
 			{ name = 'luasnip', priority = 2 },
-			buffer(3),
+			buffer(1),
 		})
 	},
 	['gitcommit'] = {
 		sources = cmp.config.sources({
-			{ name = 'git',                 priority = 1 },
-			{ name = 'conventionalcommits', priority = 2 },
-			{ name = 'luasnip',             priority = 3 },
-			async_path(4),
-			buffer(5),
+			{ name = 'conventionalcommits', priority = 5 },
+			{ name = 'git',                 priority = 4 },
+			{ name = 'luasnip',             priority = 2 },
+			async_path(3),
+			buffer(1),
 		}),
 	},
 }
@@ -112,8 +127,8 @@ local cmdline = {
 		{
 			mapping = cmp.mapping.preset.cmdline(),
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp_document_symbol', priority = 1 },
-				buffer(2),
+				{ name = 'nvim_lsp_document_symbol', priority = 2 },
+				buffer(1),
 			}),
 		}
 	},
@@ -134,7 +149,7 @@ local cmdline = {
 ---@type Sources
 local M = {
 	setup = function(T)
-		if is_tbl(T) then
+		if is_tbl(T) and not empty(T) then
 			for k, v in next, T do
 				if is_num(k) and is_tbl({ v[1], v[2] }, true) then
 					table.insert(ft, v)
