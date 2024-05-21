@@ -237,6 +237,8 @@ if is_fun(User.assoc) then
 	User.assoc()
 end
 
+vim.g.markdown_minlines = 500
+
 vim.cmd([[
 filetype plugin indent on
 syntax on
