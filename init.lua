@@ -195,9 +195,7 @@ for mode, t in next, map_tbl do
 			goto continue
 		end
 
-		if not is_tbl(v[2]) then
-			v[2] = {}
-		end
+		v[2] = is_tbl(v[2]) and v[2] or {}
 
 		func(lhs, v[1], v[2])
 
