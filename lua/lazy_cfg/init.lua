@@ -650,8 +650,8 @@ M.UI = {
 	-- File Tree
 	{
 		'nvim-tree/nvim-tree.lua',
-		main = 'nvim-tree',
 		name = 'nvim_tree',
+		main = 'nvim-tree',
 		version = false,
 		dependencies = {
 			'web-devicons',
