@@ -56,7 +56,7 @@ for k, v in next, Hilite do
 	end
 end
 
-local apply_Hilite = function()
+local function apply_Hilite()
 	for k, v in next, Hilite do
 		hi(k, v)
 	end
@@ -72,7 +72,7 @@ Ibl.setup({
 	},
 	whitespace = {
 		highlight = highlight,
-		remove_blankline_trail = false,
+		remove_blankline_trail = true,
 	},
 	scope = { enabled = true },
 })
