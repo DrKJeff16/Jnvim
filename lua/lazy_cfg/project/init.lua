@@ -8,6 +8,7 @@ local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local nmap = kmap.n
+local desc = kmap.desc
 
 if not exists('project_nvim') then
 	return
@@ -93,7 +94,7 @@ local keys = {
 				print(msg)
 			end
 		end,
-		{ desc = 'Print Recent Projects' }
+		desc('Print Recent Projects')
 	}
 }
 
