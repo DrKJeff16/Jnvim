@@ -90,21 +90,21 @@ local M = {
 	modes = MODES,
 }
 
-function M.kmap.desc(msg, noremap, silent, nowait, bufnr)
+function M.kmap.desc(msg, silent, bufnr, noremap, nowait)
 	return {
 		desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
-		noremap = is_bool(noremap) and noremap or true,
 		silent = is_bool(silent) and silent or true,
-		nowait = is_bool(nowait) and nowait or true,
 		buffer = is_int(bufnr) and bufnr or 0,
+		noremap = is_bool(noremap) and noremap or true,
+		nowait = is_bool(nowait) and nowait or true,
 	}
 end
 for _, field in next, { M.map, M.buf_map } do
-	function field.desc(msg, noremap, silent, nowait)
+	function field.desc(msg, silent, noremap, nowait)
 		return {
 			desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
-			noremap = is_bool(noremap) and noremap or true,
 			silent = is_bool(silent) and silent or true,
+			noremap = is_bool(noremap) and noremap or true,
 			nowait = is_bool(nowait) and nowait or true,
 		}
 	end
