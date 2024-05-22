@@ -14,6 +14,7 @@ local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local nmap = User.maps.kmap.n
+local desc = User.maps.kmap.desc
 
 local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
@@ -32,10 +33,6 @@ vim.opt.rtp:prepend(lazypath)
 
 ---@type fun(): string
 local function luasnip_build()
-	if not executable({ 'make', 'mingw32-make' }) then
-		return ''
-	end
-
 	local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp'
 
 	if is_windows and executable('mingw32-make') then
@@ -769,10 +766,10 @@ end
 
 ---@type KeyMapDict
 local Keys = {
-	['<leader>Lee'] = { key_variant('ed'), { desc = 'Open `Lazy` File' } },
-	['<leader>Les'] = { key_variant('split'), { desc = 'Open `Lazy` File Horizontal Window' } },
-	['<leader>Let'] = { key_variant('tabnew'), { desc = 'Open `Lazy` File Tab' } },
-	['<leader>Lev'] = { key_variant('vsplit'), { desc = 'Open `Lazy`File Vertical Window' } },
+	['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+	['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+	['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+	['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
 }
 
 for lhs, v in next, Keys do
