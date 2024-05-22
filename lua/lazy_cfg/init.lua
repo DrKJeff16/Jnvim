@@ -707,7 +707,6 @@ M.UI = {
 			'cmp',
 		},
 		config = source('lazy_cfg.noice'),
-		enabled = not vim_has('nvim-0.11'),
 	},
 	{
 		'LudoPinelli/comment-box.nvim',
