@@ -7,6 +7,7 @@ local types = User.types.gitsigns
 local bufmap = User.maps.buf_map
 
 local is_nil = Check.value.is_nil
+local is_int = Check.value.is_int
 local is_num = Check.value.is_num
 local is_fun = Check.value.is_fun
 local exists = Check.exists.module
@@ -58,9 +59,7 @@ local signs = {
 local opts = {
 	---@type fun(bufnr: integer)
 	on_attach                    = function(bufnr)
-		if not is_num(bufnr) or bufnr < 0 then
-			bufnr = 0
-		end
+		bufnr = is_int(bufnr) and bufnr or 0
 
 		for mode, v in next, keys do
 			---@type BufMapFunction
@@ -85,20 +84,20 @@ local opts = {
 	watch_gitdir                 = { follow_files = true },
 	auto_attach                  = true,
 	attach_to_untracked          = true,
-	current_line_blame           = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	current_line_blame           = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
 	current_line_blame_opts      = {
 		virt_text = true,
 		virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
 		delay = 2000,
 		ignore_whitespace = false,
-		virt_text_priority = 15,
+		virt_text_priority = 10,
 	},
 	current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
 	sign_priority                = 10,
 	update_debounce              = 100,
 	max_file_length              = 40000, -- Disable if file is longer than this (in lines)
 	preview_config               = {
-		border = 'double',
+		border = 'single',
 		style = 'minimal',
 		relative = 'cursor',
 		row = 0,
