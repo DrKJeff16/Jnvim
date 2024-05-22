@@ -8,6 +8,7 @@ local map = User.maps.map
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local desc = map.desc
 
 if not exists('barbar') then
 	return
@@ -96,33 +97,32 @@ Bar.setup()
 
 ---@type ApiMapDict
 local Keys = {
-	['<leader>B<A-,>'] = { '<CMD>BufferPrevious<CR>' },
-	['<leader>B<A-.>'] = { '<CMD>BufferNext<CR>' },
-	['<leader>B<A-0>'] = { '<CMD>BufferLast<CR>' },
-	['<leader>B<A-1>'] = { '<CMD>BufferGoto 1<CR>' },
-	['<leader>B<A-2>'] = { '<CMD>BufferGoto 2<CR>' },
-	['<leader>B<A-3>'] = { '<CMD>BufferGoto 3<CR>' },
-	['<leader>B<A-4>'] = { '<CMD>BufferGoto 4<CR>' },
-	['<leader>B<A-5>'] = { '<CMD>BufferGoto 5<CR>' },
-	['<leader>B<A-6>'] = { '<CMD>BufferGoto 6<CR>' },
-	['<leader>B<A-7>'] = { '<CMD>BufferGoto 7<CR>' },
-	['<leader>B<A-8>'] = { '<CMD>BufferGoto 8<CR>' },
-	['<leader>B<A-9>'] = { '<CMD>BufferGoto 9<CR>' },
-	['<leader>B<A-<>'] = { '<CMD>BufferMovePrevious<CR>' },
-	['<leader>B<A->>'] = { '<CMD>BufferMoveNext<CR>' },
-	['<leader>B<A-c>'] = { '<CMD>BufferClose<CR>' },
-	['<leader>B<A-p>'] = { '<CMD>BufferPin<CR>' },
-	['<leader>B<C-p>'] = { '<CMD>BufferPick<CR>' },
-	['<leader>Bb'] = { '<CMD>BufferOrderByBufferNumber<CR>' },
-	['<leader>Bd'] = { '<CMD>BufferOrderByDirectory<CR>' },
-	['<leader>Bl'] = { '<CMD>BufferOrderByLanguage<CR>' },
-	['<leader>Bn'] = { '<CMD>BufferOrderByName<CR>' },
-	['<leader>Bw'] = { '<CMD>BufferOrderByWindowNumber<CR>' },
+	['<leader>Bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
+	['<leader>Bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
+	['<leader>Bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
+	['<leader>Bf'] = { '<CMD>BufferFirst<CR>', desc('First Buffer') },
+	['<leader>B1'] = { '<CMD>BufferGoto 1<CR>', desc('Goto Buffer 1') },
+	['<leader>B2'] = { '<CMD>BufferGoto 2<CR>', desc('Goto Buffer 2') },
+	['<leader>B3'] = { '<CMD>BufferGoto 3<CR>', desc('Goto Buffer 3') },
+	['<leader>B4'] = { '<CMD>BufferGoto 4<CR>', desc('Goto Buffer 4') },
+	['<leader>B5'] = { '<CMD>BufferGoto 5<CR>', desc('Goto Buffer 5') },
+	['<leader>B6'] = { '<CMD>BufferGoto 6<CR>', desc('Goto Buffer 6') },
+	['<leader>B7'] = { '<CMD>BufferGoto 7<CR>', desc('Goto Buffer 7') },
+	['<leader>B8'] = { '<CMD>BufferGoto 8<CR>', desc('Goto Buffer 8') },
+	['<leader>B9'] = { '<CMD>BufferGoto 9<CR>', desc('Goto Buffer 9') },
+	['<leader>BMp'] = { '<CMD>BufferMovePrevious<CR>', desc('Move Previous Buffer') },
+	['<leader>BMn'] = { '<CMD>BufferMoveNext<CR>', desc('Move Next Buffer') },
+	['<leader>Bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
+	['<leader>B<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
+	['<leader>B<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
+	['<leader>B<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
+	['<leader>B<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
+	['<leader>B<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
+	['<leader>B<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
+	['<leader>B<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
 }
 
 for lhs, v in next, Keys do
-	if not is_tbl(v[2]) then
-		v[2] = {}
-	end
+	v[2] = is_tbl(v[2]) and v[2] or {}
 	map.n(lhs, v[1], v[2])
 end
