@@ -2,13 +2,16 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.highlight')
+require('user.types.user.check')
 
+---@type UserCheck
 local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
+local is_int = Check.value.is_int
 local empty = Check.value.empty
 
 ---@type UserHl
@@ -16,12 +19,9 @@ local M = {
 	hl = function(name, opts, bufnr)
 		if not (is_str(name) or is_tbl(opts)) or empty(name) or empty(opts) then
 			error('(user.highlight.hl): A highlight value is not permitted!')
-			return
 		end
 
-		if not is_num(bufnr) or bufnr < 0 then
-			bufnr = 0
-		end
+		bufnr = is_int(bufnr) and bufnr or 0
 
 		vim.api.nvim_set_hl(bufnr, name, opts)
 	end,
@@ -33,16 +33,14 @@ local M = {
 function M.hl_from_arr(arr)
 	if not is_tbl(arr) or empty(arr) then
 		error('(user.highlight.hl_from_arr): Unable to parse argument.')
-		return
 	end
 
 	for _, T in next, arr do
-		if not (is_str(T.name) or is_tbl(T.opts)) or empty(T.name) or empty(T.opts) then
+		if (is_str(T.name) or is_tbl(T.opts)) and not empty(T.name) and not empty(T.opts) then
+			M.hl(T.name, T.opts)
+		else
 			error('(user.highlight.hl_from_arr): A highlight value is not permitted!')
-			return
 		end
-
-		M.hl(T.name, T.opts)
 	end
 end
 
@@ -65,16 +63,14 @@ end
 function M.hl_from_dict(dict)
 	if not is_tbl(dict) or empty(dict) then
 		error('(user.highlight.hl_from_dict): Unable to parse argument.')
-		return
 	end
 
 	for k, v in next, dict do
-		if not (is_str(k) or is_tbl(v)) or empty(v) then
+		if (is_str(k) or is_tbl(v)) and not empty(v) then
+			M.hl(k, v)
+		else
 			error('(user.highlight.hl_from_dict): A highlight value is not permitted!')
-			return
 		end
-
-		M.hl(k, v)
 	end
 end
 

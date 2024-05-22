@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.opts')
+require('user.types.user.check')
 
+---@type UserCheck
 local Check = require('user.check')
 
 local exists = Check.exists.vim_exists
@@ -26,7 +28,7 @@ local opt_tbl = {
 	background = 'dark',
 	copyindent = true,
 	cmdwinheight = 3,
-	-- colorcolumn = { '+1' },
+	colorcolumn = { '+1' },
 	completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
 	confirm = true,
 	encoding = 'utf-8',
@@ -88,11 +90,8 @@ local opt_tbl = {
 
 if is_windows then
 	opt_tbl.shellslash = true
-	if executable('mingw32-make') then
-		opt_tbl.makeprg = 'mingw32-make'
-	elseif executable('make') then
-		opt_tbl.makeprg = 'make'
-	end
+
+	opt_tbl.makeprg = executable('mingw32-make') and 'mingw32-make' or 'make'
 end
 
 ---@type fun(opts: OptsTbl)
