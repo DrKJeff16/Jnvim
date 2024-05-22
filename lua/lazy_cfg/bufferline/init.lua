@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+
 local exists = Check.exists.module
 
 if not exists('bufferline') or exists('barbar') then
@@ -11,11 +12,7 @@ end
 
 local BLine = require('bufferline')
 
----@param count integer
----@param lvl 'error'|'warning'
----@param diags? table<string, any>
----@param context? table
----@return string
+---@type fun(count: integer, lvl: 'error'|'warning', diags: table<string, any>?, context: table?): string
 local diagnostics_indicator = function(count, lvl, diags, context)
 	if not context.buffer:current() then
 		return ''
@@ -25,7 +22,7 @@ local diagnostics_indicator = function(count, lvl, diags, context)
 
 	for e, n in next, diags do
 		local sym = e == "error" and " "
-		or (e == "warning" and " " or "" )
+			or (e == "warning" and " " or "")
 		s = s .. n .. sym
 	end
 
@@ -54,11 +51,11 @@ local opts = {
 			style = 'icon',
 		},
 
-        buffer_close_icon = '󰅖',
-        modified_icon = '●',
-        close_icon = '',
-        left_trunc_marker = '',
-        right_trunc_marker = '',
+		buffer_close_icon = '󰅖',
+		modified_icon = '●',
+		close_icon = '',
+		left_trunc_marker = '',
+		right_trunc_marker = '',
 
 		max_name_length = 25,
 		max_prefix_length = 15,
@@ -75,7 +72,7 @@ local opts = {
 		show_tab_indicators = true,
 
 		show_duplicate_prefix = true,
-		duplicates_across_groups = false,
+		duplicates_across_groups = true,
 
 		persist_buffer_sort = false,
 
