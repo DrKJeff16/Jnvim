@@ -36,9 +36,7 @@ local M = {
 			for _, v in next, var do
 				res = v == nil
 
-				if res then
-					break
-				end
+				if res then break end
 			end
 
 			return res
@@ -75,9 +73,7 @@ local function type_fun(t)
 		for _, v in next, var do
 			res = not is_nil(t) and type(v) == t
 
-			if not res then
-				break
-			end
+			if not res then break end
 		end
 
 		return res
@@ -122,12 +118,10 @@ function M.value.is_int(var, multiple)
 	local is_bool = M.value.is_bool
 	local is_num = M.value.is_num
 
-	local mtype = math.type
-
 	multiple = is_bool(multiple) and multiple or false
 
 	if not multiple then
-		return is_num(var) and var >= 0 and mtype(var) == 'integer'
+		return is_num(var) and var >= 0
 	end
 	if not is_tbl(var) then
 		return false
@@ -137,11 +131,9 @@ function M.value.is_int(var, multiple)
 	local res
 
 	for _, v in next, var do
-		res = is_num(var) and var >= 0 and mtype(var) == 'integer'
+		res = is_num(var) and var >= 0
 
-		if not res then
-			break
-		end
+		if not res then break end
 	end
 
 	return res
@@ -212,9 +204,7 @@ function M.exists.vim_has(expr)
 		for _, v in next, expr do
 			res = M.exists.vim_has(v)
 
-			if not res then
-				break
-			end
+			if not res then break end
 		end
 
 		return res
@@ -238,9 +228,7 @@ function M.exists.vim_exists(expr)
 		for _, v in next, expr do
 			res = M.exists.vim_exists(v)
 
-			if not res then
-				break
-			end
+			if not res then break end
 		end
 
 		return res
