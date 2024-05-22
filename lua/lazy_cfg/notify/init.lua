@@ -31,14 +31,14 @@ local Opts = {
 		WARN = ""
 	},
 	level = vim.log.levels.INFO,
-	minimum_width = 10,
+	minimum_width = 15,
 	render = "default",
 	stages = "fade_in_slide_out",
 	time_formats = {
 		notification = "%T",
 		notification_history = "%FT%T"
 	},
-	timeout = 1750,
+	timeout = 1500,
 	top_down = true,
 }
 
