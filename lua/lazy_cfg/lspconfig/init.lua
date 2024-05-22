@@ -11,6 +11,7 @@ local empty = Check.value.empty
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
+local desc = User.maps.kmap.desc
 local nmap = User.maps.kmap.n
 local hi = User.highlight.hl
 
@@ -30,13 +31,12 @@ local insp = vim.inspect
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
-local sign_define = vim.fn.sign_define
+-- local sign_define = vim.fn.sign_define
 
 ---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
 	if not is_str(path) or path == '' then
-		error('Cannot generate function from type `' .. type(path) .. '`')
-		return nil
+		error('(lazy_cfg.lspconfig:sub_fun): Cannot generate function from type `' .. type(path) .. '`')
 	end
 
 	return function()
@@ -169,18 +169,19 @@ end
 
 ---@type KeyMapDict
 local keys = {
-	['<leader>le'] = { Diag.open_float, { desc = 'Diagnostics Float' } },
-	['<leader>l['] = { Diag.goto_prev, { desc = 'Previous Diagnostic' } },
-	['<leader>l]'] = { Diag.goto_next, { desc = 'Previous Diagnostic' } },
-	['<leader>lq'] = { Diag.setloclist, { desc = 'Add Loclist' } },
-	['<leader>lC'] = { function() vim.cmd('LspInfo') end, { desc = 'Get LSP Config Info' } },
-	['<leader>lR'] = { function() vim.cmd('LspRestart') end, { desc = 'Restart Server' } },
-	['<leader>lH'] = { function() vim.cmd('LspStop') end, { desc = 'Stop Server' } },
-	['<leader>lI'] = { function() vim.cmd('LspStart') end, { desc = 'Start Server' } },
+	['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
+	['<leader>l['] = { Diag.goto_prev, desc('Previous Diagnostic') },
+	['<leader>l]'] = { Diag.goto_next, desc('Previous Diagnostic') },
+	['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
+	['<leader>lC'] = { function() vim.cmd('LspInfo') end, desc('Get LSP Config Info') },
+	['<leader>lR'] = { function() vim.cmd('LspRestart') end, desc('Restart Server') },
+	['<leader>lH'] = { function() vim.cmd('LspStop') end, desc('Stop Server') },
+	['<leader>lI'] = { function() vim.cmd('LspStart') end, desc('Start Server') },
 }
 
 for lhs, v in next, keys do
-	nmap(lhs, v[1], v[2] or {})
+	v[2] = is_tbl(v[2]) and v[2] or {}
+	nmap(lhs, v[1], v[2])
 end
 
 au('LspAttach', {
@@ -192,23 +193,14 @@ au('LspAttach', {
 
 		bo[buf].omnifunc = 'v:lua.lsp.omnifunc'
 
-		local opts = { buffer = buf, noremap = true, nowait = true, silent = true }
-		opts.desc = 'Declaration'
-		nmap('<leader>lgD', lsp_buf.declaration, opts)
-		opts.desc = 'Definition'
-		nmap('<leader>lgd', lsp_buf.definition, opts)
-		opts.desc = 'Hover'
-		nmap('<leader>lk', lsp_buf.hover, opts)
-		nmap('K', lsp_buf.hover, opts)
-		opts.desc = 'Implementation'
-		nmap('<leader>lgi', lsp_buf.implementation, opts)
-		opts.desc = 'Signature Help'
-		nmap('<leader>lS', lsp_buf.signature_help, opts)
-		opts.desc = 'Add Workspace Folder'
-		nmap('<leader>lwa', lsp_buf.add_workspace_folder, opts)
-		opts.desc = 'Remove Workspace Folder'
-		nmap('<leader>lwr', lsp_buf.remove_workspace_folder, opts)
-		opts.desc = 'List Workspace Folders'
+		nmap('<leader>lgD', lsp_buf.declaration, desc('Declaration', true, buf))
+		nmap('<leader>lgd', lsp_buf.definition, desc('Definition', true, buf))
+		nmap('<leader>lk', lsp_buf.hover, desc('Hover', true, buf))
+		nmap('K', lsp_buf.hover, desc('Hover', true, buf))
+		nmap('<leader>lgi', lsp_buf.implementation, desc('Implementation', true, buf))
+		nmap('<leader>lS', lsp_buf.signature_help, desc('Signature Help', true, buf))
+		nmap('<leader>lwa', lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf))
+		nmap('<leader>lwr', lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf))
 		nmap('<leader>lwl', function()
 			local out = lsp_buf.list_workspace_folders()
 			local msg = ''
@@ -222,20 +214,15 @@ au('LspAttach', {
 
 				Notify(msg, 'info', { title = 'Workspace Folders' })
 			else
-				print(msg)
+				vim.notify(msg, vim.log.levels.INFO)
 			end
-		end, opts)
-		opts.desc = 'Type Definition'
-		nmap('<leader>lD', lsp_buf.type_definition, opts)
-		opts.desc = 'Rename...'
-		nmap('<leader>lrn', lsp_buf.rename, opts)
-		opts.desc = 'References'
-		nmap('<leader>lgr', lsp_buf.references, opts)
-		opts.desc = 'Format File'
-		nmap('<leader>lf', function() lsp_buf.format({ async = true }) end, opts)
+		end, desc('List Workspace Folders', true, buf))
+		nmap('<leader>lD', lsp_buf.type_definition, desc('Type Definition', true, buf))
+		nmap('<leader>lrn', lsp_buf.rename, desc('Rename...', true, buf))
+		nmap('<leader>lgr', lsp_buf.references, desc('References', true, buf))
+		nmap('<leader>lf', function() lsp_buf.format({ async = true }) end, desc('Format File', true, buf))
 
-		opts.desc = 'Code Actions'
-		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, opts)
+		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, desc('Code Actions', true, buf))
 	end,
 })
 
@@ -276,17 +263,17 @@ for event, opts_arr in next, aus do
 	end
 end
 
-local signs = {
+-- FIX: This section causes complaints from nvim due to version bump v0.11.0.
+--
+--[[ local signs = {
 	Error = '󰅚 ',
 	Warn = '󰀪 ',
 	Hint = '󰌶 ',
 	Info = ' ',
 }
 
---- FIX: This section causes complaints from nvim due to version bump v0.11.0.
---
--- for type, icon in next, signs do
--- 	local hlite = 'DiagnosticSign' .. type
---
--- 	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
--- end
+for type, icon in next, signs do
+	local hlite = 'DiagnosticSign' .. type
+
+	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
+end ]]

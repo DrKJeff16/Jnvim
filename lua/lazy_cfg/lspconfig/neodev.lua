@@ -8,6 +8,7 @@ local types = User.types.lspconfig
 local executable = Check.exists.executable
 local modules = Check.exists.modules
 local exists = Check.exists.module
+local is_nil = Check.value.is_nil
 
 if not modules({ 'neodev', 'lspconfig' }) or not executable({ 'lua-language-server', 'vscode-json-language-server' }) then
 	local msg = [[Missing any of the following:
@@ -17,10 +18,12 @@ if not modules({ 'neodev', 'lspconfig' }) or not executable({ 'lua-language-serv
 	- `vscode-json-language-server`
 	]]
 
-	if exists('notify') then
+	if not is_nil(Notify) then
+		Notify(msg, 'error', { title = 'LSPCONFIG' })
+	elseif exists('notify') then
 		require('notify')(msg, 'error', { title = 'LSPCONFIG' })
 	else
-		error(msg)
+		vim.notify(msg, vim.log.levels.ERROR)
 	end
 	return
 end
@@ -29,7 +32,6 @@ local Neodev = require('neodev')
 
 ---@type LuaDevOptions
 local opts = {
-	debug = true,
 	library = {
 		enabled = true,
 		runtime = true,

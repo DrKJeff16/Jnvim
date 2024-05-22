@@ -41,11 +41,7 @@ function M.setup()
 	local kinds = vim.lsp.protocol.CompletionItemKind
 
 	for s, kind in next, kinds do
-		if not is_str(M.icons[s]) or empty(M.icons[s]) then
-			kinds[s] = kind
-		else
-			kinds[s] = M.icons[s]
-		end
+		kinds[s] = (is_str(M.icons[s]) and not empty(M.icons[s])) and M.icons[s] or kind
 	end
 end
 
