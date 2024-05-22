@@ -14,15 +14,12 @@ local function src(mini_mod, opts)
 	mini_mod = 'mini.' .. mini_mod
 
 	if not exists(mini_mod) then
-		error('(lazy_cfg.mini): Unable to import `' .. mini_mod .. '`')
-		return
+		error('(lazy_cfg.mini:src): Unable to import `' .. mini_mod .. '`')
 	end
 
 	local M = require(mini_mod)
 
-	if not is_tbl(opts) then
-		opts = {}
-	end
+	opts = is_tbl(opts) and opts or {}
 
 	if is_fun(M.setup) then
 		M.setup(opts)
