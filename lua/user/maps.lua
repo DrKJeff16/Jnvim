@@ -12,6 +12,7 @@ local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_num = Check.value.is_num
+local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
@@ -89,17 +90,17 @@ local M = {
 	modes = MODES,
 }
 
---[[ function M.kmap.desc(msg, arg)
-	---@type KeyMapOpts
-	local res = { desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key' }
-
-	if #arg >= 1 then
-		-- `noremap`
-		arg[1]
+for _, field in next, { M.map, M.kmap, M.buf_map } do
+	function field.desc(msg, noremap, silent, nowait, bufnr)
+		return {
+			desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
+			noremap = is_bool(noremap) and noremap or true,
+			silent = is_bool(silent) and silent or true,
+			nowait = is_bool(nowait) and nowait or true,
+			buffer = is_int(bufnr) and bufnr or 0,
+		}
 	end
-
-	return res
-end ]]
+end
 
 function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
@@ -123,12 +124,10 @@ function M.nop(T, opts, mode)
 
 	if is_str(T) then
 		map_tbl[mode](T, '<Nop>', opts)
-	elseif is_tbl(T) then
+	else
 		for _, v in next, T do
 			map_tbl[mode](v, '<Nop>', opts)
 		end
-	else
-		error('(user.maps.nop): Unable to parse keys.')
 	end
 end
 

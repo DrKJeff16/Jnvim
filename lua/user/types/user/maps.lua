@@ -76,9 +76,9 @@
 ---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
 ---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: BufMapOpts?)
 
----@alias ApiDescFun fun(msg: string, ...): ApiMapOpts
----@alias KeyDescFun fun(msg: string, ...): KeyMapOpts
----@alias BufDescFun fun(msg: string, ...): BufMapOpts
+---@alias ApiDescFun fun(msg: string, noremap: boolean?, silent: boolean?, nowait: boolean?, bufnr: integer?): ApiMapOpts
+---@alias KeyDescFun fun(msg: string, noremap: boolean?, silent: boolean?, nowait: boolean?, bufnr: integer?): KeyMapOpts
+---@alias BufDescFun fun(msg: string, noremap: boolean?, silent: boolean?, nowait: boolean?, bufnr: integer?): BufMapOpts
 
 ---@class UserApiMaps
 ---@field n ApiMapFunction
@@ -113,4 +113,3 @@
 ---@field buf_map UserBufMaps
 ---@field nop fun(T: string|string[], opts: ApiMapOpts?, mode: MapModes?)
 ---@field modes Modes
----@field map_tbl? MapTblFun

@@ -14,6 +14,7 @@ local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
 local nop = User.maps.nop
+local desc = Kmap.desc
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, desc = 'Leader Key' })
@@ -69,7 +70,7 @@ end
 ---@type Maps
 local map_tbl = {
 	n = {
-		['<Esc><Esc>'] = { '<CMD>nohls<CR>', { desc = 'Remove Highlights' } },
+		['<Esc><Esc>'] = { '<CMD>nohls<CR>', desc('Remove Highlights') },
 
 		['<leader>fs'] = { '<CMD>w<CR>', { silent = false, desc = 'Save File' } },
 		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
@@ -78,7 +79,7 @@ local map_tbl = {
 				vim.cmd('luafile $MYVIMRC')
 				vim.notify('Sourced `init.lua`')
 			end,
-			{ silent = false }
+			{ silent = false, desc = 'Source My `init.lua`' }
 		},
 		['<leader>fvl'] = {
 			function()
@@ -88,12 +89,12 @@ local map_tbl = {
 				if ft == 'lua' then
 					vim.cmd('luafile %')
 					vim.notify('Sourced current Lua file')
-				elseif not is_nil(_G.Notify) then
+				elseif not is_nil(Notify) then
 					Notify(err_msg, 'error', { title = 'Lua' })
 				elseif exists('notify') then
 					require('notify')(err_msg, 'error', { title = 'Lua' })
 				else
-					error(err_msg)
+					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
 			{ silent = false, desc = 'Attempt to source current Lua file' },
@@ -107,12 +108,12 @@ local map_tbl = {
 				if ft == 'vim' then
 					vim.cmd('so %')
 					vim.notify('Sourced current Vim file')
-				elseif not is_nil(_G.Notify) then
+				elseif not is_nil(Notify) then
 					Notify(err_msg, 'error', { title = 'Vim' })
 				elseif exists('notify') then
 					require('notify')(err_msg, 'error', { title = 'Vim' })
 				else
-					error(err_msg)
+					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
 			{ silent = false, desc = 'Attempt To source current Vim file' },
@@ -130,11 +131,11 @@ local map_tbl = {
 		['<leader>hv'] = { ':vertical h ', { silent = false, desc = 'Prompt For Help On Vertical Split' } },
 		['<leader>hs'] = { ':horizontal h ', { silent = false, desc = 'Prompt For Help On Horizontal Split' } },
 		['<leader>hh'] = { ':h ', { silent = false, desc = 'Prompt For Help' } },
-		['<leader>hT'] = { '<CMD>tab h<CR>', { desc = 'Open Help On New Tab' } },
-		['<leader>hV'] = { '<CMD>vertical h<CR>', { desc = 'Open Help On Vertical Split' } },
-		['<leader>hS'] = { '<CMD>horizontal h<CR>', { desc = 'Open Help On Horizontal Split' } },
+		['<leader>hT'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
+		['<leader>hV'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
+		['<leader>hS'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
 
-		['<leader>wn'] = { '<C-w>w', { desc = 'Next Window' } },
+		['<leader>wn'] = { '<C-w>w', desc('Next Window') },
 		['<leader>wss'] = { '<CMD>split<CR>', { silent = false } },
 		['<leader>wsv'] = { '<CMD>vsplit<CR>', { silent = false } },
 		['<leader>wsS'] = { ':split ', { silent = false, desc = 'Horizontal Split (Interactively)' } },
@@ -169,11 +170,11 @@ local map_tbl = {
 	},
 	--- WARNING: DO NOT USE `<CMD>`!!!
 	v = {
-		['<leader>s'] = { ':sort<CR>', { desc = 'Sort' } },
-		['<leader>S'] = { ':sort!<CR>', { desc = 'Sort (Reverse)' } },
+		['<leader>s'] = { ':sort<CR>', desc('Sort') },
+		['<leader>S'] = { ':sort!<CR>', desc('Sort (Reverse)') },
 
-		['<leader>f'] = { ':foldopen<CR>', { desc = 'Open Fold' } },
-		['<leader>F'] = { ':foldclose<CR>', { desc = 'Open Fold' } },
+		['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
+		['<leader>F'] = { ':foldclose<CR>', desc('Open Fold') },
 
 		['<leader>r'] = { ':s/', { silent = false, desc = 'Run Search-Replace Interactively' } },
 	},
@@ -204,7 +205,7 @@ for mode, t in next, map_tbl do
 end
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
-local function csc_check(T)
+local function color_exists(T)
 	return is_tbl(T) and is_fun(T.setup)
 end
 
@@ -213,19 +214,19 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	local Csc = Pkg.colorschemes
 
 	-- Reorder to your liking.
-	if csc_check(Csc.tokyonight) then
+	if color_exists(Csc.tokyonight) then
 		Csc.tokyonight.setup()
-	elseif csc_check(Csc.onedark) then
+	elseif color_exists(Csc.onedark) then
 		Csc.onedark.setup()
-	elseif csc_check(Csc.catppuccin) then
+	elseif color_exists(Csc.catppuccin) then
 		Csc.catppuccin.setup()
-	elseif csc_check(Csc.nightfox) then
+	elseif color_exists(Csc.nightfox) then
 		Csc.nightfox.setup()
-	elseif csc_check(Csc.spaceduck) then
+	elseif color_exists(Csc.spaceduck) then
 		Csc.spaceduck.setup()
-	elseif csc_check(Csc.dracula) then
+	elseif color_exists(Csc.dracula) then
 		Csc.dracula.setup()
-	elseif csc_check(Csc.molokai) then
+	elseif color_exists(Csc.molokai) then
 		Csc.molokai.setup()
 	end
 end
