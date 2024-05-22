@@ -2,7 +2,9 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
-local exists = User.check.exists.module
+local Check = User.check
+
+local exists = Check.exists.module
 
 if not exists('comment-box') then
 	return
@@ -17,7 +19,7 @@ CB.setup({
 	--   - "auto":  comment-box will use block line style comments if
 	--              multiple lines are selected, line style comments
 	--              otherwise
-	comment_style = "line",
+	comment_style = "block",
 	doc_width = 80, -- width of the document
 	box_width = 60, -- width of the boxes
 	borders = { -- symbols used to draw a box
