@@ -118,16 +118,10 @@
 				"inject-field",
 				"need-check-nil"
 			],
-			"Lua.diagnostics.disableScheme": [
-				"git"
-			],
 			"Lua.diagnostics.enable": true,
 			"Lua.diagnostics.globals": [
 				"vim"
 			],
-			"Lua.diagnostics.workspaceDelay": 2000,
-			"Lua.diagnostics.workspaceEvent": "OnSave",
-			"Lua.diagnostics.workspaceRate": 100,
 			"Lua.format.enable": true,
 			"Lua.hint.arrayIndex": "Auto",
 			"Lua.hint.await": true,
@@ -159,7 +153,6 @@
 			"Lua.window.progressBar": true,
 			"Lua.window.statusBar": true,
 			"Lua.workspace.checkThirdParty": false,
-			"Lua.workspace.ignoreSubmodules": false,
 			"Lua.workspace.useGitIgnore": true
 		},
 		"pylsp": {

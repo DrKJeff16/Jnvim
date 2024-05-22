@@ -1,6 +1,5 @@
 {
 	"$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-	"addonManager.enable": true,
 	"codeLens.enable": true,
 	"completion.autoRequire": false,
 	"completion.callSnippet": "Replace",
@@ -17,11 +16,6 @@
 		"unused-label",
 		"need-check-nil"
 	],
-	"diagnostics.enable": true,
-	"diagnostics.globals": [
-		"vim"
-	],
-	"diagnostics.libraryFiles": "Opened",
 	"format.enable": true,
 	"hint.arrayIndex": "Enable",
 	"hint.await": true,
@@ -55,15 +49,7 @@
 	"runtime.fileEncoding": "utf8",
 	"runtime.path": [
 		"?.lua",
-		"?/init.lua",
-		"/usr/local/share/nvim/runtime/?/init.lua",
-		"/usr/local/share/nvim/runtime/?.lua",
-		"/usr/share/nvim/runtime/lua/?/init.lua",
-		"/usr/share/nvim/runtime/lua/?.lua",
-		"/home/drjeff16/.luarocks/share/lua/5.4/?.lua",
-		"/home/drjeff16/.luarocks/share/lua/5.4/?/init.lua",
-		"/usr/share/luajit-21/?.lua",
-		"/usr/share/luajit-21/jit/?/init.lua"
+		"?/init.lua"
 	],
 	"runtime.pathStrict": false,
 	"runtime.version": "LuaJIT",
@@ -78,10 +64,6 @@
 	"type.weakUnionCheck": true,
 	"window.progressBar": true,
 	"window.statusBar": true,
-	"workspace.checkThirdParty": "Disable",
-	"workspace.ignoreDir": [
-		".vscode"
-	],
 	"workspace.ignoreSubmodules": false,
 	"workspace.library": [
 		"/home/drjeff16/.config/nvim/lua",
