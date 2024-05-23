@@ -24,7 +24,7 @@ local system = vim.fn.system
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
 -- Install `Lazy` automatically.
-if not fs_stat(lazypath) or not exists('lazy') then
+if not fs_stat(lazypath) then
 	system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
 end
 
@@ -64,7 +64,7 @@ end
 ---@type fun(field: string): fun()
 local function colorscheme_init(field)
 	if not is_str(field) or empty(field) then
-		error('Unable to initialize colorscheme.')
+		error('(lazy_cfg:colorscheme_init): Unable to initialize colorscheme.')
 	end
 
 	return function()
