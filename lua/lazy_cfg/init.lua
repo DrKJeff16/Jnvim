@@ -52,7 +52,7 @@ local Lazy = require('lazy')
 --- ```lua
 --- 'lazy_cfg.<plugin_name>[.<...>]'
 --- ```
---- If the module is not found, a warninr is raised
+--- If the module is not found, a warning is raised
 --- and returns `true`.
 ---@type fun(mod_str: string): fun()
 local function source(mod_str)
