@@ -10,8 +10,8 @@ local empty = Check.value.empty
 
 ---@type UserMod
 local M = {
-	types = require('user.types'),
-	check = require('user.check'),
+	types = Types,
+	check = Check,
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
