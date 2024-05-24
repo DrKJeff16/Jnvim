@@ -283,6 +283,10 @@ function M.exists.modules(mod, need_all)
 	local empty = M.value.empty
 	local exists = M.exists.module
 
+	if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
+		error('`(user.check.exists.modules)`: Input is neither a string nor a string array.')
+	end
+
 	need_all = is_bool(need_all) and need_all or false
 
 	---@type boolean|table<string, boolean>
@@ -305,8 +309,6 @@ function M.exists.modules(mod, need_all)
 				if not r then break end
 			end
 		end
-	else
-		error('`(user.check.exists.modules)`: Input is neither a string nor a string array.')
 	end
 
 	return res
@@ -317,7 +319,6 @@ function M.new()
 	self.exists = M.exists
 	self.value = M.value
 	self.dry_run = M.dry_run
-	self.new = M.new
 
 	return self
 end
