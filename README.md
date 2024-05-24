@@ -64,3 +64,55 @@ For these to work, the following executables must be installed and in your `$PAT
         ├── module_2.lua
         └── ...
 ```
+
+### Plugins
+
+There's a lot of plugins included. Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua). Those are
+ordered by category. Please refer to [`lazy.nvim`](https://github.com/folke/lazy.nvim) for more info on how to install.
+
+Among the most important plugins there are:
+
+* [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
+    * [`Comment.nvim`](https://github.com/numToStr/Comment.nvim)
+* [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
+    * [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
+    * [`neodev.nvim`](https://github.com/folke/neodev.nvim)
+* [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
+    * [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
+* [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
+* [`Noice`](https://github.com/folke/noice.nvim)
+* [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
+* [`which-key`](https://github.com/folke/which-key.nvim)
+* [`telescope`](https://github.com/nvim-telescope/telescope.nvim)
+* [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
+    * [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
+    * [`BarBar`](https://github.com/romgrk/barbar.nvim)
+* [`NvimTree`](https://github.com/nvim-tree/nvim-tree.lua)
+
+---
+
+## API
+
+The `User` API can be found in [`lua/user`](/lua/user). It provides a bunch of functionalities to give easier
+code structures and to simplify configuration. **_It's still at an experimental phase, but it works as-is_**.
+
+### Types
+
+This submodule includes type annotations and documentation. It can be found in [`user/types`](/lua/user/types)
+You can include it by using the following code snippet:
+
+```lua
+require('user.types')
+-- Or by using the access point:
+require('user').types
+```
+
+For API-specific documentation, you can use the submodule [`types/user`](/lua/user/types/user):
+
+```lua
+require('user.types.user')
+-- Or by using the access point:
+require('user').types.user
+```
+
+Each include their pertinent files sourced by the `init.lua` file.
