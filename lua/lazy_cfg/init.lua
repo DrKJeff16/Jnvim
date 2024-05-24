@@ -680,6 +680,7 @@ M.UI = {
 			"Notify",
 			'Mini',
 			'cmp',
+			'treesitter',
 		},
 		config = source('lazy_cfg.noice'),
 	},
