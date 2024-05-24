@@ -693,7 +693,7 @@ M.UI = {
 -- File Syntax Plugins
 M.SYNTAX = {
 	{ 'rhysd/vim-syntax-codeowners',    name = 'codeowners-syntax' },
-	{ 'vim-scripts/DoxygenToolkit.vim', name = 'DoxygenToolkit', enabled = executable('doxygen') },
+	{ 'vim-scripts/DoxygenToolkit.vim', name = 'DoxygenToolkit',   enabled = executable('doxygen') },
 }
 
 M.UTILS = {
