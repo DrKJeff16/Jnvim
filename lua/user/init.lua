@@ -1,6 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+-- Source all API annotations
 local Types = require('user.types')
 local Check = require('user.check')
 
