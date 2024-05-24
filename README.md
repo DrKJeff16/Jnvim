@@ -17,15 +17,17 @@
 
 ## About
 
-This is a [Nvim](https://github.com/neovim/neovim) configuration, configured in a _modular_, **_obsessively documented_**
-**portable** and **platform-independant** way. Type checking is supported and documentation is included as far as possible.
+This is a [Nvim](https://github.com/neovim/neovim) configuration, configured in a **modular**,
+**_obsessively documented_**, **portable** and **platform-independant** way.
+Type checking is supported and documentation is included as far as possible.
 
-This configuration uses [Lazy](https://github.com/folke/lazy.nvim) as plugin manager. Please read the [Plugins](#plugins)
-section to get an understanding of how this works.
+This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim) as the default plugin manager.
+Please read the [Plugins section](#plugins) to get an understanding of how this works.
 
 This configuration has its core entirely dependant on the [`user`](/lua/user) module, which provides a customized
-**_API_** which includes **_module checking_**, **_type checking_**, **_highlighting functions_**, **_option settings_**,
-**_keymap functions_**, **_annotations_**, etc. For more info make sure to check the [User API](#api) section.
+**_API_** which includes **_module checking_**, **_type checking_**, **_highlighting functions_**,
+**_options setting_**, **_keymap functions_**, **_annotations_**, and more.
+For more info make sure to check the [User API](#api) section.
 
 ### Requirements
 
