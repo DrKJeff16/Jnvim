@@ -180,6 +180,8 @@ M.ESSENTIAL = {
 		keys = {
 			{ '<leader>vs', function() vim.cmd('StartupTime') end, desc = 'Run StartupTime' }
 		},
+		name = 'StartupTime',
+		version = false,
 		config = function()
 			vim.g.startuptime_tries = 10
 		end,
@@ -390,8 +392,8 @@ M.VCS = {
 		config = source('lazy_cfg.diffview'),
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
-		-- enabled = executable('git'),
-		enabled = not vim_has('nvim-0.11'),
+		enabled = executable('git'),
+		-- enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- LSP
@@ -442,8 +444,8 @@ M.LSP = {
 		config = source('lazy_cfg.lspconfig.clangd'),
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
-		-- enabled = executable('clangd'),
-		enabled = not vim_has('nvim-0.11'),
+		enabled = executable('clangd'),
+		-- enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- Completion and `cmp` related
@@ -660,6 +662,9 @@ M.UI = {
 		name = 'colorizer',
 		version = false,
 		config = source('lazy_cfg.colorizer'),
+		--- NOTE: Disabled to supress warnings from version bump v0.11.0
+		--- until further notice.
+		enabled = not vim_has('nvim-0.11'),
 	},
 	{
 		'akinsho/toggleterm.nvim',
