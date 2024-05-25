@@ -69,11 +69,7 @@ local mode_funcs = function(field)
 	local VALID = { api = { map, false }, key = { kmap, false }, buf = { bufmap, true } }
 
 	if is_nil(VALID[field]) then
-		error(
-			"(user.maps.mode_funcs): Invalid variant ID `"
-				.. field
-				.. "`\nMust be `'api'|'key'|'buf'`"
-		)
+		error("(user.maps:mode_funcs): Invalid variant ID `" .. field .. "`\nMust be `'api'|'key'|'buf'`")
 	end
 
 	---@type UserKeyMaps|UserApiMaps|UserBufMaps
