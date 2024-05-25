@@ -15,14 +15,11 @@ local Lualine = require("lualine")
 
 ---@type fun(theme: string?): string
 local function theme_select(theme)
-	if not is_str(theme) then
-		theme = "auto"
-	else
-		theme = exists(theme) and theme or "auto"
-	end
+	-- WARN: This might not the best way to approach this...
+	theme = is_str(theme) and exists(theme) and theme or "auto"
 
 	if theme == "auto" then
-		for _, t in next, { "onedark", "catppuccin", "tokyonight" } do
+		for _, t in next, { "nightfox", "onedark", "catppuccin", "tokyonight" } do
 			if exists(t) then
 				theme = t
 				break
@@ -33,10 +30,10 @@ local function theme_select(theme)
 	return theme
 end
 
-Lualine.setup({
+local Opts = {
 	options = {
 		icons_enabled = true,
-		theme = theme_select("tokyonight"),
+		theme = theme_select("nightfox"),
 		component_separators = { left = "", right = "" },
 		section_separators = { left = "", right = "" },
 		ignore_focus = {},
@@ -66,15 +63,20 @@ Lualine.setup({
 		lualine_c = {
 			{
 				"diagnostics",
-				sources = { "nvim_lsp", "nvim_workspace_diagnostic" },
-				sections = { "error", "warn" },
+				sources = { "nvim_workspace_diagnostic", "nvim_lsp" },
+				sections = { "error", "warn", "info" },
 				diagnostics_color = {
 					error = "DiagnosticError",
 					warn = "DiagnosticWarn",
 					info = "DiagnosticInfo",
 					hint = "DiagnosticHint",
 				},
-				symbols = { error = "E ", warn = "W ", info = "I ", hint = "? " },
+				symbols = {
+					error = "󰅚 ",
+					hint = "󰌶 ",
+					info = " ",
+					warn = "󰀪 ",
+				},
 				colored = true,
 				update_in_insert = false,
 				always_visible = true,
@@ -89,21 +91,30 @@ Lualine.setup({
 		lualine_z = { "location" },
 	},
 	inactive_sections = {
-		lualine_a = {},
+		lualine_a = { "windows" },
 		lualine_b = { "filename" },
 		lualine_c = {},
-		lualine_x = { "location" },
-		lualine_y = { "windows" },
-		lualine_z = {},
+		lualine_x = { "filetype" },
+		lualine_y = {},
+		lualine_z = { "location" },
 	},
 	inactive_tabline = {},
 	inactive_winbar = {},
 
 	extensions = {
-		"lazy",
 		"fugitive",
 		"man",
-		"nvim-tree",
-		"toggleterm",
 	},
-})
+}
+
+if exists("lazy") then
+	table.insert(Opts.extensions, "lazy")
+end
+if exists("nvim-tree") then
+	table.insert(Opts.extensions, "nvim-tree")
+end
+if exists("toggleterm") then
+	table.insert(Opts.extensions, "toggleterm")
+end
+
+Lualine.setup(Opts)
