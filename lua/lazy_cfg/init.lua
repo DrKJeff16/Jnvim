@@ -37,6 +37,23 @@ end
 -- Add `Lazy` to runtimepath
 vim.opt.rtp:prepend(lazypath)
 
+--- Returns the string for the `build` field for `LuaSnip` depending on certain conditions.
+--- ---
+--- ## Return
+--- ---
+--- ### Unix
+--- **The return string could be empty** or something akin to
+--- ```sh
+--- make install_jsregexp
+--- ```
+--- If `nproc` is found in `PATH` or a valid executable then the string could look like
+--- ```sh
+--- make -j"$(nproc)" install_jsregexp
+--- ```
+--- ---
+--- ### Windows
+--- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
+--- ---
 ---@type fun(): string
 local function luasnip_build()
 	local cmd = executable("nproc") and 'make -j"$(nproc)" install_jsregexp'
@@ -44,7 +61,37 @@ local function luasnip_build()
 
 	if is_windows and executable("mingw32-make") then
 		cmd = "mingw32-" .. cmd
-	elseif is_windows and not executable("mingw32-make") then
+	elseif is_windows and not executable("make") then
+		cmd = ""
+	end
+
+	return cmd
+end
+
+--- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
+--- ---
+--- ## Return
+--- ---
+--- ### Unix
+--- **The return string could be empty** or something akin to
+--- ```sh
+--- make
+--- ```
+--- If `nproc` is found in `PATH` or a valid executable then the string could look like
+--- ```sh
+--- make -j"$(nproc)"
+--- ```
+--- ---
+--- ### Windows
+--- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
+--- ---
+---@type fun(): string
+local function tel_fzf_build()
+	local cmd = executable("nproc") and 'make -j"$(nproc)"' or "make"
+
+	if is_windows and executable("mingw32-make") then
+		cmd = "mingw32-" .. cmd
+	elseif is_windows and not executable("make") then
 		cmd = ""
 	end
 
@@ -55,12 +102,15 @@ local Lazy = require("lazy")
 
 --- A `config` function to call your plugins.
 --- ---
---- Param `mod_str` must comply with this format:
+--- ## Parameters
+--- * `mod_str` This parameter must comply with the following format:
 --- ```lua
---- 'lazy_cfg.<plugin_name>[.<...>]'
+--- "lazy_cfg.<plugin_name>[.<...>]"
 --- ```
---- If the module is not found, a warning is raised
---- and returns `true`.
+--- ---
+--- ## Return
+--- A function that attempts to `require` the given `mod_str`.
+--- ---
 ---@type fun(mod_str: string): fun()
 local function source(mod_str)
 	return function()
@@ -69,12 +119,15 @@ local function source(mod_str)
 end
 
 --- Set the global condition for a later submodule call.
----
---- ## Fields
---- * `field`: A string that will be the name of a vim `g:...` variable.
----
+--- ---
+--- ## Parameters
+--- * `field`: Either a **string** that will be the name of a vim `g:...` variable, or
+---	a **dictionary** with the keys as the vim `g:...` variable names, and the value
+---	as whatever said variables are set to respectively.
+--- ---
 --- ## Return
---- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable.
+--- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
+--- ---
 ---@type fun(field: string|table<string, any>): fun()
 local function colorscheme_init(fields)
 	if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
@@ -96,7 +149,7 @@ end
 ---@type table<string, LazyPlugs>
 local M = {}
 
--- Colorschemes
+--- Colorscheme Plugins
 M.COLORSCHEMES = {
 	{
 		"navarasu/onedark.nvim",
@@ -189,7 +242,7 @@ M.COLORSCHEMES = {
 		init = colorscheme_init("installed_spacemacs"),
 	},
 }
--- Essential Plugins
+--- Essential Plugins
 M.ESSENTIAL = {
 	{
 		"dstein64/vim-startuptime",
@@ -334,7 +387,7 @@ M.NVIM = {
 	},
 }
 
--- Treesitter
+--- Treesitter Plugins
 M.TS = {
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -359,11 +412,12 @@ M.TS = {
 		name = "ts-commentstring",
 	},
 }
--- Editing Utils
+--- Editing Utils
 M.EDITING = {
 	{
 		"numToStr/Comment.nvim",
 		name = "Comment",
+		version = false,
 		dependencies = {
 			"treesitter",
 			"ts-commentstring",
@@ -382,6 +436,7 @@ M.EDITING = {
 		"folke/todo-comments.nvim",
 		event = "BufWinEnter",
 		name = "todo-comments",
+		version = false,
 		dependencies = {
 			"treesitter",
 			"Plenary",
@@ -403,7 +458,7 @@ M.EDITING = {
 		enabled = false,
 	},
 }
--- Version Control
+--- Version Control Plugins
 M.VCS = {
 	{
 		"tpope/vim-fugitive",
@@ -424,13 +479,10 @@ M.VCS = {
 		name = "DiffView",
 		version = false,
 		config = source("lazy_cfg.diffview"),
-		--- NOTE: Disabled to supress warnings from version bump v0.11.0
-		--- until further notice.
 		enabled = executable("git"),
-		-- enabled = not vim_has('nvim-0.11'),
 	},
 }
--- LSP
+--- LSP Plugins
 M.LSP = {
 	{
 		"neovim/nvim-lspconfig",
@@ -466,7 +518,6 @@ M.LSP = {
 	},
 	{
 		"folke/trouble.nvim",
-		cmd = { "Trouble", "TroubleClose", "TroubleRefresh", "TroubleToggle" },
 		name = "Trouble",
 		version = false,
 		dependencies = { "web-devicons" },
@@ -475,11 +526,12 @@ M.LSP = {
 		"p00f/clangd_extensions.nvim",
 		ft = { "c", "cpp" },
 		name = "clangd_exts",
+		version = false,
 		config = source("lazy_cfg.lspconfig.clangd"),
 		enabled = executable("clangd"),
 	},
 }
--- Completion and `cmp` related
+--- Completion and `cmp`-related Plugins
 M.COMPLETION = {
 	{
 		"hrsh7th/nvim-cmp",
@@ -502,7 +554,7 @@ M.COMPLETION = {
 			"petertriho/cmp-git",
 			"davidsierradz/cmp-conventionalcommits",
 
-			"HiPhish/nvim-cmp-vlime",
+			"cmp-vlime",
 
 			"hrsh7th/cmp-nvim-lua",
 
@@ -532,6 +584,7 @@ M.COMPLETION = {
 	{
 		"HiPhish/nvim-cmp-vlime",
 		ft = "lisp",
+		name = "cmp-vlime",
 		version = false,
 		dependencies = { "VLime" },
 	},
@@ -546,6 +599,7 @@ M.COMPLETION = {
 M.TELESCOPE = {
 	{
 		"nvim-telescope/telescope.nvim",
+		event = "VimEnter",
 		name = "Telescope",
 		version = false,
 		dependencies = {
@@ -562,18 +616,7 @@ M.TELESCOPE = {
 		lazy = true,
 		name = "Telescope-fzf",
 		version = false,
-		-- TODO: Check whether `nproc` exists in `PATH`.
-		build = function()
-			local nproc = (exists("nproc") and { "make", '-j"$(nproc)"' } or { "make" })
-
-			if _G.is_windows and executable("mingw32-make") then
-				nproc[1] = "mingw32-" .. nproc[1]
-			elseif _G.is_windows and not executable("mingw32-make") then
-				return
-			end
-
-			system(nproc)
-		end,
+		build = tel_fzf_build(),
 		enabled = executable("fzf"),
 	},
 	-- Project Manager
@@ -593,7 +636,7 @@ M.TELESCOPE = {
 		enabled = not vim_has("nvim-0.11"),
 	},
 }
--- UI Customizations
+--- UI Plugins
 M.UI = {
 	-- Statusline
 	{
@@ -609,6 +652,7 @@ M.UI = {
 		end,
 		config = source("lazy_cfg.lualine"),
 	},
+	-- Tabline
 	{
 		"akinsho/bufferline.nvim",
 		priority = 1000,
@@ -625,6 +669,7 @@ M.UI = {
 		config = source("lazy_cfg.bufferline"),
 		enabled = false,
 	},
+	-- Tabline
 	{
 		"romgrk/barbar.nvim",
 		priority = 1000,
@@ -641,6 +686,7 @@ M.UI = {
 		end,
 		config = source("lazy_cfg.barbar"),
 	},
+	-- Indent Scope
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
@@ -654,7 +700,9 @@ M.UI = {
 		lazy = true,
 		name = "rainbow_delimiters",
 		version = false,
-		enabled = false,
+		--- NOTE: Disabled to supress warnings from version bump v0.11.0
+		--- until further notice.
+		enabled = not vim_has("nvim-0.11"),
 	},
 	-- File Tree
 	{
@@ -727,16 +775,22 @@ M.UI = {
 	{
 		"LudoPinelli/comment-box.nvim",
 		name = "CommentBox",
+		version = false,
 		config = source("lazy_cfg.commentbox"),
 		enabled = false,
 	},
 }
 -- File Syntax Plugins
 M.SYNTAX = {
-	{ "rhysd/vim-syntax-codeowners", name = "codeowners-syntax" },
+	{
+		"rhysd/vim-syntax-codeowners",
+		name = "codeowners-syntax",
+		version = false,
+	},
 	{
 		"vim-scripts/DoxygenToolkit.vim",
 		name = "DoxygenToolkit",
+		version = false,
 		enabled = executable("doxygen"),
 	},
 }
