@@ -1,7 +1,7 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local csc_t = User.types.colorschemes
 
@@ -13,7 +13,7 @@ local function src(subs)
 	local res = {}
 
 	for _, v in next, subs do
-		local path = 'lazy_cfg.colorschemes.' .. v
+		local path = "lazy_cfg.colorschemes." .. v
 
 		if exists(path) then
 			res[v] = require(path)
@@ -26,15 +26,15 @@ local function src(subs)
 end
 
 local submods = {
-	'onedark',
-	'tokyonight',
-	'catppuccin',
-	'nightfox',
-	'gloombuddy',
-	'oak',
-	'molokai',
-	'spaceduck',
-	'dracula',
+	"onedark",
+	"tokyonight",
+	"catppuccin",
+	"nightfox",
+	"gloombuddy",
+	"oak",
+	"molokai",
+	"spaceduck",
+	"dracula",
 }
 
 local M = src(submods)

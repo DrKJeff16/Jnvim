@@ -1,18 +1,18 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 
-if not exists('clangd_extensions') or not executable('clangd') then
+if not exists("clangd_extensions") or not executable("clangd") then
 	return
 end
 
-local Exts = require('clangd_extensions')
-local Inlay = require('clangd_extensions.inlay_hints')
+local Exts = require("clangd_extensions")
+local Inlay = require("clangd_extensions.inlay_hints")
 
 Exts.setup({
 	inlay_hints = {
@@ -69,8 +69,8 @@ Exts.setup({
 
 		highlights = { detail = "Comment" },
 	},
-	memory_usage = { border = 'single' },
-	symbol_info = { border = 'double' },
+	memory_usage = { border = "single" },
+	symbol_info = { border = "double" },
 })
 
 Inlay.setup_autocmd()

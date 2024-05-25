@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local types = User.types.cmp
 
@@ -10,15 +10,16 @@ local is_nil = Check.value.is_nil
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
-if not exists('cmp') then
-	error('No `cmp` module!')
+if not exists("cmp") then
+	error("No `cmp` module!")
 	return
 end
 
-local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
-local cmp = require('cmp')
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
+local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip")
+	or require("luasnip")
+local cmp = require("cmp")
+local Types = require("cmp.types")
+local CmpTypes = require("cmp.types.cmp")
 
 local api = vim.api
 

@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local hl_t = User.types.user.highlight
 
@@ -11,12 +11,12 @@ local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local hi = User.highlight.hl
 
-if not exists('ibl') then
+if not exists("ibl") then
 	return
 end
 
-local Ibl = require('ibl')
-local Hooks = require('ibl.hooks')
+local Ibl = require("ibl")
+local Hooks = require("ibl.hooks")
 
 local HType = Hooks.type
 local Builtin = Hooks.builtin
@@ -25,13 +25,13 @@ local register = Hooks.register
 
 ---@type HlDict
 local Hilite = {
-	['RainbowRed'] = { fg = '#E06C75' },
-	['RainbowYellow'] = { fg = '#E5C07B' },
-	['RainbowBlue'] = { fg = '#61AFEF' },
-	['RainbowOrange'] = { fg = '#D19A66' },
-	['RainbowGreen'] = { fg = '#98C379' },
-	['RainbowViolet'] = { fg = '#C678DD' },
-	['RainbowCyan'] = { fg = '#56B6C2' },
+	["RainbowRed"] = { fg = "#E06C75" },
+	["RainbowYellow"] = { fg = "#E5C07B" },
+	["RainbowBlue"] = { fg = "#61AFEF" },
+	["RainbowOrange"] = { fg = "#D19A66" },
+	["RainbowGreen"] = { fg = "#98C379" },
+	["RainbowViolet"] = { fg = "#C678DD" },
+	["RainbowCyan"] = { fg = "#56B6C2" },
 }
 
 ---@type string[]
@@ -68,7 +68,7 @@ register(HType.SCOPE_HIGHLIGHT, Builtin.scope_highlight_from_extmark)
 Ibl.setup({
 	indent = {
 		highlight = highlight,
-		char = '•',
+		char = "•",
 	},
 	whitespace = {
 		highlight = highlight,
@@ -77,6 +77,6 @@ Ibl.setup({
 	scope = { enabled = true },
 })
 
-if exists('rainbow-delimiters.setup') then
+if exists("rainbow-delimiters.setup") then
 	vim.g.rainbow_delimiters = { highlight = names }
 end

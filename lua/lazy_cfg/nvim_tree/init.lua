@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local kmap = User.maps.kmap
 local types = User.types.nvim_tree
@@ -17,7 +17,7 @@ local hi = User.highlight.hl
 
 local nmap = kmap.n
 
-if not exists('nvim-tree') then
+if not exists("nvim-tree") then
 	return
 end
 
@@ -48,7 +48,7 @@ local function key_opts(desc, bufn)
 
 	---@type KeyMapOpts
 	local res = {
-		desc = 'NvimTree: ' .. desc,
+		desc = "NvimTree: " .. desc,
 		buffer = bufn,
 		noremap = true,
 		silent = true,
@@ -58,9 +58,9 @@ local function key_opts(desc, bufn)
 	return res
 end
 
-local Tree = require('nvim-tree')
-local View = require('nvim-tree.view')
-local Api = require('nvim-tree.api')
+local Tree = require("nvim-tree")
+local View = require("nvim-tree.view")
+local Api = require("nvim-tree.api")
 
 local Tapi = Api.tree
 local Tnode = Api.node
@@ -107,29 +107,29 @@ local map_lft = function(keys)
 			args.opts = is_tbl(args.opts) and args.opts or {}
 			nmap(k, args[1], args.opts)
 		else
-			error('(lazy_cfg.nvim_tree.map_lft): Invalid key table.')
+			error("(lazy_cfg.nvim_tree.map_lft): Invalid key table.")
 		end
 	end
 end
 
 ---@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
 local my_maps = {
-	['<leader>fto'] = {
+	["<leader>fto"] = {
 		open,
-		key_opts('Open NvimTree'),
+		key_opts("Open NvimTree"),
 	},
-	['<leader>ftt'] = {
+	["<leader>ftt"] = {
 		toggle,
-		key_opts('Toggle NvimTree'),
+		key_opts("Toggle NvimTree"),
 	},
-	['<leader>ftd'] = {
+	["<leader>ftd"] = {
 		close,
-		key_opts('Close NvimTree'),
+		key_opts("Close NvimTree"),
 	},
 
-	['<leader>ftf'] = {
+	["<leader>ftf"] = {
 		focus,
-		key_opts('Focus NvimTree'),
+		key_opts("Focus NvimTree"),
 	},
 }
 
@@ -146,15 +146,15 @@ local function tab_win_close(nwin)
 	end, win_list(ntab))
 	local tab_bufs = tbl_map(get_bufn, tab_wins)
 
-	if buf_info.name:match('.*NvimTree_%d*$') and not empty(tab_bufs) then
+	if buf_info.name:match(".*NvimTree_%d*$") and not empty(tab_bufs) then
 		close()
 	elseif #tab_bufs == 1 then
 		local lbuf_info = fn.getbufinfo(tab_bufs[1])[1]
 
-		if lbuf_info.name:match('.*NvimTree_%d*$') then
+		if lbuf_info.name:match(".*NvimTree_%d*$") then
 			sched(function()
 				if #list_wins() == 1 then
-					vim.cmd('quit')
+					vim.cmd("quit")
 				else
 					close_win(tab_wins[1], true)
 				end
@@ -171,7 +171,7 @@ local function tree_open(data)
 	local buf = vim.bo[nbuf]
 
 	local real = fn.filereadable(name) == 1
-	local no_name = name == '' and buf.buftype == ''
+	local no_name = name == "" and buf.buftype == ""
 	local dir = fn.isdirectory(name) == 1
 
 	if not real and not no_name then
@@ -192,7 +192,7 @@ local function tree_open(data)
 	local open_opts = { find_file = true }
 
 	if dir then
-		vim.cmd('cd ' .. name)
+		vim.cmd("cd " .. name)
 		open()
 	else
 		toggle(toggle_opts)
@@ -240,7 +240,7 @@ local function git_add()
 	local ngs = node.git_status
 	local ngsf = ngs.file
 	local abs = node.absolute_path
-	local gs = ngsf or ''
+	local gs = ngsf or ""
 
 	if empty(gs) then
 		if is_tbl(ngs.dir.direct) and not empty(ngs.dir.direct) then
@@ -252,14 +252,14 @@ local function git_add()
 
 	---@type TreeGitConds
 	local conds = {
-		add = { '??', 'MM', 'AM', ' M' },
-		restore = { 'M ', 'A ' },
+		add = { "??", "MM", "AM", " M" },
+		restore = { "M ", "A " },
 	}
 
 	if in_tbl(conds.add, gs) then
-		fn.system('git add ' .. abs)
+		fn.system("git add " .. abs)
 	elseif in_tbl(conds.restore, gs) then
-		fn.system('git restore --staged ' .. abs)
+		fn.system("git restore --staged " .. abs)
 	end
 
 	reload()
@@ -273,7 +273,7 @@ local function swap_then_open_tab()
 	local node = get_node()
 
 	if is_tbl(node) and not empty(node) then
-		vim.cmd('wincmd l')
+		vim.cmd("wincmd l")
 		tab(node)
 	end
 end
@@ -284,37 +284,37 @@ local on_attach = function(bufn)
 
 	---@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
 	local keys = {
-		['<C-t>'] = {
+		["<C-t>"] = {
 			change_root_to_parent,
-			key_opts('Set Root To Upper Dir', bufn),
+			key_opts("Set Root To Upper Dir", bufn),
 		},
-		['?'] = {
+		["?"] = {
 			toggle_help,
-			key_opts('Help', bufn),
+			key_opts("Help", bufn),
 		},
-		['<C-f>'] = {
+		["<C-f>"] = {
 			edit_or_open,
-			key_opts('Edit Or Open', bufn),
+			key_opts("Edit Or Open", bufn),
 		},
-		['P'] = {
+		["P"] = {
 			vsplit_preview,
-			key_opts('Vsplit Preview', bufn),
+			key_opts("Vsplit Preview", bufn),
 		},
-		['c'] = {
+		["c"] = {
 			close,
-			key_opts('Close', bufn),
+			key_opts("Close", bufn),
 		},
-		['HA'] = {
+		["HA"] = {
 			collapse_all,
-			key_opts('Collapse All', bufn),
+			key_opts("Collapse All", bufn),
 		},
-		['ga'] = {
+		["ga"] = {
 			git_add,
-			key_opts('Git Add...', bufn),
+			key_opts("Git Add...", bufn),
 		},
-		['t'] = {
+		["t"] = {
 			swap_then_open_tab,
-			key_opts('Open Tab', bufn),
+			key_opts("Open Tab", bufn),
 		},
 	}
 
@@ -328,7 +328,7 @@ Tree.setup({
 	on_attach = on_attach,
 
 	sort = {
-		sorter = 'name',
+		sorter = "name",
 		folders_first = false,
 		files_first = false,
 	},
@@ -363,8 +363,8 @@ Tree.setup({
 				local center_x = (screen_w - window_w) / 2
 				local center_y = ((rows:get() - window_h) / 2) - cmdh:get()
 				return {
-					border = 'rounded',
-					relative = 'editor',
+					border = "rounded",
+					relative = "editor",
 					row = center_y,
 					col = center_x,
 					width = window_w_int,
@@ -400,11 +400,10 @@ Tree.setup({
 				folder = { enable = true, color = true },
 			},
 
-			git_placement = 'signcolumn',
-			modified_placement = 'before',
-			diagnostics_placement = 'after',
-			bookmarks_placement = 'after',
-
+			git_placement = "signcolumn",
+			modified_placement = "before",
+			diagnostics_placement = "after",
+			bookmarks_placement = "after",
 
 			symlink_arrow = " ➛ ",
 			show = {
@@ -445,12 +444,12 @@ Tree.setup({
 	},
 	filters = { dotfiles = false },
 	live_filter = {
-		prefix = '[FILTER]: ',
+		prefix = "[FILTER]: ",
 		always_show_folders = true,
 	},
 })
 
-if exists('telescope') then
+if exists("telescope") then
 	local Fs = Api.fs
 	local tree_actions = {
 		{
@@ -482,9 +481,9 @@ if exists('telescope') then
 	}
 
 	local function tree_actions_menu(node)
-		local Finders = require('telescope.finders')
-		local Pickers = require('telescope.pickers')
-		local Sorters = require('telescope.sorters')
+		local Finders = require("telescope.finders")
+		local Pickers = require("telescope.pickers")
+		local Sorters = require("telescope.sorters")
 
 		local entry_maker = function(menu_item)
 			return {
@@ -532,8 +531,7 @@ if exists('telescope') then
 		}
 
 		-- Opening the menu
-		Pickers.new({ prompt_title = 'Tree Menu' }, default_options)
-			:find()
+		Pickers.new({ prompt_title = "Tree Menu" }, default_options):find()
 	end
 end
 
@@ -544,19 +542,19 @@ end) ]]
 
 ---@type HlDict
 local hl_groups = {
-	['NvimTreeExecFile'] = { fg = '#ffa0a0' },
-	['NvimTreeSpecialFile'] = { fg = '#ff80ff', underline = true },
-	['NvimTreeSymlink'] = { fg = 'Yellow', italic = true },
-	['NvimTreeImageFile'] = { link = 'Title' },
+	["NvimTreeExecFile"] = { fg = "#ffa0a0" },
+	["NvimTreeSpecialFile"] = { fg = "#ff80ff", underline = true },
+	["NvimTreeSymlink"] = { fg = "Yellow", italic = true },
+	["NvimTreeImageFile"] = { link = "Title" },
 }
 
 ---@type AuDict
 local au_cmds = {
-	['VimEnter'] = { callback = tree_open },
-	['WinClosed'] = {
+	["VimEnter"] = { callback = tree_open },
+	["WinClosed"] = {
 		callback = function()
 			---@type integer
-			local nwin = tonumber(fn.expand('<amatch>'))
+			local nwin = tonumber(fn.expand("<amatch>"))
 
 			local tabc = function()
 				return tab_win_close(nwin)
@@ -566,7 +564,7 @@ local au_cmds = {
 		end,
 		nested = true,
 	},
-	['VimResized'] = {
+	["VimResized"] = {
 		group = "NvimTreeResize",
 		callback = function()
 			if View.is_visible() then
@@ -575,7 +573,7 @@ local au_cmds = {
 			end
 		end,
 	},
-	['BufEnter'] = {
+	["BufEnter"] = {
 		nested = true,
 		callback = function()
 			local ATree = Api.tree
@@ -595,10 +593,10 @@ local au_cmds = {
 				end, 0)
 			end
 		end,
-	}
+	},
 }
 
-augroup('NvimTreeResize', {
+augroup("NvimTreeResize", {
 	clear = true,
 })
 for k, v in next, au_cmds do

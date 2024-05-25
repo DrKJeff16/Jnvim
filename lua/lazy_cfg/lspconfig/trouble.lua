@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local kmap = User.maps.kmap
 local types = User.types.lspconfig
@@ -9,11 +9,11 @@ local types = User.types.lspconfig
 local exists = Check.exists.module
 local desc = kmap.desc
 
-if not exists('trouble') then
+if not exists("trouble") then
 	return
 end
 
-local Trouble = require('trouble')
+local Trouble = require("trouble")
 
 local toggle = Trouble.toggle
 
@@ -32,35 +32,35 @@ local opts = {
 	action_keys = { -- key mappings for actions in the trouble list
 		-- map to {} to remove a mapping, for example:
 		-- close = {},
-		close = "q",                                                                   -- close the list
-		cancel = "<Esc>",                                                              -- cancel the preview and get back to your last window / buffer / cursor
-		refresh = "r",                                                                 -- manually refresh
-		jump = { "<cr>", "<Tab>", "<2-leftmouse>" },                                   -- jump to the diagnostic or open / close folds
-		open_split = { "<C-x>" },                                                      -- open buffer in new split
-		open_vsplit = { "<C-v>" },                                                     -- open buffer in new vsplit
-		open_tab = { "<C-t>" },                                                        -- open buffer in new tab
-		jump_close = { "o" },                                                          -- jump to the diagnostic and close the list
-		toggle_mode = { "m" },                                                         -- toggle between "workspace" and "document" diagnostics mode
-		switch_severity = { "s" },                                                     -- switch "diagnostics" severity filter level to HINT / INFO / WARN / ERROR
-		toggle_preview = { "P" },                                                      -- toggle auto_preview
-		hover = { "K" },                                                               -- opens a small popup with the full multiline message
-		preview = { "p" },                                                             -- preview the diagnostic location
-		open_code_href = { "c" },                                                      -- if present, open a URI with more information about the diagnostic error
-		close_folds = { "zM", "zm" },                                                  -- close all folds
-		open_folds = { "zR", "zr" },                                                   -- open all folds
-		toggle_fold = { "zA", "za" },                                                  -- toggle fold of current file
-		previous = "k",                                                                -- previous item
-		next = "j",                                                                    -- next item
-		help = "?",                                                                    -- help menu
+		close = "q", -- close the list
+		cancel = "<Esc>", -- cancel the preview and get back to your last window / buffer / cursor
+		refresh = "r", -- manually refresh
+		jump = { "<cr>", "<Tab>", "<2-leftmouse>" }, -- jump to the diagnostic or open / close folds
+		open_split = { "<C-x>" }, -- open buffer in new split
+		open_vsplit = { "<C-v>" }, -- open buffer in new vsplit
+		open_tab = { "<C-t>" }, -- open buffer in new tab
+		jump_close = { "o" }, -- jump to the diagnostic and close the list
+		toggle_mode = { "m" }, -- toggle between "workspace" and "document" diagnostics mode
+		switch_severity = { "s" }, -- switch "diagnostics" severity filter level to HINT / INFO / WARN / ERROR
+		toggle_preview = { "P" }, -- toggle auto_preview
+		hover = { "K" }, -- opens a small popup with the full multiline message
+		preview = { "p" }, -- preview the diagnostic location
+		open_code_href = { "c" }, -- if present, open a URI with more information about the diagnostic error
+		close_folds = { "zM", "zm" }, -- close all folds
+		open_folds = { "zR", "zr" }, -- open all folds
+		toggle_fold = { "zA", "za" }, -- toggle fold of current file
+		previous = "k", -- previous item
+		next = "j", -- next item
+		help = "?", -- help menu
 	},
-	multiline = true,                                                                  -- render multi-line messages
-	indent_lines = true,                                                               -- add an indent guide below the fold icons
-	win_config = { border = "single" },                                                -- window configuration for floating windows. See |nvim_open_win()|.
-	auto_open = false,                                                                 -- automatically open the list when you have diagnostics
-	auto_close = true,                                                                 -- automatically close the list when you have no diagnostics
-	auto_preview = true,                                                               -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-	auto_fold = true,                                                                  -- automatically fold a file trouble list at creation
-	auto_jump = { "lsp_definitions" },                                                 -- for the given modes, automatically jump if there is only a single result
+	multiline = true, -- render multi-line messages
+	indent_lines = true, -- add an indent guide below the fold icons
+	win_config = { border = "single" }, -- window configuration for floating windows. See |nvim_open_win()|.
+	auto_open = false, -- automatically open the list when you have diagnostics
+	auto_close = true, -- automatically close the list when you have no diagnostics
+	auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+	auto_fold = true, -- automatically fold a file trouble list at creation
+	auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
 	include_declaration = { "lsp_definitions", "lsp_references", "lsp_implementations" }, -- for the given modes, include the declaration of the current symbol in the results
 	signs = {
 		-- icons / text used for a diagnostic
@@ -77,36 +77,36 @@ Trouble.setup(opts)
 
 ---@type KeyMapDict
 local Keys = {
-	["<leader>xx"] = { toggle, { desc = 'Toggle Trouble' } },
+	["<leader>xx"] = { toggle, { desc = "Toggle Trouble" } },
 	["<leader>xw"] = {
 		function()
 			toggle("workspace_diagnostics")
 		end,
-		desc('Toggle Workspace Diagnostics'),
+		desc("Toggle Workspace Diagnostics"),
 	},
 	["<leader>xd"] = {
 		function()
 			toggle("document_diagnostics")
 		end,
-		desc('Toggle Document Diagnostics')
+		desc("Toggle Document Diagnostics"),
 	},
 	["<leader>xq"] = {
 		function()
 			toggle("quickfix")
 		end,
-		desc('Toggle Quickfix')
+		desc("Toggle Quickfix"),
 	},
 	["<leader>xl"] = {
 		function()
 			toggle("loclist")
 		end,
-		desc('Toggle Loclist')
+		desc("Toggle Loclist"),
 	},
 	["<leader>xr"] = {
 		function()
 			toggle("lsp_references")
 		end,
-		desc('Toggle References')
+		desc("Toggle References"),
 	},
 }
 

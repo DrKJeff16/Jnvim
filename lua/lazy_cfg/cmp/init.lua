@@ -1,27 +1,28 @@
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local types = User.types.cmp
 
 local exists = Check.exists.module
 local is_fun = Check.value.is_fun
 
-if not exists('cmp') or not exists('luasnip') then
+if not exists("cmp") or not exists("luasnip") then
 	return
 end
 
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
+local Types = require("cmp.types")
+local CmpTypes = require("cmp.types.cmp")
 
 local tbl_contains = vim.tbl_contains
 local get_mode = vim.api.nvim_get_mode
 
-local Sks = require('lazy_cfg.cmp.kinds')
-local Util = require('lazy_cfg.cmp.util')
-local Sources = require('lazy_cfg.cmp.sources').new()
+local Sks = require("lazy_cfg.cmp.kinds")
+local Util = require("lazy_cfg.cmp.util")
+local Sources = require("lazy_cfg.cmp.sources").new()
 
-local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
-local cmp = require('cmp')
-local Compare = require('cmp.config.compare')
+local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip")
+	or require("luasnip")
+local cmp = require("cmp")
+local Compare = require("cmp.config.compare")
 
 local tab_map = Util.tab_map
 local s_tab_map = Util.s_tab_map
@@ -32,18 +33,18 @@ local buffer = Sources.buffer
 
 ---@type table<string, cmp.MappingClass|fun(fallback: function):nil>
 local Mappings = {
-	['<C-j>'] = cmp.mapping.scroll_docs(-4),
-	['<C-k>'] = cmp.mapping.scroll_docs(4),
-	['<C-e>'] = cmp.mapping.abort(), -- Same as `<Esc>`
-	['<C-Space>'] = cmp.mapping.complete(),
-	['<CR>'] = cmp.mapping(cr_map),
-	['<Tab>'] = cmp.mapping(tab_map),
-	['<S-Tab>'] = cmp.mapping(s_tab_map),
-	['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-	['<Down>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-	['<Up>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-	['<Right>'] = cmp.mapping(bs_map, { 'i', 's' }),
-	['<Left>'] = cmp.mapping(bs_map, { 'i', 's' }),
+	["<C-j>"] = cmp.mapping.scroll_docs(-4),
+	["<C-k>"] = cmp.mapping.scroll_docs(4),
+	["<C-e>"] = cmp.mapping.abort(), -- Same as `<Esc>`
+	["<C-Space>"] = cmp.mapping.complete(),
+	["<CR>"] = cmp.mapping(cr_map),
+	["<Tab>"] = cmp.mapping(tab_map),
+	["<S-Tab>"] = cmp.mapping(s_tab_map),
+	["<BS>"] = cmp.mapping(bs_map, { "i", "s", "c" }),
+	["<Down>"] = cmp.mapping(bs_map, { "i", "s", "c" }),
+	["<Up>"] = cmp.mapping(bs_map, { "i", "s", "c" }),
+	["<Right>"] = cmp.mapping(bs_map, { "i", "s" }),
+	["<Left>"] = cmp.mapping(bs_map, { "i", "s" }),
 }
 
 ---@type cmp.ConfigSchema
@@ -51,39 +52,39 @@ local opts = {
 	---@type fun(): boolean
 	enabled = function()
 		local disable_ft = {
-			'NvimTree',
-			'TelescopePrompt',
-			'checkhealth',
-			'help',
-			'lazy',
+			"NvimTree",
+			"TelescopePrompt",
+			"checkhealth",
+			"help",
+			"lazy",
 		}
 
 		local enable_comments = {
-			'bash',
-			'c',
-			'codeowners',
-			'cpp',
-			'crontab',
-			'css',
-			'gitattributes',
-			'gitconfig',
-			'gitignore',
-			'html',
-			'java',
-			'jsonc',
-			'less',
-			'lisp',
-			'lua',
-			'markdown',
-			'python',
-			'scss',
-			'sh',
-			'vim',
-			'zsh',
+			"bash",
+			"c",
+			"codeowners",
+			"cpp",
+			"crontab",
+			"css",
+			"gitattributes",
+			"gitconfig",
+			"gitignore",
+			"html",
+			"java",
+			"jsonc",
+			"less",
+			"lisp",
+			"lua",
+			"markdown",
+			"python",
+			"scss",
+			"sh",
+			"vim",
+			"zsh",
 		}
 
 		---@type string
-		local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+		local ft = vim.api.nvim_get_option_value("ft", { scope = "local" })
 
 		if tbl_contains(disable_ft, ft) then
 			return false
@@ -91,16 +92,16 @@ local opts = {
 		if tbl_contains(enable_comments, ft) then
 			return true
 		end
-		if get_mode().mode == 'c' then
+		if get_mode().mode == "c" then
 			return true
 		end
 
-		local Context = require('cmp.config.context')
+		local Context = require("cmp.config.context")
 
 		local in_ts_capture = Context.in_treesitter_capture
 		local in_syntax_group = Context.in_syntax_group
 
-		return not (in_ts_capture('comment') or in_syntax_group('Comment'))
+		return not (in_ts_capture("comment") or in_syntax_group("Comment"))
 	end,
 
 	snippet = {
@@ -131,7 +132,7 @@ local opts = {
 	},
 
 	completion = {
-		completeopt = 'menu,menuone,noselect,noinsert,preview',
+		completeopt = "menu,menuone,noselect,noinsert,preview",
 		keyword_length = 1,
 	},
 
@@ -151,9 +152,9 @@ local opts = {
 	mapping = cmp.mapping.preset.insert(Mappings),
 
 	sources = cmp.config.sources({
-		{ name = 'nvim_lsp',                priority = 1 },
-		{ name = 'nvim_lsp_signature_help', priority = 2 },
-		{ name = 'luasnip',                 priority = 3 },
+		{ name = "nvim_lsp", priority = 1 },
+		{ name = "nvim_lsp_signature_help", priority = 2 },
+		{ name = "luasnip", priority = 3 },
 		buffer(4),
 	}),
 }
@@ -167,12 +168,12 @@ if is_fun(Sks.vscode) then
 end
 
 -- For debugging.
-if exists('notify') then
-	local Notify = require('notify')
+if exists("notify") then
+	local Notify = require("notify")
 
-	Notify('cmp loaded.', 'info', {
-		title = 'cmp',
+	Notify("cmp loaded.", "info", {
+		title = "cmp",
 	})
 else
-	print('cmp loaded.')
+	print("cmp loaded.")
 end

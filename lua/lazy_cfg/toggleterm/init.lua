@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local types = User.types.toggleterm
 local map = User.maps.map
@@ -13,7 +13,7 @@ local tmap = map.t
 local nmap = map.n
 local imap = map.i
 
-if not exists('toggleterm') then
+if not exists("toggleterm") then
 	return
 end
 
@@ -22,7 +22,7 @@ local api = vim.api
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
-local TT = require('toggleterm')
+local TT = require("toggleterm")
 
 local FACTOR = vim.o.columns * 0.55
 
@@ -31,7 +31,7 @@ TT.setup({
 	size = function(term)
 		local res = 30
 
-		if term.direction == 'vertical' then
+		if term.direction == "vertical" then
 			res = FACTOR
 		end
 
@@ -40,21 +40,21 @@ TT.setup({
 
 	autochdir = true,
 	hide_numbers = true,
-	direction = 'float',
+	direction = "float",
 	close_on_exit = true,
 
 	opts = {
-		border = 'none',
-		title_pos = 'center',
+		border = "none",
+		title_pos = "center",
 		width = FACTOR,
 	},
 
 	highlights = {
-		Normal = { guibg = '#291d3f' },
-		NormalFloat = { link = 'Normal' },
+		Normal = { guibg = "#291d3f" },
+		NormalFloat = { link = "Normal" },
 		FloatBorder = {
-			guifg = '#c5c7a1',
-			guibg = '#21443d',
+			guifg = "#c5c7a1",
+			guibg = "#21443d",
 		},
 	},
 	shade_terminals = true,
@@ -68,8 +68,8 @@ TT.setup({
 	persist_mode = true,
 
 	float_opts = {
-		border = 'single',
-		title_pos = 'center',
+		border = "single",
+		title_pos = "center",
 		zindex = 100,
 		winblend = 3,
 	},
@@ -87,13 +87,13 @@ TT.setup({
 ---@type AuPair[]
 local aus = {
 	{
-		event = 'TermEnter',
+		event = "TermEnter",
 		opts = {
-			pattern = { 'term://*toggleterm#*' },
+			pattern = { "term://*toggleterm#*" },
 			callback = function()
-				tmap('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
-			end
-		}
+				tmap("<c-t>", '<CMD>exe v:count1 . "ToggleTerm"<CR>')
+			end,
+		},
 	},
 }
 
@@ -105,21 +105,21 @@ end
 local map_tbl = {
 	n = {
 		{
-			lhs = '<c-t>',
+			lhs = "<c-t>",
 			rhs = '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = 'Toggle \'ToggleTerm\'' },
+			opts = { desc = "Toggle 'ToggleTerm'" },
 		},
 		{
-			lhs = '<leader>Tt',
+			lhs = "<leader>Tt",
 			rhs = '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = 'Toggle \'ToggleTerm\'' },
+			opts = { desc = "Toggle 'ToggleTerm'" },
 		},
 	},
 	i = {
 		{
-			lhs = '<c-t>',
+			lhs = "<c-t>",
 			rhs = '<Esc><CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = 'Toggle \'ToggleTerm\'' },
+			opts = { desc = "Toggle 'ToggleTerm'" },
 		},
 	},
 	t = {},

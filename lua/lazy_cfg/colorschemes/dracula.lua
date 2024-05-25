@@ -1,13 +1,13 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local csc_t = User.types.colorschemes
 
 ---@type CscSubMod
 local M = {
-	mod_cmd = 'colorscheme dracula',
-	mod_pfx = 'lazy_cfg.colorschemes.dracula',
+	mod_cmd = "colorscheme dracula",
+	mod_pfx = "lazy_cfg.colorschemes.dracula",
 }
 
 if vim.g.installed_dracula == 1 then

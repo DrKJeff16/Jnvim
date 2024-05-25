@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-local
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
@@ -10,14 +10,14 @@ local exists = Check.exists.module
 local nmap = kmap.n
 local desc = kmap.desc
 
-if not exists('project_nvim') then
+if not exists("project_nvim") then
 	return
 end
 
 local stdpath = vim.fn.stdpath
 
-local Project = require('project_nvim')
-local Config = require('project_nvim.config')
+local Project = require("project_nvim")
+local Config = require("project_nvim.config")
 
 local recent_proj = Project.get_recent_projects
 
@@ -43,20 +43,20 @@ local opts = {
 		".svn",
 		"Makefile",
 		"package.json",
-		'pyproject.toml',
-		'.neoconf.json',
-		'neoconf.json',
-		'Pipfile',
-		'Pipfile.lock',
-		'requirements.txt',
-		'tox.ini',
-		'stylua.toml',
+		"pyproject.toml",
+		".neoconf.json",
+		"neoconf.json",
+		"Pipfile",
+		"Pipfile.lock",
+		"requirements.txt",
+		"tox.ini",
+		"stylua.toml",
 	},
 
 	-- Don't calculate root dir on specific directories
 	-- Ex: { "~/.cargo/*", ... }
 	exclude_dirs = {
-		'~/Templates/^'
+		"~/Templates/^",
 	},
 
 	-- Show hidden files in telescope
@@ -70,7 +70,7 @@ local opts = {
 	-- * global (default)
 	-- * tab
 	-- * win
-	scope_chdir = 'tab',
+	scope_chdir = "tab",
 
 	-- Path where project.nvim will store the project history for use in
 	-- telescope
@@ -81,21 +81,21 @@ Project.setup(opts)
 
 ---@type KeyMapDict
 local keys = {
-	['<leader>pr'] = {
+	["<leader>pr"] = {
 		function()
-			local msg = '\n'
+			local msg = "\n"
 
 			for _, v in next, recent_proj() do
-				msg = msg .. '\n- ' .. v
+				msg = msg .. "\n- " .. v
 			end
-			if exists('notify') then
-				require('notify')(msg, 'info', { title = 'Recent Projects' })
+			if exists("notify") then
+				require("notify")(msg, "info", { title = "Recent Projects" })
 			else
 				print(msg)
 			end
 		end,
-		desc('Print Recent Projects')
-	}
+		desc("Print Recent Projects"),
+	},
 }
 
 for key, v in next, keys do

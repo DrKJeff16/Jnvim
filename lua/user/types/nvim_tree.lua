@@ -1,6 +1,6 @@
-require('user.types.user.maps')
-require('user.types.user.highlight')
-require('user.types.user.autocmd')
+require("user.types.user.maps")
+require("user.types.user.highlight")
+require("user.types.user.autocmd")
 
 ---@alias AnyFunc fun(...)
 ---@alias TreeApi table<string, string|AnyFunc|table>
@@ -40,4 +40,3 @@ require('user.types.user.autocmd')
 ---@class TreeGitConds
 ---@field add string[]
 ---@field restore string[]
-

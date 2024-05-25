@@ -1,16 +1,16 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 
 local exists = Check.exists.module
 
-if not exists('comment-box') then
+if not exists("comment-box") then
 	return
 end
 
-local CB = require('comment-box')
+local CB = require("comment-box")
 
 CB.setup({
 	-- type of comments:
@@ -47,7 +47,7 @@ CB.setup({
 	line_blank_line_below = false, -- insert a blank line below the line
 })
 
-if exists('which-key') then
+if exists("which-key") then
 	local wk = require("which-key")
 	wk.register({
 		["<Leader>"] = {

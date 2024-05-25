@@ -1,24 +1,24 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 
 local exists = Check.exists.module
 
-if not exists('noice') then
+if not exists("noice") then
 	return
 end
 
-local Noice = require('noice')
-local Util = require('noice.util')
+local Noice = require("noice")
+local Util = require("noice.util")
 
 ---@type NoiceConfig
 local Opts = {
 	cmdline = {
 		enabled = true,
 		---@type 'cmdline_popup'|'cmdline'
-		view = 'cmdline_popup',
+		view = "cmdline_popup",
 		---@type NoiceFormatOptions
 		format = {
 			-- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
@@ -30,7 +30,11 @@ local Opts = {
 			search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
 			search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
 			filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-			lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+			lua = {
+				pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" },
+				icon = "",
+				lang = "lua",
+			},
 			help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
 			input = {}, -- Used by input()
 			-- lua = false, -- to disable a format, set to `false`
@@ -39,17 +43,17 @@ local Opts = {
 	messages = {
 		-- NOTE: If you enable messages, then the cmdline is enabled automatically.
 		-- This is a current Neovim limitation.
-		enabled = true,  -- enables the Noice messages UI
-		view = "mini",   -- default view for messages
+		enabled = true, -- enables the Noice messages UI
+		view = "mini", -- default view for messages
 		view_error = "notify", -- view for errors
 		view_warn = "mini", -- view for warnings
-		view_history = 'mini', -- view for :messages
+		view_history = "mini", -- view for :messages
 		view_search = false, -- view for search count messages. Set to `false` to disable
 	},
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
 		---@type 'nui'|'cmp'
-		backend = 'nui', -- backend to use to show regular cmdline completions
+		backend = "nui", -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
 		---@type NoicePopupmenuItemKind|false
 		kind_icons = {}, -- set to `false` to disable icons
@@ -58,8 +62,8 @@ local Opts = {
 	-- see the section on Command Redirection
 	---@type NoiceRouteConfig
 	redirect = {
-		view = 'popup',
-		filter = { event = 'msg_show' },
+		view = "popup",
+		filter = { event = "msg_show" },
 	},
 	commands = {
 		history = {
@@ -72,7 +76,7 @@ local Opts = {
 					{ error = true },
 					{ warning = true },
 					{ event = "msg_show", kind = { "" } },
-					{ event = "lsp",      kind = "message" },
+					{ event = "lsp", kind = "message" },
 				},
 			},
 		},
@@ -86,7 +90,7 @@ local Opts = {
 					{ error = true },
 					{ warning = true },
 					{ event = "msg_show", kind = { "" } },
-					{ event = "lsp",      kind = "message" },
+					{ event = "lsp", kind = "message" },
 				},
 			},
 			filter_opts = { count = 1 },
@@ -102,7 +106,7 @@ local Opts = {
 	},
 	notify = {
 		enabled = true,
-		view = 'notify',
+		view = "notify",
 	},
 	lsp = {
 		progress = {
@@ -125,7 +129,7 @@ local Opts = {
 		hover = {
 			enabled = true,
 			silent = false,
-			view = 'hover',
+			view = "hover",
 			---@type NoiceViewOptions
 			opts = {},
 		},
@@ -137,26 +141,26 @@ local Opts = {
 				luasnip = true,
 				throttle = 50,
 			},
-			view = 'hover',
+			view = "hover",
 			---@type NoiceViewOptions
 			opts = {},
 		},
 		documentation = {
-			view = 'hover',
+			view = "hover",
 			---@type NoiceViewOptions
 			opts = {
-				lang = 'markdown',
+				lang = "markdown",
 				replace = true,
-				render = 'plain',
-				format = { '{message}' },
-				win_options = { concealcursor = 'n', conceallevel = 3 },
+				render = "plain",
+				format = { "{message}" },
+				win_options = { concealcursor = "n", conceallevel = 3 },
 			},
 		},
 	},
 	markdown = {
 		hover = {
-			['|(%S-)|'] = vim.cmd.help,
-			['%[.-%]%((%S-)%)'] = Util.open,
+			["|(%S-)|"] = vim.cmd.help,
+			["%[.-%]%((%S-)%)"] = Util.open,
 		},
 		highlights = {
 			["|%S-|"] = "@text.reference",
@@ -174,29 +178,29 @@ local Opts = {
 	},
 	-- you can enable a preset for easier configuration
 	presets = {
-		bottom_search = false,  -- use a classic bottom cmdline for search
+		bottom_search = false, -- use a classic bottom cmdline for search
 		command_palette = true, -- position the cmdline and popupmenu together
 		long_message_to_split = true, -- long messages will be sent to a split
-		inc_rename = false,     -- enables an input dialog for inc-rename.nvim
-		lsp_doc_border = true,  -- add a border to hover docs and signature help
+		inc_rename = false, -- enables an input dialog for inc-rename.nvim
+		lsp_doc_border = true, -- add a border to hover docs and signature help
 	},
 	throttle = 1000 / 50,
 	---@type NoiceConfigViews
 	views = {}, ---@see section on views
 	---@type NoiceRouteConfig
 	routes = {
-		view = 'notify',
+		view = "notify",
 		filter = {},
 		opts = {
-			align = 'center',
+			align = "center",
 		},
 	}, ---@see section on routes
 	---@type table<string, NoiceFilter>
 	status = {}, ---@see section on statusline components
 	---@type NoiceFormatOptions
 	format = {
-		default = { '{level} ', '{title} ', '{message}' },
-		notify = { '{message}' },
+		default = { "{level} ", "{title} ", "{message}" },
+		notify = { "{message}" },
 		details = {
 			"{level} ",
 			"{date} ",

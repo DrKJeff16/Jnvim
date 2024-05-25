@@ -1,36 +1,36 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local types = User.types.colorizer
 
 local exists = Check.exists.module
 
-if not exists('colorizer') then
+if not exists("colorizer") then
 	return
 end
 
-local Colorizer = require('colorizer')
+local Colorizer = require("colorizer")
 
 ---@type ColorizerOpts
 local DEFAULT = {
-	RGB      = true,      -- #RGB hex codes
-	RRGGBB   = true,      -- #RRGGBB hex codes
-	names    = false,     -- "Name" codes like Blue
-	RRGGBBAA = true,      -- #RRGGBBAA hex codes
-	rgb_fn   = false,     -- CSS rgb() and rgba() functions
-	hsl_fn   = false,     -- CSS hsl() and hsla() functions
-	css      = false,     -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-	css_fn   = false,     -- Enable all CSS *functions*: rgb_fn, hsl_fn
+	RGB = true, -- #RGB hex codes
+	RRGGBB = true, -- #RRGGBB hex codes
+	names = false, -- "Name" codes like Blue
+	RRGGBBAA = true, -- #RRGGBBAA hex codes
+	rgb_fn = false, -- CSS rgb() and rgba() functions
+	hsl_fn = false, -- CSS hsl() and hsla() functions
+	css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+	css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
 	-- Available modes: foreground, background
-	mode     = 'background', -- Set the display mode.
+	mode = "background", -- Set the display mode.
 }
 function DEFAULT.new()
 	local self = setmetatable({}, { __index = DEFAULT })
 
 	for k, _ in next, DEFAULT do
-		if k ~= '__index' then
+		if k ~= "__index" then
 			self[k] = DEFAULT[k]
 		end
 	end
@@ -49,9 +49,9 @@ local Lua = DEFAULT.new()
 Lua.names = true
 
 Colorizer.setup({
-	['*'] = DEFAULT,
-	['css'] = Html,
-	['html'] = Html,
-	['markdown'] = Html,
-	['lua'] = Lua,
+	["*"] = DEFAULT,
+	["css"] = Html,
+	["html"] = Html,
+	["markdown"] = Html,
+	["lua"] = Lua,
 })

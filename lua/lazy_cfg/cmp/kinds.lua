@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local utypes = User.types.cmp
 
@@ -10,89 +10,89 @@ local hl = User.highlight.hl
 
 local api = vim.api
 
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
+local Types = require("cmp.types")
+local CmpTypes = require("cmp.types.cmp")
 
-local cmp = require('cmp')
-local LK = require('lspkind')
+local cmp = require("cmp")
+local LK = require("lspkind")
 
 ---@type FmtKindIcons
 local kind_icons = {
-	Class =				"󰠱",
-	Color =				"󰏘",
-	Constant =			"󰏿",
-	Constructor =		"",
-	Enum =				"",
-	EnumMember =		"",
-	Event =				"",
-	Field =				"󰇽",
-	File =				"󰈙",
-	Folder =			"󰉋",
-	Function =			"󰊕",
-	Interface =			"",
-	Keyword =			"󰌋",
-	Method =			"󰆧",
-	Module =			"",
-	Operator =			"󰆕",
-	Property =			"󰜢",
-	Reference =			"",
-	Snippet =			"",
-	Struct =			"",
-	Text =				"",
-	TypeParameter =		"󰅲",
-	Unit =				"",
-	Value =				"󰎠",
-	Variable =			"󰂡",
+	Class = "󰠱",
+	Color = "󰏘",
+	Constant = "󰏿",
+	Constructor = "",
+	Enum = "",
+	EnumMember = "",
+	Event = "",
+	Field = "󰇽",
+	File = "󰈙",
+	Folder = "󰉋",
+	Function = "󰊕",
+	Interface = "",
+	Keyword = "󰌋",
+	Method = "󰆧",
+	Module = "",
+	Operator = "󰆕",
+	Property = "󰜢",
+	Reference = "",
+	Snippet = "",
+	Struct = "",
+	Text = "",
+	TypeParameter = "󰅲",
+	Unit = "",
+	Value = "󰎠",
+	Variable = "󰂡",
 }
 
 ---@type FmtKindIcons
 local kind_codicons = {
-	Class = '  ',
-	Color = '  ',
-	Constant = '  ',
-	Constructor = '  ',
-	Enum = '  ',
-	EnumMember = '  ',
-	Event = '  ',
-	Field = '  ',
-	File = '  ',
-	Folder = '  ',
-	Function = '  ',
-	Interface = '  ',
-	Keyword = '  ',
-	Method = '  ',
-	Module = '  ',
-	Operator = '  ',
-	Property = '  ',
-	Reference = '  ',
-	Snippet = '  ',
-	Struct = '  ',
-	Text = '  ',
-	TypeParameter = '  ',
-	Unit = '  ',
-	Value = '  ',
-	Variable = '  ',
+	Class = "  ",
+	Color = "  ",
+	Constant = "  ",
+	Constructor = "  ",
+	Enum = "  ",
+	EnumMember = "  ",
+	Event = "  ",
+	Field = "  ",
+	File = "  ",
+	Folder = "  ",
+	Function = "  ",
+	Interface = "  ",
+	Keyword = "  ",
+	Method = "  ",
+	Module = "  ",
+	Operator = "  ",
+	Property = "  ",
+	Reference = "  ",
+	Snippet = "  ",
+	Struct = "  ",
+	Text = "  ",
+	TypeParameter = "  ",
+	Unit = "  ",
+	Value = "  ",
+	Variable = "  ",
 }
 
 local function vscode()
 	---@type HlDict
 	local vscode_hls = {
 		-- gray
-		CmpItemAbbrDeprecated = { bg='NONE', strikethrough=true, fg='#808080' },
+		CmpItemAbbrDeprecated = { bg = "NONE", strikethrough = true, fg = "#808080" },
 		-- blue
-		CmpItemAbbrMatch = { bg='NONE', fg='#569CD6' },
-		CmpItemAbbrMatchFuzzy = { link='CmpIntemAbbrMatch' },
+		CmpItemAbbrMatch = { bg = "NONE", fg = "#569CD6" },
+		CmpItemAbbrMatchFuzzy = { link = "CmpIntemAbbrMatch" },
 		-- light blue
-		CmpItemKindVariable = { bg='NONE', fg='#9CDCFE' },
-		CmpItemKindInterface = { link='CmpItemKindVariable' },
-		CmpItemKindText = { link='CmpItemKindVariable' },
+		CmpItemKindVariable = { bg = "NONE", fg = "#9CDCFE" },
+		CmpItemKindInterface = { link = "CmpItemKindVariable" },
+		CmpItemKindText = { link = "CmpItemKindVariable" },
 		-- pink
-		CmpItemKindFunction = { bg='NONE', fg='#C586C0' },
-		CmpItemKindMethod = { link='CmpItemKindFunction' },
+		CmpItemKindFunction = { bg = "NONE", fg = "#C586C0" },
+		CmpItemKindMethod = { link = "CmpItemKindFunction" },
 		-- front
-		CmpItemKindKeyword = { bg='NONE', fg='#D4D4D4' },
-		CmpItemKindProperty = { link='CmpItemKindKeyword' },
-		CmpItemKindUnit = { link='CmpItemKindKeyword' },
+		CmpItemKindKeyword = { bg = "NONE", fg = "#D4D4D4" },
+		CmpItemKindProperty = { link = "CmpItemKindKeyword" },
+		CmpItemKindUnit = { link = "CmpItemKindKeyword" },
 	}
 
 	for n, o in next, vscode_hls do
@@ -103,7 +103,7 @@ end
 ---@param entry cmp.Entry
 ---@param vim_item vim.CompletedItem
 local function vscode_fmt(entry, vim_item)
-	vim_item.kind = kind_codicons[vim_item.kind] or ''
+	vim_item.kind = kind_codicons[vim_item.kind] or ""
 	return vim_item
 end
 
@@ -164,7 +164,7 @@ local M = {
 	kind_codicons = kind_codicons,
 	formatting = {
 		expandable_indicator = true,
-		fields = { 'abbr', 'kind', 'menu' },
+		fields = { "abbr", "kind", "menu" },
 		format = fmt,
 	},
 	window = {
@@ -172,7 +172,7 @@ local M = {
 		completion = cmp.config.window.bordered(),
 	},
 	view = {
-		entries = { name = 'custom', selection_order = 'top_down' },
+		entries = { name = "custom", selection_order = "top_down" },
 		docs = { auto_open = true },
 	},
 	vscode = vscode,

@@ -1,7 +1,7 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local csc_t = User.types.colorschemes
 
@@ -9,13 +9,13 @@ local exists = Check.exists.module
 
 ---@type CscSubMod
 local M = {
-	mod_pfx = 'lazy_cfg.colorschemes.catppuccin',
-	mod_cmd = 'colorscheme catppuccin',
+	mod_pfx = "lazy_cfg.colorschemes.catppuccin",
+	mod_cmd = "colorscheme catppuccin",
 }
 
-if exists('catppuccin') then
+if exists("catppuccin") then
 	function M.setup()
-		local Cppc = require('catppuccin')
+		local Cppc = require("catppuccin")
 
 		---@type CatppuccinOptions
 		local opts = {
@@ -37,38 +37,38 @@ if exists('catppuccin') then
 			no_bold = false, -- Force no bold
 			no_underline = false, -- Force no underline
 			styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-				comments = { 'altfont' }, -- Change the style of comments
-				conditionals = { 'altfont' },
-				loops = { 'bold' },
-				functions = { 'bold' },
-				keywords = { 'bold' },
-				strings = { 'altfont' },
-				variables = { 'altfont' },
-				numbers = { 'altfont' },
-				booleans = { 'altfont' },
-				properties = { 'underline' },
-				types = { 'undercurl' },
-				operators = { 'altfont' },
+				comments = { "altfont" }, -- Change the style of comments
+				conditionals = { "altfont" },
+				loops = { "bold" },
+				functions = { "bold" },
+				keywords = { "bold" },
+				strings = { "altfont" },
+				variables = { "altfont" },
+				numbers = { "altfont" },
+				booleans = { "altfont" },
+				properties = { "underline" },
+				types = { "undercurl" },
+				operators = { "altfont" },
 				-- miscs = {}, -- Uncomment to turn off hard-coded styles
 			},
 			color_overrides = {},
 			custom_highlights = {},
 			default_integrations = true,
 			integrations = {
-				barbar = exists('barbar'),
-				diffview = exists('diffview'),
-				treesitter_context = exists('treesitter-context'),
-				rainbow_delimiters = exists('rainbow-delimiters'),
-				indent_blankline = exists('ibl'),
+				barbar = exists("barbar"),
+				diffview = exists("diffview"),
+				treesitter_context = exists("treesitter-context"),
+				rainbow_delimiters = exists("rainbow-delimiters"),
+				indent_blankline = exists("ibl"),
 				native_lsp = true,
-				which_key = exists('which-key'),
-				telescope = exists('telescope'),
-				dashboard = exists('dashboard'),
-				cmp = exists('cmp'),
-				gitsigns = exists('gitsigns'),
-				nvimtree = exists('nvim-tree'),
-				treesitter = exists('nvim-treesitter'),
-				notify = exists('notify'),
+				which_key = exists("which-key"),
+				telescope = exists("telescope"),
+				dashboard = exists("dashboard"),
+				cmp = exists("cmp"),
+				gitsigns = exists("gitsigns"),
+				nvimtree = exists("nvim-tree"),
+				treesitter = exists("nvim-treesitter"),
+				notify = exists("notify"),
 				mini = {
 					enabled = true,
 					indentscope_color = "",

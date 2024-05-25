@@ -1,29 +1,29 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 
 local exists = Check.exists.module
 
-if not exists('luasnip') then
+if not exists("luasnip") then
 	return
 end
 
 local api = vim.api
 
-local types = require('luasnip.util.types')
-local ls = require('luasnip')
-local events = require('luasnip.util.events')
-local ai = require('luasnip.nodes.absolute_indexer')
-local extras = require('luasnip.extras')
-local node_util = require('luasnip.nodes.util')
-local util = require('luasnip.util.util')
-local Fmt = require('luasnip.extras.fmt')
-local conds = require('luasnip.extras.expand_conditions')
-local PFix = require('luasnip.extras.postfix')
-local parser = require('luasnip.util.parser')
-local key_indexer = require('luasnip.nodes.key_indexer')
+local types = require("luasnip.util.types")
+local ls = require("luasnip")
+local events = require("luasnip.util.events")
+local ai = require("luasnip.nodes.absolute_indexer")
+local extras = require("luasnip.extras")
+local node_util = require("luasnip.nodes.util")
+local util = require("luasnip.util.util")
+local Fmt = require("luasnip.extras.fmt")
+local conds = require("luasnip.extras.expand_conditions")
+local PFix = require("luasnip.extras.postfix")
+local parser = require("luasnip.util.parser")
+local key_indexer = require("luasnip.nodes.key_indexer")
 
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -49,22 +49,22 @@ local postfix = PFix.postfix
 local parse = parser.parse_snippet
 local k = key_indexer.new_key
 
-if exists('luasnip.loaders.from_vscode') then
-	require('luasnip.loaders.from_vscode').lazy_load()
+if exists("luasnip.loaders.from_vscode") then
+	require("luasnip.loaders.from_vscode").lazy_load()
 end
 
 local function char_count_same(c1, c2)
 	local line = api.nvim_get_current_line()
 	-- '%'-escape chars to force explicit match (gsub accepts patterns).
 	-- second return value is number of substitutions.
-	local _, ct1 = string.gsub(line, '%' .. c1, '')
-	local _, ct2 = string.gsub(line, '%' .. c2, '')
+	local _, ct1 = string.gsub(line, "%" .. c1, "")
+	local _, ct2 = string.gsub(line, "%" .. c2, "")
 	return ct1 == ct2
 end
 
 local function even_count(count)
 	local line = api.nvim_get_current_line()
-	local _, ct = string.gsub(line, count, '')
+	local _, ct = string.gsub(line, count, "")
 	return ct % 2 == 0
 end
 
@@ -89,9 +89,11 @@ local function pair(pair_begin, pair_end, expand_func, ...)
 		trig = pair_begin,
 		wordTrig = false,
 	}, {
-		t({ pair_begin }), i(1), t({ pair_end }),
+		t({ pair_begin }),
+		i(1),
+		t({ pair_end }),
 	}, {
-		condition = part(expand_func, part(..., pair_begin, pair_end))
+		condition = part(expand_func, part(..., pair_begin, pair_end)),
 	})
 end
 
@@ -108,14 +110,14 @@ Config.setup({
 	ext_opts = {
 		[types.choiceNode] = {
 			active = {
-				virt_text = { { "●" } }
-			}
+				virt_text = { { "●" } },
+			},
 		},
 		[types.insertNode] = {
 			active = {
-				virt_text = { { "●" } }
-			}
-		}
+				virt_text = { { "●" } },
+			},
+		},
 	},
 	parser_nested_assembler = function(_, snippetNode)
 		local select = function(snip, no_move, dry_run)
@@ -195,7 +197,6 @@ Config.setup({
 	end,
 })
 
-
 local current_nsid = api.nvim_create_namespace("LuaSnipChoiceListSelections")
 local current_win = nil
 
@@ -221,8 +222,13 @@ local function window_for_choiceNode(choiceNode)
 	local w, h = vim.lsp.util._make_floating_popup_size(buf_text)
 
 	-- adding highlight so we can see which one is been selected.
-	local extmark = api.nvim_buf_set_extmark(buf, current_nsid, row_selection, 0,
-		{ hl_group = 'incsearch', end_line = row_selection + row_offset })
+	local extmark = api.nvim_buf_set_extmark(
+		buf,
+		current_nsid,
+		row_selection,
+		0,
+		{ hl_group = "incsearch", end_line = row_selection + row_offset }
+	)
 
 	-- shows window at a beginning of choiceNode.
 	local win = api.nvim_open_win(buf, false, {
@@ -231,7 +237,7 @@ local function window_for_choiceNode(choiceNode)
 		height = h,
 		bufpos = choiceNode.mark:pos_begin_end(),
 		style = "minimal",
-		border = 'rounded',
+		border = "rounded",
 	})
 
 	-- return with 3 main important so we can use them again
@@ -250,7 +256,7 @@ function choice_popup(choiceNode)
 		prev = current_win,
 		node = choiceNode,
 		extmark = create_win.extmark,
-		buf = create_win.buf
+		buf = create_win.buf,
 	}
 end
 

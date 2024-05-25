@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require("user")
 local Check = User.check
 local types = User.types.telescope
 local kmap = User.maps.kmap
@@ -13,7 +13,7 @@ local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local nmap = kmap.n
 
-if not exists('telescope') then
+if not exists("telescope") then
 	return
 end
 
@@ -22,72 +22,72 @@ local empty = vim.tbl_isempty
 local au = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
-local Telescope = require('telescope')
-local Builtin = require('telescope.builtin')
-local Themes = require('telescope.themes')
-local Actions = require('telescope.actions')
-local ActionLayout = require('telescope.actions.layout')
+local Telescope = require("telescope")
+local Builtin = require("telescope.builtin")
+local Themes = require("telescope.themes")
+local Actions = require("telescope.actions")
+local ActionLayout = require("telescope.actions.layout")
 local Extensions = Telescope.extensions
 
 local load_ext = Telescope.load_extension
 
 local opts = {
 	defaults = {
-		layout_strategy = 'flex',
+		layout_strategy = "flex",
 		layout_config = { vertical = { width = vim.o.columns * 3 / 4 } },
 		mappings = {
 			i = {
-				['<C-h>'] = 'which_key',
-				['<C-u>'] = false,
-				['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
-				['<ESC>'] = Actions.close,
-				['<C-e>'] = Actions.close,
-				['<C-q>'] = Actions.close,
+				["<C-h>"] = "which_key",
+				["<C-u>"] = false,
+				["<C-d>"] = Actions.delete_buffer + Actions.move_to_top,
+				["<ESC>"] = Actions.close,
+				["<C-e>"] = Actions.close,
+				["<C-q>"] = Actions.close,
 			},
 		},
 	},
 
 	pickers = {
-		colorscheme = { theme = 'dropdown' },
-		find_files = { theme = 'dropdown' },
-		lsp_definitions = { theme = 'dropdown' },
-		pickers = { theme = 'dropdown' },
-		notify = { theme = 'dropdown' },
+		colorscheme = { theme = "dropdown" },
+		find_files = { theme = "dropdown" },
+		lsp_definitions = { theme = "dropdown" },
+		pickers = { theme = "dropdown" },
+		notify = { theme = "dropdown" },
 	},
 }
 
 Telescope.setup(opts)
 
 local function open()
-	vim.cmd('Telescope')
+	vim.cmd("Telescope")
 end
 
 ---@type KeyMapDict
 local Maps = {
-	['<leader><leader>'] = { open, { desc = 'Open Telescope' } },
-	['<leader>hH'] = { Builtin.help_tags, { desc = 'Telescope Help Tags' } },
-	['<leader>ff'] = { Builtin.find_files, { desc = 'File Picker' } },
+	["<leader><leader>"] = { open, { desc = "Open Telescope" } },
+	["<leader>hH"] = { Builtin.help_tags, { desc = "Telescope Help Tags" } },
+	["<leader>ff"] = { Builtin.find_files, { desc = "File Picker" } },
 
-	['<leader>fTbC'] = { Builtin.commands, { desc = 'Colommands' } },
-	['<leader>fTbO'] = { Builtin.keymaps, { desc = 'Vim Options' } },
-	['<leader>fTbP'] = { Builtin.planets, { desc = 'Planets' } },
-	['<leader>fTbb'] = { Builtin.buffers, { desc = 'Buffers' } },
-	['<leader>fTbc'] = { Builtin.colorscheme, { desc = 'Colorschemes' } },
-	['<leader>fTbd'] = { Builtin.diagnostics, { desc = 'Diagnostics' } },
-	['<leader>fTbg'] = { Builtin.live_grep, { desc = 'Live Grep' } },
-	['<leader>fTbk'] = { Builtin.keymaps, { desc = 'Keymaps' } },
-	['<leader>fTblD'] = { Builtin.lsp_document_symbols, { desc = 'Document Symbols' } },
-	['<leader>fTbld'] = { Builtin.lsp_definitions, { desc = 'Definitions' } },
-	['<leader>fTbp'] = { Builtin.pickers, { desc = 'Pickers' } },
+	["<leader>fTbC"] = { Builtin.commands, { desc = "Colommands" } },
+	["<leader>fTbO"] = { Builtin.keymaps, { desc = "Vim Options" } },
+	["<leader>fTbP"] = { Builtin.planets, { desc = "Planets" } },
+	["<leader>fTbb"] = { Builtin.buffers, { desc = "Buffers" } },
+	["<leader>fTbc"] = { Builtin.colorscheme, { desc = "Colorschemes" } },
+	["<leader>fTbd"] = { Builtin.diagnostics, { desc = "Diagnostics" } },
+	["<leader>fTbg"] = { Builtin.live_grep, { desc = "Live Grep" } },
+	["<leader>fTbk"] = { Builtin.keymaps, { desc = "Keymaps" } },
+	["<leader>fTblD"] = { Builtin.lsp_document_symbols, { desc = "Document Symbols" } },
+	["<leader>fTbld"] = { Builtin.lsp_definitions, { desc = "Definitions" } },
+	["<leader>fTbp"] = { Builtin.pickers, { desc = "Pickers" } },
 }
 
 ---@type table<string, TelExtension>
 local known_exts = {
-	['scope'] = { 'scope' },
-	['project_nvim'] = {
-		'projects',
+	["scope"] = { "scope" },
+	["project_nvim"] = {
+		"projects",
 		---@type fun(): KeyMapDict
-		keys = exists('project_nvim') and function()
+		keys = exists("project_nvim") and function()
 			if is_nil(Extensions.projects) then
 				return {}
 			end
@@ -96,36 +96,46 @@ local known_exts = {
 
 			---@type KeyMapDict
 			local res = {
-				['<leader>fTep'] = { pfx.projects, { desc = 'Project Picker' } },
+				["<leader>fTep"] = { pfx.projects, { desc = "Project Picker" } },
 			}
 
 			return res
 		end,
 	},
-	['notify'] = {
-		'notify',
+	["notify"] = {
+		"notify",
 		---@type fun(): KeyMapDict
-		keys = exists('notify') and function()
+		keys = exists("notify") and function()
 			local pfx = Extensions.notify
 
 			---@type KeyMapDict
 			local res = {
-				['<leader>fTeN'] = { pfx.notify, { desc = 'Notify Picker' } },
+				["<leader>fTeN"] = { pfx.notify, { desc = "Notify Picker" } },
 			}
 
 			return res
 		end,
 	},
-	['noice'] = {
-		'noice',
+	["noice"] = {
+		"noice",
 		---@type fun(): KeyMapDict
-		keys = exists('noice') and function()
-			local Noice = require('noice')
+		keys = exists("noice") and function()
+			local Noice = require("noice")
 
 			---@type KeyMapDict
 			local res = {
-				['<leadec>nl'] = { function() Noice.cmd('last') end,    { desc = 'NoiceLast' } },
-				['<leadec>nh'] = { function() Noice.cmd('history') end, { desc = 'NoiceHistory' } },
+				["<leadec>nl"] = {
+					function()
+						Noice.cmd("last")
+					end,
+					{ desc = "NoiceLast" },
+				},
+				["<leadec>nh"] = {
+					function()
+						Noice.cmd("history")
+					end,
+					{ desc = "NoiceHistory" },
+				},
 			}
 
 			return res
@@ -162,13 +172,17 @@ end
 
 ---@type AuRepeat
 local au_tbl = {
-	['User'] = {
+	["User"] = {
 		{
-			pattern = 'TelescopePreviewerLoaded',
+			pattern = "TelescopePreviewerLoaded",
 
 			---@type fun(args: TelAuArgs)
 			callback = function(args)
-				if not is_tbl(args.data) or not is_str(args.data.filetype) or args.data.filetype ~= 'help' then
+				if
+					not is_tbl(args.data)
+					or not is_str(args.data.filetype)
+					or args.data.filetype ~= "help"
+				then
 					vim.wo.number = true
 				else
 					vim.wo.wrap = false
