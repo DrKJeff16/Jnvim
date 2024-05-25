@@ -1,9 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
--- Source all API annotations
-local Types = require("user.types")
-local Check = require("user.check")
+local Types = require("user.types") -- Source all API annotations
+local Check = require("user.check") -- Checker utilities
 
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
