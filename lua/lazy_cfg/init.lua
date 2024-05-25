@@ -751,6 +751,7 @@ Lazy.setup(T)
 ---@type LazyMods
 local P = {
 	colorschemes = require('lazy_cfg.colorschemes'),
+	wk = require('lazy_cfg.which_key'),
 }
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()

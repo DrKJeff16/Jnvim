@@ -22,3 +22,6 @@ require('user.types.user.maps')
 ---@alias RegKeysNamed table<string, RegPfx>
 
 ---@alias RegOpts KeyMapOpts
+
+---@class WK
+---@field reg fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)

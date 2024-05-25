@@ -106,4 +106,9 @@ WK.setup({
 
 presets.operators['v'] = nil
 
-exists('lazy_cfg.which_key.register', true)
+---@type WK
+local M = {
+	reg = require('lazy_cfg.which_key.register')
+}
+
+return M

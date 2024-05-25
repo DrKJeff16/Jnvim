@@ -380,3 +380,5 @@ add_if_module('todo-comments', {
 
 reg(Names)
 reg(Regs)
+
+return reg

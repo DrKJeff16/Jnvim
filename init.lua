@@ -207,6 +207,9 @@ if not called_lazy then
 	_G.called_lazy = true
 end
 
+local wk_t = User.types.which_key
+local reg = Pkg.wk.reg
+
 ---@type fun(T: CscSubMod|ODSubMod): boolean
 local function color_exists(T)
 	return is_tbl(T) and is_fun(T.setup)
@@ -216,18 +219,19 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
-	---@type KeyMapDict
+	---@type table<string, RegKey>
 	local CscKeys = {}
 
-	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula')[]
+	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula'|'oak')[]
 	local selected = {
 		-- Reorder to your liking.
 		'catppuccin',
 		'nightfox',
 		'tokyonight',
 		'onedark',
-		'spaceduck',
 		'molokai',
+		'oak',
+		'spaceduck',
 		'dracula',
 	}
 
@@ -236,24 +240,17 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	for _, c in next, selected do
 		if color_exists(Csc[c]) then
 			found_csc = empty(found_csc) and i or found_csc
-			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
+			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, 'Setup Colorscheme `' .. c .. '`' }
 			i = i + 1
 		end
 	end
 
-	for lhs, v in next, CscKeys do
-		v[2] = is_tbl(v[2]) and v[2] or {}
-		Kmap.n(lhs, v[1], v[2])
-	end
+	reg({ ['<leader>vc'] = { name = '+Colorschemes' } })
+	reg(CscKeys)
 
 	if not empty(found_csc) then
 		Csc[selected[found_csc]].setup()
 	end
-end
-
--- HACK: Preserve `which_key` after re-sourcing this file
-if exists('lazy_cfg.which_key') then
-	require('lazy_cfg.which_key')
 end
 
 -- Call the user file associations
