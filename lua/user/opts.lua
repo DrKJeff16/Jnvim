@@ -2,21 +2,16 @@
 ---@diagnostic disable:unused-function
 
 require("user.types.user.opts")
-require("user.types.user.check")
 
----@type UserCheck
 local Check = require("user.check")
 
 local exists = Check.exists.vim_exists
 local is_nil = Check.value.is_nil
 local executable = Check.exists.executable
-local has = Check.exists.vim_has or function(expr)
-	return vim.fn.has(expr) == 1
-end
+local vim_has = Check.exists.vim_has
+local vim_exists = Check.exists.vim_exists
 
-vim.g.is_windows = has("win32")
----@type boolean
-_G.is_windows = vim.g.is_windows
+_G.is_windows = vim_has("win32")
 
 ---@type OptsTbl
 local opt_tbl = {
@@ -37,7 +32,7 @@ local opt_tbl = {
 	expandtab = false,
 	fileencoding = "utf-8",
 	fileignorecase = is_windows,
-	formatoptions = "oqwnbljp",
+	formatoptions = "bjlopqnw",
 	hidden = true,
 	helplang = { "en" },
 	hlsearch = true,
@@ -53,7 +48,7 @@ local opt_tbl = {
 	},
 	matchtime = 30,
 	menuitems = 40,
-	mouse = "",
+	mouse = "", -- Get that mouse out of my sight!
 	number = true,
 	preserveindent = true,
 	relativenumber = false,
@@ -63,7 +58,7 @@ local opt_tbl = {
 		"tabpages",
 		"globals",
 	},
-	shell = is_windows and "cmd.exe" or "bash",
+	shell = "bash",
 	scrolloff = 3,
 	showcmd = true,
 	showmatch = true,
@@ -78,7 +73,7 @@ local opt_tbl = {
 	showtabline = 2,
 	softtabstop = 4,
 	shiftwidth = 0,
-	termguicolors = true,
+	termguicolors = vim_exists("+termguicolors"),
 	title = true,
 	tabstop = 4,
 	updatecount = 100,
@@ -90,10 +85,17 @@ local opt_tbl = {
 
 if is_windows then
 	opt_tbl.shellslash = true
+	opt_tbl.shell = executable("bash.exe") and "bash.exe" or "cmd.exe"
 
-	opt_tbl.makeprg = executable("mingw32-make") and "mingw32-make" or "make"
+	opt_tbl.makeprg = executable("mingw32-make.exe") and "mingw32-make.exe" or opt_tbl.makeprg
 end
 
+--- Option setter for the aforementioned options dictionary.
+--- ---
+--- ## Parameters
+--- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
+--- respectively.
+--- ---
 ---@type fun(opts: OptsTbl)
 local function optset(opts)
 	for k, v in next, opts do
@@ -102,7 +104,7 @@ local function optset(opts)
 		elseif not is_nil(vim.o[k]) then
 			vim.o[k] = v
 		else
-			error("(user.opts): Unable to set option `" .. k .. "`")
+			vim.notify("(user.opts:optset): Unable to set option `" .. k .. "`")
 		end
 	end
 end
