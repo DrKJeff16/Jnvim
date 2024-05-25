@@ -6,18 +6,18 @@ local Check = User.check
 local types = User.types.gitsigns
 local bufmap = User.maps.buf_map
 
+local exists = Check.exists.module
+local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
 local is_int = Check.value.is_int
 local is_num = Check.value.is_num
 local is_fun = Check.value.is_fun
-local exists = Check.exists.module
-local executable = Check.exists.executable
 
 if not exists("gitsigns") or not executable("git") then
 	return
 end
 
-local Gsig = require("gitsigns")
+local GS = require("gitsigns")
 
 ---@type table<string, BufMapTbl[]|BufMapArr[]>
 local keys = {
@@ -105,4 +105,4 @@ local opts = {
 	},
 }
 
-Gsig.setup(opts)
+GS.setup(opts)
