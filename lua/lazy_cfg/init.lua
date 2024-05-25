@@ -68,15 +68,21 @@ end
 ---
 --- ## Return
 --- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable.
----@type fun(field: string): fun()
-local function colorscheme_init(field)
-	if not is_str(field) or empty(field) then
+---@type fun(field: string|table<string, any>): fun()
+local function colorscheme_init(fields)
+	if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
 		error('(lazy_cfg:colorscheme_init): Unable to initialize colorscheme.')
 	end
 
 	return function()
 		vim.opt.termguicolors = vim_exists('+termguicolors')
-		vim.g[field] = 1
+		if is_str(fields) then
+			vim.g[fields] = 1
+		else
+			for field, val in next, fields do
+				vim.g[field] = val
+			end
+		end
 	end
 end
 

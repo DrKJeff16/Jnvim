@@ -1,8 +1,6 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local pfx = ''
-
 local User = require('user')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -21,11 +19,11 @@ if exists('catppuccin') then
 
 		---@type CatppuccinOptions
 		local opts = {
-			flavour = "macchiato", -- latte, frappe, macchiato, mocha
+			flavour = "mocha", -- latte, frappe, macchiato, mocha
 			-- flavour = "auto" -- will respect terminal's background
 			background = { -- :h background
 				light = "latte",
-				dark = "macchiato",
+				dark = "mocha",
 			},
 			transparent_background = false, -- disables setting the background color.
 			show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
@@ -33,23 +31,23 @@ if exists('catppuccin') then
 			dim_inactive = {
 				enabled = true, -- dims the background color of inactive window
 				shade = "dark",
-				percentage = 0.10, -- percentage of the shade to apply to the inactive window
+				percentage = 0.15, -- percentage of the shade to apply to the inactive window
 			},
-			no_italic = false, -- Force no italic
+			no_italic = true, -- Force no italic
 			no_bold = false, -- Force no bold
 			no_underline = false, -- Force no underline
 			styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
 				comments = { 'altfont' }, -- Change the style of comments
-				conditionals = { "bold" },
+				conditionals = { 'altfont' },
 				loops = { 'bold' },
 				functions = { 'bold' },
 				keywords = { 'bold' },
 				strings = { 'altfont' },
 				variables = { 'altfont' },
 				numbers = { 'altfont' },
-				booleans = { 'bold' },
-				properties = { 'bold' },
-				types = { 'bold' },
+				booleans = { 'altfont' },
+				properties = { 'underline' },
+				types = { 'undercurl' },
 				operators = { 'altfont' },
 				-- miscs = {}, -- Uncomment to turn off hard-coded styles
 			},
