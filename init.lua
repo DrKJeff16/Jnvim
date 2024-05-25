@@ -72,6 +72,7 @@ local map_tbl = {
 	n = {
 		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search') },
 
+		['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
 		['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
 		['<leader>fS'] = { ':w ', desc('Save File (Interactively)', false) },
 		['<leader>fvs'] = {
@@ -125,7 +126,7 @@ local map_tbl = {
 		['<leader>fves'] = { ':split $MYVIMRC<CR>' },
 		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>' },
 
-		['<leader>vh'] = { ':checkhealth<CR>', desc('Run Checkhealth') },
+		['<leader>vh'] = { ':checkhealth<CR>', desc('Run Checkhealth', false) },
 
 		['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
 		['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
@@ -177,6 +178,7 @@ local map_tbl = {
 		['<leader>F'] = { ':foldclose<CR>', desc('Open Fold') },
 
 		['<leader>r'] = { ':s/', desc('Run Search-Replace Interactively', false) },
+		['<leader>ir'] = { ':%retab<CR>', desc('Retab Selection') },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
