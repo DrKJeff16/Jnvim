@@ -31,9 +31,10 @@ local submods = {
 	'catppuccin',
 	'nightfox',
 	'gloombuddy',
+	'oak',
+	'molokai',
 	'spaceduck',
 	'dracula',
-	'molokai',
 }
 
 local M = src(submods)
@@ -50,6 +51,7 @@ function M.new()
 	self.spaceduck = M.spaceduck or nil
 	self.dracula = M.dracula or nil
 	self.molokai = M.molokai or nil
+	self.oak = M.oak or nil
 
 	return self
 end

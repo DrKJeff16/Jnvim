@@ -53,5 +53,6 @@
 ---@field dracula? CscSubMod|nil
 ---@field molokai? CscSubMod|nil
 ---@field gloombuddy? CscSubMod|nil
+---@field oak? CscSubMod|nil
 ---@field new? fun(): CscMod
 ---@field __index? CscMod

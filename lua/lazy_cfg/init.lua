@@ -128,9 +128,13 @@ M.COLORSCHEMES = {
 	},
 	{
 		'vigoux/oak',
+		lazy = false,
 		priority = 1000,
 		version = false,
-		init = colorscheme_init('installed_oak'),
+		init = colorscheme_init({
+			['installed_oak'] = 1,
+			['oak_virtualtext_bg'] = 1,
+		}),
 	},
 	{
 		'tjdevries/colorbuddy.vim',
