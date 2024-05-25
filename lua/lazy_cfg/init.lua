@@ -247,7 +247,6 @@ M.ESSENTIAL = {
 
 	{
 		'rcarriga/nvim-notify',
-		lazy = false,
 		priority = 1000,
 		name = 'Notify',
 		main = 'notify',
@@ -359,7 +358,12 @@ M.EDITING = {
 		config = source('lazy_cfg.Comment'),
 	},
 
-	{ 'tpope/vim-endwise', lazy = false, name = 'EndWise' },
+	{
+		'tpope/vim-endwise',
+		lazy = false,
+		name = 'EndWise',
+		version = false,
+	},
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
@@ -388,7 +392,13 @@ M.EDITING = {
 }
 -- Version Control
 M.VCS = {
-	{ 'tpope/vim-fugitive', lazy = false, name = 'Fugitive', enabled = executable('git') },
+	{
+		'tpope/vim-fugitive',
+		lazy = false,
+		name = 'Fugitive',
+		version = false,
+		enabled = executable('git'),
+	},
 	{
 		'lewis6991/gitsigns.nvim',
 		name = 'GitSigns',
@@ -453,10 +463,7 @@ M.LSP = {
 		ft = { 'c', 'cpp' },
 		name = 'clangd_exts',
 		config = source('lazy_cfg.lspconfig.clangd'),
-		--- NOTE: Disabled to supress warnings from version bump v0.11.0
-		--- until further notice.
 		enabled = executable('clangd'),
-		-- enabled = not vim_has('nvim-0.11'),
 	},
 }
 -- Completion and `cmp` related
@@ -470,18 +477,22 @@ M.COMPLETION = {
 			'treesitter',
 			'lspconfig',
 			'onsails/lspkind.nvim',
-
 			'hrsh7th/cmp-nvim-lsp',
-			'hrsh7th/cmp-nvim-lua',
 			'hrsh7th/cmp-nvim-lsp-document-symbol',
 			'hrsh7th/cmp-nvim-lsp-signature-help',
 
 			'hrsh7th/cmp-buffer',
+
 			'hrsh7th/cmp-path',
+			'https://codeberg.org/FelipeLema/cmp-async-path',
+
 			'petertriho/cmp-git',
 			'davidsierradz/cmp-conventionalcommits',
+
 			'HiPhish/nvim-cmp-vlime',
-			'https://codeberg.org/FelipeLema/cmp-async-path',
+
+			'hrsh7th/cmp-nvim-lua',
+
 			'hrsh7th/cmp-cmdline',
 
 			'saadparwaiz1/cmp_luasnip',
@@ -489,31 +500,33 @@ M.COMPLETION = {
 		},
 		init = function()
 			vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
+			vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
 		end,
 		config = source('lazy_cfg.cmp'),
 	},
-	{ 'hrsh7th/cmp-nvim-lsp', lazy = true, main = 'cmp_nvim_lsp' },
 	{
 		'L3MON4D3/LuaSnip',
-		lazy = true,
+		event = { 'InsertEnter', 'CmdlineEnter' },
 		version = false,
 		dependencies = { 'friendly-snippets' },
 		build = luasnip_build(),
 	},
 	{
 		'rafamadriz/friendly-snippets',
-		lazy = true,
-		version = false
+		ft = 'gitcommit',
+		version = false,
 	},
 	{
 		'HiPhish/nvim-cmp-vlime',
-		lazy = true,
+		ft = 'lisp',
+		version = false,
 		dependencies = { 'VLime' },
 	},
 	{
 		'vlime/vlime',
-		lazy = true,
+		ft = 'lisp',
 		name = 'VLime',
+		version = false,
 	},
 }
 -- Telescope
@@ -628,6 +641,7 @@ M.UI = {
 		lazy = true,
 		name = 'rainbow_delimiters',
 		version = false,
+		enabled = false,
 	},
 	-- File Tree
 	{
@@ -761,14 +775,14 @@ local Keys = {
 }
 
 for lhs, v in next, Keys do
+	local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
 	if not (is_str(v[1]) or is_fun(v[1])) then
+		vim.notify(msg)
 		goto continue
 	end
 
-	local rhs = v[1]
-	local opts = is_tbl(v[2]) and v[2] or {}
-
-	nmap(lhs, rhs, opts)
+	v[2] = is_tbl(v[2]) and v[2] or {}
+	nmap(lhs, v[1], v[2])
 
 	::continue::
 end
