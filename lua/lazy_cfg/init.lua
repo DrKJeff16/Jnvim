@@ -201,6 +201,7 @@ M.ESSENTIAL = {
 		event = 'VeryLazy',
 		name = 'Scratch',
 		version = false,
+		enabled = false,
 	},
 	{ 'vim-scripts/L9', lazy = false },
 	{
