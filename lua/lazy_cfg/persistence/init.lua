@@ -32,20 +32,21 @@ local Opts = {
 
 Pst.setup(Opts)
 
--- stylua: ignore
 ---@type KeyMapDict
 local Keys = {
-	['<leader>Sr'] = {
+	["<leader>Sr"] = {
 		Pst.load,
-		desc('Restore Session'),
+		desc("Restore Session"),
 	},
-	['<leader>Sl'] = {
-		function() Pst.load({ last = true }) end,
-		desc('Restore Last Session'),
+	["<leader>Sl"] = {
+		function()
+			Pst.load({ last = true })
+		end,
+		desc("Restore Last Session"),
 	},
-	['<leader>Sd'] = {
+	["<leader>Sd"] = {
 		Pst.stop,
-		desc('Don\'t Save Current Session'),
+		desc("Don't Save Current Session"),
 	},
 }
 
