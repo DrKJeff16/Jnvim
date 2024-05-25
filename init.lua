@@ -70,16 +70,16 @@ end
 ---@type Maps
 local map_tbl = {
 	n = {
-		['<Esc><Esc>'] = { '<CMD>nohls<CR>', desc('Remove Highlights') },
+		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search') },
 
-		['<leader>fs'] = { '<CMD>w<CR>', { silent = false, desc = 'Save File' } },
-		['<leader>fS'] = { ':w ', { silent = false, desc = 'Save File (Interactively)' } },
+		['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
+		['<leader>fS'] = { ':w ', desc('Save File (Interactively)', false) },
 		['<leader>fvs'] = {
 			function()
 				vim.cmd('luafile $MYVIMRC')
 				vim.notify('Sourced `init.lua`')
 			end,
-			{ silent = false, desc = 'Source My `init.lua`' }
+			desc('Source My `init.lua`', false)
 		},
 		['<leader>fvl'] = {
 			function()
@@ -97,7 +97,7 @@ local map_tbl = {
 					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
-			{ silent = false, desc = 'Attempt to source current Lua file' },
+			desc('Attempt to source current Lua file', false),
 		},
 		['<leader>fvv'] = {
 			function()
@@ -116,59 +116,59 @@ local map_tbl = {
 					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
-			{ silent = false, desc = 'Attempt To source current Vim file' },
+			desc('Attempt To source current Vim file', false),
 		},
-		['<leader>fvV'] = { ':so ', { silent = false, desc = 'Source VimScript File (Interactively)' } },
-		['<leader>fvL'] = { ':luafile ', { silent = false, desc = 'Source Lua File (Interactively)' } },
-		['<leader>fvet'] = { '<CMD>tabnew $MYVIMRC<CR>' },
-		['<leader>fvee'] = { '<CMD>ed $MYVIMRC<CR>' },
-		['<leader>fves'] = { '<CMD>split $MYVIMRC<CR>' },
-		['<leader>fvev'] = { '<CMD>vsplit $MYVIMRC<CR>' },
+		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Interactively)', false) },
+		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Interactively)', false) },
+		['<leader>fvet'] = { ':tabnew $MYVIMRC<CR>' },
+		['<leader>fvee'] = { ':ed $MYVIMRC<CR>' },
+		['<leader>fves'] = { ':split $MYVIMRC<CR>' },
+		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>' },
 
-		['<leader>vh'] = { '<CMD>checkhealth<CR>' },
+		['<leader>vh'] = { ':checkhealth<CR>', desc('Run Checkhealth') },
 
-		['<leader>ht'] = { ':tab h ', { silent = false, desc = 'Prompt For Help On New Tab' } },
-		['<leader>hv'] = { ':vertical h ', { silent = false, desc = 'Prompt For Help On Vertical Split' } },
-		['<leader>hs'] = { ':horizontal h ', { silent = false, desc = 'Prompt For Help On Horizontal Split' } },
-		['<leader>hh'] = { ':h ', { silent = false, desc = 'Prompt For Help' } },
-		['<leader>hT'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
-		['<leader>hV'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
-		['<leader>hS'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
+		['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
+		['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
+		['<leader>hs'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
+		['<leader>hh'] = { ':h ', desc('Prompt For Help', false) },
+		['<leader>hT'] = { ':tab h<CR>', desc('Open Help On New Tab') },
+		['<leader>hV'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
+		['<leader>hS'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
 
 		['<leader>wn'] = { '<C-w>w', desc('Next Window') },
-		['<leader>wss'] = { '<CMD>split<CR>', { silent = false } },
-		['<leader>wsv'] = { '<CMD>vsplit<CR>', { silent = false } },
-		['<leader>wsS'] = { ':split ', { silent = false, desc = 'Horizontal Split (Interactively)' } },
-		['<leader>wsV'] = { ':vsplit ', { silent = false, desc = 'Vertical Split (Interactively)' } },
+		['<leader>wss'] = { ':split<CR>', desc('Horizontal Split', false) },
+		['<leader>wsv'] = { ':vsplit<CR>', desc('Vertical Split', false) },
+		['<leader>wsS'] = { ':split ', desc('Horizontal Split (Interactively)', false) },
+		['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Interactively)', false) },
 
-		['<leader>qq'] = { '<CMD>qa<CR>' },
-		['<leader>qQ'] = { '<CMD>qa!<CR>' },
+		['<leader>qq'] = { ':qa<CR>' },
+		['<leader>qQ'] = { ':qa!<CR>' },
 
-		['<leader>tn'] = { '<CMD>tabN<CR>', { silent = false } },
-		['<leader>tp'] = { '<CMD>tabp<CR>', { silent = false } },
-		['<leader>td'] = { '<CMD>tabc<CR>', { silent = false } },
-		['<leader>tD'] = { '<CMD>tabc!<CR>', { silent = false } },
-		['<leader>tf'] = { '<CMD>tabfirst<CR>', { silent = false } },
-		['<leader>tl'] = { '<CMD>tablast<CR>', { silent = false } },
-		['<leader>ta'] = { ':tabnew ', { silent = false, desc = 'New Tab (Interactively)' } },
-		['<leader>tA'] = { '<CMD>tabnew<CR>', { silent = false } },
+		['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
+		['<leader>tp'] = { ':tabp<CR>', desc('Previous Tab', false) },
+		['<leader>td'] = { ':tabc<CR>', desc('Close Tab', false) },
+		['<leader>tD'] = { ':tabc!<CR>', desc('Close Tab (Forcefully)', false) },
+		['<leader>tf'] = { ':tabfirst<CR>', desc('Goto First Tab', false) },
+		['<leader>tl'] = { ':tablast<CR>', desc('Goto Last Tab', false) },
+		['<leader>ta'] = { ':tabnew ', desc('New Tab (Interactively)', false) },
+		['<leader>tA'] = { ':tabnew<CR>', desc('New Tab', false) },
 
-		['<leader>bn'] = { '<CMD>bNext<CR>', { silent = false } },
-		['<leader>bp'] = { '<CMD>bprevious<CR>', { silent = false } },
-		['<leader>bd'] = { '<CMD>bdel<CR>', { silent = false } },
-		['<leader>bD'] = { '<CMD>bdel!<CR>', { silent = false } },
-		['<leader>bf'] = { '<CMD>bfirst<CR>', { silent = false } },
-		['<leader>bl'] = { '<CMD>blast<CR>', { silent = false } },
+		['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false) },
+		['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false) },
+		['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false) },
+		['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer (Forcefully)', false) },
+		['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false) },
+		['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
 
-		['<leader>Ll'] = { '<CMD>Lazy<CR>' },
-		['<leader>LL'] = { ':Lazy ', { silent = false, desc = 'Select `Lazy` Operation (Interactively)' } },
-		['<leader>Ls'] = { '<CMD>Lazy sync<CR>' },
-		['<leader>Lx'] = { '<CMD>Lazy clean<CR>' },
-		['<leader>Lc'] = { '<CMD>Lazy check<CR>' },
-		['<leader>Li'] = { '<CMD>Lazy install<CR>' },
-		['<leader>Lr'] = { '<CMD>Lazy reload<CR>' },
+		['<leader>Ll'] = { ':Lazy<CR>' },
+		['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+		['<leader>Ls'] = { ':Lazy sync<CR>' },
+		['<leader>Lx'] = { ':Lazy clean<CR>' },
+		['<leader>Lc'] = { ':Lazy check<CR>' },
+		['<leader>Li'] = { ':Lazy install<CR>' },
+		['<leader>Lr'] = { ':Lazy reload<CR>' },
 	},
-	--- WARNING: DO NOT USE `<CMD>`!!!
+	-- WARNING: DO NOT USE `:`!!!
 	v = {
 		['<leader>s'] = { ':sort<CR>', desc('Sort') },
 		['<leader>S'] = { ':sort!<CR>', desc('Sort (Reverse)') },
@@ -176,16 +176,13 @@ local map_tbl = {
 		['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
 		['<leader>F'] = { ':foldclose<CR>', desc('Open Fold') },
 
-		['<leader>r'] = { ':s/', { silent = false, desc = 'Run Search-Replace Interactively' } },
+		['<leader>r'] = { ':s/', desc('Run Search-Replace Interactively', false) },
 	},
 	t = {
 		-- Escape terminl by pressing `<Esc>`
-		['<Esc>'] = { '<C-\\><C-n>' },
+		['<Esc>'] = { '<C-\\><C-n>', { noremap = true } },
 	},
 }
-
---- List of manually-callable plugins.
-local Pkg = require('lazy_cfg')
 
 -- Set the keymaps previously stated.
 for mode, t in next, map_tbl do
@@ -193,15 +190,19 @@ for mode, t in next, map_tbl do
 
 	for lhs, v in next, t do
 		if not (is_fun(v[1]) or is_str(v[1])) then
-			goto continue
+			error('(init.lua): Could not process keymap `' .. lhs .. '`')
 		end
 
 		v[2] = is_tbl(v[2]) and v[2] or {}
 
 		func(lhs, v[1], v[2])
-
-		::continue::
 	end
+end
+
+if not called_lazy then
+	-- List of manually-callable plugins.
+	_G.Pkg = require('lazy_cfg')
+	_G.called_lazy = true
 end
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
@@ -213,22 +214,44 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
-	-- Reorder to your liking.
-	if color_exists(Csc.tokyonight) then
-		Csc.tokyonight.setup()
-	elseif color_exists(Csc.onedark) then
-		Csc.onedark.setup()
-	elseif color_exists(Csc.catppuccin) then
-		Csc.catppuccin.setup()
-	elseif color_exists(Csc.nightfox) then
-		Csc.nightfox.setup()
-	elseif color_exists(Csc.spaceduck) then
-		Csc.spaceduck.setup()
-	elseif color_exists(Csc.dracula) then
-		Csc.dracula.setup()
-	elseif color_exists(Csc.molokai) then
-		Csc.molokai.setup()
+	---@type KeyMapDict
+	local CscKeys = {}
+
+	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula')[]
+	local selected = {
+		-- Reorder to your liking.
+		'catppuccin',
+		'nightfox',
+		'tokyonight',
+		'onedark',
+		'spaceduck',
+		'molokai',
+		'dracula',
+	}
+
+	local i = 1
+	local found_csc = 0
+	for _, c in next, selected do
+		if color_exists(Csc[c]) then
+			found_csc = empty(found_csc) and i or found_csc
+			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
+			i = i + 1
+		end
 	end
+
+	for lhs, v in next, CscKeys do
+		v[2] = is_tbl(v[2]) and v[2] or {}
+		Kmap.n(lhs, v[1], v[2])
+	end
+
+	if not empty(found_csc) then
+		Csc[selected[found_csc]].setup()
+	end
+end
+
+-- HACK: Preserve `which_key` after re-sourcing this file
+if exists('lazy_cfg.which_key') then
+	require('lazy_cfg.which_key')
 end
 
 -- Call the user file associations
