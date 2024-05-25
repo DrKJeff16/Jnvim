@@ -45,14 +45,14 @@ local Opts = {
 		-- This is a current Neovim limitation.
 		enabled = true, -- enables the Noice messages UI
 		view = "mini", -- default view for messages
-		view_error = "notify", -- view for errors
+		view_error = "mini", -- view for errors
 		view_warn = "mini", -- view for warnings
 		view_history = "mini", -- view for :messages
 		view_search = false, -- view for search count messages. Set to `false` to disable
 	},
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
-		---@type 'nui'|'cmp'
+		---@type "nui"|"cmp"
 		backend = "nui", -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
 		---@type NoicePopupmenuItemKind|false
