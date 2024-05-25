@@ -15,8 +15,7 @@ if not exists("cmp") then
 	return
 end
 
-local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip")
-	or require("luasnip")
+local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip") or require("luasnip")
 local cmp = require("cmp")
 local Types = require("cmp.types")
 local CmpTypes = require("cmp.types.cmp")

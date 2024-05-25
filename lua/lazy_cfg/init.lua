@@ -56,8 +56,7 @@ vim.opt.rtp:prepend(lazypath)
 --- ---
 ---@type fun(): string
 local function luasnip_build()
-	local cmd = executable("nproc") and 'make -j"$(nproc)" install_jsregexp'
-		or "make install_jsregexp"
+	local cmd = executable("nproc") and 'make -j"$(nproc)" install_jsregexp' or "make install_jsregexp"
 
 	if is_windows and executable("mingw32-make") then
 		cmd = "mingw32-" .. cmd
@@ -827,8 +826,7 @@ local P = {
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
 local key_variant = function(cmd)
-	cmd = (is_str(cmd) and vim.tbl_contains({ "ed", "tabnew", "split", "vsplit" }, cmd)) and cmd
-		or "ed"
+	cmd = (is_str(cmd) and vim.tbl_contains({ "ed", "tabnew", "split", "vsplit" }, cmd)) and cmd or "ed"
 
 	cmd = cmd .. " "
 

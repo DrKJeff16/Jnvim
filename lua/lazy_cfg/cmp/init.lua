@@ -19,8 +19,7 @@ local Sks = require("lazy_cfg.cmp.kinds")
 local Util = require("lazy_cfg.cmp.util")
 local Sources = require("lazy_cfg.cmp.sources").new()
 
-local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip")
-	or require("luasnip")
+local Luasnip = exists("lazy_cfg.cmp.luasnip") and require("lazy_cfg.cmp.luasnip") or require("luasnip")
 local cmp = require("cmp")
 local Compare = require("cmp.config.compare")
 

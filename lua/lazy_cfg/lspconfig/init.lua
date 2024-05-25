@@ -36,11 +36,7 @@ local rt_file = api.nvim_get_runtime_file
 ---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
 	if not is_str(path) or path == "" then
-		error(
-			"(lazy_cfg.lspconfig:sub_fun): Cannot generate function from type `"
-				.. type(path)
-				.. "`"
-		)
+		error("(lazy_cfg.lspconfig:sub_fun): Cannot generate function from type `" .. type(path) .. "`")
 	end
 
 	return function()
@@ -224,11 +220,7 @@ au("LspAttach", {
 		nmap("<leader>lgi", lsp_buf.implementation, desc("Implementation", true, buf))
 		nmap("<leader>lS", lsp_buf.signature_help, desc("Signature Help", true, buf))
 		nmap("<leader>lwa", lsp_buf.add_workspace_folder, desc("Add Workspace Folder", true, buf))
-		nmap(
-			"<leader>lwr",
-			lsp_buf.remove_workspace_folder,
-			desc("Remove Workspace Folder", true, buf)
-		)
+		nmap("<leader>lwr", lsp_buf.remove_workspace_folder, desc("Remove Workspace Folder", true, buf))
 		nmap("<leader>lwl", function()
 			local out = lsp_buf.list_workspace_folders()
 			local msg = ""
@@ -252,12 +244,7 @@ au("LspAttach", {
 			lsp_buf.format({ async = true })
 		end, desc("Format File", true, buf))
 
-		vim.keymap.set(
-			{ "n", "v" },
-			"<leader>lca",
-			lsp_buf.code_action,
-			desc("Code Actions", true, buf)
-		)
+		vim.keymap.set({ "n", "v" }, "<leader>lca", lsp_buf.code_action, desc("Code Actions", true, buf))
 	end,
 })
 

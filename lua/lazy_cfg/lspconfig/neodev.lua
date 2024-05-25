@@ -11,8 +11,7 @@ local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
 if
-	not modules({ "neodev", "lspconfig" })
-	or not executable({ "lua-language-server", "vscode-json-language-server" })
+	not modules({ "neodev", "lspconfig" }) or not executable({ "lua-language-server", "vscode-json-language-server" })
 then
 	local msg = [[Missing any of the following:
 	- `neodev`

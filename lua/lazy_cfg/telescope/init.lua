@@ -178,11 +178,7 @@ local au_tbl = {
 
 			---@type fun(args: TelAuArgs)
 			callback = function(args)
-				if
-					not is_tbl(args.data)
-					or not is_str(args.data.filetype)
-					or args.data.filetype ~= "help"
-				then
+				if not is_tbl(args.data) or not is_str(args.data.filetype) or args.data.filetype ~= "help" then
 					vim.wo.number = true
 				else
 					vim.wo.wrap = false

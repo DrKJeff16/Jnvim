@@ -240,8 +240,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	for _, c in next, selected do
 		if color_exists(Csc[c]) then
 			found_csc = empty(found_csc) and i or found_csc
-			CscKeys["<leader>vc" .. tostring(i)] =
-				{ Csc[c].setup, "Setup Colorscheme `" .. c .. "`" }
+			CscKeys["<leader>vc" .. tostring(i)] = { Csc[c].setup, "Setup Colorscheme `" .. c .. "`" }
 			i = i + 1
 		end
 	end

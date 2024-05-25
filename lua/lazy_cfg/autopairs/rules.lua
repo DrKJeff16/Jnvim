@@ -39,8 +39,7 @@ local rule2 = function(a1, ins, a2, lang)
 				local col = api.nvim_win_get_cursor(0)[2]
 
 				-- insert only works for #ins == 1 anyway
-				return a1 .. ins .. ins .. a2
-					== opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2)
+				return a1 .. ins .. ins .. a2 == opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2)
 			end),
 	})
 end
