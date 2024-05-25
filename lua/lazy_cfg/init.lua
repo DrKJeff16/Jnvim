@@ -3,7 +3,7 @@
 
 local User = require('user')
 local Check = User.check
-local lazy_t = User.types.lazy
+local types = User.types.lazy
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -61,6 +61,13 @@ local function source(mod_str)
 	end
 end
 
+--- Set the global condition for a later submodule call.
+---
+--- ## Fields
+--- * `field`: A string that will be the name of a vim `g:...` variable.
+---
+--- ## Return
+--- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable.
 ---@type fun(field: string): fun()
 local function colorscheme_init(field)
 	if not is_str(field) or empty(field) then
@@ -132,8 +139,6 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
 		init = colorscheme_init('installed_spaceduck'),
 	},
 	{
@@ -142,8 +147,6 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'dracula',
 		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
 		init = colorscheme_init('installed_dracula'),
 	},
 	{
@@ -151,8 +154,6 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
 		init = colorscheme_init('installed_space_vim_dark'),
 	},
 	{
@@ -160,8 +161,6 @@ M.COLORSCHEMES = {
 		lazy = false,
 		priority = 1000,
 		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
 		init = colorscheme_init('installed_molokai'),
 	},
 	{
@@ -170,8 +169,6 @@ M.COLORSCHEMES = {
 		priority = 1000,
 		name = 'spacemacs',
 		version = false,
-		-- Set the global condition for a later
-		-- submodule call.
 		init = colorscheme_init('installed_spacemacs'),
 	},
 }
