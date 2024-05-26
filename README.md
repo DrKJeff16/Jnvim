@@ -134,3 +134,33 @@ require('user').opts
 ```
 
 - **NOTE: This is still a very early WIP.**
+
+### Check
+_**This is the most important utility for this config.**_ Of critical importance. It provides a table with two
+sub-tables. Both used for many conditional checks, aswell as module handling. These are the following.
+
+#### `value`
+Used for value checking, differentiation and conditional code, aswell as for optional parameters in functions.
+
+|  function |                                                                                               description                                                                                               |                          parameter types                          | return type |
+|:---------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
+|  `is_nil` | Checks whether the input values are `nil`<br>(AKA whether they even exist).<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`. | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+|  `is_str` |            Checks whether the input values are of `string` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`_.                        |  `boolean`  |
+|  `is_num` |            Checks whether the input values are of `number` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`_.                        |  `boolean`  |
+| `is_bool` |            Checks whether the input values are of `boolean` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           |                        _Same as `is_nil`_.                        |  `boolean`  |
+|  `is_fun` |           Checks whether the input values are of `function` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           |                        _Same as `is_nil`_.                        |  `boolean`  |
+|  `is_tbl` |             Checks whether the input values are of `table` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`._                        |  `boolean`  |
+|  `is_int` |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              |                        _Same as `is_nil`._                        |  `boolean`  |
+|  `empty`  |                             If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.                             |                   `v`: `string\|boolean\|table`                   |  `boolean`  |
+
+#### `exists`
+Used for data existance checks, conditional module loading and fallback operations.
+
+| function | description | parameter types | return type |
+|:--------:|:-----------:|:---------------:|:-----------:|
+|  `module` | Checks whether a `require(...)` statement is valid, given the input string.<br>If 2nd parameter is `true`, attempt to return said statement if the module can be found. | `mod`: `string`, `return_mod`: `boolean` (default: `false`) | `boolean\|unknown` |
+| `modules` | Checks whether multiple `require(...)` statements are valid, given the input strings.<br>If 2nd parameter is `false` then check for each string, then stop and return false if one is not valid.<br>If 2nd parameter is `true`, return a dictionary for each key as each input string,<br> and a boolean as its respective value. | `mod`: `string[]`, `need_all`: `boolean` (default: `false`) | `boolean\|table<string, boolean>` |
+| `vim_exists` | Checks whether a string or multiple strings are true statements using the Vimscript `exists()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished. | `expr`: `string\|string[]` | `boolean` |
+| `vim_has` | Checks whether a string or multiple are true statements when using the Vimscript `has()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished. | `expr`: `string\|string[]` | `boolean` |
+| `vim_isdir` | Checks whether the string is a directory. | `path`: `string` | `boolean` |
+| `executable` | Checks whether one or multiple strings are executables found in `$PATH`.<br>If a string array is given, check each string and if any string is invalid and the `fallback` parameter is a function then execute the _fallback_ function.<br>This function will return the result regardless of whether `fallback` has been set or not. | `exe`: `string\|string[]`, `fallback`: `fun()` (default: `nil`) | `boolean` |
