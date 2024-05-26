@@ -16,84 +16,82 @@ end
 
 local Bar = require("barbar")
 
-Bar.setup()
+vim.g.barbar_auto_setup = 0
 
--- TODO: Tweak options
+Bar.setup({
+	animation = false,
+	auto_hide = false,
+	tabpages = true,
+	clickable = false,
 
--- vim.g, barbar_auto_setup = 0
---Bar.setup({
---	animation = false,
---	auto_hide = false,
---	tabpages = false,
---	clickable = false,
+	exclude_ft = {
+		'TelescopePrompt',
+		'lazy',
+		'qf',
+		'help',
+		-- 'NvimTree',
+	},
 
---	exclude_ft = {
---		'TelescopePrompt',
---		'lazy',
---	},
+	focus_on_close = 'previous',
+	hide = { inactive = false, extensions = false },
 
---	focus_on_close = 'previous',
---	hide = { inactive = false, extensions = false },
+	highlight_alternate = true,
+	highlight_inactive_file_icons = false,
+	highlight_visible = true,
 
---	highlight_alternate = true,
---	highlight_inactive_file_icons = false,
---	highlight_visible = true,
+	icons = {
+		buffer_index = false,
+		buffer_number = false,
 
---	icons = {
---		buffer_index = false,
---		buffer_number = false,
+		diagnostics = {
+			[vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
+			[vim.diagnostic.severity.WARN] = { enabled = true },
+			[vim.diagnostic.severity.INFO] = { enabled = false },
+			[vim.diagnostic.severity.HINT] = { enabled = false },
+		},
 
---		diagnostics = {
---			[vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
---			[vim.diagnostic.severity.WARN] = { enabled = true },
---			[vim.diagnostic.severity.INFO] = { enabled = false },
---			[vim.diagnostic.severity.HINT] = { enabled = false },
---		},
+		gitsigns = {
+			added = { enabled = true, icon = '+' },
+			changed = { enabled = true, icon = '~' },
+			deleted = { enabled = true, icon = '-' },
+		},
 
---		gitsigns = {
---			added = { enabled = true, icon = '+' },
---			changed = { enabled = true, icon = '~' },
---			deleted = { enabled = true, icon = '-' },
---		},
+		filetype = {
+			custom_colors = false,
+			enabled = true,
+		},
 
---		filetype = {
---			custom_colors = false,
---			enabled = true,
---		},
+		separator = { left = '▎', right = '' },
+		separator_at_end = true,
 
---		separator = { left = '▎', right = '' },
---		separator_at_end = true,
+		modified = { button = '●' },
+		pinned = { button = '', filename = true },
 
---		modified = { button = '●' },
---		pinned = { button = '', filename = true },
+		---@type 'default'|'powerline'|'slanted'
+		preset = 'default',
 
---		---@type 'default'|'powerline'|'slanted'
---		preset = 'default',
+		alternate = { filetype = { enabled = true } },
+		current = { buffer_index = false },
+		inactive = { button = '×' },
+		visible = { modified = { buffer_number = false } },
+	},
 
---		alternate = { filetype = { enabled = true } },
---		current = { buffer_index = false },
---		inactive = { button = '×' },
---		visible = { modified = { buffer_number = false } },
---	},
+	insert_at_end = false,
+	insert_at_start = false,
 
---	insert_at_end = false,
---	insert_at_start = false,
+	maximum_padding = 4,
+	minimum_padding = 0,
+	maximum_length = 32,
+	minimum_length = 0,
 
---	maximum_padding = 2,
---	minimum_padding = 1,
---	maximum_length = 32,
---	minimum_length = 0,
+	semantic_letters = true,
 
---	semantic_letters = true,
+	sidebar_filetypes = {},
 
---	sidebar_filetypes = {
---		NvimTree = true,
---	},
+	letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
 
---	letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
-
---	no_name_title = nil,
---})
+	no_name_title = nil,
+})
 
 ---@type ApiMapDict
 local Keys = {
@@ -119,10 +117,7 @@ local Keys = {
 	["<leader>B<C-d>"] = { "<CMD>BufferOrderByDirectory<CR>", desc("Order Buffer By Directory") },
 	["<leader>B<C-l>"] = { "<CMD>BufferOrderByLanguage<CR>", desc("Order Buffer By Language") },
 	["<leader>B<C-n>"] = { "<CMD>BufferOrderByName<CR>", desc("Order Buffer By Name") },
-	["<leader>B<C-w>"] = {
-		"<CMD>BufferOrderByWindowNumber<CR>",
-		desc("Order Buffer By Window Number"),
-	},
+	["<leader>B<C-w>"] = { "<CMD>BufferOrderByWindowNumber<CR>", desc("Order Buffer By Window Number") },
 }
 
 for lhs, v in next, Keys do
