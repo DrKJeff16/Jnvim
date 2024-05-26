@@ -1,28 +1,28 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local csc_m = User.types.colorschemes
 
 local exists = Check.exists.module
 
 local M = {
-	mod_pfx = "lazy_cfg.colorschemes.tokyonight",
-	mod_cmd = "colorscheme tokyonight",
+	mod_pfx = 'lazy_cfg.colorschemes.tokyonight',
+	mod_cmd = 'colorscheme tokyonight',
 }
 
-if exists("tokyonight") then
+if exists('tokyonight') then
 	function M.setup()
-		local TN = require("tokyonight")
+		local TN = require('tokyonight')
 
 		---@type Config
 		local opts = {
 			on_colors = function(colors)
-				colors.error = "#df4f4f"
+				colors.error = '#df4f4f'
 			end,
 			on_highlights = function(hl, c)
-				local prompt = "#2d3149"
+				local prompt = '#2d3149'
 				hl.TelescopeNormal = {
 					bg = c.bg_dark,
 					fg = c.fg_dark,
@@ -54,17 +54,17 @@ if exists("tokyonight") then
 			terminal_colors = true,
 			transparent = false,
 			sidebars = {
-				"qf",
-				"help",
-				"lazy",
-				"checkhealth",
-				"terminal",
-				"packer",
-				"TelescopePrompt",
-				"vista_kind",
+				'qf',
+				'help',
+				'lazy',
+				'checkhealth',
+				'terminal',
+				'packer',
+				'TelescopePrompt',
+				'vista_kind',
 			},
 
-			style = "night",
+			style = 'night',
 			live_reload = true,
 			use_background = true,
 			hide_inactive_statusline = false,
@@ -74,8 +74,8 @@ if exists("tokyonight") then
 				keywords = { italic = false, bold = true },
 				functions = { bold = true, italic = false },
 				variables = {},
-				sidebars = "dark",
-				floats = "transparent",
+				sidebars = 'dark',
+				floats = 'transparent',
 			},
 		}
 

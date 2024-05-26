@@ -1,30 +1,30 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local types = User.types.autopairs
 
 local exists = Check.exists.module
 
-if not exists("nvim-autopairs") then
+if not exists('nvim-autopairs') then
 	return
 end
 
 local api = vim.api
 
-local Ap = require("nvim-autopairs")
-local Rule = require("nvim-autopairs.rule")
-local Conds = require("nvim-autopairs.conds")
-local Handlers = require("nvim-autopairs.completion.handlers")
-local ts_conds = require("nvim-autopairs.ts-conds")
+local Ap = require('nvim-autopairs')
+local Rule = require('nvim-autopairs.rule')
+local Conds = require('nvim-autopairs.conds')
+local Handlers = require('nvim-autopairs.completion.handlers')
+local ts_conds = require('nvim-autopairs.ts-conds')
 
 -- Ap.clear_rules()
 
 local bpairs = {
-	{ "(", ")" },
-	{ "[", "]" },
-	{ "{", "}" },
+	{ '(', ')' },
+	{ '[', ']' },
+	{ '{', '}' },
 }
 
 local rule2 = function(a1, ins, a2, lang)
@@ -45,7 +45,7 @@ local rule2 = function(a1, ins, a2, lang)
 end
 
 local Rules = {
-	Rule(" ", " ")
+	Rule(' ', ' ')
 		:with_pair(function(opts)
 			local pair = opts.line:sub(opts.col - 1, opts.col)
 			return vim.tbl_contains({
@@ -60,9 +60,9 @@ local Rules = {
 			local col = api.nvim_win_get_cursor(0)[2]
 			local context = opts.line:sub(col - 1, col + 2)
 			return vim.tbl_contains({
-				bpairs[1][1] .. "  " .. bpairs[1][2],
-				bpairs[2][1] .. "  " .. bpairs[2][2],
-				bpairs[3][1] .. "  " .. bpairs[3][2],
+				bpairs[1][1] .. '  ' .. bpairs[1][2],
+				bpairs[2][1] .. '  ' .. bpairs[2][2],
+				bpairs[3][1] .. '  ' .. bpairs[3][2],
 			}, context)
 		end),
 }
@@ -71,7 +71,7 @@ for _, bracket in next, bpairs do
 	table.insert(
 		Rules,
 		-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
-		Rule(bracket[1] .. " ", " " .. bracket[2])
+		Rule(bracket[1] .. ' ', ' ' .. bracket[2])
 			:with_pair(Conds.none())
 			:with_move(function(opts)
 				return opts.char == bracket[2]
@@ -83,10 +83,10 @@ for _, bracket in next, bpairs do
 	)
 end
 
-for _, punct in next, { ",", ";" } do
+for _, punct in next, { ',', ';' } do
 	table.insert(
 		Rules,
-		Rule("", punct)
+		Rule('', punct)
 			:with_move(function(opts)
 				return opts.char == punct
 			end)
@@ -105,6 +105,6 @@ end
 
 Ap.add_rules(Rules)
 
-rule2("(", " ", ")")
+rule2('(', ' ', ')')
 
-Ap.add_rules(require("nvim-autopairs.rules.endwise-lua"))
+Ap.add_rules(require('nvim-autopairs.rules.endwise-lua'))

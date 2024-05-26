@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local hl_t = User.types.user.highlight
 local map_t = User.types.user.maps
@@ -11,17 +11,17 @@ local exists = Check.exists.module
 local hi = User.highlight.hl
 local nmap = kmap.n
 
-if not exists("treesitter-context") then
+if not exists('treesitter-context') then
 	return
 end
 
-local Context = require("treesitter-context")
-local Config = require("treesitter-context.config")
+local Context = require('treesitter-context')
+local Config = require('treesitter-context.config')
 
 ---@type TSContext.UserConfig
 local Options = {
-	mode = "topline",
-	trim_scope = "outer",
+	mode = 'topline',
+	trim_scope = 'outer',
 	line_numbers = false,
 	min_window_height = 1,
 	zindex = 30,
@@ -33,21 +33,21 @@ Context.setup(Options)
 
 ---@type HlDict
 local hls = {
-	["TreesitterContextLineNumberBottom"] = {
+	['TreesitterContextLineNumberBottom'] = {
 		underline = true,
-		sp = "Grey",
+		sp = 'Grey',
 	},
 }
 
 ---@type KeyMapDict
 local keys = {
-	["<leader>Cn"] = {
+	['<leader>Cn'] = {
 		function()
 			local goto_context = Context.go_to_context
 
 			goto_context(vim.v.count1)
 		end,
-		{ desc = "Previous Context" },
+		{ desc = 'Previous Context' },
 	},
 }
 

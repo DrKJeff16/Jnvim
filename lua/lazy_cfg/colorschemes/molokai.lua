@@ -1,13 +1,13 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local csc_t = User.types.colorschemes
 
 ---@type CscSubMod
 local M = {
-	mod_cmd = "colorscheme molokai",
-	mod_pfx = "lazy_cfg.colorschemes.molokai",
+	mod_cmd = 'colorscheme molokai',
+	mod_pfx = 'lazy_cfg.colorschemes.molokai',
 }
 
 if vim.g.installed_molokai == 1 then

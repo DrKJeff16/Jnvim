@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require("user.types.user.maps")
+require('user.types.user.maps')
 
 ---@alias ModeEnum MapModes
 

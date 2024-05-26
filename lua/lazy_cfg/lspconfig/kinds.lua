@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:missing-fields
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
 
@@ -12,27 +12,27 @@ local empty = Check.value.empty
 ---@type LspKindsMod
 local M = {
 	icons = {
-		Class = " ",
-		Color = " ",
-		Constant = " ",
-		Constructor = " ",
-		Enum = " ",
-		EnumMember = " ",
-		Field = "󰄶 ",
-		File = " ",
-		Folder = " ",
-		Function = " ",
-		Interface = "󰜰",
-		Keyword = "󰌆 ",
-		Method = "ƒ ",
-		Module = "󰏗 ",
-		Property = " ",
-		Snippet = "󰘍 ",
-		Struct = " ",
-		Text = " ",
-		Unit = " ",
-		Value = "󰎠 ",
-		Variable = " ",
+		Class = ' ',
+		Color = ' ',
+		Constant = ' ',
+		Constructor = ' ',
+		Enum = ' ',
+		EnumMember = ' ',
+		Field = '󰄶 ',
+		File = ' ',
+		Folder = ' ',
+		Function = ' ',
+		Interface = '󰜰',
+		Keyword = '󰌆 ',
+		Method = 'ƒ ',
+		Module = '󰏗 ',
+		Property = ' ',
+		Snippet = '󰘍 ',
+		Struct = ' ',
+		Text = ' ',
+		Unit = ' ',
+		Value = '󰎠 ',
+		Variable = ' ',
 	},
 }
 

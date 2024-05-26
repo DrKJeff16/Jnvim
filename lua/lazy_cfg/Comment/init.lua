@@ -1,25 +1,25 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local map = User.maps.map
 local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 
-if not exists("Comment") then
+if not exists('Comment') then
 	return
 end
 
-local Comment = require("Comment")
+local Comment = require('Comment')
 
 ---@type CommentConfig
 local opts = {
 	---Function to call before (un)comment
 	---@return string
-	pre_hook = exists("ts_context_commentstring")
-			and require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook()
+	pre_hook = exists('ts_context_commentstring')
+			and require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
 		or function(c)
 			return vim.bo.commentstring
 		end,
@@ -30,25 +30,25 @@ local opts = {
 	---LHS of toggle mappings in NORMAL mode
 	toggler = {
 		---Line-comment toggle keymap
-		line = "gcc",
+		line = 'gcc',
 		---Block-comment toggle keymap
-		block = "gbc",
+		block = 'gbc',
 	},
 	---LHS of operator-pending mappings in NORMAL and VISUAL mode
 	opleader = {
 		---Line-comment keymap
-		line = "gc",
+		line = 'gc',
 		---Block-comment keymap
-		block = "gb",
+		block = 'gb',
 	},
 	---LHS of extra mappings
 	extra = {
 		---Add comment on the line above
-		above = "gcO",
+		above = 'gcO',
 		---Add comment on the line below
-		below = "gco",
+		below = 'gco',
 		---Add comment at the end of line
-		eol = "gcA",
+		eol = 'gcA',
 	},
 	---Enable keybindings
 	---NOTE: If given `false` then the plugin won't create any mappings

@@ -1,29 +1,29 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 
 local exists = Check.exists.module
 
-if not exists("luasnip") then
+if not exists('luasnip') then
 	return
 end
 
 local api = vim.api
 
-local types = require("luasnip.util.types")
-local ls = require("luasnip")
-local events = require("luasnip.util.events")
-local ai = require("luasnip.nodes.absolute_indexer")
-local extras = require("luasnip.extras")
-local node_util = require("luasnip.nodes.util")
-local util = require("luasnip.util.util")
-local Fmt = require("luasnip.extras.fmt")
-local conds = require("luasnip.extras.expand_conditions")
-local PFix = require("luasnip.extras.postfix")
-local parser = require("luasnip.util.parser")
-local key_indexer = require("luasnip.nodes.key_indexer")
+local types = require('luasnip.util.types')
+local ls = require('luasnip')
+local events = require('luasnip.util.events')
+local ai = require('luasnip.nodes.absolute_indexer')
+local extras = require('luasnip.extras')
+local node_util = require('luasnip.nodes.util')
+local util = require('luasnip.util.util')
+local Fmt = require('luasnip.extras.fmt')
+local conds = require('luasnip.extras.expand_conditions')
+local PFix = require('luasnip.extras.postfix')
+local parser = require('luasnip.util.parser')
+local key_indexer = require('luasnip.nodes.key_indexer')
 
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -49,22 +49,22 @@ local postfix = PFix.postfix
 local parse = parser.parse_snippet
 local k = key_indexer.new_key
 
-if exists("luasnip.loaders.from_vscode") then
-	require("luasnip.loaders.from_vscode").lazy_load()
+if exists('luasnip.loaders.from_vscode') then
+	require('luasnip.loaders.from_vscode').lazy_load()
 end
 
 local function char_count_same(c1, c2)
 	local line = api.nvim_get_current_line()
 	-- '%'-escape chars to force explicit match (gsub accepts patterns).
 	-- second return value is number of substitutions.
-	local _, ct1 = string.gsub(line, "%" .. c1, "")
-	local _, ct2 = string.gsub(line, "%" .. c2, "")
+	local _, ct1 = string.gsub(line, '%' .. c1, '')
+	local _, ct2 = string.gsub(line, '%' .. c2, '')
 	return ct1 == ct2
 end
 
 local function even_count(count)
 	local line = api.nvim_get_current_line()
-	local _, ct = string.gsub(line, count, "")
+	local _, ct = string.gsub(line, count, '')
 	return ct % 2 == 0
 end
 
@@ -98,24 +98,24 @@ local function pair(pair_begin, pair_end, expand_func, ...)
 end
 
 -- these should be inside your snippet-table.
-pair("(", ")", neg, char_count_same)
-pair("{", "}", neg, char_count_same)
-pair("[", "]", neg, char_count_same)
-pair("<", ">", neg, char_count_same)
+pair('(', ')', neg, char_count_same)
+pair('{', '}', neg, char_count_same)
+pair('[', ']', neg, char_count_same)
+pair('<', '>', neg, char_count_same)
 pair("'", "'", neg, even_count)
 pair('"', '"', neg, even_count)
-pair("`", "`", neg, even_count)
+pair('`', '`', neg, even_count)
 
 Config.setup({
 	ext_opts = {
 		[types.choiceNode] = {
 			active = {
-				virt_text = { { "●" } },
+				virt_text = { { '●' } },
 			},
 		},
 		[types.insertNode] = {
 			active = {
-				virt_text = { { "●" } },
+				virt_text = { { '●' } },
 			},
 		},
 	},
@@ -133,7 +133,7 @@ Config.setup({
 
 			-- SELECT all text inside the snippet.
 			if not no_move then
-				api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+				api.nvim_feedkeys(api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true)
 				node_util.select_node(snip)
 			end
 		end
@@ -197,7 +197,7 @@ Config.setup({
 	end,
 })
 
-local current_nsid = api.nvim_create_namespace("LuaSnipChoiceListSelections")
+local current_nsid = api.nvim_create_namespace('LuaSnipChoiceListSelections')
 local current_win = nil
 
 local function window_for_choiceNode(choiceNode)
@@ -227,17 +227,17 @@ local function window_for_choiceNode(choiceNode)
 		current_nsid,
 		row_selection,
 		0,
-		{ hl_group = "incsearch", end_line = row_selection + row_offset }
+		{ hl_group = 'incsearch', end_line = row_selection + row_offset }
 	)
 
 	-- shows window at a beginning of choiceNode.
 	local win = api.nvim_open_win(buf, false, {
-		relative = "win",
+		relative = 'win',
 		width = w,
 		height = h,
 		bufpos = choiceNode.mark:pos_begin_end(),
-		style = "minimal",
-		border = "rounded",
+		style = 'minimal',
+		border = 'rounded',
 	})
 
 	-- return with 3 main important so we can use them again

@@ -37,25 +37,25 @@
 
 ---@type UserTypes
 local M = {
-	user = require("user.types.user"),
+	user = require('user.types.user'),
 
-	autopairs = require("user.types.autopairs"),
-	colorizer = require("user.types.colorizer"),
-	colorschemes = require("user.types.colorschemes"),
-	cmp = require("user.types.cmp"),
-	comment = require("user.types.comment"),
-	gitsigns = require("user.types.gitsigns"),
-	lazy = require("user.types.lazy"),
-	lspconfig = require("user.types.lspconfig"),
-	lualine = require("user.types.lualine"),
-	mini = require("user.types.mini"),
-	notify = require("user.types.notify"),
-	nvim_tree = require("user.types.nvim_tree"),
-	telescope = require("user.types.telescope"),
-	todo_comments = require("user.types.todo_comments"),
-	toggleterm = require("user.types.toggleterm"),
-	treesitter = require("user.types.treesitter"),
-	which_key = require("user.types.which_key"),
+	autopairs = require('user.types.autopairs'),
+	colorizer = require('user.types.colorizer'),
+	colorschemes = require('user.types.colorschemes'),
+	cmp = require('user.types.cmp'),
+	comment = require('user.types.comment'),
+	gitsigns = require('user.types.gitsigns'),
+	lazy = require('user.types.lazy'),
+	lspconfig = require('user.types.lspconfig'),
+	lualine = require('user.types.lualine'),
+	mini = require('user.types.mini'),
+	notify = require('user.types.notify'),
+	nvim_tree = require('user.types.nvim_tree'),
+	telescope = require('user.types.telescope'),
+	todo_comments = require('user.types.todo_comments'),
+	toggleterm = require('user.types.toggleterm'),
+	treesitter = require('user.types.treesitter'),
+	which_key = require('user.types.which_key'),
 }
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.

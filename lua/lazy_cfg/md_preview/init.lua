@@ -1,25 +1,25 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 
 local executable = Check.exists.executable
 
 ---@type table<string, string|number|table>
 local Fields = {
-	["mkdp_auto_start"] = 0,
-	["mkdp_browser"] = executable("firefox") and "/usr/bin/firefox" or "",
-	["mkdp_echo_preview_url"] = 1,
-	["mkdp_open_to_the_world"] = 0,
-	["mkdp_auto_close"] = 1,
-	["mkdp_preview_options"] = {
+	['mkdp_auto_start'] = 0,
+	['mkdp_browser'] = executable('firefox') and '/usr/bin/firefox' or '',
+	['mkdp_echo_preview_url'] = 1,
+	['mkdp_open_to_the_world'] = 0,
+	['mkdp_auto_close'] = 1,
+	['mkdp_preview_options'] = {
 		mkit = {},
 		katex = {},
 		uml = {},
 		maid = {},
 		disable_sync_scroll = 0,
-		sync_scroll_type = "relative",
+		sync_scroll_type = 'relative',
 		hide_yaml_meta = 0,
 		sequence_diagrams = {},
 		flowchart_diagrams = {},
@@ -27,8 +27,8 @@ local Fields = {
 		disable_filename = 0,
 		toc = {},
 	},
-	["mkdp_filetypes"] = { "markdown" },
-	["mkdp_theme"] = "dark",
+	['mkdp_filetypes'] = { 'markdown' },
+	['mkdp_theme'] = 'dark',
 }
 
 for k, v in next, Fields do

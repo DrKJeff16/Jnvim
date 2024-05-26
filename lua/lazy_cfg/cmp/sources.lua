@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-local
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local types = User.types.cmp
 
@@ -12,13 +12,13 @@ local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 
-local cmp = require("cmp")
+local cmp = require('cmp')
 
 ---@type fun(priority: integer?): SourceBuf
 local buffer = function(priority)
 	---@type SourceBuf
 	local res = {
-		name = "buffer",
+		name = 'buffer',
 		option = {
 			-- keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]]
 			keyword_pattern = [[\k\+]],
@@ -43,7 +43,7 @@ end
 local async_path = function(priority)
 	---@type SourceAPath
 	local res = {
-		name = "async_path",
+		name = 'async_path',
 		option = {
 			trailing_slash = true,
 			label_trailing_slash = true,
@@ -62,58 +62,58 @@ end
 local ft = {
 	{
 		{
-			"sh",
-			"bash",
-			"crontab",
-			"zsh",
-			"html",
-			"markdown",
-			"json",
-			"json5",
-			"jsonc",
-			"yaml",
+			'sh',
+			'bash',
+			'crontab',
+			'zsh',
+			'html',
+			'markdown',
+			'json',
+			'json5',
+			'jsonc',
+			'yaml',
 		},
 		{
 			sources = cmp.config.sources({
-				{ name = "nvim_lsp", priority = 5 },
+				{ name = 'nvim_lsp', priority = 5 },
 				async_path(4),
-				{ name = "nvim_lsp_signature_help", priority = 3 },
-				{ name = "luasnip", priority = 2 },
+				{ name = 'nvim_lsp_signature_help', priority = 3 },
+				{ name = 'luasnip', priority = 2 },
 				buffer(1),
 			}),
 		},
 	},
 	{
-		{ "conf", "config", "cfg", "confini", "gitconfig" },
+		{ 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
 		{
 			sources = cmp.config.sources({
-				{ name = "luasnip", priority = 2 },
+				{ name = 'luasnip', priority = 2 },
 				async_path(3),
 				buffer(1),
 			}),
 		},
 	},
-	["lua"] = {
+	['lua'] = {
 		sources = cmp.config.sources({
-			{ name = "nvim_lsp", priority = 5 },
-			{ name = "nvim_lsp_signature_help", priority = 4 },
-			{ name = "nvim_lua", priority = 3 },
-			{ name = "luasnip", priority = 2 },
+			{ name = 'nvim_lsp', priority = 5 },
+			{ name = 'nvim_lsp_signature_help', priority = 4 },
+			{ name = 'nvim_lua', priority = 3 },
+			{ name = 'luasnip', priority = 2 },
 			buffer(1),
 		}),
 	},
-	["lisp"] = {
+	['lisp'] = {
 		sources = cmp.config.sources({
-			{ name = "vlime", priority = 3 },
-			{ name = "luasnip", priority = 2 },
+			{ name = 'vlime', priority = 3 },
+			{ name = 'luasnip', priority = 2 },
 			buffer(1),
 		}),
 	},
-	["gitcommit"] = {
+	['gitcommit'] = {
 		sources = cmp.config.sources({
-			{ name = "conventionalcommits", priority = 5 },
-			{ name = "git", priority = 4 },
-			{ name = "luasnip", priority = 2 },
+			{ name = 'conventionalcommits', priority = 5 },
+			{ name = 'git', priority = 4 },
+			{ name = 'luasnip', priority = 2 },
 			async_path(3),
 			buffer(1),
 		}),
@@ -123,20 +123,20 @@ local ft = {
 ---@type SetupSources
 local cmdline = {
 	{
-		{ "/", "?" },
+		{ '/', '?' },
 		{
 			mapping = cmp.mapping.preset.cmdline(),
 			sources = cmp.config.sources({
-				{ name = "nvim_lsp_document_symbol", priority = 2 },
+				{ name = 'nvim_lsp_document_symbol', priority = 2 },
 				buffer(1),
 			}),
 		},
 	},
-	[":"] = {
+	[':'] = {
 		mapping = cmp.mapping.preset.cmdline(),
 		sources = cmp.config.sources({
 			{
-				name = "cmdline",
+				name = 'cmdline',
 				option = { treat_trailing_slash = false },
 				priority = 1,
 			},
@@ -155,9 +155,9 @@ local M = {
 					table.insert(ft, v)
 				elseif is_str(k) and is_tbl(v) then
 					ft[k] = v
-				elseif exists("notify") then
-					require("notify")("Couldn't parse!", "error", {
-						title = "(lazy_cfg.cmp.sources)",
+				elseif exists('notify') then
+					require('notify')("Couldn't parse!", 'error', {
+						title = '(lazy_cfg.cmp.sources)',
 					})
 				end
 			end
@@ -176,7 +176,7 @@ local M = {
 			end
 		end
 
-		require("cmp_git").setup()
+		require('cmp_git').setup()
 
 		for k, v in next, cmdline do
 			if is_num(k) and is_tbl({ v[1], v[2] }, true) then

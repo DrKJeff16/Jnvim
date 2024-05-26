@@ -3,7 +3,7 @@
 ---@diagnostic disable:need-check-nil
 ---@diagnostic disable:missing-fields
 
-require("user.types.user.check")
+require('user.types.user.check')
 
 ---@type UserCheck
 local M = {
@@ -20,13 +20,13 @@ local M = {
 		--- If set to `true`, the result will be `false` _unless any item on the table is `nil`_.
 		--- In that case, function will immediately stop checking. The result will be returned regardless.
 		is_nil = function(var, multiple)
-			multiple = (multiple ~= nil and type(multiple) == "boolean") and multiple or false
+			multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
 			if not multiple then
 				return var == nil
 			end
 
-			if type(var) ~= "table" or vim.tbl_isempty(var) then
+			if type(var) ~= 'table' or vim.tbl_isempty(var) then
 				return false
 			end
 
@@ -47,11 +47,11 @@ local M = {
 }
 
 local type_funcs = {
-	["is_str"] = "string",
-	["is_bool"] = "boolean",
-	["is_fun"] = "function",
-	["is_num"] = "number",
-	["is_tbl"] = "table",
+	['is_str'] = 'string',
+	['is_bool'] = 'boolean',
+	['is_fun'] = 'function',
+	['is_num'] = 'number',
+	['is_tbl'] = 'table',
 }
 
 ---@type fun(t: Types): ValueFunc
@@ -59,13 +59,13 @@ local function type_fun(t)
 	return function(var, multiple)
 		local is_nil = M.value.is_nil
 
-		multiple = (multiple ~= nil and type(multiple) == "boolean") and multiple or false
+		multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
 		if not multiple then
 			return not is_nil(var) and type(var) == t
 		end
 
-		if is_nil(var) or type(var) ~= "table" then
+		if is_nil(var) or type(var) ~= 'table' then
 			return false
 		end
 
@@ -102,7 +102,7 @@ function M.value.empty(v)
 	local res = true
 
 	if is_str(v) then
-		res = v == ""
+		res = v == ''
 	end
 
 	if is_num(v) then
@@ -182,11 +182,11 @@ M.exists = {
 		local is_tbl = M.value.is_tbl
 
 		if not is_tbl(t) then
-			error("Cannot look up a field in the following type: " .. type(t))
+			error('Cannot look up a field in the following type: ' .. type(t))
 		end
 
 		if not is_str(field) and not is_num(field) then
-			error("Field type `" .. type(t) .. "` not parseable.")
+			error('Field type `' .. type(t) .. '` not parseable.')
 		end
 
 		return not is_nil(t[field])
@@ -262,7 +262,7 @@ function M.exists.executable(exe, fallback)
 	local executable = vim.fn.executable
 
 	if not (is_str(exe) or is_tbl(exe)) then
-		error("(user.check.exists.executable): Argument type is neither string nor table")
+		error('(user.check.exists.executable): Argument type is neither string nor table')
 	end
 
 	fallback = is_fun(fallback) and fallback or nil
@@ -296,7 +296,7 @@ function M.exists.modules(mod, need_all)
 	local exists = M.exists.module
 
 	if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
-		error("`(user.check.exists.modules)`: Input is neither a string nor a string array.")
+		error('`(user.check.exists.modules)`: Input is neither a string nor a string array.')
 	end
 
 	need_all = is_bool(need_all) and need_all or false

@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-label
 
-local User = require("user")
+local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
@@ -11,18 +11,18 @@ local is_tbl = Check.value.is_tbl
 local nmap = kmap.n
 local desc = kmap.desc
 
-if not exists("persistence") then
+if not exists('persistence') then
 	return
 end
 
 local expand = vim.fn.expand
 local stdpath = vim.fn.stdpath
 
-local Pst = require("persistence")
+local Pst = require('persistence')
 
 local Opts = {
 	options = vim.opt.sessionoptions:get(),
-	dir = expand(stdpath("state") .. "/sessions/"), -- directory where session files are saved
+	dir = expand(stdpath('state') .. '/sessions/'), -- directory where session files are saved
 	pre_save = nil, -- a function to call before saving the session
 	post_save = nil, -- a function to call after saving the session
 	save_empty = false, -- don't save if there are no open file buffers
@@ -34,17 +34,17 @@ Pst.setup(Opts)
 
 ---@type KeyMapDict
 local Keys = {
-	["<leader>Sr"] = {
+	['<leader>Sr'] = {
 		Pst.load,
-		desc("Restore Session"),
+		desc('Restore Session'),
 	},
-	["<leader>Sl"] = {
+	['<leader>Sl'] = {
 		function()
 			Pst.load({ last = true })
 		end,
-		desc("Restore Last Session"),
+		desc('Restore Last Session'),
 	},
-	["<leader>Sd"] = {
+	['<leader>Sd'] = {
 		Pst.stop,
 		desc("Don't Save Current Session"),
 	},
