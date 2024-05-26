@@ -128,7 +128,7 @@ local modules = {
 	['cursorword'] = { delay = 500 },
 	['doc'] = {},
 	['extra'] = {},
-	['hipatterns'] = {
+	--[[ ['hipatterns'] = {
 		highlighters = {
 			-- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
 			fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
@@ -144,7 +144,7 @@ local modules = {
 			text_change = 750,
 			scroll = 250,
 		},
-	},
+	}, ]]
 	['move'] = {
 		-- Module mappings. Use `''` (empty string) to disable one.
 		mappings = {
