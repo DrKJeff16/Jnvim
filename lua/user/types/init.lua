@@ -1,11 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@class UserPlugin
----@field cmp? UserCmp
----@field notify? UserNotify
-
 ---@class UserTypes
+---@field user UserSubTypes
 ---@field autopairs table
 ---@field cmp table
 ---@field colorizer table
@@ -22,10 +19,14 @@
 ---@field todo_comments table
 ---@field toggleterm table
 ---@field treesitter table
----@field user UserSubTypes
 ---@field which_key table
 
 ---@class UserOpts
+
+--- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
+--- Each mode contains its respective mappings.
+--- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
+---@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
 
 ---@class UserMod
 ---@field check UserCheck
@@ -37,7 +38,10 @@
 
 ---@type UserTypes
 local M = {
+	--- API-related annotations
 	user = require('user.types.user'),
+
+	--- Plugin config-related annotations below
 
 	autopairs = require('user.types.autopairs'),
 	colorizer = require('user.types.colorizer'),
@@ -57,10 +61,5 @@ local M = {
 	treesitter = require('user.types.treesitter'),
 	which_key = require('user.types.which_key'),
 }
-
---- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
---- Each mode contains its respective mappings.
---- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
----@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
 
 return M
