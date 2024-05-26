@@ -23,7 +23,9 @@ local Pst = require('persistence')
 local Opts = {
 	options = vim.opt.sessionoptions:get(),
 	dir = expand(stdpath('state') .. '/sessions/'), -- directory where session files are saved
-	pre_save = nil, -- a function to call before saving the session
+	pre_save = not exists('barbar') and nil or function()
+		vim.api.nvim_exec_autocmds('User', { pattern = 'SessionSavePre' })
+	end, -- a function to call before saving the session
 	post_save = nil, -- a function to call after saving the session
 	save_empty = false, -- don't save if there are no open file buffers
 	pre_load = nil, -- a function to call before loading the session
