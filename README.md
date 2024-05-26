@@ -10,8 +10,6 @@
     1. [`types`](#types)
     2. [`opts`](#opts)
     3. [`check`](#check)
-        1. [`value`](#value)
-        2. [`exists`](#exists)
     4. [`maps`](#maps)
     5. [`highlight`](#highlight)
 
@@ -74,7 +72,9 @@ For these to work, the following executables must be installed and in your `$PAT
 There's a lot of plugins included. Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua). Those are
 ordered by category. Please refer to [`lazy.nvim`](https://github.com/folke/lazy.nvim) for more info on how to install.
 
-Among the most important plugins there are:
+<details>
+<summary>Some of the included plugins...</summary>
+<br>
 
 * [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
     * [`Comment.nvim`](https://github.com/numToStr/Comment.nvim)
@@ -92,6 +92,8 @@ Among the most important plugins there are:
     * [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
     * [`BarBar`](https://github.com/romgrk/barbar.nvim)
 * [`NvimTree`](https://github.com/nvim-tree/nvim-tree.lua)
+
+</details>
 
 ---
 
@@ -141,7 +143,10 @@ require('user').opts
 _**This is the most important utility for this config.**_ Of critical importance. It provides a table with two
 sub-tables. Both used for many conditional checks, aswell as module handling. These are the following.
 
-#### `value`
+<details>
+<summary><b><u><code>value</code></u></b></summary>
+<br>
+
 Used for value checking, differentiation and conditional code, aswell as for optional parameters in functions.
 
 |  function |                                                                                               description                                                                                               |                          parameter types                          | return type |
@@ -155,7 +160,12 @@ Used for value checking, differentiation and conditional code, aswell as for opt
 |  `is_int` |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              |                        _Same as `is_nil`._                        |  `boolean`  |
 |  `empty`  |                             If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.                             |                    `v`: `string\|number\|table`                   |  `boolean`  |
 
-#### `exists`
+</details>
+
+<details>
+<summary><b><u><code>exists</code></u></b></summary>
+<br>
+
 Used for data existance checks, conditional module loading and fallback operations.
 
 | function | description | parameter types | return type |
@@ -166,3 +176,5 @@ Used for data existance checks, conditional module loading and fallback operatio
 | `vim_has` | Checks whether a string or multiple are true statements when using the Vimscript `has()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished. | `expr`: `string\|string[]` | `boolean` |
 | `vim_isdir` | Checks whether the string is a directory. | `path`: `string` | `boolean` |
 | `executable` | Checks whether one or multiple strings are executables found in `$PATH`.<br>If a string array is given, check each string and if any string is invalid and the `fallback` parameter is a function then execute the _fallback_ function.<br>This function will return the result regardless of whether `fallback` has been set or not. | `exe`: `string\|string[]`, `fallback`: `fun()` (default: `nil`) | `boolean` |
+
+</details>
