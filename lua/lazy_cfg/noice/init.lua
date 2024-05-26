@@ -53,7 +53,7 @@ local Opts = {
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
 		---@type "nui"|"cmp"
-		backend = "nui", -- backend to use to show regular cmdline completions
+		backend = "cmp", -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
 		---@type NoicePopupmenuItemKind|false
 		kind_icons = {}, -- set to `false` to disable icons
