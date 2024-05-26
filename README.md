@@ -143,11 +143,14 @@ require('user').opts
 _**This is the most important utility for this config.**_ Of critical importance. It provides a table with two
 sub-tables. Both used for many conditional checks, aswell as module handling. These are the following.
 
+<ul>
+<li>
 <details>
 <summary><b><u><code>value</code></u></b></summary>
 <br>
 
 Used for value checking, differentiation and conditional code, aswell as for optional parameters in functions.
+It can be found in [`user/check/value.lua`](/lua/user/check/value.lua).
 
 |  function |                                                                                               description                                                                                               |                          parameter types                          | return type |
 |:---------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
@@ -161,12 +164,15 @@ Used for value checking, differentiation and conditional code, aswell as for opt
 |  `empty`  |                             If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.                             |                    `v`: `string\|number\|table`                   |  `boolean`  |
 
 </details>
+</li>
+<li>
 
 <details>
 <summary><b><u><code>exists</code></u></b></summary>
 <br>
 
 Used for data existance checks, conditional module loading and fallback operations.
+It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
 
 | function | description | parameter types | return type |
 |:--------:|:-----------:|:---------------:|:-----------:|
@@ -178,3 +184,35 @@ Used for data existance checks, conditional module loading and fallback operatio
 | `executable` | Checks whether one or multiple strings are executables found in `$PATH`.<br>If a string array is given, check each string and if any string is invalid and the `fallback` parameter is a function then execute the _fallback_ function.<br>This function will return the result regardless of whether `fallback` has been set or not. | `exe`: `string\|string[]`, `fallback`: `fun()` (default: `nil`) | `boolean` |
 
 </details>
+</li>
+</ul>
+
+### Maps
+This module provides keymapping utilities, for each case available.
+
+There are 3 fields which are tables that have the same function names, but follow selective behaviours:
+
+* `maps.map`: Follows the behaviour of `vim.api.nvim_set_keymap()`.
+* `maps.kmap`: Follows the behaviour of `vim.keymap.set()`.
+* `maps.buf_map`: Follows the behaviour of `vim.api.nvim_buf_set_keymap()`.
+
+Parameters and/or parameter types are tweaked for their respective table.
+Each table has a function for each mode available, <b><u>treat each function as the field's behaviour function, minus the `mode` field</u></b>:
+
+* `maps.<table>.n(...)`: Same as `:nmap`
+* `maps.<table>.i(...)`: Same as `:imap`
+* `maps.<table>.v(...)`: Same as `:vmap`
+* `maps.<table>.t(...)`: Same as `:tmap`
+* `maps.<table>.o(...)`: Same as `:omap`
+* `maps.<table>.x(...)`: Same as `:xmap`
+
+Also, each table has a `desc()` method that returns an option table with a description field
+and other fields corresponding to each parameter.
+
+* <u><b>NOTE:</b> All `boolean` parameters default to `true`, all `integer` parameters default to `0`.</u>
+
+* `maps.kmap.desc(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.keymap.set.Opts` table
+* `maps.map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.api.keyset.keymap` table
+* `maps.buf_map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.api.keyset.keymap` table
+
+<i><u>Other functions and utilities will be included in the future, and if there are unmentioned here, they're not finished.</u></i>
