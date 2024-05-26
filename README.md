@@ -8,7 +8,7 @@
     3. [Plugins](#plugins)
 2. [User API](#api)
     1. [`types`](#types)
-    2. [`cpts`](#opts)
+    2. [`opts`](#opts)
     3. [`check`](#check)
     4. [`maps`](#maps)
     5. [`highlight`](#highlight)
@@ -105,7 +105,7 @@ You can include it by using the following code snippet:
 
 ```lua
 require('user.types')
--- Or by using the access point:
+-- Or by using the entry point:
 require('user').types
 ```
 
@@ -113,8 +113,24 @@ For API-specific documentation, you can use the submodule [`types/user`](/lua/us
 
 ```lua
 require('user.types.user')
--- Or by using the access point:
+-- Or by using the entry point:
 require('user').types.user
 ```
 
 Each include their pertinent files sourced by the `init.lua` file.
+
+### Opts
+
+This submodule can be found at [`here`](/lua/user/opts.lua). The options are defined in a table to be processed
+by the local funtion `optset()`. Modify these at your leisure, but be sure to be compatible with how you'd
+use the `vim.opt` table. _`vim.o` is currently used as a fallback in a very lazy way_.
+
+To call the options:
+
+```lua
+require('user.opts')
+-- Or by using the entry point:
+require('user').opts
+```
+
+- **NOTE: This is still a very early WIP.**
