@@ -31,17 +31,6 @@ M = {
 			return res
 		end
 	end,
-	field = function(field, t)
-		if not is_tbl(t) then
-			error('Cannot look up a field in the following type: ' .. type(t))
-		end
-
-		if not is_str(field) and not is_num(field) then
-			error('Field type `' .. type(t) .. '` not parseable.')
-		end
-
-		return not is_nil(t[field])
-	end,
 }
 
 function M.vim_has(expr)

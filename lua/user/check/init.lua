@@ -11,23 +11,13 @@ local Exists = require('user.check.exists')
 local M = {
 	value = Value,
 	exists = Exists,
-	dry_run = function(f, ...)
-		---@type boolean
-		local ok
-		---@type unknown
-		local res
-
-		ok, res = pcall(f, ...)
-
-		return ok and res or nil
-	end,
 }
 
 function M.new()
 	local self = setmetatable({}, { __index = M })
+
 	self.value = M.value
 	self.exists = M.exists
-	self.dry_run = M.dry_run
 
 	return self
 end

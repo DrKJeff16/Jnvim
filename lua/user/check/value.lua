@@ -29,18 +29,13 @@ local M = {
 			return false
 		end
 
-		---@type boolean
-		local res
-
 		for _, v in next, var do
-			res = v == nil
-
-			if res then
-				break
+			if v ~= nil then
+				return false
 			end
 		end
 
-		return res
+		return true
 	end,
 }
 
@@ -67,18 +62,13 @@ local function type_fun(t)
 			return false
 		end
 
-		---@type boolean
-		local res
-
 		for _, v in next, var do
-			res = not is_nil(t) and type(v) == t
-
-			if not res then
-				break
+			if is_nil(t) or type(v) ~= t then
+				return false
 			end
 		end
 
-		return res
+		return true
 	end
 end
 
@@ -97,21 +87,19 @@ function M.empty(v)
 	local is_tbl = M.is_tbl
 	local is_num = M.is_num
 
-	local res = true
-
 	if is_str(v) then
-		res = v == ''
+		return v == ''
 	end
 
 	if is_num(v) then
-		res = v == 0
+		return v == 0
 	end
 
 	if is_tbl(v) then
-		res = vim.tbl_isempty(v)
+		return vim.tbl_isempty(v)
 	end
 
-	return res
+	return true
 end
 
 function M.is_int(var, multiple)
@@ -123,24 +111,37 @@ function M.is_int(var, multiple)
 	multiple = is_bool(multiple) and multiple or false
 
 	if not multiple then
-		return is_num(var) and var >= 0
+		return is_num(var) and var >= 0 and var == math.floor(var)
 	end
+
 	if not is_tbl(var) then
 		return false
 	end
 
-	---@type boolean
-	local res
-
 	for _, v in next, var do
-		res = is_num(var) and var >= 0
-
-		if not res then
-			break
+		if not (is_num(v) and v >= 0 and v == math.floor(v)) then
+			return false
 		end
 	end
 
-	return res
+	return true
+end
+
+function M.field(field, t)
+	local is_nil = M.is_nil
+	local is_tbl = M.is_tbl
+	local is_str = M.is_str
+	local is_num = M.is_num
+
+	if not is_tbl(t) then
+		error('Cannot look up a field in the following type: ' .. type(t))
+	end
+
+	if not (is_str(field) or is_num(field)) then
+		error('Field type `' .. type(t) .. '` not parseable.')
+	end
+
+	return not is_nil(t[field])
 end
 
 return M
