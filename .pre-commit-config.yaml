@@ -6,3 +6,4 @@ repos:
         language: system
         entry: stylua
         types: [lua]
+        verbose: true
