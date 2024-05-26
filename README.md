@@ -10,6 +10,8 @@
     1. [`types`](#types)
     2. [`opts`](#opts)
     3. [`check`](#check)
+        1. [`value`](#value)
+        2. [`exists`](#exists)
     4. [`maps`](#maps)
     5. [`highlight`](#highlight)
 
