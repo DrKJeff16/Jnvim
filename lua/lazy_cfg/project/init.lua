@@ -7,6 +7,7 @@ local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
 
 local exists = Check.exists.module
+local is_tbl = Check.value.is_tbl
 local nmap = kmap.n
 local desc = kmap.desc
 
@@ -21,7 +22,7 @@ local Config = require('project_nvim.config')
 
 local recent_proj = Project.get_recent_projects
 
-local opts = {
+local Opts = {
 	-- Manual mode doesn't automatically change your root directory, so you have
 	-- the option to manually do so using `:ProjectRoot` command.
 	manual_mode = false,
@@ -51,6 +52,9 @@ local opts = {
 		'requirements.txt',
 		'tox.ini',
 		'stylua.toml',
+		'.stylua.toml',
+		'.pre-commit-config.yaml',
+		'.pre-commit-config.yml',
 	},
 
 	-- Don't calculate root dir on specific directories
@@ -77,13 +81,13 @@ local opts = {
 	datapath = stdpath('data'),
 }
 
-Project.setup(opts)
+Project.setup(Opts)
 
 ---@type KeyMapDict
 local keys = {
 	['<leader>pr'] = {
 		function()
-			local msg = '\n'
+			local msg = ''
 
 			for _, v in next, recent_proj() do
 				msg = msg .. '\n- ' .. v
@@ -91,7 +95,7 @@ local keys = {
 			if exists('notify') then
 				require('notify')(msg, 'info', { title = 'Recent Projects' })
 			else
-				print(msg)
+				vim.notify(msg, vim.log.levels.INFO)
 			end
 		end,
 		desc('Print Recent Projects'),
@@ -99,5 +103,6 @@ local keys = {
 }
 
 for key, v in next, keys do
+	v[2] = is_tbl(v[2]) and v[2] or {}
 	nmap(key, v[1], v[2] or {})
 end
