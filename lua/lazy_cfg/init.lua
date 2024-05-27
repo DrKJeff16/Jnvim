@@ -743,6 +743,12 @@ M.UI = {
 		enabled = false,
 	},
 	{
+		'nvim-zh/colorful-winsep.nvim',
+		event = { 'WinNew' },
+		name = 'ColorfulWinsep',
+		config = source('lazy_cfg.colorful_winsep'),
+	},
+	{
 		'norcalli/nvim-colorizer.lua',
 		name = 'colorizer',
 		version = false,
