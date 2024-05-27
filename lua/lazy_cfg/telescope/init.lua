@@ -12,6 +12,7 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local nmap = kmap.n
+local desc = kmap.desc
 
 if not exists('telescope') then
 	return
@@ -31,16 +32,16 @@ local Extensions = Telescope.extensions
 
 local load_ext = Telescope.load_extension
 
-local opts = {
+local Opts = {
 	defaults = {
 		layout_strategy = 'flex',
-		layout_config = { vertical = { width = vim.o.columns * 3 / 4 } },
+		layout_config = { vertical = { width = vim.opt.columns:get() * 3 / 4 } },
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
 				['<C-u>'] = false,
 				['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
-				['<ESC>'] = Actions.close,
+				['<Esc>'] = Actions.close,
 				['<C-e>'] = Actions.close,
 				['<C-q>'] = Actions.close,
 			},
@@ -56,7 +57,7 @@ local opts = {
 	},
 }
 
-Telescope.setup(opts)
+Telescope.setup(Opts)
 
 local function open()
 	vim.cmd('Telescope')
@@ -64,21 +65,21 @@ end
 
 ---@type KeyMapDict
 local Maps = {
-	['<leader><leader>'] = { open, { desc = 'Open Telescope' } },
-	['<leader>hH'] = { Builtin.help_tags, { desc = 'Telescope Help Tags' } },
-	['<leader>ff'] = { Builtin.find_files, { desc = 'File Picker' } },
+	['<leader><leader>'] = { open, desc('Open Telescope') },
+	['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
+	['<leader>ff'] = { Builtin.find_files, desc('File Picker') },
 
-	['<leader>fTbC'] = { Builtin.commands, { desc = 'Colommands' } },
-	['<leader>fTbO'] = { Builtin.keymaps, { desc = 'Vim Options' } },
-	['<leader>fTbP'] = { Builtin.planets, { desc = 'Planets' } },
-	['<leader>fTbb'] = { Builtin.buffers, { desc = 'Buffers' } },
-	['<leader>fTbc'] = { Builtin.colorscheme, { desc = 'Colorschemes' } },
-	['<leader>fTbd'] = { Builtin.diagnostics, { desc = 'Diagnostics' } },
-	['<leader>fTbg'] = { Builtin.live_grep, { desc = 'Live Grep' } },
-	['<leader>fTbk'] = { Builtin.keymaps, { desc = 'Keymaps' } },
-	['<leader>fTblD'] = { Builtin.lsp_document_symbols, { desc = 'Document Symbols' } },
-	['<leader>fTbld'] = { Builtin.lsp_definitions, { desc = 'Definitions' } },
-	['<leader>fTbp'] = { Builtin.pickers, { desc = 'Pickers' } },
+	['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
+	['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
+	['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
+	['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
+	['<leader>fTbc'] = { Builtin.colorscheme, desc('Colorschemes') },
+	['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
+	['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
+	['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
+	['<leader>fTblD'] = { Builtin.lsp_document_symbols, desc('Document Symbols') },
+	['<leader>fTbld'] = { Builtin.lsp_definitions, desc('Definitions') },
+	['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
 }
 
 ---@type table<string, TelExtension>
@@ -96,7 +97,7 @@ local known_exts = {
 
 			---@type KeyMapDict
 			local res = {
-				['<leader>fTep'] = { pfx.projects, { desc = 'Project Picker' } },
+				['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
 			}
 
 			return res
@@ -110,7 +111,7 @@ local known_exts = {
 
 			---@type KeyMapDict
 			local res = {
-				['<leader>fTeN'] = { pfx.notify, { desc = 'Notify Picker' } },
+				['<leader>fTeN'] = { pfx.notify, desc('Notify Picker') },
 			}
 
 			return res
@@ -128,13 +129,13 @@ local known_exts = {
 					function()
 						Noice.cmd('last')
 					end,
-					{ desc = 'NoiceLast' },
+					desc('NoiceLast'),
 				},
 				['<leadec>nh'] = {
 					function()
 						Noice.cmd('history')
 					end,
-					{ desc = 'NoiceHistory' },
+					desc('NoiceHistory'),
 				},
 			}
 
@@ -165,7 +166,8 @@ for lhs, v in next, Maps do
 		goto continue
 	end
 
-	nmap(lhs, v[1], v[2] or {})
+	v[2] = is_tbl(v[2]) and v[2] or {}
+	nmap(lhs, v[1], v[2])
 
 	::continue::
 end
@@ -178,7 +180,7 @@ local au_tbl = {
 
 			---@type fun(args: TelAuArgs)
 			callback = function(args)
-				if not is_tbl(args.data) or not is_str(args.data.filetype) or args.data.filetype ~= 'help' then
+				if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
 					vim.wo.number = true
 				else
 					vim.wo.wrap = false
