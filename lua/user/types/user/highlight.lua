@@ -16,4 +16,3 @@
 ---@field hl fun(name: string, opts: HlOpts, bufnr: integer?)
 ---@field hl_from_arr fun(arr: HlPairs)
 ---@field hl_from_dict fun(dict: HlDict)
----@field current_palette fun()

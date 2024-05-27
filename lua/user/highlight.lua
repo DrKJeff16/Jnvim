@@ -21,12 +21,9 @@ local M = {
 			error('(user.highlight.hl): A highlight value is not permitted!')
 		end
 
-		bufnr = is_int(bufnr) and bufnr or 0
+		bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
 		vim.api.nvim_set_hl(bufnr, name, opts)
-	end,
-	current_palette = function()
-		vim.cmd('colorscheme')
 	end,
 }
 
