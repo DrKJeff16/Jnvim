@@ -6,13 +6,13 @@ local Check = User.check
 local types = User.types.cmp
 
 local exists = Check.exists.module
+local modules = Check.exists.modules
 local is_nil = Check.value.is_nil
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
-if not exists('cmp') then
-	error('No `cmp` module!')
-	return
+if not modules({ 'cmp', 'luasnip' }) then
+	error('Either `cmp` or `luasnip` are not installed.')
 end
 
 local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
@@ -79,16 +79,9 @@ end
 
 ---@type fun(opts: cmp.ConfirmationConfig?): fun(fallback: fun())
 function M.confirm(opts)
-	if not is_tbl(opts) then
-		opts = {}
-	end
-
-	if is_nil(opts.behavior) then
-		opts.behavior = cmp.ConfirmBehavior.Replace
-	end
-	if not is_bool(opts.select) then
-		opts.select = false
-	end
+	opts = is_tbl(opts) and opts or {}
+	opts.behavior = not is_nil(opts.behavior) and opts.behavior or cmp.ConfirmBehavior.Replace
+	opts.select = is_bool(opts.select) and opts.select or false
 
 	---@type fun(fallback: fun())
 	return function(fallback)
@@ -141,6 +134,7 @@ M.s_tab_map = {
 M.cr_map = {
 	i = M.confirm(),
 	s = M.confirm(),
+	---@diagnostic disable-next-line:missing-fields
 	c = M.confirm({ select = true }),
 }
 
@@ -149,6 +143,7 @@ function M.bs_map(fallback)
 	if cmp.visible() then
 		cmp.close()
 	end
+
 	fallback()
 end
 
