@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
+local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -11,8 +12,8 @@ local empty = Check.value.empty
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
-local desc = User.maps.kmap.desc
-local nmap = User.maps.kmap.n
+local desc = kmap.desc
+local nmap = kmap.n
 local hi = User.highlight.hl
 
 if not exists('lspconfig') then
@@ -173,7 +174,7 @@ local keys = {
 	['<leader>l['] = { Diag.goto_prev, desc('Previous Diagnostic') },
 	['<leader>l]'] = { Diag.goto_next, desc('Previous Diagnostic') },
 	['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
-	['<leader>lC'] = {
+	['<leader>lI'] = {
 		function()
 			vim.cmd('LspInfo')
 		end,
@@ -191,7 +192,7 @@ local keys = {
 		end,
 		desc('Stop Server'),
 	},
-	['<leader>lI'] = {
+	['<leader>lS'] = {
 		function()
 			vim.cmd('LspStart')
 		end,
