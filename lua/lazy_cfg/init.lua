@@ -746,6 +746,7 @@ M.UI = {
 		'nvim-zh/colorful-winsep.nvim',
 		event = { 'WinNew' },
 		name = 'ColorfulWinsep',
+		version = false,
 		config = source('lazy_cfg.colorful_winsep'),
 	},
 	{
