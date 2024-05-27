@@ -36,19 +36,13 @@ Pst.setup(Opts)
 
 ---@type KeyMapDict
 local Keys = {
-	['<leader>Sr'] = {
-		Pst.load,
-		desc('Restore Session'),
-	},
+	['<leader>Sr'] = { Pst.load, desc('Restore Session') },
+	['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
 	['<leader>Sl'] = {
 		function()
 			Pst.load({ last = true })
 		end,
 		desc('Restore Last Session'),
-	},
-	['<leader>Sd'] = {
-		Pst.stop,
-		desc("Don't Save Current Session"),
 	},
 }
 
