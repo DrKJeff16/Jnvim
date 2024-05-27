@@ -3,17 +3,18 @@ local Check = User.check
 local types = User.types.cmp
 
 local exists = Check.exists.module
+local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 
 if not exists('cmp') or not exists('luasnip') then
 	return
 end
 
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
-
 local tbl_contains = vim.tbl_contains
 local get_mode = vim.api.nvim_get_mode
+
+local Types = require('cmp.types')
+local CmpTypes = require('cmp.types.cmp')
 
 local Sks = require('lazy_cfg.cmp.kinds')
 local Util = require('lazy_cfg.cmp.util')
@@ -47,7 +48,7 @@ local Mappings = {
 }
 
 ---@type cmp.ConfigSchema
-local opts = {
+local Opts = {
 	---@type fun(): boolean
 	enabled = function()
 		local disable_ft = {
@@ -56,6 +57,7 @@ local opts = {
 			'checkhealth',
 			'help',
 			'lazy',
+			'qf',
 		}
 
 		local enable_comments = {
@@ -79,7 +81,7 @@ local opts = {
 			'scss',
 			'sh',
 			'vim',
-			'zsh',
+			'yaml',
 		}
 
 		---@type string
@@ -115,20 +117,18 @@ local opts = {
 		comparators = {
 			Compare.kind,
 			Compare.score,
-			Compare.scopes,
 			Compare.locality,
+			Compare.scopes,
+			Compare.recently_used,
 			Compare.exact,
 			Compare.offset,
-			Compare.recently_used,
 			Compare.sort_text,
 			Compare.length,
 			Compare.order,
 		},
 	},
 
-	experimental = {
-		ghost_text = false,
-	},
+	experimental = { ghost_text = false },
 
 	completion = {
 		completeopt = 'menu,menuone,noselect,noinsert,preview',
@@ -151,14 +151,14 @@ local opts = {
 	mapping = cmp.mapping.preset.insert(Mappings),
 
 	sources = cmp.config.sources({
-		{ name = 'nvim_lsp', priority = 1 },
-		{ name = 'nvim_lsp_signature_help', priority = 2 },
-		{ name = 'luasnip', priority = 3 },
-		buffer(4),
+		{ name = 'nvim_lsp', priority = 4 },
+		{ name = 'nvim_lsp_signature_help', priority = 3 },
+		{ name = 'luasnip', priority = 2 },
+		buffer(1),
 	}),
 }
 
-cmp.setup(opts)
+cmp.setup(Opts)
 
 Sources.setup()
 
@@ -167,12 +167,12 @@ if is_fun(Sks.vscode) then
 end
 
 -- For debugging.
-if exists('notify') then
+if not is_nil(Notify) then
+	Notify('cmp loaded.', 'info', { title = 'cmp' })
+elseif exists('notify') then
 	local Notify = require('notify')
 
-	Notify('cmp loaded.', 'info', {
-		title = 'cmp',
-	})
+	Notify('cmp loaded.', 'info', { title = 'cmp' })
 else
-	print('cmp loaded.')
+	vim.notify('cmp loaded.', vim.log.levels.INFO)
 end
