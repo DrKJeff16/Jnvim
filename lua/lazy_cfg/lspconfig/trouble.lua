@@ -7,6 +7,7 @@ local kmap = User.maps.kmap
 local types = User.types.lspconfig
 
 local exists = Check.exists.module
+local is_tbl = Check.value.is_tbl
 local desc = kmap.desc
 
 if not exists('trouble') then
@@ -17,7 +18,7 @@ local Trouble = require('trouble')
 
 local toggle = Trouble.toggle
 
-local opts = {
+local Opts = {
 	position = 'bottom', -- position of the list can be: bottom, top, left, right
 	height = 8, -- height of the trouble list when position is top or bottom
 	width = vim.opt.columns:get() * 2 / 5, -- width of the list when position is left or right
@@ -73,11 +74,11 @@ local opts = {
 	use_diagnostic_signs = true, -- enabling this will use the signs defined in your lsp client
 }
 
-Trouble.setup(opts)
+Trouble.setup(Opts)
 
 ---@type KeyMapDict
 local Keys = {
-	['<leader>xx'] = { toggle, { desc = 'Toggle Trouble' } },
+	['<leader>xx'] = { toggle, desc('Toggle Trouble') },
 	['<leader>xw'] = {
 		function()
 			toggle('workspace_diagnostics')
@@ -111,5 +112,6 @@ local Keys = {
 }
 
 for k, v in next, Keys do
-	kmap.n(k, v[1], v[2] or {})
+	v[2] = is_tbl(v[2]) and v[2] or {}
+	kmap.n(k, v[1], v[2])
 end
