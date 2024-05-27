@@ -1,23 +1,46 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    - id: detect-private-key
+    - id: check-shebang-scripts-are-executable
+    - id: check-executables-have-shebangs
+    - id: check-case-conflict
+    - id: check-yaml
+    - id: mixed-line-ending
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+    - id: forbid-crlf
+    - id: remove-crlf
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+    - id: markdownlint-fix
+
   - repo: local
     hooks:
-      - id: stylua
-        name: StyLua
-        language: system
-        entry: stylua
-        types: [lua]
-        verbose: true
-      - id: shfmt
-        name: shfmt
-        language: system
-        types: [shell]
-        entry: bash
-        args: [-c, make lint-sh]
-        verbose: true
-      - id: shellcheck
-        name: shellcheck
-        language: system
-        types: [shell]
-        entry: bash
-        args: [-c, make style-sh]
-        verbose: true
+    - id: stylua
+      name: StyLua
+      language: system
+      entry: stylua
+      types: [lua]
+      verbose: true
+    - id: shfmt
+      name: shfmt
+      language: system
+      types: [shell]
+      entry: bash
+      args: [-c, make lint-sh]
+      verbose: true
+    - id: shellcheck
+      name: shellcheck
+      language: system
+      types: [shell]
+      entry: bash
+      args: [-c, make style-sh]
+      verbose: true
