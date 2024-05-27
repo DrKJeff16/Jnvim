@@ -14,15 +14,27 @@ end
 
 local Comment = require('Comment')
 
+local pre_hook = function(ctx)
+	return vim.bo.commentstring
+end
+
+if exists('ts_context_commentstring') then
+	pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
+end
+
 ---@type CommentConfig
 local opts = {
 	---Function to call before (un)comment
 	---@return string
-	pre_hook = exists('ts_context_commentstring')
-			and require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
-		or function(c)
-			return vim.bo.commentstring
-		end,
+	pre_hook = pre_hook,
+
+	post_hook = function(ctx)
+		local r = unpack(vim.api.nvim_win_get_cursor(0))
+		local rcnt = vim.api.nvim_buf_line_count(0)
+		if rcnt > r then
+			vim.api.nvim_win_set_cursor(0, { r + 1, 0 })
+		end
+	end,
 	---Add a space b/w comment and the line
 	padding = true,
 	---Whether the cursor should stay at its position
