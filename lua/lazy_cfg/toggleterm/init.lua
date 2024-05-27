@@ -9,33 +9,25 @@ local map = User.maps.map
 local empty = Check.value.empty
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local tmap = map.t
-local nmap = map.n
-local imap = map.i
 
 if not exists('toggleterm') then
 	return
 end
 
-local api = vim.api
-
-local au = api.nvim_create_autocmd
-local augroup = api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
 
 local TT = require('toggleterm')
 
-local FACTOR = vim.o.columns * 0.55
+local FACTOR = vim.opt.columns:get() * 0.85
 
-TT.setup({
+local Opts = {
 	---@type fun(term: Terminal): number
 	size = function(term)
-		local res = 30
-
 		if term.direction == 'vertical' then
-			res = FACTOR
+			return FACTOR
 		end
 
-		return res
+		return vim.opt.columns:get() * 0.65
 	end,
 
 	autochdir = true,
@@ -44,7 +36,7 @@ TT.setup({
 	close_on_exit = true,
 
 	opts = {
-		border = 'none',
+		border = 'single',
 		title_pos = 'center',
 		width = FACTOR,
 	},
@@ -57,6 +49,7 @@ TT.setup({
 			guibg = '#21443d',
 		},
 	},
+
 	shade_terminals = true,
 
 	start_in_insert = true,
@@ -82,53 +75,49 @@ TT.setup({
 			return term.name
 		end,
 	},
-})
+}
 
----@type AuPair[]
+TT.setup(Opts)
+
+---@type AuDict
 local aus = {
-	{
-		event = 'TermEnter',
-		opts = {
-			pattern = { 'term://*toggleterm#*' },
-			callback = function()
-				tmap('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
-			end,
-		},
+	['TermEnter'] = {
+		pattern = { 'term://*toggleterm#*' },
+		callback = function()
+			map.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
+		end,
 	},
 }
 
-for _, v in next, aus do
-	au(v.event, v.opts)
+for event, v in next, aus do
+	au(event, v)
 end
 
--- TODO: Annotate.
-local map_tbl = {
+---@type table<'n'|'i', ApiMapDict>
+local Keys = {
 	n = {
-		{
-			lhs = '<c-t>',
-			rhs = '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = "Toggle 'ToggleTerm'" },
+		['<c-t>'] = {
+			'<CMD>exe v:count1 . "ToggleTerm"<CR>',
+			{ desc = "Toggle 'ToggleTerm'" },
 		},
-		{
-			lhs = '<leader>Tt',
-			rhs = '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = "Toggle 'ToggleTerm'" },
+		['<leader>Tt'] = {
+			'<CMD>exe v:count1 . "ToggleTerm"<CR>',
+			{ desc = "Toggle 'ToggleTerm'" },
 		},
 	},
 	i = {
-		{
-			lhs = '<c-t>',
-			rhs = '<Esc><CMD>exe v:count1 . "ToggleTerm"<CR>',
-			opts = { desc = "Toggle 'ToggleTerm'" },
+		['<c-t>'] = {
+			'<Esc><CMD>exe v:count1 . "ToggleTerm"<CR>',
+			{ desc = "Toggle 'ToggleTerm'" },
 		},
 	},
-	t = {},
 }
 
-for k, v in next, map_tbl do
-	if is_tbl(v) and not empty(v) then
-		for _, args in next, v do
-			map[k](args.lhs, args.rhs, args.opts or {})
+for mode, t in next, Keys do
+	if is_tbl(t) and not empty(t) then
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			map[mode](lhs, v[1], v[2])
 		end
 	end
 end
