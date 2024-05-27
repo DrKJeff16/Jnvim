@@ -8,8 +8,11 @@ local map_t = User.types.user.maps
 local kmap = User.maps.kmap
 
 local exists = Check.exists.module
+local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local hi = User.highlight.hl
 local nmap = kmap.n
+local desc = kmap.desc
 
 if not exists('treesitter-context') then
 	return
@@ -26,7 +29,7 @@ local Options = {
 	min_window_height = 1,
 	zindex = 30,
 	enable = true,
-	max_lines = 3,
+	max_lines = not empty(vim.opt.scrolloff:get()) and 1 or vim.opt.scrolloff:get(),
 }
 
 Context.setup(Options)
@@ -43,16 +46,15 @@ local hls = {
 local keys = {
 	['<leader>Cn'] = {
 		function()
-			local goto_context = Context.go_to_context
-
-			goto_context(vim.v.count1)
+			Context.goto_context(vim.v.count1)
 		end,
-		{ desc = 'Previous Context' },
+		desc('Previous Context'),
 	},
 }
 
-for k, tuple in next, keys do
-	nmap(k, tuple[1], tuple[2] or {})
+for lhs, v in next, keys do
+	v[2] = is_tbl(v[2]) and v[2] or {}
+	nmap(lhs, v[1], v[2])
 end
 
 for k, v in next, hls do
