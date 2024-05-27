@@ -31,7 +31,7 @@ local opt_tbl = {
 	errorbells = false,
 	expandtab = false,
 	fileencoding = 'utf-8',
-	fileignorecase = is_windows,
+	fileignorecase = false,
 	formatoptions = 'bjlopqnw',
 	hidden = true,
 	helplang = { 'en' },
@@ -58,7 +58,7 @@ local opt_tbl = {
 		'tabpages',
 		'globals',
 	},
-	shell = 'bash',
+	shell = executable('bash') and 'bash' or 'sh',
 	scrolloff = 3,
 	showcmd = true,
 	showmatch = true,
@@ -84,10 +84,21 @@ local opt_tbl = {
 }
 
 if is_windows then
-	opt_tbl.shellslash = true
-	opt_tbl.shell = executable('bash.exe') and 'bash.exe' or 'cmd.exe'
-
+	opt_tbl.fileignorecase = true
 	opt_tbl.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe' or opt_tbl.makeprg
+
+	opt_tbl.shell = 'cmd.exe'
+	if executable('bash.exe') then
+		opt_tbl.shell = 'bash.exe'
+	elseif executable('sh.exe') then
+		opt_tbl.shell = 'sh.exe'
+	elseif executable('pwsh.exe') then
+		opt_tbl.shell = 'pwsh.exe'
+	elseif executable('powershell.exe') then
+		opt_tbl.shell = 'powershell.exe'
+	end
+
+	opt_tbl.shellslash = true
 end
 
 --- Option setter for the aforementioned options dictionary.
