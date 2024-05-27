@@ -12,6 +12,6 @@ end
 
 local Startup = require('startup')
 
-local opts = {}
+local Opts = {}
 
 Startup.setup()
