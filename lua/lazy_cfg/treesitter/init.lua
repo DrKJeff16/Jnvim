@@ -92,21 +92,25 @@ local TSConfig = {
 			local max_fs = 1024 * 1024
 			local ok, stats = pcall(fs_stat, buf_name(buf))
 
-			return ok and not is_nil(stats) and stats.size > max_fs
+			local disable_ft = {
+				'config',
+				'cfg',
+				'conf',
+			}
+
+			local res = false
+
+			if vim.tbl_contains(disable_ft, vim.api.nvim_get_option_value('ft', { scope = 'local' })) then
+				res = true
+			end
+
+			return res or ok and not is_nil(stats) and stats.size > max_fs
 		end,
 		additional_vim_regex_highlighting = false,
 	},
 
 	indent = { enable = false },
-	incremental_selection = {
-		enable = true,
-		keymaps = {
-			init_selection = 'gnn', -- set to `false` to disable one of the mappings
-			node_incremental = 'grn',
-			scope_incremental = 'grc',
-			node_decremental = 'grm',
-		},
-	},
+	incremental_selection = { enable = false },
 	modules = {},
 }
 
