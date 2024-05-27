@@ -13,9 +13,11 @@ repos:
         types: [shell]
         entry: bash
         args: [-c, make lint-sh]
+        verbose: true
       - id: shellcheck
         name: shellcheck
         language: system
         types: [shell]
         entry: bash
         args: [-c, make style-sh]
+        verbose: true
