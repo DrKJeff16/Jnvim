@@ -2,13 +2,10 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.highlight')
-require('user.types.user.check')
 
----@type UserCheck
 local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
-local is_num = Check.value.is_num
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
@@ -17,7 +14,7 @@ local empty = Check.value.empty
 ---@type UserHl
 local M = {
 	hl = function(name, opts, bufnr)
-		if not (is_str(name) or is_tbl(opts)) or empty(name) or empty(opts) then
+		if not (is_str(name) and is_tbl(opts)) or (empty(name) or empty(opts)) then
 			error('(user.highlight.hl): A highlight value is not permitted!')
 		end
 
@@ -33,11 +30,11 @@ function M.hl_from_arr(arr)
 	end
 
 	for _, T in next, arr do
-		if (is_str(T.name) or is_tbl(T.opts)) and not empty(T.name) and not empty(T.opts) then
-			M.hl(T.name, T.opts)
-		else
+		if not (is_str(T.name) and is_tbl(T.opts)) or (empty(T.name) or empty(T.opts)) then
 			error('(user.highlight.hl_from_arr): A highlight value is not permitted!')
 		end
+
+		M.hl(T.name, T.opts)
 	end
 end
 
@@ -63,7 +60,7 @@ function M.hl_from_dict(dict)
 	end
 
 	for k, v in next, dict do
-		if (is_str(k) or is_tbl(v)) and not empty(v) then
+		if (is_str(k) and is_tbl(v)) and not (empty(k) or empty(v)) then
 			M.hl(k, v)
 		else
 			error('(user.highlight.hl_from_dict): A highlight value is not permitted!')
