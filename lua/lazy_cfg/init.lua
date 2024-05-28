@@ -703,7 +703,8 @@ M.UI = {
 		version = false,
 		dependencies = { 'rainbow_delimiters' },
 		config = source('lazy_cfg.blank_line'),
-		enabled = not in_console(),
+		-- enabled = not in_console(),
+		enabled = false,
 	},
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
