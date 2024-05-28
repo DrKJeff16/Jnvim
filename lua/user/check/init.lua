@@ -22,9 +22,11 @@ local M = {
 --- A boolean that confirms whether the environment is a Linux Console.
 function M.in_console()
 	local env = vim.fn.environ()
+	---@type string
+	local TERM = env['TERM']
 
 	--- TODO: This is not a good enough check. Must find a better solution.
-	return not vim.fn.has_key(env, 'DISPLAY') or env['TERM'] == 'linux'
+	return not M.value.field('DISPLAY', env) or vim.tbl_contains({ 'screen', 'linux' }, TERM)
 end
 
 function M.new()
