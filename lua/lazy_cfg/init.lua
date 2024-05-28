@@ -13,6 +13,7 @@ local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
+local in_console = Check.in_console
 local nmap = User.maps.kmap.n
 local desc = User.maps.kmap.desc
 
@@ -134,7 +135,7 @@ local function colorscheme_init(fields)
 	end
 
 	return function()
-		vim.opt.termguicolors = vim_exists('+termguicolors')
+		vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 		if is_str(fields) then
 			vim.g[fields] = 1
 		else
@@ -274,6 +275,7 @@ M.ESSENTIAL = {
 		name = 'Mini',
 		version = false,
 		config = source('lazy_cfg.mini'),
+		enabled = not in_console(),
 	},
 	{
 		'tiagovla/scope.nvim',
@@ -308,6 +310,7 @@ M.ESSENTIAL = {
 		main = 'popup',
 		version = false,
 		dependencies = { 'Plenary' },
+		enabled = not in_console(),
 	},
 
 	{
@@ -321,6 +324,7 @@ M.ESSENTIAL = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.notify'),
+		enabled = not in_console(),
 	},
 
 	{
@@ -329,6 +333,7 @@ M.ESSENTIAL = {
 		main = 'hover',
 		version = false,
 		config = source('lazy_cfg.hover'),
+		enabled = not in_console(),
 	},
 
 	{
@@ -404,6 +409,7 @@ M.TS = {
 		lazy = true,
 		name = 'ts-context',
 		version = false,
+		enabled = not in_console(),
 	},
 	{
 		'JoosepAlviste/nvim-ts-context-commentstring',
@@ -520,6 +526,7 @@ M.LSP = {
 		name = 'Trouble',
 		version = false,
 		dependencies = { 'web-devicons' },
+		enabled = not in_console(),
 	},
 	{
 		'p00f/clangd_extensions.nvim',
@@ -650,6 +657,7 @@ M.UI = {
 			vim.opt.showmode = false
 		end,
 		config = source('lazy_cfg.lualine'),
+		enabled = not in_console(),
 	},
 	-- Tabline
 	{
@@ -666,6 +674,7 @@ M.UI = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.bufferline'),
+		-- enabled = not in_console(),
 		enabled = false,
 	},
 	-- Tabline
@@ -684,6 +693,7 @@ M.UI = {
 			vim.opt.termguicolors = vim_exists('+termguicolors')
 		end,
 		config = source('lazy_cfg.barbar'),
+		enabled = not in_console(),
 	},
 	-- Indent Scope
 	{
@@ -693,6 +703,7 @@ M.UI = {
 		version = false,
 		dependencies = { 'rainbow_delimiters' },
 		config = source('lazy_cfg.blank_line'),
+		enabled = not in_console(),
 	},
 	{
 		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
@@ -701,7 +712,7 @@ M.UI = {
 		version = false,
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
-		enabled = not vim_has('nvim-0.11'),
+		enabled = not (vim_has('nvim-0.11') or in_console()),
 	},
 	-- File Tree
 	{
@@ -718,7 +729,7 @@ M.UI = {
 			vim.g.loaded_netrw = 1
 			vim.g.loaded_netrwPlugin = 1
 
-			vim.opt.termguicolors = vim_exists('+termguicolors')
+			vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 		end,
 		config = source('lazy_cfg.nvim_tree'),
 	},
@@ -737,7 +748,7 @@ M.UI = {
 			vim.g.loaded_netrw = 1
 			vim.g.loaded_netrwPlugin = 1
 
-			vim.opt.termguicolors = vim_exists('+termguicolors')
+			vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 		end,
 		config = source('lazy_cfg.neo_tree'),
 		enabled = false,
@@ -748,6 +759,7 @@ M.UI = {
 		name = 'ColorfulWinsep',
 		version = false,
 		config = source('lazy_cfg.colorful_winsep'),
+		enabled = not in_console(),
 	},
 	{
 		'norcalli/nvim-colorizer.lua',
@@ -763,6 +775,7 @@ M.UI = {
 		name = 'ToggleTerm',
 		version = false,
 		config = source('lazy_cfg.toggleterm'),
+		enabled = not in_console(),
 	},
 	{
 		'folke/noice.nvim',
@@ -777,6 +790,7 @@ M.UI = {
 			'treesitter',
 		},
 		config = source('lazy_cfg.noice'),
+		enabled = not in_console(),
 	},
 	{
 		'LudoPinelli/comment-box.nvim',
@@ -811,6 +825,7 @@ M.UTILS = {
 			vim.g.mkdp_filetypes = { 'markdown' }
 		end,
 		config = source('lazy_cfg.md_preview'),
+		enabled = not in_console(),
 	},
 }
 

@@ -26,5 +26,6 @@
 ---@class UserCheck
 ---@field exists ExistanceCheck
 ---@field value ValueCheck
+---@field in_console fun(): boolean
 ---@field new? fun(): UserCheck
 ---@field __index? UserCheck

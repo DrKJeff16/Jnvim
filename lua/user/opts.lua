@@ -10,6 +10,7 @@ local is_nil = Check.value.is_nil
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
+local in_console = Check.in_console
 
 _G.is_windows = vim_has('win32')
 
@@ -73,7 +74,7 @@ local opt_tbl = {
 	showtabline = 2,
 	softtabstop = 4,
 	shiftwidth = 0,
-	termguicolors = vim_exists('+termguicolors'),
+	termguicolors = vim_exists('+termguicolors') and not in_console(),
 	title = true,
 	tabstop = 4,
 	updatecount = 100,

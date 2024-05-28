@@ -13,11 +13,26 @@ local M = {
 	exists = Exists,
 }
 
+--- Check whether Nvim is running in a Linux Console rather than a `pty`.
+--- ---
+--- ## Description
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example.
+--- ---
+--- ## Return
+--- A boolean that confirms whether the environment is a Linux Console.
+function M.in_console()
+	local env = vim.fn.environ()
+
+	--- TODO: This is not a good enough check. Must find a better solution.
+	return not vim.fn.has_key(env, 'DISPLAY') or env['TERM'] == 'linux'
+end
+
 function M.new()
 	local self = setmetatable({}, { __index = M })
 
 	self.value = M.value
 	self.exists = M.exists
+	self.in_console = M.in_console
 
 	return self
 end
