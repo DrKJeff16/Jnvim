@@ -2,9 +2,7 @@
 ---@diagnostic disable:unused-function
 
 require('user.types.user.maps')
-require('user.types.user.check')
 
----@type UserCheck
 local Check = require('user.check')
 
 local is_nil = Check.value.is_nil
@@ -15,6 +13,7 @@ local is_num = Check.value.is_num
 local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
+local field = Check.value.field
 
 local kmap = vim.keymap.set
 local map = vim.api.nvim_set_keymap
@@ -64,12 +63,12 @@ local function variant(mode, func, with_buf)
 	return res
 end
 
----@type fun(field: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
-local mode_funcs = function(field)
-	---@type table<'api'|'key'|'buf', { integer: fun(...), integer: boolean }>
+---@type fun(key: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
+local mode_funcs = function(key)
+	---@type table<'api'|'key'|'buf', { integer: fun(), integer: boolean }>
 	local VALID = { api = { map, false }, key = { kmap, false }, buf = { bufmap, true } }
 
-	if is_nil(VALID[field]) then
+	if not field(key, VALID) then
 		error('(user.maps:mode_funcs): Invalid variant ID `' .. field .. "`\nMust be `'api'|'key'|'buf'`")
 	end
 
@@ -77,7 +76,7 @@ local mode_funcs = function(field)
 	local res = {}
 
 	for _, mode in next, MODES do
-		res[mode] = variant(mode, VALID[field][1], VALID[field][2])
+		res[mode] = variant(mode, VALID[key][1], VALID[key][2])
 	end
 
 	return res
@@ -100,8 +99,9 @@ function M.kmap.desc(msg, silent, bufnr, noremap, nowait)
 		nowait = is_bool(nowait) and nowait or true,
 	}
 end
-for _, field in next, { M.map, M.buf_map } do
-	function field.desc(msg, silent, noremap, nowait)
+
+for _, key in next, { M.map, M.buf_map } do
+	function key.desc(msg, silent, noremap, nowait)
 		return {
 			desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
 			silent = is_bool(silent) and silent or true,
@@ -115,8 +115,6 @@ function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
 		error('(user.maps.nop): Field is neither a string nor a table.')
 	end
-
-	local map_tbl = M.map
 
 	mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
 	if mode == 'i' then
@@ -132,10 +130,10 @@ function M.nop(T, opts, mode)
 	opts.silent = is_bool(opts.silent) and opts.silent or true
 
 	if is_str(T) then
-		map_tbl[mode](T, '<Nop>', opts)
+		M.map[mode](T, '<Nop>', opts)
 	else
 		for _, v in next, T do
-			map_tbl[mode](v, '<Nop>', opts)
+			M.map[mode](v, '<Nop>', opts)
 		end
 	end
 end
