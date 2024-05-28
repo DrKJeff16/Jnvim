@@ -850,6 +850,13 @@ local Keys = {
 	['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
 	['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
 	['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+	['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+	['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+	['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+	['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+	['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+	['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+	['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
 }
 
 for lhs, v in next, Keys do

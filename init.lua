@@ -37,6 +37,7 @@ local NOP = {
 	'<leader>!',
 	'<leader>"',
 	'<leader>A',
+	'<leader>B',
 	'<leader>C',
 	'<leader>I',
 	'<leader>L',
@@ -45,6 +46,7 @@ local NOP = {
 	'<leader>S',
 	'<leader>U',
 	'<leader>V',
+	'<leader>W',
 	'<leader>X',
 	'<leader>a',
 	'<leader>b',
@@ -60,6 +62,7 @@ local NOP = {
 	'<leader>r',
 	'<leader>s',
 	'<leader>v',
+	'<leader>w',
 	'<leader>x',
 	'<leader>z',
 }
@@ -160,14 +163,6 @@ local map_tbl = {
 		['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer (Forcefully)', false) },
 		['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false) },
 		['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
-
-		['<leader>Ll'] = { ':Lazy<CR>' },
-		['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
-		['<leader>Ls'] = { ':Lazy sync<CR>' },
-		['<leader>Lx'] = { ':Lazy clean<CR>' },
-		['<leader>Lc'] = { ':Lazy check<CR>' },
-		['<leader>Li'] = { ':Lazy install<CR>' },
-		['<leader>Lr'] = { ':Lazy reload<CR>' },
 	},
 	-- WARNING: DO NOT USE `:`!!!
 	v = {
