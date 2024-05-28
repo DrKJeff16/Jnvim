@@ -19,8 +19,6 @@ local Conds = require('nvim-autopairs.conds')
 local Handlers = require('nvim-autopairs.completion.handlers')
 local ts_conds = require('nvim-autopairs.ts-conds')
 
--- Ap.clear_rules()
-
 local bpairs = {
 	{ '(', ')' },
 	{ '[', ']' },
@@ -65,6 +63,41 @@ local Rules = {
 				bpairs[3][1] .. '  ' .. bpairs[3][2],
 			}, context)
 		end),
+
+	Rule('$', '$', { 'tex', 'latex' })
+		-- don't add a pair if the next character is %
+		:with_pair(Conds.not_after_regex('%%'))
+		-- don't add a pair if  the previous character is xxx
+		:with_pair(Conds.not_before_regex('xxx', 3))
+		-- don't move right when repeat character
+		:with_move(Conds.none())
+		-- don't delete if the next character is xx
+		:with_del(Conds.not_after_regex('xx'))
+		-- disable adding a newline when you press <cr>
+		:with_cr(Conds.none()),
+
+	Rule('$$', '$$', 'tex'):with_pair(function(opts)
+		print(vim.inspect(opts))
+		if opts.line == 'aa $$' then
+			-- don't add pair on that line
+			return false
+		end
+	end),
+
+	Rule('<', '>', { 'markdown', 'html' }),
+
+	Rule('\\start(%w*) $', 'tex')
+		:replace_endpair(function(opts)
+			local beforeText = string.sub(opts.line, 0, opts.col)
+			local _, _, match = beforeText:find('\\start(%w*)')
+			if match and #match > 0 then
+				return ' \\stop' .. match
+			end
+			return ''
+		end)
+		:with_move(Conds.none())
+		:use_key('<space>')
+		:use_regex(true),
 }
 
 for _, bracket in next, bpairs do
@@ -78,8 +111,10 @@ for _, bracket in next, bpairs do
 			end)
 			:with_del(Conds.none())
 			:use_key(bracket[2])
-		-- Removes the trailing whitespace that can occur without this
-		-- :replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
+			-- Removes the trailing whitespace that can occur without this
+			:replace_map_cr(function(_)
+				return '<C-c>2xi<CR><C-c>O'
+			end)
 	)
 end
 
@@ -106,5 +141,8 @@ end
 Ap.add_rules(Rules)
 
 rule2('(', ' ', ')')
+rule2('[', ' ', ']', 'sh')
+rule2('[[', ' ', ']]', 'sh')
+rule2('{', ' ', '}', 'lua')
 
 Ap.add_rules(require('nvim-autopairs.rules.endwise-lua'))
