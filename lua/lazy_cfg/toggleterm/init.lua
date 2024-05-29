@@ -5,10 +5,12 @@ local User = require('user')
 local Check = User.check
 local types = User.types.toggleterm
 local map = User.maps.map
+local WK = User.maps.wk
 
 local empty = Check.value.empty
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
+local desc = map.desc
 
 if not exists('toggleterm') then
 	return
@@ -24,10 +26,10 @@ local Opts = {
 	---@type fun(term: Terminal): number
 	size = function(term)
 		if term.direction == 'vertical' then
-			return FACTOR
+			return vim.opt.columns:get() * 0.65
 		end
 
-		return vim.opt.columns:get() * 0.65
+		return FACTOR
 	end,
 
 	autochdir = true,
@@ -98,23 +100,33 @@ local Keys = {
 	n = {
 		['<c-t>'] = {
 			'<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			{ desc = "Toggle 'ToggleTerm'" },
+			desc('Toggle'),
 		},
 		['<leader>Tt'] = {
 			'<CMD>exe v:count1 . "ToggleTerm"<CR>',
-			{ desc = "Toggle 'ToggleTerm'" },
+			desc('Toggle'),
 		},
 	},
 	i = {
 		['<c-t>'] = {
 			'<Esc><CMD>exe v:count1 . "ToggleTerm"<CR>',
-			{ desc = "Toggle 'ToggleTerm'" },
+			desc('Toggle'),
 		},
 	},
 }
 
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = { ['<leader>T'] = { name = '+Toggleterm' } },
+}
+
 for mode, t in next, Keys do
-	if is_tbl(t) and not empty(t) then
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
 		for lhs, v in next, t do
 			v[2] = is_tbl(v[2]) and v[2] or {}
 			map[mode](lhs, v[1], v[2])
