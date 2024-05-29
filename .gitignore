@@ -29,5 +29,4 @@
 *.list
 *.log
 
-Pipfile
 Pipfile.lock
