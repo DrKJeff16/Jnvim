@@ -26,7 +26,7 @@ function M.in_console()
 	local TERM = env['TERM']
 
 	--- TODO: This is not a good enough check. Must find a better solution.
-	return not M.value.field('DISPLAY', env) or vim.tbl_contains({ 'screen', 'linux' }, TERM)
+	return vim.tbl_contains({ 'screen', 'linux' }, TERM)
 end
 
 function M.new()
