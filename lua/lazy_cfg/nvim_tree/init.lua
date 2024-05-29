@@ -44,7 +44,7 @@ local floor = math.floor
 
 ---@type OptSetterFun
 local function key_opts(desc, bufn)
-	bufn = (is_num(bufn) and bufn >= 0) and bufn or 0
+	bufn = (is_num(bufn) and bufn >= 0) and bufn or vim.api.nvim_get_current_buf()
 
 	---@type KeyMapOpts
 	local res = {
