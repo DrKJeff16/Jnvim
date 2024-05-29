@@ -110,6 +110,7 @@ require('user.types.which_key')
 ---@field desc BufDescFun
 
 ---@class UserMaps.WK
+---@field available fun(): boolean
 ---@field convert fun(rhs: KeyRhs, opts: (ApiMapOpts|KeyMapOpts|BufMapOpts)?): RegKey
 ---@field convert_dict fun(T: KeyMapDict|ApiMapDict): RegKeys
 ---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false|nil

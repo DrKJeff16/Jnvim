@@ -4,6 +4,8 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lazy
+local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -14,8 +16,7 @@ local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local in_console = Check.in_console
-local nmap = User.maps.kmap.n
-local desc = User.maps.kmap.desc
+local desc = kmap.desc
 
 local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
@@ -859,35 +860,52 @@ local key_variant = function(cmd)
 	end
 end
 
----@type KeyMapDict
+---@type table<MapModes, KeyMapDict>
 local Keys = {
-	['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-	['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-	['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-	['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
-	['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-	['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-	['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-	['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-	['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-	['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
-	['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+	n = {
+		['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+		['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+		['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+		['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+		['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+		['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+		['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+		['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+		['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+		['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+		['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+	},
+	v = {
+		['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+		['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+		['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+		['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+		['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+		['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+		['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+		['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+		['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+		['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+	},
 }
 
-local Keys_WK = User.maps.wk.convert_dict(Keys)
-User.maps.wk.register(Keys_WK, { mode = 'n' })
+for mode, maps in next, Keys do
+	if WK.available() then
+		WK.register(WK.convert_dict(maps), { mode = mode })
+	else
+		for lhs, v in next, maps do
+			local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
+			if not (is_str(v[1]) or is_fun(v[1])) then
+				vim.notify(msg)
+				goto continue
+			end
 
---[[ for lhs, v in next, Keys do
-	local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
-	if not (is_str(v[1]) or is_fun(v[1])) then
-		vim.notify(msg)
-		goto continue
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			kmap[mode](lhs, v[1], v[2])
+
+			::continue::
+		end
 	end
-
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(lhs, v[1], v[2])
-
-	::continue::
-end ]]
+end
 
 return P

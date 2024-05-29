@@ -199,13 +199,15 @@ local Keys = {
 	},
 }
 
-local Keys_WK = WK.convert_dict(Keys)
-WK.register(Keys_WK)
-
---[[ for lhs, v in next, Keys do
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(lhs, v[1], v[2])
-end ]]
+if WK.available() then
+	WK.register({ ['<leaderl>'] = { name = '+LSP' } })
+	WK.register(WK.convert_dict(Keys))
+else
+	for lhs, v in next, Keys do
+		v[2] = is_tbl(v[2]) and v[2] or {}
+		nmap(lhs, v[1], v[2])
+	end
+end
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', { clear = true }),
@@ -216,49 +218,76 @@ au('LspAttach', {
 
 		bo[buf].omnifunc = 'v:lua.lsp.omnifunc'
 
+		---@type table<MapModes, KeyMapDict>
 		local K = {
-			['<leader>lgD'] = { lsp_buf.declaration, desc('Declaration', true, buf) },
-			['<leader>lgd'] = { lsp_buf.definition, desc('Definition', true, buf) },
-			['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
-			['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
-			['<leader>lgi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
-			['<leader>lS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
-			['<leader>lwa'] = { lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf) },
-			['<leader>lwr'] = { lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf) },
-			['<leader>lwl'] = {
-				function()
-					local out = lsp_buf.list_workspace_folders()
-					local msg = ''
-					for _, v in next, out do
-						msg = msg .. '\n - ' .. v
-					end
+			n = {
+				['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration', true, buf) },
+				['<leader>lfd'] = { lsp_buf.definition, desc('Definition', true, buf) },
+				['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
+				['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
+				['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
+				['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
+				['<leader>lwa'] = { lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf) },
+				['<leader>lwr'] = { lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf) },
+				['<leader>lwl'] = {
+					function()
+						local out = lsp_buf.list_workspace_folders()
+						local msg = ''
+						for _, v in next, out do
+							msg = msg .. '\n - ' .. v
+						end
 
-					-- Try doing it with `notify` plugin.
-					if exists('notify') then
-						local Notify = require('notify')
+						-- Try doing it with `notify` plugin.
+						if exists('notify') then
+							local Notify = require('notify')
 
-						Notify(msg, 'info', { title = 'Workspace Folders' })
-					else
-						vim.notify(msg, vim.log.levels.INFO)
-					end
-				end,
-				desc('List Workspace Folders', true, buf),
+							Notify(msg, 'info', { title = 'Workspace Folders' })
+						else
+							vim.notify(msg, vim.log.levels.INFO)
+						end
+					end,
+					desc('List Workspace Folders', true, buf),
+				},
+				['<leader>lfT'] = { lsp_buf.type_definition, desc('Type Definition', true, buf) },
+				['<leader>lfR'] = { lsp_buf.rename, desc('Rename...', true, buf) },
+				['<leader>lfr'] = { lsp_buf.references, desc('References', true, buf) },
+				['<leader>lff'] = {
+					function()
+						lsp_buf.format({ async = true })
+					end,
+					desc('Format File', true, buf),
+				},
+				['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
 			},
-			['<leader>lD'] = { lsp_buf.type_definition, desc('Type Definition', true, buf) },
-			['<leader>lrn'] = { lsp_buf.rename, desc('Rename...', true, buf) },
-			['<leader>lgr'] = { lsp_buf.references, desc('References', true, buf) },
-			['<leader>lf'] = {
-				function()
-					lsp_buf.format({ async = true })
-				end,
-				desc('Format File', true, buf),
+			v = {
+				['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
+			},
+		}
+		---@type table<MapModes, RegKeysNamed>
+		local Names = {
+			n = {
+				['<leader>lc'] = { name = '+Code Actions' },
+				['<leader>lw'] = { name = '+Workspace' },
+				['<leader>lf'] = { name = '+File Analysis' },
+			},
+			v = {
+				['<leader>lc'] = { name = '+Code Actions' },
 			},
 		}
 
-		local K2 = WK.convert_dict(K)
-		WK.register(K2)
-
-		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, desc('Code Actions', true, buf))
+		for mode, keys in next, K do
+			if WK.available() then
+				if is_tbl(Names[mode]) and not empty(Names[mode]) then
+					WK.register(Names[mode])
+				end
+				WK.register(WK.convert_dict(keys), { mode = mode })
+			else
+				for lhs, v in next, keys do
+					v[2] = is_tbl(v[2]) and v[2] or {}
+					kmap[mode](lhs, v[1], v[2])
+				end
+			end
+		end
 	end,
 })
 

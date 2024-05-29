@@ -140,7 +140,11 @@ function M.nop(T, opts, mode)
 end
 
 --- `which_key` API entrypoints
-M.wk = {}
+M.wk = {
+	available = function()
+		return Check.exists.module('which-key')
+	end,
+}
 
 function M.wk.convert(rhs, opts)
 	if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
@@ -181,14 +185,12 @@ function M.wk.convert_dict(T)
 end
 
 function M.wk.register(T, opts)
-	if not is_tbl(T) or empty(T) then
-		error('(user.maps.wk.register): Table is not an argument!')
+	if not M.wk.available() then
+		return false
 	end
 
-	local exists = Check.exists.module
-
-	if not exists('which-key') then
-		return false
+	if not is_tbl(T) or empty(T) then
+		error('(user.maps.wk.register): Table is not an argument!')
 	end
 
 	local WK = require('which-key')
@@ -213,11 +215,7 @@ function M.wk.register(T, opts)
 		local tbl = vim.deepcopy(v)
 
 		for _, o in next, DEFAULT_OPTS do
-			if is_str(v.name) and o == 'nowait' then
-				tbl[o] = false
-			else
-				tbl[o] = is_bool(tbl[o]) and tbl[o] or true
-			end
+			tbl[o] = is_bool(tbl[o]) and tbl[o] or opts[o]
 		end
 
 		filtered[lhs] = tbl

@@ -5,13 +5,14 @@ local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
-local nmap = kmap.n
+local empty = Check.value.empty
 
 if not exists('todo-comments') then
 	return
@@ -131,65 +132,73 @@ Todo.setup({
 	},
 })
 
----@type KeyMapDict
-local maps = {
-	-- `TODO`
-	['<leader>ctn'] = {
-		function()
-			Todo.jump_next()
-		end,
-		{ desc = "Next 'TODO' Comment" },
-	},
-	['<leader>ctp'] = {
-		function()
-			Todo.jump_prev()
-		end,
-		{ desc = "Previous 'TODO' Comment" },
-	},
+---@type table<MapModes, KeyMapDict>
+local Keys = {
+	n = {
+		-- `TODO`
+		['<leader>ctn'] = {
+			function()
+				Todo.jump_next()
+			end,
+			{ desc = "Next 'TODO' Comment" },
+		},
+		['<leader>ctp'] = {
+			function()
+				Todo.jump_prev()
+			end,
+			{ desc = "Previous 'TODO' Comment" },
+		},
 
-	-- `ERROR`
-	['<leader>cen'] = {
-		function()
-			Todo.jump_next({ keywords = { 'ERROR' } })
-		end,
-		{ desc = "Next 'ERROR' Comment" },
-	},
-	['<leader>cep'] = {
-		function()
-			Todo.jump_prev({ keywords = { 'ERROR' } })
-		end,
-		{ desc = "Previous 'ERROR' Comment" },
-	},
+		-- `ERROR`
+		['<leader>cen'] = {
+			function()
+				Todo.jump_next({ keywords = { 'ERROR' } })
+			end,
+			{ desc = "Next 'ERROR' Comment" },
+		},
+		['<leader>cep'] = {
+			function()
+				Todo.jump_prev({ keywords = { 'ERROR' } })
+			end,
+			{ desc = "Previous 'ERROR' Comment" },
+		},
 
-	-- `WARNING`
-	['<leader>cwn'] = {
-		function()
-			Todo.jump_next({ keywords = { 'WARNING' } })
-		end,
-		{ desc = "Next 'WARNING' Comment" },
-	},
-	['<leader>cwp'] = {
-		function()
-			Todo.jump_prev({ keywords = { 'WARNING' } })
-		end,
-		{ desc = "Previous 'WARNING' Comment" },
+		-- `WARNING`
+		['<leader>cwn'] = {
+			function()
+				Todo.jump_next({ keywords = { 'WARNING' } })
+			end,
+			{ desc = "Next 'WARNING' Comment" },
+		},
+		['<leader>cwp'] = {
+			function()
+				Todo.jump_prev({ keywords = { 'WARNING' } })
+			end,
+			{ desc = "Previous 'WARNING' Comment" },
+		},
 	},
 }
 
-for lhs, t in next, maps do
-	if not is_fun(t[1]) and not is_str(t[1]) then
-		goto continue
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>c'] = { name = '+TODO Comments' },
+		['<leader>cw'] = { name = "+'WARNING'" },
+		['<leader>ce'] = { name = "+'ERROR'" },
+		['<leader>ct'] = { name = "+'TODO'" },
+	},
+}
+
+for mode, keys in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+		WK.register(WK.convert_dict(keys), { mode = mode })
+	else
+		for lhs, v in next, keys do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			kmap[mode](lhs, v[1], v[2])
+		end
 	end
-	local rhs = t[1]
-
-	---@type vim.keymap.set.Opts
-	local opts = {}
-
-	if is_tbl(t[2]) then
-		opts = t[2]
-	end
-
-	nmap(lhs, rhs, opts)
-
-	::continue::
 end

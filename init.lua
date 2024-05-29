@@ -126,10 +126,10 @@ local map_tbl = {
 		},
 		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Interactively)', false) },
 		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Interactively)', false) },
-		['<leader>fvet'] = { ':tabnew $MYVIMRC<CR>' },
-		['<leader>fvee'] = { ':ed $MYVIMRC<CR>' },
-		['<leader>fves'] = { ':split $MYVIMRC<CR>' },
-		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>' },
+		['<leader>fvet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
+		['<leader>fvee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
+		['<leader>fves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
+		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
 
 		['<leader>vh'] = { ':checkhealth<CR>', desc('Run Checkhealth', false) },
 
@@ -147,8 +147,8 @@ local map_tbl = {
 		['<leader>wsS'] = { ':split ', desc('Horizontal Split (Interactively)', false) },
 		['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Interactively)', false) },
 
-		['<leader>qq'] = { ':qa<CR>' },
-		['<leader>qQ'] = { ':qa!<CR>' },
+		['<leader>qq'] = { ':qa<CR>', desc('Quit Nvim') },
+		['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
 
 		['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
 		['<leader>tp'] = { ':tabp<CR>', desc('Previous Tab', false) },
@@ -177,11 +177,47 @@ local map_tbl = {
 		['<leader>r'] = { ':s/', desc('Run Search-Replace Interactively', false) },
 		['<leader>ir'] = { ':%retab<CR>', desc('Retab Selection') },
 	},
-	t = {
-		-- Escape terminl by pressing `<Esc>`
-		['<Esc>'] = { '<C-\\><C-n>', { noremap = true } },
+}
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		-- File Handling
+		['<leader>f'] = { name = '+File' },
+		--- Source File Handling
+		['<leader>fv'] = { name = '+Vim Files' },
+		--- `init.lua` Editing
+		['<leader>fve'] = { name = '+Edit `init.lua`' },
+
+		-- Tabs Handling
+		['<leader>t'] = { name = '+Tabs' },
+
+		-- Buffer Handling
+		['<leader>b'] = { name = '+Buffer' },
+
+		-- Window Handling
+		['<leader>w'] = { name = '+Window' },
+
+		-- Window Splitting
+		['<leader>ws'] = { name = '+Split' },
+
+		-- Exiting
+		['<leader>q'] = { name = '+Quit Nvim' },
+
+		-- Help
+		['<leader>h'] = { name = '+Help' },
+
+		-- Session
+		['<leader>S'] = { name = '+Session' },
+
+		-- Vim
+		['<leader>v'] = { name = '+Vim' },
+	},
+	v = {
+		['<leader>i'] = { name = '+Indent' },
 	},
 }
+
+Kmap.t('<Esc>', '<C-\\><C-n>')
 
 if not called_lazy then
 	-- List of manually-callable plugins.
@@ -191,8 +227,18 @@ end
 
 -- Set the keymaps previously stated
 for mode, t in next, map_tbl do
-	local wk_maps = WK.convert_dict(t)
-	register(wk_maps, { mode = mode })
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			register(Names[mode], { mode = mode })
+		end
+
+		register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			Kmap[mode](lhs, v[1], v[2])
+		end
+	end
 end
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
@@ -204,7 +250,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
-	---@type RegKeys
+	---@type KeyMapDict
 	local CscKeys = {}
 
 	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula'|'oak')[]
@@ -225,13 +271,24 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	for _, c in next, selected do
 		if color_exists(Csc[c]) then
 			found_csc = empty(found_csc) and i or found_csc
-			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, 'Setup Colorscheme `' .. c .. '`' }
+			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
 			i = i + 1
 		end
 	end
 
-	register({ ['<leader>vc'] = { name = '+Colorschemes' } })
-	register(CscKeys)
+	if WK.available() then
+		register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = 'n' })
+		register(WK.convert_dict(CscKeys), { mode = 'n' })
+
+		register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = 'v' })
+		register(WK.convert_dict(CscKeys), { mode = 'v' })
+	else
+		for lhs, v in next, CscKeys do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			Kmap.n(lhs, v[1], v[2])
+			Kmap.v(lhs, v[1], v[2])
+		end
+	end
 
 	if not empty(found_csc) then
 		Csc[selected[found_csc]].setup()
