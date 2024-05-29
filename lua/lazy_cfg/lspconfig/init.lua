@@ -5,6 +5,7 @@ local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -80,12 +81,12 @@ local handlers = {
 	['textDocument/signatureHelp'] = Lsp.with(lsp_handlers.signature_help, { border = border }),
 }
 
----@type fun(srv_tbl: LspServers): LspServers
-local populate = function(srv_tbl)
+---@type fun(T: LspServers): LspServers
+local populate = function(T)
 	---@type LspServers
 	local res = {}
 
-	for k, v in next, srv_tbl do
+	for k, v in next, T do
 		if not is_tbl(v) then
 			goto continue
 		end
@@ -145,17 +146,17 @@ srv.yamlls = executable('yaml-language-server') and {} or nil
 function srv.new()
 	local self = setmetatable({}, { __index = srv })
 
-	self.lua_ls = srv.lua_ls
-	self.bashls = srv.bashls
-	self.clangd = srv.clangd
-	self.cmake = srv.cmake
-	self.html = srv.html
-	self.jdtls = srv.jdtls
-	self.jsonls = srv.jsonls
-	self.marksman = srv.marksman
-	self.pylsp = srv.pylsp
-	self.texlab = srv.texlab
-	self.yamlls = srv.yamlls
+	self.lua_ls = srv.lua_ls or nil
+	self.bashls = srv.bashls or nil
+	self.clangd = srv.clangd or nil
+	self.cmake = srv.cmake or nil
+	self.html = srv.html or nil
+	self.jdtls = srv.jdtls or nil
+	self.jsonls = srv.jsonls or nil
+	self.marksman = srv.marksman or nil
+	self.pylsp = srv.pylsp or nil
+	self.texlab = srv.texlab or nil
+	self.yamlls = srv.yamlls or nil
 
 	return self
 end
@@ -169,10 +170,8 @@ for k, v in next, srv do
 end
 
 ---@type KeyMapDict
-local keys = {
+local Keys = {
 	['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
-	['<leader>l['] = { Diag.goto_prev, desc('Previous Diagnostic') },
-	['<leader>l]'] = { Diag.goto_next, desc('Previous Diagnostic') },
 	['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
 	['<leader>lI'] = {
 		function()
@@ -200,10 +199,13 @@ local keys = {
 	},
 }
 
-for lhs, v in next, keys do
+local Keys_WK = WK.convert_dict(Keys)
+WK.register(Keys_WK)
+
+--[[ for lhs, v in next, Keys do
 	v[2] = is_tbl(v[2]) and v[2] or {}
 	nmap(lhs, v[1], v[2])
-end
+end ]]
 
 au('LspAttach', {
 	group = augroup('UserLspConfig', { clear = true }),
@@ -214,36 +216,47 @@ au('LspAttach', {
 
 		bo[buf].omnifunc = 'v:lua.lsp.omnifunc'
 
-		nmap('<leader>lgD', lsp_buf.declaration, desc('Declaration', true, buf))
-		nmap('<leader>lgd', lsp_buf.definition, desc('Definition', true, buf))
-		nmap('<leader>lk', lsp_buf.hover, desc('Hover', true, buf))
-		nmap('K', lsp_buf.hover, desc('Hover', true, buf))
-		nmap('<leader>lgi', lsp_buf.implementation, desc('Implementation', true, buf))
-		nmap('<leader>lS', lsp_buf.signature_help, desc('Signature Help', true, buf))
-		nmap('<leader>lwa', lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf))
-		nmap('<leader>lwr', lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf))
-		nmap('<leader>lwl', function()
-			local out = lsp_buf.list_workspace_folders()
-			local msg = ''
-			for _, v in next, out do
-				msg = msg .. '\n - ' .. v
-			end
+		local K = {
+			['<leader>lgD'] = { lsp_buf.declaration, desc('Declaration', true, buf) },
+			['<leader>lgd'] = { lsp_buf.definition, desc('Definition', true, buf) },
+			['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
+			['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
+			['<leader>lgi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
+			['<leader>lS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
+			['<leader>lwa'] = { lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf) },
+			['<leader>lwr'] = { lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf) },
+			['<leader>lwl'] = {
+				function()
+					local out = lsp_buf.list_workspace_folders()
+					local msg = ''
+					for _, v in next, out do
+						msg = msg .. '\n - ' .. v
+					end
 
-			-- Try doing it with `notify` plugin.
-			if exists('notify') then
-				local Notify = require('notify')
+					-- Try doing it with `notify` plugin.
+					if exists('notify') then
+						local Notify = require('notify')
 
-				Notify(msg, 'info', { title = 'Workspace Folders' })
-			else
-				vim.notify(msg, vim.log.levels.INFO)
-			end
-		end, desc('List Workspace Folders', true, buf))
-		nmap('<leader>lD', lsp_buf.type_definition, desc('Type Definition', true, buf))
-		nmap('<leader>lrn', lsp_buf.rename, desc('Rename...', true, buf))
-		nmap('<leader>lgr', lsp_buf.references, desc('References', true, buf))
-		nmap('<leader>lf', function()
-			lsp_buf.format({ async = true })
-		end, desc('Format File', true, buf))
+						Notify(msg, 'info', { title = 'Workspace Folders' })
+					else
+						vim.notify(msg, vim.log.levels.INFO)
+					end
+				end,
+				desc('List Workspace Folders', true, buf),
+			},
+			['<leader>lD'] = { lsp_buf.type_definition, desc('Type Definition', true, buf) },
+			['<leader>lrn'] = { lsp_buf.rename, desc('Rename...', true, buf) },
+			['<leader>lgr'] = { lsp_buf.references, desc('References', true, buf) },
+			['<leader>lf'] = {
+				function()
+					lsp_buf.format({ async = true })
+				end,
+				desc('Format File', true, buf),
+			},
+		}
+
+		local K2 = WK.convert_dict(K)
+		WK.register(K2)
 
 		vim.keymap.set({ 'n', 'v' }, '<leader>lca', lsp_buf.code_action, desc('Code Actions', true, buf))
 	end,
