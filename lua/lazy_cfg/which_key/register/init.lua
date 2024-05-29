@@ -32,11 +32,10 @@ local function reg(maps, opts)
 		end
 	end
 
-	---@type RegKeysTbl
+	---@type RegKeys|RegKeysNamed
 	local filtered = {}
 
 	for s, v in next, maps do
-		---@type RegKey|RegPfx
 		local tbl = vim.deepcopy(v)
 
 		for _, o in next, DEFAULT_OPTS do
