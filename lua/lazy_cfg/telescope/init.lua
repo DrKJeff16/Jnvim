@@ -5,13 +5,13 @@ local User = require('user')
 local Check = User.check
 local types = User.types.telescope
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local nmap = kmap.n
 local desc = kmap.desc
 
 if not exists('telescope') then
@@ -63,23 +63,25 @@ local function open()
 	vim.cmd('Telescope')
 end
 
----@type KeyMapDict
+---@type table<MapModes, KeyMapDict>
 local Maps = {
-	['<leader><leader>'] = { open, desc('Open Telescope') },
-	['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-	['<leader>ff'] = { Builtin.find_files, desc('File Picker') },
+	n = {
+		['<leader><leader>'] = { open, desc('Open Telescope') },
+		['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
+		['<leader>ff'] = { Builtin.find_files, desc('File Picker') },
 
-	['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
-	['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
-	['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
-	['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
-	['<leader>fTbc'] = { Builtin.colorscheme, desc('Colorschemes') },
-	['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
-	['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
-	['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
-	['<leader>fTblD'] = { Builtin.lsp_document_symbols, desc('Document Symbols') },
-	['<leader>fTbld'] = { Builtin.lsp_definitions, desc('Definitions') },
-	['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
+		['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
+		['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
+		['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
+		['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
+		['<leader>fTbc'] = { Builtin.colorscheme, desc('Colorschemes') },
+		['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
+		['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
+		['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
+		['<leader>fTblD'] = { Builtin.lsp_document_symbols, desc('Document Symbols') },
+		['<leader>fTbld'] = { Builtin.lsp_definitions, desc('Definitions') },
+		['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
+	},
 }
 
 ---@type table<string, TelExtension>
@@ -154,22 +156,36 @@ for mod, ext in next, known_exts do
 
 	if is_fun(ext.keys) then
 		for lhs, v in next, ext.keys() do
-			Maps[lhs] = v
+			for mode, _ in next, Maps do
+				Maps[mode][lhs] = v
+			end
 		end
 	end
 
 	::continue::
 end
 
-for lhs, v in next, Maps do
-	if not (is_str(lhs) and is_fun(v[1])) then
-		goto continue
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>fT'] = { name = '+Telescope' },
+		['<leader>fTb'] = { name = '+Builtins' },
+		['<leader>fTe'] = { name = '+Extensions' },
+	},
+}
+
+for mode, t in next, Maps do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			kmap[mode](lhs, v[1], v[2])
+		end
 	end
-
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(lhs, v[1], v[2])
-
-	::continue::
 end
 
 ---@type AuRepeat
