@@ -6,6 +6,7 @@ local Check = User.check
 local Types = User.types -- Import docstrings and annotations.
 local maps_t = Types.user.maps
 local Kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
@@ -15,9 +16,10 @@ local is_fun = Check.value.is_fun
 local empty = Check.value.empty
 local nop = User.maps.nop
 local desc = Kmap.desc
+local register = WK.register
 
 -- Set `<Space>` as Leader Key.
-nop('<Space>', { noremap = true, desc = 'Leader Key' })
+nop('<Space>', User.maps.map.desc('Leader Key', true, true))
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -181,29 +183,17 @@ local map_tbl = {
 	},
 }
 
--- Set the keymaps previously stated.
-for mode, t in next, map_tbl do
-	local func = Kmap[mode]
-
-	for lhs, v in next, t do
-		if not (is_fun(v[1]) or is_str(v[1])) then
-			error('(init.lua): Could not process keymap `' .. lhs .. '`')
-		end
-
-		v[2] = is_tbl(v[2]) and v[2] or {}
-
-		func(lhs, v[1], v[2])
-	end
-end
-
 if not called_lazy then
 	-- List of manually-callable plugins.
 	_G.Pkg = require('lazy_cfg')
 	_G.called_lazy = true
 end
 
-local wk_t = User.types.which_key
-local reg = Pkg.wk.reg
+-- Set the keymaps previously stated
+for mode, t in next, map_tbl do
+	local wk_maps = WK.convert_dict(t)
+	register(wk_maps, { mode = mode })
+end
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
 local function color_exists(T)
@@ -214,7 +204,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
-	---@type table<string, RegKey>
+	---@type RegKeys
 	local CscKeys = {}
 
 	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula'|'oak')[]
@@ -240,8 +230,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 		end
 	end
 
-	reg({ ['<leader>vc'] = { name = '+Colorschemes' } })
-	reg(CscKeys)
+	register({ ['<leader>vc'] = { name = '+Colorschemes' } })
+	register(CscKeys)
 
 	if not empty(found_csc) then
 		Csc[selected[found_csc]].setup()

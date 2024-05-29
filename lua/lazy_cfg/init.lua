@@ -844,7 +844,6 @@ Lazy.setup(T)
 ---@type LazyMods
 local P = {
 	colorschemes = require('lazy_cfg.colorschemes'),
-	wk = require('lazy_cfg.which_key'),
 }
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
@@ -867,15 +866,18 @@ local Keys = {
 	['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
 	['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
 	['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-	['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 	['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
 	['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
 	['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
 	['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
 	['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+	['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
 
-for lhs, v in next, Keys do
+local Keys_WK = User.maps.wk.convert_dict(Keys)
+User.maps.wk.register(Keys_WK, { mode = 'n' })
+
+--[[ for lhs, v in next, Keys do
 	local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
 	if not (is_str(v[1]) or is_fun(v[1])) then
 		vim.notify(msg)
@@ -886,6 +888,6 @@ for lhs, v in next, Keys do
 	nmap(lhs, v[1], v[2])
 
 	::continue::
-end
+end ]]
 
 return P
