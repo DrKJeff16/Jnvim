@@ -17,11 +17,6 @@ repos:
     - id: forbid-crlf
     - id: remove-crlf
 
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.41.0
-    hooks:
-    - id: markdownlint-fix
-
   - repo: local
     hooks:
     - id: stylua
