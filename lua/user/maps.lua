@@ -1,5 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
+---@diagnostic disable:missing-fields
 
 require('user.types.user.maps')
 
@@ -136,6 +137,93 @@ function M.nop(T, opts, mode)
 			M.map[mode](v, '<Nop>', opts)
 		end
 	end
+end
+
+--- `which_key` API entrypoints
+M.wk = {}
+
+function M.wk.convert(rhs, opts)
+	if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
+		error('(user.maps.wk.convert): Incorrect argument types!')
+	end
+
+	opts = is_tbl(opts) and opts or {}
+
+	---@type RegKey
+	local res = { rhs }
+
+	if is_str(opts.desc) and not empty(opts.desc) then
+		table.insert(res, opts.desc)
+	end
+
+	for _, o in next, { 'noremap', 'nowait', 'silent' } do
+		res[o] = is_bool(opts[o]) and opts[o] or true
+	end
+
+	return res
+end
+
+function M.wk.convert_dict(T)
+	if not is_tbl(T) or empty(T) then
+		error('(user.maps.wk.convert_dict): Argument empty or not a table')
+	end
+
+	---@type RegKeys
+	local res = {}
+
+	for lhs, v in next, T do
+		v[2] = is_tbl(v[2]) and v[2] or {}
+
+		res[lhs] = M.wk.convert(v[1], v[2])
+	end
+
+	return res
+end
+
+function M.wk.register(T, opts)
+	if not is_tbl(T) or empty(T) then
+		error('(user.maps.wk.register): Table is not an argument!')
+	end
+
+	local exists = Check.exists.module
+
+	if not exists('which-key') then
+		return false
+	end
+
+	local WK = require('which-key')
+	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
+
+	local register = WK.register
+
+	opts = is_tbl(opts) and opts or {}
+
+	opts.mode = is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode) and opts.mode or 'n'
+
+	for _, o in next, DEFAULT_OPTS do
+		if not is_bool(opts[o]) then
+			opts[o] = (o ~= 'nowait') and true or false
+		end
+	end
+
+	---@type RegKeys|RegKeysNamed
+	local filtered = {}
+
+	for lhs, v in next, T do
+		local tbl = vim.deepcopy(v)
+
+		for _, o in next, DEFAULT_OPTS do
+			if is_str(v.name) and o == 'nowait' then
+				tbl[o] = false
+			else
+				tbl[o] = is_bool(tbl[o]) and tbl[o] or true
+			end
+		end
+
+		filtered[lhs] = tbl
+	end
+
+	register(filtered, opts)
 end
 
 return M

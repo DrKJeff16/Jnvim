@@ -1,8 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.maps')
-
 ---@alias ModeEnum MapModes
 
 ---@class RegKey
@@ -21,7 +19,7 @@ require('user.types.user.maps')
 ---@alias RegKeys table<string, RegKey>
 ---@alias RegKeysNamed table<string, RegPfx>
 
----@alias RegOpts KeyMapOpts
+---@alias RegOpts vim.keymap.set.Opts
 
 ---@class WK
 ---@field reg fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)

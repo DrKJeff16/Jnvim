@@ -1,3 +1,5 @@
+require('user.types.which_key')
+
 ---@alias ApiMapOpts vim.api.keyset.keymap
 ---@alias KeyMapOpts vim.keymap.set.Opts
 ---@alias BufMapOpts ApiMapOpts
@@ -80,7 +82,7 @@
 ---@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?): BufMapOpts
 ---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?): KeyMapOpts
 
----@class UserApiMaps
+---@class UserMaps.Api
 ---@field n ApiMapFunction
 ---@field i ApiMapFunction
 ---@field v ApiMapFunction
@@ -89,7 +91,7 @@
 ---@field x ApiMapFunction
 ---@field desc ApiDescFun
 
----@class UserKeyMaps
+---@class UserMaps.Keymap
 ---@field n KeyMapFunction
 ---@field i KeyMapFunction
 ---@field v KeyMapFunction
@@ -98,7 +100,7 @@
 ---@field x KeyMapFunction
 ---@field desc KeyDescFun
 
----@class UserBufMaps
+---@class UserMaps.Buf
 ---@field n BufMapFunction
 ---@field i BufMapFunction
 ---@field v BufMapFunction
@@ -107,9 +109,15 @@
 ---@field x BufMapFunction
 ---@field desc BufDescFun
 
+---@class UserMaps.WK
+---@field convert fun(rhs: KeyRhs, opts: (ApiMapOpts|KeyMapOpts|BufMapOpts)?): RegKey
+---@field convert_dict fun(T: KeyMapDict|ApiMapDict): RegKeys
+---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false|nil
+
 ---@class UserMaps
----@field kmap UserKeyMaps
----@field map UserApiMaps
----@field buf_map UserBufMaps
+---@field kmap UserMaps.Keymap
+---@field map UserMaps.Api
+---@field buf_map UserMaps.Buf
 ---@field nop fun(T: string|string[], opts: ApiMapOpts?, mode: MapModes?)
+---@field wk UserMaps.WK
 ---@field modes Modes
