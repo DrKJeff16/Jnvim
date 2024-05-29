@@ -17,21 +17,26 @@
 
 ## About
 
-This is a [Nvim](https://github.com/neovim/neovim) configuration, configured in a **modular**,
-**_obsessively documented_**, **portable** and **platform-independant** way.
-Type checking is supported and documentation is included as far as possible.
+This is a [Nvim](https://github.com/neovim/neovim) configuration,
+configured in a **modular**, **_obsessively documented_**, **portable**
+and **platform-independant** way.
+<u>Type checking is supported and documentation is included.</u>
 
-This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim) as the default plugin manager.
+This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim)
+as the default plugin manager.
 Please read the [Plugins section](#plugins) to get an understanding of how this works.
 
-This configuration has its core entirely dependant on the [`user`](/lua/user) module, which provides a customized
-**_API_** which includes **_module checking_**, **_type checking_**, **_highlighting functions_**,
+This configuration has its core entirely dependant on the
+[`user`](/lua/user) module, which provides a customized
+**_API_** which includes **_module checking_**,
+**_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
 For more info make sure to check the [User API](#api) section.
 
 ### Requirements
 
-This config relies on essential plugins that improve the readability and understanding of how it works.
+This config relies on essential plugins that improve the readability and understanding
+of how it works.
 For these to work, the following executables must be installed and in your `$PATH`:
 
 * `git`
@@ -69,9 +74,16 @@ For these to work, the following executables must be installed and in your `$PAT
 
 ### Plugins
 
-There's a lot of plugins included. Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua). Those are
-ordered by category. Please refer to [`lazy.nvim`](https://github.com/folke/lazy.nvim) for more info on how to install.
+There's a lot of plugins included.
+Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua).
+They are ordered by category, and you can make your own.
 
+<br/>
+<b>NOTE:</b> <u>Please refer to</u>
+<u><a href="https://github.com/folke/lazy.nvim"><code>lazy.nvim</code></a></u>
+<u>for more info on how to install plugins.</u>
+
+<br/>
 <details>
 <summary>Some of the included plugins...</summary>
 <br>
@@ -99,12 +111,18 @@ ordered by category. Please refer to [`lazy.nvim`](https://github.com/folke/lazy
 
 ## API
 
-The `User` API can be found in [`lua/user`](/lua/user). It provides a bunch of functionalities to give easier
-code structures and to simplify configuration. **_It's still at an experimental phase, but it works as-is_**.
+The `User` API can be found in [`lua/user`](/lua/user).
+It provides a bunch of functionalities to give easier
+code structures and to simplify configuration.
+**_It's still at an experimental phase, but it works as-is_**.
 
-### Types
+<h3 id="types">
+<code>types</code>
+</h3>
 
-This submodule includes type annotations and documentation. It can be found in [`user/types`](/lua/user/types)
+This submodule includes type annotations and documentation.
+It can be found in [`user/types`](/lua/user/types).
+<br/>
 You can include it by using the following code snippet:
 
 ```lua
@@ -123,9 +141,12 @@ require('user').types.user
 
 Each include their pertinent files sourced by the `init.lua` file.
 
-### Opts
+<h3 id="opts">
+<code>opts</code>
+</h3>
 
-This submodule can be found at [`here`](/lua/user/opts.lua). The options are defined in a table to be processed
+This submodule can be found at [`here`](/lua/user/opts.lua).
+The options are defined in a table to be processed
 by the local funtion `optset()`. Modify these at your leisure, but be sure to be compatible with how you'd
 use the `vim.opt` table. _`vim.o` is currently used as a fallback in a very lazy way_.
 
@@ -140,8 +161,12 @@ require('user').opts
 - **NOTE: This is still a very early WIP.**
 
 ### Check
-_**This is the most important utility for this config.**_ Of critical importance. It provides a table with two
-sub-tables. Both used for many conditional checks, aswell as module handling. These are the following.
+_**This is the most important utility for this config.**_ Of critical importance.
+<br/>
+It provides a table with two
+sub-tables. Both used for many conditional checks, aswell as module handling.
+<br/>
+<u>These are the following:</u>
 
 <ul>
 <li>
@@ -149,8 +174,11 @@ sub-tables. Both used for many conditional checks, aswell as module handling. Th
 <summary><b><u><code>value</code></u></b></summary>
 <br>
 
-Used for value checking, differentiation and conditional code, aswell as for optional parameters in functions.
-It can be found in [`user/check/value.lua`](/lua/user/check/value.lua).
+Used for value checking, differentiation and conditional code, aswell as
+for optional parameters in functions.
+It can be found in <a href="/lua/user/check/value.lua">
+<code>user/check/value.lua</code>
+</a>.
 
 |  function |                                                                                               description                                                                                               |                          parameter types                          | return type |
 |:---------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
@@ -189,15 +217,18 @@ It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
 
 ### Maps
 This module provides keymapping utilities, for each case available.
-
-There are 3 fields which are tables that have the same function names, but follow selective behaviours:
+<br>
+There are 3 fields which are tables that have the same function names,
+but each one follows a specific behaviour:
 
 * `maps.map`: Follows the behaviour of `vim.api.nvim_set_keymap()`.
 * `maps.kmap`: Follows the behaviour of `vim.keymap.set()`.
 * `maps.buf_map`: Follows the behaviour of `vim.api.nvim_buf_set_keymap()`.
 
 Parameters and/or parameter types are tweaked for their respective table.
-Each table has a function for each mode available, <b><u>treat each function as the field's behaviour function, minus the `mode` field</u></b>:
+Each table has a function for each mode available,
+<b><u>treat each function as the field's behaviour function,
+minus the <code>mode</code> field</u></b>:
 
 * `maps.<table>.n(...)`: Same as `:nmap`
 * `maps.<table>.i(...)`: Same as `:imap`
@@ -209,10 +240,27 @@ Each table has a function for each mode available, <b><u>treat each function as 
 Also, each table has a `desc()` method that returns an option table with a description field
 and other fields corresponding to each parameter.
 
-* <u><b>NOTE:</b> All `boolean` parameters default to `true`, all `integer` parameters default to `0`.</u>
+<ul>
+<li>
+<u><b>NOTE:</b> All <code>boolean</code> parameters default to <code>true</code>,
+all <code>integer</code> parameters default to <code>0</code>.</u>
+</li>
+</ul>
+<br>
+<ul>
+<li>
+<code>maps.kmap.desc(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?)</code>:
+Returns a <code>vim.keymap.set.Opts</code> table
+</li>
+<li>
+<code>maps.map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)</code>:
+Returns a <code>vim.api.keyset.keymap</code> table
+</li>
+<li>
+<code>maps.buf_map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)</code>:
+Returns a <code>vim.api.keyset.keymap</code> table
+</li>
+</ul>
 
-* `maps.kmap.desc(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.keymap.set.Opts` table
-* `maps.map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.api.keyset.keymap` table
-* `maps.buf_map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)`: Returns a `vim.api.keyset.keymap` table
-
-<i><u>Other functions and utilities will be included in the future, and if there are unmentioned here, they're not finished.</u></i>
+<i><u>Other functions and utilities will be included in the future. If they</u></i>
+<i><u>are unmentioned here, they're not finished.</u></i>
