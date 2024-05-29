@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.mini
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
@@ -15,6 +16,10 @@ local empty = Check.value.empty
 local function src(mini_mod, opts)
 	if not is_str(mini_mod) or empty(mini_mod) then
 		error('(lazy_cfg.mini:src): Invalid or empty Mini module.')
+	end
+
+	if mini_mod == 'move' then
+		WK.register({ ['<leader>M'] = { name = '+Mini Move' } })
 	end
 
 	mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and 'mini.' .. mini_mod or mini_mod

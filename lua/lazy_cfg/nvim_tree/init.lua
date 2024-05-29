@@ -5,15 +5,18 @@ local User = require('user')
 local Check = User.check
 local kmap = User.maps.kmap
 local types = User.types.nvim_tree
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
+local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 local hi = User.highlight.hl
+local desc = kmap.desc
 
 local nmap = kmap.n
 
@@ -41,22 +44,6 @@ local close_win = api.nvim_win_close
 local list_wins = api.nvim_list_wins
 
 local floor = math.floor
-
----@type OptSetterFun
-local function key_opts(desc, bufn)
-	bufn = (is_num(bufn) and bufn >= 0) and bufn or vim.api.nvim_get_current_buf()
-
-	---@type KeyMapOpts
-	local res = {
-		desc = 'NvimTree: ' .. desc,
-		buffer = bufn,
-		noremap = true,
-		silent = true,
-		nowait = true,
-	}
-
-	return res
-end
 
 local Tree = require('nvim-tree')
 local View = require('nvim-tree.view')
@@ -87,53 +74,51 @@ local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
 
----@type fun(keys: (KeyMapArr[])|KeyMapDict|(KeyMapArgs[]))
-local map_lft = function(keys)
+---@type fun(keys: KeyMapDict, bufnr: integer?)
+local map_keys = function(keys, bufnr)
 	if not is_tbl(keys) or empty(keys) then
 		return
 	end
 
-	for k, args in next, keys do
-		if is_num(k) and is_str(args.lhs) and (is_str(args.rhs) or is_fun(args.rhs)) then
-			args.opts = is_tbl(args.opts) and args.opts or {}
-			nmap(args.lhs, args.rhs, args.opts)
-		elseif is_num(k) and is_str(args[1]) and (is_str(args[2]) or is_fun(args[2])) then
-			args[3] = is_tbl(args[3]) and args[3] or {}
-			nmap(args[1], args[2], args[3])
-		elseif is_str(k) and (is_str(args[1]) or is_fun(args[1])) then
-			args[2] = is_tbl(args[2]) and args[2] or {}
-			nmap(k, args[1], args[2])
-		elseif is_str(k) and (is_str(args.rhs) or is_fun(args.rhs)) then
-			args.opts = is_tbl(args.opts) and args.opts or {}
-			nmap(k, args[1], args.opts)
-		else
-			error('(lazy_cfg.nvim_tree.map_lft): Invalid key table.')
+	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+
+	if WK.available() then
+		WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, { mode = 'n', buffer = bufnr })
+		WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, { mode = 'v', buffer = bufnr })
+		WK.register(WK.convert_dict(keys), { mode = 'n', buffer = bufnr })
+		WK.register(WK.convert_dict(keys), { mode = 'v', buffer = bufnr })
+	else
+		for lhs, v in next, keys do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			v[2].buffer = bufnr
+			kmap.n(lhs, v[1], v[2])
+			kmap.v(lhs, v[1], v[2])
 		end
 	end
 end
 
----@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
+---@type KeyMapDict
 local my_maps = {
 	['<leader>fto'] = {
 		open,
-		key_opts('Open NvimTree'),
+		desc('Open NvimTree'),
 	},
 	['<leader>ftt'] = {
 		toggle,
-		key_opts('Toggle NvimTree'),
+		desc('Toggle NvimTree'),
 	},
 	['<leader>ftd'] = {
 		close,
-		key_opts('Close NvimTree'),
+		desc('Close NvimTree'),
 	},
 
 	['<leader>ftf'] = {
 		focus,
-		key_opts('Focus NvimTree'),
+		desc('Focus NvimTree'),
 	},
 }
 
-map_lft(my_maps)
+map_keys(my_maps)
 
 ---@type fun(nwin: integer)
 local function tab_win_close(nwin)
@@ -282,43 +267,43 @@ end
 local on_attach = function(bufn)
 	CfgApi.mappings.default_on_attach(bufn)
 
-	---@type (KeyMapArr[])|KeyMapDict|(KeyMapArgs[])
+	---@type KeyMapDict
 	local keys = {
 		['<C-t>'] = {
 			change_root_to_parent,
-			key_opts('Set Root To Upper Dir', bufn),
+			desc('Set Root To Upper Dir'),
 		},
 		['?'] = {
 			toggle_help,
-			key_opts('Help', bufn),
+			desc('Help'),
 		},
 		['<C-f>'] = {
 			edit_or_open,
-			key_opts('Edit Or Open', bufn),
+			desc('Edit Or Open'),
 		},
 		['P'] = {
 			vsplit_preview,
-			key_opts('Vsplit Preview', bufn),
+			desc('Vsplit Preview'),
 		},
 		['c'] = {
 			close,
-			key_opts('Close', bufn),
+			desc('Close'),
 		},
 		['HA'] = {
 			collapse_all,
-			key_opts('Collapse All', bufn),
+			desc('Collapse All'),
 		},
 		['ga'] = {
 			git_add,
-			key_opts('Git Add...', bufn),
+			desc('Git Add...'),
 		},
 		['t'] = {
 			swap_then_open_tab,
-			key_opts('Open Tab', bufn),
+			desc('Open Tab'),
 		},
 	}
 
-	map_lft(keys)
+	map_keys(keys, bufn)
 end
 
 local HEIGHT_RATIO = 6 / 7

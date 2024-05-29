@@ -5,9 +5,11 @@ local User = require('user')
 local Check = User.check
 local map_t = User.types.user.maps
 local map = User.maps.map
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local desc = map.desc
 
 if not exists('barbar') then
@@ -93,34 +95,83 @@ Bar.setup({
 	no_name_title = nil,
 })
 
----@type ApiMapDict
+---@type table<MapModes, ApiMapDict>
 local Keys = {
-	['<leader>Bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
-	['<leader>Bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
-	['<leader>Bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
-	['<leader>Bf'] = { '<CMD>BufferFirst<CR>', desc('First Buffer') },
-	['<leader>B1'] = { '<CMD>BufferGoto 1<CR>', desc('Goto Buffer 1') },
-	['<leader>B2'] = { '<CMD>BufferGoto 2<CR>', desc('Goto Buffer 2') },
-	['<leader>B3'] = { '<CMD>BufferGoto 3<CR>', desc('Goto Buffer 3') },
-	['<leader>B4'] = { '<CMD>BufferGoto 4<CR>', desc('Goto Buffer 4') },
-	['<leader>B5'] = { '<CMD>BufferGoto 5<CR>', desc('Goto Buffer 5') },
-	['<leader>B6'] = { '<CMD>BufferGoto 6<CR>', desc('Goto Buffer 6') },
-	['<leader>B7'] = { '<CMD>BufferGoto 7<CR>', desc('Goto Buffer 7') },
-	['<leader>B8'] = { '<CMD>BufferGoto 8<CR>', desc('Goto Buffer 8') },
-	['<leader>B9'] = { '<CMD>BufferGoto 9<CR>', desc('Goto Buffer 9') },
-	['<leader>BMp'] = { '<CMD>BufferMovePrevious<CR>', desc('Move Previous Buffer') },
-	['<leader>BMn'] = { '<CMD>BufferMoveNext<CR>', desc('Move Next Buffer') },
-	['<leader>Bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
-	['<leader>B<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
-	['<leader>B<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
-	['<leader>B<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
-	['<leader>B<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
-	['<leader>B<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
-	['<leader>B<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
-	['<leader>B<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
+	n = {
+		['<leader>Bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
+		['<leader>Bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
+		['<leader>Bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
+		['<leader>Bf'] = { '<CMD>BufferFirst<CR>', desc('First Buffer') },
+		['<leader>B1'] = { '<CMD>BufferGoto 1<CR>', desc('Goto Buffer 1') },
+		['<leader>B2'] = { '<CMD>BufferGoto 2<CR>', desc('Goto Buffer 2') },
+		['<leader>B3'] = { '<CMD>BufferGoto 3<CR>', desc('Goto Buffer 3') },
+		['<leader>B4'] = { '<CMD>BufferGoto 4<CR>', desc('Goto Buffer 4') },
+		['<leader>B5'] = { '<CMD>BufferGoto 5<CR>', desc('Goto Buffer 5') },
+		['<leader>B6'] = { '<CMD>BufferGoto 6<CR>', desc('Goto Buffer 6') },
+		['<leader>B7'] = { '<CMD>BufferGoto 7<CR>', desc('Goto Buffer 7') },
+		['<leader>B8'] = { '<CMD>BufferGoto 8<CR>', desc('Goto Buffer 8') },
+		['<leader>B9'] = { '<CMD>BufferGoto 9<CR>', desc('Goto Buffer 9') },
+		['<leader>BMp'] = { '<CMD>BufferMovePrevious<CR>', desc('Move Previous Buffer') },
+		['<leader>BMn'] = { '<CMD>BufferMoveNext<CR>', desc('Move Next Buffer') },
+		['<leader>Bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
+		['<leader>B<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
+		['<leader>B<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
+		['<leader>B<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
+		['<leader>B<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
+		['<leader>B<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
+		['<leader>B<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
+		['<leader>B<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
+	},
+	v = {
+		['<leader>Bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
+		['<leader>Bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
+		['<leader>Bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
+		['<leader>Bf'] = { '<CMD>BufferFirst<CR>', desc('First Buffer') },
+		['<leader>B1'] = { '<CMD>BufferGoto 1<CR>', desc('Goto Buffer 1') },
+		['<leader>B2'] = { '<CMD>BufferGoto 2<CR>', desc('Goto Buffer 2') },
+		['<leader>B3'] = { '<CMD>BufferGoto 3<CR>', desc('Goto Buffer 3') },
+		['<leader>B4'] = { '<CMD>BufferGoto 4<CR>', desc('Goto Buffer 4') },
+		['<leader>B5'] = { '<CMD>BufferGoto 5<CR>', desc('Goto Buffer 5') },
+		['<leader>B6'] = { '<CMD>BufferGoto 6<CR>', desc('Goto Buffer 6') },
+		['<leader>B7'] = { '<CMD>BufferGoto 7<CR>', desc('Goto Buffer 7') },
+		['<leader>B8'] = { '<CMD>BufferGoto 8<CR>', desc('Goto Buffer 8') },
+		['<leader>B9'] = { '<CMD>BufferGoto 9<CR>', desc('Goto Buffer 9') },
+		['<leader>BMp'] = { '<CMD>BufferMovePrevious<CR>', desc('Move Previous Buffer') },
+		['<leader>BMn'] = { '<CMD>BufferMoveNext<CR>', desc('Move Next Buffer') },
+		['<leader>Bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
+		['<leader>B<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
+		['<leader>B<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
+		['<leader>B<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
+		['<leader>B<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
+		['<leader>B<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
+		['<leader>B<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
+		['<leader>B<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
+	},
 }
 
-for lhs, v in next, Keys do
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	map.n(lhs, v[1], v[2])
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>B'] = { name = '+Barbar Buffer' },
+		['<leader>BM'] = { name = '+Buffer Move' },
+	},
+	v = {
+		['<leader>B'] = { name = '+Barbar Buffer' },
+		['<leader>BM'] = { name = '+Buffer Move' },
+	},
+}
+
+for mode, t in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			map[mode](lhs, v[1], v[2])
+		end
+	end
 end
