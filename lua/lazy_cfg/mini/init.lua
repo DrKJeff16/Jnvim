@@ -130,7 +130,7 @@ local modules = {
 		set_vim_settings = true,
 		silent = false,
 	}, ]]
-	['cursorword'] = { delay = 500 },
+	['cursorword'] = { delay = 1000 },
 	['doc'] = {},
 	['extra'] = {},
 	--[[ ['hipatterns'] = {
