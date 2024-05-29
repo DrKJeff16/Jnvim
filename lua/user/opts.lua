@@ -12,8 +12,6 @@ local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
-_G.is_windows = vim_has('win32')
-
 ---@type OptsTbl
 local opt_tbl = {
 	autoindent = true,

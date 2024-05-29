@@ -14,9 +14,12 @@ local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
+local vim_has = Check.exists.vim_has
 local nop = User.maps.nop
 local desc = Kmap.desc
 local register = WK.register
+
+_G.is_windows = vim_has('win32')
 
 -- Set `<Space>` as Leader Key.
 nop('<Space>', User.maps.map.desc('Leader Key', true, true))
