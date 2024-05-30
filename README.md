@@ -94,6 +94,7 @@ They are ordered by category, and you can make your own.
 <u>for more info on how to install plugins.</u>
 
 <br/>
+
 <details>
 <summary>Some of the included plugins...</summary>
 <br>
@@ -103,17 +104,18 @@ They are ordered by category, and you can make your own.
 * [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
     * [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
     * [`neodev.nvim`](https://github.com/folke/neodev.nvim)
-* [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
-    * [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
+    * [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
+        * [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
+        * [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
 * [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
-* [`Noice`](https://github.com/folke/noice.nvim)
+* [`noice.nvim`](https://github.com/folke/noice.nvim)
 * [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
-* [`which-key`](https://github.com/folke/which-key.nvim)
-* [`telescope`](https://github.com/nvim-telescope/telescope.nvim)
+* [`which-key.nvim`](https://github.com/folke/which-key.nvim)
+* [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 * [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
     * [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
     * [`BarBar`](https://github.com/romgrk/barbar.nvim)
-* [`NvimTree`](https://github.com/nvim-tree/nvim-tree.lua)
+* [`nvim-tree.lea`](https://github.com/nvim-tree/nvim-tree.lua)
 
 </details>
 
