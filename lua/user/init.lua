@@ -92,6 +92,11 @@ local M = {
 			::continue::
 		end
 	end,
+	ft_get = function(scope)
+		scope = (is_str(scope) and vim.tbl_contains({ 'local', 'global' })) and scope or 'local'
+
+		return vim.api.nvim_get_option_value('ft', { scope = scope })
+	end,
 }
 
 return M
