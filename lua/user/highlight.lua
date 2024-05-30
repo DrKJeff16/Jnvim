@@ -14,11 +14,11 @@ local empty = Check.value.empty
 ---@type UserHl
 local M = {
 	hl = function(name, opts, bufnr)
-		if not (is_str(name) and is_tbl(opts)) or (empty(name) or empty(opts)) then
+		if not (is_str(name) and is_tbl(opts)) or empty(name) then
 			error('(user.highlight.hl): A highlight value is not permitted!')
 		end
 
-		bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+		bufnr = is_int(bufnr) and bufnr or 0
 
 		vim.api.nvim_set_hl(bufnr, name, opts)
 	end,
@@ -30,7 +30,7 @@ function M.hl_from_arr(arr)
 	end
 
 	for _, T in next, arr do
-		if not (is_str(T.name) and is_tbl(T.opts)) or (empty(T.name) or empty(T.opts)) then
+		if not (is_str(T.name) and is_tbl(T.opts)) or empty(T.name) then
 			error('(user.highlight.hl_from_arr): A highlight value is not permitted!')
 		end
 
@@ -60,7 +60,7 @@ function M.hl_from_dict(dict)
 	end
 
 	for k, v in next, dict do
-		if (is_str(k) and is_tbl(v)) and not (empty(k) or empty(v)) then
+		if (is_str(k) and is_tbl(v)) and not empty(k) then
 			M.hl(k, v)
 		else
 			error('(user.highlight.hl_from_dict): A highlight value is not permitted!')
