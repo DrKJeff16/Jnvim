@@ -45,6 +45,7 @@ local Opts = {
 				['<C-e>'] = Actions.close,
 				['<C-q>'] = Actions.close,
 			},
+			n = {},
 		},
 	},
 
@@ -56,6 +57,16 @@ local Opts = {
 		notify = { theme = 'dropdown' },
 	},
 }
+
+if exists('trouble') then
+	local open_with_trouble = require('trouble.sources.telescope').open
+
+	-- Use this to add more results without clearing the trouble list
+	local add_to_trouble = require('trouble.sources.telescope').add
+
+	Opts.defaults.mappings.i['<C-t>'] = open_with_trouble
+	Opts.defaults.mappings.n['<C-t>'] = open_with_trouble
+end
 
 Telescope.setup(Opts)
 
