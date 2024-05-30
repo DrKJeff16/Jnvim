@@ -254,39 +254,74 @@ and other fields corresponding to each parameter.
 
 <ul>
 <li>
-<u><b>NOTE:</b> All <code>boolean</code> parameters default to <code>true</code>,
-all <code>integer</code> parameters default to <code>0</code>.</u>
+<b><u><code>maps.kmap.desc</code></u></b>
+
+<br/>
+
+```lua
+--- Returns a `vim.keymap.set.Opts` table
+---@param msg: string Defaults do `'Unnamed Key'`
+---@param silent? boolean Defaults to `true`
+---@param bufnr? integer Defaults to current buffer number
+---@param noremap? boolean Defaults to `true`
+---@param nowait? boolean Defaults to `true`
+---@param expr? boolean Defaults to `false`
+---@return vim.keymap.set.Opts
+maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
+```
+
 </li>
-</ul>
-<br>
-<ul>
 <li>
-<code>maps.kmap.desc(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?)</code>:
-Returns a <code>vim.keymap.set.Opts</code> table
+<b><u><code>maps.map.desc</code></u></b>
+
+<br/>
+
+```lua
+--- Returns a `vim.api.keyset.keymap` table
+---@param msg: string Defaults do `'Unnamed Key'`
+---@param silent? boolean Defaults to `true`
+---@param noremap? boolean Defaults to `true`
+---@param nowait? boolean Defaults to `true`
+---@param expr? boolean Defaults to `false`
+---@return vim.api.keyset.keymap
+maps.map.desc(msg, silent, noremap, nowait, expr)
+```
+
 </li>
 <li>
-<code>maps.map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)</code>:
-Returns a <code>vim.api.keyset.keymap</code> table
-</li>
-<li>
-<code>maps.buf_map.desc(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?)</code>:
-Returns a <code>vim.api.keyset.keymap</code> table
+<b><u><code>maps.buf_map.desc</code></u></b>
+
+<br/>
+
+```lua
+--- Returns a `vim.api.keyset.keymap` table
+---@param msg: string Defaults do `'Unnamed Key'`
+---@param silent? boolean Defaults to `true`
+---@param noremap? boolean Defaults to `true`
+---@param nowait? boolean Defaults to `true`
+---@param expr? boolean Defaults to `false`
+---@return vim.api.keyset.keymap
+maps.buf_map.desc(msg, silent, noremap, nowait, expr)
+```
+
 </li>
 </ul>
 
-<i><u>Other functions and utilities will be included in the future. If they</u></i>
-<i><u>are unmentioned here, they're not finished.</u></i>
-
----
+<br/>
+<hr/>
+<hr/>
 
 <h4 id="wk"><code>maps.wk</code></h4>
 
-<b>WARNING:</b> <u>For the moment the API won't register a keymap without</u>
-<u>a description defined for such keymap</u>
-<u>(<i>A.K.A. the <code>desc</code> field in the keymap options</i>)</u>.
+<hr/>
+<span style="text-align: center; padding: 0 1em;">
+<b>WARNING:</b> <u>For the moment the API won't register a keymap without
+a description defined for such keymap
+(<i>A.K.A. the <code>desc</code> field in the keymap options</i>)</u>.
 I will try to correct for this behaviour later, but for documentation
 purposes I'm leaving this bug as an enforcer to keep keymaps documented.
-<br>
+</span>
+<hr/>
 
 The `maps` API also includes integration with
 [`which_key`](https://github.com/folke/which-key.nvim) as `user.maps.wk`.
@@ -319,9 +354,7 @@ end
 ```
 
 If you try to use `wk.register()` despite not being available it'll
-return `false` and refuse to process your keymaps.
-
-<br/>
+return `false` and refuse to process your keymaps altogether.
 
 If you want to convert a keymap table, you must first structure it as follows:
 
