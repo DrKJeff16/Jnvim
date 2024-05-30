@@ -888,9 +888,23 @@ local Keys = {
 		['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
 	},
 }
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>L'] = { name = '+Lazy' },
+		['<leader>Le'] = { name = '+Edit Lazy File' },
+	},
+	v = {
+		['<leader>L'] = { name = '+Lazy' },
+		['<leader>Le'] = { name = '+Edit Lazy File' },
+	},
+}
 
 for mode, maps in next, Keys do
 	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
 		WK.register(WK.convert_dict(maps), { mode = mode })
 	else
 		for lhs, v in next, maps do
