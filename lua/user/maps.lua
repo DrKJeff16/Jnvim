@@ -91,23 +91,25 @@ local M = {
 	modes = MODES,
 }
 
-function M.kmap.desc(msg, silent, bufnr, noremap, nowait)
+function M.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 	return {
 		desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
 		silent = is_bool(silent) and silent or true,
 		buffer = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf(),
 		noremap = is_bool(noremap) and noremap or true,
 		nowait = is_bool(nowait) and nowait or true,
+		expr = is_bool(expr) and expr or false,
 	}
 end
 
 for _, key in next, { M.map, M.buf_map } do
-	function key.desc(msg, silent, noremap, nowait)
+	function key.desc(msg, silent, noremap, nowait, expr)
 		return {
 			desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
 			silent = is_bool(silent) and silent or true,
 			noremap = is_bool(noremap) and noremap or true,
 			nowait = is_bool(nowait) and nowait or true,
+			expr = is_bool(expr) and expr or false,
 		}
 	end
 end

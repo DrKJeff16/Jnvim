@@ -78,9 +78,9 @@ require('user.types.which_key')
 ---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(ApiMapOpts|KeyMapOpts)?)
 ---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: BufMapOpts?)
 
----@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?): ApiMapOpts
----@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?): BufMapOpts
----@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?): KeyMapOpts
+---@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): ApiMapOpts
+---@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): BufMapOpts
+---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): KeyMapOpts
 
 ---@class UserMaps.Api
 ---@field n ApiMapFunction
