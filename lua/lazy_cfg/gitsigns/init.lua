@@ -4,14 +4,18 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.gitsigns
-local bufmap = User.maps.buf_map
+local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
+local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local is_num = Check.value.is_num
 local is_fun = Check.value.is_fun
+local empty = Check.value.empty
+local desc = kmap.desc
 
 if not exists('gitsigns') or not executable('git') then
 	return
@@ -19,30 +23,59 @@ end
 
 local GS = require('gitsigns')
 
----@type table<string, BufMapTbl[]|BufMapArr[]>
-local keys = {
+---@type table<MapModes, KeyMapDict>
+local Keys = {
 	n = {
-		-- Navigati7on
-		{ '<leader>G]c', "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'", { expr = true } },
-		{ '<leader>G[c', "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'", { expr = true } },
+		-- Navigation
+		['<leader>G]c'] = {
+			"&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'",
+			desc('Next Hunk', true, 0, true, true, true),
+		},
+		['<leader>G[c'] = {
+			"&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'",
+			desc('Previous Hunk', true, 0, true, true, true),
+		},
 
 		-- Actions
-		{ '<leader>Ghs', '<CMD>Gitsigns stage_hunk<CR>' },
-		{ '<leader>Ghr', '<CMD>Gitsigns reset_hunk<CR>' },
-		{ '<leader>GhS', '<CMD>Gitsigns stage_buffer<CR>' },
-		{ '<leader>Ghu', '<CMD>Gitsigns undo_stage_hunk<CR>' },
-		{ '<leader>GhR', '<CMD>Gitsigns reset_buffer<CR>' },
-		{ '<leader>Ghp', '<CMD>Gitsigns preview_hunk<CR>' },
-		{ '<leader>Ghb', '<CMD>lua require("gitsigns").blame_line{full=true}<CR>' },
-		{ '<leader>Gtb', '<CMD>Gitsigns toggle_current_line_blame<CR>' },
-		{ '<leader>Ghd', '<CMD>Gitsigns diffthis<CR>' },
-		{ '<leader>GhD', '<CMD>lua require("gitsigns").diffthis("~")<CR>' },
-		{ '<leader>Gtd', '<CMD>Gitsigns toggle_deleted<CR>' },
+		['<leader>Ghs'] = { '<CMD>Gitsigns stage_hunk<CR>', desc('Stage Current Hunk') },
+		['<leader>Ghr'] = { '<CMD>Gitsigns reset_hunk<CR>', desc('Reset Current Hunk') },
+		['<leader>Ghu'] = { '<CMD>Gitsigns undo_stage_hunk<CR>', desc('Undo Hunk Stage') },
+		['<leader>Ghp'] = { '<CMD>Gitsigns preview_hunk<CR>', desc('Preview Current Hunk') },
+		['<leader>GhS'] = { '<CMD>Gitsigns stage_buffer<CR>', desc('Stage The Whole Buffer') },
+		['<leader>GhR'] = { '<CMD>Gitsigns reset_buffer<CR>', desc('Reset The Whole Buffer') },
+		['<leader>Ghb'] = {
+			function()
+				GS.blame_line({ full = true })
+			end,
+			desc('Blame Current Line'),
+		},
+		['<leader>Ghd'] = { '<CMD>Gitsigns diffthis<CR>', desc('Diff Against Index') },
+		['<leader>GhD'] = {
+			function()
+				GS.diffthis('~')
+			end,
+			desc('Diff This'),
+		},
+		['<leader>Gtb'] = { '<CMD>Gitsigns toggle_current_line_blame<CR>', desc('Toggle Line Blame') },
+		['<leader>Gtd'] = { '<CMD>Gitsigns toggle_deleted<CR>', desc('Toggle Deleted') },
 	},
-	-- WARNING: Avoid using `<CMD>` at all costs.
 	v = {
-		{ '<leader>Ghs', ':Gitsigns stage_hunk<CR>' },
-		{ '<leader>Ghr', ':Gitsigns reset_hunk<CR>' },
+		{ '<leader>Ghs', ':Gitsigns stage_hunk<CR>', desc('Stage Selected Hunk(s)') },
+		{ '<leader>Ghr', ':Gitsigns reset_hunk<CR>', desc('Reset Selected Hunk(s)') },
+	},
+}
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>G'] = { name = '+Gitsigns' },
+		['<leader>Gh'] = { name = '+Hunks' },
+		['<leader>Gt'] = { name = '+Toggles' },
+		['<leader>G['] = { name = '+Previous Hunk' },
+		['<leader>G]'] = { name = '+Next Hunk' },
+	},
+	v = {
+		['<leader>G'] = { name = '+Gitsigns' },
+		['<leader>Gh'] = { name = '+Hunks' },
 	},
 }
 
@@ -59,17 +92,21 @@ local signs = {
 local opts = {
 	---@type fun(bufnr: integer)
 	on_attach = function(bufnr)
-		bufnr = is_int(bufnr) and bufnr or 0
+		bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
-		for mode, v in next, keys do
-			---@type BufMapFunction
-			local func = bufmap[mode]
+		for mode, t in next, Keys do
+			if WK.available() then
+				if is_tbl(Names[mode]) and not empty(Names[mode]) then
+					WK.register(Names[mode], { mode = mode, buffer = bufnr })
+				end
 
-			for _, t in next, v do
-				if not is_nil(t.lhs) and not is_nil(t.rhs) then
-					func(bufnr, t.lhs, t.rhs, t.opts or {})
-				elseif not is_nil(t[1]) and not is_nil(t[2]) then
-					func(bufnr, t[1], t[2], t[3] or {})
+				WK.register(WK.convert_dict(t), { mode = mode, buffer = bufnr })
+			else
+				for lhs, v in next, t do
+					v[2] = is_tbl(v[2]) and v[2] or {}
+					v[2].buffer = bufnr
+
+					kmap[mode](lhs, v[1], v[2])
 				end
 			end
 		end
