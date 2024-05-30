@@ -501,6 +501,7 @@ M.LSP = {
 			'SchemaStore',
 		},
 		config = source('lazy_cfg.lspconfig'),
+		enabled = vim_has('nvim-0.8'), -- Constraint specified in the repo
 	},
 	{
 		'b0o/SchemaStore',

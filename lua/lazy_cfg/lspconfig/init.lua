@@ -33,7 +33,16 @@ local insp = vim.inspect
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local rt_file = api.nvim_get_runtime_file
--- local sign_define = vim.fn.sign_define
+
+local on_windows = vim.uv.os_uname().version:match('Windows')
+
+---@type fun(...): string
+local function join_paths(...)
+	local path_sep = on_windows and '\\' or '/'
+	return table.concat({ ... }, path_sep)
+end
+
+require('vim.lsp.log').set_format_func(insp)
 
 ---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
@@ -79,6 +88,13 @@ local border = {
 local handlers = {
 	['textDocument/hover'] = Lsp.with(lsp_handlers.hover, { border = border }),
 	['textDocument/signatureHelp'] = Lsp.with(lsp_handlers.signature_help, { border = border }),
+	['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+		signs = true,
+		virtual_text = true,
+	}),
+	['textDocument/references'] = Lsp.with(Lsp.handlers['textDocument/references'], {
+		loclist = true,
+	}),
 }
 
 ---@type fun(T: LspServers): LspServers
@@ -200,7 +216,7 @@ local Keys = {
 }
 
 if WK.available() then
-	WK.register({ ['<leaderl>'] = { name = '+LSP' } })
+	WK.register({ ['<leader>l'] = { name = '+LSP' } })
 	WK.register(WK.convert_dict(Keys))
 else
 	for lhs, v in next, Keys do
@@ -212,11 +228,16 @@ end
 au('LspAttach', {
 	group = augroup('UserLspConfig', { clear = true }),
 
-	---@type fun(ev: EvBuf)
-	callback = function(ev)
-		local buf = ev.buf
+	callback = function(args)
+		local buf = args.buf
+		local client = Lsp.get_client_by_id(args.data.client_id)
 
-		bo[buf].omnifunc = 'v:lua.lsp.omnifunc'
+		if client.server_capabilities.completionProvider then
+			bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+		end
+		if client.server_capabilities.definitionProvider then
+			bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+		end
 
 		---@type table<MapModes, KeyMapDict>
 		local K = {
@@ -290,6 +311,34 @@ au('LspAttach', {
 		end
 	end,
 })
+au('LspDetach', {
+	group = augroup('UserLspConfig', { clear = false }),
+
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		-- Do something with the client
+		vim.cmd('setlocal tagfunc< omnifunc<')
+	end,
+})
+au('LspProgress', {
+	group = augroup('UserLspConfig', { clear = false }),
+	pattern = '*',
+	callback = function()
+		vim.cmd.redrawstatus()
+	end,
+})
+--[[ au('LspTokenUpdate', {
+	group = augroup('UserLspConfig', { clear = false }),
+	callback = function(args)
+		local token = args.data.token
+
+		if token.type == 'variable' and not token.modifiers.readonly then
+			vim.lsp.semantic_tokens.highlight_token(
+				token, args.buf, args.data.client_id, 'MyMutableVariableHighlight'
+			)
+		end
+	end,
+}) ]]
 
 Diag.config({
 	virtual_text = true,
@@ -328,17 +377,13 @@ for event, opts_arr in next, aus do
 	end
 end
 
--- FIX: This section causes complaints from nvim due to version bump v0.11.0.
---
---[[ local signs = {
-	Error = '󰅚 ',
-	Warn = '󰀪 ',
-	Hint = '󰌶 ',
-	Info = ' ',
+---@type HlDict
+local Highlights = {
+	['@lsp.type.variable.lua'] = { fg = '#35c7aa' },
+	['@lsp.mod.deprecated'] = { strikethrough = true },
+	['@lsp.typemod.function.async'] = { fg = '#a142c0' },
 }
 
-for type, icon in next, signs do
-	local hlite = 'DiagnosticSign' .. type
-
-	sign_define(hlite, { text = icon, texthl = hlite, numhl = hlite })
-end ]]
+for name, opts in next, Highlights do
+	hi(name, opts)
+end
