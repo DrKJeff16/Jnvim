@@ -11,6 +11,7 @@
     2. [`opts`](#opts)
     3. [`check`](#check)
     4. [`maps`](#maps)
+        1. [`wk`](#wk)
     5. [`highlight`](#highlight)
 
 ---
@@ -44,32 +45,41 @@ For these to work, the following executables must be installed and in your `$PAT
 * [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
 * [`ripgreg`](https://github.com/BurntSushi/ripgrep)
 * [`fd`](https://github.com/sharkdp/fd)
-* **(Optional)** [`fzf`](https://github.com/junegunn/fzf)
+* **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf)
 
 ### Structure
 
 ```
 /lua
-├── lazy_cfg/  <== Folder containing all Lua plugin configurations.
-│   ├── init.lua  <== Lazy Plugins are installed from here.
+├── lazy_cfg/  <== Folder containing all Lua plugin configurations
+│   ├── init.lua  <== Plugin Installation and entry points are called
 │   ├── plugin1/
-│   │   ├── init.lua
+│   │   ├── init.lua  <== If submodules exist, entry points are defined here
 │   │   └── ...
 │   ├── plugin2/
 │   │   └── init.lua
 │   └── ...
-└── user  <== User API module
-    ├── check/  <== Checker Functions
-    │   └── init.lua
-    ├── highlight.lua  <== Highlight Functions
-    ├── init.lua  <== API `init`
-    ├── maps.lua  <== Mapping Functions
-    ├── opts.lua  <== Vim Options
-    └── types/  <== Lua Type Annotations and Documentation
-        ├── user/  <== User API Documentation
-        ├── module_1.lua
-        ├── module_2.lua
-        └── ...
+├── user  <== User API module
+│   ├── check/  <== Checker Functions
+│   │   ├── init.lua  <== Entry points are defined here
+│   │   ├── exists.lua  <== Existance checkers
+│   │   └── value.lua  <== Value checkers
+│   ├── highlight.lua  <== Highlight Functions
+│   ├── init.lua  <== API `init`, where entry points are defined
+│   ├── maps.lua  <== Mapping Functions
+│   ├── opts.lua  <== Vim Options
+│   └── types/  <== Lua Type Annotations and Documentation
+│       ├── init.lua  <== Entry points are defined here
+│       ├── user/  <== User API Documentation
+│       │   ├── init.lua  <== Entry points are defined here
+│       │   ├── autocmd.lua  <== Autocommand annotations
+│       │   ├── check.lua  <== `check` module annotations
+│       │   ├── highlight.lua  <== `highlight` module annotations
+│       │   ├── maps.lua  <== `maps` module annotations
+│       │   └── opts.lua  <== `opts` module annotations
+│       ├── module_1.lua
+│       ├── module_2.lua
+└───────└── ...
 ```
 
 ### Plugins
@@ -264,3 +274,210 @@ Returns a <code>vim.api.keyset.keymap</code> table
 
 <i><u>Other functions and utilities will be included in the future. If they</u></i>
 <i><u>are unmentioned here, they're not finished.</u></i>
+
+---
+
+<h4 id="wk"><code>maps.wk</code></h4>
+
+<b>WARNING:</b> <u>For the moment the API won't register a keymap without</u>
+<u>a description defined for such keymap</u>
+<u>(<i>A.K.A. the <code>desc</code> field in the keymap options</i>)</u>.
+I will try to correct for this behaviour later, but for documentation
+purposes I'm leaving this bug as an enforcer to keep keymaps documented.
+<br>
+
+The `maps` API also includes integration with
+[`which_key`](https://github.com/folke/which-key.nvim) as `user.maps.wk`.
+It can be found found in [`user/maps.lua`](/lua/user/maps.lua)
+
+This module creates mappings using custom-made functions that convert
+a specific type of mapping dictionary to a format compatible with `which_key`.
+To understand how this works refer to the aforementioned link to the
+`which_key` repository.
+
+This module has the method _`wk.available()`_, which simply returns a boolean
+indicating whether `which-key` is installed and available to use.
+Use it, for example, to setup a fallback for setting keys, like in the
+following example:
+
+```lua
+local Kmap = require('user').maps.kmap
+local WK = require('user').maps.wk
+
+local my_keys = {
+    --- Your maps go here...
+}
+
+if WK.available() then
+    --- Use `WK`
+else
+    --- Use `Kmap`
+end
+
+```
+
+If you try to use `wk.register()` despite not being available it'll
+return `false` and refuse to process your keymaps.
+
+<br/>
+
+If you want to convert a keymap table, you must first structure it as follows:
+
+```lua
+--- Using `vim.keymap.set()` (`User.maps.kmap`) as an example.
+--- You can translate a `User.maps.map` equivalent the same way, but
+--- you'll have to define the buffer number externally if you use
+--- `User.maps.buf_map`
+
+---@class RhsnOpts
+---@field [1] string|fun() The `rhs` for your keymap, i.e. what'll be executed
+---@field [2]? vim.keymap.set.Opts See `|:h vim.keymap.set()|` for the `opts` field
+
+---@alias KeyMapDict table<string, RhsOpts> A dict with the key as lhs and the value as the class above
+
+---@type KeyMapDict
+local Keys = {
+    ['lhs1'] = { 'rhs1', { desc = 'Keymap 1' } },
+    ['lhs2'] = { function() print('this is rhs2') end, { desc = 'Keymap 1', noremap = true } }
+}
+```
+
+<br/>
+
+With this dict, you can convert it and then map it using `WK.convert_dict()`
+and `WK.register()` respectively.
+
+<ul>
+<li>
+<details>
+<summary><b><u>Example 1</u></b></summary>
+
+```lua
+--- Following the code above the examples...
+
+local Keys_WK = WK.convert_dict()
+
+if WK.available() then
+    WK.register(Keys_WK, opts?) -- `opts` defaults to `{ mode = 'n' }`
+else
+    for lhs, v in next, Keys do
+        --- `v[1]` is `rhs`
+        --- `v[2]` is `vim.keymap.set.Opts` (in this case using `kmap`)
+        Kmap.<vim_mode>(lhs, v[1], v[2])
+    end
+end
+```
+
+</details>
+</li>
+<br/>
+<li>
+<details>
+<summary><b><u>Example 2</u></b></summary>
+
+```lua
+--- Following the code above the examples...
+
+if WK.available() then
+    WK.register(WK.convert_dict(Keys), opts?) -- `opts` defaults to `{ mode = 'n' }`
+else
+    for lhs, v in next, Keys do
+        --- `v[1]` is `rhs`
+        --- `v[2]` is `vim.keymap.set.Opts` (in this case using `kmap`)
+        Kmap.<vim_mode>(lhs, v[1], v[2])
+    end
+end
+```
+
+</details>
+</li>
+
+<br/>
+
+The `wk.register()` has two arguments:
+
+<ol>
+<li>
+A table of the aforementioned format (or a
+<a href="https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings">group names</a>
+dictionary, we'll get to that shortly)
+</li>
+<li>An options table with the structure specified
+<a href="https://github.com/folke/which-key.nvim?tab=readme-ov-file#-setup">in
+the <code>which_key</code> repository
+</a>:
+
+```lua
+--- NOTE: These fields are set to their default value in `wk.register`.
+---       `nil` means it is not set at all inside the function if not defined,
+---       not their valid type (unless explicitly defined as type `nil`).
+{
+    ---@type 'n'|'i'|'v'|'t'|'o'|'x'
+    mode = 'n',
+
+    --- prefix: use "<leader>f" for example for mapping everything related to finding files
+    --- the prefix is prepended to every mapping part of `mappings`
+    ---@type string
+    prefix = nil,
+
+    ---@type integer|nil
+    buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
+
+    ---@type boolean
+    silent = true, -- use `silent` when creating keymaps
+
+    ---@type boolean
+    noremap = true, -- use `noremap` when creating keymaps
+
+    --- NOTE: If processing a group keymap field (`['...'] = { name = '...' }`)
+    ---       the default value is `false`
+    ---@type boolean
+    nowait = true, -- use `nowait` when creating keymaps
+
+    ---@type boolean
+    expr = nil, -- use `expr` when creating keymaps
+}
+```
+
+</li>
+</ol>
+
+
+<br/>
+
+You can also process <u>group names</u> the following way:
+
+```lua
+---@class RegPfx
+---@field name string The map group name. Should look like `'+Group'`
+---@field noremap? boolean Defaults to `true`
+---@field nowait? boolean Defaults to `false`
+---@field silent? boolean Defaults to `true`
+
+---@alias RegKeysNamed table<string, RegPfx> The key string is the keymap prefix that defines the group
+
+---@type RegKeysNamed
+local Names = {
+    ['<leader>X'] = { name = '+Group X' },
+    ['<leader>X1'] = { name = '+Subgroup X1' },
+
+    ['<leader>t'] = { name = '+Group t' },
+}
+
+WK.register(Names, { mode = <whatever mode> })
+```
+
+<br/>
+
+<u><b>This API component is in early design so it will be simpler and more
+completein the future.</b></u>
+
+---
+
+<h3 id="highlight"><code>highlight</code></h3>
+
+This module provides utilities for setting highlights in an easier way.
+It can be found in [`user/highlight.lua`](/lua/user/highlight.lua).
+
+<b><u>A description will be pending until further notice, i.e. when the module is
+structured in a satisfactory manner.</u></b>
