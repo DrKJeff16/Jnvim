@@ -64,7 +64,7 @@ local function variant(mode, func, with_buf)
 	return res
 end
 
----@type fun(key: 'api'|'key'|'buf'): UserKeyMaps|UserApiMaps|UserBufMaps
+---@type fun(key: 'api'|'key'|'buf'): UserMaps.Keymap|UserMaps.Api|UserMaps.Buf
 local mode_funcs = function(key)
 	---@type table<'api'|'key'|'buf', { integer: fun(), integer: boolean }>
 	local VALID = { api = { map, false }, key = { kmap, false }, buf = { bufmap, true } }
@@ -73,7 +73,7 @@ local mode_funcs = function(key)
 		error('(user.maps:mode_funcs): Invalid variant ID `' .. field .. "`\nMust be `'api'|'key'|'buf'`")
 	end
 
-	---@type UserKeyMaps|UserApiMaps|UserBufMaps
+	---@type UserMaps.Keymap|UserMaps.Api|UserMaps.Buf
 	local res = {}
 
 	for _, mode in next, MODES do
@@ -116,7 +116,7 @@ end
 
 function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
-		error('(user.maps.nop): Field is neither a string nor a table.')
+		error('(user.maps.nop): Argument is neither a string nor a table.')
 	end
 
 	mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
@@ -133,10 +133,10 @@ function M.nop(T, opts, mode)
 	opts.silent = is_bool(opts.silent) and opts.silent or true
 
 	if is_str(T) then
-		M.map[mode](T, '<Nop>', opts)
+		M.kmap[mode](T, '<Nop>', opts)
 	else
 		for _, v in next, T do
-			M.map[mode](v, '<Nop>', opts)
+			M.kmap[mode](v, '<Nop>', opts)
 		end
 	end
 end
@@ -146,28 +146,33 @@ M.wk = {
 	available = function()
 		return Check.exists.module('which-key')
 	end,
+	convert = function(rhs, opts)
+		if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
+			error('(user.maps.wk.convert): Incorrect argument types!')
+		end
+
+		local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
+
+		opts = is_tbl(opts) and opts or {}
+
+		for _, o in next, DEFAULT_OPTS do
+			opts[o] = is_bool(opts[o]) and opts[o] or true
+		end
+
+		---@type RegKey
+		local res = { rhs }
+
+		if is_str(opts.desc) and not empty(opts.desc) then
+			table.insert(res, opts.desc)
+		end
+
+		for _, o in next, DEFAULT_OPTS do
+			res[o] = opts[o]
+		end
+
+		return res
+	end,
 }
-
-function M.wk.convert(rhs, opts)
-	if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
-		error('(user.maps.wk.convert): Incorrect argument types!')
-	end
-
-	opts = is_tbl(opts) and opts or {}
-
-	---@type RegKey
-	local res = { rhs }
-
-	if is_str(opts.desc) and not empty(opts.desc) then
-		table.insert(res, opts.desc)
-	end
-
-	for _, o in next, { 'noremap', 'nowait', 'silent' } do
-		res[o] = is_bool(opts[o]) and opts[o] or true
-	end
-
-	return res
-end
 
 function M.wk.convert_dict(T)
 	if not is_tbl(T) or empty(T) then
@@ -192,13 +197,11 @@ function M.wk.register(T, opts)
 	end
 
 	if not is_tbl(T) or empty(T) then
-		error('(user.maps.wk.register): Table is not an argument!')
+		error('(user.maps.wk.register): Parameter is not a table')
 	end
 
 	local WK = require('which-key')
 	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
-
-	local register = WK.register
 
 	opts = is_tbl(opts) and opts or {}
 
@@ -223,7 +226,7 @@ function M.wk.register(T, opts)
 		filtered[lhs] = tbl
 	end
 
-	register(filtered, opts)
+	WK.register(filtered, opts)
 end
 
 return M
