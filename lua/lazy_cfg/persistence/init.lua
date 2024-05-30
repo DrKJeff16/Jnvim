@@ -5,10 +5,11 @@ local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
-local nmap = kmap.n
+local empty = Check.value.empty
 local desc = kmap.desc
 
 if not exists('persistence') then
@@ -34,19 +35,47 @@ local Opts = {
 
 Pst.setup(Opts)
 
----@type KeyMapDict
+---@type table<MapModes, KeyMapDict>
 local Keys = {
-	['<leader>Sr'] = { Pst.load, desc('Restore Session') },
-	['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
-	['<leader>Sl'] = {
-		function()
-			Pst.load({ last = true })
-		end,
-		desc('Restore Last Session'),
+	n = {
+		['<leader>Sr'] = { Pst.load, desc('Restore Session') },
+		['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
+		['<leader>Sl'] = {
+			function()
+				Pst.load({ last = true })
+			end,
+			desc('Restore Last Session'),
+		},
+	},
+	v = {
+		['<leader><C-S>r'] = { Pst.load, desc('Restore Session') },
+		['<leader><C-S>d'] = { Pst.stop, desc("Don't Save Current Session") },
+		['<leader><C-S>l'] = {
+			function()
+				Pst.load({ last = true })
+			end,
+			desc('Restore Last Session'),
+		},
 	},
 }
 
-for lhs, v in next, Keys do
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(lhs, v[1], v[2])
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = { ['<leader>S'] = { name = '+Session (Persistence)' } },
+	v = { ['<leader><C-S>'] = { name = '+Session (Persistence)' } },
+}
+
+for mode, t in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			kmap[mode](lhs, v[1], v[2])
+		end
+	end
 end
