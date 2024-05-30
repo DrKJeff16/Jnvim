@@ -95,6 +95,15 @@ local Maps = {
 	},
 }
 
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = {
+		['<leader>fT'] = { name = '+Telescope' },
+		['<leader>fTb'] = { name = '+Builtins' },
+		['<leader>fTe'] = { name = '+Extensions' },
+	},
+}
+
 ---@type table<string, TelExtension>
 local known_exts = {
 	['scope'] = { 'scope' },
@@ -133,24 +142,28 @@ local known_exts = {
 	['noice'] = {
 		'noice',
 		---@type fun(): KeyMapDict
-		keys = exists('noice') and function()
+		keys = function()
 			local Noice = require('noice')
 
 			---@type KeyMapDict
 			local res = {
-				['<leadec>nl'] = {
+				['<leader>fTenl'] = {
 					function()
 						Noice.cmd('last')
 					end,
 					desc('NoiceLast'),
 				},
-				['<leadec>nh'] = {
+				['<leader>fTenh'] = {
 					function()
 						Noice.cmd('history')
 					end,
 					desc('NoiceHistory'),
 				},
 			}
+
+			if is_tbl(Names['n']) then
+				Names['n']['<leader>fTen'] = { name = '+Noice' }
+			end
 
 			return res
 		end,
@@ -175,15 +188,6 @@ for mod, ext in next, known_exts do
 
 	::continue::
 end
-
----@type table<MapModes, RegKeysNamed>
-local Names = {
-	n = {
-		['<leader>fT'] = { name = '+Telescope' },
-		['<leader>fTb'] = { name = '+Builtins' },
-		['<leader>fTe'] = { name = '+Extensions' },
-	},
-}
 
 for mode, t in next, Maps do
 	if WK.available() then
