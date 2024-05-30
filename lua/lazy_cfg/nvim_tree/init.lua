@@ -74,25 +74,35 @@ local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
 
----@type fun(keys: KeyMapDict, bufnr: integer?)
-local map_keys = function(keys, bufnr)
+---@type fun(keys: KeyMapDict, bufnr: integer|nil?)
+local function map_keys(keys, bufnr)
 	if not is_tbl(keys) or empty(keys) then
 		return
 	end
 
-	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+	bufnr = is_int(bufnr) and bufnr or nil
 
-	if WK.available() then
-		WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, { mode = 'n', buffer = bufnr })
-		WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, { mode = 'v', buffer = bufnr })
-		WK.register(WK.convert_dict(keys), { mode = 'n', buffer = bufnr })
-		WK.register(WK.convert_dict(keys), { mode = 'v', buffer = bufnr })
-	else
-		for lhs, v in next, keys do
-			v[2] = is_tbl(v[2]) and v[2] or {}
-			v[2].buffer = bufnr
-			kmap.n(lhs, v[1], v[2])
-			kmap.v(lhs, v[1], v[2])
+	for _, mode in next, { 'n', 'v' } do
+		if WK.available() then
+			---@type RegOpts
+			local opts = { mode = mode }
+
+			if not is_nil(bufnr) then
+				opts.buffer = bufnr
+			end
+
+			WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, opts)
+			WK.register(WK.convert_dict(keys), opts)
+		else
+			for lhs, v in next, keys do
+				v[2] = is_tbl(v[2]) and v[2] or {}
+
+				if not is_nil(bufnr) then
+					v[2].buffer = bufnr
+				end
+
+				kmap[mode](lhs, v[1], v[2])
+			end
 		end
 	end
 end
