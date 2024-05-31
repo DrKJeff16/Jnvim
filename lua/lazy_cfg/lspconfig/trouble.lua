@@ -3,11 +3,13 @@
 
 local User = require('user')
 local Check = User.check
-local kmap = User.maps.kmap
 local types = User.types.lspconfig
+local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local desc = kmap.desc
 
 if not exists('trouble') then
@@ -183,42 +185,93 @@ local Opts = {
 
 Trouble.setup(Opts)
 
----@type KeyMapDict
+---@type table<MapModes, KeyMapDict>
 local Keys = {
-	['<leader>xx'] = { toggle, desc('Toggle Trouble') },
-	['<leader>xw'] = {
-		function()
-			toggle('workspace_diagnostics')
-		end,
-		desc('Toggle Workspace Diagnostics'),
+	n = {
+		['<leader>xx'] = { toggle, desc('Toggle Trouble') },
+		['<leader>xw'] = {
+			function()
+				toggle('workspace_diagnostics')
+			end,
+			desc('Toggle Workspace Diagnostics'),
+		},
+		['<leader>xd'] = {
+			function()
+				toggle('document_diagnostics')
+			end,
+			desc('Toggle Document Diagnostics'),
+		},
+		['<leader>xq'] = {
+			function()
+				toggle('quickfix')
+			end,
+			desc('Toggle Quickfix'),
+		},
+		['<leader>xl'] = {
+			function()
+				toggle('loclist')
+			end,
+			desc('Toggle Loclist'),
+		},
+		['<leader>xr'] = {
+			function()
+				toggle('lsp_references')
+			end,
+			desc('Toggle References'),
+		},
 	},
-	['<leader>xd'] = {
-		function()
-			toggle('document_diagnostics')
-		end,
-		desc('Toggle Document Diagnostics'),
-	},
-	['<leader>xq'] = {
-		function()
-			toggle('quickfix')
-		end,
-		desc('Toggle Quickfix'),
-	},
-	['<leader>xl'] = {
-		function()
-			toggle('loclist')
-		end,
-		desc('Toggle Loclist'),
-	},
-	['<leader>xr'] = {
-		function()
-			toggle('lsp_references')
-		end,
-		desc('Toggle References'),
+	v = {
+		['<leader>xx'] = { toggle, desc('Toggle Trouble') },
+		['<leader>xw'] = {
+			function()
+				toggle('workspace_diagnostics')
+			end,
+			desc('Toggle Workspace Diagnostics'),
+		},
+		['<leader>xd'] = {
+			function()
+				toggle('document_diagnostics')
+			end,
+			desc('Toggle Document Diagnostics'),
+		},
+		['<leader>xq'] = {
+			function()
+				toggle('quickfix')
+			end,
+			desc('Toggle Quickfix'),
+		},
+		['<leader>xl'] = {
+			function()
+				toggle('loclist')
+			end,
+			desc('Toggle Loclist'),
+		},
+		['<leader>xr'] = {
+			function()
+				toggle('lsp_references')
+			end,
+			desc('Toggle References'),
+		},
 	},
 }
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = { ['<leader>x'] = { name = '+Trouble' } },
+	v = { ['<leader>x'] = { name = '+Trouble' } },
+}
 
-for k, v in next, Keys do
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	kmap.n(k, v[1], v[2])
+for mode, t in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+
+			kmap[mode](t, v[1], v[2])
+		end
+	end
 end
