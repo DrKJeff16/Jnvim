@@ -20,11 +20,8 @@ local desc = Kmap.desc
 
 _G.is_windows = vim_has('win32')
 
--- WARNING: DO NOT CHANGE ANYTHING BUT THE FIRST PARAMETER
---          Keymaps will break for yet unknown reasons.
---
 -- Set `<Space>` as Leader Key.
-nop('<Space>', User.maps.map.desc('Leader Key', true, true))
+nop('<Space>', desc('Leader Key', true, nil, true))
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 

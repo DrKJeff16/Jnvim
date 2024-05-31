@@ -23,6 +23,44 @@ local bufmap = vim.api.nvim_buf_set_keymap
 ---@type Modes
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
+---@type fun(T: UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts, fields: string|string[]): UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts
+local strip_options = function(T, fields)
+	if not is_tbl(T) then
+		error('(maps:strip_options): Empty table')
+	end
+
+	if empty(T) then
+		return T
+	end
+
+	if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
+		return T
+	end
+
+	---@type UserMaps.Keymap.Opts
+	local res = {}
+
+	if is_str(fields) then
+		if not field(fields, T) then
+			return T
+		end
+
+		for k, v in next, T do
+			if k ~= fields then
+				res[k] = v
+			end
+		end
+	else
+		for k, v in next, T do
+			if not vim.tbl_contains(fields, k) then
+				res[k] = v
+			end
+		end
+	end
+
+	return res
+end
+
 ---@type fun(mode: string, func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
 local function variant(mode, func, with_buf)
 	if not (is_fun(func) and is_str(mode) and vim.tbl_contains(MODES, mode)) then
@@ -138,11 +176,15 @@ function M.nop(T, opts, mode)
 
 	opts.silent = is_bool(opts.silent) and opts.silent or true
 
+	if is_int(opts.buffer) then
+		opts = strip_options(vim.deepcopy(opts), 'buffer')
+	end
+
 	if is_str(T) then
-		M.map[mode](T, '<Nop>', opts)
+		M.kmap[mode](T, '<Nop>', opts)
 	else
 		for _, v in next, T do
-			M.map[mode](v, '<Nop>', opts)
+			M.kmap[mode](v, '<Nop>', opts)
 		end
 	end
 end
