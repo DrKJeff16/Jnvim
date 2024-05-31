@@ -6,6 +6,8 @@ local Check = User.check
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
+local empty = Check.value.empty
 
 if not exists('lualine') then
 	return
@@ -13,16 +15,19 @@ end
 
 local Lualine = require('lualine')
 
----@type fun(theme: string?): string
-local function theme_select(theme)
-	-- WARN: This might not the best way to approach this...
-	theme = is_str(theme) and exists(theme) and theme or 'auto'
+---@type fun(theme: string?, force_auto: boolean?): string
+local function theme_select(theme, force_auto)
+	theme = (is_str(theme) and not empty(theme)) and theme or 'auto'
 
-	if theme == 'auto' then
+	force_auto = is_bool(force_auto) and force_auto or false
+
+	-- If `auto` theme and permitted to select from fallbacks.
+	-- Keep in mind these fallbacks are the same strings as their `require()` module strings.
+	if theme == 'auto' and not force_auto then
 		for _, t in next, { 'nightfox', 'onedark', 'catppuccin', 'tokyonight' } do
 			if exists(t) then
 				theme = t
-				break
+				break -- Be contempt with the first theme you find
 			end
 		end
 	end
@@ -33,7 +38,7 @@ end
 local Opts = {
 	options = {
 		icons_enabled = true,
-		theme = theme_select('nightfox'),
+		theme = theme_select('nightfox', true),
 		component_separators = { left = '', right = '' },
 		section_separators = { left = '', right = '' },
 		ignore_focus = {},
@@ -50,6 +55,9 @@ local Opts = {
 			{
 				'mode',
 				icons_enabled = true,
+
+				--- Return the first letter of mode.
+				--- e.g. `NORMAL` ==> `N`
 				---@type fun(str: string): string
 				fmt = function(str)
 					return str:sub(1, 1)
@@ -63,8 +71,8 @@ local Opts = {
 		lualine_c = {
 			{
 				'diagnostics',
-				sources = { 'nvim_workspace_diagnostic', 'nvim_lsp' },
-				sections = { 'error', 'warn', 'info' },
+				sources = { 'nvim_lsp' },
+				sections = { 'error', 'warn' },
 				diagnostics_color = {
 					error = 'DiagnosticError',
 					warn = 'DiagnosticWarn',
@@ -91,7 +99,7 @@ local Opts = {
 		lualine_z = { 'location' },
 	},
 	inactive_sections = {
-		lualine_a = { 'windows' },
+		lualine_a = {},
 		lualine_b = { 'filename' },
 		lualine_c = {},
 		lualine_x = { 'filetype' },
