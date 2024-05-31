@@ -3,19 +3,29 @@ repos:
     rev: v4.6.0
     hooks:
     - id: detect-private-key
+      verbose: true
     - id: check-shebang-scripts-are-executable
+      verbose: true
     - id: check-executables-have-shebangs
+      verbose: true
     - id: check-case-conflict
+      verbose: true
     - id: check-yaml
+      verbose: true
     - id: mixed-line-ending
+      verbose: true
     - id: end-of-file-fixer
+      verbose: true
     - id: trailing-whitespace
+      verbose: true
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
     hooks:
     - id: forbid-crlf
+      verbose: true
     - id: remove-crlf
+      verbose: true
 
   - repo: local
     hooks:
