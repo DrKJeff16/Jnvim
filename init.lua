@@ -17,7 +17,6 @@ local empty = Check.value.empty
 local vim_has = Check.exists.vim_has
 local nop = User.maps.nop
 local desc = Kmap.desc
-local register = WK.register
 
 _G.is_windows = vim_has('win32')
 
@@ -110,8 +109,7 @@ local map_tbl = {
 		},
 		['<leader>fvv'] = {
 			function()
-				---@type string
-				local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+				local ft = User.ft_get()
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'vim' then
@@ -184,38 +182,41 @@ local map_tbl = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
 	n = {
-		-- File Handling
+		--- File Handling
 		['<leader>f'] = { name = '+File' },
-		--- Source File Handling
-		['<leader>fv'] = { name = '+Vim Files' },
+		--- Script File Handling
+		['<leader>fv'] = { name = '+Script Files' },
 		--- `init.lua` Editing
 		['<leader>fve'] = { name = '+Edit `init.lua`' },
+		--- Indent Control
+		['<leader>fi'] = { name = '+Indent' },
 
-		-- Tabs Handling
+		--- Tabs Handling
 		['<leader>t'] = { name = '+Tabs' },
 
-		-- Buffer Handling
+		--- Buffer Handling
 		['<leader>b'] = { name = '+Buffer' },
 
-		-- Window Handling
+		--- Window Handling
 		['<leader>w'] = { name = '+Window' },
 
-		-- Window Splitting
+		--- Window Splitting
 		['<leader>ws'] = { name = '+Split' },
 
-		-- Exiting
+		--- Exiting
 		['<leader>q'] = { name = '+Quit Nvim' },
 
-		-- Help
+		--- Help
 		['<leader>h'] = { name = '+Help' },
 
-		-- Session
+		--- Session
 		['<leader>S'] = { name = '+Session' },
 
-		-- Vim
+		--- Vim
 		['<leader>v'] = { name = '+Vim' },
 	},
 	v = {
+		--- Indent Control
 		['<leader>i'] = { name = '+Indent' },
 	},
 }
@@ -232,10 +233,10 @@ end
 for mode, t in next, map_tbl do
 	if WK.available() then
 		if is_tbl(Names[mode]) and not empty(Names[mode]) then
-			register(Names[mode], { mode = mode })
+			WK.register(Names[mode], { mode = mode })
 		end
 
-		register(WK.convert_dict(t), { mode = mode })
+		WK.register(WK.convert_dict(t), { mode = mode })
 	else
 		for lhs, v in next, t do
 			v[2] = is_tbl(v[2]) and v[2] or {}
@@ -273,23 +274,21 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	local found_csc = 0
 	for _, c in next, selected do
 		if color_exists(Csc[c]) then
-			found_csc = empty(found_csc) and i or found_csc
+			found_csc = found_csc == 0 and i or found_csc
 			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
 			i = i + 1
 		end
 	end
 
-	if WK.available() then
-		register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = 'n' })
-		register(WK.convert_dict(CscKeys), { mode = 'n' })
-
-		register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = 'v' })
-		register(WK.convert_dict(CscKeys), { mode = 'v' })
-	else
-		for lhs, v in next, CscKeys do
-			v[2] = is_tbl(v[2]) and v[2] or {}
-			Kmap.n(lhs, v[1], v[2])
-			Kmap.v(lhs, v[1], v[2])
+	for _, mode in next, { 'n', 'v' } do
+		if WK.available() then
+			WK.register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = mode })
+			WK.register(WK.convert_dict(CscKeys), { mode = mode })
+		else
+			for lhs, v in next, CscKeys do
+				v[2] = is_tbl(v[2]) and v[2] or {}
+				Kmap[mode](lhs, v[1], v[2])
+			end
 		end
 	end
 
