@@ -35,6 +35,7 @@ local submods = {
 	'molokai',
 	'spaceduck',
 	'dracula',
+	'spacemacs',
 }
 
 local M = src(submods)
@@ -43,15 +44,10 @@ function M.new()
 	local self = setmetatable({}, { __index = M })
 
 	self.new = M.new
-	self.tokyonight = M.tokyonight or nil
-	self.onedark = M.onedark or nil
-	self.catppuccin = M.catppuccin or nil
-	self.nightfox = M.nightfox or nil
-	self.gloombuddy = M.gloombuddy or nil
-	self.spaceduck = M.spaceduck or nil
-	self.dracula = M.dracula or nil
-	self.molokai = M.molokai or nil
-	self.oak = M.oak or nil
+
+	for _, c in next, submods do
+		self[c] = M[c] or nil
+	end
 
 	return self
 end

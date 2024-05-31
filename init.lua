@@ -257,13 +257,14 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	---@type KeyMapDict
 	local CscKeys = {}
 
-	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'molokai'|'dracula'|'oak')[]
+	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak')[]
 	local selected = {
 		-- Reorder to your liking.
 		'catppuccin',
 		'nightfox',
 		'tokyonight',
 		'onedark',
+		'spacemacs',
 		'molokai',
 		'oak',
 		'spaceduck',
