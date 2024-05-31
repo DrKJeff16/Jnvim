@@ -20,6 +20,9 @@ local desc = Kmap.desc
 
 _G.is_windows = vim_has('win32')
 
+-- WARNING: DO NOT CHANGE ANYTHING BUT THE FIRST PARAMETER
+--          Keymaps will break for yet unknown reasons.
+--
 -- Set `<Space>` as Leader Key.
 nop('<Space>', User.maps.map.desc('Leader Key', true, true))
 vim.g.mapleader = ' '
@@ -32,7 +35,7 @@ vim.g.loaded_netrwPlugin = 1
 -- Vim `:set ...` global options setter
 local opts = User.opts
 
--- Use system clipboard
+-- Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
 -- Avoid executing Normal mode keys when attempting `<leader>` sequences.
