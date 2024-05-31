@@ -187,48 +187,91 @@ for k, v in next, srv do
 	lspconfig[k].setup(v)
 end
 
----@type KeyMapDict
+---@type table<MapModes,KeyMapDict>
 local Keys = {
-	['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
-	['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
-	['<leader>lI'] = {
-		function()
-			vim.cmd('LspInfo')
-		end,
-		desc('Get LSP Config Info'),
+	n = {
+		['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
+		['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
+		['<leader>lI'] = {
+			function()
+				vim.cmd('LspInfo')
+			end,
+			desc('Get LSP Config Info'),
+		},
+		['<leader>lR'] = {
+			function()
+				vim.cmd('LspRestart')
+			end,
+			desc('Restart Server'),
+		},
+		['<leader>lH'] = {
+			function()
+				vim.cmd('LspStop')
+			end,
+			desc('Stop Server'),
+		},
+		['<leader>lS'] = {
+			function()
+				vim.cmd('LspStart')
+			end,
+			desc('Start Server'),
+		},
 	},
-	['<leader>lR'] = {
-		function()
-			vim.cmd('LspRestart')
-		end,
-		desc('Restart Server'),
-	},
-	['<leader>lH'] = {
-		function()
-			vim.cmd('LspStop')
-		end,
-		desc('Stop Server'),
-	},
-	['<leader>lS'] = {
-		function()
-			vim.cmd('LspStart')
-		end,
-		desc('Start Server'),
+	v = {
+		['<leader>lI'] = {
+			function()
+				vim.cmd('LspInfo')
+			end,
+			desc('Get LSP Config Info'),
+		},
+		['<leader>lR'] = {
+			function()
+				vim.cmd('LspRestart')
+			end,
+			desc('Restart Server'),
+		},
+		['<leader>lH'] = {
+			function()
+				vim.cmd('LspStop')
+			end,
+			desc('Stop Server'),
+		},
+		['<leader>lS'] = {
+			function()
+				vim.cmd('LspStart')
+			end,
+			desc('Start Server'),
+		},
 	},
 }
 
-if WK.available() then
-	WK.register({ ['<leader>l'] = { name = '+LSP' } })
-	WK.register(WK.convert_dict(Keys))
-else
-	for lhs, v in next, Keys do
-		v[2] = is_tbl(v[2]) and v[2] or {}
-		nmap(lhs, v[1], v[2])
+local Names = {
+	n = {
+		['<leader>l'] = { name = '+LSP' },
+	},
+	v = {
+		['<leader>l'] = { name = '+LSP' },
+	},
+}
+
+for mode, t in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+
+			kmap[mode](lhs, v[1], v[2])
+		end
 	end
 end
 
 au('LspAttach', {
-	group = augroup('UserLspConfig', { clear = true }),
+	group = augroup('UserLspConfig', { clear = false }),
 
 	callback = function(args)
 		local buf = args.buf
@@ -287,26 +330,26 @@ au('LspAttach', {
 			},
 		}
 		---@type table<MapModes, RegKeysNamed>
-		local Names = {
+		local Names2 = {
 			n = {
 				['<leader>lc'] = { name = '+Code Actions' },
-				['<leader>lw'] = { name = '+Workspace' },
 				['<leader>lf'] = { name = '+File Analysis' },
+				['<leader>lw'] = { name = '+Workspace' },
 			},
-			v = {
-				['<leader>lc'] = { name = '+Code Actions' },
-			},
+			v = { ['<leader>lc'] = { name = '+Code Actions' } },
 		}
 
 		for mode, keys in next, K do
 			if WK.available() then
-				if is_tbl(Names[mode]) and not empty(Names[mode]) then
-					WK.register(Names[mode])
+				if is_tbl(Names2[mode]) and not empty(Names2[mode]) then
+					WK.register(Names2[mode], { mode = mode, buffer = buf })
 				end
-				WK.register(WK.convert_dict(keys), { mode = mode })
+
+				WK.register(WK.convert_dict(keys), { mode = mode, buffer = buf })
 			else
 				for lhs, v in next, keys do
 					v[2] = is_tbl(v[2]) and v[2] or {}
+
 					kmap[mode](lhs, v[1], v[2])
 				end
 			end

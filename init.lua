@@ -80,11 +80,11 @@ end
 ---@type Maps
 local map_tbl = {
 	n = {
-		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search') },
+		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search', false) },
 
 		['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
 		['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
-		['<leader>fS'] = { ':w ', desc('Save File (Interactively)', false) },
+		['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
 		['<leader>fvs'] = {
 			function()
 				vim.cmd('luafile $MYVIMRC')
@@ -108,7 +108,7 @@ local map_tbl = {
 					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
-			desc('Attempt to source current Lua file', false),
+			desc('Source Current File As Lua File'),
 		},
 		['<leader>fvv'] = {
 			function()
@@ -126,16 +126,16 @@ local map_tbl = {
 					vim.notify(err_msg, vim.log.levels.ERROR)
 				end
 			end,
-			desc('Attempt To source current Vim file', false),
+			desc('Source Current File As VimScript File'),
 		},
-		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Interactively)', false) },
-		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Interactively)', false) },
+		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
+		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
 		['<leader>fvet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
 		['<leader>fvee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
 		['<leader>fves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
 		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
 
-		['<leader>vh'] = { ':checkhealth<CR>', desc('Run Checkhealth', false) },
+		['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth', false) },
 
 		['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
 		['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
@@ -145,28 +145,29 @@ local map_tbl = {
 		['<leader>hV'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
 		['<leader>hS'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
 
-		['<leader>wn'] = { '<C-w>w', desc('Next Window') },
+		['<leader>wn'] = { '<C-w>w', desc('Cycle Window') },
+		['<leader>wd'] = { '<C-w>q', desc('Close Window') },
+		['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
+		['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
 		['<leader>wss'] = { ':split<CR>', desc('Horizontal Split', false) },
 		['<leader>wsv'] = { ':vsplit<CR>', desc('Vertical Split', false) },
-		['<leader>wsS'] = { ':split ', desc('Horizontal Split (Interactively)', false) },
-		['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Interactively)', false) },
 
 		['<leader>qq'] = { ':qa<CR>', desc('Quit Nvim') },
 		['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
 
+		['<leader>ta'] = { ':tabnew ', desc('New Tab (Prompt)', false) },
 		['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
 		['<leader>tp'] = { ':tabp<CR>', desc('Previous Tab', false) },
 		['<leader>td'] = { ':tabc<CR>', desc('Close Tab', false) },
-		['<leader>tD'] = { ':tabc!<CR>', desc('Close Tab (Forcefully)', false) },
+		['<leader>tD'] = { ':tabc!<CR>', desc('Close Tab Forcefully', false) },
 		['<leader>tf'] = { ':tabfirst<CR>', desc('Goto First Tab', false) },
 		['<leader>tl'] = { ':tablast<CR>', desc('Goto Last Tab', false) },
-		['<leader>ta'] = { ':tabnew ', desc('New Tab (Interactively)', false) },
 		['<leader>tA'] = { ':tabnew<CR>', desc('New Tab', false) },
 
 		['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false) },
 		['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false) },
 		['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false) },
-		['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer (Forcefully)', false) },
+		['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer Forcefully', false) },
 		['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false) },
 		['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
 	},
@@ -178,8 +179,8 @@ local map_tbl = {
 		['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
 		['<leader>F'] = { ':foldclose<CR>', desc('Open Fold') },
 
-		['<leader>r'] = { ':s/', desc('Run Search-Replace Interactively', false) },
-		['<leader>ir'] = { ':%retab<CR>', desc('Retab Selection') },
+		['<leader>r'] = { ':%s/', desc('Run Global Search-Replace Interactively', false) },
+		['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 	},
 }
 ---@type table<MapModes, RegKeysNamed>
@@ -212,15 +213,18 @@ local Names = {
 		--- Help
 		['<leader>h'] = { name = '+Help' },
 
-		--- Session
-		['<leader>S'] = { name = '+Session' },
-
 		--- Vim
 		['<leader>v'] = { name = '+Vim' },
 	},
 	v = {
 		--- Indent Control
 		['<leader>i'] = { name = '+Indent' },
+
+		--- Vim
+		['<leader>v'] = { name = '+Vim' },
+
+		--- Help
+		['<leader>h'] = { name = '+Help' },
 	},
 }
 
@@ -243,6 +247,7 @@ for mode, t in next, map_tbl do
 	else
 		for lhs, v in next, t do
 			v[2] = is_tbl(v[2]) and v[2] or {}
+
 			Kmap[mode](lhs, v[1], v[2])
 		end
 	end
@@ -257,8 +262,11 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	-- A table containing various possible colorschemes.
 	local Csc = Pkg.colorschemes
 
-	---@type KeyMapDict
-	local CscKeys = {}
+	---@type table<MapModes, KeyMapDict>
+	local CscKeys = {
+		n = {},
+		v = {},
+	}
 
 	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak')[]
 	local selected = {
@@ -279,18 +287,32 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 	for _, c in next, selected do
 		if color_exists(Csc[c]) then
 			found_csc = found_csc == 0 and i or found_csc
-			CscKeys['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
+
+			for mode, _ in next, CscKeys do
+				CscKeys[mode]['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
+			end
+
 			i = i + 1
 		end
 	end
 
-	for _, mode in next, { 'n', 'v' } do
+	---@type table<MapModes, RegKeysNamed>
+	local NamesCsc = {
+		n = { ['<leader>vc'] = { name = '+Colorschemes' } },
+		v = { ['<leader>vc'] = { name = '+Colorschemes' } },
+	}
+
+	for mode, t in next, CscKeys do
 		if WK.available() then
-			WK.register({ ['<leader>vc'] = { name = '+Colorschemes' } }, { mode = mode })
-			WK.register(WK.convert_dict(CscKeys), { mode = mode })
+			if is_tbl(NamesCsc[mode]) and not empty(NamesCsc[mode]) then
+				WK.register(NamesCsc[mode], { mode = mode })
+			end
+
+			WK.register(WK.convert_dict(t), { mode = mode })
 		else
-			for lhs, v in next, CscKeys do
+			for lhs, v in next, t do
 				v[2] = is_tbl(v[2]) and v[2] or {}
+
 				Kmap[mode](lhs, v[1], v[2])
 			end
 		end

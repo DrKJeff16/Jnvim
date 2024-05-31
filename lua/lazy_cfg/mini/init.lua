@@ -19,7 +19,8 @@ local function src(mini_mod, opts)
 	end
 
 	if mini_mod == 'move' then
-		WK.register({ ['<leader>M'] = { name = '+Mini Move' } })
+		WK.register({ ['<leader>M'] = { name = '+Mini Move' } }, { mode = 'n' })
+		WK.register({ ['<leader>M'] = { name = '+Mini Move' } }, { mode = 'v' })
 	end
 
 	mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and 'mini.' .. mini_mod or mini_mod
