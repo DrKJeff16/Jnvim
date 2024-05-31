@@ -207,7 +207,7 @@ It can be found in <a href="/lua/user/check/value.lua">
 |  `is_fun`  |           Checks whether the input values are of `function` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           |                        _Same as `is_nil`_.                        |  `boolean`  |
 |  `is_tbl`  |             Checks whether the input values are of `table` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`._                        |  `boolean`  |
 |  `is_int`  |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              |                        _Same as `is_nil`._                        |  `boolean`  |
-|  `empty`   |                             If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.                             |                    `v`: `string\|number\|table`                   |  `boolean`  |
+|  `empty`   |              If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.<br>If other type return `true`.            |                    `v`: `string\|number\|table`                   |  `boolean`  |
 
 </li>
 
@@ -274,7 +274,7 @@ and other fields corresponding to each parameter.
 --- Returns a `vim.keymap.set.Opts` table
 ---@param msg: string Defaults do `'Unnamed Key'`
 ---@param silent? boolean Defaults to `true`
----@param bufnr? integer Defaults to current buffer number
+---@param bufnr? integer Not included in output table unless explicitly set
 ---@param noremap? boolean Defaults to `true`
 ---@param nowait? boolean Defaults to `true`
 ---@param expr? boolean Defaults to `false`
@@ -307,13 +307,15 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 
 <br/>
 
-<h4 id="wk"><code>maps.wk</code></h4>
+<h4 id="wk">
+<code>maps.wk</code>
+</h4>
 
 <hr/>
 <span style="text-align: center; padding: 0 1em;">
 <b>WARNING:</b> <u>For the moment the API won't register a keymap without
 a description defined for such keymap
-(<i>A.K.A. the <code>desc</code> field in the keymap options</i>)</u>.
+(<i>A.K.A. the</i> <code>desc</code> <i>field in the keymap options</i>)</u>.
 I will try to correct for this behaviour later, but for documentation
 purposes I'm leaving this bug as an enforcer to keep keymaps documented.
 </span>
@@ -360,11 +362,11 @@ If you want to convert a keymap table, you must first structure it as follows:
 --- you'll have to define the buffer number externally if you use
 --- `User.maps.buf_map`
 
----@class RhsnOpts
+---@class KeyRhsOpts
 ---@field [1] string|fun() The `rhs` for your keymap, i.e. what'll be executed
 ---@field [2]? vim.keymap.set.Opts See `|:h vim.keymap.set()|` for the `opts` field
 
----@alias KeyMapDict table<string, RhsOpts> A dict with the key as lhs and the value as the class above
+---@alias KeyMapDict table<string, KeyRhsOpts> A dict with the key as lhs and the value as the class above
 
 ---@type KeyMapDict
 local Keys = {
@@ -380,8 +382,11 @@ and `WK.register()` respectively.
 
 <ul>
 <li>
+
 <details>
-<summary><b><u>Example 1</u></b></summary>
+<summary>
+<b><u>Example 1</u></b>
+</summary>
 
 ```lua
 --- Following the code above the examples...
@@ -401,16 +406,22 @@ end
 
 </details>
 </li>
+
 <br/>
+
 <li>
+
 <details>
-<summary><b><u>Example 2</u></b></summary>
+<summary>
+<b><u>Example 2</u></b>
+</summary>
 
 ```lua
 --- Following the code above the examples...
 
 if WK.available() then
     WK.register(WK.convert_dict(Keys), opts?) -- `opts` defaults to `{ mode = 'n' }`
+    -- Wk.register(WK.convert_dict(Keys), { mode = 'n' })
 else
     for lhs, v in next, Keys do
         --- `v[1]` is `rhs`
@@ -425,7 +436,11 @@ end
 
 <br/>
 
-The `wk.register()` has two arguments:
+<u>
+<code>wk.register()</code> has two arguments
+</u>:
+
+<br/>
 
 <ol>
 <li>
@@ -473,7 +488,6 @@ the <code>which_key</code> repository
 </li>
 </ol>
 
-
 <br/>
 
 You can also process <u>group names</u> the following way:
@@ -499,13 +513,16 @@ WK.register(Names, { mode = <whatever mode> })
 ```
 
 <br/>
+<br/>
 
 <u><b>This API component is in early design so it will be simpler and more
 completein the future.</b></u>
 
 ---
 
-<h3 id="highlight"><code>highlight</code></h3>
+<h3 id="highlight">
+<code>highlight</code>
+</h3>
 
 This module provides utilities for setting highlights in an easier way.
 It can be found in [`user/highlight.lua`](/lua/user/highlight.lua).
