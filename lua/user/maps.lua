@@ -92,14 +92,20 @@ local M = {
 }
 
 function M.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
-	return {
+	---@type UserMaps.Keymap.Opts
+	local res = {
 		desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
 		silent = is_bool(silent) and silent or true,
-		buffer = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf(),
 		noremap = is_bool(noremap) and noremap or true,
 		nowait = is_bool(nowait) and nowait or true,
 		expr = is_bool(expr) and expr or false,
 	}
+
+	if is_int(bufnr) then
+		res.buffer = bufnr
+	end
+
+	return res
 end
 
 for _, key in next, { M.map, M.buf_map } do
@@ -133,10 +139,10 @@ function M.nop(T, opts, mode)
 	opts.silent = is_bool(opts.silent) and opts.silent or true
 
 	if is_str(T) then
-		M.kmap[mode](T, '<Nop>', opts)
+		M.map[mode](T, '<Nop>', opts)
 	else
 		for _, v in next, T do
-			M.kmap[mode](v, '<Nop>', opts)
+			M.map[mode](v, '<Nop>', opts)
 		end
 	end
 end

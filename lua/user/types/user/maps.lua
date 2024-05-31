@@ -119,6 +119,6 @@ require('user.types.which_key')
 ---@field kmap UserMaps.Keymap
 ---@field map UserMaps.Api
 ---@field buf_map UserMaps.Buf
----@field nop fun(T: string|string[], opts: UserMaps.Keymap.Opts?, mode: MapModes?)
+---@field nop fun(T: string|string[], opts: UserMaps.Api.Opts?, mode: MapModes?)
 ---@field wk UserMaps.WK
 ---@field modes Modes
