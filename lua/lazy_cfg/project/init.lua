@@ -5,17 +5,16 @@ local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
-local nmap = kmap.n
+local empty = Check.value.empty
 local desc = kmap.desc
 
 if not exists('project_nvim') then
 	return
 end
-
-local stdpath = vim.fn.stdpath
 
 local Project = require('project_nvim')
 local Config = require('project_nvim.config')
@@ -78,31 +77,66 @@ local Opts = {
 
 	-- Path where project.nvim will store the project history for use in
 	-- telescope
-	datapath = stdpath('data'),
+	datapath = vim.fn.stdpath('data'),
 }
 
 Project.setup(Opts)
 
----@type KeyMapDict
-local keys = {
-	['<leader>pr'] = {
-		function()
-			local msg = ''
+---@type table<MapModes,KeyMapDict>
+local Keys = {
+	n = {
+		['<leader>pr'] = {
+			function()
+				local msg = ''
 
-			for _, v in next, recent_proj() do
-				msg = msg .. '\n- ' .. v
-			end
-			if exists('notify') then
-				require('notify')(msg, 'info', { title = 'Recent Projects' })
-			else
-				vim.notify(msg, vim.log.levels.INFO)
-			end
-		end,
-		desc('Print Recent Projects'),
+				for _, v in next, recent_proj() do
+					msg = msg .. '\n- ' .. v
+				end
+				if exists('notify') then
+					require('notify')(msg, 'info', { title = 'Recent Projects' })
+				else
+					vim.notify(msg, vim.log.levels.INFO)
+				end
+			end,
+			desc('Print Recent Projects'),
+		},
+	},
+	v = {
+		['<leader>pr'] = {
+			function()
+				local msg = ''
+
+				for _, v in next, recent_proj() do
+					msg = msg .. '\n- ' .. v
+				end
+				if exists('notify') then
+					require('notify')(msg, 'info', { title = 'Recent Projects' })
+				else
+					vim.notify(msg, vim.log.levels.INFO)
+				end
+			end,
+			desc('Print Recent Projects'),
+		},
 	},
 }
 
-for key, v in next, keys do
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(key, v[1], v[2] or {})
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+	n = { ['<leader>p'] = { name = '+Project' } },
+	v = { ['<leader>p'] = { name = '+Project' } },
+}
+
+for mode, t in next, Keys do
+	if WK.available() then
+		if is_tbl(Names[mode]) and not empty(Names[mode]) then
+			WK.register(Names[mode], { mode = mode })
+		end
+
+		WK.register(WK.convert_dict(t), { mode = mode })
+	else
+		for lhs, v in next, t do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+			kmap[mode](lhs, v[1], v[2] or {})
+		end
+	end
 end

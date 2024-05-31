@@ -632,6 +632,7 @@ M.TELESCOPE = {
 		'ahmedkhalf/project.nvim',
 		lazy = false,
 		name = 'Project',
+		main = 'project_nvim',
 		version = false,
 		init = function()
 			vim.opt.ls = 2
@@ -641,7 +642,7 @@ M.TELESCOPE = {
 		config = source('lazy_cfg.project'),
 		--- NOTE: Disabled to supress warnings from version bump v0.11.0
 		--- until further notice.
-		enabled = not vim_has('nvim-0.11'),
+		-- enabled = not vim_has('nvim-0.11'),
 	},
 }
 --- UI Plugins
