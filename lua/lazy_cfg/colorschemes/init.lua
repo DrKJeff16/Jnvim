@@ -46,7 +46,7 @@ function M.new()
 	self.new = M.new
 
 	for _, c in next, submods do
-		self[c] = M[c] or nil
+		self[c] = exists(c, true) or nil
 	end
 
 	return self
