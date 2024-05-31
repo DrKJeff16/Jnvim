@@ -189,14 +189,15 @@ local Names = {
 	},
 }
 
-for mode, keys in next, Keys do
+for mode, t in next, Keys do
 	if WK.available() then
 		if is_tbl(Names[mode]) and not empty(Names[mode]) then
 			WK.register(Names[mode], { mode = mode })
 		end
-		WK.register(WK.convert_dict(keys), { mode = mode })
+
+		WK.register(WK.convert_dict(t), { mode = mode })
 	else
-		for lhs, v in next, keys do
+		for lhs, v in next, t do
 			v[2] = is_tbl(v[2]) and v[2] or {}
 			kmap[mode](lhs, v[1], v[2])
 		end
