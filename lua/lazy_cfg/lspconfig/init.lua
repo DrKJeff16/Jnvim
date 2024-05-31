@@ -42,7 +42,7 @@ local function join_paths(...)
 	return table.concat({ ... }, path_sep)
 end
 
-require('vim.lsp.log').set_format_func(insp)
+-- require('vim.lsp.log').set_format_func(insp)
 
 ---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
@@ -154,6 +154,7 @@ srv.cmake = executable('cmake-languqge-server') and {} or nil
 srv.html = executable('vscode-html-language-server') and {} or nil
 srv.jdtls = executable('jdtls') and {} or nil
 srv.jsonls = executable('vscode-json-language-server') and {} or nil
+srv.julials = executable('julia') and {} or nil
 srv.marksman = executable('marksman') and {} or nil
 srv.pylsp = executable('pylsp') and {} or nil
 srv.texlab = executable('texlab') and {} or nil
@@ -162,17 +163,18 @@ srv.yamlls = executable('yaml-language-server') and {} or nil
 function srv.new()
 	local self = setmetatable({}, { __index = srv })
 
-	self.lua_ls = srv.lua_ls or nil
-	self.bashls = srv.bashls or nil
-	self.clangd = srv.clangd or nil
-	self.cmake = srv.cmake or nil
-	self.html = srv.html or nil
-	self.jdtls = srv.jdtls or nil
-	self.jsonls = srv.jsonls or nil
-	self.marksman = srv.marksman or nil
-	self.pylsp = srv.pylsp or nil
-	self.texlab = srv.texlab or nil
-	self.yamlls = srv.yamlls or nil
+	self.lua_ls = srv.lua_ls
+	self.bashls = srv.bashls
+	self.clangd = srv.clangd
+	self.cmake = srv.cmake
+	self.html = srv.html
+	self.jdtls = srv.jdtls
+	self.jsonls = srv.jsonls
+	self.julials = srv.julials
+	self.marksman = srv.marksman
+	self.pylsp = srv.pylsp
+	self.texlab = srv.texlab
+	self.yamlls = srv.yamlls
 
 	return self
 end
@@ -377,7 +379,7 @@ for event, opts_arr in next, aus do
 	end
 end
 
----@type HlDict
+--[[ ---@type HlDict
 local Highlights = {
 	['@lsp.type.variable.lua'] = { fg = '#35c7aa' },
 	['@lsp.mod.deprecated'] = { strikethrough = true },
@@ -386,4 +388,4 @@ local Highlights = {
 
 for name, opts in next, Highlights do
 	hi(name, opts)
-end
+end ]]
