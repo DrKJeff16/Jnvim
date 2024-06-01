@@ -3,6 +3,7 @@
 
 local Types = require('user.types') -- Source all API annotations
 local Check = require('user.check') -- Checker utilities
+local Util = require('user.util') -- Coding utilities
 
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
@@ -14,6 +15,7 @@ local empty = Check.value.empty
 ---@type UserMod
 local M = {
 	types = Types,
+	util = Util,
 	check = Check,
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),

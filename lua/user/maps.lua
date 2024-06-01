@@ -5,6 +5,7 @@
 require('user.types.user.maps')
 
 local Check = require('user.check')
+local Util = require('user.util')
 
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
@@ -15,6 +16,7 @@ local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 local field = Check.value.field
+local strip_fields = Util.strip_fields
 
 local kmap = vim.keymap.set
 local map = vim.api.nvim_set_keymap
@@ -22,44 +24,6 @@ local bufmap = vim.api.nvim_buf_set_keymap
 
 ---@type Modes
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
-
----@type fun(T: UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts, fields: string|string[]): UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts
-local strip_options = function(T, fields)
-	if not is_tbl(T) then
-		error('(maps:strip_options): Empty table')
-	end
-
-	if empty(T) then
-		return T
-	end
-
-	if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
-		return T
-	end
-
-	---@type UserMaps.Keymap.Opts
-	local res = {}
-
-	if is_str(fields) then
-		if not field(fields, T) then
-			return T
-		end
-
-		for k, v in next, T do
-			if k ~= fields then
-				res[k] = v
-			end
-		end
-	else
-		for k, v in next, T do
-			if not vim.tbl_contains(fields, k) then
-				res[k] = v
-			end
-		end
-	end
-
-	return res
-end
 
 ---@type fun(mode: string, func: MapFuncs, with_buf: boolean?): KeyMapFunction|ApiMapFunction|BufMapFunction
 local function variant(mode, func, with_buf)
@@ -177,7 +141,8 @@ function M.nop(T, opts, mode)
 	opts.silent = is_bool(opts.silent) and opts.silent or true
 
 	if is_int(opts.buffer) then
-		opts = strip_options(vim.deepcopy(opts), 'buffer')
+		---@type UserMaps.Keymap.Opts
+		opts = strip_fields(opts, 'buffer')
 	end
 
 	if is_str(T) then

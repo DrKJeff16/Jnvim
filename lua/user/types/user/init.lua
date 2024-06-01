@@ -7,6 +7,7 @@
 ---@field autocmd table
 ---@field opts table
 ---@field check table
+---@field util table
 
 ---@type UserSubTypes
 local M = {
@@ -15,6 +16,7 @@ local M = {
 	highlight = require('user.types.user.highlight'),
 	maps = require('user.types.user.maps'),
 	opts = require('user.types.user.opts'),
+	util = require('user.types.user.util'),
 }
 
 return M
