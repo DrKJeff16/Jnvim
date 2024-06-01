@@ -14,9 +14,9 @@ local empty = Check.value.empty
 
 ---@type UserMod
 local M = {
-	types = Types,
-	util = Util,
-	check = Check,
+	types = require('user.types'),
+	util = require('user.util'),
+	check = require('user.check'),
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
@@ -72,11 +72,6 @@ local M = {
 
 			::continue::
 		end
-	end,
-	ft_get = function(scope)
-		scope = (is_str(scope) and vim.tbl_contains({ 'local', 'global' })) and scope or 'local'
-
-		return vim.api.nvim_get_option_value('ft', { scope = scope })
 	end,
 }
 

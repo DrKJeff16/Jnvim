@@ -6,6 +6,7 @@ require('user.types.user.util')
 local Value = require('user.check.value')
 local is_tbl = Value.is_tbl
 local is_str = Value.is_str
+local is_int = Value.is_int
 local empty = Value.empty
 local field = Value.field
 
@@ -49,17 +50,20 @@ function M.strip_fields(T, fields)
 	return res
 end
 
-function M.ft_set(s)
-	local set_option = vim.api.nvim_set_option_value
-	local curr_buf = vim.api.nvim_get_current_buf
+function M.ft_set(s, bufnr)
+	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
 	return function()
 		if is_str(s) then
-			set_option('ft', s, {
-				buf = curr_buf(),
-			})
+			vim.api.nvim_set_option_value('ft', s, { buf = bufnr })
 		end
 	end
+end
+
+function M.ft_get(bufnr)
+	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+
+	return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
 
 return M

@@ -7,6 +7,7 @@ local Types = User.types -- Import docstrings and annotations.
 local maps_t = Types.user.maps
 local Kmap = User.maps.kmap
 local WK = User.maps.wk
+local Util = User.util
 
 local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
@@ -17,6 +18,7 @@ local empty = Check.value.empty
 local vim_has = Check.exists.vim_has
 local nop = User.maps.nop
 local desc = Kmap.desc
+local ft_get = Util.ft_get
 
 _G.is_windows = vim_has('win32')
 
@@ -109,7 +111,7 @@ local map_tbl = {
 		},
 		['<leader>fvv'] = {
 			function()
-				local ft = User.ft_get()
+				local ft = ft_get()
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'vim' then

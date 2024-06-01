@@ -35,7 +35,6 @@
 ---@field highlight UserHl
 ---@field opts UserOpts
 ---@field types UserTypes
----@field ft_get fun(scope: ('local'|'global')?): string
 ---@field util UserUtils
 
 ---@type UserTypes
