@@ -346,6 +346,7 @@ M.ESSENTIAL = {
 		lazy = true,
 		name = 'web-devicons',
 		version = false,
+		enabled = not in_console(),
 	},
 }
 
@@ -386,7 +387,7 @@ M.NVIM = {
 			'Plenary',
 		},
 		config = source('lazy_cfg.startup'),
-		enabled = false,
+		-- enabled = false,
 	},
 	{
 		'folke/persistence.nvim',
@@ -444,7 +445,6 @@ M.EDITING = {
 	-- TODO COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		event = 'BufWinEnter',
 		name = 'todo-comments',
 		version = false,
 		dependencies = {
@@ -540,7 +540,7 @@ M.LSP = {
 		name = 'clangd_exts',
 		version = false,
 		config = source('lazy_cfg.lspconfig.clangd'),
-		enabled = executable('clangd'),
+		enabled = executable('clangd') and not in_console(),
 	},
 }
 --- Completion and `cmp`-related Plugins
@@ -622,6 +622,7 @@ M.TELESCOPE = {
 			'Project',
 		},
 		config = source('lazy_cfg.telescope'),
+		enabled = not in_console(),
 	},
 	{
 		'nvim-telescope/telescope-fzf-native.nvim',
@@ -678,7 +679,7 @@ M.UI = {
 		},
 		init = function()
 			vim.opt.stal = 2
-			vim.opt.termguicolors = vim_exists('+termguicolors')
+			vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 		end,
 		config = source('lazy_cfg.bufferline'),
 		-- enabled = not in_console(),
