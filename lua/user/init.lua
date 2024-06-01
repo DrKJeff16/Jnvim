@@ -22,33 +22,20 @@ local M = {
 	opts = require('user.opts'),
 
 	assoc = function()
-		---@type fun(s: string): fun()
-		local function ft(s)
-			local set_option = vim.api.nvim_set_option_value
-			local curr_buf = vim.api.nvim_get_current_buf
-
-			return function()
-				if is_str(s) then
-					set_option('ft', s, {
-						buf = curr_buf(),
-						scope = 'local',
-					})
-				end
-			end
-		end
+		local ft = Util.ft_set
 
 		local au = vim.api.nvim_create_autocmd
 
-		vim.api.nvim_create_augroup('UserAssocs', { clear = true })
+		local group = vim.api.nvim_create_augroup('UserAssocs', { clear = false })
 
 		---@type AuRepeatEvents[]
 		local aus = {
 			{
 				events = { 'BufNewFile', 'BufReadPre' },
 				opts_tbl = {
-					{ pattern = '*.org', callback = ft('org'), group = 'UserAssocs' },
-					{ pattern = '.spacemacs', callback = ft('lisp'), group = 'UserAssocs' },
-					{ pattern = '.clangd', callback = ft('yaml'), group = 'UserAssocs' },
+					{ pattern = '*.org', callback = ft('org'), group = group },
+					{ pattern = '.spacemacs', callback = ft('lisp'), group = group },
+					{ pattern = '.clangd', callback = ft('yaml'), group = group },
 				},
 			},
 		}
@@ -58,8 +45,6 @@ local M = {
 				vim.notify('(user.assoc): Event type `' .. type(v.events) .. '` is neither string nor table')
 				goto continue
 			end
-
-			local events = v.events
 
 			if not is_tbl(v.opts_tbl) or empty(v.opts_tbl) then
 				vim.notify('(user.assoc): Event options in a non-table or an empty one')
@@ -82,13 +67,7 @@ local M = {
 					goto continue
 				end
 
-				o.group = (is_str(o.group) and o.group == 'UserAssocs') and o.group or 'UserAssocs'
-
-				if not is_nil(o.buffer) then
-					o.buffer = is_int(o.buffer) and o.buffer or 0
-				end
-
-				au(events, o)
+				au(v.events, o)
 			end
 
 			::continue::

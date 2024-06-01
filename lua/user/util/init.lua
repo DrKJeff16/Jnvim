@@ -49,4 +49,17 @@ function M.strip_fields(T, fields)
 	return res
 end
 
+function M.ft_set(s)
+	local set_option = vim.api.nvim_set_option_value
+	local curr_buf = vim.api.nvim_get_current_buf
+
+	return function()
+		if is_str(s) then
+			set_option('ft', s, {
+				buf = curr_buf(),
+			})
+		end
+	end
+end
+
 return M
