@@ -715,13 +715,11 @@ M.UI = {
 		enabled = false,
 	},
 	{
-		'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
-		lazy = true,
+		'HiPhish/rainbow-delimiters.nvim',
 		name = 'rainbow_delimiters',
 		version = false,
-		--- NOTE: Disabled to supress warnings from version bump v0.11.0
-		--- until further notice.
-		enabled = not (vim_has('nvim-0.11') or in_console()),
+		config = source('lazy_cfg.rainbow_delimiters'),
+		enabled = not in_console(),
 	},
 	-- File Tree
 	{
