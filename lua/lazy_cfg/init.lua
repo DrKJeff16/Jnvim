@@ -826,7 +826,6 @@ M.SYNTAX = {
 M.UTILS = {
 	{
 		'iamcco/markdown-preview.nvim',
-		ft = { 'markdown' },
 		name = 'md_preview',
 		build = executable('yarn') and 'cd app && yarn install' or '',
 		init = function()
