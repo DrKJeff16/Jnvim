@@ -68,6 +68,8 @@ For these to work, the following executables must be installed and in your `$PAT
 │   ├── init.lua  <== API `init`, where entry points are defined
 │   ├── maps.lua  <== Mapping Functions
 │   ├── opts.lua  <== Vim Options
+│   ├── util/  <== Misc Utils
+│   │   └── init.lua  <== Entry points are defined here
 │   └── types/  <== Lua Type Annotations and Documentation
 │       ├── init.lua  <== Entry points are defined here
 │       ├── user/  <== User API Documentation
@@ -76,10 +78,11 @@ For these to work, the following executables must be installed and in your `$PAT
 │       │   ├── check.lua  <== `check` module annotations
 │       │   ├── highlight.lua  <== `highlight` module annotations
 │       │   ├── maps.lua  <== `maps` module annotations
-│       │   └── opts.lua  <== `opts` module annotations
+│       │   ├── opts.lua  <== `opts` module annotations
+│       │   └── util.lua  <== `util` module annotations
 │       ├── module_1.lua
 │       ├── module_2.lua
-└───────└── ...
+│       └── ...
 ```
 
 ### Plugins
@@ -89,6 +92,7 @@ Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua).
 They are ordered by category, and you can make your own.
 
 <br/>
+
 <b>NOTE:</b> <u>Please refer to</u>
 <u><a href="https://github.com/folke/lazy.nvim"><code>lazy.nvim</code></a></u>
 <u>for more info on how to install plugins.</u>
@@ -97,8 +101,11 @@ They are ordered by category, and you can make your own.
 <br/>
 
 <details>
-<summary>Some of the included plugins...</summary>
-<br>
+<summary>
+<b><u>Some of the included plugins...</u></b>
+</summary>
+
+<br/>
 
 * [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
     * [`Comment.nvim`](https://github.com/numToStr/Comment.nvim)
@@ -130,32 +137,35 @@ code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
 
 <h3 id="types">
-<code>types</code>
+<u><code>types</code></u>
 </h3>
 
 This submodule includes type annotations and documentation.
 It can be found in [`user/types`](/lua/user/types).
+
 <br/>
+
 You can include it by using the following code snippet:
 
 ```lua
-require('user.types')
+require('user.types[.<type_module>]')
 -- Or by using the entry point:
-require('user').types
+-- require('user').types[.<type_module>]
 ```
 
 For API-specific documentation, you can use the submodule [`types/user`](/lua/user/types/user):
 
 ```lua
-require('user.types.user')
+require('user.types.user[.<type_module>]')
 -- Or by using the entry point:
-require('user').types.user
+-- require('user').types.user[.<type_module>]
 ```
 
-Each include their pertinent files sourced by the `init.lua` file.
+Each directory serves as an entry point for its pertinent files,
+sourced by the `init.lua` file in it.
 
 <h3 id="opts">
-<code>opts</code>
+<u><code>opts</code></u>
 </h3>
 
 This submodule can be found at [`here`](/lua/user/opts.lua).
@@ -168,17 +178,19 @@ To call the options:
 ```lua
 require('user.opts')
 -- Or by using the entry point:
-require('user').opts
+-- require('user').opts
 ```
 
 - **NOTE: This is still a very early WIP.**
 
 <h3 id="check">
-<code>check</code>
+<u><code>check</code></u>
 </h3>
 
 _**This is the most important utility for this config.**_ Of critical importance.
+
 <br/>
+
 It provides a table with two
 sub-tables. Both used for many conditional checks, aswell as module handling.
 
@@ -236,7 +248,7 @@ It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
 <hr/>
 
 <h3 id="maps">
-<code>maps</code>
+<u><code>maps</code></u>
 </h3>
 
 This module provides keymapping utilities in a more
@@ -521,7 +533,7 @@ completein the future.</b></u>
 ---
 
 <h3 id="highlight">
-<code>highlight</code>
+<u><code>highlight</code></u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
