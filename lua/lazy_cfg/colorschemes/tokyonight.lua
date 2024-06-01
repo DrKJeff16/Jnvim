@@ -17,7 +17,7 @@ if exists('tokyonight') then
 		local TN = require('tokyonight')
 
 		---@type Config
-		local opts = {
+		local Opts = {
 			on_colors = function(colors)
 				colors.error = '#df4f4f'
 			end,
@@ -57,20 +57,21 @@ if exists('tokyonight') then
 				'qf',
 				'help',
 				'lazy',
-				'checkhealth',
 				'terminal',
+				'toggleterm',
 				'packer',
 				'TelescopePrompt',
 				'vista_kind',
+				'NvimTree',
 			},
 
-			style = 'night',
+			style = 'moon',
 			live_reload = true,
 			use_background = true,
 			hide_inactive_statusline = false,
 			lualine_bold = true,
 			styles = {
-				comments = { italic = false },
+				comments = { italic = true },
 				keywords = { italic = false, bold = true },
 				functions = { bold = true, italic = false },
 				variables = {},
@@ -79,7 +80,7 @@ if exists('tokyonight') then
 			},
 		}
 
-		TN.setup(opts)
+		TN.setup(Opts)
 
 		vim.cmd(M.mod_cmd)
 	end

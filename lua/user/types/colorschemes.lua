@@ -51,6 +51,7 @@
 ---@field nightfox? CscSubMod|nil
 ---@field spaceduck? CscSubMod|nil
 ---@field dracula? CscSubMod|nil
+---@field space_vim_dark? CscSubMod|nil
 ---@field spacemacs? CscSubMod|nil
 ---@field molokai? CscSubMod|nil
 ---@field gloombuddy? CscSubMod|nil

@@ -36,6 +36,7 @@ local submods = {
 	'spaceduck',
 	'dracula',
 	'spacemacs',
+	'space_vim_dark',
 }
 
 local M = src(submods)

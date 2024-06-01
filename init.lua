@@ -265,12 +265,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 		v = {},
 	}
 
-	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak')[]
+	--- Reorder to your liking.
+	---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak'|'space_vim_dark')[]
 	local selected = {
-		-- Reorder to your liking.
+		'tokyonight',
 		'catppuccin',
 		'nightfox',
-		'tokyonight',
 		'onedark',
 		'spacemacs',
 		'molokai',
