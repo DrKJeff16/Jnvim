@@ -91,33 +91,12 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
 					desc('Stop Markdown Preview'),
 				},
 			},
-			i = {
-				['<C-m>t'] = {
-					function()
-						vim.cmd('MarkdownPreviewToggle')
-					end,
-					desc('Toggle Markdown Preview'),
-				},
-				['<C-m>p'] = {
-					function()
-						vim.cmd('MarkdownPreview')
-					end,
-					desc('Run Markdown Preview'),
-				},
-				['<C-m>s'] = {
-					function()
-						vim.cmd('MarkdownPreviewStop')
-					end,
-					desc('Stop Markdown Preview'),
-				},
-			},
 		}
 
 		---@type table<MapModes, RegKeysNamed>
 		local Names = {
 			n = { ['<leader>f<C-m>'] = { name = '+MarkdownPreview' } },
 			v = { ['<leader>f<C-m>'] = { name = '+MarkdownPreview' } },
-			i = { ['<C-m>'] = { name = '+MarkdownPreview' } },
 		}
 
 		local bufnr = vim.api.nvim_get_current_buf()
