@@ -31,3 +31,4 @@
 ---@field ft_set fun(s: string, bufnr: integer?): fun()
 ---@field ft_get fun(bufnr: integer?): string
 ---@field notify UserUtils.Notify
+---@field assoc fun()

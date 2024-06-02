@@ -30,7 +30,6 @@
 
 ---@class UserMod
 ---@field check UserCheck
----@field assoc fun()
 ---@field maps UserMaps
 ---@field highlight UserHl
 ---@field opts UserOpts
