@@ -4,6 +4,7 @@
 require('user.types.user.opts')
 
 local Check = require('user.check')
+local Util = require('user.util')
 
 local exists = Check.exists.vim_exists
 local is_nil = Check.value.is_nil
@@ -11,6 +12,7 @@ local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
+local notify = Util.notify.notify
 
 ---@type OptsTbl
 local opt_tbl = {
@@ -114,7 +116,7 @@ local function optset(opts)
 		elseif not is_nil(vim.o[k]) then
 			vim.o[k] = v
 		else
-			vim.notify('(user.opts:optset): Unable to set option `' .. k .. '`')
+			notify('(user.opts:optset): Unable to set option `' .. k .. '`', 'error', { title = 'user.opts' })
 		end
 	end
 end
