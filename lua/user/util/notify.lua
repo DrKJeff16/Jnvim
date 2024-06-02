@@ -21,6 +21,8 @@ function M.notify(msg, lvl, opts)
 		error('(user.util.notify.notify): Empty message', vim.log.levels.WARN)
 	end
 
+	opts = (type(opts) == 'table') and opts or {}
+
 	local vim_lvl = vim.log.levels
 
 	local DEFAULT_LVLS = {
