@@ -110,7 +110,7 @@ local known_exts = {
 	['project_nvim'] = {
 		'projects',
 		---@type fun(): KeyMapDict
-		keys = exists('project_nvim') and function()
+		keys = function()
 			if is_nil(Extensions.projects) then
 				return {}
 			end
@@ -194,10 +194,12 @@ for mode, t in next, Maps do
 		if is_tbl(Names[mode]) and not empty(Names[mode]) then
 			WK.register(Names[mode], { mode = mode })
 		end
+
 		WK.register(WK.convert_dict(t), { mode = mode })
 	else
 		for lhs, v in next, t do
 			v[2] = is_tbl(v[2]) and v[2] or {}
+
 			kmap[mode](lhs, v[1], v[2])
 		end
 	end
