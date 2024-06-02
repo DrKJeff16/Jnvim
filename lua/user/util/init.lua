@@ -3,17 +3,17 @@
 
 require('user.types.user.util')
 
-local Value = require('user.check.value')
-local is_tbl = Value.is_tbl
-local is_str = Value.is_str
-local is_int = Value.is_int
-local empty = Value.empty
-local field = Value.field
-
 ---@type UserUtils
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 function M.strip_fields(T, fields)
+	local is_tbl = require('user.check.value').is_tbl
+	local is_str = require('user.check.value').is_str
+	local is_int = require('user.check.value').is_int
+	local empty = require('user.check.value').empty
+	local field = require('user.check.value').field
+
 	if not is_tbl(T) then
 		error('(maps:strip_options): Empty table')
 	end
@@ -51,6 +51,9 @@ function M.strip_fields(T, fields)
 end
 
 function M.ft_set(s, bufnr)
+	local is_int = require('user.check.value').is_int
+	local is_str = require('user.check.value').is_str
+
 	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
 	return function()
@@ -61,6 +64,7 @@ function M.ft_set(s, bufnr)
 end
 
 function M.ft_get(bufnr)
+	local is_int = require('user.check.value').is_int
 	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
 	return vim.api.nvim_get_option_value('ft', { buf = bufnr })
