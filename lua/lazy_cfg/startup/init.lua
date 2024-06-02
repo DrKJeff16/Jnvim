@@ -14,4 +14,4 @@ local Startup = require('startup')
 
 local Opts = {}
 
-Startup.setup()
+Startup.setup(Opts)
