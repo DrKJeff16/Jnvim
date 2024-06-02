@@ -66,4 +66,6 @@ function M.ft_get(bufnr)
 	return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
 
+M.notify = require('user.util.notify')
+
 return M
