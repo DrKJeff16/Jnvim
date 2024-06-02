@@ -9,7 +9,13 @@
 ---|4
 ---|5
 
----@alias NotifyLvl NotifyLevel
+---@alias NotifyLvl
+---|'debug'
+---|'error'
+---|'info'
+---|'off'
+---|'trace'
+---|'warn'
 
 ---@class NotifyOpts
 ---@field title? string Defaults to `'Message'`
