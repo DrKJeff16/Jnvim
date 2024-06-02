@@ -59,6 +59,22 @@ local async_path = function(priority)
 	return res
 end
 
+local lua_sources = {
+	{ name = 'nvim_lsp', priority = 5 },
+	{ name = 'nvim_lua', priority = 4 },
+	{ name = 'nvim_lsp_signature_help', priority = 3 },
+	{ name = 'luasnip', priority = 2 },
+	buffer(1),
+}
+
+if exists('lazydev') then
+	table.insert(lua_sources, {
+		name = 'lazydev',
+		group_index = 0,
+		priority = 6,
+	})
+end
+
 ---@type SetupSources
 local ft = {
 	{
@@ -95,13 +111,7 @@ local ft = {
 		},
 	},
 	['lua'] = {
-		sources = cmp.config.sources({
-			{ name = 'nvim_lsp', priority = 5 },
-			{ name = 'nvim_lsp_signature_help', priority = 4 },
-			{ name = 'nvim_lua', priority = 3 },
-			{ name = 'luasnip', priority = 2 },
-			buffer(1),
-		}),
+		sources = cmp.config.sources(lua_sources),
 	},
 	['lisp'] = {
 		sources = cmp.config.sources({

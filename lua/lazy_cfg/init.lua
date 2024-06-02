@@ -493,7 +493,7 @@ M.LSP = {
 		name = 'lspconfig',
 		version = false,
 		dependencies = {
-			'NeoDev',
+			'LazyDev',
 			'NeoConf',
 			'Trouble',
 			'SchemaStore',
@@ -510,12 +510,22 @@ M.LSP = {
 	},
 	-- Essential for Nvim Lua files.
 	{
+		'folke/lazydev.nvim',
+		ft = 'lua',
+		name = 'LazyDev',
+		version = false,
+		dependencies = { 'luvit-meta' },
+		config = source('lazy_cfg.lspconfig.lazydev'),
+	},
+	{ 'Bilal2453/luvit-meta', lazy = true, version = false }, -- optional `vim.uv` typings
+	--[[ -- Essential for Nvim Lua files.
+	{
 		'folke/neodev.nvim',
 		name = 'NeoDev',
 		version = false,
 		dependencies = { 'NeoConf' },
 		enabled = executable('lua-language-server'),
-	},
+	}, ]]
 	{
 		'folke/neoconf.nvim',
 		name = 'NeoConf',

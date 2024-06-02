@@ -11,17 +11,7 @@ local modules = Check.exists.modules
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
-if
-	not modules({ 'neodev', 'lspconfig' }) or not executable({ 'lua-language-server', 'vscode-json-language-server' })
-then
-	local msg = [[Missing any of the following:
-	- `neodev`
-	- `lspconfig`
-	- `lua-language-server`
-	- `vscode-json-language-server`
-	]]
-
-	Util.notify.notify(msg, 'error', { title = 'LSPCONFIG' })
+if not modules({ 'neodev', 'lspconfig' }) or not executable({ 'lua-language-server' }) then
 	return
 end
 
