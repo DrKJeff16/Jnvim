@@ -45,27 +45,6 @@ local Opts = {
 notify.setup(Opts)
 vim.notify = notify
 
-_G.Notify = notify
-
----@type fun(msg: string, lvl: ('info'|'error'|'warn')?, opts: table?)
-function _G.anotify(msg, lvl, opts)
-	if not is_str(lvl) or not vim.tbl_contains({ 'info', 'warn', 'ertor' }, lvl) then
-		lvl = 'info'
-	end
-
-	if not is_tbl(opts) or not is_str(opts.title) or empty(opts.title) then
-		opts = {
-			title = 'Message',
-		}
-	end
-
-	local async = require('plenary.async').run
-
-	async(function()
-		Notify(msg, lvl, opts)
-	end)
-end
-
 ---@type HlDict
 local NotifyHl = {
 	['NotifyERRORBorder'] = { fg = '#8A1F1F' },
