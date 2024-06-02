@@ -78,19 +78,19 @@ end
 local Maps = {
 	n = {
 		['<leader><leader>'] = { open, desc('Open Telescope') },
+		['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
 		['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-		['<leader>ff'] = { Builtin.find_files, desc('File Picker') },
+		['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
+		['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
+		['<leader>vcc'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
 		['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
 		['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
 		['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
 		['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
-		['<leader>fTbc'] = { Builtin.colorscheme, desc('Colorschemes') },
 		['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
 		['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
 		['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
-		['<leader>fTblD'] = { Builtin.lsp_document_symbols, desc('Document Symbols') },
-		['<leader>fTbld'] = { Builtin.lsp_definitions, desc('Definitions') },
 		['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
 	},
 }
