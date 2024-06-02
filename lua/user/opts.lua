@@ -91,12 +91,12 @@ if is_windows then
 	opt_tbl.shell = 'cmd.exe'
 	if executable('bash.exe') then
 		opt_tbl.shell = 'bash.exe'
+		opt_tbl.shellcmdflag = '-c'
 	elseif executable('sh.exe') then
 		opt_tbl.shell = 'sh.exe'
-	elseif executable('pwsh.exe') then
-		opt_tbl.shell = 'pwsh.exe'
-	elseif executable('powershell.exe') then
-		opt_tbl.shell = 'powershell.exe'
+		opt_tbl.shellcmdflag = '-c'
+	else
+		opt_tbl.shell = 'cmd.exe'
 	end
 
 	opt_tbl.shellslash = true
