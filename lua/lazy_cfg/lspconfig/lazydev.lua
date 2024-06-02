@@ -17,7 +17,6 @@ end
 local stdpath = vim.fn.stdpath
 
 local config = stdpath('config')
-local LAZY = vim.env.LAZY
 
 local LazyDev = require('lazydev')
 
@@ -25,22 +24,22 @@ LazyDev.setup({
 	runtime = vim.env.VIMRUNTIME --[[@as string]],
 
 	library = {
-		LAZY .. '/luvit-meta/library',
-		LAZY .. '/Notify',
-		LAZY .. '/which_key',
-		LAZY .. '/cmp',
-		LAZY .. '/LazyDev',
-		LAZY .. '/lspconfig',
+		'luvit-meta/library',
+		'Notify',
+		'which_key',
+		'cmp',
+		'LazyDev',
+		'lspconfig',
 		config,
 	}, ---@type string[]
 
-	---@type boolean|(fun(client:vim.lsp.Client):boolean?)
-	enabled = function(client)
+	---@type boolean|(fun(root_dir):boolean?)
+	enabled = function(root_dir)
 		if not is_nil(vim.g.lazydev_enabled) then
 			return vim.g.lazydev_enabled
 		end
 
-		return client.root_dir and vim.uv.fs_stat(client.root_dir .. '/lua') and true or false
+		return true
 	end,
 
 	-- add the cmp source for completion of:
