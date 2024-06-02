@@ -18,23 +18,22 @@ end
 
 local Trouble = require('trouble')
 
-local toggle = Trouble.toggle
-
 ---@type trouble.Config
 local Opts = {
-	auto_open = false, -- automatically open the list when you have diagnostics
-	auto_close = true, -- automatically close the list when you have no diagnostics
-	auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-	auto_fold = true, -- automatically fold a file trouble list at creation
-	auto_jump = { 'lsp_definitions' }, -- for the given modes, automatically jump if there is only a single result
+	auto_close = false, -- auto close when there are no items
+	auto_open = false, -- auto open when there are items
+	auto_preview = true, -- automatically open preview when on an item
+	auto_refresh = true, -- auto refresh when open
+	auto_jump = false, -- auto jump to the item when there's only one
 	focus = false, -- Focus the window when opened
 	restore = true, -- restores the last location in the list when opening
 	follow = true, -- Follow the current item
 	indent_guides = true, -- show indent guides
 	max_items = 200, -- limit number of items that can be displayed per section
 	multiline = true, -- render multi-line messages
-	pinned = true, -- When pinned, the opened trouble window will be bound to the current buffer
-
+	pinned = false, -- When pinned, the opened trouble window will be bound to the current buffer
+	warn_no_results = true, -- show a warning when there are no results
+	open_no_results = false, -- open the trouble window when there are no results
 	---@type trouble.Window.opts
 	win = {}, -- window options for the results window. Can be a split or a floating window.
 	-- Window options for the preview window. Can be a split, floating window,
@@ -47,7 +46,7 @@ local Opts = {
 		-- Set to false, if you want the preview to always be a real loaded buffer.
 		scratch = true,
 	},
-	-- Throttle/Debounce settings. Should usually not be changed.
+	--- Throttle/Debounce settings. Should usually not be changed.
 	---@type table<string, number|{ms:number, debounce?:boolean}>
 	throttle = {
 		refresh = 20, -- fetches new data when needed
@@ -65,7 +64,7 @@ local Opts = {
 		R = 'toggle_refresh',
 		q = 'close',
 		o = 'jump_close',
-		['<Esc>'] = 'cancel',
+		['<esc>'] = 'cancel',
 		['<cr>'] = 'jump',
 		['<2-leftmouse>'] = 'jump',
 		['<c-s>'] = 'jump_split',
@@ -98,10 +97,21 @@ local Opts = {
 		zi = 'fold_toggle_enable',
 		gb = { -- example of a custom action that toggles the active view filter
 			action = function(view)
-				view.state.filter_buffer = not view.state.filter_buffer
-				view:filter(view.state.filter_buffer and { buf = 0 } or nil)
+				view:filter({ buf = 0 }, { toggle = true })
 			end,
 			desc = 'Toggle Current Buffer Filter',
+		},
+		s = { -- example of a custom action that toggles the severity
+			action = function(view)
+				local f = view:get_filter('severity')
+				local severity = ((f and f.filter.severity or 0) + 1) % 5
+				view:filter({ severity = severity }, {
+					id = 'severity',
+					template = '{hl:Title}Filter:{hl} {severity}',
+					del = severity == 0,
+				})
+			end,
+			desc = 'Toggle Severity Filter',
 		},
 	},
 	---@type table<string, trouble.Mode>
@@ -140,19 +150,19 @@ local Opts = {
 	-- stylua: ignore
 	icons = {
 		---@type trouble.Indent.symbols
-		indent = {
-			top           = "│ ",
-			middle        = "├╴",
-			last          = "└╴",
+		indent        = {
+			top         = "│ ",
+			middle      = "├╴",
+			last        = "└╴",
 			-- last          = "-╴",
 			-- last       = "╰╴", -- rounded
-			fold_open     = " ",
-			fold_closed   = " ",
-			ws            = "  ",
+			fold_open   = " ",
+			fold_closed = " ",
+			ws          = "  ",
 		},
-		folder_closed   = " ",
-		folder_open     = " ",
-		kinds = {
+		folder_closed = " ",
+		folder_open   = " ",
+		kinds         = {
 			Array         = " ",
 			Boolean       = "󰨙 ",
 			Class         = " ",
@@ -188,32 +198,31 @@ Trouble.setup(Opts)
 ---@type table<MapModes, KeyMapDict>
 local Keys = {
 	n = {
-		['<leader>xx'] = { toggle, desc('Toggle Trouble') },
-		['<leader>xw'] = {
+		['<leader>lxx'] = {
 			function()
-				toggle('workspace_diagnostics')
+				vim.cmd('Trouble diagnostics toggle filter.buf=0')
 			end,
-			desc('Toggle Workspace Diagnostics'),
+			desc('Toggle Trouble Diagnostics'),
 		},
-		['<leader>xd'] = {
+		['<leader>lxs'] = {
 			function()
-				toggle('document_diagnostics')
+				vim.cmd('Trouble symbols toggle focus=false')
 			end,
-			desc('Toggle Document Diagnostics'),
+			desc('Toggle Trouble Diagnostics'),
 		},
-		['<leader>xq'] = {
+		['<leader>lxl'] = {
 			function()
-				toggle('quickfix')
+				vim.cmd('Trouble lsp toggle focus=false')
 			end,
-			desc('Toggle Quickfix'),
+			desc('Toggle LSP'),
 		},
-		['<leader>xl'] = {
+		['<leader>lxL'] = {
 			function()
-				toggle('loclist')
+				vim.cmd('Trouble loclist toggle')
 			end,
-			desc('Toggle Loclist'),
+			desc('Toggle Location List'),
 		},
-		['<leader>xr'] = {
+		['<leader>lxr'] = {
 			function()
 				toggle('lsp_references')
 			end,
@@ -221,32 +230,32 @@ local Keys = {
 		},
 	},
 	v = {
-		['<leader>xx'] = { toggle, desc('Toggle Trouble') },
-		['<leader>xw'] = {
+		['<leader>lxx'] = { toggle, desc('Toggle Trouble') },
+		['<leader>lxw'] = {
 			function()
 				toggle('workspace_diagnostics')
 			end,
 			desc('Toggle Workspace Diagnostics'),
 		},
-		['<leader>xd'] = {
+		['<leader>lxd'] = {
 			function()
 				toggle('document_diagnostics')
 			end,
 			desc('Toggle Document Diagnostics'),
 		},
-		['<leader>xq'] = {
+		['<leader>lxq'] = {
 			function()
 				toggle('quickfix')
 			end,
 			desc('Toggle Quickfix'),
 		},
-		['<leader>xl'] = {
+		['<leader>lxl'] = {
 			function()
 				toggle('loclist')
 			end,
 			desc('Toggle Loclist'),
 		},
-		['<leader>xr'] = {
+		['<leader>lxr'] = {
 			function()
 				toggle('lsp_references')
 			end,
@@ -256,8 +265,8 @@ local Keys = {
 }
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
-	n = { ['<leader>x'] = { name = '+Trouble' } },
-	v = { ['<leader>x'] = { name = '+Trouble' } },
+	n = { ['<leader>lx'] = { name = '+Trouble' } },
+	v = { ['<leader>lx'] = { name = '+Trouble' } },
 }
 
 for mode, t in next, Keys do
