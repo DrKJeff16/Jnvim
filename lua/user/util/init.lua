@@ -7,6 +7,16 @@ require('user.types.user.util')
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
+function M.xor(x, y)
+	local is_bool = require('user.check.value').is_bool
+
+	if not is_bool({ x, y }, true) then
+		error('(user.util.xor): An argument is not of boolean type')
+	end
+
+	return (x and not y) or (not x and y)
+end
+
 function M.strip_fields(T, fields)
 	local is_tbl = require('user.check.value').is_tbl
 	local is_str = require('user.check.value').is_str
@@ -44,6 +54,46 @@ function M.strip_fields(T, fields)
 			if not vim.tbl_contains(fields, k) then
 				res[k] = v
 			end
+		end
+	end
+
+	return res
+end
+
+function M.strip_values(T, values, max_instances)
+	local is_tbl = require('user.check.value').is_tbl
+	local is_nil = require('user.check.value').is_nil
+	local is_str = require('user.check.value').is_str
+	local is_int = require('user.check.value').is_int
+	local empty = require('user.check.value').empty
+
+	if not is_tbl(T) then
+		error('(user.util.strip_values): Not a table')
+	elseif not is_tbl(values) or empty(values) then
+		error('(user.util.strip_values): No values given')
+	end
+
+	local xor = M.xor
+
+	max_instances = is_int(max_instances) and max_instances or 0
+
+	local res = {}
+
+	local count = 0
+
+	for k, v in next, T do
+		if xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
+			if not vim.tbl_contains(values, v) and is_int(k) then
+				table.insert(res, v)
+			elseif not vim.tbl_contains(values, v) then
+				res[k] = v
+			else
+				count = count + 1
+			end
+		elseif is_int(k) then
+			table.insert(res, v)
+		else
+			res[k] = v
 		end
 	end
 

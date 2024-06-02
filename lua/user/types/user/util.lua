@@ -33,7 +33,9 @@
 ---@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: NotifyOpts?)
 
 ---@class UserUtils
----@field strip_fields fun(T: table, fields: string|string[]): table
+---@field xor fun(x: boolean, y: boolean): boolean
+---@field strip_fields fun(T: table, values: string|string[]): table
+---@field strip_values fun(T: table, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string, bufnr: integer?): fun()
 ---@field ft_get fun(bufnr: integer?): string
 ---@field notify UserUtils.Notify
