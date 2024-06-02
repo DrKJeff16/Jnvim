@@ -85,16 +85,9 @@ local map_tbl = {
 		['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
 		['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
 		['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
-		['<leader>fvs'] = {
-			function()
-				vim.cmd('luafile $MYVIMRC')
-				notify('Sourced `init.lua`')
-			end,
-			desc('Source My `init.lua`', false),
-		},
 		['<leader>fvl'] = {
 			function()
-				local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+				local ft = Util.ft_get()
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'lua' then
@@ -108,7 +101,7 @@ local map_tbl = {
 		},
 		['<leader>fvv'] = {
 			function()
-				local ft = ft_get()
+				local ft = Util.ft_get()
 				local err_msg = 'File not sourceable!'
 
 				if ft == 'vim' then
@@ -122,12 +115,19 @@ local map_tbl = {
 		},
 		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
 		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
-		['<leader>fvet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
-		['<leader>fvee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
-		['<leader>fves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
-		['<leader>fvev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
+		['<leader>vet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
+		['<leader>vee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
+		['<leader>ves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
+		['<leader>vev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
 
 		['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth', false) },
+		['<leader>vs'] = {
+			function()
+				vim.cmd('luafile $MYVIMRC')
+				notify('Sourced `init.lua`')
+			end,
+			desc('Source My `init.lua`', false),
+		},
 
 		['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
 		['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
@@ -182,8 +182,6 @@ local Names = {
 		['<leader>f'] = { name = '+File' },
 		--- Script File Handling
 		['<leader>fv'] = { name = '+Script Files' },
-		--- `init.lua` Editing
-		['<leader>fve'] = { name = '+Edit `init.lua`' },
 		--- Indent Control
 		['<leader>fi'] = { name = '+Indent' },
 
@@ -206,6 +204,8 @@ local Names = {
 
 		--- Vim
 		['<leader>v'] = { name = '+Vim' },
+		--- `init.lua` Editing
+		['<leader>ve'] = { name = '+Edit `init.lua`' },
 	},
 	v = {
 		--- Indent Control
