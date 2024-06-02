@@ -19,6 +19,7 @@ local vim_has = Check.exists.vim_has
 local nop = User.maps.nop
 local desc = Kmap.desc
 local ft_get = Util.ft_get
+local notify = Util.notify.notify
 
 _G.is_windows = vim_has('win32')
 
@@ -87,7 +88,7 @@ local map_tbl = {
 		['<leader>fvs'] = {
 			function()
 				vim.cmd('luafile $MYVIMRC')
-				vim.notify('Sourced `init.lua`')
+				notify('Sourced `init.lua`')
 			end,
 			desc('Source My `init.lua`', false),
 		},
@@ -98,13 +99,9 @@ local map_tbl = {
 
 				if ft == 'lua' then
 					vim.cmd('luafile %')
-					vim.notify('Sourced current Lua file')
-				elseif not is_nil(Notify) then
-					Notify(err_msg, 'error', { title = 'Lua' })
-				elseif exists('notify') then
-					require('notify')(err_msg, 'error', { title = 'Lua' })
+					notify('Sourced current Lua file')
 				else
-					vim.notify(err_msg, vim.log.levels.ERROR)
+					notify(err_msg, vim.log.levels.ERROR, { title = 'Lua' })
 				end
 			end,
 			desc('Source Current File As Lua File'),
@@ -116,13 +113,9 @@ local map_tbl = {
 
 				if ft == 'vim' then
 					vim.cmd('so %')
-					vim.notify('Sourced current Vim file')
-				elseif not is_nil(Notify) then
-					Notify(err_msg, 'error', { title = 'Vim' })
-				elseif exists('notify') then
-					require('notify')(err_msg, 'error', { title = 'Vim' })
+					notify('Sourced current Vim file')
 				else
-					vim.notify(err_msg, vim.log.levels.ERROR)
+					notify(err_msg, vim.log.levels.ERROR, { title = 'Vim' })
 				end
 			end,
 			desc('Source Current File As VimScript File'),
@@ -202,7 +195,6 @@ local Names = {
 
 		--- Window Handling
 		['<leader>w'] = { name = '+Window' },
-
 		--- Window Splitting
 		['<leader>ws'] = { name = '+Split' },
 
@@ -323,9 +315,10 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 end
 
 -- Call the user file associations
-if is_fun(User.assoc) then
+--[[ if is_fun(User.assoc) then
 	User.assoc()
-end
+end ]]
+Util.assoc()
 
 vim.g.markdown_minlines = 500
 
