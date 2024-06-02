@@ -30,7 +30,7 @@ function DEFAULT.new()
 	local self = setmetatable({}, { __index = DEFAULT })
 
 	for k, _ in next, DEFAULT do
-		if k ~= '__index' then
+		if not vim.tbl_contains({ 'new', '__index' }) then
 			self[k] = DEFAULT[k]
 		end
 	end

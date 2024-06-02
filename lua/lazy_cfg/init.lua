@@ -774,9 +774,6 @@ M.UI = {
 		name = 'colorizer',
 		version = false,
 		config = source('lazy_cfg.colorizer'),
-		--- NOTE: Disabled to supress warnings from version bump v0.11.0
-		--- until further notice.
-		enabled = not vim_has('nvim-0.11'),
 	},
 	{
 		'akinsho/toggleterm.nvim',
