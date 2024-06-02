@@ -32,8 +32,8 @@ end
 function M.new()
 	local self = setmetatable({}, { __index = M })
 
-	self.value = M.value
-	self.exists = M.exists
+	self.value = require('user.check.value')
+	self.exists = require('user.check.exists')
 	self.in_console = M.in_console
 
 	return self

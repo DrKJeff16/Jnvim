@@ -86,6 +86,7 @@ function M.empty(v)
 	local is_str = M.is_str
 	local is_tbl = M.is_tbl
 	local is_num = M.is_num
+	local notify = require('user.util.notify').notify
 
 	if is_str(v) then
 		return v == ''
@@ -99,6 +100,7 @@ function M.empty(v)
 		return vim.tbl_isempty(v)
 	end
 
+	notify("(user.check.value.empty): Value isn't a table, string nor a number", 'warn', { title = 'user.value.empty' })
 	return true
 end
 
@@ -134,11 +136,11 @@ function M.field(field, t)
 	local is_num = M.is_num
 
 	if not is_tbl(t) then
-		error('Cannot look up a field in the following type: ' .. type(t))
+		error('(user.check.value.field): Cannot look up a field in the following type: ' .. type(t))
 	end
 
 	if not (is_str(field) or is_num(field)) then
-		error('Field type `' .. type(t) .. '` not parseable.')
+		error('(user.check.value.field): Field type `' .. type(t) .. '` not parseable')
 	end
 
 	return not is_nil(t[field])

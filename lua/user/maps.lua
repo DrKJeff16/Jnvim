@@ -124,7 +124,7 @@ end
 
 function M.nop(T, opts, mode)
 	if not (is_str(T) or is_tbl(T)) then
-		error('(user.maps.nop): Argument is neither a string nor a table.')
+		error('(user.maps.nop): Argument is neither a string nor a table')
 	end
 
 	mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
@@ -206,10 +206,11 @@ end
 
 function M.wk.register(T, opts)
 	if not M.wk.available() then
+		Util.notify.notify('(user.maps.wk.register): `which_key` unavailable')
 		return false
 	end
 
-	if not is_tbl(T) or empty(T) then
+	if not (is_tbl(T) or is_str(T)) or empty(T) then
 		error('(user.maps.wk.register): Parameter is not a table')
 	end
 
