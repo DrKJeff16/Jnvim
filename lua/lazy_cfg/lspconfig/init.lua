@@ -299,18 +299,13 @@ au('LspAttach', {
 					function()
 						local out = lsp_buf.list_workspace_folders()
 						local msg = ''
+
+						local notify = require('user.util.notify').notify
 						for _, v in next, out do
 							msg = msg .. '\n - ' .. v
 						end
 
-						-- Try doing it with `notify` plugin.
-						if exists('notify') then
-							local Notify = require('notify')
-
-							Notify(msg, 'info', { title = 'Workspace Folders' })
-						else
-							vim.notify(msg, vim.log.levels.INFO)
-						end
+						notify(msg, 'info', { title = 'Workspace Folders' })
 					end,
 					desc('List Workspace Folders', true, buf),
 				},

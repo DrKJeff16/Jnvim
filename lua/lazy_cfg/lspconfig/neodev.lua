@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local types = User.types.lspconfig
 
 local executable = Check.exists.executable
@@ -20,13 +21,7 @@ then
 	- `vscode-json-language-server`
 	]]
 
-	if not is_nil(Notify) then
-		Notify(msg, 'error', { title = 'LSPCONFIG' })
-	elseif exists('notify') then
-		require('notify')(msg, 'error', { title = 'LSPCONFIG' })
-	else
-		vim.notify(msg, vim.log.levels.ERROR)
-	end
+	Util.notify.notify(msg, 'error', { title = 'LSPCONFIG' })
 	return
 end
 

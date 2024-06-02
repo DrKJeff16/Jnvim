@@ -3,9 +3,11 @@
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
 local WK = User.maps.wk
+local UNotify = Util.notify
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
@@ -92,11 +94,7 @@ local Keys = {
 				for _, v in next, recent_proj() do
 					msg = msg .. '\n- ' .. v
 				end
-				if exists('notify') then
-					require('notify')(msg, 'info', { title = 'Recent Projects' })
-				else
-					vim.notify(msg, vim.log.levels.INFO)
-				end
+				UNotify.notify(msg, 'info', { title = 'Recent Projects' })
 			end,
 			desc('Print Recent Projects'),
 		},
@@ -109,11 +107,7 @@ local Keys = {
 				for _, v in next, recent_proj() do
 					msg = msg .. '\n- ' .. v
 				end
-				if exists('notify') then
-					require('notify')(msg, 'info', { title = 'Recent Projects' })
-				else
-					vim.notify(msg, vim.log.levels.INFO)
-				end
+				UNotify.notify(msg, 'info', { title = 'Recent Projects' })
 			end,
 			desc('Print Recent Projects'),
 		},

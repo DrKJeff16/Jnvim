@@ -1,5 +1,6 @@
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local types = User.types.cmp
 
 local exists = Check.exists.module
@@ -17,18 +18,18 @@ local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
 
 local Sks = require('lazy_cfg.cmp.kinds')
-local Util = require('lazy_cfg.cmp.util')
+local CmpUtil = require('lazy_cfg.cmp.util')
 local Sources = require('lazy_cfg.cmp.sources').new()
 
 local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')
 local Compare = require('cmp.config.compare')
 
-local tab_map = Util.tab_map
-local s_tab_map = Util.s_tab_map
-local cr_map = Util.cr_map
+local tab_map = CmpUtil.tab_map
+local s_tab_map = CmpUtil.s_tab_map
+local cr_map = CmpUtil.cr_map
 
-local bs_map = Util.bs_map
+local bs_map = CmpUtil.bs_map
 local buffer = Sources.buffer
 
 ---@type table<string, cmp.MappingClass|fun(fallback: function):nil>
@@ -167,12 +168,4 @@ if is_fun(Sks.vscode) then
 end
 
 -- For debugging.
-if not is_nil(Notify) then
-	Notify('cmp loaded.', 'info', { title = 'cmp' })
-elseif exists('notify') then
-	local Notify = require('notify')
-
-	Notify('cmp loaded.', 'info', { title = 'cmp' })
-else
-	vim.notify('cmp loaded.', vim.log.levels.INFO)
-end
+Util.notify.notify('cmp loaded.', vim.log.levels.INFO)

@@ -5,6 +5,7 @@ local Lspconfig = require('lspconfig')
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local types = User.types.lspconfig
 
 local exists = Check.exists.module
@@ -18,13 +19,7 @@ end
 if is_num(neoconf_configured) and neoconf_configured == 1 then
 	local msg = "Neoconf can't be re-sourced."
 
-	if not is_nil(Notify) then
-		Notify(msg, 'error', { title = 'NeoConf' })
-	elseif exists('notify') then
-		require('notify')(msg, 'error', { title = 'NeoConf' })
-	else
-		vim.notify(msg, vim.log.levels.ERROR)
-	end
+	Util.notify.notify(msg, 'error', { title = 'NeoConf' })
 
 	return
 else

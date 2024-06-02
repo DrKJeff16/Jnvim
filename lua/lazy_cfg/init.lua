@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lazy
+local Util = User.util
 local kmap = User.maps.kmap
 local WK = User.maps.wk
 
@@ -914,7 +915,7 @@ for mode, maps in next, Keys do
 		for lhs, v in next, maps do
 			local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
 			if not (is_str(v[1]) or is_fun(v[1])) then
-				vim.notify(msg)
+				Util.notify.notify(msg, 'error', { title = 'lazy_cfg' })
 				goto continue
 			end
 

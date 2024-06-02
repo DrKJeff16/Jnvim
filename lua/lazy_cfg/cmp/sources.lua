@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local types = User.types.cmp
 
 local exists = Check.exists.module
@@ -142,11 +143,14 @@ local cmdline = {
 			},
 			async_path(2),
 		}),
+
+		---@diagnostic disable-next-line:missing-fields
 		matching = { disallow_symbol_nonprefix_matching = false },
 	},
 }
 
 ---@type Sources
+---@diagnostic disable-next-line:missing-fields
 local M = {
 	setup = function(T)
 		if is_tbl(T) and not empty(T) then
@@ -155,9 +159,10 @@ local M = {
 					table.insert(ft, v)
 				elseif is_str(k) and is_tbl(v) then
 					ft[k] = v
-				elseif exists('notify') then
-					require('notify')("Couldn't parse!", 'error', {
-						title = '(lazy_cfg.cmp.sources)',
+				else
+					Util.notify.notify("(lazy_cfg.cmp.sources): Couldn't parse the input table value", 'error', {
+						title = 'lazy_cfg.cmp.sources',
+						timeout = 2000,
 					})
 				end
 			end
