@@ -10,7 +10,7 @@ local executable = Check.exists.executable
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
-if not exists('lazydev') or not executable('lua-language-server') then
+if not exists('lazydev') or not executable('lua-language-server') or exists('neodev') then
 	return
 end
 
