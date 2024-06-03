@@ -132,7 +132,7 @@ function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
 		['wk.register'] = M.wk.register,
 	}
 
-	if not field(map_func, map_choices) then
+	if not field(map_func, map_choices) or (map_func == 'wk.register' and not M.wk.available()) then
 		map_func = 'kmap'
 	end
 
@@ -222,33 +222,42 @@ M.wk = {
 	available = function()
 		return Check.exists.module('which-key')
 	end,
-	convert = function(rhs, opts)
-		if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
-			error('(user.maps.wk.convert): Incorrect argument types!')
-		end
-
-		local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
-
-		opts = is_tbl(opts) and opts or {}
-
-		for _, o in next, DEFAULT_OPTS do
-			opts[o] = is_bool(opts[o]) and opts[o] or true
-		end
-
-		---@type RegKey
-		local res = { rhs }
-
-		if is_str(opts.desc) and not empty(opts.desc) then
-			table.insert(res, opts.desc)
-		end
-
-		for _, o in next, DEFAULT_OPTS do
-			res[o] = opts[o]
-		end
-
-		return res
-	end,
 }
+
+function M.wk.convert(rhs, opts)
+	if not M.wk.available() then
+		error('(user.maps.wk.convert): `which_key` not available')
+	end
+
+	if not ((is_str(rhs) and not empty(rhs)) or is_fun(rhs)) then
+		error('(user.maps.wk.convert): Incorrect argument types')
+	end
+
+	local DEFAULT_OPTS = { 'noremap', 'nowait', 'silent' }
+
+	opts = is_tbl(opts) and opts or {}
+
+	for _, o in next, DEFAULT_OPTS do
+		opts[o] = is_bool(opts[o]) and opts[o] or true
+	end
+
+	if is_str(rhs) and rhs == 'which_key_ignore' then
+		return rhs
+	end
+
+	---@type RegKey
+	local res = { rhs }
+
+	if is_str(opts.desc) and not empty(opts.desc) then
+		table.insert(res, opts.desc)
+	end
+
+	for _, o in next, DEFAULT_OPTS do
+		res[o] = opts[o]
+	end
+
+	return res
+end
 
 function M.wk.convert_dict(T)
 	if not is_tbl(T) or empty(T) then

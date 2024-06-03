@@ -115,7 +115,7 @@ require('user.types.which_key')
 
 ---@class UserMaps.WK
 ---@field available fun(): boolean
----@field convert fun(rhs: UserMaps.Keymap.Rhs, opts: (UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts)?): RegKey
+---@field convert fun(rhs: UserMaps.Keymap.Rhs, opts: (UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts)?): RegKey|'which_key_ignore'
 ---@field convert_dict fun(T: KeyMapDict|ApiMapDict): RegKeys
 ---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false|nil
 

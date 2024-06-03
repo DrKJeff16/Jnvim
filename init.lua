@@ -78,9 +78,9 @@ for _, mode in next, User.maps.modes do
 end
 
 ---@type Maps
-local map_tbl = {
+local Keys = {
 	n = {
-		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search', false) },
+		['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
 
 		['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
 		['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
@@ -89,7 +89,7 @@ local map_tbl = {
 		['<leader>fvl'] = {
 			function()
 				local ft = Util.ft_get()
-				local err_msg = 'File not sourceable!'
+				local err_msg = 'Filetype' .. ft .. ' not sourceable by Lua'
 
 				if ft == 'lua' then
 					vim.cmd('luafile %')
@@ -103,7 +103,7 @@ local map_tbl = {
 		['<leader>fvv'] = {
 			function()
 				local ft = Util.ft_get()
-				local err_msg = 'File not sourceable!'
+				local err_msg = 'Filetype' .. ft .. ' not sourceable by Vim'
 
 				if ft == 'vim' then
 					vim.cmd('so %')
@@ -116,6 +116,7 @@ local map_tbl = {
 		},
 		['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
 		['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
+
 		['<leader>vet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
 		['<leader>vee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
 		['<leader>ves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
@@ -126,7 +127,7 @@ local map_tbl = {
 				vim.cmd('luafile $MYVIMRC')
 				notify('Sourced `init.lua`')
 			end,
-			desc('Source My `init.lua`', false),
+			desc('Source $MYVIMRC', false),
 		},
 
 		['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
@@ -163,7 +164,6 @@ local map_tbl = {
 		['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false) },
 		['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
 	},
-	-- WARNING: DO NOT USE `:`!!!
 	v = {
 		['<leader>s'] = { ':sort<CR>', desc('Sort') },
 		['<leader>S'] = { ':sort!<CR>', desc('Sort (Reverse)') },
@@ -205,7 +205,7 @@ local Names = {
 		--- Vim
 		['<leader>v'] = { name = '+Vim' },
 		--- `init.lua` Editing
-		['<leader>ve'] = { name = '+Edit `init.lua`' },
+		['<leader>ve'] = { name = '+Edit $MYVIMRC' },
 	},
 	v = {
 		--- Indent Control
@@ -228,20 +228,12 @@ if not called_lazy then
 end
 
 -- Set the keymaps previously stated
-for mode, t in next, map_tbl do
+for mode, t in next, Names do
 	if WK.available() then
-		if is_tbl(Names[mode]) and not empty(Names[mode]) then
-			WK.register(Names[mode], { mode = mode })
-		end
-
-		WK.register(WK.convert_dict(t), { mode = mode })
-	else
-		for lhs, v in next, t do
-			v[2] = is_tbl(v[2]) and v[2] or {}
-
-			Kmap[mode](lhs, v[1], v[2])
-		end
+		WK.register(Names[mode], { mode = mode })
 	end
+
+	User.maps.map_dict(Keys, 'wk.register', true, mode)
 end
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
@@ -293,20 +285,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 		v = { ['<leader>vc'] = { name = '+Colorschemes' } },
 	}
 
-	for mode, t in next, CscKeys do
+	for mode, t in next, NamesCsc do
 		if WK.available() then
-			if is_tbl(NamesCsc[mode]) and not empty(NamesCsc[mode]) then
-				WK.register(NamesCsc[mode], { mode = mode })
-			end
-
-			WK.register(WK.convert_dict(t), { mode = mode })
-		else
-			for lhs, v in next, t do
-				v[2] = is_tbl(v[2]) and v[2] or {}
-
-				Kmap[mode](lhs, v[1], v[2])
-			end
+			WK.register(NamesCsc[mode], { mode = mode })
 		end
+
+		User.maps.map_dict(CscKeys, 'wk.register', true, mode)
 	end
 
 	if not empty(found_csc) then
@@ -315,9 +299,6 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 end
 
 -- Call the user file associations
---[[ if is_fun(User.assoc) then
-	User.assoc()
-end ]]
 Util.assoc()
 
 vim.g.markdown_minlines = 500
