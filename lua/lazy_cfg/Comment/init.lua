@@ -3,8 +3,6 @@
 
 local User = require('user')
 local Check = User.check
-local map = User.maps.map
-local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 
@@ -23,7 +21,7 @@ if exists('ts_context_commentstring') then
 end
 
 ---@type CommentConfig
-local opts = {
+local Opts = {
 	---Function to call before (un)comment
 	---@return string
 	pre_hook = pre_hook,
@@ -72,4 +70,4 @@ local opts = {
 	},
 }
 
-Comment.setup(opts)
+Comment.setup(Opts)
