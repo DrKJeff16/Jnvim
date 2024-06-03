@@ -9,9 +9,9 @@ repos:
     - id: check-executables-have-shebangs
       verbose: true
     - id: check-case-conflict
-      verbose: true
+      verbose: false
     - id: check-yaml
-      verbose: true
+      verbose: false
     - id: mixed-line-ending
       verbose: true
     - id: end-of-file-fixer
@@ -23,7 +23,7 @@ repos:
     rev: v1.5.5
     hooks:
     - id: forbid-crlf
-      verbose: true
+      verbose: false
     - id: remove-crlf
       verbose: true
 
