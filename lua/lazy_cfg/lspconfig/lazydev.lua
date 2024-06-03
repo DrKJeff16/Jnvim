@@ -31,6 +31,7 @@ LazyDev.setup({
 		'LazyDev',
 		'lspconfig',
 		config,
+		vim.env.VIMRUNTIME,
 	}, ---@type string[]
 
 	---@type boolean|(fun(root_dir):boolean?)
