@@ -13,8 +13,7 @@ end
 local Noice = require('noice')
 local Util = require('noice.util')
 
----@type NoiceConfig
-local Opts = {
+Noice.setup({
 	cmdline = {
 		enabled = true,
 		---@type 'cmdline_popup'|'cmdline'
@@ -45,15 +44,15 @@ local Opts = {
 		-- This is a current Neovim limitation.
 		enabled = true, -- enables the Noice messages UI
 		view = 'mini', -- default view for messages
-		view_error = 'notify', -- view for errors
-		view_warn = 'notify', -- view for warnings
+		view_error = 'split', -- view for errors
+		view_warn = 'split', -- view for warnings
 		view_history = 'mini', -- view for :messages
 		view_search = false, -- view for search count messages. Set to `false` to disable
 	},
 	popupmenu = {
 		enabled = true, -- enables the Noice popupmenu UI
 		---@type "nui"|"cmp"
-		backend = 'cmp', -- backend to use to show regular cmdline completions
+		backend = exists('cmp') and 'cmp' or 'nui', -- backend to use to show regular cmdline completions
 		-- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
 		---@type NoicePopupmenuItemKind|false
 		kind_icons = {}, -- set to `false` to disable icons
@@ -95,10 +94,10 @@ local Opts = {
 			},
 			filter_opts = { count = 1 },
 		},
-		-- :Noice errors
+		-- `:Noice errors`
 		errors = {
 			-- options for the message history that you get with `:Noice`
-			view = 'notify',
+			view = 'split',
 			opts = { enter = true, format = 'details' },
 			filter = { error = true },
 			filter_opts = { reverse = true },
@@ -118,7 +117,7 @@ local Opts = {
 			--- @type NoiceFormat|string
 			format_done = 'lsp_progress_done',
 			throttle = 1000 / 30, -- frequency to update lsp progress message
-			view = 'mini',
+			view = false,
 		},
 		-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
 		override = {
@@ -131,7 +130,14 @@ local Opts = {
 			silent = false,
 			view = 'hover',
 			---@type NoiceViewOptions
-			opts = {},
+			opts = {
+				border = 'solid',
+				type = 'popup',
+				merge = true,
+				zindex = 100,
+				timeout = 3500,
+				scrollbar = true,
+			},
 		},
 		signature = {
 			enabled = true,
@@ -178,7 +184,7 @@ local Opts = {
 	},
 	-- you can enable a preset for easier configuration
 	presets = {
-		bottom_search = false, -- use a classic bottom cmdline for search
+		bottom_search = true, -- use a classic bottom cmdline for search
 		command_palette = true, -- position the cmdline and popupmenu together
 		long_message_to_split = true, -- long messages will be sent to a split
 		inc_rename = false, -- enables an input dialog for inc-rename.nvim
@@ -212,6 +218,4 @@ local Opts = {
 			'{message}',
 		},
 	}, ---@see section on formatting
-}
-
-Noice.setup(Opts)
+})
