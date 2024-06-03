@@ -110,6 +110,69 @@ function M.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 	return res
 end
 
+function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
+	if not (is_tbl(T) and not empty(T)) then
+		error("(user.maps.map_dict): Keys either aren't table or table is empty")
+	end
+	if not is_str(map_func) or empty(map_func) then
+		error('(user.maps.map_dict): `map_func` is not a string')
+	end
+
+	if not (is_str(mode) and vim.tbl_contains(M.modes, mode)) then
+		mode = 'n'
+	end
+
+	dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
+
+	bufnr = is_int(bufnr) and bufnr or nil
+
+	local map_choices = {
+		['kmap'] = M.kmap,
+		['map'] = M.map,
+		['wk.register'] = M.wk.register,
+	}
+
+	if not field(map_func, map_choices) then
+		map_func = 'kmap'
+	end
+
+	if dict_has_modes then
+		for mode_choice, t in next, T do
+			if map_func == 'kmap' or map_func == 'map' then
+				for lhs, v in next, t do
+					v[2] = is_tbl(v[2]) and v[2] or {}
+
+					map_choices[map_func][mode_choice](lhs, v[1], v[2])
+				end
+			else
+				---@type RegOpts
+				local wk_opts = { mode = mode_choice }
+
+				if not is_nil(bufnr) then
+					wk_opts.buffer = bufnr
+				end
+
+				map_choices[map_func](M.wk.convert_dict(t), wk_opts)
+			end
+		end
+	elseif map_func == 'kmap' or map_func == 'map' then
+		for lhs, v in next, T do
+			v[2] = is_tbl(v[2]) and v[2] or {}
+
+			map_choices[map_func][mode](lhs, v[1], v[2])
+		end
+	else
+		---@type RegOpts
+		local wk_opts = { mode = mode }
+
+		if not is_nil(bufnr) then
+			wk_opts.buffer = bufnr
+		end
+
+		map_choices[map_func](M.wk.convert_dict(T), wk_opts)
+	end
+end
+
 for _, key in next, { M.map, M.buf_map } do
 	function key.desc(msg, silent, noremap, nowait, expr)
 		return {

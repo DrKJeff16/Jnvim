@@ -74,6 +74,10 @@ require('user.types.which_key')
 ---@alias KeyMapModeDicts table<MapModes, KeyMapTbl[]>
 ---@alias BufMapModeDicts table<MapModes, BufMapTbl[]>
 
+---@alias ApiMapModeDict table<MapModes, ApiMapDict>
+---@alias KeyMapModeDict table<MapModes, KeyMapDict>
+---@alias BufMapModeDict table<MapModes, ApiMapDict>
+
 ---@alias MapFuncs
 ---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(UserMaps.Api.Opts|UserMaps.Keymap.Opts)?)
 ---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: UserMaps.Buf.Opts?)
@@ -122,3 +126,4 @@ require('user.types.which_key')
 ---@field nop fun(T: string|string[], opts: UserMaps.Keymap.Opts?, mode: MapModes?)
 ---@field wk UserMaps.WK
 ---@field modes Modes
+---@field map_dict fun(T: ApiMapModeDict|KeyMapModeDict|ApiMapDict|KeyMapDict, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: MapModes?, bufnr: integer|nil?)
