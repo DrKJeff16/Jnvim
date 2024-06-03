@@ -129,21 +129,32 @@ function M.is_int(var, multiple)
 	return true
 end
 
-function M.field(field, t)
+function M.fields(fields, T)
 	local is_nil = M.is_nil
 	local is_tbl = M.is_tbl
 	local is_str = M.is_str
 	local is_num = M.is_num
+	local empty = M.empty
 
-	if not is_tbl(t) then
-		error('(user.check.value.field): Cannot look up a field in the following type: ' .. type(t))
+	if not is_tbl(T) then
+		error('(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T))
 	end
 
-	if not (is_str(field) or is_num(field)) then
-		error('(user.check.value.field): Field type `' .. type(t) .. '` not parseable')
+	if not (is_str(fields) or is_num(fields) or is_tbl(fields)) or empty(fields) then
+		error('(user.check.value.fields): Field type `' .. type(T) .. '` not parseable')
 	end
 
-	return not is_nil(t[field])
+	if not is_tbl(fields) then
+		return not is_nil(T[fields])
+	end
+
+	for _, v in next, fields do
+		if not M.fields(v, T) then
+			return false
+		end
+	end
+
+	return true
 end
 
 return M

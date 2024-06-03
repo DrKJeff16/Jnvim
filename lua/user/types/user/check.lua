@@ -21,7 +21,7 @@
 ---@field is_bool ValueFunc
 ---@field is_int fun(var: number|number[], multiple: boolean?): boolean
 ---@field empty fun(v: string|table|number): boolean
----@field field fun(field: string|integer, t: table<string|integer, any>): boolean
+---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
 
 ---@class UserCheck
 ---@field exists ExistanceCheck

@@ -22,7 +22,7 @@ function M.strip_fields(T, fields)
 	local is_str = require('user.check.value').is_str
 	local is_int = require('user.check.value').is_int
 	local empty = require('user.check.value').empty
-	local field = require('user.check.value').field
+	local field = require('user.check.value').fields
 
 	if not is_tbl(T) then
 		error('(user.util.strip_fields): Empty table')

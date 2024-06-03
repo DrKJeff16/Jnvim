@@ -15,7 +15,7 @@ local is_num = Check.value.is_num
 local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
-local field = Check.value.field
+local field = Check.value.fields
 local strip_fields = Util.strip_fields
 
 local kmap = vim.keymap.set
