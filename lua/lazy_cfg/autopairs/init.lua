@@ -56,6 +56,7 @@ Ap.setup({
 		all = '(',
 		tex = '{',
 		html = '<',
+		markdown = '<',
 		xml = '<',
 	},
 
@@ -82,14 +83,10 @@ local M = {
 	end,
 }
 
-if is_fun(M.rules) then
-	M.rules()
-end
+M.rules()
 
-if is_fun(M.cmp) then
-	local ap_cmp = M.cmp()
+local ap_cmp = M.cmp()
 
-	if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
-		ap_cmp.on()
-	end
+if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
+	ap_cmp.on()
 end
