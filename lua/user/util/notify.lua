@@ -18,7 +18,7 @@ local M = {}
 
 function M.notify(msg, lvl, opts)
 	if type(msg) ~= 'string' then
-		error('(user.util.notify.notify): Empty message', vim.log.levels.WARN)
+		error('(user.util.notify.notify): Empty message', vim.log.levels.ERROR)
 	end
 
 	opts = (type(opts) == 'table') and opts or {}
@@ -26,12 +26,12 @@ function M.notify(msg, lvl, opts)
 	local vim_lvl = vim.log.levels
 
 	local DEFAULT_LVLS = {
-		[vim_lvl.TRACE + 1] = 'trace',
-		[vim_lvl.DEBUG + 1] = 'debug',
-		[vim_lvl.INFO + 1] = 'info',
-		[vim_lvl.WARN + 1] = 'warn',
-		[vim_lvl.ERROR + 1] = 'error',
-		[vim_lvl.OFF + 1] = 'off',
+		'trace',
+		'debug',
+		'info',
+		'warn',
+		'error',
+		'off',
 	}
 
 	---@type notify.Options
@@ -45,10 +45,10 @@ function M.notify(msg, lvl, opts)
 	if exists('notify') then
 		local notify = require('notify')
 
-		if type(lvl) == 'number' and (lvl >= vim_lvl.TRACE and lvl <= vim_lvl.OFF) then
+		if type(lvl) == 'number' and (lvl >= 0 and lvl <= 5) then
 			lvl = DEFAULT_LVLS[math.floor(lvl) + 1]
-		else
-			lvl = DEFAULT_LVLS[vim_lvl.INFO + 1]
+		elseif type(lvl) == 'number' then
+			lvl = DEFAULT_LVLS[3]
 		end
 
 		if opts ~= nil and type(opts) == 'table' and not vim.tbl_isempty(opts) then

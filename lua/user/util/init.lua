@@ -25,7 +25,7 @@ function M.strip_fields(T, fields)
 	local field = require('user.check.value').field
 
 	if not is_tbl(T) then
-		error('(maps:strip_options): Empty table')
+		error('(user.util.strip_fields): Empty table')
 	end
 
 	if empty(T) then
@@ -104,7 +104,7 @@ function M.ft_set(s, bufnr)
 	local is_int = require('user.check.value').is_int
 	local is_str = require('user.check.value').is_str
 
-	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+	bufnr = is_int(bufnr) and bufnr or 0
 
 	return function()
 		if is_str(s) then
@@ -115,7 +115,8 @@ end
 
 function M.ft_get(bufnr)
 	local is_int = require('user.check.value').is_int
-	bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+
+	bufnr = is_int(bufnr) and bufnr or 0
 
 	return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
