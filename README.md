@@ -2,17 +2,37 @@
 
 ## Table Of Contents
 
-1. [About](#about)
-    1. [Requirements](#requirements)
-    2. [Structure](#structure)
-    3. [Plugins](#plugins)
-2. [User API](#api)
-    1. [`types`](#types)
-    2. [`opts`](#opts)
-    3. [`check`](#check)
-    4. [`maps`](#maps)
-        1. [`wk`](#wk)
-    5. [`highlight`](#highlight)
+<ol>
+<li>
+<a href="#about">About</a>
+
+<ol>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#structure">Structure</a></li>
+<li><a href="#plugins">Plugins</a></li>
+</ol>
+
+</li>
+<li>
+<a href="#api">User API</a>
+
+<ol>
+<li><a href="#types"><code>types</code></a></li>
+<li><a href="#util"><code>util</code></a></li>
+<li><a href="#opts"><code>opts</code></a></li>
+<li><a href="#check"><code>check</code></a></li>
+<li><a href="#maps"><code>maps</code></a>
+
+<ol>
+<li><a href="#wk"><code>wk</code></a>
+</ol>
+
+</li>
+<li><a href="#highlight"><code>highlight</code></a>
+</ol>
+
+</li>
+<ol>
 
 ---
 
@@ -69,7 +89,8 @@ For these to work, the following executables must be installed and in your `$PAT
 │   ├── maps.lua  <== Mapping Functions
 │   ├── opts.lua  <== Vim Options
 │   ├── util/  <== Misc Utils
-│   │   └── init.lua  <== Entry points are defined here
+│   │   ├── init.lua  <== Entry points are defined here
+│   │   └── notify.lua  <== Notification utilities
 │   └── types/  <== Lua Type Annotations and Documentation
 │       ├── init.lua  <== Entry points are defined here
 │       ├── user/  <== User API Documentation
