@@ -303,6 +303,8 @@ Util.assoc()
 
 vim.g.markdown_minlines = 500
 
+require('user.distro.archlinux').setup()
+
 vim.cmd([[
 filetype plugin indent on
 syntax on

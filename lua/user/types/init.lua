@@ -23,6 +23,14 @@
 
 ---@class UserOpts
 
+---@class User.Distro.Distrospec
+---@field setup fun()
+
+---@class User.Distro.Archlinux: User.Distro.Distrospec
+
+---@class User.Distro
+---@field archlinux? User.Distro.Archlinux
+
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
@@ -31,6 +39,7 @@
 ---@class UserMod
 ---@field check UserCheck
 ---@field maps UserMaps
+---@field distro User.Distro
 ---@field highlight UserHl
 ---@field opts UserOpts
 ---@field types UserTypes

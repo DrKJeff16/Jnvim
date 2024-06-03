@@ -20,6 +20,7 @@ local M = {
 	maps = require('user.maps'),
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
+	distro = require('user.distro'),
 
 	---@deprecated
 	assoc = Util.assoc,
