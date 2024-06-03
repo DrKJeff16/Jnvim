@@ -157,4 +157,51 @@ function M.fields(fields, T)
 	return true
 end
 
+function M.tbl_values(values, T, return_keys)
+	local is_tbl = M.is_tbl
+	local is_str = M.is_str
+	local is_int = M.is_int
+	local is_bool = M.is_bool
+	local empty = M.empty
+
+	if not is_tbl(values) or empty(values) then
+		error('(user.check.value.tbl_values): Value argument is either not a table or an empty one')
+	end
+
+	if not is_tbl(T) or empty(T) then
+		error('(user.check.value.tbl_values): Table to check is either not a table or an empty one')
+	end
+
+	return_keys = is_bool(return_keys) and return_keys or false
+
+	---@type boolean|string|integer|(string|integer)[]
+	local res = return_keys and {} or false
+
+	for _, val in next, values do
+		for k, v in next, T do
+			if return_keys and v == val then
+				table.insert(res, k)
+			elseif not return_keys and v == val then
+				res = v == val
+				break
+			end
+		end
+
+		--- If not returning key, and no value found after this sweep, break
+		if not (return_keys or res) then
+			break
+		end
+	end
+
+	if return_keys then
+		if #res == 1 then
+			res = res[1]
+		elseif empty(res) then
+			res = false
+		end
+	end
+
+	return res
+end
+
 return M

@@ -22,6 +22,7 @@
 ---@field is_int fun(var: number|number[], multiple: boolean?): boolean
 ---@field empty fun(v: string|table|number): boolean
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
+---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
 
 ---@class UserCheck
 ---@field exists ExistanceCheck
