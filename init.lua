@@ -82,6 +82,7 @@ local map_tbl = {
 	n = {
 		['<Esc><Esc>'] = { ':nohls<CR>', desc('Remove Highlighted Search', false) },
 
+		['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
 		['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
 		['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
 		['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
@@ -94,7 +95,7 @@ local map_tbl = {
 					vim.cmd('luafile %')
 					notify('Sourced current Lua file')
 				else
-					notify(err_msg, vim.log.levels.ERROR, { title = 'Lua' })
+					notify(err_msg, 'error', { title = 'Lua' })
 				end
 			end,
 			desc('Source Current File As Lua File'),
@@ -108,7 +109,7 @@ local map_tbl = {
 					vim.cmd('so %')
 					notify('Sourced current Vim file')
 				else
-					notify(err_msg, vim.log.levels.ERROR, { title = 'Vim' })
+					notify(err_msg, 'error', { title = 'Vim' })
 				end
 			end,
 			desc('Source Current File As VimScript File'),
@@ -119,7 +120,6 @@ local map_tbl = {
 		['<leader>vee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
 		['<leader>ves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
 		['<leader>vev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
-
 		['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth', false) },
 		['<leader>vs'] = {
 			function()
@@ -169,9 +169,9 @@ local map_tbl = {
 		['<leader>S'] = { ':sort!<CR>', desc('Sort (Reverse)') },
 
 		['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
-		['<leader>F'] = { ':foldclose<CR>', desc('Open Fold') },
+		['<leader>F'] = { ':foldclose<CR>', desc('Close Fold') },
 
-		['<leader>r'] = { ':%s/', desc('Run Global Search-Replace Interactively', false) },
+		['<leader>r'] = { ':s/', desc('Run Search-Replace Prompt For Selection', false) },
 		['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 	},
 }

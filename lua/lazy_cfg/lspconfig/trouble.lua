@@ -208,7 +208,7 @@ local Keys = {
 			function()
 				vim.cmd('Trouble symbols toggle focus=false')
 			end,
-			desc('Toggle Trouble Diagnostics'),
+			desc('Toggle Trouble Symbols'),
 		},
 		['<leader>lxl'] = {
 			function()
@@ -224,42 +224,41 @@ local Keys = {
 		},
 		['<leader>lxr'] = {
 			function()
-				toggle('lsp_references')
+				vim.cmd('Trouble lsp_references')
 			end,
-			desc('Toggle References'),
+			desc('Toggle LSP References'),
 		},
 	},
 	v = {
-		['<leader>lxx'] = { toggle, desc('Toggle Trouble') },
-		['<leader>lxw'] = {
+		['<leader>lxx'] = {
 			function()
-				toggle('workspace_diagnostics')
+				vim.cmd('Trouble diagnostics toggle filter.buf=0')
 			end,
-			desc('Toggle Workspace Diagnostics'),
+			desc('Toggle Trouble Diagnostics'),
 		},
-		['<leader>lxd'] = {
+		['<leader>lxs'] = {
 			function()
-				toggle('document_diagnostics')
+				vim.cmd('Trouble symbols toggle focus=false')
 			end,
-			desc('Toggle Document Diagnostics'),
-		},
-		['<leader>lxq'] = {
-			function()
-				toggle('quickfix')
-			end,
-			desc('Toggle Quickfix'),
+			desc('Toggle Trouble Symbols'),
 		},
 		['<leader>lxl'] = {
 			function()
-				toggle('loclist')
+				vim.cmd('Trouble lsp toggle focus=false')
 			end,
-			desc('Toggle Loclist'),
+			desc('Toggle LSP'),
+		},
+		['<leader>lxL'] = {
+			function()
+				vim.cmd('Trouble loclist toggle')
+			end,
+			desc('Toggle Location List'),
 		},
 		['<leader>lxr'] = {
 			function()
-				toggle('lsp_references')
+				vim.cmd('Trouble lsp_references')
 			end,
-			desc('Toggle References'),
+			desc('Toggle LSP References'),
 		},
 	},
 }
