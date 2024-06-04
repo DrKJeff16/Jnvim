@@ -10,7 +10,7 @@ local executable = Check.exists.executable
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
-if not exists('lazydev') or not executable('lua-language-server') or exists('neodev') then
+if not (exists('lazydev') and executable('lua-language-server') and not exists('neodev')) then
 	return
 end
 
@@ -20,19 +20,15 @@ local config = stdpath('config')
 
 local LazyDev = require('lazydev')
 
+---@type string[]
+local library = vim.deepcopy(vim.opt.rtp:get())
+
+table.insert(library, 'luvit-meta/library')
+
 LazyDev.setup({
 	runtime = vim.env.VIMRUNTIME --[[@as string]],
 
-	library = {
-		'luvit-meta/library',
-		'Notify',
-		'which_key',
-		'cmp',
-		'LazyDev',
-		'lspconfig',
-		config,
-		vim.env.VIMRUNTIME,
-	}, ---@type string[]
+	library = library,
 
 	---@type boolean|(fun(root_dir):boolean?)
 	enabled = function(root_dir)
