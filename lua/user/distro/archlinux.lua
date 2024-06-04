@@ -2,18 +2,19 @@
 -- (eg. for Vim runtime files from Arch Linux packages)
 
 require('user.types')
-local Check = require('user.check')
-local Util = require('user.util')
-
-local is_dir = Check.exists.vim_isdir
-local tbl_values = Check.value.tbl_values
-local empty = Check.value.empty
-local strip_values = Util.strip_values
 
 ---@type User.Distro.Archlinux
 local M = {}
 
 function M.setup()
+	local Check = require('user.check')
+	local Util = require('user.util')
+
+	local is_dir = Check.exists.vim_isdir
+	local tbl_values = Check.value.tbl_values
+	local empty = Check.value.empty
+	local strip_values = Util.strip_values
+
 	local rtpaths = {
 		'/usr/local/share/nvim/runtime',
 		'/usr/share/nvim/runtime',
