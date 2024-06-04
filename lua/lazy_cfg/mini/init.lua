@@ -173,6 +173,24 @@ local modules = {
 			reindent_linewise = true,
 		},
 	},
+	['starter'] = {
+		autoopen = true,
+
+		-- Whether to evaluate action of single active item
+		evaluate_single = false,
+
+		items = nil,
+
+		header = nil,
+
+		footer = nil,
+
+		content_hooks = nil,
+
+		query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
+
+		silent = false,
+	},
 	['trailspace'] = { only_in_normal_buffers = true },
 }
 
