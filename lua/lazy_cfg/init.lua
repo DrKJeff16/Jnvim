@@ -279,6 +279,10 @@ M.ESSENTIAL = {
 		'vhyrro/luarocks.nvim',
 		priority = 1000,
 		version = false,
+		opts = {
+			rocks = { 'fzy', 'pathlib.nvim' },
+			luarocks_build_args = { '--local' },
+		},
 		config = true,
 	},
 	{
