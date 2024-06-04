@@ -20,10 +20,9 @@ local config = stdpath('config')
 
 local LazyDev = require('lazydev')
 
----@type string[]
 local library = vim.deepcopy(vim.opt.rtp:get())
 
-table.insert(library, 'luvit-meta/library')
+table.insert(library, { path = 'luvit-meta/library', words = { 'vim%.uv' } })
 
 LazyDev.setup({
 	runtime = vim.env.VIMRUNTIME --[[@as string]],
@@ -32,11 +31,7 @@ LazyDev.setup({
 
 	---@type boolean|(fun(root_dir):boolean?)
 	enabled = function(root_dir)
-		if not is_nil(vim.g.lazydev_enabled) then
-			return vim.g.lazydev_enabled
-		end
-
-		return true
+		return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
 	end,
 
 	-- add the cmp source for completion of:
