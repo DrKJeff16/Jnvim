@@ -30,6 +30,4 @@ function M.update(...)
 	vim.cmd('cd ' .. old_cwd)
 end
 
-M.update({ git = true, xd = { 'x', 'y' } })
-
 return M
