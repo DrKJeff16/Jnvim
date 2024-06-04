@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local au_t = User.types.user.autocmd
 
 local exists = Check.exists.module
 
@@ -11,6 +12,9 @@ if not exists('luasnip') then
 end
 
 local api = vim.api
+
+local au = api.nvim_create_autocmd
+local augroup = api.nvim_create_augroup
 
 local types = require('luasnip.util.types')
 local ls = require('luasnip')
@@ -219,7 +223,7 @@ local function window_for_choiceNode(choiceNode)
 	end
 
 	api.nvim_buf_set_text(buf, 0, 0, 0, 0, buf_text)
-	local w, h = vim.lsp.util._make_floating_popup_size(buf_text)
+	local w, h = vim.lsp.util._make_floating_popup_size(buf_text, {})
 
 	-- adding highlight so we can see which one is been selected.
 	local extmark = api.nvim_buf_set_extmark(
@@ -237,14 +241,14 @@ local function window_for_choiceNode(choiceNode)
 		height = h,
 		bufpos = choiceNode.mark:pos_begin_end(),
 		style = 'minimal',
-		border = 'rounded',
+		border = 'double',
 	})
 
 	-- return with 3 main important so we can use them again
 	return { win_id = win, extmark = extmark, buf = buf }
 end
 
-function choice_popup(choiceNode)
+local function choice_popup(choiceNode)
 	-- build stack for nested choiceNodes.
 	if current_win then
 		api.nvim_win_close(current_win.win_id, true)
@@ -283,13 +287,36 @@ local function choice_popup_close()
 	end
 end
 
-vim.cmd([[
-augroup choice_popup
-au!
-au User LuasnipChoiceNodeEnter lua choice_popup(require("luasnip").session.event_node)
-au User LuasnipChoiceNodeLeave lua choice_popup_close()
-au User LuasnipChangeChoice lua update_choice_popup(require("luasnip").session.event_node)
-augroup END
-]])
+local group = augroup('choice_popup', { clear = true })
+---@type AuRepeat
+local AUCMDS = {
+	['User'] = {
+		{
+			pattern = 'LuasnipChoiceNodeEnter',
+			group = group,
+			callback = function()
+				choice_popup(ls.session.event_node)
+			end,
+		},
+		{
+			pattern = 'LuasnipChangeChoice',
+			group = group,
+			callback = function()
+				update_choice_popup(ls.session.event_node)
+			end,
+		},
+		{
+			pattern = 'LuasnipChoiceNodeLeave',
+			group = group,
+			callback = choice_popup_close,
+		},
+	},
+}
+
+for event, T in next, AUCMDS do
+	for _, opts in next, T do
+		au(event, opts)
+	end
+end
 
 return ls
