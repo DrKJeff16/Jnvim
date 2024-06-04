@@ -9,6 +9,7 @@ local types = User.types.cmp
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
+local is_int = Check.value.is_int
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local empty = Check.value.empty
@@ -21,8 +22,8 @@ local buffer = function(priority)
 	local res = {
 		name = 'buffer',
 		option = {
-			-- keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]]
-			keyword_pattern = [[\k\+]],
+			-- keyword_pattern = [[\k\+]],
+			keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]],
 			get_bufnrs = function()
 				local bufs = {}
 				for _, win in next, vim.api.nvim_list_wins() do
@@ -33,7 +34,7 @@ local buffer = function(priority)
 		},
 	}
 
-	if is_num(priority) and priority >= 1 then
+	if is_int(priority) then
 		res.priority = priority
 	end
 
@@ -52,26 +53,26 @@ local async_path = function(priority)
 		},
 	}
 
-	if is_num(priority) and priority >= 1 then
+	if is_int(priority) then
 		res.priority = priority
 	end
 
 	return res
 end
 
+---@type (cmp.SourceConfig|SourceBuf)[]
 local lua_sources = {
-	{ name = 'nvim_lsp', priority = 5 },
-	{ name = 'nvim_lua', priority = 4 },
-	{ name = 'nvim_lsp_signature_help', priority = 3 },
-	{ name = 'luasnip', priority = 2 },
-	buffer(1),
+	{ name = 'nvim_lsp' },
+	{ name = 'nvim_lua' },
+	{ name = 'nvim_lsp_signature_help' },
+	{ name = 'luasnip' },
+	buffer(),
 }
 
 if exists('lazydev') then
 	table.insert(lua_sources, {
 		name = 'lazydev',
 		group_index = 0,
-		priority = 6,
 	})
 end
 
@@ -92,11 +93,11 @@ local ft = {
 		},
 		{
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp', priority = 5 },
-				async_path(4),
-				{ name = 'nvim_lsp_signature_help', priority = 3 },
-				{ name = 'luasnip', priority = 2 },
-				buffer(1),
+				{ name = 'nvim_lsp' },
+				async_path(),
+				{ name = 'nvim_lsp_signature_help' },
+				{ name = 'luasnip' },
+				buffer(),
 			}),
 		},
 	},
@@ -104,9 +105,9 @@ local ft = {
 		{ 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
 		{
 			sources = cmp.config.sources({
-				{ name = 'luasnip', priority = 2 },
-				async_path(3),
-				buffer(1),
+				{ name = 'luasnip' },
+				async_path(),
+				buffer(),
 			}),
 		},
 	},
@@ -115,18 +116,18 @@ local ft = {
 	},
 	['lisp'] = {
 		sources = cmp.config.sources({
-			{ name = 'vlime', priority = 3 },
-			{ name = 'luasnip', priority = 2 },
-			buffer(1),
+			{ name = 'vlime' },
+			{ name = 'luasnip' },
+			buffer(),
 		}),
 	},
 	['gitcommit'] = {
 		sources = cmp.config.sources({
-			{ name = 'conventionalcommits', priority = 5 },
-			{ name = 'git', priority = 4 },
-			{ name = 'luasnip', priority = 2 },
-			async_path(3),
-			buffer(1),
+			{ name = 'conventionalcommits' },
+			{ name = 'git' },
+			{ name = 'luasnip' },
+			async_path(),
+			buffer(),
 		}),
 	},
 }
@@ -138,8 +139,8 @@ local cmdline = {
 		{
 			mapping = cmp.mapping.preset.cmdline(),
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp_document_symbol', priority = 2 },
-				buffer(1),
+				{ name = 'nvim_lsp_document_symbol' },
+				buffer(),
 			}),
 		},
 	},
@@ -149,9 +150,8 @@ local cmdline = {
 			{
 				name = 'cmdline',
 				option = { treat_trailing_slash = false },
-				priority = 1,
 			},
-			async_path(2),
+			async_path(),
 		}),
 
 		---@diagnostic disable-next-line:missing-fields
@@ -163,6 +163,8 @@ local cmdline = {
 ---@diagnostic disable-next-line:missing-fields
 local M = {
 	setup = function(T)
+		local notify = require('user.util.notify').notify
+
 		if is_tbl(T) and not empty(T) then
 			for k, v in next, T do
 				if is_num(k) and is_tbl({ v[1], v[2] }, true) then
@@ -170,7 +172,7 @@ local M = {
 				elseif is_str(k) and is_tbl(v) then
 					ft[k] = v
 				else
-					Util.notify.notify("(lazy_cfg.cmp.sources): Couldn't parse the input table value", 'error', {
+					notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
 						title = 'lazy_cfg.cmp.sources',
 						timeout = 2000,
 					})
@@ -187,7 +189,10 @@ local M = {
 			elseif is_str(k) and is_tbl(v) then
 				cmp.setup.filetype(k, v)
 			else
-				error("Couldn't parse!")
+				notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
+					title = 'lazy_cfg.cmp.sources',
+					timeout = 2000,
+				})
 			end
 		end
 
@@ -202,7 +207,10 @@ local M = {
 			elseif is_str(k) and is_tbl(v) then
 				cmp.setup.cmdline(k, v)
 			else
-				error("Couldn't parse!")
+				notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
+					title = 'lazy_cfg.cmp.sources',
+					timeout = 2000,
+				})
 			end
 		end
 	end,
