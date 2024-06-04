@@ -1,0 +1,3 @@
+---@class User.Update
+---@field update fun(...)
+---@field is_latest fun(): boolean

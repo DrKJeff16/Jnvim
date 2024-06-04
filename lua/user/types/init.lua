@@ -44,6 +44,7 @@
 ---@field opts UserOpts
 ---@field types UserTypes
 ---@field util UserUtils
+---@field update User.Update
 
 ---@type UserTypes
 local M = {

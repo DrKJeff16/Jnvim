@@ -8,6 +8,7 @@
 ---@field opts table
 ---@field check table
 ---@field util table
+---@field update table
 
 ---@type UserSubTypes
 local M = {
@@ -17,6 +18,7 @@ local M = {
 	maps = require('user.types.user.maps'),
 	opts = require('user.types.user.opts'),
 	util = require('user.types.user.util'),
+	update = require('user.types.user.update'),
 }
 
 return M

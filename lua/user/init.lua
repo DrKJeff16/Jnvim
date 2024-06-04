@@ -21,6 +21,7 @@ local M = {
 	highlight = require('user.highlight'),
 	opts = require('user.opts'),
 	distro = require('user.distro'),
+	update = require('user.update'),
 
 	---@deprecated
 	assoc = Util.assoc,
