@@ -365,7 +365,7 @@ M.NVIM = {
 			vim.opt.timeoutlen = 300
 			vim.opt.ttimeout = true
 			vim.opt.ttimeoutlen = -1
-			vim.opt.termguicolors = vim_exists('+termguicolors')
+			vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 		end,
 		config = source('lazy_cfg.which_key'),
 	},
@@ -388,12 +388,13 @@ M.NVIM = {
 			'Plenary',
 		},
 		config = source('lazy_cfg.startup'),
-		-- enabled = false,
+		enabled = false,
 	},
 	{
 		'folke/persistence.nvim',
 		event = 'BufReadPre',
 		name = 'Persistence',
+		version = false,
 		config = source('lazy_cfg.persistence'),
 	},
 }
@@ -523,6 +524,7 @@ M.LSP = {
 		version = false,
 		dependencies = { 'luvit-meta' },
 		config = source('lazy_cfg.lspconfig.lazydev'),
+		enabled = executable('lua-language-server'),
 	},
 	{ 'Bilal2453/luvit-meta', lazy = true, version = false }, -- optional `vim.uv` typings
 	--[[ -- Essential for Nvim Lua files.
@@ -811,6 +813,7 @@ M.UI = {
 		name = 'CommentBox',
 		version = false,
 		config = source('lazy_cfg.commentbox'),
+		-- enabled = not in_console(),
 		enabled = false,
 	},
 }
