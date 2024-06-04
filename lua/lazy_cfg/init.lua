@@ -43,13 +43,15 @@ vim.opt.rtp:prepend(lazypath)
 --- Returns the string for the `build` field for `LuaSnip` depending on certain conditions.
 --- ---
 --- ## Return
---- ---
+---
 --- ### Unix
 --- **The return string could be empty** or something akin to
 --- ```sh
 --- make install_jsregexp
 --- ```
+---
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
+---
 --- ```sh
 --- make -j"$(nproc)" install_jsregexp
 --- ```
@@ -73,13 +75,16 @@ end
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
 --- ---
 --- ## Return
---- ---
+---
 --- ### Unix
 --- **The return string could be empty** or something akin to
+---
 --- ```sh
 --- make
 --- ```
+---
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
+---
 --- ```sh
 --- make -j"$(nproc)"
 --- ```
@@ -106,9 +111,11 @@ local Lazy = require('lazy')
 --- ---
 --- ## Parameters
 --- * `mod_str` This parameter must comply with the following format:
+---
 --- ```lua
 --- "lazy_cfg.<plugin_name>[.<...>]"
 --- ```
+---
 --- ---
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
