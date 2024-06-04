@@ -527,14 +527,6 @@ M.LSP = {
 		enabled = executable('lua-language-server'),
 	},
 	{ 'Bilal2453/luvit-meta', lazy = true, version = false }, -- optional `vim.uv` typings
-	--[[ -- Essential for Nvim Lua files.
-	{
-		'folke/neodev.nvim',
-		name = 'NeoDev',
-		version = false,
-		dependencies = { 'NeoConf' },
-		enabled = executable('lua-language-server'),
-	}, ]]
 	{
 		'folke/neoconf.nvim',
 		name = 'NeoConf',
