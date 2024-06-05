@@ -12,22 +12,22 @@ local notify = Notify.notify
 local M = {}
 
 function M.update(...)
-	local args = { ... }
+    local args = { ... }
 
-	local old_cwd = vim.fn.getcwd()
+    local old_cwd = vim.fn.getcwd()
 
-	vim.cmd('cd ' .. vim.fn.stdpath('config'))
+    vim.cmd('cd ' .. vim.fn.stdpath('config'))
 
-	local cmd = {
-		'git',
-		'pull',
-		'--rebase',
-		'--recurse-submodules',
-	}
+    local cmd = {
+        'git',
+        'pull',
+        '--rebase',
+        '--recurse-submodules',
+    }
 
-	vim.fn.system(cmd)
+    vim.fn.system(cmd)
 
-	vim.cmd('cd ' .. old_cwd)
+    vim.cmd('cd ' .. old_cwd)
 end
 
 return M

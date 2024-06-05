@@ -7,7 +7,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('startup') then
-	return
+    return
 end
 
 local Startup = require('startup')

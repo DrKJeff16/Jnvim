@@ -6,14 +6,14 @@ local csc_t = User.types.colorschemes
 
 ---@type CscSubMod
 local M = {
-	mod_cmd = 'colorscheme spacemacs-theme',
-	mod_pfx = 'lazy_cfg.colorschemes.spacemacs',
+    mod_cmd = 'colorscheme spacemacs-theme',
+    mod_pfx = 'lazy_cfg.colorschemes.spacemacs',
 }
 
 if vim.g.installed_spacemacs == 1 then
-	function M.setup()
-		vim.cmd(M.mod_cmd)
-	end
+    function M.setup()
+        vim.cmd(M.mod_cmd)
+    end
 end
 
 return M

@@ -18,216 +18,216 @@ local cmp = require('cmp')
 
 ---@type fun(priority: integer?): SourceBuf
 local buffer = function(priority)
-	---@type SourceBuf
-	local res = {
-		name = 'buffer',
-		option = {
-			-- keyword_pattern = [[\k\+]],
-			keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]],
-			get_bufnrs = function()
-				local bufs = {}
-				for _, win in next, vim.api.nvim_list_wins() do
-					bufs[vim.api.nvim_win_get_buf(win)] = true
-				end
-				return vim.tbl_keys(bufs)
-			end,
-		},
-	}
+    ---@type SourceBuf
+    local res = {
+        name = 'buffer',
+        option = {
+            -- keyword_pattern = [[\k\+]],
+            keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]],
+            get_bufnrs = function()
+                local bufs = {}
+                for _, win in next, vim.api.nvim_list_wins() do
+                    bufs[vim.api.nvim_win_get_buf(win)] = true
+                end
+                return vim.tbl_keys(bufs)
+            end,
+        },
+    }
 
-	if is_int(priority) then
-		res.priority = priority
-	end
+    if is_int(priority) then
+        res.priority = priority
+    end
 
-	return res
+    return res
 end
 
 ---@type fun(priority: integer?): SourceAPath
 local async_path = function(priority)
-	---@type SourceAPath
-	local res = {
-		name = 'async_path',
-		option = {
-			trailing_slash = true,
-			label_trailing_slash = true,
-			show_hidden_files_by_default = true,
-		},
-	}
+    ---@type SourceAPath
+    local res = {
+        name = 'async_path',
+        option = {
+            trailing_slash = true,
+            label_trailing_slash = true,
+            show_hidden_files_by_default = true,
+        },
+    }
 
-	if is_int(priority) then
-		res.priority = priority
-	end
+    if is_int(priority) then
+        res.priority = priority
+    end
 
-	return res
+    return res
 end
 
 ---@type (cmp.SourceConfig|SourceBuf)[]
 local lua_sources = {
-	{ name = 'nvim_lsp' },
-	{ name = 'nvim_lua' },
-	{ name = 'nvim_lsp_signature_help' },
-	{ name = 'luasnip' },
-	buffer(),
+    { name = 'nvim_lsp' },
+    { name = 'nvim_lua' },
+    { name = 'nvim_lsp_signature_help' },
+    { name = 'luasnip' },
+    buffer(),
 }
 
 if exists('lazydev') then
-	table.insert(lua_sources, {
-		name = 'lazydev',
-		group_index = 0,
-	})
+    table.insert(lua_sources, {
+        name = 'lazydev',
+        group_index = 0,
+    })
 end
 
 ---@type SetupSources
 local ft = {
-	{
-		{
-			'sh',
-			'bash',
-			'crontab',
-			'zsh',
-			'html',
-			'markdown',
-			'json',
-			'json5',
-			'jsonc',
-			'yaml',
-		},
-		{
-			sources = cmp.config.sources({
-				{ name = 'nvim_lsp' },
-				async_path(),
-				{ name = 'nvim_lsp_signature_help' },
-				{ name = 'luasnip' },
-				buffer(),
-			}),
-		},
-	},
-	{
-		{ 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
-		{
-			sources = cmp.config.sources({
-				{ name = 'luasnip' },
-				async_path(),
-				buffer(),
-			}),
-		},
-	},
-	['lua'] = {
-		sources = cmp.config.sources(lua_sources),
-	},
-	['lisp'] = {
-		sources = cmp.config.sources({
-			{ name = 'vlime' },
-			{ name = 'luasnip' },
-			buffer(),
-		}),
-	},
-	['gitcommit'] = {
-		sources = cmp.config.sources({
-			{ name = 'conventionalcommits' },
-			{ name = 'git' },
-			{ name = 'luasnip' },
-			async_path(),
-			buffer(),
-		}),
-	},
+    {
+        {
+            'sh',
+            'bash',
+            'crontab',
+            'zsh',
+            'html',
+            'markdown',
+            'json',
+            'json5',
+            'jsonc',
+            'yaml',
+        },
+        {
+            sources = cmp.config.sources({
+                { name = 'nvim_lsp' },
+                async_path(),
+                { name = 'nvim_lsp_signature_help' },
+                { name = 'luasnip' },
+                buffer(),
+            }),
+        },
+    },
+    {
+        { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
+        {
+            sources = cmp.config.sources({
+                { name = 'luasnip' },
+                async_path(),
+                buffer(),
+            }),
+        },
+    },
+    ['lua'] = {
+        sources = cmp.config.sources(lua_sources),
+    },
+    ['lisp'] = {
+        sources = cmp.config.sources({
+            { name = 'vlime' },
+            { name = 'luasnip' },
+            buffer(),
+        }),
+    },
+    ['gitcommit'] = {
+        sources = cmp.config.sources({
+            { name = 'conventionalcommits' },
+            { name = 'git' },
+            { name = 'luasnip' },
+            async_path(),
+            buffer(),
+        }),
+    },
 }
 
 ---@type SetupSources
 local cmdline = {
-	{
-		{ '/', '?' },
-		{
-			mapping = cmp.mapping.preset.cmdline(),
-			sources = cmp.config.sources({
-				{ name = 'nvim_lsp_document_symbol' },
-				buffer(),
-			}),
-		},
-	},
-	[':'] = {
-		mapping = cmp.mapping.preset.cmdline(),
-		sources = cmp.config.sources({
-			{
-				name = 'cmdline',
-				option = { treat_trailing_slash = false },
-			},
-			async_path(),
-		}),
+    {
+        { '/', '?' },
+        {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = cmp.config.sources({
+                { name = 'nvim_lsp_document_symbol' },
+                buffer(),
+            }),
+        },
+    },
+    [':'] = {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+            {
+                name = 'cmdline',
+                option = { treat_trailing_slash = false },
+            },
+            async_path(),
+        }),
 
-		---@diagnostic disable-next-line:missing-fields
-		matching = { disallow_symbol_nonprefix_matching = false },
-	},
+        ---@diagnostic disable-next-line:missing-fields
+        matching = { disallow_symbol_nonprefix_matching = false },
+    },
 }
 
 ---@type Sources
 ---@diagnostic disable-next-line:missing-fields
 local M = {
-	setup = function(T)
-		local notify = require('user.util.notify').notify
+    setup = function(T)
+        local notify = require('user.util.notify').notify
 
-		if is_tbl(T) and not empty(T) then
-			for k, v in next, T do
-				if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-					table.insert(ft, v)
-				elseif is_str(k) and is_tbl(v) then
-					ft[k] = v
-				else
-					notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-						title = 'lazy_cfg.cmp.sources',
-						timeout = 2000,
-					})
-				end
-			end
-		end
+        if is_tbl(T) and not empty(T) then
+            for k, v in next, T do
+                if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+                    table.insert(ft, v)
+                elseif is_str(k) and is_tbl(v) then
+                    ft[k] = v
+                else
+                    notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
+                        title = 'lazy_cfg.cmp.sources',
+                        timeout = 2000,
+                    })
+                end
+            end
+        end
 
-		for k, v in next, ft do
-			if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-				local names = v[1]
-				local opts = v[2]
+        for k, v in next, ft do
+            if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+                local names = v[1]
+                local opts = v[2]
 
-				cmp.setup.filetype(names, opts)
-			elseif is_str(k) and is_tbl(v) then
-				cmp.setup.filetype(k, v)
-			else
-				notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-					title = 'lazy_cfg.cmp.sources',
-					timeout = 2000,
-				})
-			end
-		end
+                cmp.setup.filetype(names, opts)
+            elseif is_str(k) and is_tbl(v) then
+                cmp.setup.filetype(k, v)
+            else
+                notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
+                    title = 'lazy_cfg.cmp.sources',
+                    timeout = 2000,
+                })
+            end
+        end
 
-		require('cmp_git').setup()
+        require('cmp_git').setup()
 
-		for k, v in next, cmdline do
-			if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-				local names = v[1]
-				local opts = v[2]
+        for k, v in next, cmdline do
+            if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+                local names = v[1]
+                local opts = v[2]
 
-				cmp.setup.cmdline(names, opts)
-			elseif is_str(k) and is_tbl(v) then
-				cmp.setup.cmdline(k, v)
-			else
-				notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-					title = 'lazy_cfg.cmp.sources',
-					timeout = 2000,
-				})
-			end
-		end
-	end,
+                cmp.setup.cmdline(names, opts)
+            elseif is_str(k) and is_tbl(v) then
+                cmp.setup.cmdline(k, v)
+            else
+                notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
+                    title = 'lazy_cfg.cmp.sources',
+                    timeout = 2000,
+                })
+            end
+        end
+    end,
 
-	buffer = buffer,
-	async_path = async_path,
+    buffer = buffer,
+    async_path = async_path,
 }
 
 function M.new()
-	local self = setmetatable({}, { __index = M })
+    local self = setmetatable({}, { __index = M })
 
-	self.new = M.new
-	self.setup = M.setup
-	self.buffer = M.buffer
-	self.async_path = M.async_path
+    self.new = M.new
+    self.setup = M.setup
+    self.buffer = M.buffer
+    self.async_path = M.async_path
 
-	return self
+    return self
 end
 
 return M

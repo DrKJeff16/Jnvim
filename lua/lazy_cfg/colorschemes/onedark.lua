@@ -11,56 +11,56 @@ local empty = Check.value.empty
 
 ---@type ODSubMod
 local M = {
-	mod_pfx = 'lazy_cfg.colorschemes.onedark',
-	mod_cmd = 'colorscheme onedark',
+    mod_pfx = 'lazy_cfg.colorschemes.onedark',
+    mod_cmd = 'colorscheme onedark',
 }
 
 if exists('onedark') then
-	function M.setup(style)
-		local OD = require('onedark')
+    function M.setup(style)
+        local OD = require('onedark')
 
-		if not is_str or not vim.tbl_contains(OD.styles_list, style) then
-			style = 'deep'
-		end
+        if not is_str or not vim.tbl_contains(OD.styles_list, style) then
+            style = 'deep'
+        end
 
-		---@type OD
-		local opts = {
-			style = style,
-			transparent = false,
-			term_colors = true,
-			ending_tildes = true,
-			cmp_itemkind_reverse = true,
+        ---@type OD
+        local opts = {
+            style = style,
+            transparent = false,
+            term_colors = true,
+            ending_tildes = true,
+            cmp_itemkind_reverse = true,
 
-			toggle_style_key = nil,
-			toggle_style_list = { 'deep', 'warmer', 'darker' },
+            toggle_style_key = nil,
+            toggle_style_list = { 'deep', 'warmer', 'darker' },
 
-			code_style = {
-				comments = 'altfont', -- Change the style of comments
-				conditionals = 'bold',
-				loops = 'bold',
-				functions = 'bold',
-				keywords = 'bold',
-				strings = 'altfont',
-				variables = 'altfont',
-				numbers = 'altfont',
-				booleans = 'bold',
-				properties = 'bold',
-				types = 'bold',
-				operators = 'altfont',
-				-- miscs = '', -- Uncomment to turn off hard-coded styles
-			},
+            code_style = {
+                comments = 'altfont', -- Change the style of comments
+                conditionals = 'bold',
+                loops = 'bold',
+                functions = 'bold',
+                keywords = 'bold',
+                strings = 'altfont',
+                variables = 'altfont',
+                numbers = 'altfont',
+                booleans = 'bold',
+                properties = 'bold',
+                types = 'bold',
+                operators = 'altfont',
+                -- miscs = '', -- Uncomment to turn off hard-coded styles
+            },
 
-			lualine = { transparent = false },
+            lualine = { transparent = false },
 
-			diagnostics = {
-				darker = true,
-				undercurl = true,
-				background = true,
-			},
-		}
+            diagnostics = {
+                darker = true,
+                undercurl = true,
+                background = true,
+            },
+        }
 
-		OD.load()
-	end
+        OD.load()
+    end
 end
 
 return M

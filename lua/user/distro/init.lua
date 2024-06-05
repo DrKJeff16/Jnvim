@@ -5,7 +5,7 @@ local Types = require('user.types') -- Source all API annotations
 
 ---@type User.Distro
 local M = {
-	archlinux = require('user.distro.archlinux'),
+    archlinux = require('user.distro.archlinux'),
 }
 
 return M

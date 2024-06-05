@@ -11,7 +11,7 @@ local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
 if not (exists('lazydev') and executable('lua-language-server') and not exists('neodev')) then
-	return
+    return
 end
 
 local stdpath = vim.fn.stdpath
@@ -25,18 +25,18 @@ local library = vim.deepcopy(vim.opt.rtp:get())
 table.insert(library, { path = 'luvit-meta/library', words = { 'vim%.uv' } })
 
 LazyDev.setup({
-	runtime = vim.env.VIMRUNTIME --[[@as string]],
+    runtime = vim.env.VIMRUNTIME --[[@as string]],
 
-	library = library,
+    library = library,
 
-	---@type boolean|(fun(root_dir):boolean?)
-	enabled = function(root_dir)
-		return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
-	end,
+    ---@type boolean|(fun(root_dir):boolean?)
+    enabled = function(root_dir)
+        return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
+    end,
 
-	integrations = {
-		lspconfig = true,
-		cmp = exists('cmp'),
-		coq = false,
-	},
+    integrations = {
+        lspconfig = true,
+        cmp = exists('cmp'),
+        coq = false,
+    },
 })

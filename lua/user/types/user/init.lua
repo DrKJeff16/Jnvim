@@ -12,13 +12,13 @@
 
 ---@type UserSubTypes
 local M = {
-	autocmd = require('user.types.user.autocmd'),
-	check = require('user.types.user.check'),
-	highlight = require('user.types.user.highlight'),
-	maps = require('user.types.user.maps'),
-	opts = require('user.types.user.opts'),
-	util = require('user.types.user.util'),
-	update = require('user.types.user.update'),
+    autocmd = require('user.types.user.autocmd'),
+    check = require('user.types.user.check'),
+    highlight = require('user.types.user.highlight'),
+    maps = require('user.types.user.maps'),
+    opts = require('user.types.user.opts'),
+    util = require('user.types.user.util'),
+    update = require('user.types.user.update'),
 }
 
 return M

@@ -7,34 +7,34 @@ require('user.types')
 local M = {}
 
 function M.setup()
-	local Check = require('user.check')
-	local Util = require('user.util')
+    local Check = require('user.check')
+    local Util = require('user.util')
 
-	local is_dir = Check.exists.vim_isdir
-	local tbl_values = Check.value.tbl_values
-	local empty = Check.value.empty
-	local strip_values = Util.strip_values
+    local is_dir = Check.exists.vim_isdir
+    local tbl_values = Check.value.tbl_values
+    local empty = Check.value.empty
+    local strip_values = Util.strip_values
 
-	local rtpaths = {
-		'/usr/local/share/nvim/runtime',
-		'/usr/share/nvim/runtime',
-		'/usr/local/share/vim/vimfiles',
-		'/usr/local/share/vim/vimfiles/after',
-		'/usr/share/vim/vimfiles',
-		'/usr/share/vim/vimfiles/after',
-	}
+    local rtpaths = {
+        '/usr/local/share/nvim/runtime',
+        '/usr/share/nvim/runtime',
+        '/usr/local/share/vim/vimfiles',
+        '/usr/local/share/vim/vimfiles/after',
+        '/usr/share/vim/vimfiles',
+        '/usr/share/vim/vimfiles/after',
+    }
 
-	for _, path in next, vim.deepcopy(rtpaths) do
-		if not (is_dir(path) or tbl_values({ path }, vim.opt.rtp:get())) then
-			rtpaths = strip_values(rtpaths, { path })
-		end
-	end
+    for _, path in next, vim.deepcopy(rtpaths) do
+        if not (is_dir(path) or tbl_values({ path }, vim.opt.rtp:get())) then
+            rtpaths = strip_values(rtpaths, { path })
+        end
+    end
 
-	if not empty(rtpaths) then
-		vim.opt.rtp:append(rtpaths)
-	end
+    if not empty(rtpaths) then
+        vim.opt.rtp:append(rtpaths)
+    end
 
-	vim.cmd('runtime! archlinux.vim')
+    vim.cmd('runtime! archlinux.vim')
 end
 
 return M

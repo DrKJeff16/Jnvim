@@ -8,7 +8,7 @@ local types = User.types.autopairs
 local mods_exist = Check.exists.modules
 
 if not mods_exist({ 'nvim-autopairs', 'cmp' }) then
-	return
+    return
 end
 
 local cmp = require('cmp')
@@ -19,27 +19,27 @@ local cmp_lsp = cmp.lsp
 local insp = vim.inspect
 
 local ft_handles = {
-	filetypes = {
-		-- "*" is a alias to all filetypes
-		['*'] = {
-			['('] = {
-				kind = {
-					cmp_lsp.CompletionItemKind.Function,
-					cmp_lsp.CompletionItemKind.Method,
-				},
-				handler = handlers['*'],
-			},
-		},
-		tex = false,
-		text = false,
-	},
+    filetypes = {
+        -- "*" is a alias to all filetypes
+        ['*'] = {
+            ['('] = {
+                kind = {
+                    cmp_lsp.CompletionItemKind.Function,
+                    cmp_lsp.CompletionItemKind.Method,
+                },
+                handler = handlers['*'],
+            },
+        },
+        tex = false,
+        text = false,
+    },
 }
 
 ---@type APCmp
 local M = {
-	on = function()
-		cmp.event:on('confirm_done', cmp_ap.on_confirm_done(ft_handles))
-	end,
+    on = function()
+        cmp.event:on('confirm_done', cmp_ap.on_confirm_done(ft_handles))
+    end,
 }
 
 return M

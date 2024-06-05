@@ -14,17 +14,17 @@ local empty = Check.value.empty
 
 ---@type UserMod
 local M = {
-	types = require('user.types'),
-	util = require('user.util'),
-	check = require('user.check'),
-	maps = require('user.maps'),
-	highlight = require('user.highlight'),
-	opts = require('user.opts'),
-	distro = require('user.distro'),
-	update = require('user.update'),
+    types = require('user.types'),
+    util = require('user.util'),
+    check = require('user.check'),
+    maps = require('user.maps'),
+    highlight = require('user.highlight'),
+    opts = require('user.opts'),
+    distro = require('user.distro'),
+    update = require('user.update'),
 
-	---@deprecated
-	assoc = Util.assoc,
+    ---@deprecated
+    assoc = Util.assoc,
 }
 
 return M

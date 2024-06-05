@@ -48,28 +48,28 @@
 
 ---@type UserTypes
 local M = {
-	--- API-related annotations
-	user = require('user.types.user'),
+    --- API-related annotations
+    user = require('user.types.user'),
 
-	--- Plugin config-related annotations below
+    --- Plugin config-related annotations below
 
-	autopairs = require('user.types.autopairs'),
-	colorizer = require('user.types.colorizer'),
-	colorschemes = require('user.types.colorschemes'),
-	cmp = require('user.types.cmp'),
-	comment = require('user.types.comment'),
-	gitsigns = require('user.types.gitsigns'),
-	lazy = require('user.types.lazy'),
-	lspconfig = require('user.types.lspconfig'),
-	lualine = require('user.types.lualine'),
-	mini = require('user.types.mini'),
-	notify = require('user.types.notify'),
-	nvim_tree = require('user.types.nvim_tree'),
-	telescope = require('user.types.telescope'),
-	todo_comments = require('user.types.todo_comments'),
-	toggleterm = require('user.types.toggleterm'),
-	treesitter = require('user.types.treesitter'),
-	which_key = require('user.types.which_key'),
+    autopairs = require('user.types.autopairs'),
+    colorizer = require('user.types.colorizer'),
+    colorschemes = require('user.types.colorschemes'),
+    cmp = require('user.types.cmp'),
+    comment = require('user.types.comment'),
+    gitsigns = require('user.types.gitsigns'),
+    lazy = require('user.types.lazy'),
+    lspconfig = require('user.types.lspconfig'),
+    lualine = require('user.types.lualine'),
+    mini = require('user.types.mini'),
+    notify = require('user.types.notify'),
+    nvim_tree = require('user.types.nvim_tree'),
+    telescope = require('user.types.telescope'),
+    todo_comments = require('user.types.todo_comments'),
+    toggleterm = require('user.types.toggleterm'),
+    treesitter = require('user.types.treesitter'),
+    which_key = require('user.types.which_key'),
 }
 
 return M

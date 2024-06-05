@@ -9,23 +9,23 @@ local kmap = User.maps.kmap
 local exists = Check.exists.module
 
 if not exists('dashboard') then
-	return
+    return
 end
 
 local DSB = require('dashboard')
 
 local opts = {
-	theme = 'doom',
+    theme = 'doom',
 
-	disable_move = true,
-	shortcut_type = 'number',
-	change_to_vcs_root = true,
+    disable_move = true,
+    shortcut_type = 'number',
+    change_to_vcs_root = true,
 
-	hide = {
-		statusline = true,
-		tabline = false,
-		winbar = false,
-	},
+    hide = {
+        statusline = true,
+        tabline = false,
+        winbar = false,
+    },
 }
 
 DSB.setup(opts)
