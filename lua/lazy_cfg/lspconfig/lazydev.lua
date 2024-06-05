@@ -20,8 +20,8 @@ local config = stdpath('config')
 
 local LazyDev = require('lazydev')
 
+---@type lazydev.Library.spec[]
 local library = vim.deepcopy(vim.opt.rtp:get())
-
 table.insert(library, { path = 'luvit-meta/library', words = { 'vim%.uv' } })
 
 LazyDev.setup({
@@ -34,8 +34,9 @@ LazyDev.setup({
 		return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
 	end,
 
-	-- add the cmp source for completion of:
-	-- `require "modname"`
-	-- `---@module "modname"`
-	cmp = true,
+	integrations = {
+		lspconfig = true,
+		cmp = exists('cmp'),
+		coq = false,
+	},
 })
