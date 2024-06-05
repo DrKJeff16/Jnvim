@@ -34,24 +34,20 @@ M = {
 }
 
 function M.vim_has(expr)
-	local has = vim.fn.has
-
 	if is_str(expr) then
-		return has(expr) == 1
+		return vim.fn.has(expr) == 1
 	end
 
 	if is_tbl(expr) and not empty(expr) then
 		local res = false
 
 		for _, v in next, expr do
-			res = M.vim_has(v)
-
-			if not res then
-				break
+			if not M.vim_has(v) then
+				return false
 			end
 		end
 
-		return res
+		return true
 	end
 
 	return false
