@@ -71,6 +71,7 @@ local NOP = {
 	'p',
 	'r',
 	's',
+	'u',
 	'v',
 	'w',
 	'x',
@@ -124,7 +125,7 @@ local Keys = {
 		['<leader>vee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
 		['<leader>ves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
 		['<leader>vev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
-		['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth', false) },
+		['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
 		['<leader>vs'] = {
 			function()
 				vim.cmd('luafile $MYVIMRC')
@@ -148,8 +149,8 @@ local Keys = {
 		['<leader>wss'] = { ':split<CR>', desc('Horizontal Split', false) },
 		['<leader>wsv'] = { ':vsplit<CR>', desc('Vertical Split', false) },
 
-		['<leader>qq'] = { ':qa<CR>', desc('Quit Nvim') },
-		['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
+		['<leader>qq'] = { ':qa<CR>', desc('Quit Nvim', false) },
+		['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully', false) },
 
 		['<leader>ta'] = { ':tabnew ', desc('New Tab (Prompt)', false) },
 		['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
