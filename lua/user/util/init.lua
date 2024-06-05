@@ -135,6 +135,10 @@ function M.assoc()
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
+    local retab = function()
+        vim.cmd('%retab')
+    end
+
     ---@type AuRepeatEvents[]
     local aus = {
         {
@@ -142,6 +146,12 @@ function M.assoc()
             opts_tbl = {
                 { pattern = '.spacemacs', callback = ft('lisp'), group = group },
                 { pattern = '.clangd', callback = ft('yaml'), group = group },
+            },
+        },
+        {
+            events = { 'BufWritePre' },
+            opts_tbl = {
+                { pattern = '*', callback = retab, group = group },
             },
         },
     }
