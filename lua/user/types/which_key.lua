@@ -27,6 +27,3 @@
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field expr? boolean
-
----@class WK
----@field reg fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)

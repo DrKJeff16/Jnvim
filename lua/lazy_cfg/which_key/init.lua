@@ -23,7 +23,7 @@ WK.setup({
 		-- the presets plugin, adds help for a bunch of default keybindings in Neovim
 		-- No actual key bindings are created
 		spelling = {
-			enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+			enabled = vim.opt.spell:get(), -- enabling this will show WhichKey when pressing z= to select spelling suggestions
 			suggestions = 0, -- how many suggestions should be shown in the list?
 		},
 		presets = {
@@ -65,8 +65,8 @@ WK.setup({
 		zindex = 1000, -- positive value to position WhichKey above other floating windows.
 	},
 	layout = {
-		height = { min = 4, max = 30 }, -- min and max height of the columns
-		width = { min = 25, max = 60 }, -- min and max width of the columns
+		height = { min = 4, max = math.floor(vim.opt.lines:get() / 3) }, -- min and max height of the columns
+		width = { min = 25, max = math.floor(vim.opt.columns:get() * 3 / 4) }, -- min and max width of the columns
 		spacing = 1, -- spacing between columns
 		align = 'center', -- align columns left, center or right
 	},
@@ -105,10 +105,3 @@ WK.setup({
 })
 
 presets.operators['v'] = nil
-
----@type WK
-local M = {
-	reg = require('lazy_cfg.which_key.register'),
-}
-
-return M
