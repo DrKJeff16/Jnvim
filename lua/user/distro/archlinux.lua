@@ -33,6 +33,8 @@ function M.setup()
 	if not empty(rtpaths) then
 		vim.opt.rtp:append(rtpaths)
 	end
+
+	vim.cmd('runtime! archlinux.vim')
 end
 
 return M
