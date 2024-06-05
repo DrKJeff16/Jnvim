@@ -24,6 +24,7 @@
 ---@field empty fun(v: string|table|number): boolean
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
+---@field single_type_tbl fun(type_str: string, T: table): boolean
 
 ---@class UserCheck
 ---@field exists ExistanceCheck

@@ -216,4 +216,41 @@ function M.tbl_values(values, T, return_keys)
 	return res
 end
 
+function M.single_type_tbl(type_str, T)
+	local is_str = M.is_str
+	local is_tbl = M.is_tbl
+	local empty = M.empty
+
+	local ALLOWED_TYPES = {
+		'boolean',
+		'function',
+		'nil',
+		'number',
+		'string',
+		'table',
+		'thread',
+		'userdata',
+	}
+
+	if not is_str(type_str) then
+		error('(user.check.value.single_type_tbl): You need to define a type as a string')
+	end
+
+	if not vim.tbl_contains(ALLOWED_TYPES, type_str) then
+		error('(user.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type')
+	end
+
+	if not is_tbl(T) or empty(T) then
+		error('(user.check.value.single_type_tbl): Expected a NON-EMPTY TABLE')
+	end
+
+	for _, v in next, T do
+		if type(v) ~= type_str then
+			return false
+		end
+	end
+
+	return true
+end
+
 return M
