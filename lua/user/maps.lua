@@ -185,13 +185,13 @@ for _, key in next, { M.map, M.buf_map } do
 	end
 end
 
-function M.nop(T, opts, mode)
+function M.nop(T, opts, mode, prefix)
 	if not (is_str(T) or is_tbl(T)) then
 		error('(user.maps.nop): Argument is neither a string nor a table')
 	end
 
 	mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
-	if mode == 'i' then
+	if vim.tbl_contains({ 'i', 't' }, mode) then
 		return
 	end
 
@@ -208,11 +208,13 @@ function M.nop(T, opts, mode)
 		opts = strip_fields(opts, 'buffer')
 	end
 
+	prefix = is_str(prefix) and prefix or ''
+
 	if is_str(T) then
-		M.kmap[mode](T, '<Nop>', opts)
+		M.kmap[mode](prefix .. T, '<Nop>', opts)
 	else
 		for _, v in next, T do
-			M.kmap[mode](v, '<Nop>', opts)
+			M.kmap[mode](prefix .. v, '<Nop>', opts)
 		end
 	end
 end

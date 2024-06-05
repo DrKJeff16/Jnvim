@@ -123,7 +123,7 @@ require('user.types.which_key')
 ---@field kmap UserMaps.Keymap
 ---@field map UserMaps.Api
 ---@field buf_map UserMaps.Buf
----@field nop fun(T: string|string[], opts: UserMaps.Keymap.Opts?, mode: MapModes?)
+---@field nop fun(T: string|string[], opts: UserMaps.Keymap.Opts?, mode: MapModes?, prefix: string?)
 ---@field wk UserMaps.WK
 ---@field modes Modes
 ---@field map_dict fun(T: ApiMapModeDict|KeyMapModeDict|ApiMapDict|KeyMapDict, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: MapModes?, bufnr: integer|nil?)
