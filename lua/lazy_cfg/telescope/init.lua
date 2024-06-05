@@ -35,7 +35,11 @@ local load_ext = Telescope.load_extension
 local Opts = {
 	defaults = {
 		layout_strategy = 'flex',
-		layout_config = { vertical = { width = vim.opt.columns:get() * 3 / 4 } },
+		layout_config = {
+			vertical = {
+				width = math.floor(vim.opt.columns:get() * 3 / 4),
+			},
+		},
 		mappings = {
 			i = {
 				['<C-h>'] = 'which_key',
@@ -54,7 +58,6 @@ local Opts = {
 		find_files = { theme = 'dropdown' },
 		lsp_definitions = { theme = 'dropdown' },
 		pickers = { theme = 'dropdown' },
-		notify = { theme = 'dropdown' },
 	},
 }
 
