@@ -8,6 +8,7 @@ local maps_t = Types.user.maps
 local Kmap = User.maps.kmap
 local WK = User.maps.wk
 local Util = User.util
+local Notify = Util.notify
 
 local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
@@ -19,7 +20,7 @@ local vim_has = Check.exists.vim_has
 local nop = User.maps.nop
 local desc = Kmap.desc
 local ft_get = Util.ft_get
-local notify = Util.notify.notify
+local notify = Notify.notify
 
 _G.is_windows = vim_has('win32')
 
