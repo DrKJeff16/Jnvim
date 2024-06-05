@@ -11,13 +11,19 @@ local M = {
 
 	--- Check whether a value is `nil`, i.e. non existant or explicitly set as nil.
 	--- ---
-	--- * `var`: Any data type to be checked if it's nil.
-	--- **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
-	--- Otherwise it will be flagged as non-existant and function will return `true`.
+	--- ## Parameters
 	---
-	--- * `multiple`: Tell the function you're checking multiple values. (Default: `false`).
-	--- If set to `true`, the result will be `false` _unless any item on the table is `nil`_.
-	--- In that case, function will immediately stop checking. The result will be returned regardless.
+	--- * `var`: Any data type to be checked if it's nil.
+	---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+	---          Otherwise it will be flagged as non-existant and function will return `true`.
+	---
+	--- * `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+	---               If set to `true`, every element of the table will be checked.
+	---               If **any** element doesn't exist or is `nil`, automatically returns false
+	--- ---
+	--- ## Return
+	--- A boolean value indicating whether in data is `nil` or doesn't exist.
+	--- ---
 	is_nil = function(var, multiple)
 		multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
@@ -25,6 +31,7 @@ local M = {
 			return var == nil
 		end
 
+		--- Treat `var` as a table from here on
 		if type(var) ~= 'table' or vim.tbl_isempty(var) then
 			return false
 		end
@@ -52,12 +59,13 @@ local function type_fun(t)
 	return function(var, multiple)
 		local is_nil = M.is_nil
 
-		multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
+		multiple = (not is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
 
 		if not multiple then
 			return not is_nil(var) and type(var) == t
 		end
 
+		--- Treat `var` as a table from here on
 		if is_nil(var) or type(var) ~= 'table' then
 			return false
 		end
@@ -72,36 +80,9 @@ local function type_fun(t)
 	end
 end
 
+--- Create the rest of `is_*` functions, save for `is_int`
 for k, v in next, type_funcs do
 	M[k] = type_fun(v)
-end
-
---- Returns whether a data value is "empty", including these scenarios:
---- * Empty string
---- * Number equal to zero
---- * Empty table
---- ---
---- * `v`: Must be either a string, number or a table. Otherwise you'll get complaints.
-function M.empty(v)
-	local is_str = M.is_str
-	local is_tbl = M.is_tbl
-	local is_num = M.is_num
-	local notify = require('user.util.notify').notify
-
-	if is_str(v) then
-		return v == ''
-	end
-
-	if is_num(v) then
-		return v == 0
-	end
-
-	if is_tbl(v) then
-		return vim.tbl_isempty(v)
-	end
-
-	notify("(user.check.value.empty): Value isn't a table, string nor a number", 'warn', { title = 'user.value.empty' })
-	return true
 end
 
 function M.is_int(var, multiple)
@@ -126,6 +107,37 @@ function M.is_int(var, multiple)
 		end
 	end
 
+	return true
+end
+
+--- Returns whether a data value is "empty", including these scenarios:
+--- * Is an empty string (`x == ''`)
+--- * Is an integer equal to zero (`x == 0`)
+--- * Is an empty table
+--- ---
+--- ## Parameters
+--- * `v`: Must be either a string, number or a table.
+---        Otherwise you'll get complaints and the function will return `true`
+--- ---
+function M.empty(v)
+	local is_str = M.is_str
+	local is_tbl = M.is_tbl
+	local is_num = M.is_num
+	local notify = require('user.util.notify').notify
+
+	if is_str(v) then
+		return v == ''
+	end
+
+	if is_num(v) then
+		return v == 0
+	end
+
+	if is_tbl(v) then
+		return vim.tbl_isempty(v)
+	end
+
+	notify("(user.check.value.empty): Value isn't a table, string nor a number", 'warn', { title = 'user.value.empty' })
 	return true
 end
 
@@ -182,12 +194,12 @@ function M.tbl_values(values, T, return_keys)
 			if return_keys and v == val then
 				table.insert(res, k)
 			elseif not return_keys and v == val then
-				res = v == val
+				res = true
 				break
 			end
 		end
 
-		--- If not returning key, and no value found after this sweep, break
+		--- If not returning key, and no value found after previous sweep, break
 		if not (return_keys or res) then
 			break
 		end

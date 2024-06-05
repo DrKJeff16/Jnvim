@@ -148,7 +148,7 @@ function M.modules(mod, need_all)
 	local exists = M.module
 
 	if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
-		error('`(user.check.exists.modules)`: Input is neither a string nor a string array.')
+		error('`(user.check.exists.modules)`: Input is neither a string nor a table.')
 	end
 
 	need_all = is_bool(need_all) and need_all or false
@@ -158,7 +158,7 @@ function M.modules(mod, need_all)
 
 	if is_str(mod) then
 		res = exists(mod)
-	elseif is_tbl(mod) and not empty(mod) then
+	else
 		res = {}
 
 		for _, v in next, mod do
