@@ -133,7 +133,7 @@ function M.assoc()
 
 	local au = vim.api.nvim_create_autocmd
 
-	local group = vim.api.nvim_create_augroup('UserAssocs', { clear = false })
+	local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
 	---@type AuRepeatEvents[]
 	local aus = {
@@ -174,7 +174,7 @@ function M.assoc()
 				goto continue
 			end
 
-			if not is_nil(o.callback) and not is_fun(o.callback) then
+			if not is_fun(o.callback) then
 				M.notify.notify('(user.assoc): Callback is not a function', 'error')
 				goto continue
 			end
