@@ -78,9 +78,9 @@ local function luarocks_set()
     local has_luarocks = executable('luarocks', function()
         require('user.util.notify').notify(
             [[
-		(lazy_cfg:luarocks_set): `luarocks` is not installed. Can't install both `luarocks.nvim` and `Neorg`.
-		Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-		]],
+        (lazy_cfg:luarocks_set): `luarocks` is not installed. Can't install both `luarocks.nvim` and `Neorg`.
+        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
+        ]],
             'error',
             { title = 'Luarocks', timeout = 3000, hide_from_history = false }
         )
@@ -89,9 +89,9 @@ local function luarocks_set()
     local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' }, function()
         require('user.util.notify').notify(
             [[
-		(lazy_cfg:luarocks_set): Either `LUA_PATH` or `LUA_CPATH` are not initialized. Can't install both `luarocks.nvim` and `Neorg`.
-		Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-		]],
+        (lazy_cfg:luarocks_set): Either `LUA_PATH` or `LUA_CPATH` are not initialized. Can't install both `luarocks.nvim` and `Neorg`.
+        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
+        ]],
             'warn',
             { title = 'Luarocks', timeout = 3000, hide_from_history = false }
         )
@@ -159,8 +159,8 @@ end
 --- ---
 --- ## Parameters
 --- * `field`: Either a **string** that will be the name of a vim `g:...` variable, or
----	a **dictionary** with the keys as the vim `g:...` variable names, and the value
----	as whatever said variables are set to respectively.
+--- a **dictionary** with the keys as the vim `g:...` variable names, and the value
+--- as whatever said variables are set to respectively.
 --- ---
 --- ## Return
 --- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
@@ -415,6 +415,7 @@ M.NVIM = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.which_key'),
+        enabled = vim_has('nvim-0.9'),
     },
     {
         'nvimdev/dashboard-nvim',
