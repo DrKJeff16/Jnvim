@@ -157,6 +157,7 @@ srv.jsonls = executable('vscode-json-language-server') and {} or nil
 srv.julials = executable('julia') and {} or nil
 srv.marksman = executable('marksman') and {} or nil
 srv.pylsp = executable('pylsp') and {} or nil
+srv.rust_analyzer = executable('rust-analyzer') and {} or nil
 srv.texlab = executable('texlab') and {} or nil
 srv.yamlls = executable('yaml-language-server') and {} or nil
 
@@ -173,6 +174,7 @@ function srv.new()
     self.julials = srv.julials
     self.marksman = srv.marksman
     self.pylsp = srv.pylsp
+    self.rust_analyzer = srv.rust_analyzer
     self.texlab = srv.texlab
     self.yamlls = srv.yamlls
 
@@ -368,16 +370,16 @@ au('LspProgress', {
     end,
 })
 --[[ au('LspTokenUpdate', {
-	group = augroup('UserLspConfig', { clear = false }),
-	callback = function(args)
-		local token = args.data.token
+    group = augroup('UserLspConfig', { clear = false }),
+    callback = function(args)
+        local token = args.data.token
 
-		if token.type == 'variable' and not token.modifiers.readonly then
-			vim.lsp.semantic_tokens.highlight_token(
-				token, args.buf, args.data.client_id, 'MyMutableVariableHighlight'
-			)
-		end
-	end,
+        if token.type == 'variable' and not token.modifiers.readonly then
+            vim.lsp.semantic_tokens.highlight_token(
+                token, args.buf, args.data.client_id, 'MyMutableVariableHighlight'
+            )
+        end
+    end,
 }) ]]
 
 Diag.config({
@@ -419,11 +421,11 @@ end
 
 --[[ ---@type HlDict
 local Highlights = {
-	['@lsp.type.variable.lua'] = { fg = '#35c7aa' },
-	['@lsp.mod.deprecated'] = { strikethrough = true },
-	['@lsp.typemod.function.async'] = { fg = '#a142c0' },
+    ['@lsp.type.variable.lua'] = { fg = '#35c7aa' },
+    ['@lsp.mod.deprecated'] = { strikethrough = true },
+    ['@lsp.typemod.function.async'] = { fg = '#a142c0' },
 }
 
 for name, opts in next, Highlights do
-	hi(name, opts)
+    hi(name, opts)
 end ]]
