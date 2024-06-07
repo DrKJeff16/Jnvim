@@ -177,7 +177,7 @@
 ---@field filesize LuaLine.Components.Filesize
 ---@field filetype LuaLine.Components.Filetype
 ---@field hostname LuaLine.Components.Hostname
----@field locatios LuaLine.Components.Location
+---@field location LuaLine.Components.Location
 ---@field mode LuaLine.Components.Mode
 ---@field progress LuaLine.Components.Progress
 ---@field searchcount LuaLine.Components.Searchcount

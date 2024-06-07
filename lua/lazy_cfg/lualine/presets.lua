@@ -11,26 +11,6 @@ local floor = math.floor
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
-M.default = {
-    lualine_a = {
-        M.components.mode,
-    },
-    lualine_b = {
-        M.components.branch,
-        M.components.filename,
-    },
-    lualine_c = {
-        M.components.diagnostics,
-    },
-    lualine_x = {
-        M.components.fileformat,
-        M.components.encoding,
-        M.components.filetype,
-    },
-    lualine_y = {},
-    lualine_z = {},
-}
-
 M.components = {
     buffers = {
         'buffers',
@@ -164,6 +144,8 @@ M.components = {
 
         symbols = {
             error = '󰅚 ',
+            hint = '󰌶 ',
+            info = ' ',
             warn = '󰀪 ',
         },
 
@@ -182,6 +164,29 @@ M.components = {
         fmt = function(str)
             return str:sub(1, 1)
         end,
+    },
+}
+
+M.default = {
+    lualine_a = {
+        M.components.mode,
+    },
+    lualine_b = {
+        M.components.filename,
+    },
+    lualine_c = {
+        M.components.diagnostics,
+    },
+    lualine_x = {
+        M.components.encoding,
+        M.components.fileformat,
+        M.components.filetype,
+    },
+    lualine_y = {
+        M.components.progress,
+    },
+    lualine_z = {
+        M.components.location,
     },
 }
 
