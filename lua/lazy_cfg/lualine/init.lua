@@ -53,14 +53,7 @@ local Opts = {
         },
     },
     sections = Presets.default,
-    inactive_sections = {
-        lualine_a = {},
-        lualine_b = { 'filename' },
-        lualine_c = {},
-        lualine_x = { 'filetype' },
-        lualine_y = {},
-        lualine_z = { 'location' },
-    },
+    inactive_sections = Presets.default_inactive,
     inactive_tabline = {},
     inactive_winbar = {},
 

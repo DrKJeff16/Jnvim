@@ -11,6 +11,7 @@ local floor = math.floor
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
+---@diagnostic disable-next-line:missing-fields
 M.components = {
     buffers = {
         'buffers',
@@ -185,6 +186,21 @@ M.default = {
     lualine_y = {
         M.components.progress,
     },
+    lualine_z = {
+        M.components.location,
+    },
+}
+
+M.default_inactive = {
+    lualine_a = {},
+    lualine_b = {
+        M.components.filename,
+    },
+    lualine_c = {},
+    lualine_x = {
+        M.components.filetype,
+    },
+    lualine_y = {},
     lualine_z = {
         M.components.location,
     },
