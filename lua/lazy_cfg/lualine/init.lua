@@ -15,6 +15,8 @@ end
 
 local Lualine = require('lualine')
 
+local Presets = require('lazy_cfg.lualine.presets')
+
 ---@type fun(theme: string?, force_auto: boolean?): string
 local function theme_select(theme, force_auto)
     theme = (is_str(theme) and not empty(theme)) and theme or 'auto'
@@ -50,54 +52,7 @@ local Opts = {
             winbar = 1000,
         },
     },
-    sections = {
-        lualine_a = {
-            {
-                'mode',
-                icons_enabled = true,
-
-                --- Return the first letter of mode.
-                --- e.g. `NORMAL` ==> `N`
-                ---@type fun(str: string): string
-                fmt = function(str)
-                    return str:sub(1, 1)
-                end,
-            },
-        },
-        lualine_b = {
-            'branch',
-            'filename',
-        },
-        lualine_c = {
-            {
-                'diagnostics',
-                sources = { 'nvim_lsp' },
-                sections = { 'error', 'warn' },
-                diagnostics_color = {
-                    error = 'DiagnosticError',
-                    warn = 'DiagnosticWarn',
-                    info = 'DiagnosticInfo',
-                    hint = 'DiagnosticHint',
-                },
-                symbols = {
-                    error = '󰅚 ',
-                    hint = '󰌶 ',
-                    info = ' ',
-                    warn = '󰀪 ',
-                },
-                colored = true,
-                update_in_insert = false,
-                always_visible = true,
-            },
-        },
-        lualine_x = {
-            'encoding',
-            'fileformat',
-            'filetype',
-        },
-        lualine_y = { 'progress' },
-        lualine_z = { 'location' },
-    },
+    sections = Presets.default,
     inactive_sections = {
         lualine_a = {},
         lualine_b = { 'filename' },
