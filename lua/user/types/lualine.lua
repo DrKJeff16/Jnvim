@@ -120,25 +120,79 @@
 ---@field use_mode_colors? boolean
 ---@field windows_color? table<'active'|'inactive', string>
 
+---@class LuaLine.Components.Filesize: LuaLine.Components.Spec
+---@field [1] 'filesize'
+
+---@class LuaLine.Components.Branch: LuaLine.Components.Spec
+---@field [1] 'branch'
+
+---@class LuaLine.Components.Encoding: LuaLine.Components.Spec
+---@field [1] 'encoding'
+
+---@class LuaLine.Components.Hostname: LuaLine.Components.Spec
+---@field [1] 'hostname'
+
+---@class LuaLine.Components.Mode: LuaLine.Components.Spec
+---@field [1] 'mode'
+---@field fmt? fun(str: string): string
+
+---@class LuaLine.Components.Progress: LuaLine.Components.Spec
+---@field [1] 'progress'
+
+---@class LuaLine.Components.Location: LuaLine.Components.Spec
+---@field [1] 'location'
+
+---@class LuaLine.Components.Selectioncount: LuaLine.Components.Spec
+---@field [1] 'selectioncount'
+
 ---@alias LuaLine.Components
+---|LuaLine.Components.Branch
 ---|LuaLine.Components.Buffers
+---|LuaLine.Components.DateTime
 ---|LuaLine.Components.Diagnostics
 ---|LuaLine.Components.Diff
+---|LuaLine.Components.Encoding
 ---|LuaLine.Components.Fileformat
 ---|LuaLine.Components.Filename
+---|LuaLine.Components.Filesize
 ---|LuaLine.Components.Filetype
+---|LuaLine.Components.Hostname
+---|LuaLine.Components.Location
+---|LuaLine.Components.Mode
+---|LuaLine.Components.Progress
 ---|LuaLine.Components.Searchcount
+---|LuaLine.Components.Selectioncount
 ---|LuaLine.Components.Tabs
 ---|LuaLine.Components.Windows
----|LuaLine.Components.DateTime
+
+---@class LuaLine.ComponentsDict
+---@field branch LuaLine.Components.Branch
+---@field buffers LuaLine.Components.Buffers
+---@field datetime LuaLine.Components.DateTime
+---@field diagnostics LuaLine.Components.Diagnostics
+---@field diff LuaLine.Components.Diff
+---@field encoding LuaLine.Components.Encoding
+---@field fileformat LuaLine.Components.Fileformat
+---@field filename LuaLine.Components.Filename
+---@field filesize LuaLine.Components.Filesize
+---@field filetype LuaLine.Components.Filetype
+---@field hostname LuaLine.Components.Hostname
+---@field locatios LuaLine.Components.Location
+---@field mode LuaLine.Components.Mode
+---@field progress LuaLine.Components.Progress
+---@field searchcount LuaLine.Components.Searchcount
+---@field selectioncount LuaLine.Components.Selectioncount
+---@field tabs LuaLine.Components.Tabs
+---@field windows LuaLine.Components.Windows
 
 ---@class LuaLine.Sections
----@field lualine_a (table|LuaLine.Components|SectionComponentStr)[]
----@field lualine_b (table|LuaLine.Components|SectionComponentStr)[]
----@field lualine_c (table|LuaLine.Components|SectionComponentStr)[]
----@field lualine_x (table|LuaLine.Components|SectionComponentStr)[]
----@field lualine_y (table|LuaLine.Components|SectionComponentStr)[]
----@field lualine_z (table|LuaLine.Components|SectionComponentStr)[]
+---@field lualine_a (table|LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_b (table|LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_c (table|LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_x (table|LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_y (table|LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_z (table|LuaLine.Components|SectionComponentStr|fun())[]
 
 ---@class LuaLine.Presets
 ---@field default LuaLine.Sections
+---@field components LuaLine.ComponentsDict
