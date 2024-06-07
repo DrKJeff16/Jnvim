@@ -25,7 +25,7 @@ local notify = Notify.notify
 _G.is_windows = vim_has('win32')
 
 -- Set `<Space>` as Leader Key.
-nop('<Space>', desc('Leader Key', true, nil, true))
+nop('<Space>', { noremap = true, silent = true, nowait = false })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
