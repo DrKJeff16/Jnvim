@@ -708,7 +708,6 @@ M.UI = {
     -- Statusline
     {
         'nvim-lualine/lualine.nvim',
-        priority = 1000,
         name = 'LuaLine',
         version = false,
         dependencies = { 'web-devicons' },
@@ -718,6 +717,19 @@ M.UI = {
             vim.opt.showmode = false
         end,
         config = source('lazy_cfg.lualine'),
+        -- enabled = not in_console(),
+        enabled = false,
+    },
+    {
+        'glepnir/galaxyline.nvim',
+        version = false,
+        dependencies = { 'web-devicons' },
+        init = function()
+            vim.opt.ls = 2
+            vim.opt.stal = 2
+            vim.opt.showmode = false
+        end,
+        config = source('lazy_cfg.galaxyline'),
         enabled = not in_console(),
     },
     -- Tabline
