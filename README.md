@@ -24,7 +24,9 @@
 <li><a href="#maps"><code>maps</code></a>
 
 <ol>
-<li><a href="#wk"><code>wk</code></a>
+<li><a href="#wk">
+<code>maps.wk</code>
+</a>
 </ol>
 
 </li>
@@ -84,6 +86,9 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── exists.lua  <== Existance checkers
 │   │   └── value.lua  <== Value checkers
+│   ├── distro/  <== OS Utilities
+│   │   ├── init.lua  <== Entry points are defined here
+│   │   └── archlinux.lua  <== Archlinux utilities
 │   ├── highlight.lua  <== Highlight Functions
 │   ├── init.lua  <== API `init`, where entry points are defined
 │   ├── maps.lua  <== Mapping Functions
@@ -114,11 +119,10 @@ They are ordered by category, and you can make your own.
 
 <br/>
 
-<b>NOTE:</b> <u>Please refer to</u>
-<u><a href="https://github.com/folke/lazy.nvim"><code>lazy.nvim</code></a></u>
-<u>for more info on how to install plugins.</u>
+<b>NOTE:</b> <u>Please refer to
+<a href="https://github.com/folke/lazy.nvim"><code>lazy.nvim</code></a>
+for more info on how to install plugins.</u>
 
-<br/>
 <br/>
 
 <details>
@@ -150,7 +154,7 @@ They are ordered by category, and you can make your own.
 
 ---
 
-## API
+<h2 id="api">User API</h2>
 
 The `User` API can be found in [`lua/user`](/lua/user).
 It provides a bunch of functionalities to give easier
