@@ -12,7 +12,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 if not modules({ 'cmp', 'luasnip' }) then
-	error('Either `cmp` or `luasnip` are not installed.')
+    error('Either `cmp` or `luasnip` are not installed.')
 end
 
 local Luasnip = exists('lazy_cfg.cmp.luasnip') and require('lazy_cfg.cmp.luasnip') or require('luasnip')
@@ -31,120 +31,120 @@ local M = {}
 
 ---@type fun(): boolean
 function M.has_words_before()
-	unpack = unpack or table.unpack
+    unpack = unpack or table.unpack
 
-	local line, col = unpack(win_cursor(0))
-	return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+    local line, col = unpack(win_cursor(0))
+    return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
 ---@type fun(fallback: fun())
 function M.n_select(fallback)
-	local jumpable = Luasnip.expand_or_locally_jumpable
-	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Insert }
+    local jumpable = Luasnip.expand_or_locally_jumpable
+    ---@type cmp.SelectOption
+    local opts = { behavior = cmp.SelectBehavior.Insert }
 
-	if cmp.visible() then
-		cmp.select_next_item(opts)
-	elseif jumpable() then
-		Luasnip.expand_or_jump()
-	elseif M.has_words_before() then
-		cmp.complete()
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		end
-	else
-		fallback()
-	end
+    if cmp.visible() then
+        cmp.select_next_item(opts)
+    elseif jumpable() then
+        Luasnip.expand_or_jump()
+    elseif M.has_words_before() then
+        cmp.complete()
+        if cmp.visible() then
+            cmp.select_next_item(opts)
+        end
+    else
+        fallback()
+    end
 end
 
 ---@type fun(fallback: fun())
 function M.n_shift_select(fallback)
-	local jumpable = Luasnip.jumpable
-	---@type cmp.SelectOption
-	local opts = { behavior = cmp.SelectBehavior.Replace }
+    local jumpable = Luasnip.jumpable
+    ---@type cmp.SelectOption
+    local opts = { behavior = cmp.SelectBehavior.Replace }
 
-	if cmp.visible() then
-		cmp.select_prev_item(opts)
-	elseif jumpable(-1) then
-		Luasnip.jump(-1)
-	elseif M.has_words_before() then
-		cmp.complete()
-		if cmp.visible() then
-			cmp.select_prev_item(opts)
-		end
-	else
-		fallback()
-	end
+    if cmp.visible() then
+        cmp.select_prev_item(opts)
+    elseif jumpable(-1) then
+        Luasnip.jump(-1)
+    elseif M.has_words_before() then
+        cmp.complete()
+        if cmp.visible() then
+            cmp.select_prev_item(opts)
+        end
+    else
+        fallback()
+    end
 end
 
 ---@type fun(opts: cmp.ConfirmationConfig?): fun(fallback: fun())
 function M.confirm(opts)
-	opts = is_tbl(opts) and opts or {}
-	opts.behavior = not is_nil(opts.behavior) and opts.behavior or cmp.ConfirmBehavior.Replace
-	opts.select = is_bool(opts.select) and opts.select or false
+    opts = is_tbl(opts) and opts or {}
+    opts.behavior = not is_nil(opts.behavior) and opts.behavior or cmp.ConfirmBehavior.Replace
+    opts.select = is_bool(opts.select) and opts.select or false
 
-	---@type fun(fallback: fun())
-	return function(fallback)
-		if cmp.visible() and cmp.get_selected_entry() then
-			cmp.confirm(opts)
-		else
-			fallback()
-		end
-	end
+    ---@type fun(fallback: fun())
+    return function(fallback)
+        if cmp.visible() and cmp.get_selected_entry() then
+            cmp.confirm(opts)
+        else
+            fallback()
+        end
+    end
 end
 
 ---@type TabMap
 M.tab_map = {
-	i = M.n_select,
-	s = M.n_select,
+    i = M.n_select,
+    s = M.n_select,
 
-	---@type fun(fallback: fun())
-	c = function(fallback)
-		local opts = { behavior = cmp.SelectBehavior.Insert }
+    ---@type fun(fallback: fun())
+    c = function(fallback)
+        local opts = { behavior = cmp.SelectBehavior.Insert }
 
-		if cmp.visible() then
-			cmp.select_next_item(opts)
-		elseif M.has_words_before() then
-			cmp.complete()
-		else
-			fallback()
-		end
-	end,
+        if cmp.visible() then
+            cmp.select_next_item(opts)
+        elseif M.has_words_before() then
+            cmp.complete()
+        else
+            fallback()
+        end
+    end,
 }
 
 M.s_tab_map = {
-	i = M.n_shift_select,
-	s = M.n_shift_select,
+    i = M.n_shift_select,
+    s = M.n_shift_select,
 
-	---@type fun(fallback: fun())
-	c = function(fallback)
-		local opts = { behavior = cmp.SelectBehavior.Select }
+    ---@type fun(fallback: fun())
+    c = function(fallback)
+        local opts = { behavior = cmp.SelectBehavior.Select }
 
-		if cmp.visible() then
-			cmp.select_prev_item(opts)
-		elseif M.has_words_before() then
-			cmp.complete()
-		else
-			fallback()
-		end
-	end,
+        if cmp.visible() then
+            cmp.select_prev_item(opts)
+        elseif M.has_words_before() then
+            cmp.complete()
+        else
+            fallback()
+        end
+    end,
 }
 
 ---@type CrMap
 M.cr_map = {
-	i = M.confirm(),
-	s = M.confirm(),
-	---@diagnostic disable-next-line:missing-fields
-	c = M.confirm({ select = true }),
+    i = M.confirm(),
+    s = M.confirm(),
+    ---@diagnostic disable-next-line:missing-fields
+    c = M.confirm({ select = true }),
 }
 
 ---@type fun(fallback: fun())
 function M.bs_map(fallback)
-	if cmp.visible() then
-		cmp.close()
-	end
+    if cmp.visible() then
+        cmp.close()
+    end
 
-	fallback()
+    fallback()
 end
 
 return M

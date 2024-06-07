@@ -3,24 +3,23 @@ repos:
     rev: v4.6.0
     hooks:
     - id: detect-private-key
+      verbose: true
     - id: check-shebang-scripts-are-executable
+      verbose: true
     - id: check-executables-have-shebangs
-    - id: check-case-conflict
-    - id: check-yaml
+      verbose: true
     - id: mixed-line-ending
+      verbose: true
     - id: end-of-file-fixer
+      verbose: true
     - id: trailing-whitespace
+      verbose: true
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
     hooks:
-    - id: forbid-crlf
     - id: remove-crlf
-
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.41.0
-    hooks:
-    - id: markdownlint-fix
+      verbose: true
 
   - repo: local
     hooks:
@@ -29,18 +28,4 @@ repos:
       language: system
       entry: stylua
       types: [lua]
-      verbose: true
-    - id: shfmt
-      name: shfmt
-      language: system
-      types: [shell]
-      entry: bash
-      args: [-c, make lint-sh]
-      verbose: true
-    - id: shellcheck
-      name: shellcheck
-      language: system
-      types: [shell]
-      entry: bash
-      args: [-c, make style-sh]
       verbose: true

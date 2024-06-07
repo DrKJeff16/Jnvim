@@ -11,38 +11,38 @@ local empty = Check.value.empty
 
 ---@type LspKindsMod
 local M = {
-	icons = {
-		Class = ' ',
-		Color = ' ',
-		Constant = ' ',
-		Constructor = ' ',
-		Enum = ' ',
-		EnumMember = ' ',
-		Field = '󰄶 ',
-		File = ' ',
-		Folder = ' ',
-		Function = ' ',
-		Interface = '󰜰',
-		Keyword = '󰌆 ',
-		Method = 'ƒ ',
-		Module = '󰏗 ',
-		Property = ' ',
-		Snippet = '󰘍 ',
-		Struct = ' ',
-		Text = ' ',
-		Unit = ' ',
-		Value = '󰎠 ',
-		Variable = ' ',
-	},
+    icons = {
+        Class = ' ',
+        Color = ' ',
+        Constant = ' ',
+        Constructor = ' ',
+        Enum = ' ',
+        EnumMember = ' ',
+        Field = '󰄶 ',
+        File = ' ',
+        Folder = ' ',
+        Function = ' ',
+        Interface = '󰜰',
+        Keyword = '󰌆 ',
+        Method = 'ƒ ',
+        Module = '󰏗 ',
+        Property = ' ',
+        Snippet = '󰘍 ',
+        Struct = ' ',
+        Text = ' ',
+        Unit = ' ',
+        Value = '󰎠 ',
+        Variable = ' ',
+    },
 }
 
 function M.setup()
-	---@type table<string, string>
-	local kinds = vim.lsp.protocol.CompletionItemKind
+    ---@type table<string, string>
+    local kinds = vim.lsp.protocol.CompletionItemKind
 
-	for s, kind in next, kinds do
-		kinds[s] = (is_str(M.icons[s]) and not empty(M.icons[s])) and M.icons[s] or kind
-	end
+    for s, kind in next, kinds do
+        kinds[s] = (is_str(M.icons[s]) and not empty(M.icons[s])) and M.icons[s] or kind
+    end
 end
 
 return M

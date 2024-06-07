@@ -2,6 +2,9 @@
 /src
 /repro.lua
 
+/patches
+*.patch
+
 *.rar
 *.cpio
 *.zip
@@ -28,3 +31,5 @@
 
 *.list
 *.log
+
+Pipfile.lock

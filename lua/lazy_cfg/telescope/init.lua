@@ -5,17 +5,17 @@ local User = require('user')
 local Check = User.check
 local types = User.types.telescope
 local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local nmap = kmap.n
 local desc = kmap.desc
 
 if not exists('telescope') then
-	return
+    return
 end
 
 local in_tbl = vim.tbl_contains
@@ -33,165 +33,201 @@ local Extensions = Telescope.extensions
 local load_ext = Telescope.load_extension
 
 local Opts = {
-	defaults = {
-		layout_strategy = 'flex',
-		layout_config = { vertical = { width = vim.opt.columns:get() * 3 / 4 } },
-		mappings = {
-			i = {
-				['<C-h>'] = 'which_key',
-				['<C-u>'] = false,
-				['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
-				['<Esc>'] = Actions.close,
-				['<C-e>'] = Actions.close,
-				['<C-q>'] = Actions.close,
-			},
-		},
-	},
+    defaults = {
+        layout_strategy = 'flex',
+        layout_config = {
+            vertical = {
+                width = math.floor(vim.opt.columns:get() * 3 / 4),
+            },
+        },
+        mappings = {
+            i = {
+                ['<C-h>'] = 'which_key',
+                ['<C-u>'] = false,
+                ['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
+                ['<Esc>'] = Actions.close,
+                ['<C-e>'] = Actions.close,
+                ['<C-q>'] = Actions.close,
+            },
+            n = {},
+        },
+    },
 
-	pickers = {
-		colorscheme = { theme = 'dropdown' },
-		find_files = { theme = 'dropdown' },
-		lsp_definitions = { theme = 'dropdown' },
-		pickers = { theme = 'dropdown' },
-		notify = { theme = 'dropdown' },
-	},
+    pickers = {
+        colorscheme = { theme = 'dropdown' },
+        find_files = { theme = 'dropdown' },
+        lsp_definitions = { theme = 'dropdown' },
+        pickers = { theme = 'dropdown' },
+    },
 }
+
+if exists('trouble') then
+    local open_with_trouble = require('trouble.sources.telescope').open
+
+    -- Use this to add more results without clearing the trouble list
+    local add_to_trouble = require('trouble.sources.telescope').add
+
+    Opts.defaults.mappings.i['<C-t>'] = open_with_trouble
+    Opts.defaults.mappings.n['<C-t>'] = open_with_trouble
+end
 
 Telescope.setup(Opts)
 
 local function open()
-	vim.cmd('Telescope')
+    vim.cmd('Telescope')
 end
 
----@type KeyMapDict
+---@type table<MapModes, KeyMapDict>
 local Maps = {
-	['<leader><leader>'] = { open, desc('Open Telescope') },
-	['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-	['<leader>ff'] = { Builtin.find_files, desc('File Picker') },
+    n = {
+        ['<leader><leader>'] = { open, desc('Open Telescope') },
+        ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
+        ['<leader>hH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
+        ['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
+        ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
+        ['<leader>vcc'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
-	['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
-	['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
-	['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
-	['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
-	['<leader>fTbc'] = { Builtin.colorscheme, desc('Colorschemes') },
-	['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
-	['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
-	['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
-	['<leader>fTblD'] = { Builtin.lsp_document_symbols, desc('Document Symbols') },
-	['<leader>fTbld'] = { Builtin.lsp_definitions, desc('Definitions') },
-	['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
+        ['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
+        ['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
+        ['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
+        ['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
+        ['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
+        ['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
+        ['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
+        ['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
+    },
+}
+
+---@type table<MapModes, RegKeysNamed>
+local Names = {
+    n = {
+        ['<leader>fT'] = { name = '+Telescope' },
+        ['<leader>fTb'] = { name = '+Builtins' },
+        ['<leader>fTe'] = { name = '+Extensions' },
+    },
 }
 
 ---@type table<string, TelExtension>
 local known_exts = {
-	['scope'] = { 'scope' },
-	['project_nvim'] = {
-		'projects',
-		---@type fun(): KeyMapDict
-		keys = exists('project_nvim') and function()
-			if is_nil(Extensions.projects) then
-				return {}
-			end
+    ['scope'] = { 'scope' },
+    ['project_nvim'] = {
+        'projects',
+        ---@type fun(): KeyMapDict
+        keys = function()
+            if is_nil(Extensions.projects) then
+                return {}
+            end
 
-			local pfx = Extensions.projects
+            local pfx = Extensions.projects
 
-			---@type KeyMapDict
-			local res = {
-				['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
-			}
+            ---@type KeyMapDict
+            local res = {
+                ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
+            }
 
-			return res
-		end,
-	},
-	['notify'] = {
-		'notify',
-		---@type fun(): KeyMapDict
-		keys = exists('notify') and function()
-			local pfx = Extensions.notify
+            return res
+        end,
+    },
+    ['notify'] = {
+        'notify',
+        ---@type fun(): KeyMapDict
+        keys = exists('notify') and function()
+            local pfx = Extensions.notify
 
-			---@type KeyMapDict
-			local res = {
-				['<leader>fTeN'] = { pfx.notify, desc('Notify Picker') },
-			}
+            ---@type KeyMapDict
+            local res = {
+                ['<leader>fTeN'] = { pfx.notify, desc('Notify Picker') },
+            }
 
-			return res
-		end,
-	},
-	['noice'] = {
-		'noice',
-		---@type fun(): KeyMapDict
-		keys = exists('noice') and function()
-			local Noice = require('noice')
+            return res
+        end,
+    },
+    ['noice'] = {
+        'noice',
+        ---@type fun(): KeyMapDict
+        keys = function()
+            local Noice = require('noice')
 
-			---@type KeyMapDict
-			local res = {
-				['<leadec>nl'] = {
-					function()
-						Noice.cmd('last')
-					end,
-					desc('NoiceLast'),
-				},
-				['<leadec>nh'] = {
-					function()
-						Noice.cmd('history')
-					end,
-					desc('NoiceHistory'),
-				},
-			}
+            ---@type KeyMapDict
+            local res = {
+                ['<leader>fTenl'] = {
+                    function()
+                        Noice.cmd('last')
+                    end,
+                    desc('NoiceLast'),
+                },
+                ['<leader>fTenh'] = {
+                    function()
+                        Noice.cmd('history')
+                    end,
+                    desc('NoiceHistory'),
+                },
+            }
 
-			return res
-		end,
-	},
+            if is_tbl(Names['n']) then
+                Names['n']['<leader>fTen'] = { name = '+Noice' }
+            end
+
+            return res
+        end,
+    },
 }
 
 --- Load and Set Keymaps for available extensions.
 for mod, ext in next, known_exts do
-	if not (exists(mod) and is_str(ext[1])) then
-		goto continue
-	end
+    if not (exists(mod) and is_str(ext[1])) then
+        goto continue
+    end
 
-	load_ext(ext[1])
+    load_ext(ext[1])
 
-	if is_fun(ext.keys) then
-		for lhs, v in next, ext.keys() do
-			Maps[lhs] = v
-		end
-	end
+    if is_fun(ext.keys) then
+        for lhs, v in next, ext.keys() do
+            for mode, _ in next, Maps do
+                Maps[mode][lhs] = v
+            end
+        end
+    end
 
-	::continue::
+    ::continue::
 end
 
-for lhs, v in next, Maps do
-	if not (is_str(lhs) and is_fun(v[1])) then
-		goto continue
-	end
+for mode, t in next, Maps do
+    if WK.available() then
+        if is_tbl(Names[mode]) and not empty(Names[mode]) then
+            WK.register(Names[mode], { mode = mode })
+        end
 
-	v[2] = is_tbl(v[2]) and v[2] or {}
-	nmap(lhs, v[1], v[2])
+        WK.register(WK.convert_dict(t), { mode = mode })
+    else
+        for lhs, v in next, t do
+            v[2] = is_tbl(v[2]) and v[2] or {}
 
-	::continue::
+            kmap[mode](lhs, v[1], v[2])
+        end
+    end
 end
 
 ---@type AuRepeat
 local au_tbl = {
-	['User'] = {
-		{
-			pattern = 'TelescopePreviewerLoaded',
+    ['User'] = {
+        {
+            pattern = 'TelescopePreviewerLoaded',
 
-			---@type fun(args: TelAuArgs)
-			callback = function(args)
-				if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
-					vim.wo.number = true
-				else
-					vim.wo.wrap = false
-				end
-			end,
-		},
-	},
+            ---@type fun(args: TelAuArgs)
+            callback = function(args)
+                if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
+                    vim.wo.number = true
+                else
+                    vim.wo.wrap = false
+                end
+            end,
+        },
+    },
 }
 
 for event, v in next, au_tbl do
-	for _, au_opts in next, v do
-		au(event, au_opts)
-	end
+    for _, au_opts in next, v do
+        au(event, au_opts)
+    end
 end

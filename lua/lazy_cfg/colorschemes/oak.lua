@@ -9,14 +9,14 @@ local exists = Check.exists.module
 
 ---@type CscSubMod
 local M = {
-	mod_pfx = 'lazy_cfg.colorschemes.oak',
-	mod_cmd = 'colorscheme oak',
+    mod_pfx = 'lazy_cfg.colorschemes.oak',
+    mod_cmd = 'colorscheme oak',
 }
 
 if vim.g.installed_oak == 1 then
-	function M.setup()
-		vim.cmd(M.mod_cmd)
-	end
+    function M.setup()
+        vim.cmd(M.mod_cmd)
+    end
 end
 
 return M

@@ -8,6 +8,7 @@
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string|string[], need_all: boolean?): boolean|table<string, boolean>
 ---@field executable fun(exe: string|string[], fallback: fun()?): boolean
+---@field env_vars fun(vars: string|string[], fallback: fun()?): boolean
 ---@field vim_exists fun(expr: string|string[]): boolean
 ---@field vim_has fun(expr: string|string[]): boolean
 ---@field vim_isdir fun(path: string): boolean
@@ -21,7 +22,9 @@
 ---@field is_bool ValueFunc
 ---@field is_int fun(var: number|number[], multiple: boolean?): boolean
 ---@field empty fun(v: string|table|number): boolean
----@field field fun(field: string|integer, t: table<string|integer, any>): boolean
+---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
+---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
+---@field single_type_tbl fun(type_str: string, T: table): boolean
 
 ---@class UserCheck
 ---@field exists ExistanceCheck

@@ -1,13 +1,11 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-require('user.types.user.maps')
-
 ---@alias ModeEnum MapModes
 
 ---@class RegKey
 ---@field [1] string|fun()
----@field [2]? string
+---@field [2] string
 ---@field noremap? boolean
 ---@field nowait? boolean
 ---@field silent? boolean
@@ -18,10 +16,14 @@ require('user.types.user.maps')
 ---@field nowait? boolean
 ---@field silent? boolean
 
----@alias RegKeys table<string, RegKey>
+---@alias RegKeys table<string, RegKey|'which_key_ignore'|string|{ integer: string }>
 ---@alias RegKeysNamed table<string, RegPfx>
 
----@alias RegOpts KeyMapOpts
-
----@class WK
----@field reg fun(maps: RegKeys|RegKeysNamed, opts: RegOpts?)
+---@class RegOpts
+---@field buffer? integer|nil
+---@field mode MapModes
+---@field prefix? string
+---@field silent? boolean
+---@field noremap? boolean
+---@field nowait? boolean
+---@field expr? boolean

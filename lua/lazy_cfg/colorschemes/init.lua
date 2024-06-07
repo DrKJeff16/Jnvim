@@ -9,51 +9,48 @@ local exists = Check.exists.module
 
 ---@type fun(subs: string[]): CscMod
 local function src(subs)
-	---@type CscMod
-	local res = {}
+    ---@type CscMod
+    local res = {}
 
-	for _, v in next, subs do
-		local path = 'lazy_cfg.colorschemes.' .. v
+    for _, v in next, subs do
+        local path = 'lazy_cfg.colorschemes.' .. v
 
-		if exists(path) then
-			res[v] = require(path)
-		else
-			res[v] = nil
-		end
-	end
+        if exists(path) then
+            res[v] = require(path)
+        else
+            res[v] = nil
+        end
+    end
 
-	return res
+    return res
 end
 
 local submods = {
-	'onedark',
-	'tokyonight',
-	'catppuccin',
-	'nightfox',
-	'gloombuddy',
-	'oak',
-	'molokai',
-	'spaceduck',
-	'dracula',
+    'onedark',
+    'tokyonight',
+    'catppuccin',
+    'nightfox',
+    'gloombuddy',
+    'oak',
+    'molokai',
+    'spaceduck',
+    'dracula',
+    'spacemacs',
+    'space_vim_dark',
 }
 
 local M = src(submods)
 
 function M.new()
-	local self = setmetatable({}, { __index = M })
+    local self = setmetatable({}, { __index = M })
 
-	self.new = M.new
-	self.tokyonight = M.tokyonight or nil
-	self.onedark = M.onedark or nil
-	self.catppuccin = M.catppuccin or nil
-	self.nightfox = M.nightfox or nil
-	self.gloombuddy = M.gloombuddy or nil
-	self.spaceduck = M.spaceduck or nil
-	self.dracula = M.dracula or nil
-	self.molokai = M.molokai or nil
-	self.oak = M.oak or nil
+    self.new = M.new
 
-	return self
+    for _, c in next, submods do
+        self[c] = exists(c, true) or nil
+    end
+
+    return self
 end
 
 return M

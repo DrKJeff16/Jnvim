@@ -1,0 +1,45 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+typing = "*"
+typing-extensions = "*"
+argparse = "*"
+pynvim = "*"
+neovim = "*"
+pyvim = "*"
+argcomplete = "*"
+progress = "*"
+pytar = "*"
+pyxdg = "*"
+requests = "*"
+
+[dev-packages]
+pre-commit = "*"
+python-lsp-server = {extras = ["all"], version = "*"}
+isort = "*"
+typing = "*"
+typing-extensions = "*"
+mypy = "*"
+mypy-extensions = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+pyproject-toml = "*"
+black = "*"
+sphinx = "*"
+markdown = "*"
+numpydoc = "*"
+pyi = "*"
+pyyaml = "*"
+pytoml = "*"
+ipython = "*"
+jupyterlab = "*"
+json5 = "*"
+rope = "*"
+pydocstyle = "*"
+
+[requires]
+python_version = "3.12"

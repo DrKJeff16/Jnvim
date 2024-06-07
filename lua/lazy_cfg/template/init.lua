@@ -7,15 +7,15 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('template') then
-	return
+    return
 end
 
 local TPL = require('template')
 
 local opts = {
-	-- temp_dir = '/home/drjeff16/Templates',
-	author = 'DrKJeff16',
-	email = 'g.maxc.fox@protonmail.com',
+    -- temp_dir = '/home/drjeff16/Templates',
+    author = 'DrKJeff16',
+    email = 'g.maxc.fox@protonmail.com',
 }
 
 TPL.setup(opts)
