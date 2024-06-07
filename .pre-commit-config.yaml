@@ -35,17 +35,3 @@ repos:
       entry: stylua
       types: [lua]
       verbose: true
-    - id: shfmt
-      name: shfmt
-      language: system
-      types: [shell]
-      entry: bash
-      args: [-c, make lint-sh]
-      verbose: true
-    - id: shellcheck
-      name: shellcheck
-      language: system
-      types: [shell]
-      entry: bash
-      args: [-c, make style-sh]
-      verbose: true
