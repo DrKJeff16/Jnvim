@@ -155,6 +155,43 @@ function M.assoc()
                 { pattern = '*', callback = retab, group = group },
             },
         },
+        {
+            events = { 'FileType' },
+            opts_tbl = {
+                {
+                    pattern = 'c',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
+                {
+                    pattern = 'cpp',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
+            },
+        },
     }
 
     local ok, _ = pcall(require, 'orgmode')
