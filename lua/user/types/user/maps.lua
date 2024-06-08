@@ -20,7 +20,7 @@ require('user.types.which_key')
 ---@field [1] UserMaps.Api.Rhs
 ---@field [2]? UserMaps.Api.Opts
 
----@class KeyMapRhsOptsArr: ApiMapRhsOptsArr
+---@class KeyMapRhsOptsArr
 ---@field [1] UserMaps.Keymap.Rhs
 ---@field [2]? UserMaps.Keymap.Opts
 
@@ -28,7 +28,7 @@ require('user.types.which_key')
 ---@field rhs UserMaps.Api.Rhs
 ---@field opts? UserMaps.Api.Opts
 
----@class KeyMapRhsOptsDict: ApiMapRhsOptsDict
+---@class KeyMapRhsOptsDict
 ---@field rhs UserMaps.Keymap.Rhs
 ---@field opts? UserMaps.Keymap.Opts
 
