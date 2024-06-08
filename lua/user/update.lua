@@ -30,4 +30,13 @@ function M.update(...)
     vim.cmd('cd ' .. old_cwd)
 end
 
-return M
+function M.new()
+    local self = setmetatable({}, { __index = M, __call = M.update })
+
+    self.update = M.update
+    self.new = M.new
+
+    return self
+end
+
+return M.new()
