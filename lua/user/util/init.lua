@@ -25,7 +25,7 @@ function M.strip_fields(T, fields)
     local field = require('user.check.value').fields
 
     if not is_tbl(T) then
-        error('(user.util.strip_fields): Empty table')
+        error('(user.util.strip_fields): Argument is not a table')
     end
 
     if empty(T) then
@@ -69,7 +69,8 @@ function M.strip_values(T, values, max_instances)
 
     if not is_tbl(T) then
         error('(user.util.strip_values): Not a table')
-    elseif not is_tbl(values) or empty(values) then
+    end
+    if not is_tbl(values) or empty(values) then
         error('(user.util.strip_values): No values given')
     end
 
