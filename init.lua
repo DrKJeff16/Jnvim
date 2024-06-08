@@ -88,7 +88,9 @@ local Keys = {
 
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
         ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
+        ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
+        ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
+        ['<leader>fs'] = { ':w<CR>', desc('Save File') },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
         ['<leader>fvl'] = {
             function()
@@ -131,7 +133,7 @@ local Keys = {
                 vim.cmd('luafile $MYVIMRC')
                 notify('Sourced `init.lua`')
             end,
-            desc('Source $MYVIMRC', false),
+            desc('Source $MYVIMRC'),
         },
 
         ['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
@@ -188,6 +190,8 @@ local Names = {
         ['<leader>fv'] = { name = '+Script Files' },
         --- Indent Control
         ['<leader>fi'] = { name = '+Indent' },
+        --- Folding Control
+        ['<leader>fF'] = { name = '+Folding' },
 
         --- Tabs Handling
         ['<leader>t'] = { name = '+Tabs' },
