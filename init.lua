@@ -1,14 +1,14 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
-local Check = User.check
-local Types = User.types -- Import docstrings and annotations.
-local maps_t = Types.user.maps
-local Kmap = User.maps.kmap
-local WK = User.maps.wk
-local Util = User.util
-local Notify = Util.notify
+local User = require('user') -- User API
+local Check = User.check -- Checking utilities
+local Types = User.types -- Import docstrings and annotations
+local maps_t = Types.user.maps -- Annotations for mapping utilities
+local Kmap = User.maps.kmap -- `vim.keymap.set` backend
+local WK = User.maps.wk -- `which-key` backend
+local Util = User.util -- General utilities
+local Notify = Util.notify -- API notifier
 
 local exists = Check.exists.module -- Checks for missing modules
 local is_nil = Check.value.is_nil
@@ -39,7 +39,7 @@ local opts = User.opts
 -- Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
--- Avoid executing Normal mode keys when attempting `<leader>` sequences.
+-- Avoid executing these keys when attempting `<leader>` sequences.
 local NOP = {
     "'",
     '!',
@@ -81,6 +81,7 @@ for _, mode in next, User.maps.modes do
     nop(NOP, {}, mode, '<leader>')
 end
 
+--- Global keymaps, plugin-agnostic
 ---@type Maps
 local Keys = {
     n = {
@@ -181,6 +182,7 @@ local Keys = {
         ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
     },
 }
+--- `which-key` map group prefixes
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
@@ -306,11 +308,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     end
 end
 
--- Call the user file associations
+-- Call the user file associations and other autocmds
 Util.assoc()
 
 vim.g.markdown_minlines = 500
 
+-- Call runtimepath optimizations for arch linux
 require('user.distro.archlinux').setup()
 
 vim.cmd([[
