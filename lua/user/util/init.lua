@@ -150,12 +150,6 @@ function M.assoc()
             },
         },
         {
-            events = { 'BufWritePre' },
-            opts_tbl = {
-                { pattern = '*', callback = retab, group = group },
-            },
-        },
-        {
             events = { 'FileType' },
             opts_tbl = {
                 {
