@@ -96,7 +96,7 @@ local Keys = {
         ['<leader>fvl'] = {
             function()
                 local ft = Util.ft_get()
-                local err_msg = 'Filetype' .. ft .. ' not sourceable by Lua'
+                local err_msg = 'Filetype `' .. ft .. '` not sourceable by Lua'
 
                 if ft == 'lua' then
                     vim.cmd('luafile %')
@@ -110,7 +110,7 @@ local Keys = {
         ['<leader>fvv'] = {
             function()
                 local ft = Util.ft_get()
-                local err_msg = 'Filetype' .. ft .. ' not sourceable by Vim'
+                local err_msg = 'Filetype `' .. ft .. '` not sourceable by Vim'
 
                 if ft == 'vim' then
                     vim.cmd('so %')
@@ -172,8 +172,8 @@ local Keys = {
         ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
     },
     v = {
-        ['<leader>s'] = { ':sort<CR>', desc('Sort') },
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort (Reverse)') },
+        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
+        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
 
         ['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
         ['<leader>F'] = { ':foldclose<CR>', desc('Close Fold') },
