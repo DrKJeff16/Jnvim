@@ -75,27 +75,9 @@ end
 
 ---@type fun(): boolean
 local function luarocks_set()
-    local has_luarocks = executable('luarocks', function()
-        require('user.util.notify').notify(
-            [[
-        (lazy_cfg:luarocks_set): `luarocks` is not installed. Can't install both `luarocks.nvim` and `Neorg`.
-        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-        ]],
-            'error',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+    local has_luarocks = executable('luarocks')
 
-    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' }, function()
-        require('user.util.notify').notify(
-            [[
-        (lazy_cfg:luarocks_set): Either `LUA_PATH` or `LUA_CPATH` are not initialized. Can't install both `luarocks.nvim` and `Neorg`.
-        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-        ]],
-            'warn',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' })
 
     return has_luarocks and configured_luarocks
 end
