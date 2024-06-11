@@ -100,9 +100,13 @@ local Keys = {
 
                 if ft == 'lua' then
                     vim.cmd('luafile %')
-                    notify('Sourced current Lua file')
+                    notify(
+                        'Sourced current Lua file',
+                        'info',
+                        { title = 'Lua', timeout = 200, hide_from_history = true }
+                    )
                 else
-                    notify(err_msg, 'error', { title = 'Lua' })
+                    notify(err_msg, 'error', { title = 'Lua', timeout = 250, hide_from_history = true })
                 end
             end,
             desc('Source Current File As Lua File'),
@@ -114,9 +118,13 @@ local Keys = {
 
                 if ft == 'vim' then
                     vim.cmd('so %')
-                    notify('Sourced current Vim file')
+                    notify(
+                        'Sourced current Vim file',
+                        'info',
+                        { title = 'Vim', timeout = 200, hide_from_history = true }
+                    )
                 else
-                    notify(err_msg, 'error', { title = 'Vim' })
+                    notify(err_msg, 'error', { title = 'Vim', timeout = 250, hide_from_history = true })
                 end
             end,
             desc('Source Current File As VimScript File'),
@@ -124,15 +132,15 @@ local Keys = {
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
 
-        ['<leader>vet'] = { ':tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
-        ['<leader>vee'] = { ':ed $MYVIMRC<CR>', desc('Open In Current Window') },
-        ['<leader>ves'] = { ':split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
-        ['<leader>vev'] = { ':vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
+        ['<leader>vet'] = { '<CMD>tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
+        ['<leader>vee'] = { '<CMD>ed $MYVIMRC<CR>', desc('Open In Current Window') },
+        ['<leader>ves'] = { '<CMD>split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
+        ['<leader>vev'] = { '<CMD>vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
         ['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
         ['<leader>vs'] = {
             function()
                 vim.cmd('luafile $MYVIMRC')
-                notify('Sourced `init.lua`')
+                notify('Sourced `init.lua`', 'info', { title = 'luafile', timeout = 250, hide_from_history = true })
             end,
             desc('Source $MYVIMRC'),
         },
