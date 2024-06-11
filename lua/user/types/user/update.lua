@@ -1,3 +1,4 @@
 ---@class User.Update
 ---@field update fun(...)
----@field new fun(): User.Update
+---@field new? fun(): User.Update
+---@field protected __index? User.Update

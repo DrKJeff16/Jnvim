@@ -16,8 +16,6 @@ function M.update(...)
 
     local old_cwd = vim.fn.getcwd()
 
-    vim.cmd('cd ' .. vim.fn.stdpath('config'))
-
     local cmd = {
         'git',
         'pull',
@@ -25,16 +23,13 @@ function M.update(...)
         '--recurse-submodules',
     }
 
-    vim.fn.system(cmd)
-
-    vim.cmd('cd ' .. old_cwd)
+    vim.system(cmd, { cwd = vim.fn.stdpath('config') })
 end
 
 function M.new()
     local self = setmetatable({}, { __index = M, __call = M.update })
 
     self.update = M.update
-    self.new = M.new
 
     return self
 end
