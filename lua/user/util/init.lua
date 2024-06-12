@@ -184,6 +184,22 @@ function M.assoc()
                         end
                     end,
                 },
+                {
+                    pattern = 'markdown',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
             },
         },
     }
