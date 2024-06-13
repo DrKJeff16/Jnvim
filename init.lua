@@ -172,12 +172,12 @@ local Keys = {
         ['<leader>tl'] = { ':tablast<CR>', desc('Goto Last Tab', false) },
         ['<leader>tA'] = { ':tabnew<CR>', desc('New Tab', false) },
 
-        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false) },
-        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false) },
-        ['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false) },
-        ['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer Forcefully', false) },
-        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false) },
-        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false) },
+        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false, nil, false) },
+        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false, nil, false) },
+        ['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false, nil, false) },
+        ['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer Forcefully', false, nil, false) },
+        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false, nil, false) },
+        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false, nil, false) },
     },
     v = {
         ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
@@ -207,7 +207,7 @@ local Names = {
         ['<leader>t'] = { name = '+Tabs' },
 
         --- Buffer Handling
-        ['<leader>b'] = { name = '+Buffer' },
+        ['<leader>b'] = { name = '+Buffer', noremap = false },
 
         --- Window Handling
         ['<leader>w'] = { name = '+Window' },

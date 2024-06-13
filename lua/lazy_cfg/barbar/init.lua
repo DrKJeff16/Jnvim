@@ -4,13 +4,13 @@
 local User = require('user')
 local Check = User.check
 local map_t = User.types.user.maps
-local map = User.maps.map
-local WK = User.maps.wk
+local Maps = User.maps
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local desc = map.desc
+local desc = Maps.map.desc
+local map_dict = Maps.map_dict
 
 if not exists('barbar') then
     return
@@ -152,26 +152,14 @@ local Keys = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>B'] = { name = '+Barbar Buffer' },
-        ['<leader>BM'] = { name = '+Buffer Move' },
+        ['<leader>b'] = { name = '+Barbar Buffer' },
+        ['<leader>bM'] = { name = '+Buffer Move' },
     },
     v = {
-        ['<leader>B'] = { name = '+Barbar Buffer' },
-        ['<leader>BM'] = { name = '+Buffer Move' },
+        ['<leader>b'] = { name = '+Barbar Buffer' },
+        ['<leader>bM'] = { name = '+Buffer Move' },
     },
 }
 
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            map[mode](lhs, v[1], v[2])
-        end
-    end
-end
+map_dict(Keys, 'wk.register', true)
+map_dict(Names, 'wk.register', true)
