@@ -87,6 +87,13 @@ local Keys = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
 
+        ['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer Forcefully', false, nil, false) },
+        ['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false, nil, false) },
+        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false, nil, false) },
+        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false, nil, false) },
+        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false, nil, false) },
+        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false, nil, false) },
+
         ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
@@ -171,13 +178,6 @@ local Keys = {
         ['<leader>tl'] = { ':tablast<CR>', desc('Goto Last Tab', false) },
         ['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
         ['<leader>tp'] = { ':tabp<CR>', desc('Previous Tab', false) },
-
-        ['<leader>bD'] = { ':bdel!<CR>', desc('Close Buffer Forcefully', false, nil, false) },
-        ['<leader>bd'] = { ':bdel<CR>', desc('Close Buffer', false, nil, false) },
-        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer', false, nil, false) },
-        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer', false, nil, false) },
-        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer', false, nil, false) },
-        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer', false, nil, false) },
     },
     v = {
         ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
