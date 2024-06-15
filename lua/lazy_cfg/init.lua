@@ -873,7 +873,26 @@ for _, plugs in next, M do
         table.insert(T, p)
     end
 end
-Lazy.setup(T)
+Lazy.setup(T, {
+    change_detection = {
+        enabled = true,
+        notify = true,
+    },
+
+    checker = {
+        check_pinned = false,
+        enabled = true,
+        frequency = 1800,
+        notify = true,
+    },
+
+    ui = {
+        border = 'double',
+        title = 'L      A      Z      Y',
+        title_pos = 'center',
+        wrap = true,
+    },
+})
 
 ---@type LazyMods
 local P = {
