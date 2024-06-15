@@ -5,8 +5,9 @@ local User = require('user')
 local Check = User.check
 local types = User.types.lazy
 local Util = User.util
-local kmap = User.maps.kmap
-local WK = User.maps.wk
+local Maps = User.maps
+local kmap = Maps.kmap
+local WK = Maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -19,6 +20,7 @@ local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local in_console = Check.in_console
 local desc = kmap.desc
+local map_dict = Maps.map_dict
 
 local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
@@ -121,11 +123,9 @@ local Lazy = require('lazy')
 --- ---
 --- ## Parameters
 --- * `mod_str` This parameter must comply with the following format:
----
 --- ```lua
 --- "lazy_cfg.<plugin_name>[.<...>]"
 --- ```
----
 --- ---
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
@@ -680,9 +680,6 @@ M.TELESCOPE = {
             vim.o.autochdir = true
         end,
         config = source('lazy_cfg.project'),
-        --- NOTE: Disabled to supress warnings from version bump v0.11.0
-        --- until further notice.
-        -- enabled = not vim_has('nvim-0.11'),
     },
 }
 --- UI Plugins
@@ -936,26 +933,10 @@ local Names = {
     },
 }
 
-for mode, maps in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-        WK.register(WK.convert_dict(maps), { mode = mode })
-    else
-        for lhs, v in next, maps do
-            local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
-            if not (is_str(v[1]) or is_fun(v[1])) then
-                Util.notify.notify(msg, 'error', { title = 'lazy_cfg' })
-                goto continue
-            end
-
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            kmap[mode](lhs, v[1], v[2])
-
-            ::continue::
-        end
-    end
+if WK.available() then
+    map_dict(Names, 'wk.register', true)
 end
+
+map_dict(Keys, 'wk.register', true)
 
 return P
