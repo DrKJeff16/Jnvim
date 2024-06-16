@@ -85,7 +85,7 @@ local function luarocks_set()
 end
 
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
---- ---
+---
 --- ## Return
 ---
 --- ### Unix
@@ -882,7 +882,7 @@ Lazy.setup(T, {
     checker = {
         check_pinned = false,
         enabled = true,
-        frequency = 1800,
+        frequency = 3600,
         notify = true,
     },
 
