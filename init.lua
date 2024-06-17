@@ -20,6 +20,7 @@ local nop = User.maps.nop
 local desc = Kmap.desc
 local ft_get = Util.ft_get
 local notify = Util.notify.notify
+local map_dict = Maps.map_dict
 
 _G.is_windows = vim_has('win32')
 
@@ -98,7 +99,7 @@ local Keys = {
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
         ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File') },
+        ['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
         ['<leader>fvl'] = {
@@ -111,7 +112,7 @@ local Keys = {
                     notify(
                         'Sourced current Lua file',
                         'info',
-                        { title = 'Lua', timeout = 200, hide_from_history = true }
+                        { title = 'Lua', timeout = 150, hide_from_history = true }
                     )
                 else
                     notify(err_msg, 'error', { title = 'Lua', timeout = 250, hide_from_history = true })
@@ -129,7 +130,7 @@ local Keys = {
                     notify(
                         'Sourced current Vim file',
                         'info',
-                        { title = 'Vim', timeout = 200, hide_from_history = true }
+                        { title = 'Vim', timeout = 150, hide_from_history = true }
                     )
                 else
                     notify(err_msg, 'error', { title = 'Vim', timeout = 250, hide_from_history = true })
@@ -159,81 +160,61 @@ local Keys = {
         ['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
         ['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
 
+        ['<leader>wN'] = { '<CMD>new<CR>', desc('New Blank File', false) },
         ['<leader>wd'] = { '<C-w>q', desc('Close Window') },
         ['<leader>wn'] = { '<C-w>w', desc('Cycle Window') },
         ['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
         ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
-        ['<leader>wss'] = { ':split<CR>', desc('Horizontal Split', false) },
-        ['<leader>wsv'] = { ':vsplit<CR>', desc('Vertical Split', false) },
+        ['<leader>wss'] = { '<CMD>split<CR>', desc('Horizontal Split', false) },
+        ['<leader>wsv'] = { '<CMD>vsplit<CR>', desc('Vertical Split', false) },
 
-        ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully', false) },
-        ['<leader>qq'] = { ':qa<CR>', desc('Quit Nvim', false) },
+        ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully', false) },
+        ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim', false) },
 
-        ['<leader>tA'] = { ':tabnew<CR>', desc('New Tab', false) },
-        ['<leader>tD'] = { ':tabc!<CR>', desc('Close Tab Forcefully', false) },
+        ['<leader>tA'] = { '<CMD>tabnew<CR>', desc('New Tab', false) },
+        ['<leader>tD'] = { '<CMD>tabc!<CR>', desc('Close Tab Forcefully', false) },
         ['<leader>ta'] = { ':tabnew ', desc('New Tab (Prompt)', false) },
-        ['<leader>td'] = { ':tabc<CR>', desc('Close Tab', false) },
-        ['<leader>tf'] = { ':tabfirst<CR>', desc('Goto First Tab', false) },
-        ['<leader>tl'] = { ':tablast<CR>', desc('Goto Last Tab', false) },
-        ['<leader>tn'] = { ':tabN<CR>', desc('Next Tab', false) },
-        ['<leader>tp'] = { ':tabp<CR>', desc('Previous Tab', false) },
+        ['<leader>td'] = { '<CMD>tabc<CR>', desc('Close Tab', false) },
+        ['<leader>tf'] = { '<CMD>tabfirst<CR>', desc('Goto First Tab', false) },
+        ['<leader>tl'] = { '<CMD>tablast<CR>', desc('Goto Last Tab', false) },
+        ['<leader>tn'] = { '<CMD>tabN<CR>', desc('Next Tab', false) },
+        ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab', false) },
     },
     v = {
         ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
         ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
 
-        ['<leader>F'] = { ':foldclose<CR>', desc('Close Fold') },
-        ['<leader>f'] = { ':foldopen<CR>', desc('Open Fold') },
+        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold') },
+        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold') },
 
         ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 
-        ['<leader>r'] = { ':s/', desc('Run Search-Replace Prompt For Selection', false) },
+        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
     },
 }
 --- `which-key` map group prefixes
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        --- Buffer Handling
-        ['<leader>b'] = { name = '+Buffer', noremap = false },
-
-        --- File Handling
-        ['<leader>f'] = { name = '+File' },
-        --- Folding Control
-        ['<leader>fF'] = { name = '+Folding' },
-        --- Indent Control
-        ['<leader>fi'] = { name = '+Indent' },
-        --- Script File Handling
-        ['<leader>fv'] = { name = '+Script Files' },
-
-        --- Help
-        ['<leader>h'] = { name = '+Help' },
-
-        --- Exiting
-        ['<leader>q'] = { name = '+Quit Nvim' },
-
-        --- Tabs Handling
-        ['<leader>t'] = { name = '+Tabs' },
-
-        --- Vim
-        ['<leader>v'] = { name = '+Vim' },
-        --- `init.lua` Editing
-        ['<leader>ve'] = { name = '+Edit $MYVIMRC' },
-
-        --- Window Handling
-        ['<leader>w'] = { name = '+Window' },
-        --- Window Splitting
-        ['<leader>ws'] = { name = '+Split' },
+        ['<leader>b'] = { name = '+Buffer', noremap = false }, -- Buffer Handling
+        ['<leader>f'] = { name = '+File' }, -- File Handling
+        ['<leader>fF'] = { name = '+Folding' }, -- Folding Control
+        ['<leader>fi'] = { name = '+Indent' }, -- Indent Control
+        ['<leader>fv'] = { name = '+Script Files' }, -- Script File Handling
+        ['<leader>h'] = { name = '+Help' }, -- Help
+        ['<leader>q'] = { name = '+Quit Nvim' }, -- Exiting
+        ['<leader>t'] = { name = '+Tabs' }, -- Tabs Handling
+        ['<leader>v'] = { name = '+Vim' }, -- Vim
+        ['<leader>ve'] = { name = '+Edit $MYVIMRC' }, -- `init.lua` Editing
+        ['<leader>w'] = { name = '+Window' }, -- Window Handling
+        ['<leader>ws'] = { name = '+Split' }, -- Window Splitting
     },
     v = {
-        --- Help
-        ['<leader>h'] = { name = '+Help' },
-
-        --- Indent Control
-        ['<leader>i'] = { name = '+Indent' },
-
-        --- Vim
-        ['<leader>v'] = { name = '+Vim' },
+        ['<leader>f'] = { name = '+File' }, -- File Handling
+        ['<leader>fF'] = { name = '+Folding' }, -- Folding
+        ['<leader>h'] = { name = '+Help' }, -- Help
+        ['<leader>i'] = { name = '+Indent' }, -- Indent Control
+        ['<leader>v'] = { name = '+Vim' }, -- Vim
     },
 }
 
@@ -246,13 +227,10 @@ if not called_lazy then
 end
 
 -- Set the keymaps previously stated
-for mode, t in next, Names do
-    if WK.available() then
-        WK.register(Names[mode], { mode = mode })
-    end
-
-    User.maps.map_dict(Keys, 'wk.register', true, mode)
+if WK.available() then
+    map_dict(Names, 'wk.register', true)
 end
+map_dict(Keys, 'wk.register', true)
 
 ---@type fun(T: CscSubMod|ODSubMod): boolean
 local function color_exists(T)
@@ -264,16 +242,15 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local Csc = Pkg.colorschemes
 
     ---@type table<MapModes, KeyMapDict>
-    local CscKeys = {
-        n = {},
-        v = {},
-    }
+    local CscKeys = {}
+    CscKeys.n = {}
+    CscKeys.v = {}
 
     --- Reorder to your liking.
     ---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak'|'space_vim_dark')[]
     local selected = {
-        'tokyonight',
         'catppuccin',
+        'tokyonight',
         'nightfox',
         'onedark',
         'spacemacs',
@@ -303,13 +280,11 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         v = { ['<leader>vc'] = { name = '+Colorschemes' } },
     }
 
-    for mode, t in next, NamesCsc do
-        if WK.available() then
-            WK.register(NamesCsc[mode], { mode = mode })
-        end
-
-        Maps.map_dict(CscKeys, 'wk.register', true, mode)
+    if WK.available() then
+        map_dict(NamesCsc, 'wk.register', true)
     end
+
+    map_dict(CscKeys, 'wk.register', true)
 
     if not empty(found_csc) then
         Csc[selected[found_csc]].setup()
@@ -323,6 +298,8 @@ vim.g.markdown_minlines = 500
 
 -- Call runtimepath optimizations for arch linux
 require('user.distro.archlinux').setup()
+
+User.commands:setup_commands()
 
 vim.cmd([[
 filetype plugin indent on

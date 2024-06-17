@@ -22,6 +22,7 @@ local M = {
     opts = require('user.opts'),
     distro = require('user.distro'),
     update = require('user.update'),
+    commands = require('user.commands'):new(),
 }
 
 return M
