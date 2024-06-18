@@ -5,14 +5,17 @@ local User = require('user')
 local Check = User.check
 local hl_t = User.types.user.highlight
 local map_t = User.types.user.maps
-local kmap = User.maps.kmap
-local WK = User.maps.wk
+local Maps = User.maps
+local kmap = Maps.kmap
+local WK = Maps.wk
+local Highlight = User.highlight
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local hi = User.highlight.hl
+local hi = Highlight.hl
 local desc = kmap.desc
+local map_dict = Maps.map_dict
 
 if not exists('treesitter-context') then
     return
@@ -21,25 +24,19 @@ end
 local Context = require('treesitter-context')
 local Config = require('treesitter-context.config')
 
----@type TSContext.UserConfig
-local Options = {
+Context.setup({
     mode = 'topline',
-    trim_scope = 'outer',
+    trim_scope = 'inner',
     line_numbers = false,
     min_window_height = 1,
     zindex = 30,
     enable = true,
-    max_lines = not empty(vim.opt.scrolloff:get()) and 1 or vim.opt.scrolloff:get(),
-}
-
-Context.setup(Options)
+    max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() or 1,
+})
 
 ---@type HlDict
 local hls = {
-    ['TreesitterContextLineNumberBottom'] = {
-        underline = true,
-        sp = 'Grey',
-    },
+    ['TreesitterContextLineNumberBottom'] = { underline = true, sp = 'Grey' },
 }
 
 ---@type table<MapModes, KeyMapDict>
@@ -58,21 +55,10 @@ local Names = {
     n = { ['<leader>C'] = { name = '+Context' } },
 }
 
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-
-            kmap[mode](lhs, v[1], v[2])
-        end
-    end
+if WK.available() then
+    map_dict(Names, 'wk.register', true, nil, 0)
 end
+map_dict(Keys, 'wk.register', true, nil, 0)
 
 for k, v in next, hls do
     hi(k, v)
