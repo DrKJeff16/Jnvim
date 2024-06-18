@@ -45,6 +45,7 @@
 ---@field types UserTypes
 ---@field util UserUtils
 ---@field update User.Update
+---@field commands User.UserCommands
 
 ---@type UserTypes
 local M = {

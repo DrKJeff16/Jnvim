@@ -102,10 +102,9 @@ local ft = {
         },
     },
     {
-        { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
+        { 'conf', 'config', 'cfg', 'confini', 'gitconfig', 'toml' },
         {
             sources = cmp.config.sources({
-                { name = 'luasnip' },
                 async_path(),
                 buffer(),
             }),
@@ -117,7 +116,6 @@ local ft = {
     ['lisp'] = {
         sources = cmp.config.sources({
             { name = 'vlime' },
-            { name = 'luasnip' },
             buffer(),
         }),
     },
@@ -125,7 +123,6 @@ local ft = {
         sources = cmp.config.sources({
             { name = 'conventionalcommits' },
             { name = 'git' },
-            { name = 'luasnip' },
             async_path(),
             buffer(),
         }),

@@ -22,9 +22,7 @@ local M = {
     opts = require('user.opts'),
     distro = require('user.distro'),
     update = require('user.update'),
-
-    ---@deprecated
-    assoc = Util.assoc,
+    commands = require('user.commands'):new(),
 }
 
 return M

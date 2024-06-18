@@ -28,7 +28,7 @@ Exts.setup({
         -- autoSetHints both are true.
         only_current_line_autocmd = { 'CursorHold' },
         -- whether to show parameter hints with the inlay hints or not
-        show_parameter_hints = true,
+        show_parameter_hints = false,
         -- prefix for parameter hints
         parameter_hints_prefix = '<- ',
         -- prefix for all the other hints (type, chaining)

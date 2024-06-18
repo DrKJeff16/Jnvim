@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -22,8 +23,6 @@ local TSUtils = require('nvim-treesitter.ts_utils')
 Install.prefer_git = true
 
 local ensure = {
-    'asm',
-    'arduino',
     'bash',
     'c',
     'cmake',
@@ -39,25 +38,20 @@ local ensure = {
     'gitattributes',
     'gitcommit',
     'gitignore',
-    'glsl',
     'gpg',
     'html',
     'ini',
     'json',
     'json5',
     'jsonc',
-    'julia',
     'kconfig',
-    'latex',
     'lua',
     'luadoc',
     'luap',
-    'luau',
     'markdown',
     'markdown_inline',
     'meson',
     'ninja',
-    'objdump',
     'passwd',
     'python',
     'query',
@@ -66,9 +60,7 @@ local ensure = {
     'rst',
     'scss',
     'ssh_config',
-    'templ',
     'tmux',
-    'todotxt',
     'toml',
     'udev',
     'vim',
@@ -77,8 +69,7 @@ local ensure = {
     'yaml',
 }
 
----@type TSConfig
-local TSConfig = {
+Cfg.setup({
     auto_install = true,
     sync_install = false,
     ignore_install = {},
@@ -93,16 +84,12 @@ local TSConfig = {
             local ok, stats = pcall(fs_stat, buf_name(buf))
 
             local disable_ft = {
-                'config',
-                'cfg',
-                'conf',
+                'text',
             }
 
             local res = false
 
-            if vim.tbl_contains(disable_ft, vim.api.nvim_get_option_value('ft', { scope = 'local' })) then
-                res = true
-            end
+            res = vim.tbl_contains(disable_ft, vim.api.nvim_get_option_value('ft', { scope = 'local' }))
 
             return res or ok and not is_nil(stats) and stats.size > max_fs
         end,
@@ -112,9 +99,7 @@ local TSConfig = {
     indent = { enable = false },
     incremental_selection = { enable = false },
     modules = {},
-}
-
-Cfg.setup(TSConfig)
+})
 
 exists('lazy_cfg.treesitter.context', true)
 

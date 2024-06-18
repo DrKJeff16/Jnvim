@@ -45,8 +45,8 @@ Noice.setup({
         enabled = true, -- enables the Noice messages UI
         view = 'mini', -- default view for messages
         view_error = 'split', -- view for errors
-        view_warn = 'split', -- view for warnings
-        view_history = 'mini', -- view for :messages
+        view_warn = 'notify', -- view for warnings
+        view_history = false, -- view for :messages
         view_search = false, -- view for search count messages. Set to `false` to disable
     },
     popupmenu = {
@@ -68,7 +68,7 @@ Noice.setup({
         history = {
             -- options for the message history that you get with `:Noice`
             view = 'split',
-            opts = { enter = true, format = 'details' },
+            opts = { enter = false, format = 'details' },
             filter = {
                 any = {
                     { event = 'notify' },
@@ -97,8 +97,8 @@ Noice.setup({
         -- `:Noice errors`
         errors = {
             -- options for the message history that you get with `:Noice`
-            view = 'split',
-            opts = { enter = true, format = 'details' },
+            view = 'popup',
+            opts = { enter = false, format = 'details' },
             filter = { error = true },
             filter_opts = { reverse = true },
         },
@@ -116,8 +116,9 @@ Noice.setup({
             format = 'lsp_progress',
             --- @type NoiceFormat|string
             format_done = 'lsp_progress_done',
-            throttle = 1000 / 30, -- frequency to update lsp progress message
-            view = false,
+            throttle = 1000 / 100, -- frequency to update lsp progress message
+            view = 'mini',
+            opts = { enter = false, format = 'details', border = 'rounded' },
         },
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
@@ -143,13 +144,22 @@ Noice.setup({
             enabled = true,
             auto_open = {
                 enabled = true,
-                trigger = true,
-                luasnip = true,
-                throttle = 50,
+                trigger = false,
+                luasnip = false,
+                throttle = 500,
             },
             view = 'hover',
             ---@type NoiceViewOptions
-            opts = {},
+            opts = {
+                border = 'rounded',
+                type = 'popup',
+                focusable = true,
+                merge = true,
+                zindex = 100,
+                timeout = 200,
+                scrollbar = true,
+                lang = 'markdown', -- FIX: Is this a good idea?
+            },
         },
         documentation = {
             view = 'hover',
@@ -187,10 +197,10 @@ Noice.setup({
         bottom_search = true, -- use a classic bottom cmdline for search
         command_palette = true, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = false, -- enables an input dialog for inc-rename.nvim
+        inc_rename = exists('inc_rename'), -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
     },
-    throttle = 1000 / 50,
+    throttle = 1000 / 30,
     ---@type NoiceConfigViews
     views = {}, ---@see section on views
     ---@type NoiceRouteConfig
