@@ -44,8 +44,6 @@ local function join_paths(...)
     return table.concat({ ... }, path_sep)
 end
 
--- require('vim.lsp.log').set_format_func(insp)
-
 ---@type fun(path: string): nil|fun()
 local sub_fun = function(path)
     if not is_str(path) or path == '' then
@@ -63,14 +61,12 @@ end
 local Sub = {
     kinds = exists('lazy_cfg.lspconfig.kinds', true),
     neoconf = sub_fun('lazy_cfg.lspconfig.neoconf'),
-    neodev = sub_fun('lazy_cfg.lspconfig.neodev'),
     clangd = sub_fun('lazy_cfg.lspconfig.clangd'),
     trouble = sub_fun('lazy_cfg.lspconfig.trouble'),
 }
 
 -- Now call each.
 Sub.neoconf()
-Sub.neodev()
 Sub.clangd()
 Sub.trouble()
 Sub.kinds.setup()
@@ -261,7 +257,7 @@ if WK.available() then
 end
 
 au('LspAttach', {
-    group = augroup('UserLspConfig', { clear = false }),
+    group = augroup('UserLspConfig', { clear = true }),
 
     callback = function(args)
         local buf = args.buf
