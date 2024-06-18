@@ -100,7 +100,7 @@ end
 --- ```sh
 --- make -j"$(nproc)"
 --- ```
---- ---
+---
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
@@ -138,14 +138,14 @@ local function source(mod_str)
 end
 
 --- Set the global condition for a later submodule call.
---- ---
+---
 --- ## Parameters
---- * `field`: Either a **string** that will be the name of a vim `g:...` variable, or
---- a **dictionary** with the keys as the vim `g:...` variable names, and the value
+--- * `field`: Either a `string` that will be the name of a vim `g:...` variable, or
+--- a `dictionary` with the keys as the vim `g:...` variable names, and the value
 --- as whatever said variables are set to respectively.
 --- ---
 --- ## Return
---- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
+--- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
 --- ---
 ---@type fun(field: string|table<string, any>): fun()
 local function colorscheme_init(fields)
