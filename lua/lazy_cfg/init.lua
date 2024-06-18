@@ -577,6 +577,12 @@ M.LSP = {
         config = source('lazy_cfg.lspconfig.clangd'),
         enabled = executable('clangd') and not in_console(),
     },
+    {
+        'smjonas/inc-rename.nvim',
+        name = 'inc-rename',
+        main = 'inc_rename',
+        config = source('lazy_cfg.lspconfig.inc_rename'),
+    },
 }
 --- Completion and `cmp`-related Plugins
 M.COMPLETION = {
@@ -818,6 +824,7 @@ M.UI = {
         name = 'Noice',
         version = false,
         dependencies = {
+            'inc-rename',
             'MunifTanjim/nui.nvim',
             'Notify',
             'Mini',
