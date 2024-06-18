@@ -4,8 +4,10 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
-local kmap = User.maps.kmap
-local WK = User.maps.wk
+local Maps = User.maps
+local kmap = Maps.kmap
+local WK = Maps.wk
+local Highlight = User.highlight
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -14,8 +16,8 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
 local desc = kmap.desc
-local nmap = kmap.n
-local hi = User.highlight.hl
+local map_dict = Maps.map_dict
+local hi = Highlight.hl
 
 if not exists('lspconfig') then
     return
@@ -192,8 +194,6 @@ end
 ---@type table<MapModes,KeyMapDict>
 local Keys = {
     n = {
-        ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
-        ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
         ['<leader>lI'] = {
             function()
                 vim.cmd('LspInfo')
@@ -248,28 +248,16 @@ local Keys = {
 }
 
 local Names = {
-    n = {
-        ['<leader>l'] = { name = '+LSP' },
-    },
-    v = {
-        ['<leader>l'] = { name = '+LSP' },
-    },
+    n = { ['<leader>l'] = { name = '+LSP' } },
+    v = { ['<leader>l'] = { name = '+LSP' } },
 }
 
-for mode, t in next, Keys do
+if WK.available() then
     if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-
-            kmap[mode](lhs, v[1], v[2])
-        end
+        map_dict(Names, 'wk.register', true)
     end
+
+    map_dict(Keys, 'wk.register', true)
 end
 
 au('LspAttach', {
@@ -321,10 +309,10 @@ au('LspAttach', {
                     desc('Format File', true, buf),
                 },
                 ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
+                ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float', true, buf) },
+                ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist', true, buf) },
             },
-            v = {
-                ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
-            },
+            v = { ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) } },
         }
         ---@type table<MapModes, RegKeysNamed>
         local Names2 = {
@@ -336,21 +324,10 @@ au('LspAttach', {
             v = { ['<leader>lc'] = { name = '+Code Actions' } },
         }
 
-        for mode, keys in next, K do
-            if WK.available() then
-                if is_tbl(Names2[mode]) and not empty(Names2[mode]) then
-                    WK.register(Names2[mode], { mode = mode, buffer = buf })
-                end
-
-                WK.register(WK.convert_dict(keys), { mode = mode, buffer = buf })
-            else
-                for lhs, v in next, keys do
-                    v[2] = is_tbl(v[2]) and v[2] or {}
-
-                    kmap[mode](lhs, v[1], v[2])
-                end
-            end
+        if WK.available() then
+            map_dict(Names2, 'wk.register', true, nil, buf)
         end
+        map_dict(K, 'wk.register', true, nil, buf)
     end,
 })
 au('LspDetach', {
