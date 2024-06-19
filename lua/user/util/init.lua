@@ -8,9 +8,7 @@ require('user.types.user.util')
 local M = {}
 
 function M.xor(x, y)
-    local is_bool = require('user.check.value').is_bool
-
-    if not is_bool({ x, y }, true) then
+    if not require('user.check.value').is_bool({ x, y }, true) then
         error('(user.util.xor): An argument is not of boolean type')
     end
 
@@ -18,11 +16,13 @@ function M.xor(x, y)
 end
 
 function M.strip_fields(T, fields)
-    local is_tbl = require('user.check.value').is_tbl
-    local is_str = require('user.check.value').is_str
-    local is_int = require('user.check.value').is_int
-    local empty = require('user.check.value').empty
-    local field = require('user.check.value').fields
+    local Value = require('user.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
+    local field = Value.fields
 
     if not is_tbl(T) then
         error('(user.util.strip_fields): Argument is not a table')
@@ -61,11 +61,13 @@ function M.strip_fields(T, fields)
 end
 
 function M.strip_values(T, values, max_instances)
-    local is_tbl = require('user.check.value').is_tbl
-    local is_nil = require('user.check.value').is_nil
-    local is_str = require('user.check.value').is_str
-    local is_int = require('user.check.value').is_int
-    local empty = require('user.check.value').empty
+    local Value = require('user.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_nil = Value.is_nil
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
 
     if not is_tbl(T) then
         error('(user.util.strip_values): Not a table')
@@ -102,8 +104,10 @@ function M.strip_values(T, values, max_instances)
 end
 
 function M.ft_set(s, bufnr)
-    local is_int = require('user.check.value').is_int
-    local is_str = require('user.check.value').is_str
+    local Value = require('user.check.value')
+
+    local is_int = Value.is_int
+    local is_str = Value.is_str
 
     bufnr = is_int(bufnr) and bufnr or 0
 
@@ -115,9 +119,7 @@ function M.ft_set(s, bufnr)
 end
 
 function M.ft_get(bufnr)
-    local is_int = require('user.check.value').is_int
-
-    bufnr = is_int(bufnr) and bufnr or 0
+    bufnr = require('user.check.value').is_int(bufnr) and bufnr or 0
 
     return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
@@ -125,12 +127,15 @@ end
 M.notify = require('user.util.notify')
 
 function M.assoc()
+    local Value = require('user.check.value')
+
+    local is_nil = Value.is_nil
+    local is_fun = Value.is_fun
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local empty = Value.empty
+
     local ft = M.ft_set
-    local is_nil = require('user.check.value').is_nil
-    local is_fun = require('user.check.value').is_fun
-    local is_tbl = require('user.check.value').is_tbl
-    local is_str = require('user.check.value').is_str
-    local empty = require('user.check.value').empty
 
     local au = vim.api.nvim_create_autocmd
 
@@ -200,6 +205,23 @@ function M.assoc()
                         end
                     end,
                 },
+                {
+                    pattern = 'lua',
+                    callback = function()
+                        local map_dict = require('user.maps').map_dict
+                        local WK = require('user.maps').wk
+                        local desc = require('user.maps').kmap.desc
+
+                        if require('user.check.exists').executable('stylua') then
+                            map_dict({
+                                ['<leader>fl'] = {
+                                    ':silent !stylua %',
+                                    desc('Format with Stylua', true, 0),
+                                },
+                            }, 'wk.register', false, 'n', 0)
+                        end
+                    end,
+                },
             },
         },
     }
@@ -217,7 +239,7 @@ function M.assoc()
         end
 
         if not is_tbl(v.opts_tbl) or empty(v.opts_tbl) then
-            M.notify.notify('(user.assoc): Event options in a non-table or an empty one', 'error')
+            M.notify.notify('(user.assoc): Event options are not in a table or it is empty', 'error')
             goto continue
         end
 

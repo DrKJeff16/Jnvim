@@ -26,10 +26,10 @@ local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
 local system = vim.fn.system
 
--- Set installation dir for `Lazy`.
+--- Set installation dir for `Lazy`.
 local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
 
--- Install `Lazy` automatically.
+--- Install `Lazy` automatically.
 if not fs_stat(lazypath) then
     system({
         'git',
@@ -40,7 +40,7 @@ if not fs_stat(lazypath) then
     })
 end
 
--- Add `Lazy` to runtimepath
+--- Add `Lazy` to runtimepath
 vim.opt.rtp:prepend(lazypath)
 
 --- Returns the string for the `build` field for `LuaSnip` depending on certain conditions.
@@ -299,8 +299,8 @@ M.ESSENTIAL = {
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-        version = '*', -- Pin Neorg to the latest stable release
+        lazy = false, --- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+        version = '*', --- Pin Neorg to the latest stable release
         config = true,
         enabled = luarocks_set(),
     },
@@ -323,7 +323,7 @@ M.ESSENTIAL = {
             vim.opt.stal = 2
             vim.opt.hid = true
 
-            -- NOTE: Required for `scope`
+            --- NOTE: Required for `scope`
             vim.opt.sessionoptions = {
                 'buffers',
                 'tabpages',
@@ -380,7 +380,7 @@ M.ESSENTIAL = {
     },
 }
 
--- Nvim Configurations
+--- Nvim Configurations
 M.NVIM = {
     {
         'folke/which-key.nvim',
@@ -474,7 +474,7 @@ M.EDITING = {
         name = 'EndWise',
         version = false,
     },
-    -- TODO COMMENTS
+    --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
         name = 'todo-comments',
@@ -537,7 +537,7 @@ M.LSP = {
             'SchemaStore',
         },
         config = source('lazy_cfg.lspconfig'),
-        enabled = vim_has('nvim-0.8'), -- Constraint specified in the repo
+        enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
     },
     {
         'b0o/SchemaStore',
@@ -546,7 +546,7 @@ M.LSP = {
         version = false,
         enabled = executable('vscode-json-language-server'),
     },
-    -- Essential for Nvim Lua files.
+    --- Essential for Nvim Lua files.
     {
         'folke/lazydev.nvim',
         ft = 'lua',
@@ -556,7 +556,7 @@ M.LSP = {
         config = source('lazy_cfg.lspconfig.lazydev'),
         enabled = executable('lua-language-server'),
     },
-    { 'Bilal2453/luvit-meta', lazy = true, version = false }, -- optional `vim.uv` typings
+    { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
         name = 'NeoConf',
@@ -648,7 +648,7 @@ M.COMPLETION = {
         version = false,
     },
 }
--- Telescope
+--- Telescope
 M.TELESCOPE = {
     {
         'nvim-telescope/telescope.nvim',
@@ -673,7 +673,7 @@ M.TELESCOPE = {
         build = tel_fzf_build(),
         enabled = executable('fzf'),
     },
-    -- Project Manager
+    --- Project Manager
     {
         'ahmedkhalf/project.nvim',
         lazy = false,
@@ -690,7 +690,7 @@ M.TELESCOPE = {
 }
 --- UI Plugins
 M.UI = {
-    -- Statusline
+    --- Statusline
     {
         'nvim-lualine/lualine.nvim',
         priority = 1000,
@@ -705,7 +705,7 @@ M.UI = {
         config = source('lazy_cfg.lualine'),
         enabled = not in_console(),
     },
-    -- Tabline
+    --- Tabline
     {
         'akinsho/bufferline.nvim',
         priority = 1000,
@@ -720,10 +720,10 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.bufferline'),
-        -- enabled = not in_console(),
+        --- enabled = not in_console(),
         enabled = false,
     },
-    -- Tabline
+    --- Tabline
     {
         'romgrk/barbar.nvim',
         priority = 1000,
@@ -741,7 +741,7 @@ M.UI = {
         config = source('lazy_cfg.barbar'),
         enabled = not in_console(),
     },
-    -- Indent Scope
+    --- Indent Scope
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
@@ -758,7 +758,7 @@ M.UI = {
         config = source('lazy_cfg.rainbow_delimiters'),
         enabled = not in_console(),
     },
-    -- File Tree
+    --- File Tree
     {
         'nvim-tree/nvim-tree.lua',
         name = 'nvim_tree',
@@ -769,7 +769,7 @@ M.UI = {
             'Mini',
         },
         init = function()
-            -- Disable `netrw`.
+            --- Disable `netrw`.
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
@@ -785,10 +785,10 @@ M.UI = {
             'Plenary',
             'web-devicons',
             'MunifTanjim/nui.nvim',
-            -- '3rd/image.nvim',
+            --- '3rd/image.nvim',
         },
         init = function()
-            -- Disable `netrw`.
+            --- Disable `netrw`.
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
@@ -839,11 +839,11 @@ M.UI = {
         name = 'CommentBox',
         version = false,
         config = source('lazy_cfg.commentbox'),
-        -- enabled = not in_console(),
+        --- enabled = not in_console(),
         enabled = false,
     },
 }
--- File Syntax Plugins
+--- File Syntax Plugins
 M.SYNTAX = {
     {
         'rhysd/vim-syntax-codeowners',
