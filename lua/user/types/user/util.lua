@@ -40,3 +40,4 @@
 ---@field ft_get fun(bufnr: integer?): string
 ---@field notify UserUtils.Notify
 ---@field assoc fun()
+---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
