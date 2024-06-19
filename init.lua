@@ -1,46 +1,46 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user') -- User API
-local Check = User.check -- Checking utilities
-local Types = User.types -- Import docstrings and annotations
-local Maps = User.maps -- Mapping utilities
-local Util = User.util -- General utilities
-local Kmap = Maps.kmap -- `vim.keymap.set` backend
-local WK = Maps.wk -- `which-key` backend
-local maps_t = Types.user.maps -- Annotations for mapping utilities
+local User = require('user') --- User API
+local Check = User.check --- Checking utilities
+local Types = User.types --- Import docstrings and annotations
+local Maps = User.maps --- Mapping utilities
+local Util = User.util --- General utilities
+local Kmap = Maps.kmap --- `vim.keymap.set` backend
+local WK = Maps.wk --- `which-key` backend
+local maps_t = Types.user.maps ---@see UserSubTypes.maps
 
-local exists = Check.exists.module -- Checks for missing modules
-local is_tbl = Check.value.is_tbl
-local is_str = Check.value.is_str
-local is_fun = Check.value.is_fun
-local empty = Check.value.empty
-local vim_has = Check.exists.vim_has
-local nop = User.maps.nop
-local desc = Kmap.desc
-local ft_get = Util.ft_get
-local notify = Util.notify.notify
-local map_dict = Maps.map_dict
-local displace_letter = Util.displace_letter
+local exists = Check.exists.module ---@see User.Check.Existance.module
+local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
+local is_str = Check.value.is_str ---@see User.Check.Value.is_str
+local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
+local empty = Check.value.empty ---@see User.Check.Value.empty
+local vim_has = Check.exists.vim_has ---@see User.Check.Existance.vim_has
+local nop = User.maps.nop ---@see User.Maps.nop
+local desc = Kmap.desc ---@see User.Maps.Keymap.desc
+local ft_get = Util.ft_get ---@see User.Util.ft_get
+local notify = Util.notify.notify ---@see User.Util.Notify.notify
+local map_dict = Maps.map_dict ---@see User.Maps.map_dict
+local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
 _G.is_windows = vim_has('win32')
 
--- Set `<Space>` as Leader Key.
+--- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, silent = true, nowait = false })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Disable `netrw` regardless of whether `nvim_tree` exists or not
+--- Disable `netrw` regardless of whether `nvim_tree` exists or not
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Vim `:set ...` global options setter
+--- Vim `:set ...` global options setter
 local opts = User.opts
 
--- Uncomment to use system clipboard
--- vim.o.clipboard = 'unnamedplus'
+--- Uncomment to use system clipboard
+--- vim.o.clipboard = 'unnamedplus'
 
--- Avoid executing these keys when attempting `<leader>` sequences.
+--- Avoid executing these keys when attempting `<leader>` sequences.
 local NOP = {
     "'",
     '!',
@@ -197,37 +197,37 @@ local Keys = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>b'] = { name = '+Buffer', noremap = false }, -- Buffer Handling
-        ['<leader>f'] = { name = '+File' }, -- File Handling
-        ['<leader>fF'] = { name = '+Folding' }, -- Folding Control
-        ['<leader>fi'] = { name = '+Indent' }, -- Indent Control
-        ['<leader>fv'] = { name = '+Script Files' }, -- Script File Handling
-        ['<leader>h'] = { name = '+Help' }, -- Help
-        ['<leader>q'] = { name = '+Quit Nvim' }, -- Exiting
-        ['<leader>t'] = { name = '+Tabs' }, -- Tabs Handling
-        ['<leader>v'] = { name = '+Vim' }, -- Vim
-        ['<leader>ve'] = { name = '+Edit $MYVIMRC' }, -- `init.lua` Editing
-        ['<leader>w'] = { name = '+Window' }, -- Window Handling
-        ['<leader>ws'] = { name = '+Split' }, -- Window Splitting
+        ['<leader>b'] = { name = '+Buffer', noremap = false }, --- Buffer Handling
+        ['<leader>f'] = { name = '+File' }, --- File Handling
+        ['<leader>fF'] = { name = '+Folding' }, --- Folding Control
+        ['<leader>fi'] = { name = '+Indent' }, --- Indent Control
+        ['<leader>fv'] = { name = '+Script Files' }, --- Script File Handling
+        ['<leader>h'] = { name = '+Help' }, --- Help
+        ['<leader>q'] = { name = '+Quit Nvim' }, --- Exiting
+        ['<leader>t'] = { name = '+Tabs' }, --- Tabs Handling
+        ['<leader>v'] = { name = '+Vim' }, --- Vim
+        ['<leader>ve'] = { name = '+Edit $MYVIMRC' }, --- `init.lua` Editing
+        ['<leader>w'] = { name = '+Window' }, --- Window Handling
+        ['<leader>ws'] = { name = '+Split' }, --- Window Splitting
     },
     v = {
-        ['<leader>f'] = { name = '+File' }, -- File Handling
-        ['<leader>fF'] = { name = '+Folding' }, -- Folding
-        ['<leader>h'] = { name = '+Help' }, -- Help
-        ['<leader>i'] = { name = '+Indent' }, -- Indent Control
-        ['<leader>v'] = { name = '+Vim' }, -- Vim
+        ['<leader>f'] = { name = '+File' }, --- File Handling
+        ['<leader>fF'] = { name = '+Folding' }, --- Folding
+        ['<leader>h'] = { name = '+Help' }, --- Help
+        ['<leader>i'] = { name = '+Indent' }, --- Indent Control
+        ['<leader>v'] = { name = '+Vim' }, --- Vim
     },
 }
 
 Kmap.t('<Esc>', '<C-\\><C-n>')
 
 if not called_lazy then
-    -- List of manually-callable plugins.
+    --- List of manually-callable plugins.
     _G.Pkg = require('lazy_cfg')
     _G.called_lazy = true
 end
 
--- Set the keymaps previously stated
+--- Set the keymaps previously stated
 if WK.available() then
     map_dict(Names, 'wk.register', true)
 end
@@ -239,7 +239,7 @@ local function color_exists(T)
 end
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
-    -- A table containing various possible colorschemes.
+    --- A table containing various possible colorschemes.
     local Csc = Pkg.colorschemes
 
     ---@type table<MapModes, KeyMapDict>
@@ -309,12 +309,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     end
 end
 
--- Call the user file associations and other autocmds
+--- Call the user file associations and other autocmds
 Util.assoc()
 
 vim.g.markdown_minlines = 500
 
--- Call runtimepath optimizations for arch linux
+--- Call runtimepath optimizations for arch linux
 require('user.distro.archlinux').setup()
 
 User.commands:setup_commands()
