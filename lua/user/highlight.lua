@@ -11,7 +11,7 @@ local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
 
----@type UserHl
+---@type User.Hl
 local M = {
     hl = function(name, opts, bufnr)
         if not (is_str(name) and is_tbl(opts)) or empty(name) then

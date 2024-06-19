@@ -13,7 +13,7 @@ local function exists(mod)
     return ok
 end
 
----@type UserUtils.Notify
+---@type User.Util.Notify
 local M = {}
 
 function M.notify(msg, lvl, opts)

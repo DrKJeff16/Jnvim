@@ -3,7 +3,7 @@
 
 require('user.types.user.util')
 
----@type UserUtils
+---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 

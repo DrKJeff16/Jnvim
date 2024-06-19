@@ -12,7 +12,7 @@ local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 
----@type UserMod
+---@type User
 local M = {
     types = require('user.types'),
     util = require('user.util'),
