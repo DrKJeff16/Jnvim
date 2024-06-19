@@ -36,7 +36,7 @@ function M.strip_fields(T, fields)
         return T
     end
 
-    ---@type UserMaps.Keymap.Opts
+    ---@type User.Maps.Keymap.Opts
     local res = {}
 
     if is_str(fields) then

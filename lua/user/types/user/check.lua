@@ -4,7 +4,7 @@
 ---@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table')
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
----@class ExistanceCheck
+---@class User.Check.Existance
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string|string[], need_all: boolean?): boolean|table<string, boolean>
 ---@field executable fun(exe: string|string[], fallback: fun()?): boolean
@@ -13,7 +13,7 @@
 ---@field vim_has fun(expr: string|string[]): boolean
 ---@field vim_isdir fun(path: string): boolean
 
----@class ValueCheck
+---@class User.Check.Value
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil.
 --- ## Parameters
 ---
@@ -124,9 +124,8 @@
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
 ---@field single_type_tbl fun(type_str: string, T: table): boolean
 
----@class UserCheck
----@field exists ExistanceCheck
----@field value ValueCheck
+---@class User.Check
+---@field exists User.Check.Existance
+---@field value User.Check.Value
 ---@field in_console fun(): boolean
----@field new? fun(): UserCheck
----@field __index? UserCheck
+---@field new? fun(): User.Check

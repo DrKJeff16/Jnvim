@@ -14,7 +14,7 @@ local is_num = Value.is_num
 local is_fun = Value.is_fun
 local empty = Value.empty
 
----@type ExistanceCheck
+---@type User.Check.Existance
 M = {
     module = function(mod, return_mod)
         return_mod = is_bool(return_mod) and return_mod or false

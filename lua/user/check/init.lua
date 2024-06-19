@@ -8,7 +8,7 @@ local Value = require('user.check.value')
 local Exists = require('user.check.exists')
 
 --- Checking Utilities
----@type UserCheck
+---@type User.Check
 local M = {
     value = Value,
     exists = Exists,

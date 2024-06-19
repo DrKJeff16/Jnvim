@@ -37,8 +37,8 @@
 ---@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
 
 ---@class UserMod
----@field check UserCheck
----@field maps UserMaps
+---@field check User.Check
+---@field maps User.Maps
 ---@field distro User.Distro
 ---@field highlight UserHl
 ---@field opts UserOpts
