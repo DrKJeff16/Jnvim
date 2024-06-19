@@ -2,8 +2,6 @@
 
 [[ $# -eq 0 ]] && exit 1
 
-IFS=$'\n' FILES=($(find . -type f -regex '.*\.lua$' | cut -d '/' -f2-))
-
 while [[ $# -gt 0 ]]; do
     if ! [[ "$1" =~ ^s/.+/.*/g$ ]] ; then
         shift
@@ -12,7 +10,7 @@ while [[ $# -gt 0 ]]; do
 
     REGEX="$1"
 
-    for F in "${FILES[@]}"; do
+    for F in $(find . -type f -regex '.*\.lua$' | cut -d '/' -f2-); do
         sed -i "${REGEX}" "$F" || break
     done
 

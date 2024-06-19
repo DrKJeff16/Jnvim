@@ -116,7 +116,11 @@ local function optset(opts)
         elseif not is_nil(vim.o[k]) then
             vim.o[k] = v
         else
-            notify('(user.opts:optset): Unable to set option `' .. k .. '`', 'error', { title = 'user.opts' })
+            notify(
+                '(user.opts:optset): Unable to set option `' .. k .. '`',
+                'error',
+                { title = 'user.opts', hide_from_history = false, timeout = 3000 }
+            )
         end
     end
 end

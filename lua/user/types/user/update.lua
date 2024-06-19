@@ -1,3 +1,4 @@
 ---@class User.Update
 ---@field update fun(...)
----@field is_latest fun(): boolean
+---@field new? fun(): User.Update
+---@field protected __index? User.Update

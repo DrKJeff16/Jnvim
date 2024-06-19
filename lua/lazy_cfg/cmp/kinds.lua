@@ -100,17 +100,16 @@ local function vscode()
     end
 end
 
----@param entry cmp.Entry
----@param vim_item vim.CompletedItem
+---@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
 local function vscode_fmt(entry, vim_item)
     vim_item.kind = kind_codicons[vim_item.kind] or ''
     return vim_item
 end
 
----@param entry cmp.Entry
----@param vim_item vim.CompletedItem
+---@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
 local function fmt(entry, vim_item)
-    return LK.cmp_format({ with_text = false })(entry, vim_item)
+    vim_item.kind = (kind_codicons[vim_item.kind] or '')
+    return vim_item
 end
 
 ---@type HlDict
@@ -164,7 +163,7 @@ local M = {
     kind_codicons = kind_codicons,
     formatting = {
         expandable_indicator = true,
-        fields = { 'abbr', 'kind', 'menu' },
+        fields = { 'kind', 'abbr' },
         format = fmt,
     },
     window = {

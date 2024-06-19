@@ -4,8 +4,9 @@
 local User = require('user')
 local Check = User.check
 local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
-local WK = User.maps.wk
+local Maps = User.maps
+local kmap = Maps.kmap
+local WK = Maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -13,16 +14,19 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
+local desc = kmap.desc
+local map_dict = Maps.map_dict
 
 if not exists('todo-comments') then
     return
 end
 
-local Todo = require('todo-comments')
+local TODO = require('todo-comments')
 
-Todo.setup({
+-- TODO: Test
+TODO.setup({
     signs = true, -- show icons in the signs column
-    sign_priority = 10, -- sign priority
+    sign_priority = 50, -- sign priority
     -- keywords recognized as todo comments
     keywords = {
         TITLE = {
@@ -99,11 +103,11 @@ Todo.setup({
         multiline_pattern = '^.', -- lua pattern to match the next multiline from the start of the matched keyword
         multiline_context = 3, -- extra lines that will be re-evaluated when changing a line
         before = '', -- 'fg' or 'bg' or empty
-        keyword = 'bg', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+        keyword = 'wide_bg', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
         after = 'fg', -- 'fg' or 'bg' or empty
         pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
         comments_only = true, -- uses treesitter to match keywords in comments only
-        max_line_len = 200, -- ignore lines longer than this
+        max_line_len = 250, -- ignore lines longer than this
         exclude = {}, -- list of file types to exclude highlighting
     },
     -- list of named colors where we try to extract the guifg from the
@@ -132,74 +136,64 @@ Todo.setup({
     },
 })
 
----@type table<MapModes, KeyMapDict>
-local Keys = {
-    n = {
-        -- `TODO`
-        ['<leader>ctn'] = {
-            function()
-                Todo.jump_next()
-            end,
-            { desc = "Next 'TODO' Comment" },
-        },
-        ['<leader>ctp'] = {
-            function()
-                Todo.jump_prev()
-            end,
-            { desc = "Previous 'TODO' Comment" },
-        },
+---@type fun(direction: 'next'|'prev', keyword: string): fun()
+local function jump(direction, keyword)
+    if not (is_str(direction) or vim.tbl_contains({ 'next', 'prev' }, direction)) then
+        error('(lazy_cfg.todo_comments:jump): Invalid direction')
+    end
 
-        -- `ERROR`
-        ['<leader>cen'] = {
-            function()
-                Todo.jump_next({ keywords = { 'ERROR' } })
-            end,
-            { desc = "Next 'ERROR' Comment" },
-        },
-        ['<leader>cep'] = {
-            function()
-                Todo.jump_prev({ keywords = { 'ERROR' } })
-            end,
-            { desc = "Previous 'ERROR' Comment" },
-        },
+    local direction_map = {
+        next = TODO.jump_next,
+        prev = TODO.jump_prev,
+    }
 
-        -- `WARNING`
-        ['<leader>cwn'] = {
-            function()
-                Todo.jump_next({ keywords = { 'WARNING' } })
-            end,
-            { desc = "Next 'WARNING' Comment" },
-        },
-        ['<leader>cwp'] = {
-            function()
-                Todo.jump_prev({ keywords = { 'WARNING' } })
-            end,
-            { desc = "Previous 'WARNING' Comment" },
-        },
-    },
-}
-
----@type table<MapModes, RegKeysNamed>
-local Names = {
-    n = {
-        ['<leader>c'] = { name = '+TODO Comments' },
-        ['<leader>cw'] = { name = "+'WARNING'" },
-        ['<leader>ce'] = { name = "+'ERROR'" },
-        ['<leader>ct'] = { name = "+'TODO'" },
-    },
-}
-
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            kmap[mode](lhs, v[1], v[2])
-        end
+    return function()
+        direction_map[direction]({ keywords = { keyword } })
     end
 end
+
+---@type KeyMapDict
+local Keys = {
+    -- `TODO`
+    ['<leader>ctn'] = {
+        jump('next', 'TODO'),
+        desc("Next 'TODO' Comment"),
+    },
+    ['<leader>ctp'] = {
+        jump('prev', 'TODO'),
+        desc("Previous 'TODO' Comment"),
+    },
+
+    -- `ERROR`
+    ['<leader>cen'] = {
+        jump('next', 'ERROR'),
+        desc("Next 'ERROR' Comment"),
+    },
+    ['<leader>cep'] = {
+        jump('prev', 'ERROR'),
+        desc("Previous 'ERROR' Comment"),
+    },
+
+    -- `WARNING`
+    ['<leader>cwn'] = {
+        jump('next', 'WARNING'),
+        desc("Next 'WARNING' Comment"),
+    },
+    ['<leader>cwp'] = {
+        jump('prev', 'WARNING'),
+        desc("Previous 'WARNING' Comment"),
+    },
+}
+
+---@type RegKeysNamed
+local Names = {
+    ['<leader>c'] = { name = '+TODO Comments' },
+    ['<leader>cw'] = { name = "+'WARNING'" },
+    ['<leader>ce'] = { name = "+'ERROR'" },
+    ['<leader>ct'] = { name = "+'TODO'" },
+}
+
+if WK.available() then
+    map_dict(Names, 'wk.register', false, 'n')
+end
+map_dict(Keys, 'wk.register', false, 'n')

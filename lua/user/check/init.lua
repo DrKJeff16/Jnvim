@@ -7,7 +7,8 @@ require('user.types.user.check')
 local Value = require('user.check.value')
 local Exists = require('user.check.exists')
 
----@type UserCheck
+--- Checking Utilities
+---@type User.Check
 local M = {
     value = Value,
     exists = Exists,
@@ -20,6 +21,7 @@ local M = {
 --- ---
 --- ## Return
 --- A boolean that confirms whether the environment is a Linux Console.
+--- ---
 function M.in_console()
     local env = vim.fn.environ()
     ---@type string

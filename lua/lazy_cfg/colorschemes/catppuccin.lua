@@ -17,8 +17,7 @@ if exists('catppuccin') then
     function M.setup()
         local Cppc = require('catppuccin')
 
-        ---@type CatppuccinOptions
-        local opts = {
+        Cppc.setup({
             flavour = 'frappe', -- latte, frappe, macchiato, mocha
             -- flavour = "auto" -- will respect terminal's background
             background = { -- :h background
@@ -26,8 +25,8 @@ if exists('catppuccin') then
                 dark = 'mocha',
             },
             transparent_background = false, -- disables setting the background color.
-            show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-            term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+            show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
+            term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
             dim_inactive = {
                 enabled = true, -- dims the background color of inactive window
                 shade = 'dark',
@@ -41,7 +40,7 @@ if exists('catppuccin') then
                 conditionals = { 'bold' },
                 loops = { 'bold' },
                 functions = { 'bold' },
-                keywords = { 'bold' },
+                keywords = { 'italic' },
                 strings = { 'italic' },
                 variables = { 'altfont' },
                 numbers = { 'altfont' },
@@ -73,6 +72,10 @@ if exists('catppuccin') then
                 },
                 lsp_trouble = exists('trouble'),
                 markdown = true,
+                mini = {
+                    enabled = true,
+                    indentscope_color = 'lavender',
+                },
                 native_lsp = {
                     enabled = true,
                     virtual_text = {
@@ -104,15 +107,9 @@ if exists('catppuccin') then
                 treesitter = exists('nvim-treesitter'),
                 treesitter_context = exists('treesitter-context'),
                 which_key = exists('which-key'),
-                mini = {
-                    enabled = true,
-                    indentscope_color = 'lavender',
-                },
                 -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
             },
-        }
-
-        Cppc.setup(opts)
+        })
 
         vim.cmd(M.mod_cmd)
     end

@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@class UserTypes
+---@class User.Types
 ---@field user UserSubTypes
 ---@field autopairs table
 ---@field cmp table
@@ -21,7 +21,7 @@
 ---@field treesitter table
 ---@field which_key table
 
----@class UserOpts
+---@class User.Opts
 
 ---@class User.Distro.Distrospec
 ---@field setup fun()
@@ -36,17 +36,18 @@
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table.
 ---@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
 
----@class UserMod
----@field check UserCheck
----@field maps UserMaps
+---@class User
+---@field check User.Check
+---@field maps User.Maps
 ---@field distro User.Distro
----@field highlight UserHl
----@field opts UserOpts
----@field types UserTypes
----@field util UserUtils
+---@field highlight User.Hl
+---@field opts User.Opts
+---@field types User.Types
+---@field util User.Util
 ---@field update User.Update
+---@field commands User.Commands
 
----@type UserTypes
+---@type User.Types
 local M = {
     --- API-related annotations
     user = require('user.types.user'),

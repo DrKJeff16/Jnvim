@@ -16,14 +16,13 @@ local empty = Check.value.empty
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
----@type table<string, string|number|table>
 local Fields = {
-    ['mkdp_auto_start'] = 0,
-    ['mkdp_browser'] = executable('firefox') and '/usr/bin/firefox' or '',
-    ['mkdp_echo_preview_url'] = 1,
-    ['mkdp_open_to_the_world'] = 0,
-    ['mkdp_auto_close'] = 1,
-    ['mkdp_preview_options'] = {
+    mkdp_auto_start = 0,
+    mkdp_browser = executable('firefox') and '/usr/bin/firefox' or '',
+    mkdp_echo_preview_url = 1,
+    mkdp_open_to_the_world = 0,
+    mkdp_auto_close = 1,
+    mkdp_preview_options = {
         mkit = {},
         katex = {},
         uml = {},
@@ -37,8 +36,8 @@ local Fields = {
         disable_filename = 0,
         toc = {},
     },
-    ['mkdp_filetypes'] = { 'markdown' },
-    ['mkdp_theme'] = 'dark',
+    mkdp_filetypes = { 'markdown' },
+    mkdp_theme = 'dark',
 }
 
 for k, v in next, Fields do

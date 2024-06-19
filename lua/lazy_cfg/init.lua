@@ -5,8 +5,9 @@ local User = require('user')
 local Check = User.check
 local types = User.types.lazy
 local Util = User.util
-local kmap = User.maps.kmap
-local WK = User.maps.wk
+local Maps = User.maps
+local kmap = Maps.kmap
+local WK = Maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -19,6 +20,7 @@ local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local in_console = Check.in_console
 local desc = kmap.desc
+local map_dict = Maps.map_dict
 
 local fs_stat = vim.uv.fs_stat
 local stdpath = vim.fn.stdpath
@@ -75,33 +77,15 @@ end
 
 ---@type fun(): boolean
 local function luarocks_set()
-    local has_luarocks = executable('luarocks', function()
-        require('user.util.notify').notify(
-            [[
-        (lazy_cfg:luarocks_set): `luarocks` is not installed. Can't install both `luarocks.nvim` and `Neorg`.
-        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-        ]],
-            'error',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+    local has_luarocks = executable('luarocks')
 
-    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' }, function()
-        require('user.util.notify').notify(
-            [[
-        (lazy_cfg:luarocks_set): Either `LUA_PATH` or `LUA_CPATH` are not initialized. Can't install both `luarocks.nvim` and `Neorg`.
-        Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
-        ]],
-            'warn',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' })
 
     return has_luarocks and configured_luarocks
 end
 
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
---- ---
+---
 --- ## Return
 ---
 --- ### Unix
@@ -116,7 +100,7 @@ end
 --- ```sh
 --- make -j"$(nproc)"
 --- ```
---- ---
+---
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
@@ -139,11 +123,9 @@ local Lazy = require('lazy')
 --- ---
 --- ## Parameters
 --- * `mod_str` This parameter must comply with the following format:
----
 --- ```lua
 --- "lazy_cfg.<plugin_name>[.<...>]"
 --- ```
----
 --- ---
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
@@ -156,14 +138,14 @@ local function source(mod_str)
 end
 
 --- Set the global condition for a later submodule call.
---- ---
+---
 --- ## Parameters
---- * `field`: Either a **string** that will be the name of a vim `g:...` variable, or
---- a **dictionary** with the keys as the vim `g:...` variable names, and the value
+--- * `field`: Either a `string` that will be the name of a vim `g:...` variable, or
+--- a `dictionary` with the keys as the vim `g:...` variable names, and the value
 --- as whatever said variables are set to respectively.
 --- ---
 --- ## Return
---- A **function** that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
+--- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
 --- ---
 ---@type fun(field: string|table<string, any>): fun()
 local function colorscheme_init(fields)
@@ -595,6 +577,12 @@ M.LSP = {
         config = source('lazy_cfg.lspconfig.clangd'),
         enabled = executable('clangd') and not in_console(),
     },
+    {
+        'smjonas/inc-rename.nvim',
+        name = 'inc-rename',
+        main = 'inc_rename',
+        config = source('lazy_cfg.lspconfig.inc_rename'),
+    },
 }
 --- Completion and `cmp`-related Plugins
 M.COMPLETION = {
@@ -698,9 +686,6 @@ M.TELESCOPE = {
             vim.o.autochdir = true
         end,
         config = source('lazy_cfg.project'),
-        --- NOTE: Disabled to supress warnings from version bump v0.11.0
-        --- until further notice.
-        -- enabled = not vim_has('nvim-0.11'),
     },
 }
 --- UI Plugins
@@ -839,6 +824,7 @@ M.UI = {
         name = 'Noice',
         version = false,
         dependencies = {
+            'inc-rename',
             'MunifTanjim/nui.nvim',
             'Notify',
             'Mini',
@@ -894,7 +880,26 @@ for _, plugs in next, M do
         table.insert(T, p)
     end
 end
-Lazy.setup(T)
+Lazy.setup(T, {
+    change_detection = {
+        enabled = true,
+        notify = true,
+    },
+
+    checker = {
+        check_pinned = false,
+        enabled = true,
+        frequency = 3600,
+        notify = true,
+    },
+
+    ui = {
+        border = 'double',
+        title = 'L      A      Z      Y',
+        title_pos = 'center',
+        wrap = true,
+    },
+})
 
 ---@type LazyMods
 local P = {
@@ -954,26 +959,10 @@ local Names = {
     },
 }
 
-for mode, maps in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-        WK.register(WK.convert_dict(maps), { mode = mode })
-    else
-        for lhs, v in next, maps do
-            local msg = '(lazy_cfg): Could not set keymap `' .. lhs .. '`'
-            if not (is_str(v[1]) or is_fun(v[1])) then
-                Util.notify.notify(msg, 'error', { title = 'lazy_cfg' })
-                goto continue
-            end
-
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            kmap[mode](lhs, v[1], v[2])
-
-            ::continue::
-        end
-    end
+if WK.available() then
+    map_dict(Names, 'wk.register', true)
 end
+
+map_dict(Keys, 'wk.register', true)
 
 return P

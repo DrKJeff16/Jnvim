@@ -29,14 +29,15 @@
 ---@field hide_from_history? boolean Defaults to `false`
 ---@field animate? boolean Defaults to `true`
 
----@class UserUtils.Notify
+---@class User.Util.Notify
 ---@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: NotifyOpts?)
 
----@class UserUtils
+---@class User.Util
 ---@field xor fun(x: boolean, y: boolean): boolean
 ---@field strip_fields fun(T: table, values: string|string[]): table
 ---@field strip_values fun(T: table, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string, bufnr: integer?): fun()
 ---@field ft_get fun(bufnr: integer?): string
----@field notify UserUtils.Notify
+---@field notify User.Util.Notify
 ---@field assoc fun()
+---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
