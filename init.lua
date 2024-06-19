@@ -21,6 +21,7 @@ local desc = Kmap.desc
 local ft_get = Util.ft_get
 local notify = Util.notify.notify
 local map_dict = Maps.map_dict
+local displace_letter = Util.displace_letter
 
 _G.is_windows = vim_has('win32')
 
@@ -247,7 +248,6 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     CscKeys.v = {}
 
     --- Reorder to your liking.
-    ---@type ('nightfox'|'tokyonight'|'catppuccin'|'onedark'|'spaceduck'|'spacemacs'|'molokai'|'dracula'|'oak'|'space_vim_dark')[]
     local selected = {
         'catppuccin',
         'tokyonight',
@@ -258,21 +258,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         'oak',
         'spaceduck',
         'dracula',
+        'space_vim_dark',
     }
-
-    local i = 1
-    local found_csc = 0
-    for _, c in next, selected do
-        if color_exists(Csc[c]) then
-            found_csc = found_csc == 0 and i or found_csc
-
-            for mode, _ in next, CscKeys do
-                CscKeys[mode]['<leader>vc' .. tostring(i)] = { Csc[c].setup, desc('Setup Colorscheme `' .. c .. '`') }
-            end
-
-            i = i + 1
-        end
-    end
 
     ---@type table<MapModes, RegKeysNamed>
     local NamesCsc = {
@@ -280,10 +267,41 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         v = { ['<leader>vc'] = { name = '+Colorschemes' } },
     }
 
+    local csc_group = 'a'
+    local i = 1
+    local found_csc = 0
+    for _, c in next, selected do
+        if color_exists(Csc[c]) then
+            found_csc = found_csc == 0 and i or found_csc
+
+            for mode, _ in next, CscKeys do
+                ---@type fun(...)
+                local setup = Csc[c].setup
+
+                CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
+                    setup,
+                    desc('Setup Colorscheme `' .. c .. '`'),
+                }
+            end
+
+            NamesCsc.n['<leader>vc' .. csc_group] = {
+                name = '+Group ' .. csc_group,
+            }
+            NamesCsc.v['<leader>vc' .. csc_group] = {
+                name = '+Group ' .. csc_group,
+            }
+            if i == 9 then
+                i = 0
+                csc_group = displace_letter(csc_group, 'next', true)
+            else
+                i = i + 1
+            end
+        end
+    end
+
     if WK.available() then
         map_dict(NamesCsc, 'wk.register', true)
     end
-
     map_dict(CscKeys, 'wk.register', true)
 
     if not empty(found_csc) then
