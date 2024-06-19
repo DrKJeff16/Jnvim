@@ -66,7 +66,7 @@ local function variant(mode, func, with_buf)
     return res
 end
 
----@type fun(key: 'api'|'key'|'buf'): UserMaps.Keymap|UserMaps.Api|UserMaps.Buf
+---@type fun(key: 'api'|'key'|'buf'): User.Maps.Keymap|User.Maps.Api|User.Maps.Buf
 local mode_funcs = function(key)
     ---@type table<'api'|'key'|'buf', { integer: fun(), integer: boolean }>
     local VALID = { api = { map, false }, key = { kmap, false }, buf = { bufmap, true } }
@@ -75,7 +75,7 @@ local mode_funcs = function(key)
         error('(user.maps:mode_funcs): Invalid variant ID `' .. field .. "`\nMust be `'api'|'key'|'buf'`")
     end
 
-    ---@type UserMaps.Keymap|UserMaps.Api|UserMaps.Buf
+    ---@type User.Maps.Keymap|User.Maps.Api|User.Maps.Buf
     local res = {}
 
     for _, mode in next, MODES do
@@ -85,7 +85,7 @@ local mode_funcs = function(key)
     return res
 end
 
----@type UserMaps
+---@type User.Maps
 local M = {
     kmap = mode_funcs('key'),
     map = mode_funcs('api'),
@@ -94,7 +94,7 @@ local M = {
 }
 
 function M.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
-    ---@type UserMaps.Keymap.Opts
+    ---@type User.Maps.Keymap.Opts
     local res = {
         desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
         silent = is_bool(silent) and silent or true,
@@ -116,7 +116,7 @@ function M.nop(T, opts, mode, prefix)
     end
 
     mode = (is_str(mode) and vim.tbl_contains(M.modes, mode)) and mode or 'n'
-    if vim.tbl_contains({ 'i', 't' }, mode) then
+    if vim.tbl_contains({ 'i', 't', 'o', 'x' }, mode) then
         return
     end
 
@@ -129,7 +129,7 @@ function M.nop(T, opts, mode, prefix)
     opts.silent = is_bool(opts.silent) and opts.silent or true
 
     if is_int(opts.buffer) then
-        ---@type UserMaps.Keymap.Opts
+        ---@type User.Maps.Keymap.Opts
         opts = strip_fields(opts, 'buffer')
     end
 

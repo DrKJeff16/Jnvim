@@ -30,41 +30,65 @@ local Keys = {
     n = {
         -- Navigation
         ['<leader>G]c'] = {
-            "&diff ? ']c' : '<CMD>Gitsigns next_hunk<CR>'",
+            function()
+                if vim.wo.diff then
+                    vim.cmd.normal({ ']c', bang = true })
+                else
+                    GS.nav_hunk('next')
+                end
+            end,
             desc('Next Hunk', true, 0, true, true, true),
         },
         ['<leader>G[c'] = {
-            "&diff ? '[c' : '<CMD>Gitsigns prev_hunk<CR>'",
-            desc('Previous Hunk', true, 0, true, true, true),
+            function()
+                if vim.wo.diff then
+                    vim.cmd.normal({ '[c', bang = true })
+                else
+                    GS.nav_hunk('prev')
+                end
+            end,
+            desc('Next Hunk', true, 0, true, true, true),
         },
 
         -- Actions
-        ['<leader>Ghs'] = { '<CMD>Gitsigns stage_hunk<CR>', desc('Stage Current Hunk', true, 0) },
-        ['<leader>Ghr'] = { '<CMD>Gitsigns reset_hunk<CR>', desc('Reset Current Hunk', true, 0) },
-        ['<leader>Ghu'] = { '<CMD>Gitsigns undo_stage_hunk<CR>', desc('Undo Hunk Stage', true, 0) },
-        ['<leader>Ghp'] = { '<CMD>Gitsigns preview_hunk<CR>', desc('Preview Current Hunk', true, 0) },
-        ['<leader>GhS'] = { '<CMD>Gitsigns stage_buffer<CR>', desc('Stage The Whole Buffer', true, 0) },
-        ['<leader>GhR'] = { '<CMD>Gitsigns reset_buffer<CR>', desc('Reset The Whole Buffer', true, 0) },
+        ['<leader>Ghs'] = { GS.stage_hunk, desc('Stage Current Hunk') },
+        ['<leader>Ghr'] = { GS.reset_hunk, desc('Reset Current Hunk') },
+        ['<leader>Ghu'] = { GS.undo_stage_hunk, desc('Undo Hunk Stage') },
+        ['<leader>Ghp'] = { GS.preview_hunk, desc('Preview Current Hunk') },
+        ['<leader>GhS'] = { GS.stage_buffer, desc('Stage The Whole Buffer') },
+        ['<leader>GhR'] = { GS.reset_buffer, desc('Reset The Whole Buffer') },
         ['<leader>Ghb'] = {
             function()
                 GS.blame_line({ full = true })
             end,
-            desc('Blame Current Line', true, 0),
+            desc('Blame Current Line'),
         },
-        ['<leader>Ghd'] = { '<CMD>Gitsigns diffthis<CR>', desc('Diff Against Index', true, 0) },
+        ['<leader>Ghd'] = { GS.diffthis, desc('Diff Against Index') },
         ['<leader>GhD'] = {
             function()
                 GS.diffthis('~')
             end,
-            desc('Diff This', true, 0),
+            desc('Diff This'),
         },
-        ['<leader>Gtb'] = { '<CMD>Gitsigns toggle_current_line_blame<CR>', desc('Toggle Line Blame', true, 0) },
-        ['<leader>Gtd'] = { '<CMD>Gitsigns toggle_deleted<CR>', desc('Toggle Deleted', true, 0) },
+        ['<leader>Gtb'] = { GS.toggle_current_line_blame, desc('Toggle Line Blame') },
+        ['<leader>Gtd'] = { GS.toggle_deleted, desc('Toggle Deleted') },
     },
     v = {
-        ['<leader>Ghs'] = { ':Gitsigns stage_hunk<CR>', desc('Stage Selected Hunks', true, 0) },
-        ['<leader>Ghr'] = { ':Gitsigns reset_hunk<CR>', desc('Reset Selected Hunks', true, 0) },
+        ['<leader>Ghs'] = {
+            function()
+                GS.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end,
+            desc('Stage Selected Hunks'),
+        },
+        ['<leader>Ghr'] = {
+            function()
+                GS.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end,
+            desc('Reset Selected Hunks'),
+        },
     },
+    o = { ['ih'] = { ':<C-U>Gitsigns select_hunk<CR>' } },
+    x = { ['ih'] = { ':<C-U>Gitsigns select_hunk<CR>' } },
 }
 ---@type table<MapModes, RegKeysNamed>
 local Names = {

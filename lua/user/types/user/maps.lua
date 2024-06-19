@@ -1,14 +1,14 @@
 require('user.types.which_key')
 
----@alias UserMaps.Api.Opts vim.api.keyset.keymap
----@alias UserMaps.Keymap.Opts vim.keymap.set.Opts
----@alias UserMaps.Buf.Opts UserMaps.Api.Opts
+---@alias User.Maps.Api.Opts vim.api.keyset.keymap
+---@alias User.Maps.Keymap.Opts vim.keymap.set.Opts
+---@alias User.Maps.Buf.Opts User.Maps.Api.Opts
 
 --- `Rhs` for use in `vim.keymap.set`
----@alias UserMaps.Keymap.Rhs string|fun()
+---@alias User.Maps.Keymap.Rhs string|fun()
 
 --- `Rhs` for use in `vim.api.nvim_set_keymap`
----@alias UserMaps.Api.Rhs string
+---@alias User.Maps.Api.Rhs string
 
 --- Available modes
 ---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
@@ -17,26 +17,26 @@ require('user.types.which_key')
 ---@alias Modes MapModes[]
 
 ---@class ApiMapRhsOptsArr
----@field [1] UserMaps.Api.Rhs
----@field [2]? UserMaps.Api.Opts
+---@field [1] User.Maps.Api.Rhs
+---@field [2]? User.Maps.Api.Opts
 
 ---@class KeyMapRhsOptsArr
----@field [1] UserMaps.Keymap.Rhs
----@field [2]? UserMaps.Keymap.Opts
+---@field [1] User.Maps.Keymap.Rhs
+---@field [2]? User.Maps.Keymap.Opts
 
 ---@class ApiMapRhsOptsDict
----@field rhs UserMaps.Api.Rhs
----@field opts? UserMaps.Api.Opts
+---@field rhs User.Maps.Api.Rhs
+---@field opts? User.Maps.Api.Opts
 
 ---@class KeyMapRhsOptsDict
----@field rhs UserMaps.Keymap.Rhs
----@field opts? UserMaps.Keymap.Opts
+---@field rhs User.Maps.Keymap.Rhs
+---@field opts? User.Maps.Keymap.Opts
 
 --- Array for `vim.api.nvim_set_keymap` arguments
 ---@class ApiMapArr
 ---@field [1] string
 ---@field [2] string
----@field [3]? UserMaps.Api.Opts
+---@field [3]? User.Maps.Api.Opts
 
 ---@class BufMapArr: ApiMapArr
 
@@ -44,7 +44,7 @@ require('user.types.which_key')
 ---@class KeyMapArr: ApiMapArr
 ---@field [1] string
 ---@field [2] string|fun()
----@field [3]? UserMaps.Keymap.Opts
+---@field [3]? User.Maps.Keymap.Opts
 
 ---@alias ApiMapDict table<string, ApiMapRhsOptsArr>
 ---@alias ApiMapDicts table<string, ApiMapRhsOptsDict>
@@ -54,21 +54,21 @@ require('user.types.which_key')
 ---@class ApiMapTbl
 ---@field lhs string
 ---@field rhs string
----@field opts? UserMaps.Api.Opts
+---@field opts? User.Maps.Api.Opts
 
 ---@class MapTbl: ApiMapTbl
 
 ---@class KeyMapTbl: ApiMapTbl
 ---@field rhs string|fun()
----@field opts? UserMaps.Keymap.Opts
+---@field opts? User.Maps.Keymap.Opts
 
 --- The same as `ApiMapTbl`, just add `bufnr` as field.
 ---@class BufMapTbl: ApiMapTbl
 ---@field bufnr integer
 
----@alias ApiMapFunction fun(lhs: string, rhs: string, opts: UserMaps.Api.Opts?)
----@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts: UserMaps.Keymap.Opts?)
----@alias BufMapFunction fun(b: integer, lhs: string, rhs: string, opts: UserMaps.Api.Opts?)
+---@alias ApiMapFunction fun(lhs: string, rhs: string, opts: User.Maps.Api.Opts?)
+---@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts: User.Maps.Keymap.Opts?)
+---@alias BufMapFunction fun(b: integer, lhs: string, rhs: string, opts: User.Maps.Api.Opts?)
 
 ---@alias ApiMapModeDicts table<MapModes, ApiMapTbl[]>
 ---@alias KeyMapModeDicts table<MapModes, KeyMapTbl[]>
@@ -79,14 +79,14 @@ require('user.types.which_key')
 ---@alias BufMapModeDict table<MapModes, ApiMapDict>
 
 ---@alias MapFuncs
----|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(UserMaps.Api.Opts|UserMaps.Keymap.Opts)?)
----|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: UserMaps.Buf.Opts?)
+---|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(User.Maps.Api.Opts|User.Maps.Keymap.Opts)?)
+---|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: User.Maps.Buf.Opts?)
 
----@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): UserMaps.Api.Opts
----@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): UserMaps.Buf.Opts
----@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): UserMaps.Keymap.Opts
+---@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Api.Opts
+---@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Buf.Opts
+---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts
 
----@class UserMaps.Api
+---@class User.Maps.Api
 ---@field n ApiMapFunction
 ---@field i ApiMapFunction
 ---@field v ApiMapFunction
@@ -95,7 +95,7 @@ require('user.types.which_key')
 ---@field x ApiMapFunction
 ---@field desc ApiDescFun
 
----@class UserMaps.Keymap
+---@class User.Maps.Keymap
 ---@field n KeyMapFunction
 ---@field i KeyMapFunction
 ---@field v KeyMapFunction
@@ -104,7 +104,7 @@ require('user.types.which_key')
 ---@field x KeyMapFunction
 ---@field desc KeyDescFun
 
----@class UserMaps.Buf
+---@class User.Maps.Buf
 ---@field n BufMapFunction
 ---@field i BufMapFunction
 ---@field v BufMapFunction
@@ -113,17 +113,17 @@ require('user.types.which_key')
 ---@field x BufMapFunction
 ---@field desc BufDescFun
 
----@class UserMaps.WK
+---@class User.Maps.WK
 ---@field available fun(): boolean
----@field convert fun(rhs: UserMaps.Keymap.Rhs|UserMaps.Api.Rhs|RegPfx|RegKey, opts: (UserMaps.Api.Opts|UserMaps.Keymap.Opts|UserMaps.Buf.Opts)?): RegKey|RegPfx|'which_key_ignore'
+---@field convert fun(rhs: User.Maps.Keymap.Rhs|User.Maps.Api.Rhs|RegPfx|RegKey, opts: (User.Maps.Api.Opts|User.Maps.Keymap.Opts|User.Maps.Buf.Opts)?): RegKey|RegPfx|'which_key_ignore'
 ---@field convert_dict fun(T: KeyMapDict|ApiMapDict|RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
 ---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false|nil
 
----@class UserMaps
----@field kmap UserMaps.Keymap
----@field map UserMaps.Api
----@field buf_map UserMaps.Buf
----@field nop fun(T: string|string[], opts: UserMaps.Keymap.Opts?, mode: MapModes?, prefix: string?)
----@field wk UserMaps.WK
+---@class User.Maps
+---@field kmap User.Maps.Keymap
+---@field map User.Maps.Api
+---@field buf_map User.Maps.Buf
+---@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
+---@field wk User.Maps.WK
 ---@field modes Modes
 ---@field map_dict fun(T: ApiMapModeDict|KeyMapModeDict|ApiMapDict|KeyMapDict, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: MapModes?, bufnr: integer|nil?)

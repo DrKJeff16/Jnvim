@@ -10,7 +10,7 @@ local set_lines = vim.api.nvim_buf_set_lines
 local exec = vim.api.nvim_exec
 local exec2 = vim.api.nvim_exec2
 
----@type User.UserCommands
+---@type User.Commands
 local M = {}
 
 function M.redir()

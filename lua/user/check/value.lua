@@ -5,7 +5,7 @@
 
 require('user.types.user.check')
 
----@type ValueCheck
+---@type User.Check.Value
 local M = {
     -- NOTE: We define `is_nil` first as it's used by the other checkers.
 

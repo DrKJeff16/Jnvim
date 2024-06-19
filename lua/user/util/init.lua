@@ -3,7 +3,7 @@
 
 require('user.types.user.util')
 
----@type UserUtils
+---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
@@ -36,7 +36,7 @@ function M.strip_fields(T, fields)
         return T
     end
 
-    ---@type UserMaps.Keymap.Opts
+    ---@type User.Maps.Keymap.Opts
     local res = {}
 
     if is_str(fields) then
@@ -242,6 +242,141 @@ function M.assoc()
 
         ::continue::
     end
+end
+
+function M.displace_letter(c, direction, cycle)
+    local Value = require('user.check.value')
+    direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction)) and direction or 'next'
+    cycle = Value.is_bool(cycle) and cycle or false
+
+    if c == '' then
+        return 'a'
+    end
+
+    local lower_map_next = {
+        a = 'b',
+        b = 'c',
+        c = 'd',
+        d = 'e',
+        e = 'f',
+        f = 'g',
+        g = 'h',
+        h = 'i',
+        i = 'j',
+        j = 'k',
+        k = 'l',
+        l = 'm',
+        m = 'n',
+        n = 'o',
+        o = 'p',
+        p = 'q',
+        q = 'r',
+        r = 's',
+        s = 't',
+        t = 'u',
+        u = 'v',
+        v = 'w',
+        w = 'x',
+        x = 'y',
+        y = 'z',
+        z = cycle and 'a' or 'A',
+    }
+    local lower_map_prev = {
+        a = cycle and 'z' or 'Z',
+        b = 'a',
+        c = 'b',
+        d = 'c',
+        e = 'd',
+        f = 'e',
+        g = 'f',
+        h = 'g',
+        i = 'h',
+        j = 'i',
+        k = 'j',
+        l = 'k',
+        m = 'l',
+        n = 'm',
+        o = 'n',
+        p = 'o',
+        q = 'p',
+        r = 'q',
+        s = 'r',
+        t = 's',
+        u = 't',
+        v = 'u',
+        w = 'v',
+        x = 'w',
+        y = 'x',
+        z = 'y',
+    }
+    local upper_map_prev = {
+        A = cycle and 'Z' or 'z',
+        B = 'A',
+        C = 'B',
+        D = 'C',
+        E = 'D',
+        F = 'E',
+        G = 'F',
+        H = 'G',
+        I = 'H',
+        J = 'I',
+        K = 'J',
+        L = 'K',
+        M = 'L',
+        N = 'M',
+        O = 'N',
+        P = 'O',
+        Q = 'P',
+        R = 'Q',
+        S = 'R',
+        T = 'S',
+        U = 'T',
+        V = 'U',
+        W = 'V',
+        X = 'W',
+        Y = 'X',
+        Z = 'Y',
+    }
+    local upper_map_next = {
+        A = 'B',
+        B = 'C',
+        C = 'D',
+        D = 'E',
+        E = 'F',
+        F = 'G',
+        G = 'H',
+        H = 'I',
+        I = 'J',
+        J = 'K',
+        K = 'L',
+        L = 'M',
+        M = 'N',
+        N = 'O',
+        O = 'P',
+        P = 'Q',
+        Q = 'R',
+        R = 'S',
+        S = 'T',
+        T = 'U',
+        U = 'V',
+        V = 'W',
+        W = 'X',
+        X = 'Y',
+        Y = 'Z',
+        Z = cycle and 'A' or 'a',
+    }
+
+    if direction == 'next' and Value.fields(c, lower_map_next) then
+        return lower_map_next[c]
+    elseif direction == 'next' and Value.fields(c, upper_map_next) then
+        return upper_map_next[c]
+    elseif direction == 'prev' and Value.fields(c, lower_map_prev) then
+        return lower_map_prev[c]
+    elseif direction == 'prev' and Value.fields(c, upper_map_prev) then
+        return upper_map_prev[c]
+    end
+
+    error('(user.util.displace_letter): Invalid argument')
 end
 
 return M
