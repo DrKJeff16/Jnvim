@@ -68,6 +68,7 @@ For these to work, the following executables must be installed and in your `$PAT
 * [`ripgreg`](https://github.com/BurntSushi/ripgrep)
 * [`fd`](https://github.com/sharkdp/fd)
 * **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf)
+* **(Optional _(for `Neorg`)_)** `luarocks`
 
 ### Structure
 
@@ -132,29 +133,29 @@ for more info on how to install plugins.</u>
 
 <br/>
 
+* [`which-key.nvim`](https://github.com/folke/which-key.nvim)
+* [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
 * [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
-    * [`Comment.nvim`](https://github.com/numToStr/Comment.nvim)
 * [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
-    * [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
-    * [`neodev.nvim`](https://github.com/folke/neodev.nvim)
-    * [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
-        * [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
-        * [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
+* [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
+* [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
+* [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
+* [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
+* [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
 * [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
 * [`noice.nvim`](https://github.com/folke/noice.nvim)
-* [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
-* [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 * [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 * [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
-    * [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
-    * [`BarBar`](https://github.com/romgrk/barbar.nvim)
-* [`nvim-tree.lea`](https://github.com/nvim-tree/nvim-tree.lua)
+* [`BarBar`](https://github.com/romgrk/barbar.nvim)
+* [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
 
 </details>
 
 ---
 
-<h2 id="api">User API</h2>
+<h2 id="api">
+The <code>User</code> API
+</h2>
 
 The `User` API can be found in [`lua/user`](/lua/user).
 It provides a bunch of functionalities to give easier
@@ -162,7 +163,9 @@ code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
 
 <h3 id="types">
-<u><code>types</code></u>
+<u>
+<code>user.types</code>
+</u>
 </h3>
 
 This submodule includes type annotations and documentation.
@@ -190,7 +193,9 @@ Each directory serves as an entry point for its pertinent files,
 sourced by the `init.lua` file in it.
 
 <h3 id="opts">
-<u><code>opts</code></u>
+<u>
+<code>user.opts</code>
+</u>
 </h3>
 
 This submodule can be found at [`here`](/lua/user/opts.lua).
@@ -209,7 +214,9 @@ require('user.opts')
 - **NOTE: This is still a very early WIP.**
 
 <h3 id="check">
-<u><code>check</code></u>
+<u>
+<code>user.check</code>
+</u>
 </h3>
 
 _**This is the most important utility for this config.**_ Of critical importance.
@@ -225,7 +232,9 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 
 <ul>
 <li>
-<b><u><code>value</code></u></b>
+<b><u>
+<code>user.check.value</code>
+</u></b>
 
 Used for value checking, differentiation and conditional code, aswell as
 for optional parameters in functions.
@@ -252,7 +261,9 @@ It can be found in <a href="/lua/user/check/value.lua">
 
 <li>
 
-<b><u><code>exists</code></u></b>
+<b><u>
+<code>user.check.exists</code>
+</u></b>
 
 Used for data existance checks, conditional module loading and fallback operations.
 It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
@@ -349,13 +360,13 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 </h4>
 
 <hr/>
-<span style="text-align: center; padding: 0 1em;">
+
 <b>WARNING:</b> <u>For the moment the API won't register a keymap without
 a description defined for such keymap
 (<i>A.K.A. the</i> <code>desc</code> <i>field in the keymap options</i>)</u>.
 I will try to correct for this behaviour later, but for documentation
 purposes I'm leaving this bug as an enforcer to keep keymaps documented.
-</span>
+
 <hr/>
 
 The `maps` API also includes integration with
@@ -399,11 +410,11 @@ If you want to convert a keymap table, you must first structure it as follows:
 --- you'll have to define the buffer number externally if you use
 --- `User.maps.buf_map`
 
----@class KeyRhsOpts
----@field [1] string|fun() The `rhs` for your keymap, i.e. what'll be executed
----@field [2]? vim.keymap.set.Opts See `|:h vim.keymap.set()|` for the `opts` field
+---@class KeyMapRhsOptsArr
+---@field [1] User.Maps.Keymap.Rhs
+---@field [2]? User.Maps.Keymap.Opts
 
----@alias KeyMapDict table<string, KeyRhsOpts> A dict with the key as lhs and the value as the class above
+---@alias KeyMapDict table<string, KeyMapRhsOptsArr> A dict with the key as lhs and the value as the class above
 
 ---@type KeyMapDict
 local Keys = {
@@ -470,12 +481,11 @@ end
 
 </details>
 </li>
+</ul>
 
 <br/>
 
-<u>
-<code>wk.register()</code> has two arguments
-</u>:
+<code>wk.register()</code> <u>has two arguments</u>:
 
 <br/>
 
@@ -494,8 +504,10 @@ the <code>which_key</code> repository
 --- NOTE: These fields are set to their default value in `wk.register`.
 ---       `nil` means it is not set at all inside the function if not defined,
 ---       not their valid type (unless explicitly defined as type `nil`).
+
+---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
 {
-    ---@type 'n'|'i'|'v'|'t'|'o'|'x'
+    ---@type MapModes
     mode = 'n',
 
     --- prefix: use "<leader>f" for example for mapping everything related to finding files
@@ -550,7 +562,6 @@ WK.register(Names, { mode = <whatever mode> })
 ```
 
 <br/>
-<br/>
 
 <u><b>This API component is in early design so it will be simpler and more
 completein the future.</b></u>
@@ -558,7 +569,9 @@ completein the future.</b></u>
 ---
 
 <h3 id="highlight">
-<u><code>highlight</code></u>
+<u>
+<code>user.highlight</code>
+</u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
