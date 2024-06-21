@@ -97,6 +97,13 @@ local Keys = {
 
         ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
+        ['<leader>fN'] = {
+            function()
+                vim.cmd.wincmd('n')
+                vim.cmd.wincmd('o')
+            end,
+            desc('New Blank File', true, 0),
+        },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
         ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
@@ -161,13 +168,75 @@ local Keys = {
         ['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
         ['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
 
-        ['<leader>wN'] = { '<CMD>new<CR>', desc('New Blank File') },
-        ['<leader>wd'] = { '<C-w>q', desc('Close Window') },
-        ['<leader>wn'] = { '<C-w>w', desc('Cycle Window') },
+        ['<leader>wN'] = {
+            function()
+                vim.cmd.wincmd('n')
+                vim.cmd.wincmd('o')
+            end,
+            desc('New Blank File', true, 0),
+        },
+        ['<leader>w='] = {
+            function()
+                vim.cmd.wincmd('=')
+            end,
+            desc('Resize all windows equally', true, 0),
+        },
+        ['<leader>w<Left>'] = {
+            function()
+                vim.cmd.wincmd('h')
+            end,
+            desc('Go To Window On The Left', true, 0),
+        },
+        ['<leader>w<Right>'] = {
+            function()
+                vim.cmd.wincmd('l')
+            end,
+            desc('Go To Window On The Right', true, 0),
+        },
+        ['<leader>w<Up>'] = {
+            function()
+                vim.cmd.wincmd('k')
+            end,
+            desc('Go To Window Above', true, 0),
+        },
+        ['<leader>w<Down>'] = {
+            function()
+                vim.cmd.wincmd('j')
+            end,
+            desc('Go To Window Below', true, 0),
+        },
+        ['<leader>wd'] = {
+            function()
+                vim.cmd.wincmd('q')
+            end,
+            desc('Close Window', true, 0),
+        },
+        ['<leader>wn'] = {
+            function()
+                vim.cmd.wincmd('w')
+            end,
+            desc('Next Window', true, 0),
+        },
+        ['<leader>wp'] = {
+            function()
+                vim.cmd.wincmd('W')
+            end,
+            desc('Previous Window', true, 0),
+        },
         ['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
         ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
-        ['<leader>wss'] = { '<CMD>split<CR>', desc('Horizontal Split') },
-        ['<leader>wsv'] = { '<CMD>vsplit<CR>', desc('Vertical Split') },
+        ['<leader>wss'] = {
+            function()
+                vim.cmd.wincmd('s')
+            end,
+            desc('Horizontal Split', true, 0),
+        },
+        ['<leader>wsv'] = {
+            function()
+                vim.cmd.wincmd('v')
+            end,
+            desc('Vertical Split', true, 0),
+        },
 
         ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
         ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
