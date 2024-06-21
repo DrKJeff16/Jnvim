@@ -1,16 +1,4 @@
 {
-	"neodev": {
-		"debug": true,
-		"library": {
-			"enabled": true,
-			"plugins": true,
-			"runtime": true,
-			"types": true
-		},
-		"lspconfig": true,
-		"pathStrict": true,
-		"setup_jsonls": true
-	},
 	"lspconfig": {
 		"bashls": {
 			"bashIde.backgroundAnalysisMaxFiles": 500,
