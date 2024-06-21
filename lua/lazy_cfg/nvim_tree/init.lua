@@ -279,7 +279,7 @@ local on_attach = function(bufn)
 
     ---@type KeyMapDict
     local keys = {
-        ['<C-t>'] = {
+        ['<C-U>'] = {
             change_root_to_parent,
             desc('Set Root To Upper Dir'),
         },
@@ -330,9 +330,23 @@ Tree.setup({
 
     auto_reload_on_write = true,
 
+    update_focused_file = {
+        enable = true,
+        update_root = {
+            enable = true,
+        },
+        exclude = false,
+    },
+
+    system_open = {
+        cmd = 'xdg-open',
+        args = {},
+    },
+
     disable_netrw = true,
     hijack_netrw = true,
-    hijack_cursor = true,
+    hijack_cursor = false,
+    hijack_unnamed_buffer_when_opening = true,
     hijack_directories = {
         enable = true,
         auto_open = true,
@@ -345,18 +359,18 @@ Tree.setup({
             enable = true,
             quit_on_focus_loss = true,
             open_win_config = function()
-                local cols = vim.opt.columns
-                local rows = vim.opt.lines
-                local cmdh = vim.opt.cmdheight
+                local cols = vim.opt.columns:get()
+                local rows = vim.opt.lines:get()
+                local cmdh = vim.opt.cmdheight:get()
 
-                local screen_w = cols:get()
-                local screen_h = rows:get() - cmdh:get()
+                local screen_w = cols
+                local screen_h = rows - cmdh
                 local window_w = screen_w * WIDTH_RATIO
                 local window_h = screen_h * HEIGHT_RATIO
                 local window_w_int = floor(window_w)
                 local window_h_int = floor(window_h)
                 local center_x = (screen_w - window_w) / 2
-                local center_y = ((rows:get() - window_h) / 2) - cmdh:get()
+                local center_y = ((rows - window_h) / 2) - cmdh
                 return {
                     border = 'rounded',
                     relative = 'editor',
@@ -370,9 +384,14 @@ Tree.setup({
         width = function()
             return floor(vim.opt.columns:get() * WIDTH_RATIO)
         end,
+        cursorline = true,
+        preserve_window_proportions = true,
+        number = false,
+        relativenumber = false,
+        signcolumn = vim.opt_local.signcolumn:get(),
     },
     renderer = {
-        group_empty = true,
+        group_empty = false,
         add_trailing = false,
         full_name = false,
 
@@ -389,6 +408,8 @@ Tree.setup({
             },
         },
 
+        symlink_destination = true,
+
         icons = {
             web_devicons = {
                 file = { enable = true, color = true },
@@ -398,7 +419,7 @@ Tree.setup({
             git_placement = 'signcolumn',
             modified_placement = 'before',
             diagnostics_placement = 'after',
-            bookmarks_placement = 'after',
+            bookmarks_placement = 'before',
 
             symlink_arrow = ' ➛ ',
             show = {
@@ -408,7 +429,7 @@ Tree.setup({
                 git = true,
                 modified = true,
                 diagnostics = true,
-                bookmarks = false,
+                bookmarks = true,
             },
             glyphs = {
                 default = '',
@@ -441,6 +462,14 @@ Tree.setup({
     live_filter = {
         prefix = '[FILTER]: ',
         always_show_folders = true,
+    },
+
+    git = {
+        enable = true,
+        cygwin_support = is_windows,
+        timeout = 750,
+        show_on_dirs = true,
+        show_on_open_dirs = true,
     },
 })
 
