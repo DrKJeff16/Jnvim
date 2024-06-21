@@ -53,6 +53,8 @@ local Opts = {
         },
     },
 
+    extensions = {},
+
     pickers = {
         colorscheme = { theme = 'dropdown' },
         find_files = { theme = 'dropdown' },
@@ -71,7 +73,14 @@ if exists('trouble') then
     Opts.defaults.mappings.n['<C-t>'] = open_with_trouble
 end
 
+if exists('lazy_cfg.telescope.file_browser') then
+    Opts.extensions.file_browser = require('lazy_cfg.telescope.file_browser')
+end
+
 Telescope.setup(Opts)
+if exists('telescope._extensions.file_browser') then
+    load_ext('file_browser')
+end
 
 local function open()
     vim.cmd('Telescope')

@@ -14,6 +14,7 @@ local executable = Check.exists.executable
 local env_vars = Check.exists.env_vars
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
+local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
@@ -22,16 +23,12 @@ local in_console = Check.in_console
 local desc = kmap.desc
 local map_dict = Maps.map_dict
 
-local fs_stat = vim.uv.fs_stat
-local stdpath = vim.fn.stdpath
-local system = vim.fn.system
+--- Set installation dir for `Lazy`.
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
--- Set installation dir for `Lazy`.
-local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
-
--- Install `Lazy` automatically.
-if not fs_stat(lazypath) then
-    system({
+--- Install `Lazy` automatically.
+if not vim.uv.fs_stat(lazypath) then
+    vim.fn.system({
         'git',
         'clone',
         '--filter=blob:none',
@@ -40,25 +37,22 @@ if not fs_stat(lazypath) then
     })
 end
 
--- Add `Lazy` to runtimepath
+--- Add `Lazy` to runtimepath
 vim.opt.rtp:prepend(lazypath)
 
 --- Returns the string for the `build` field for `LuaSnip` depending on certain conditions.
---- ---
+---
 --- ## Return
 ---
 --- ### Unix
 --- **The return string could be empty** or something akin to
 --- ```sh
---- make install_jsregexp
+--- $ make install_jsregexp
 --- ```
----
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
----
 --- ```sh
---- make -j"$(nproc)" install_jsregexp
+--- $ make -j"$(nproc)" install_jsregexp
 --- ```
---- ---
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
@@ -77,11 +71,7 @@ end
 
 ---@type fun(): boolean
 local function luarocks_set()
-    local has_luarocks = executable('luarocks')
-
-    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' })
-
-    return has_luarocks and configured_luarocks
+    return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })
 end
 
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
@@ -90,19 +80,16 @@ end
 ---
 --- ### Unix
 --- **The return string could be empty** or something akin to
----
 --- ```sh
---- make
+--- $ make
 --- ```
----
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
----
 --- ```sh
---- make -j"$(nproc)"
+--- $ make -j"$(nproc)"
 --- ```
----
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
+--- If unsuccessful, **it'll return an empty string**.
 --- ---
 ---@type fun(): string
 local function tel_fzf_build()
@@ -120,13 +107,15 @@ end
 local Lazy = require('lazy')
 
 --- A `config` function to call your plugins.
---- ---
+---
 --- ## Parameters
 --- * `mod_str` This parameter must comply with the following format:
---- ```lua
---- "lazy_cfg.<plugin_name>[.<...>]"
+---```lua
+--- source('lazy_cfg.<plugin_name>[.<...>]')
 --- ```
---- ---
+--- as all the plugin configs MUST BE IN the repo's `lua/lazy_cfg/` directory.
+--- **_That being said_**, you can use any module path if you wish to do so.
+---
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
 --- ---
@@ -143,7 +132,7 @@ end
 --- * `field`: Either a `string` that will be the name of a vim `g:...` variable, or
 --- a `dictionary` with the keys as the vim `g:...` variable names, and the value
 --- as whatever said variables are set to respectively.
---- ---
+---
 --- ## Return
 --- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
 --- ---
@@ -155,6 +144,7 @@ local function colorscheme_init(fields)
 
     return function()
         vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+
         if is_str(fields) then
             vim.g[fields] = 1
         else
@@ -272,7 +262,7 @@ M.ESSENTIAL = {
         cmd = 'StartupTime',
         keys = {
             {
-                '<leader>vs',
+                '<leader>vS',
                 function()
                     vim.cmd('StartupTime')
                 end,
@@ -289,18 +279,14 @@ M.ESSENTIAL = {
         'vhyrro/luarocks.nvim',
         priority = 1000,
         version = false,
-        opts = {
-            rocks = { 'fzy', 'pathlib.nvim' },
-            luarocks_build_args = { '--local' },
-        },
         config = true,
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-        version = '*', -- Pin Neorg to the latest stable release
+        lazy = false,
+        version = '*',
         config = true,
         enabled = luarocks_set(),
     },
@@ -314,8 +300,6 @@ M.ESSENTIAL = {
     },
     {
         'tiagovla/scope.nvim',
-        event = 'VimEnter',
-        priority = 1000,
         name = 'Scope',
         version = false,
         init = function()
@@ -323,7 +307,7 @@ M.ESSENTIAL = {
             vim.opt.stal = 2
             vim.opt.hid = true
 
-            -- NOTE: Required for `scope`
+            --- NOTE: Required for `scope`
             vim.opt.sessionoptions = {
                 'buffers',
                 'tabpages',
@@ -339,14 +323,6 @@ M.ESSENTIAL = {
         name = 'Plenary',
         version = false,
     },
-    {
-        'nvim-lua/popup.nvim',
-        name = 'Popup',
-        main = 'popup',
-        version = false,
-        dependencies = { 'Plenary' },
-        enabled = not in_console(),
-    },
 
     {
         'rcarriga/nvim-notify',
@@ -356,7 +332,7 @@ M.ESSENTIAL = {
         version = false,
         dependencies = { 'Plenary' },
         init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors')
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.notify'),
         enabled = not in_console(),
@@ -380,7 +356,7 @@ M.ESSENTIAL = {
     },
 }
 
--- Nvim Configurations
+--- Nvim Configurations
 M.NVIM = {
     {
         'folke/which-key.nvim',
@@ -474,7 +450,7 @@ M.EDITING = {
         name = 'EndWise',
         version = false,
     },
-    -- TODO COMMENTS
+    --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
         name = 'todo-comments',
@@ -514,7 +490,7 @@ M.VCS = {
         name = 'GitSigns',
         version = false,
         config = source('lazy_cfg.gitsigns'),
-        enabled = executable('git'),
+        enabled = executable('git') and not in_console(),
     },
     {
         'sindrets/diffview.nvim',
@@ -537,7 +513,7 @@ M.LSP = {
             'SchemaStore',
         },
         config = source('lazy_cfg.lspconfig'),
-        enabled = vim_has('nvim-0.8'), -- Constraint specified in the repo
+        enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
     },
     {
         'b0o/SchemaStore',
@@ -546,7 +522,7 @@ M.LSP = {
         version = false,
         enabled = executable('vscode-json-language-server'),
     },
-    -- Essential for Nvim Lua files.
+    --- Essential for Nvim Lua files.
     {
         'folke/lazydev.nvim',
         ft = 'lua',
@@ -556,7 +532,7 @@ M.LSP = {
         config = source('lazy_cfg.lspconfig.lazydev'),
         enabled = executable('lua-language-server'),
     },
-    { 'Bilal2453/luvit-meta', lazy = true, version = false }, -- optional `vim.uv` typings
+    { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
         name = 'NeoConf',
@@ -648,11 +624,10 @@ M.COMPLETION = {
         version = false,
     },
 }
--- Telescope
+--- Telescope
 M.TELESCOPE = {
     {
         'nvim-telescope/telescope.nvim',
-        event = 'VimEnter',
         name = 'Telescope',
         version = false,
         dependencies = {
@@ -666,14 +641,23 @@ M.TELESCOPE = {
         enabled = not in_console(),
     },
     {
+        'nvim-telescope/telescope-file-browser.nvim',
+        lazy = true,
+        name = 'TelescopeBrowser',
+        dependencies = {
+            'Plenary',
+        },
+        enabled = not in_console(),
+    },
+    {
         'nvim-telescope/telescope-fzf-native.nvim',
         lazy = true,
         name = 'Telescope-fzf',
         version = false,
         build = tel_fzf_build(),
-        enabled = executable('fzf'),
+        enabled = executable('fzf') and not in_console(),
     },
-    -- Project Manager
+    --- Project Manager
     {
         'ahmedkhalf/project.nvim',
         lazy = false,
@@ -690,7 +674,7 @@ M.TELESCOPE = {
 }
 --- UI Plugins
 M.UI = {
-    -- Statusline
+    --- Statusline
     {
         'nvim-lualine/lualine.nvim',
         priority = 1000,
@@ -705,7 +689,7 @@ M.UI = {
         config = source('lazy_cfg.lualine'),
         enabled = not in_console(),
     },
-    -- Tabline
+    --- Tabline
     {
         'akinsho/bufferline.nvim',
         priority = 1000,
@@ -720,10 +704,10 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.bufferline'),
-        -- enabled = not in_console(),
+        --- enabled = not in_console(),
         enabled = false,
     },
-    -- Tabline
+    --- Tabline
     {
         'romgrk/barbar.nvim',
         priority = 1000,
@@ -736,12 +720,12 @@ M.UI = {
         },
         init = function()
             vim.opt.stal = 2
-            vim.opt.termguicolors = vim_exists('+termguicolors')
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.barbar'),
         enabled = not in_console(),
     },
-    -- Indent Scope
+    --- Indent Scope
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
@@ -758,7 +742,7 @@ M.UI = {
         config = source('lazy_cfg.rainbow_delimiters'),
         enabled = not in_console(),
     },
-    -- File Tree
+    --- File Tree
     {
         'nvim-tree/nvim-tree.lua',
         name = 'nvim_tree',
@@ -769,7 +753,7 @@ M.UI = {
             'Mini',
         },
         init = function()
-            -- Disable `netrw`.
+            --- Disable `netrw`.
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
@@ -785,10 +769,10 @@ M.UI = {
             'Plenary',
             'web-devicons',
             'MunifTanjim/nui.nvim',
-            -- '3rd/image.nvim',
+            --- '3rd/image.nvim',
         },
         init = function()
-            -- Disable `netrw`.
+            --- Disable `netrw`.
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
@@ -839,11 +823,11 @@ M.UI = {
         name = 'CommentBox',
         version = false,
         config = source('lazy_cfg.commentbox'),
-        -- enabled = not in_console(),
+        --- enabled = not in_console(),
         enabled = false,
     },
 }
--- File Syntax Plugins
+--- File Syntax Plugins
 M.SYNTAX = {
     {
         'rhysd/vim-syntax-codeowners',
@@ -880,26 +864,34 @@ for _, plugs in next, M do
         table.insert(T, p)
     end
 end
-Lazy.setup(T, {
-    change_detection = {
-        enabled = true,
-        notify = true,
-    },
 
-    checker = {
-        check_pinned = false,
-        enabled = true,
-        frequency = 3600,
-        notify = true,
-    },
+if is_nil(called_lazy) then
+    Lazy.setup(T, {
+        change_detection = {
+            enabled = true,
+            notify = true,
+        },
 
-    ui = {
-        border = 'double',
-        title = 'L      A      Z      Y',
-        title_pos = 'center',
-        wrap = true,
-    },
-})
+        checker = {
+            check_pinned = false,
+            enabled = true,
+            frequency = 3600,
+            notify = true,
+        },
+
+        ui = {
+            border = 'double',
+            title = 'L      A      Z      Y',
+            title_pos = 'center',
+            wrap = true,
+        },
+        dev = {
+            path = vim.fn.environ()['HOME'] .. '/Project/nvim',
+        },
+    })
+
+    _G.called_lazy = true
+end
 
 ---@type LazyMods
 local P = {
