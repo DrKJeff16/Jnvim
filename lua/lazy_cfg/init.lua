@@ -262,7 +262,7 @@ M.ESSENTIAL = {
         cmd = 'StartupTime',
         keys = {
             {
-                '<leader>vs',
+                '<leader>vS',
                 function()
                     vim.cmd('StartupTime')
                 end,
