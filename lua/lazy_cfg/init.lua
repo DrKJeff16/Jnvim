@@ -23,16 +23,12 @@ local in_console = Check.in_console
 local desc = kmap.desc
 local map_dict = Maps.map_dict
 
-local fs_stat = vim.uv.fs_stat
-local stdpath = vim.fn.stdpath
-local system = vim.fn.system
-
 --- Set installation dir for `Lazy`.
-local lazypath = stdpath('data') .. '/lazy/lazy.nvim'
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 --- Install `Lazy` automatically.
-if not fs_stat(lazypath) then
-    system({
+if not vim.uv.fs_stat(lazypath) then
+    vim.fn.system({
         'git',
         'clone',
         '--filter=blob:none',
@@ -51,15 +47,12 @@ vim.opt.rtp:prepend(lazypath)
 --- ### Unix
 --- **The return string could be empty** or something akin to
 --- ```sh
---- make install_jsregexp
+--- $ make install_jsregexp
 --- ```
----
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
----
 --- ```sh
---- make -j"$(nproc)" install_jsregexp
+--- $ make -j"$(nproc)" install_jsregexp
 --- ```
----
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
@@ -78,11 +71,7 @@ end
 
 ---@type fun(): boolean
 local function luarocks_set()
-    local has_luarocks = executable('luarocks')
-
-    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' })
-
-    return has_luarocks and configured_luarocks
+    return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })
 end
 
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
@@ -91,16 +80,13 @@ end
 ---
 --- ### Unix
 --- **The return string could be empty** or something akin to
----
 --- ```sh
 --- $ make
 --- ```
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
----
 --- ```sh
 --- $ make -j"$(nproc)"
 --- ```
----
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- If unsuccessful, **it'll return an empty string**.
@@ -314,7 +300,6 @@ M.ESSENTIAL = {
     },
     {
         'tiagovla/scope.nvim',
-        event = 'VimEnter',
         name = 'Scope',
         version = false,
         init = function()
@@ -338,14 +323,6 @@ M.ESSENTIAL = {
         name = 'Plenary',
         version = false,
     },
-    --[[ {
-        'nvim-lua/popup.nvim',
-        name = 'Popup',
-        main = 'popup',
-        version = false,
-        dependencies = { 'Plenary' },
-        enabled = false,
-    }, ]]
 
     {
         'rcarriga/nvim-notify',
@@ -355,7 +332,7 @@ M.ESSENTIAL = {
         version = false,
         dependencies = { 'Plenary' },
         init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors')
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.notify'),
         enabled = not in_console(),
@@ -513,7 +490,7 @@ M.VCS = {
         name = 'GitSigns',
         version = false,
         config = source('lazy_cfg.gitsigns'),
-        enabled = executable('git'),
+        enabled = executable('git') and not in_console(),
     },
     {
         'sindrets/diffview.nvim',
@@ -651,7 +628,6 @@ M.COMPLETION = {
 M.TELESCOPE = {
     {
         'nvim-telescope/telescope.nvim',
-        event = 'VimEnter',
         name = 'Telescope',
         version = false,
         dependencies = {
@@ -670,7 +646,7 @@ M.TELESCOPE = {
         name = 'Telescope-fzf',
         version = false,
         build = tel_fzf_build(),
-        enabled = executable('fzf'),
+        enabled = executable('fzf') and not in_console(),
     },
     --- Project Manager
     {
@@ -735,7 +711,7 @@ M.UI = {
         },
         init = function()
             vim.opt.stal = 2
-            vim.opt.termguicolors = vim_exists('+termguicolors')
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.barbar'),
         enabled = not in_console(),
