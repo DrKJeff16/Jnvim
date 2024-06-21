@@ -292,18 +292,14 @@ M.ESSENTIAL = {
         'vhyrro/luarocks.nvim',
         priority = 1000,
         version = false,
-        opts = {
-            rocks = { 'fzy', 'pathlib.nvim' },
-            luarocks_build_args = { '--local' },
-        },
         config = true,
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        lazy = false, --- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-        version = '*', --- Pin Neorg to the latest stable release
+        lazy = false,
+        version = '*',
         config = true,
         enabled = luarocks_set(),
     },
@@ -318,7 +314,6 @@ M.ESSENTIAL = {
     {
         'tiagovla/scope.nvim',
         event = 'VimEnter',
-        priority = 1000,
         name = 'Scope',
         version = false,
         init = function()
