@@ -641,6 +641,15 @@ M.TELESCOPE = {
         enabled = not in_console(),
     },
     {
+        'nvim-telescope/telescope-file-browser.nvim',
+        lazy = true,
+        name = 'TelescopeBrowser',
+        dependencies = {
+            'Plenary',
+        },
+        enabled = not in_console(),
+    },
+    {
         'nvim-telescope/telescope-fzf-native.nvim',
         lazy = true,
         name = 'Telescope-fzf',
