@@ -44,7 +44,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 --- Returns the string for the `build` field for `LuaSnip` depending on certain conditions.
---- ---
+---
 --- ## Return
 ---
 --- ### Unix
@@ -58,7 +58,7 @@ vim.opt.rtp:prepend(lazypath)
 --- ```sh
 --- make -j"$(nproc)" install_jsregexp
 --- ```
---- ---
+---
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
@@ -92,17 +92,17 @@ end
 --- **The return string could be empty** or something akin to
 ---
 --- ```sh
---- make
+--- $ make
 --- ```
----
 --- If `nproc` is found in `PATH` or a valid executable then the string could look like
 ---
 --- ```sh
---- make -j"$(nproc)"
+--- $ make -j"$(nproc)"
 --- ```
 ---
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
+--- If unsuccessful, **it'll return an empty string**.
 --- ---
 ---@type fun(): string
 local function tel_fzf_build()
@@ -120,13 +120,15 @@ end
 local Lazy = require('lazy')
 
 --- A `config` function to call your plugins.
---- ---
+---
 --- ## Parameters
 --- * `mod_str` This parameter must comply with the following format:
---- ```lua
---- "lazy_cfg.<plugin_name>[.<...>]"
+---```lua
+--- source('lazy_cfg.<plugin_name>[.<...>]')
 --- ```
---- ---
+--- as all the plugin configs MUST BE IN the repo's `lua/lazy_cfg/` directory.
+--- **_That being said_**, you can use any module path if you wish to do so.
+---
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
 --- ---
@@ -143,7 +145,7 @@ end
 --- * `field`: Either a `string` that will be the name of a vim `g:...` variable, or
 --- a `dictionary` with the keys as the vim `g:...` variable names, and the value
 --- as whatever said variables are set to respectively.
---- ---
+---
 --- ## Return
 --- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
 --- ---
@@ -155,6 +157,7 @@ local function colorscheme_init(fields)
 
     return function()
         vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+
         if is_str(fields) then
             vim.g[fields] = 1
         else
