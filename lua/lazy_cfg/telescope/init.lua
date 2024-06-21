@@ -69,8 +69,8 @@ if exists('trouble') then
     -- Use this to add more results without clearing the trouble list
     local add_to_trouble = require('trouble.sources.telescope').add
 
-    Opts.defaults.mappings.i['<C-t>'] = open_with_trouble
-    Opts.defaults.mappings.n['<C-t>'] = open_with_trouble
+    Opts.defaults.mappings.i['<C-T>'] = open_with_trouble
+    Opts.defaults.mappings.n['<C-T>'] = open_with_trouble
 end
 
 if Check.exists.modules({ 'lazy_cfg.telescope.file_browser' }) then

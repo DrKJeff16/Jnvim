@@ -279,7 +279,7 @@ local on_attach = function(bufn)
 
     ---@type KeyMapDict
     local keys = {
-        ['<C-t>'] = {
+        ['<C-U>'] = {
             change_root_to_parent,
             desc('Set Root To Upper Dir'),
         },
