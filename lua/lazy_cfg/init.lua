@@ -337,14 +337,14 @@ M.ESSENTIAL = {
         name = 'Plenary',
         version = false,
     },
-    {
+    --[[ {
         'nvim-lua/popup.nvim',
         name = 'Popup',
         main = 'popup',
         version = false,
         dependencies = { 'Plenary' },
-        enabled = not in_console(),
-    },
+        enabled = false,
+    }, ]]
 
     {
         'rcarriga/nvim-notify',
