@@ -119,6 +119,18 @@
 --- A boolean value indicating whether the data is an integer or not.
 --- ---
 ---@field is_int fun(var: number|number[], multiple: boolean?): boolean
+--- Returns whether a given string/number/table is "empty", including these scenarios:
+--- * Is an empty string (`x == ''`)
+--- * Is an integer equal to zero (`x == 0`)
+--- * Is an empty table
+---
+--- ## Parameters
+--- * `v`: Must be either a string, number or a table.
+---        Otherwise you'll get complaints and the function will return `true`
+---
+--- ## Returns
+--- A boolean indicatin whether input data is empty or not.
+--- ---
 ---@field empty fun(v: string|table|number): boolean
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]

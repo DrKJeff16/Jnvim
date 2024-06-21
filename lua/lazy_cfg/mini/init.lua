@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local Util = User.util
 local types = User.types.mini
 local WK = User.maps.wk
 
@@ -11,16 +12,13 @@ local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local empty = Check.value.empty
+local map_dict = User.maps.map_dict
+local notify = Util.notify.notify
 
 ---@type fun(min_mod: string, opts: table?)
 local function src(mini_mod, opts)
     if not is_str(mini_mod) or empty(mini_mod) then
         error('(lazy_cfg.mini:src): Invalid or empty Mini module.')
-    end
-
-    if mini_mod == 'move' then
-        WK.register({ ['<leader>M'] = { name = '+Mini Move' } }, { mode = 'n' })
-        WK.register({ ['<leader>M'] = { name = '+Mini Move' } }, { mode = 'v' })
     end
 
     mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and 'mini.' .. mini_mod or mini_mod
@@ -34,12 +32,28 @@ local function src(mini_mod, opts)
     opts = is_tbl(opts) and opts or {}
 
     if is_fun(M.setup) then
-        M.setup(opts)
+        local ok
+        ok, _ = pcall(M.setup, opts)
+
+        if not ok then
+            notify(
+                '(lazy_cfg.mini:src): Could not setup `' .. mini_mod .. '`',
+                'error',
+                { title = mini_mod, timeout = 400, hide_from_history = false }
+            )
+        end
+    end
+
+    if mini_mod == 'move' and WK.available() then
+        map_dict({
+            n = { ['<leader>M'] = { name = '+Mini Move' } },
+            v = { ['<leader>M'] = { name = '+Mini Move' } },
+        }, 'wk.register', true)
     end
 end
 
 ---@type MiniModules
-local modules = {
+local Mods = {
     ['align'] = {
         -- Module mappings. Use `''` (empty string) to disable one.
         mappings = {
@@ -50,23 +64,23 @@ local modules = {
         -- Modifiers changing alignment steps and/or options
         modifiers = {
             --[[ -- Main option modifiers
-			['s'] = --<function: enter split pattern>,
-			['j'] = --<function: choose justify side>,
-			['m'] = --<function: enter merge delimiter>,
+            ['s'] = --<function: enter split pattern>,
+            ['j'] = --<function: choose justify side>,
+            ['m'] = --<function: enter merge delimiter>,
 
-			-- Modifiers adding pre-steps
-			['f'] = --<function: filter parts by entering Lua expression>,
-			['i'] = --<function: ignore some split matches>,
-			['p'] = --<function: pair parts>,
-			['t'] = --<function: trim parts>,
+            -- Modifiers adding pre-steps
+            ['f'] = --<function: filter parts by entering Lua expression>,
+            ['i'] = --<function: ignore some split matches>,
+            ['p'] = --<function: pair parts>,
+            ['t'] = --<function: trim parts>,
 
-			-- Delete some last pre-step
-			['<BS>'] = --<function: delete some last pre-step>,
+            -- Delete some last pre-step
+            ['<BS>'] = --<function: delete some last pre-step>,
 
-			-- Special configurations for common splits
-			['='] = --<function: enhanced setup for '='>,
-			[','] = --<function: enhanced setup for ','>,
-			[' '] = --<function: enhanced setup for ' '>, ]]
+            -- Special configurations for common splits
+            ['='] = --<function: enhanced setup for '='>,
+            [','] = --<function: enhanced setup for ','>,
+            [' '] = --<function: enhanced setup for ' '>, ]]
 
             t = function(steps, _)
                 local trim_high = require('mini.align').gen_step.trim('both', 'high')
@@ -125,32 +139,15 @@ local modules = {
             relnum_in_visual_mode = false,
         },
 
+        silent = true,
+    },
+    ['bufremove'] = {
+        set_vim_settings = true,
         silent = false,
     },
-    --[[ ['bufremove'] = {
-		set_vim_settings = true,
-		silent = false,
-	}, ]]
-    ['cursorword'] = { delay = 1000 },
+    ['cursorword'] = { delay = 2000 },
     ['doc'] = {},
     ['extra'] = {},
-    --[[ ['hipatterns'] = {
-		highlighters = {
-			-- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
-			fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-			hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
-			todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
-			note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
-
-			-- Highlight hex color strings (`#rrggbb`) using that color
-			hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-		},
-
-		delay = {
-			text_change = 750,
-			scroll = 250,
-		},
-	}, ]]
     ['move'] = {
         -- Module mappings. Use `''` (empty string) to disable one.
         mappings = {
@@ -173,27 +170,40 @@ local modules = {
             reindent_linewise = true,
         },
     },
-    ['starter'] = {
+    ['starter'] = exists('lazy_cfg.mini.starter') and require('lazy_cfg.mini.starter').telescope or {
         autoopen = true,
-
         -- Whether to evaluate action of single active item
         evaluate_single = false,
-
         items = nil,
-
         header = nil,
-
         footer = nil,
-
         content_hooks = nil,
-
         query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
-
-        silent = false,
+        silent = true,
     },
     ['trailspace'] = { only_in_normal_buffers = true },
 }
 
-for mod, opts in next, modules do
+if not exists('todo-comments') then
+    Mods.hlpatterns = {
+        highlighters = {
+            -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+            fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+            hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+            todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+            note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+
+            -- Highlight hex color strings (`#rrggbb`) using that color
+            hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+        },
+
+        delay = {
+            text_change = 1500,
+            scroll = 350,
+        },
+    }
+end
+
+for mod, opts in next, Mods do
     src(mod, opts)
 end
