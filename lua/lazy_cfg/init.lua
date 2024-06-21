@@ -14,6 +14,7 @@ local executable = Check.exists.executable
 local env_vars = Check.exists.env_vars
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
+local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
@@ -878,26 +879,34 @@ for _, plugs in next, M do
         table.insert(T, p)
     end
 end
-Lazy.setup(T, {
-    change_detection = {
-        enabled = true,
-        notify = true,
-    },
 
-    checker = {
-        check_pinned = false,
-        enabled = true,
-        frequency = 3600,
-        notify = true,
-    },
+if is_nil(called_lazy) then
+    Lazy.setup(T, {
+        change_detection = {
+            enabled = true,
+            notify = true,
+        },
 
-    ui = {
-        border = 'double',
-        title = 'L      A      Z      Y',
-        title_pos = 'center',
-        wrap = true,
-    },
-})
+        checker = {
+            check_pinned = false,
+            enabled = true,
+            frequency = 3600,
+            notify = true,
+        },
+
+        ui = {
+            border = 'double',
+            title = 'L      A      Z      Y',
+            title_pos = 'center',
+            wrap = true,
+        },
+        dev = {
+            path = vim.fn.environ()['HOME'] .. '/Project/nvim',
+        },
+    })
+
+    _G.called_lazy = true
+end
 
 ---@type LazyMods
 local P = {

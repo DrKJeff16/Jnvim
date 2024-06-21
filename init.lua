@@ -221,11 +221,8 @@ local Names = {
 
 Kmap.t('<Esc>', '<C-\\><C-n>')
 
-if not called_lazy then
-    --- List of manually-callable plugins.
-    _G.Pkg = require('lazy_cfg')
-    _G.called_lazy = true
-end
+--- List of manually-callable plugins.
+_G.Pkg = require('lazy_cfg')
 
 --- Set the keymaps previously stated
 if WK.available() then
