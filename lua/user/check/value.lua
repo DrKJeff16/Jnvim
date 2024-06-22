@@ -235,7 +235,7 @@ function M.empty(v)
     return true
 end
 
-local function fields(fields, T)
+local function fields(field, T)
     local is_tbl = M.is_tbl
     local is_str = M.is_str
     local is_num = M.is_num
@@ -245,16 +245,16 @@ local function fields(fields, T)
         error('(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T))
     end
 
-    if not (is_str(fields) or is_num(fields) or is_tbl(fields)) or empty(fields) then
+    if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
         error('(user.check.value.fields): Field type `' .. type(T) .. '` not parseable')
     end
 
-    if not is_tbl(fields) then
-        return not is_nil(T[fields])
+    if not is_tbl(field) then
+        return not is_nil(T[field])
     end
 
-    for _, v in next, fields do
-        if not M.fields(v, T) then
+    for _, v in next, field do
+        if not fields(v, T) then
             return false
         end
     end

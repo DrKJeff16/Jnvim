@@ -3,16 +3,16 @@
 
 require('user.types.user.opts')
 
-local Check = require('user.check')
-local Util = require('user.util')
+local Value = require('user.check.value')
+local Exists = require('user.check.exists')
 
-local exists = Check.exists.vim_exists
-local is_nil = Check.value.is_nil
-local executable = Check.exists.executable
-local vim_has = Check.exists.vim_has
-local vim_exists = Check.exists.vim_exists
-local in_console = Check.in_console
-local notify = Util.notify.notify
+local exists = Exists.vim_exists
+local is_nil = Value.is_nil
+local executable = Exists.executable
+local vim_has = Exists.vim_has
+local vim_exists = Exists.vim_exists
+local in_console = require('user.check').in_console
+local notify = require('user.util.notify').notify
 
 ---@type OptsTbl
 local opt_tbl = {
