@@ -5,6 +5,41 @@
 
 require('user.types.user.check')
 
+--- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil.
+--- ## Parameters
+---
+--- * `var`: Any data type to be checked if it's nil.
+---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---          Otherwise it will be flagged as non-existant and the function will return `true`.
+---
+--- * `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---               If set to `true`, every element of the table will be checked.
+---               If **any** element doesn't exist or is `nil`, the function automatically returns false.
+---
+--- ## Return
+--- A boolean value indicating whether the data is `nil` or doesn't exist.
+--- ---
+local function is_nil(var, multiple)
+    multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
+
+    if not multiple then
+        return var == nil
+    end
+
+    --- Treat `var` as a table from here on
+    if type(var) ~= 'table' or vim.tbl_isempty(var) then
+        return false
+    end
+
+    for _, v in next, var do
+        if v ~= nil then
+            return false
+        end
+    end
+
+    return true
+end
+
 ---@type User.Check.Value
 local M = {
     -- NOTE: We define `is_nil` first as it's used by the other checkers.
@@ -23,33 +58,12 @@ local M = {
     --- ## Return
     --- A boolean value indicating whether the data is `nil` or doesn't exist.
     --- ---
-    is_nil = function(var, multiple)
-        multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
-
-        if not multiple then
-            return var == nil
-        end
-
-        --- Treat `var` as a table from here on
-        if type(var) ~= 'table' or vim.tbl_isempty(var) then
-            return false
-        end
-
-        for _, v in next, var do
-            if v ~= nil then
-                return false
-            end
-        end
-
-        return true
-    end,
+    is_nil = is_nil,
 }
 
 ---@type fun(t: Types): ValueFunc
 local function type_fun(t)
     return function(var, multiple)
-        local is_nil = M.is_nil
-
         multiple = (not is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
 
         if not multiple then
@@ -164,7 +178,6 @@ M.is_tbl = type_fun('table')
 --- A boolean value indicating whether the data is an integer or not.
 --- ---
 function M.is_int(var, multiple)
-    local is_nil = M.is_nil
     local is_tbl = M.is_tbl
     local is_bool = M.is_bool
     local is_num = M.is_num
@@ -222,8 +235,7 @@ function M.empty(v)
     return true
 end
 
-function M.fields(fields, T)
-    local is_nil = M.is_nil
+local function fields(field, T)
     local is_tbl = M.is_tbl
     local is_str = M.is_str
     local is_num = M.is_num
@@ -233,22 +245,23 @@ function M.fields(fields, T)
         error('(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T))
     end
 
-    if not (is_str(fields) or is_num(fields) or is_tbl(fields)) or empty(fields) then
+    if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
         error('(user.check.value.fields): Field type `' .. type(T) .. '` not parseable')
     end
 
-    if not is_tbl(fields) then
-        return not is_nil(T[fields])
+    if not is_tbl(field) then
+        return not is_nil(T[field])
     end
 
-    for _, v in next, fields do
-        if not M.fields(v, T) then
+    for _, v in next, field do
+        if not fields(v, T) then
             return false
         end
     end
 
     return true
 end
+M.fields = fields
 
 function M.tbl_values(values, T, return_keys)
     local is_tbl = M.is_tbl
