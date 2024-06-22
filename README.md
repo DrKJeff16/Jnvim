@@ -17,20 +17,20 @@
 <a href="#api">User API</a>
 
 <ol>
-<li><a href="#types"><code>types</code></a></li>
-<li><a href="#util"><code>util</code></a></li>
-<li><a href="#opts"><code>opts</code></a></li>
-<li><a href="#check"><code>check</code></a></li>
-<li><a href="#maps"><code>maps</code></a>
+<li><a href="#types"><code>user.types</code></a></li>
+<li><a href="#util"><code>user.util</code></a></li>
+<li><a href="#opts"><code>user.opts</code></a></li>
+<li><a href="#check"><code>user.check</code></a></li>
+<li><a href="#maps"><code>user.maps</code></a>
 
 <ol>
 <li><a href="#wk">
-<code>maps.wk</code>
+<code>user.maps.wk</code>
 </a>
 </ol>
-
 </li>
-<li><a href="#highlight"><code>highlight</code></a>
+
+<li><a href="#highlight"><code>user.highlight</code></a>
 </ol>
 
 </li>
@@ -66,8 +66,7 @@ For these to work, the following executables must be installed and in your `$PAT
 * [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
 * [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
 * [`ripgreg`](https://github.com/BurntSushi/ripgrep)
-* [`fd`](https://github.com/sharkdp/fd)
-* **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf)
+* **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf), [`fd`](https://github.com/sharkdp/fd)
 * **(Optional _(for `Neorg`)_)** `luarocks`
 
 ### Structure
@@ -75,21 +74,21 @@ For these to work, the following executables must be installed and in your `$PAT
 ```
 /lua
 ├── lazy_cfg/  <== Folder containing all Lua plugin configurations
-│   ├── init.lua  <== Plugin Installation and entry points are called
+│   ├── init.lua  <== Plugin Installation and entry points are called here
 │   ├── plugin1/
 │   │   ├── init.lua  <== If submodules exist, entry points are defined here
 │   │   └── ...
 │   ├── plugin2/
 │   │   └── init.lua
 │   └── ...
-├── user  <== User API module
+├── user/  <== User API module
 │   ├── check/  <== Checker Functions
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── exists.lua  <== Existance checkers
 │   │   └── value.lua  <== Value checkers
 │   ├── distro/  <== OS Utilities
 │   │   ├── init.lua  <== Entry points are defined here
-│   │   └── archlinux.lua  <== Archlinux utilities
+│   │   └── archlinux.lua  <== Arch Linux utilities
 │   ├── highlight.lua  <== Highlight Functions
 │   ├── init.lua  <== API `init`, where entry points are defined
 │   ├── maps.lua  <== Mapping Functions
@@ -107,22 +106,19 @@ For these to work, the following executables must be installed and in your `$PAT
 │       │   ├── maps.lua  <== `maps` module annotations
 │       │   ├── opts.lua  <== `opts` module annotations
 │       │   └── util.lua  <== `util` module annotations
-│       ├── module_1.lua
-│       ├── module_2.lua
-│       └── ...
+│       └── ...  <== Other annotation
 ```
 
 ### Plugins
 
 There's a lot of plugins included.
-Those may be found in [`/lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua).
+Those may be found in [`lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua).
 They are ordered by category, and you can make your own.
 
 <br/>
 
-<b>NOTE:</b> <u>Please refer to
-<a href="https://github.com/folke/lazy.nvim"><code>lazy.nvim</code></a>
-for more info on how to install plugins.</u>
+**NOTE:** _Please refer to
+[`lazy.nvim`](https://github.com/folke/lazy.nvim) for more info on how to install plugins._
 
 <br/>
 
@@ -151,7 +147,7 @@ for more info on how to install plugins.</u>
 
 </details>
 
----
+<br/>
 
 <h2 id="api">
 The <code>User</code> API
@@ -162,10 +158,10 @@ It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
 
+<br/>
+
 <h3 id="types">
-<u>
-<code>user.types</code>
-</u>
+<u><code>user.types</code></u>
 </h3>
 
 This submodule includes type annotations and documentation.
@@ -177,53 +173,45 @@ You can include it by using the following code snippet:
 
 ```lua
 require('user.types[.<type_module>]')
--- Or by using the entry point:
--- require('user').types[.<type_module>]
+--- Or by using the entry point:
+--- require('user').types[.<type_module>]
 ```
 
 For API-specific documentation, you can use the submodule [`types/user`](/lua/user/types/user):
 
 ```lua
 require('user.types.user[.<type_module>]')
--- Or by using the entry point:
--- require('user').types.user[.<type_module>]
+--- Or by using the entry point:
+--- require('user').types.user[.<type_module>]
 ```
 
 Each directory serves as an entry point for its pertinent files,
 sourced by the `init.lua` file in it.
 
 <h3 id="opts">
-<u>
-<code>user.opts</code>
-</u>
+<u><code>user.opts</code></u>
 </h3>
 
 This submodule can be found at [`here`](/lua/user/opts.lua).
 The options are defined in a table to be processed
 by the local funtion `optset()`. Modify these at your leisure, but be sure to be compatible with how you'd
-use the `vim.opt` table. _`vim.o` is currently used as a fallback in a very lazy way_.
+use the `vim.opt` table.
 
 To call the options:
 
 ```lua
 require('user.opts')
--- Or by using the entry point:
--- require('user').opts
+--- Or by using the entry point:
+--- require('user').opts
 ```
 
-- **NOTE: This is still a very early WIP.**
+- **NOTE**: This is still a very early WIP.
 
 <h3 id="check">
-<u>
-<code>user.check</code>
-</u>
+<u><code>user.check</code></u>
 </h3>
 
-_**This is the most important utility for this config.**_ Of critical importance.
-
-<br/>
-
-It provides a table with two
+_**This is the most important utility for this config.**_ It currently provides a table with two
 sub-tables. Both used for many conditional checks, aswell as module handling.
 
 <br/>
@@ -232,15 +220,11 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 
 <ul>
 <li>
-<b><u>
-<code>user.check.value</code>
-</u></b>
+<b><u><code>user.check.value</code></u></b>
 
 Used for value checking, differentiation and conditional code, aswell as
 for optional parameters in functions.
-It can be found in <a href="/lua/user/check/value.lua">
-<code>user/check/value.lua</code>
-</a>.
+It can be found in [`user/check/value.lua`](/lua/user/check/value.lua).
 
 <br/>
 
@@ -261,9 +245,7 @@ It can be found in <a href="/lua/user/check/value.lua">
 
 <li>
 
-<b><u>
-<code>user.check.exists</code>
-</u></b>
+<b><u><code>user.check.exists</code></u></b>
 
 Used for data existance checks, conditional module loading and fallback operations.
 It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
@@ -284,7 +266,7 @@ It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
 <hr/>
 
 <h3 id="maps">
-<u><code>maps</code></u>
+<u><code>user.maps</code></u>
 </h3>
 
 This module provides keymapping utilities in a more
@@ -356,18 +338,8 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 <br/>
 
 <h4 id="wk">
-<code>maps.wk</code>
+<u><code>user.maps.wk</code></u>
 </h4>
-
-<hr/>
-
-<b>WARNING:</b> <u>For the moment the API won't register a keymap without
-a description defined for such keymap
-(<i>A.K.A. the</i> <code>desc</code> <i>field in the keymap options</i>)</u>.
-I will try to correct for this behaviour later, but for documentation
-purposes I'm leaving this bug as an enforcer to keep keymaps documented.
-
-<hr/>
 
 The `maps` API also includes integration with
 [`which_key`](https://github.com/folke/which-key.nvim) as `user.maps.wk`.
@@ -425,7 +397,7 @@ local Keys = {
 
 <br/>
 
-With this dict, you can convert it and then map it using `WK.convert_dict()`
+With this dictionary, you can convert it and then map it using `WK.convert_dict()`
 and `WK.register()` respectively.
 
 <ul>
@@ -442,7 +414,7 @@ and `WK.register()` respectively.
 local Keys_WK = WK.convert_dict()
 
 if WK.available() then
-    WK.register(Keys_WK, opts?) -- `opts` defaults to `{ mode = 'n' }`
+    WK.register(Keys_WK, opts?) --- `opts` defaults to `{ mode = 'n' }`
 else
     for lhs, v in next, Keys do
         --- `v[1]` is `rhs`
@@ -495,10 +467,10 @@ A table of the aforementioned format (or a
 <a href="https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings">group names</a>
 dictionary, we'll get to that shortly)
 </li>
-<li>An options table with the structure specified
-<a href="https://github.com/folke/which-key.nvim?tab=readme-ov-file#-setup">in
-the <code>which_key</code> repository
-</a>:
+
+<li>
+
+An options table with the structure specified in [the `which_key` repository](https://github.com/folke/which-key.nvim?tab=readme-ov-file#-setup):
 
 ```lua
 --- NOTE: These fields are set to their default value in `wk.register`.
@@ -569,9 +541,7 @@ completein the future.</b></u>
 ---
 
 <h3 id="highlight">
-<u>
-<code>user.highlight</code>
-</u>
+<u><code>user.highlight</code></u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
