@@ -14,26 +14,22 @@ local is_num = Value.is_num
 local is_fun = Value.is_fun
 local empty = Value.empty
 
----@type User.Check.Existance
-M = {
-    module = function(mod, return_mod)
-        return_mod = is_bool(return_mod) and return_mod or false
+local function module(mod, return_mod)
+    return_mod = is_bool(return_mod) and return_mod or false
 
-        ---@type boolean
-        local res
-        ---@type unknown
-        local m
-        res, m = pcall(require, mod)
+    ---@type boolean
+    local res
+    ---@type unknown
+    local m
+    res, m = pcall(require, mod)
 
-        if return_mod then
-            return not is_nil(m) and m or nil
-        else
-            return res
-        end
-    end,
-}
-
-function M.vim_has(expr)
+    if return_mod then
+        return not is_nil(m) and m or nil
+    else
+        return res
+    end
+end
+local function vim_has(expr)
     if is_str(expr) then
         return vim.fn.has(expr) == 1
     end
@@ -42,7 +38,7 @@ function M.vim_has(expr)
         local res = false
 
         for _, v in next, expr do
-            if not M.vim_has(v) then
+            if not vim_has(v) then
                 return false
             end
         end
@@ -52,8 +48,7 @@ function M.vim_has(expr)
 
     return false
 end
-
-function M.vim_exists(expr)
+local function vim_exists(expr)
     local exists = vim.fn.exists
 
     if is_str(expr) then
@@ -63,7 +58,7 @@ function M.vim_exists(expr)
     if is_tbl(expr) and not empty(expr) then
         local res = false
         for _, v in next, expr do
-            res = M.vim_exists(v)
+            res = vim_exists(v)
 
             if not res then
                 break
@@ -75,11 +70,6 @@ function M.vim_exists(expr)
 
     return false
 end
-
-function M.vim_isdir(path)
-    return (is_str(path) and not empty(path)) and (vim.fn.isdirectory(path) == 1) or false
-end
-
 local function env_vars(vars, fallback)
     local environment = vim.fn.environ()
 
@@ -109,12 +99,7 @@ local function env_vars(vars, fallback)
 
     return res
 end
-
-M.env_vars = env_vars
-
-function M.executable(exe, fallback)
-    local executable = vim.fn.executable
-
+local function executable(exe, fallback)
     if not (is_str(exe) or is_tbl(exe)) then
         error('(user.check.exists.executable): Argument type is neither string nor table')
     end
@@ -124,10 +109,10 @@ function M.executable(exe, fallback)
     local res = false
 
     if is_str(exe) then
-        res = executable(exe) == 1
+        res = vim.fn.executable(exe) == 1
     elseif is_tbl(exe) then
         for _, v in next, exe do
-            res = M.executable(v)
+            res = executable(v)
 
             if not res then
                 break
@@ -141,9 +126,8 @@ function M.executable(exe, fallback)
 
     return res
 end
-
-function M.modules(mod, need_all)
-    local exists = M.module
+local function modules(mod, need_all)
+    local exists = module
 
     if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
         error('`(user.check.exists.modules)`: Input is neither a string nor a table.')
@@ -177,5 +161,19 @@ function M.modules(mod, need_all)
 
     return res
 end
+local function vim_isdir(path)
+    return (is_str(path) and not empty(path)) and (vim.fn.isdirectory(path) == 1) or false
+end
+
+---@type User.Check.Existance
+M = {
+    module = module,
+    vim_has = vim_has,
+    vim_exists = vim_exists,
+    env_vars = env_vars,
+    executable = executable,
+    modules = modules,
+    vim_isdir = vim_isdir,
+}
 
 return M

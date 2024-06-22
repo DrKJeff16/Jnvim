@@ -10,26 +10,26 @@ local Exists = require('user.check.exists')
 --- Checking Utilities
 ---@type User.Check
 local M = {
-    value = Value,
-    exists = Exists,
+    value = require('user.check.value'),
+    exists = require('user.check.exists'),
+
+    --- Check whether Nvim is running in a Linux Console rather than a `pty`.
+    --- ---
+    --- ## Description
+    --- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example.
+    --- ---
+    --- ## Return
+    --- A boolean that confirms whether the environment is a Linux Console.
+    --- ---
+    in_console = function()
+        local env = vim.fn.environ()
+        ---@type string
+        local TERM = env['TERM']
+
+        --- TODO: This is not a good enough check. Must find a better solution.
+        return vim.tbl_contains({ 'screen', 'linux' }, TERM)
+    end,
 }
-
---- Check whether Nvim is running in a Linux Console rather than a `pty`.
---- ---
---- ## Description
---- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example.
---- ---
---- ## Return
---- A boolean that confirms whether the environment is a Linux Console.
---- ---
-function M.in_console()
-    local env = vim.fn.environ()
-    ---@type string
-    local TERM = env['TERM']
-
-    --- TODO: This is not a good enough check. Must find a better solution.
-    return vim.tbl_contains({ 'screen', 'linux' }, TERM)
-end
 
 function M.new()
     local self = setmetatable({}, { __index = M })
