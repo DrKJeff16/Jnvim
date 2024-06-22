@@ -80,6 +80,38 @@ function M.vim_isdir(path)
     return (is_str(path) and not empty(path)) and (vim.fn.isdirectory(path) == 1) or false
 end
 
+local function env_vars(vars, fallback)
+    local environment = vim.fn.environ()
+
+    if not (is_str(vars) or is_tbl(vars)) then
+        error('(user.check.exists.env_vars): Argument type is neither string nor table')
+    end
+
+    fallback = is_fun(fallback) and fallback or nil
+
+    local res = false
+
+    if is_str(vars) then
+        res = vim.fn.has_key(environment, vars) == 1
+    elseif is_tbl(vars) then
+        for _, v in next, vars do
+            res = env_vars(v)
+
+            if not res then
+                break
+            end
+        end
+    end
+
+    if not res and is_fun(fallback) then
+        fallback()
+    end
+
+    return res
+end
+
+M.env_vars = env_vars
+
 function M.executable(exe, fallback)
     local executable = vim.fn.executable
 
@@ -96,36 +128,6 @@ function M.executable(exe, fallback)
     elseif is_tbl(exe) then
         for _, v in next, exe do
             res = M.executable(v)
-
-            if not res then
-                break
-            end
-        end
-    end
-
-    if not res and is_fun(fallback) then
-        fallback()
-    end
-
-    return res
-end
-
-function M.env_vars(vars, fallback)
-    local environment = vim.fn.environ()
-
-    if not (is_str(vars) or is_tbl(vars)) then
-        error('(user.check.exists.env_vars): Argument type is neither string nor table')
-    end
-
-    fallback = is_fun(fallback) and fallback or nil
-
-    local res = false
-
-    if is_str(vars) then
-        res = vim.fn.has_key(environment, vars) == 1
-    elseif is_tbl(vars) then
-        for _, v in next, vars do
-            res = M.env_vars(v)
 
             if not res then
                 break
