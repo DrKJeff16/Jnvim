@@ -2,29 +2,27 @@
 ---@diagnostic disable:unused-local
 
 require('user.types.user.update')
-local Util = require('user.util')
-local Notify = require('user.util.notify')
 
-local notify = Notify.notify
+local notify = require('user.util.notify').notify
 
 ---@type User.Update
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local M = {
+    update = function(...)
+        local args = { ... }
 
-function M.update(...)
-    local args = { ... }
+        local old_cwd = vim.fn.getcwd()
 
-    local old_cwd = vim.fn.getcwd()
+        local cmd = {
+            'git',
+            'pull',
+            '--rebase',
+            '--recurse-submodules',
+        }
 
-    local cmd = {
-        'git',
-        'pull',
-        '--rebase',
-        '--recurse-submodules',
-    }
-
-    vim.system(cmd, { cwd = vim.fn.stdpath('config') })
-end
+        vim.system(cmd, { cwd = vim.fn.stdpath('config') })
+    end,
+}
 
 function M.new()
     local self = setmetatable({}, { __index = M, __call = M.update })

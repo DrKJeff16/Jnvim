@@ -3,17 +3,19 @@
 
 require('user.types.user.util')
 
----@type User.Util
----@diagnostic disable-next-line:missing-fields
-local M = {}
-
-function M.xor(x, y)
+local function xor(x, y)
     if not require('user.check.value').is_bool({ x, y }, true) then
         error('(user.util.xor): An argument is not of boolean type')
     end
 
     return (x and not y) or (not x and y)
 end
+
+---@type User.Util
+---@diagnostic disable-next-line:missing-fields
+local M = {
+    xor = xor,
+}
 
 function M.strip_fields(T, fields)
     local Value = require('user.check.value')
@@ -76,12 +78,9 @@ function M.strip_values(T, values, max_instances)
         error('(user.util.strip_values): No values given')
     end
 
-    local xor = M.xor
-
     max_instances = is_int(max_instances) and max_instances or 0
 
     local res = {}
-
     local count = 0
 
     for k, v in next, T do
@@ -103,7 +102,7 @@ function M.strip_values(T, values, max_instances)
     return res
 end
 
-function M.ft_set(s, bufnr)
+local function ft_set(s, bufnr)
     local Value = require('user.check.value')
 
     local is_int = Value.is_int
@@ -117,6 +116,7 @@ function M.ft_set(s, bufnr)
         end
     end
 end
+M.ft_set = ft_set
 
 function M.ft_get(bufnr)
     bufnr = require('user.check.value').is_int(bufnr) and bufnr or 0
@@ -135,7 +135,7 @@ function M.assoc()
     local is_str = Value.is_str
     local empty = Value.empty
 
-    local ft = M.ft_set
+    local ft = ft_set
 
     local au = vim.api.nvim_create_autocmd
 
@@ -209,8 +209,8 @@ function M.assoc()
                     pattern = 'lua',
                     callback = function()
                         local map_dict = require('user.maps').map_dict
-                        local WK = require('user.maps').wk
-                        local desc = require('user.maps').kmap.desc
+                        local WK = require('user.maps.wk')
+                        local desc = require('user.maps.kmap').desc
 
                         if require('user.check.exists').executable('stylua') then
                             map_dict({
@@ -232,30 +232,32 @@ function M.assoc()
         table.insert(aus[1].opts_tbl, { pattern = '*.org', callback = ft('org'), group = group })
     end
 
+    local notify = require('user.util.notify').notify
+
     for _, v in next, aus do
         if not (is_str(v.events) or is_tbl(v.events)) or empty(v.events) then
-            M.notify.notify('(user.assoc): Event type `' .. type(v.events) .. '` is neither string nor table', 'error')
+            notify('(user.assoc): Event type `' .. type(v.events) .. '` is neither string nor table', 'error')
             goto continue
         end
 
         if not is_tbl(v.opts_tbl) or empty(v.opts_tbl) then
-            M.notify.notify('(user.assoc): Event options are not in a table or it is empty', 'error')
+            notify('(user.assoc): Event options are not in a table or it is empty', 'error')
             goto continue
         end
 
         for _, o in next, v.opts_tbl do
             if not is_tbl(o) or empty(o) then
-                M.notify.notify('(user.assoc): Event option is not a table or an empty one', 'error')
+                notify('(user.assoc): Event option is not a table or an empty one', 'error')
                 goto continue
             end
 
             if not is_nil(o.pattern) and (not is_str(o.pattern) or empty(o.pattern)) then
-                M.notify.notify('(user.assoc): Pattern is not a string or is an empty one', 'error')
+                notify('(user.assoc): Pattern is not a string or is an empty one', 'error')
                 goto continue
             end
 
             if not is_fun(o.callback) then
-                M.notify.notify('(user.assoc): Callback is not a function', 'error')
+                notify('(user.assoc): Callback is not a function', 'error')
                 goto continue
             end
 
