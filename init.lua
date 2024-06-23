@@ -11,6 +11,7 @@ local WK = Maps.wk --- `which-key` backend
 local maps_t = Types.user.maps ---@see UserSubTypes.maps
 
 local exists = Check.exists.module ---@see User.Check.Existance.module
+local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
@@ -289,6 +290,11 @@ local Names = {
 }
 
 Kmap.t('<Esc>', '<C-\\><C-n>')
+
+if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
+    ---@type 'lualine'|'galaxyline'
+    _G.use_statusline = 'lualine'
+end
 
 --- List of manually-callable plugins.
 _G.Pkg = require('lazy_cfg')
