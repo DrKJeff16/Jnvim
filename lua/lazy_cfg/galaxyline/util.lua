@@ -15,31 +15,22 @@ end
 
 local opt_get = vim.api.nvim_get_option_value
 
+---@class JLine.Themes
+---@field default table
+---@field tokyonight? ColorScheme
+---@field catppuccin_mocha? table
+---@field catppuccin_macchiato? table
+---@field catppuccin_frappe? table
+---@field nightfox? table
+
 ---@class JLine.Util
----@field themes table<string, table|nil>
+---@field themes JLine.Themes
 ---@field file_readonly fun(icon: string?): ''|string
 ---@field dimensions fun(): { integer: integer, integer: integer }
 
 ---@type JLine.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {
-    themes = {
-        --- Obviously works
-        default = require('galaxyline.theme').default,
-
-        --- TODO: Works(?)
-        tokyonight = exists('tokyonight.colors') and require('tokyonight.colors').default or nil,
-
-        --- FIX: Doesn't work
-        catppuccin_mocha = exists('catppuccin.palettes.mocha') and require('catppuccin.palettes.mocha') or nil,
-        catppuccin_frappe = exists('catppuccin.palettes.frappe') and require('catppuccin.palettes.frappe') or nil,
-        catppuccin_macchiato = exists('catppuccin.palettes.macchiato') and require('catppuccin.palettes.macchiato')
-            or nil,
-
-        --- FIX: Doesn't work
-        nightfox = require('nightfox.palette.carbonfox').palette,
-    },
-
     variant = 'default',
 
     dimensions = function()
@@ -60,10 +51,32 @@ local M = {
 
         return ''
     end,
+
+    themes = {
+        --- Obviously works
+        default = require('galaxyline.theme').default,
+    },
 }
 
+if exists('tokyonight') then
+    --- TODO: Works(?)
+    ---@type ColorScheme|nil
+    M.themes.tokyonight = require('tokyonight.colors').setup()
+end
+
+if exists('catppuccin') then
+    M.themes.catppuccin_macchiato = require('catppuccin.palettes').get_palette('macchiato')
+    M.themes.catppuccin_mocha = require('catppuccin.palettes').get_palette('mocha')
+    M.themes.catppuccin_frappe = require('catppuccin.palettes').get_palette('frappe')
+end
+
+if exists('nightfox') then
+    M.themes.nightfox = require('nightfox.palette').load()
+end
+
+---@return ColorScheme|table
 function M:palette()
-    return self.themes[self.variant]
+    return not is_nil(self.themes[self.variant]) and self.themes[self.variant] or self.themes.default
 end
 
 ---@return string

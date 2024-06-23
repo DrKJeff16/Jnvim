@@ -3,6 +3,7 @@
 
 local User = require('user')
 local Check = User.check
+local Highlight = User.highlight
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -63,7 +64,7 @@ local function buf_init_devicons()
     return dev_icons
 end
 
---- @return { color: string, icon: string }
+--- @return { color: string|integer, icon: string }
 local function filetype_info()
     return vim.b.dev_icons or buf_init_devicons()
 end
@@ -74,32 +75,9 @@ local SEPARATORS = {
     --- A left separator.
     left_separator = { provider = '' },
     --- A right separator.
-    right_separator = { provider = '' },
+    right_separator = { provider = ' ' },
 }
 
----@class JLine.Highlight.Spec
-
----@class JLine.Section.Component
----@field condition? boolean
----@field highlight? JLine.Highlight.Spec
----@field separator_highlight? JLine.Highlight.Spec
----@field icon? string
----@field provider string|fun(...): string
----@field separator? string
-
-GL.section.left[1] = {
-    ---@type JLine.Section.Component
-    FileSize = {
-        provider = 'FileSize',
-        condition = function()
-            return empty(vim.fn.expand('%:t')) ~= 1
-        end,
-
-        icon = '  ',
-        highlight = { default_colors.magenta2, default_colors.bg_highlight },
-        separator = SEPARATORS.align.provider,
-        separator_highlight = { default_colors.purple, default_colors.terminal_black },
-    },
-}
-
+-- require('lazy_cfg.galaxyline.spaceline')
+require('lazy_cfg.galaxyline.eviline')
 GL.load_galaxyline()
