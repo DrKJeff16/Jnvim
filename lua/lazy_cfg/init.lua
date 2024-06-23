@@ -269,7 +269,7 @@ M.ESSENTIAL = {
         priority = 1000,
         version = false,
         config = source('lazy_cfg.luarocks'),
-        enabled = luarocks_set(),
+        enabled = false,
     },
     {
         'folke/zen-mode.nvim',
@@ -280,7 +280,7 @@ M.ESSENTIAL = {
         'nvim-neorg/neorg',
         version = false,
         config = source('lazy_cfg.neorg'),
-        enabled = luarocks_set(),
+        enabled = false,
     },
     {
         'vim-scripts/L9',
@@ -895,6 +895,8 @@ if is_nil(called_lazy) then
             patterns = { 'DrKJeff16' },
             fallback = false,
         },
+        concurrency = 8,
+
         change_detection = {
             enabled = true,
             notify = true,
