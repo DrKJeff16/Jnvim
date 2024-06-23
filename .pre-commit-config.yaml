@@ -2,30 +2,30 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
-    - id: detect-private-key
-      verbose: true
-    - id: check-shebang-scripts-are-executable
-      verbose: true
-    - id: check-executables-have-shebangs
-      verbose: true
-    - id: mixed-line-ending
-      verbose: true
-    - id: end-of-file-fixer
-      verbose: true
-    - id: trailing-whitespace
-      verbose: true
+      - id: detect-private-key
+        verbose: true
+      - id: check-shebang-scripts-are-executable
+        verbose: true
+      - id: check-executables-have-shebangs
+        verbose: true
+      - id: mixed-line-ending
+        verbose: true
+      - id: end-of-file-fixer
+        verbose: true
+      - id: trailing-whitespace
+        verbose: true
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
     hooks:
-    - id: remove-crlf
-      verbose: true
+      - id: remove-crlf
+        verbose: true
 
   - repo: local
     hooks:
-    - id: stylua
-      name: StyLua
-      language: system
-      entry: stylua
-      types: [lua]
-      verbose: true
+      - id: stylua
+        name: StyLua
+        language: system
+        entry: stylua
+        types: [lua]
+        verbose: true

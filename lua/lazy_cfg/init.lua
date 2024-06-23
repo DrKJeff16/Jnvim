@@ -504,6 +504,17 @@ M.VCS = {
         config = source('lazy_cfg.diffview'),
         enabled = executable('git'),
     },
+    {
+        'kdheepak/lazygit.nvim',
+        name = 'LazyGit',
+        version = false,
+        dependencies = {
+            'Plenary',
+            'Telescope',
+        },
+        config = source('lazy_cfg.lazygit'),
+        enabled = executable({ 'git', 'lazygit' }),
+    },
 }
 --- LSP Plugins
 M.LSP = {
