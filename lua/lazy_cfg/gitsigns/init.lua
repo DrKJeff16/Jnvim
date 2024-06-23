@@ -29,7 +29,7 @@ local GS = require('gitsigns')
 local Keys = {
     n = {
         -- Navigation
-        ['<leader>G]c'] = {
+        ['<leader>Gh]'] = {
             function()
                 if vim.wo.diff then
                     vim.cmd.normal({ ']c', bang = true })
@@ -39,7 +39,7 @@ local Keys = {
             end,
             desc('Next Hunk', true, 0, true, true, true),
         },
-        ['<leader>G[c'] = {
+        ['<leader>Gh['] = {
             function()
                 if vim.wo.diff then
                     vim.cmd.normal({ '[c', bang = true })
@@ -47,7 +47,7 @@ local Keys = {
                     GS.nav_hunk('prev')
                 end
             end,
-            desc('Next Hunk', true, 0, true, true, true),
+            desc('Previous Hunk', true, 0, true, true, true),
         },
 
         -- Actions
@@ -93,15 +93,13 @@ local Keys = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>G'] = { name = '+Gitsigns' },
-        ['<leader>Gh'] = { name = '+Hunks' },
-        ['<leader>Gt'] = { name = '+Toggles' },
-        ['<leader>G['] = { name = '+Previous Hunk' },
-        ['<leader>G]'] = { name = '+Next Hunk' },
+        ['<leader>G'] = { name = '+Git' },
+        ['<leader>Gh'] = { name = '+GitSigns Hunks' },
+        ['<leader>Gt'] = { name = '+GitSigns Toggles' },
     },
     v = {
-        ['<leader>G'] = { name = '+Gitsigns' },
-        ['<leader>Gh'] = { name = '+Hunks' },
+        ['<leader>G'] = { name = '+Git' },
+        ['<leader>Gh'] = { name = '+GitSigns Hunks' },
     },
 }
 

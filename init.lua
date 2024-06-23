@@ -289,7 +289,7 @@ local Names = {
     },
 }
 
-Kmap.t('<Esc>', '<C-\\><C-n>')
+Kmap.t('<Esc>', '<C-\\><C-n>', { buffer = 0 })
 
 if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
     ---@type 'lualine'|'galaxyline'

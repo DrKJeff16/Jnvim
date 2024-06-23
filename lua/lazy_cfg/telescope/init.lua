@@ -13,6 +13,7 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local desc = kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('telescope') then
     return
@@ -182,6 +183,25 @@ local known_exts = {
             return res
         end,
     },
+    ['lazygit.utils'] = {
+        'lazygit',
+
+        ---@type fun(): KeyMapDict
+        keys = function()
+            if is_nil(Extensions.lazygit) then
+                return {}
+            end
+
+            local pfx = Extensions.lazygit
+
+            ---@type KeyMapDict
+            local res = {
+                ['<leader>fTeG'] = { pfx.lazygit, desc('LazyGit Picker') },
+            }
+
+            return res
+        end,
+    },
 }
 
 --- Load and Set Keymaps for available extensions.
@@ -203,21 +223,10 @@ for mod, ext in next, known_exts do
     ::continue::
 end
 
-for mode, t in next, Maps do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-
-            kmap[mode](lhs, v[1], v[2])
-        end
-    end
+if WK.available() and is_tbl(Names) and not empty(Names) then
+    map_dict(Names, 'wk.register', true)
 end
+map_dict(Maps, 'wk.register', true)
 
 ---@type AuRepeat
 local au_tbl = {
