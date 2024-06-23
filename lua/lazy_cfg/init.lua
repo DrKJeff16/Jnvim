@@ -717,19 +717,22 @@ M.UI = {
             vim.opt.showmode = false
         end,
         config = source('lazy_cfg.lualine'),
-        -- enabled = not in_console(),
-        enabled = false,
+        cond = use_statusline == 'lualine',
+        enabled = not in_console(),
     },
     {
         'glepnir/galaxyline.nvim',
+        name = 'GalaxyLine',
         version = false,
         dependencies = { 'web-devicons' },
         init = function()
             vim.opt.ls = 2
             vim.opt.stal = 2
             vim.opt.showmode = false
+            vim.opt.termguicolors = not in_console()
         end,
         config = source('lazy_cfg.galaxyline'),
+        cond = use_statusline == 'galaxyline',
         enabled = not in_console(),
     },
     -- Tabline
