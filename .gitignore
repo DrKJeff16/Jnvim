@@ -4,6 +4,7 @@
 
 /patches
 *.patch
+*.diff
 
 *.rar
 *.cpio

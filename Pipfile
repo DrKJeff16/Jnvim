@@ -41,6 +41,8 @@ pytoml = "*"
 ipython = "*"
 jupyterlab = "*"
 json5 = "*"
+argh = "*"
+argcomplete = "*"
 
 [requires]
 python_version = "3.12"
