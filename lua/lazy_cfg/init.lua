@@ -290,8 +290,13 @@ M.ESSENTIAL = {
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        lazy = false,
+        ft = 'norg',
         version = '*',
+        opts = {
+            load = {
+                ['core.defaults'] = {},
+            },
+        },
         config = true,
         enabled = luarocks_set(),
     },
@@ -837,7 +842,6 @@ M.UI = {
     {
         'folke/noice.nvim',
         event = 'VeryLazy',
-        name = 'Noice',
         version = false,
         dependencies = {
             'inc-rename',
@@ -898,27 +902,35 @@ for _, plugs in next, M do
 end
 
 if is_nil(called_lazy) then
-    Lazy.setup(T, {
+    Lazy.setup({
+        root = vim.fn.stdpath('data') .. '/lazy',
+        performance = {
+            rtp = {
+                reset = true,
+                disabled_plugins = {
+                    'tutor',
+                    'netrwPlugin',
+                },
+            },
+        },
+        spec = T,
+        install = {
+            colorscheme = { 'habamax' },
+            missing = true,
+        },
+        rocks = {
+            root = vim.fn.stdpath('data') .. '/lazy-rocks',
+            server = 'https://nvim-neorocks.github.io/rocks-binaries/',
+        },
         change_detection = {
             enabled = true,
             notify = true,
         },
-
         checker = {
-            check_pinned = false,
             enabled = true,
-            frequency = 3600,
             notify = true,
-        },
-
-        ui = {
-            border = 'double',
-            title = 'L      A      Z      Y',
-            title_pos = 'center',
-            wrap = true,
-        },
-        dev = {
-            path = vim.fn.environ()['HOME'] .. '/Project/nvim',
+            frequency = 1800,
+            check_pinned = false,
         },
     })
 
