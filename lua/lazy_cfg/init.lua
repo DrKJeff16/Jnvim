@@ -109,8 +109,6 @@ local function tel_fzf_build()
     return cmd
 end
 
-local Lazy = require('lazy')
-
 --- A `config` function to call your plugins.
 ---
 --- ## Parameters
@@ -159,6 +157,8 @@ local function colorscheme_init(fields)
         end
     end
 end
+
+local Lazy = require('lazy')
 
 ---@type table<string, LazyPlugs>
 local M = {}
