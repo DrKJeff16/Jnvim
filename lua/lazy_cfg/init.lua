@@ -23,11 +23,6 @@ local in_console = Check.in_console
 local desc = kmap.desc
 local map_dict = Maps.map_dict
 
---- Statusline selector
-if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
-    _G.use_statusline = 'galaxyline'
-end
-
 --- Set installation dir for `Lazy`.
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
@@ -707,7 +702,7 @@ M.UI = {
             vim.opt.showmode = false
         end,
         config = source('lazy_cfg.lualine'),
-        cond = use_statusline == 'lualine',
+        cond = not is_nil(use_statusline) and (use_statusline == 'lualine') or true,
         enabled = not in_console(),
     },
     {
@@ -722,7 +717,7 @@ M.UI = {
             vim.opt.termguicolors = not in_console()
         end,
         config = source('lazy_cfg.galaxyline'),
-        cond = use_statusline == 'galaxyline',
+        cond = not is_nil(use_statusline) and (use_statusline == 'galaxyline') or false,
         enabled = not in_console(),
     },
     --- Tabline
