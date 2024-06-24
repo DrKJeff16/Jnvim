@@ -949,7 +949,7 @@ local key_variant = function(cmd)
     cmd = cmd .. ' '
 
     return function()
-        local full_cmd = cmd .. stdpath('config') .. '/lua/lazy_cfg/init.lua'
+        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/lazy_cfg/init.lua'
 
         vim.cmd(full_cmd)
     end
