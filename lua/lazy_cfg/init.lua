@@ -330,7 +330,6 @@ M.ESSENTIAL = {
     {
         'nvim-lua/plenary.nvim',
         lazy = true,
-        name = 'Plenary',
         version = false,
     },
 
@@ -340,7 +339,7 @@ M.ESSENTIAL = {
         name = 'Notify',
         main = 'notify',
         version = false,
-        dependencies = { 'Plenary' },
+        dependencies = { 'plenary.nvim' },
         init = function()
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
@@ -401,7 +400,7 @@ M.NVIM = {
         version = false,
         dependencies = {
             'Telescope',
-            'Plenary',
+            'plenary.nvim',
         },
         config = source('lazy_cfg.startup'),
         enabled = false,
@@ -467,7 +466,7 @@ M.EDITING = {
         version = false,
         dependencies = {
             'treesitter',
-            'Plenary',
+            'plenary.nvim',
         },
         config = source('lazy_cfg.todo_comments'),
         enabled = executable('rg'),
@@ -514,7 +513,7 @@ M.VCS = {
         name = 'LazyGit',
         version = false,
         dependencies = {
-            'Plenary',
+            'plenary.nvim',
             'Telescope',
         },
         config = source('lazy_cfg.lazygit'),
@@ -655,7 +654,7 @@ M.TELESCOPE = {
             'Telescope-fzf',
             'treesitter',
             'lspconfig',
-            'Plenary',
+            'plenary.nvim',
             'Project',
         },
         config = source('lazy_cfg.telescope'),
@@ -666,7 +665,7 @@ M.TELESCOPE = {
         lazy = true,
         name = 'TelescopeBrowser',
         dependencies = {
-            'Plenary',
+            'plenary.nvim',
         },
         enabled = not in_console(),
     },
@@ -803,7 +802,7 @@ M.UI = {
         name = 'NeoTree',
         version = false,
         dependencies = {
-            'Plenary',
+            'plenary.nvim',
             'web-devicons',
             'MunifTanjim/nui.nvim',
             --- '3rd/image.nvim',
