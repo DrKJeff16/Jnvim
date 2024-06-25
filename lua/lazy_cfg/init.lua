@@ -268,22 +268,31 @@ M.ESSENTIAL = {
     },
     {
         'vhyrro/luarocks.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
-        config = true,
+        --[[ opts = {
+            rocks = {
+                'fzy',
+                'pathlib.nvim',
+                'lua-utils.nvim',
+                'nvim-nio',
+            },
+            luarocks_buird_args = { '--local' },
+        }, ]]
+        config = source('lazy_cfg.luarocks'),
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        ft = 'norg',
         version = '*',
-        opts = {
+        --[[ opts = {
             load = {
                 ['core.defaults'] = {},
             },
-        },
-        config = true,
+        }, ]]
+        config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
     { 'vim-scripts/L9', lazy = false },
