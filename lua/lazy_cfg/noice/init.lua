@@ -11,7 +11,7 @@ if not exists('noice') then
 end
 
 local Noice = require('noice')
-local Util = require('noice.util')
+local NUtil = require('noice.util')
 
 Noice.setup({
     cmdline = {
@@ -29,13 +29,9 @@ Noice.setup({
             search_down = { kind = 'search', pattern = '^/', icon = ' ', lang = 'regex' },
             search_up = { kind = 'search', pattern = '^%?', icon = ' ', lang = 'regex' },
             filter = { pattern = '^:%s*!', icon = '$', lang = 'bash' },
-            lua = {
-                pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' },
-                icon = '',
-                lang = 'lua',
-            },
+            lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = '', lang = 'lua' },
             help = { pattern = '^:%s*he?l?p?%s+', icon = '' },
-            input = {}, -- Used by input()
+            input = { view = 'cmdline_input', icon = '󰥻 ' }, -- Used by input()
             -- lua = false, -- to disable a format, set to `false`
         },
     },
@@ -55,7 +51,29 @@ Noice.setup({
         backend = exists('cmp') and 'cmp' or 'nui', -- backend to use to show regular cmdline completions
         -- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
         ---@type NoicePopupmenuItemKind|false
-        kind_icons = {}, -- set to `false` to disable icons
+        kind_icons = {
+            Class = ' ',
+            Color = ' ',
+            Constant = ' ',
+            Constructor = ' ',
+            Enum = '了 ',
+            EnumMember = ' ',
+            Field = ' ',
+            File = ' ',
+            Folder = ' ',
+            Function = ' ',
+            Interface = ' ',
+            Keyword = ' ',
+            Method = 'ƒ ',
+            Module = ' ',
+            Property = ' ',
+            Snippet = ' ',
+            Struct = ' ',
+            Text = ' ',
+            Unit = ' ',
+            Value = ' ',
+            Variable = ' ',
+        }, -- set to `false` to disable icons
     },
     -- default options for require('noice').redirect
     -- see the section on Command Redirection
@@ -63,6 +81,7 @@ Noice.setup({
     redirect = {
         view = 'popup',
         filter = { event = 'msg_show' },
+        opts = { enter = false, format = 'details' },
     },
     commands = {
         history = {
@@ -97,7 +116,7 @@ Noice.setup({
         -- `:Noice errors`
         errors = {
             -- options for the message history that you get with `:Noice`
-            view = 'popup',
+            view = 'split',
             opts = { enter = false, format = 'details' },
             filter = { error = true },
             filter_opts = { reverse = true },
@@ -106,6 +125,8 @@ Noice.setup({
     notify = {
         enabled = true,
         view = 'notify',
+        opts = { enter = false, format = 'details' },
+        filter = { error = true },
     },
     lsp = {
         progress = {
@@ -116,7 +137,7 @@ Noice.setup({
             format = 'lsp_progress',
             --- @type NoiceFormat|string
             format_done = 'lsp_progress_done',
-            throttle = 1000 / 100, -- frequency to update lsp progress message
+            throttle = 1000 / 120, -- frequency to update lsp progress message
             view = 'mini',
             opts = { enter = false, format = 'details', border = 'rounded' },
         },
@@ -128,37 +149,35 @@ Noice.setup({
         },
         hover = {
             enabled = true,
-            silent = false,
-            view = 'hover',
+            silent = true,
+            view = nil,
             ---@type NoiceViewOptions
             opts = {
                 border = 'solid',
-                type = 'popup',
                 merge = true,
                 zindex = 100,
                 timeout = 3500,
                 scrollbar = true,
+                enter = false,
             },
         },
         signature = {
             enabled = true,
             auto_open = {
                 enabled = true,
-                trigger = false,
-                luasnip = false,
+                trigger = true,
+                luasnip = true,
                 throttle = 500,
             },
-            view = 'hover',
+            view = nil,
             ---@type NoiceViewOptions
             opts = {
-                border = 'rounded',
+                border = 'shadow',
                 type = 'popup',
                 focusable = true,
-                merge = true,
                 zindex = 100,
-                timeout = 200,
+                timeout = 600,
                 scrollbar = true,
-                lang = 'markdown', -- FIX: Is this a good idea?
             },
         },
         documentation = {
@@ -173,10 +192,15 @@ Noice.setup({
             },
         },
     },
+    all = {
+        view = 'split',
+        opts = { enter = false, format = 'details' },
+        filter = {},
+    },
     markdown = {
         hover = {
             ['|(%S-)|'] = vim.cmd.help,
-            ['%[.-%]%((%S-)%)'] = Util.open,
+            ['%[.-%]%((%S-)%)'] = NUtil.open,
         },
         highlights = {
             ['|%S-|'] = '@text.reference',
@@ -205,10 +229,11 @@ Noice.setup({
     views = {}, ---@see section on views
     ---@type NoiceRouteConfig
     routes = {
-        view = 'notify',
-        filter = {},
+        view = 'split',
+        filter = { event = 'msg_show', min_height = 20, kind = 'search_count' },
         opts = {
             align = 'center',
+            skip = true,
         },
     }, ---@see section on routes
     ---@type table<string, NoiceFilter>
