@@ -259,21 +259,12 @@ M.COLORSCHEMES = {
 M.ESSENTIAL = {
     {
         'dstein64/vim-startuptime',
-        cmd = 'StartupTime',
-        keys = {
-            {
-                '<leader>vS',
-                function()
-                    vim.cmd('StartupTime')
-                end,
-                desc = 'Run StartupTime',
-            },
-        },
         name = 'StartupTime',
         version = false,
-        config = function()
-            vim.g.startuptime_tries = 10
+        init = function()
+            vim.g.installed_startuptime = 1
         end,
+        config = source('lazy_cfg.startuptime'),
     },
     {
         'vhyrro/luarocks.nvim',
