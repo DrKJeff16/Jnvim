@@ -10,7 +10,9 @@ local is_num = Value.is_num
 local is_fun = Value.is_fun
 local empty = Value.empty
 
----@type fun(mod: string, return_mod: boolean?): boolean|unknown|nil
+---@param mod string
+---@param return_mod? boolean
+---@return boolean|unknown|nil
 local function module(mod, return_mod)
     return_mod = is_bool(return_mod) and return_mod or false
 
@@ -27,7 +29,9 @@ local function module(mod, return_mod)
     end
 end
 
----@type fun(mod: string|string[], need_all: boolean?): boolean|table<string, boolean>
+---@param mod string|string[]
+---@param need_all? boolean
+---@return boolean|table<string, boolean>
 local function modules(mod, need_all)
     local exists = module
 
@@ -64,7 +68,8 @@ local function modules(mod, need_all)
     return res
 end
 
----@type fun(expr: string|string[]): boolean
+---@param expr string|string[]
+---@return boolean
 local function vim_has(expr)
     if is_str(expr) then
         return vim.fn.has(expr) == 1
@@ -85,7 +90,8 @@ local function vim_has(expr)
     return false
 end
 
----@type fun(expr: string|string[]): boolean
+---@param expr string|string[]
+---@return boolean
 local function vim_exists(expr)
     local exists = vim.fn.exists
 
@@ -109,7 +115,9 @@ local function vim_exists(expr)
     return false
 end
 
----@type fun(vars: string|string[], fallback: fun()?): boolean
+---@param vars string|string[]
+---@param fallback? fun()
+---@return boolean
 local function env_vars(vars, fallback)
     local environment = vim.fn.environ()
 
@@ -140,7 +148,9 @@ local function env_vars(vars, fallback)
     return res
 end
 
----@type fun(exe: string|string[], fallback: fun()?): boolean
+---@param exe string|string[]
+---@param fallback? fun()
+---@return boolean
 local function executable(exe, fallback)
     if not (is_str(exe) or is_tbl(exe)) then
         error('(user.check.exists.executable): Argument type is neither string nor table')
@@ -169,7 +179,8 @@ local function executable(exe, fallback)
     return res
 end
 
----@type fun(path: string): boolean
+---@param path string
+---@return boolean
 local function vim_isdir(path)
     return (is_str(path) and not empty(path)) and (vim.fn.isdirectory(path) == 1) or false
 end

@@ -19,7 +19,7 @@ require('user.types.user.check')
 --- ## Return
 --- A boolean value indicating whether the data is `nil` or doesn't exist.
 --- ---
-local function is_nil(var, multiple)
+local is_nil = function(var, multiple)
     multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
     if not multiple then
