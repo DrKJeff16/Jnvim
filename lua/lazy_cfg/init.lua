@@ -56,7 +56,7 @@ vim.opt.rtp:prepend(lazypath)
 --- ### Windows
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- ---
----@type fun(): string
+---@return string
 local function luasnip_build()
     local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp'
 
@@ -69,7 +69,7 @@ local function luasnip_build()
     return cmd
 end
 
----@type fun(): boolean
+---@return boolean
 local function luarocks_set()
     return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })
 end
@@ -91,7 +91,7 @@ end
 --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 --- If unsuccessful, **it'll return an empty string**.
 --- ---
----@type fun(): string
+---@return string
 local function tel_fzf_build()
     local cmd = executable('nproc') and 'make -j"$(nproc)"' or 'make'
 
@@ -117,7 +117,8 @@ end
 --- ## Return
 --- A function that attempts to `require` the given `mod_str`.
 --- ---
----@type fun(mod_str: string): fun()
+---@param mod_str string
+---@return fun()
 local function source(mod_str)
     return function()
         exists(mod_str, true)
@@ -134,7 +135,8 @@ end
 --- ## Return
 --- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s).
 --- ---
----@type fun(field: string|table<string, any>): fun()
+---@param fields string|table<string, any>
+---@return fun()
 local function colorscheme_init(fields)
     if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
         error('(lazy_cfg:colorscheme_init): Unable to initialize colorscheme.')
@@ -259,40 +261,40 @@ M.COLORSCHEMES = {
 M.ESSENTIAL = {
     {
         'dstein64/vim-startuptime',
-        cmd = 'StartupTime',
-        keys = {
-            {
-                '<leader>vS',
-                function()
-                    vim.cmd('StartupTime')
-                end,
-                desc = 'Run StartupTime',
-            },
-        },
         name = 'StartupTime',
         version = false,
-        config = function()
-            vim.g.startuptime_tries = 10
+        init = function()
+            vim.g.installed_startuptime = 1
         end,
+        config = source('lazy_cfg.startuptime'),
     },
     {
         'vhyrro/luarocks.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
-        config = true,
+        --[[ opts = {
+            rocks = {
+                'fzy',
+                'pathlib.nvim',
+                'lua-utils.nvim',
+                'nvim-nio',
+            },
+            luarocks_buird_args = { '--local' },
+        }, ]]
+        config = source('lazy_cfg.luarocks'),
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        ft = 'norg',
         version = '*',
-        opts = {
+        --[[ opts = {
             load = {
                 ['core.defaults'] = {},
             },
-        },
-        config = true,
+        }, ]]
+        config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
     { 'vim-scripts/L9', lazy = false },
@@ -935,7 +937,8 @@ local P = {
     colorschemes = require('lazy_cfg.colorschemes'),
 }
 
----@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
+---@param cmd 'ed'|'tabnew'|'split'|'vsplit'
+---@return fun()
 local key_variant = function(cmd)
     cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
 

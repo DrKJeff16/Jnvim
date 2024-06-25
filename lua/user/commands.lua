@@ -11,6 +11,7 @@ local exec = vim.api.nvim_exec
 local exec2 = vim.api.nvim_exec2
 
 ---@type User.Commands
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 function M.redir()

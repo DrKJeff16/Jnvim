@@ -84,7 +84,7 @@ for _, mode in next, User.maps.modes do
 end
 
 --- Global keymaps, plugin-agnostic
----@type Maps
+---@type table<MapModes, KeyMapDict>
 local Keys = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
@@ -305,7 +305,8 @@ if WK.available() then
 end
 map_dict(Keys, 'wk.register', true)
 
----@type fun(T: CscSubMod|ODSubMod): boolean
+---@param T? CscSubMod|ODSubMod
+---@return boolean
 local function color_exists(T)
     return is_tbl(T) and is_fun(T.setup)
 end
