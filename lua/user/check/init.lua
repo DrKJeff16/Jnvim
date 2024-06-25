@@ -4,8 +4,6 @@
 ---@diagnostic disable:missing-fields
 
 require('user.types.user.check')
-local Value = require('user.check.value')
-local Exists = require('user.check.exists')
 
 --- Checking Utilities
 ---@type User.Check
@@ -23,11 +21,13 @@ local M = {
     --- ---
     in_console = function()
         local env = vim.fn.environ()
-        ---@type string
-        local TERM = env['TERM']
+
+        if not require('user.check.value').fields('DISPLAY', env) then
+            return false
+        end
 
         --- TODO: This is not a good enough check. Must find a better solution.
-        return vim.tbl_contains({ 'screen', 'linux' }, TERM)
+        return vim.tbl_contains({ 'linux' }, env['TERM'])
     end,
 }
 
@@ -36,7 +36,6 @@ function M.new()
 
     self.value = require('user.check.value')
     self.exists = require('user.check.exists')
-    self.in_console = M.in_console
 
     return self
 end
