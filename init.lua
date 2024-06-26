@@ -100,8 +100,12 @@ local Keys = {
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
         ['<leader>fN'] = {
             function()
+                local ft = Util.ft_get(0)
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
+
+                vim.bo.modifiable = true
+                vim.api.nvim_set_option_value('ft', ft, { buf = 0 })
             end,
             desc('New Blank File', true, 0),
         },
@@ -148,6 +152,7 @@ local Keys = {
             desc('Source Current File As VimScript File'),
         },
 
+        ['<leader>vH'] = { ':checkhealth ', desc('Prompt For Checkhealth', false) },
         ['<leader>vee'] = { '<CMD>ed $MYVIMRC<CR>', desc('Open In Current Window') },
         ['<leader>ves'] = { '<CMD>split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
         ['<leader>vet'] = { '<CMD>tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
@@ -171,8 +176,12 @@ local Keys = {
 
         ['<leader>wN'] = {
             function()
+                local ft = Util.ft_get(0)
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
+
+                vim.bo.modifiable = true
+                vim.api.nvim_set_option_value('ft', ft, { buf = 0 })
             end,
             desc('New Blank File', true, 0),
         },

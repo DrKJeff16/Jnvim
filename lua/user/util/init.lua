@@ -214,8 +214,8 @@ function M.assoc()
 
                         if require('user.check.exists').executable('stylua') then
                             map_dict({
-                                ['<leader>fl'] = {
-                                    ':silent !stylua %',
+                                ['<leader><C-l>'] = {
+                                    ':silent !stylua %<CR>',
                                     desc('Format with Stylua', true, 0),
                                 },
                             }, 'wk.register', false, 'n', 0)
