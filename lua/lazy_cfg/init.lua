@@ -823,10 +823,22 @@ M.UI = {
         enabled = not in_console(),
     },
     {
+        'brenoprata10/nvim-highlight-colors',
+        name = 'HiColors',
+        main = 'nvim-highlight-colors',
+        version = false,
+        init = function()
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+        end,
+        config = source('lazy_cfg.hicolors'),
+        enabled = vim_exists('+termguicolors'),
+    },
+    {
         'norcalli/nvim-colorizer.lua',
         name = 'colorizer',
         version = false,
         config = source('lazy_cfg.colorizer'),
+        enabled = false,
     },
     {
         'akinsho/toggleterm.nvim',
