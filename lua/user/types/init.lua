@@ -8,6 +8,7 @@
 ---@field colorizer table
 ---@field colorschemes table
 ---@field comment table
+---@field galaxyline table
 ---@field gitsigns table
 ---@field lazy table
 ---@field lspconfig table
@@ -59,6 +60,7 @@ local M = {
     colorschemes = require('user.types.colorschemes'),
     cmp = require('user.types.cmp'),
     comment = require('user.types.comment'),
+    galaxyline = require('user.types.galaxyline'),
     gitsigns = require('user.types.gitsigns'),
     lazy = require('user.types.lazy'),
     lspconfig = require('user.types.lspconfig'),
