@@ -111,7 +111,6 @@ Neorg.setup({
                     personal = '~/.norg',
                     notes = '~/Documents/Notes',
                 },
-                default_workspace = 'personal',
                 index = 'index.norg',
                 open_last_workspace = true,
                 use_popup = true,
