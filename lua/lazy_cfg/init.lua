@@ -165,7 +165,6 @@ M.COLORSCHEMES = {
     {
         'navarasu/onedark.nvim',
         priority = 1000,
-        name = 'OneDark',
         main = 'onedark',
         version = false,
         init = colorscheme_init('installed_onedark'),
@@ -181,7 +180,6 @@ M.COLORSCHEMES = {
     {
         'folke/tokyonight.nvim',
         priority = 1000,
-        name = 'tokyonight',
         main = 'tokyonight',
         version = false,
         init = colorscheme_init('installed_tokyonight'),
@@ -189,7 +187,6 @@ M.COLORSCHEMES = {
     {
         'EdenEast/nightfox.nvim',
         priority = 1000,
-        name = 'nightfox',
         main = 'nightfox',
         version = false,
         init = colorscheme_init('installed_nightfox'),
@@ -198,7 +195,7 @@ M.COLORSCHEMES = {
         'bkegley/gloombuddy',
         priority = 1000,
         version = false,
-        dependencies = { 'colorbuddy' },
+        dependencies = { 'colorbuddy.vim' },
         init = colorscheme_init('installed_gloombuddy'),
     },
     {
@@ -215,7 +212,6 @@ M.COLORSCHEMES = {
         'tjdevries/colorbuddy.vim',
         lazy = false,
         priority = 1000,
-        name = 'colorbuddy',
         version = false,
         init = colorscheme_init('installed_colorbuddy'),
     },
@@ -261,7 +257,6 @@ M.COLORSCHEMES = {
 M.ESSENTIAL = {
     {
         'dstein64/vim-startuptime',
-        name = 'StartupTime',
         version = false,
         init = function()
             vim.g.installed_startuptime = 1
@@ -277,31 +272,29 @@ M.ESSENTIAL = {
         enabled = luarocks_set(),
     },
     {
+        'folke/zen-mode.nvim',
+        version = false,
+        config = source('lazy_cfg.zen_mode'),
+    },
+    {
         'nvim-neorg/neorg',
         dependencies = {
             'luarocks.nvim',
-            'folke/zen-mode.nvim',
+            'zen-mode.nvim',
         },
         version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
-    {
-        'folke/zen-mode.nvim',
-        version = false,
-        config = source('lazy_cfg.zen_mode'),
-    },
     { 'vim-scripts/L9', lazy = false },
     {
         'echasnovski/mini.nvim',
-        name = 'Mini',
         version = false,
         config = source('lazy_cfg.mini'),
         enabled = not in_console(),
     },
     {
         'tiagovla/scope.nvim',
-        name = 'Scope',
         version = false,
         init = function()
             vim.opt.ls = 2
@@ -327,7 +320,6 @@ M.ESSENTIAL = {
     {
         'rcarriga/nvim-notify',
         priority = 1000,
-        name = 'Notify',
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
@@ -340,7 +332,6 @@ M.ESSENTIAL = {
 
     {
         'lewis6991/hover.nvim',
-        name = 'Hover',
         main = 'hover',
         version = false,
         config = source('lazy_cfg.hover'),
@@ -350,7 +341,6 @@ M.ESSENTIAL = {
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
-        name = 'web-devicons',
         version = false,
         enabled = not in_console(),
     },
@@ -362,7 +352,6 @@ M.NVIM = {
         'folke/which-key.nvim',
         event = 'VeryLazy',
         priority = 1000,
-        name = 'which_key',
         main = 'which-key',
         version = false,
         init = function()
@@ -378,19 +367,17 @@ M.NVIM = {
     {
         'nvimdev/dashboard-nvim',
         event = 'VimEnter',
-        name = 'Dashboard',
         version = false,
-        dependencies = { 'web-devicons' },
+        dependencies = { 'nvim-web-devicons' },
         config = source('lazy_cfg.dashboard'),
         enabled = false,
     },
     {
         'startup-nvim/startup.nvim',
         event = 'VimEnter',
-        name = 'Startup',
         version = false,
         dependencies = {
-            'Telescope',
+            'telescope.nvim',
             'plenary.nvim',
         },
         config = source('lazy_cfg.startup'),
@@ -399,7 +386,6 @@ M.NVIM = {
     {
         'folke/persistence.nvim',
         event = 'BufReadPre',
-        name = 'Persistence',
         version = false,
         config = source('lazy_cfg.persistence'),
     },
@@ -409,37 +395,38 @@ M.NVIM = {
 M.TS = {
     {
         'nvim-treesitter/nvim-treesitter',
-        name = 'treesitter',
         build = ':TSUpdate',
         version = false,
         dependencies = {
-            'ts-context',
-            'ts-commentstring',
+            'nvim-treesitter-context',
+            'nvim-ts-context-commentstring',
+            'nvim-treesitter-textobjects',
         },
         config = source('lazy_cfg.treesitter'),
     },
     {
         'nvim-treesitter/nvim-treesitter-context',
         lazy = true,
-        name = 'ts-context',
         version = false,
         enabled = not in_console(),
     },
     {
         'JoosepAlviste/nvim-ts-context-commentstring',
         lazy = true,
-        name = 'ts-commentstring',
+    },
+    {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        version = false,
     },
 }
 --- Editing Utils
 M.EDITING = {
     {
         'numToStr/Comment.nvim',
-        name = 'Comment',
         version = false,
         dependencies = {
-            'treesitter',
-            'ts-commentstring',
+            'nvim-treesitter',
+            'nvim-ts-context-commentstring',
         },
         config = source('lazy_cfg.Comment'),
     },
@@ -447,16 +434,14 @@ M.EDITING = {
     {
         'tpope/vim-endwise',
         lazy = false,
-        name = 'EndWise',
         version = false,
     },
     --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
-        name = 'todo-comments',
         version = false,
         dependencies = {
-            'treesitter',
+            'nvim-treesitter',
             'plenary.nvim',
         },
         config = source('lazy_cfg.todo_comments'),
@@ -464,14 +449,12 @@ M.EDITING = {
     },
     {
         'windwp/nvim-autopairs',
-        name = 'AutoPairs',
         main = 'nvim-autopairs',
         version = false,
         config = source('lazy_cfg.autopairs'),
     },
     {
         'glepnir/template.nvim',
-        name = 'Template',
         config = source('lazy_cfg.template'),
         enabled = false,
     },
@@ -481,31 +464,27 @@ M.VCS = {
     {
         'tpope/vim-fugitive',
         lazy = false,
-        name = 'Fugitive',
         version = false,
         enabled = executable('git'),
     },
     {
         'lewis6991/gitsigns.nvim',
-        name = 'GitSigns',
         version = false,
         config = source('lazy_cfg.gitsigns'),
         enabled = executable('git') and not in_console(),
     },
     {
         'sindrets/diffview.nvim',
-        name = 'DiffView',
         version = false,
         config = source('lazy_cfg.diffview'),
         enabled = executable('git'),
     },
     {
         'kdheepak/lazygit.nvim',
-        name = 'LazyGit',
         version = false,
         dependencies = {
             'plenary.nvim',
-            'Telescope',
+            'telescope.nvim',
         },
         config = source('lazy_cfg.lazygit'),
         enabled = executable({ 'git', 'lazygit' }),
@@ -515,12 +494,11 @@ M.VCS = {
 M.LSP = {
     {
         'neovim/nvim-lspconfig',
-        name = 'lspconfig',
         version = false,
         dependencies = {
-            'LazyDev',
-            'NeoConf',
-            'Trouble',
+            'lazydev.nvim',
+            'neoconf.nvim',
+            'trouble.nvim',
             'SchemaStore',
         },
         config = source('lazy_cfg.lspconfig'),
@@ -529,7 +507,6 @@ M.LSP = {
     {
         'b0o/SchemaStore',
         lazy = true,
-        name = 'SchemaStore',
         version = false,
         enabled = executable('vscode-json-language-server'),
     },
@@ -537,37 +514,31 @@ M.LSP = {
     {
         'folke/lazydev.nvim',
         ft = 'lua',
-        name = 'LazyDev',
         version = false,
-        dependencies = { 'luvit-meta' },
+        dependencies = { 'Bilal2453/luvit-meta' },
         config = source('lazy_cfg.lspconfig.lazydev'),
         enabled = executable('lua-language-server'),
     },
     { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
-        name = 'NeoConf',
         version = false,
     },
     {
         'folke/trouble.nvim',
-        name = 'Trouble',
         version = false,
-        dependencies = { 'web-devicons' },
+        dependencies = { 'nvim-web-devicons' },
         enabled = not in_console(),
     },
     {
         'p00f/clangd_extensions.nvim',
         ft = { 'c', 'cpp' },
-        name = 'clangd_exts',
         version = false,
         config = source('lazy_cfg.lspconfig.clangd'),
         enabled = executable('clangd') and not in_console(),
     },
     {
         'smjonas/inc-rename.nvim',
-        name = 'inc-rename',
-        main = 'inc_rename',
         config = source('lazy_cfg.lspconfig.inc_rename'),
     },
 }
@@ -576,11 +547,10 @@ M.COMPLETION = {
     {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
-        name = 'cmp',
         version = false,
         dependencies = {
-            'treesitter',
-            'lspconfig',
+            'nvim-treesitter/nvim-treesitter',
+            'neovim/nvim-lspconfig',
             'onsails/lspkind.nvim',
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-nvim-lsp-document-symbol',
@@ -594,7 +564,7 @@ M.COMPLETION = {
             'petertriho/cmp-git',
             'davidsierradz/cmp-conventionalcommits',
 
-            'cmp-vlime',
+            'nvim-cmp-vlime',
 
             'hrsh7th/cmp-nvim-lua',
 
@@ -603,7 +573,7 @@ M.COMPLETION = {
             'cmp-doxygen',
 
             'saadparwaiz1/cmp_luasnip',
-            'LuaSnip',
+            'L3MON4D3/LuaSnip',
         },
         init = function()
             vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
@@ -615,8 +585,8 @@ M.COMPLETION = {
         'paopaol/cmp-doxygen',
         lazy = true,
         dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-treesitter/nvim-treesitter-textobjects',
+            'nvim-treesitter',
+            'nvim-treesitter-textobjects',
         },
     },
     {
@@ -634,14 +604,12 @@ M.COMPLETION = {
     {
         'HiPhish/nvim-cmp-vlime',
         ft = 'lisp',
-        name = 'cmp-vlime',
         version = false,
-        dependencies = { 'VLime' },
+        dependencies = { 'vlime' },
     },
     {
         'vlime/vlime',
         ft = 'lisp',
-        name = 'VLime',
         version = false,
     },
 }
@@ -649,14 +617,14 @@ M.COMPLETION = {
 M.TELESCOPE = {
     {
         'nvim-telescope/telescope.nvim',
-        name = 'Telescope',
         version = false,
         dependencies = {
-            'Telescope-fzf',
-            'treesitter',
-            'lspconfig',
+            'telescope-file-browser.nvim',
+            'telescope-fzf-native.nvim',
+            'nvim-treesitter',
+            'nvim-lspconfig',
             'plenary.nvim',
-            'Project',
+            'project.nvim',
         },
         config = source('lazy_cfg.telescope'),
         enabled = not in_console(),
@@ -664,16 +632,12 @@ M.TELESCOPE = {
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
-        name = 'TelescopeBrowser',
-        dependencies = {
-            'plenary.nvim',
-        },
+        dependencies = { 'plenary.nvim' },
         enabled = not in_console(),
     },
     {
         'nvim-telescope/telescope-fzf-native.nvim',
         lazy = true,
-        name = 'Telescope-fzf',
         version = false,
         build = tel_fzf_build(),
         enabled = executable('fzf') and not in_console(),
@@ -682,7 +646,6 @@ M.TELESCOPE = {
     {
         'ahmedkhalf/project.nvim',
         lazy = false,
-        name = 'Project',
         main = 'project_nvim',
         version = false,
         init = function()
@@ -699,9 +662,8 @@ M.UI = {
     {
         'nvim-lualine/lualine.nvim',
         priority = 1000,
-        name = 'LuaLine',
         version = false,
-        dependencies = { 'web-devicons' },
+        dependencies = { 'nvim-web-devicons' },
         init = function()
             vim.opt.ls = 2
             vim.opt.stal = 2
@@ -713,9 +675,8 @@ M.UI = {
     },
     {
         'glepnir/galaxyline.nvim',
-        name = 'GalaxyLine',
         version = false,
-        dependencies = { 'web-devicons' },
+        dependencies = { 'nvim-web-devicons' },
         init = function()
             vim.opt.ls = 2
             vim.opt.stal = 2
@@ -730,11 +691,10 @@ M.UI = {
     {
         'akinsho/bufferline.nvim',
         priority = 1000,
-        name = 'BufferLine',
         version = false,
         dependencies = {
-            'web-devicons',
-            'Scope',
+            'nvim-web-devicons',
+            'scope.nvim',
         },
         init = function()
             vim.opt.stal = 2
@@ -748,12 +708,11 @@ M.UI = {
     {
         'romgrk/barbar.nvim',
         priority = 1000,
-        name = 'BarBar',
         version = false,
         dependencies = {
-            'GitSigns',
-            'web-devicons',
-            'Scope',
+            'gitsigns.nvim',
+            'nvim-web-devicons',
+            'scope.nvim',
         },
         init = function()
             vim.opt.stal = 2
@@ -766,15 +725,13 @@ M.UI = {
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
-        name = 'ibl',
         version = false,
-        dependencies = { 'rainbow_delimiters' },
+        dependencies = { 'rainbow-delimiters.nvim' },
         config = source('lazy_cfg.blank_line'),
         enabled = not in_console(),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
-        name = 'rainbow_delimiters',
         version = false,
         config = source('lazy_cfg.rainbow_delimiters'),
         enabled = not in_console(),
@@ -782,12 +739,11 @@ M.UI = {
     --- File Tree
     {
         'nvim-tree/nvim-tree.lua',
-        name = 'nvim_tree',
         main = 'nvim-tree',
         version = false,
         dependencies = {
-            'web-devicons',
-            'Mini',
+            'nvim-web-devicons',
+            'mini.nvim',
         },
         init = function()
             --- Disable `netrw`.
@@ -800,11 +756,10 @@ M.UI = {
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
-        name = 'NeoTree',
         version = false,
         dependencies = {
             'plenary.nvim',
-            'web-devicons',
+            'nvim-web-devicons',
             'MunifTanjim/nui.nvim',
             --- '3rd/image.nvim',
         },
@@ -821,14 +776,12 @@ M.UI = {
     {
         'nvim-zh/colorful-winsep.nvim',
         event = { 'WinNew' },
-        name = 'ColorfulWinsep',
         version = false,
         config = source('lazy_cfg.colorful_winsep'),
         enabled = not in_console(),
     },
     {
         'brenoprata10/nvim-highlight-colors',
-        name = 'HiColors',
         main = 'nvim-highlight-colors',
         version = false,
         init = function()
@@ -839,14 +792,12 @@ M.UI = {
     },
     {
         'norcalli/nvim-colorizer.lua',
-        name = 'colorizer',
         version = false,
         config = source('lazy_cfg.colorizer'),
         enabled = false,
     },
     {
         'akinsho/toggleterm.nvim',
-        name = 'ToggleTerm',
         version = false,
         config = source('lazy_cfg.toggleterm'),
         enabled = not in_console(),
@@ -856,19 +807,18 @@ M.UI = {
         event = 'VeryLazy',
         version = false,
         dependencies = {
-            'inc-rename',
+            'inc-rename.nvim',
             'MunifTanjim/nui.nvim',
-            'Notify',
-            'Mini',
-            'cmp',
-            'treesitter',
+            'nvim-notify',
+            'mini.nvim',
+            'nvim-cmp',
+            'nvim-treesitter',
         },
         config = source('lazy_cfg.noice'),
         enabled = not in_console(),
     },
     {
         'LudoPinelli/comment-box.nvim',
-        name = 'CommentBox',
         version = false,
         config = source('lazy_cfg.commentbox'),
         --- enabled = not in_console(),
@@ -879,12 +829,10 @@ M.UI = {
 M.SYNTAX = {
     {
         'rhysd/vim-syntax-codeowners',
-        name = 'codeowners-syntax',
         version = false,
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
-        name = 'DoxygenToolkit',
         version = false,
         enabled = executable('doxygen'),
     },
@@ -893,7 +841,6 @@ M.SYNTAX = {
 M.UTILS = {
     {
         'iamcco/markdown-preview.nvim',
-        name = 'md_preview',
         build = executable('yarn') and 'cd app && yarn install' or '',
         init = function()
             vim.g.mkdp_filetypes = { 'markdown' }
