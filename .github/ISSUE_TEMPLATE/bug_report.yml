@@ -29,7 +29,7 @@ body:
   - type: input
     attributes:
       label: "Operating System (`uname -ors` for Unix, or manually set if using Windows)"
-      placeholder: Linux 6.9.5-x64v2-xanmod1-1 GNU/Linux
+      placeholder: Linux 5.15.X GNU/Linux / Windows 10 Home
     validations:
       required: true
   - type: textarea
