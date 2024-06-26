@@ -26,6 +26,11 @@ Neorg.setup({
             },
         },
         ['core.neorgcmd.commands.return'] = {},
+        ['core.presenter'] = {
+            config = {
+                zen_mode = exists('zen-mode') and 'zen-mode' or '',
+            },
+        },
         ['core.summary'] = {},
         ['core.mode'] = {},
         ['core.itero'] = {},

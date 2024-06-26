@@ -278,10 +278,18 @@ M.ESSENTIAL = {
     },
     {
         'nvim-neorg/neorg',
-        dependencies = { 'luarocks.nvim' },
+        dependencies = {
+            'luarocks.nvim',
+            'folke/zen-mode.nvim',
+        },
         version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
+    },
+    {
+        'folke/zen-mode.nvim',
+        version = false,
+        config = source('lazy_cfg.zen_mode'),
     },
     { 'vim-scripts/L9', lazy = false },
     {
