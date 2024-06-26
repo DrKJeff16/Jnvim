@@ -62,17 +62,31 @@ local function async_path(priority)
     return res
 end
 
----@type (cmp.SourceConfig|SourceBuf)[]
-local lua_sources = {
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lua' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'luasnip' },
-    buffer(),
+---@type table<string, (cmp.SourceConfig|SourceBuf|SourceAPath)[]>
+local Sources = {
+    c = {
+        { name = 'nvim_lsp' },
+        { name = 'nvim_lsp_signature_help' },
+        { name = 'luasnip' },
+        async_path(),
+        buffer(),
+    },
+
+    lua = {
+        { name = 'nvim_lsp' },
+        { name = 'nvim_lua' },
+        { name = 'nvim_lsp_signature_help' },
+        { name = 'luasnip' },
+        buffer(),
+    },
 }
 
+if exists('cmp_doxygen') then
+    table.insert(Sources.c, { name = 'doxygen' })
+end
+
 if exists('lazydev') then
-    table.insert(lua_sources, {
+    table.insert(Sources.lua, {
         name = 'lazydev',
         group_index = 0,
     })
@@ -112,8 +126,14 @@ local ft = {
             }),
         },
     },
+    {
+        { 'c', 'cpp' },
+        {
+            sources = cmp.config.sources(Sources.c),
+        },
+    },
     ['lua'] = {
-        sources = cmp.config.sources(lua_sources),
+        sources = cmp.config.sources(Sources.lua),
     },
     ['lisp'] = {
         sources = cmp.config.sources({
