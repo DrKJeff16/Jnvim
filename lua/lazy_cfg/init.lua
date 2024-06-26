@@ -273,29 +273,23 @@ M.ESSENTIAL = {
         lazy = false,
         priority = 1000,
         version = false,
-        --[[ opts = {
-            rocks = {
-                'fzy',
-                'pathlib.nvim',
-                'lua-utils.nvim',
-                'nvim-nio',
-            },
-            luarocks_buird_args = { '--local' },
-        }, ]]
         config = source('lazy_cfg.luarocks'),
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
-        dependencies = { 'luarocks.nvim' },
-        version = '*',
-        --[[ opts = {
-            load = {
-                ['core.defaults'] = {},
-            },
-        }, ]]
+        dependencies = {
+            'luarocks.nvim',
+            'folke/zen-mode.nvim',
+        },
+        version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
+    },
+    {
+        'folke/zen-mode.nvim',
+        version = false,
+        config = source('lazy_cfg.zen_mode'),
     },
     { 'vim-scripts/L9', lazy = false },
     {
@@ -606,6 +600,8 @@ M.COMPLETION = {
 
             'hrsh7th/cmp-cmdline',
 
+            'cmp-doxygen',
+
             'saadparwaiz1/cmp_luasnip',
             'LuaSnip',
         },
@@ -614,6 +610,14 @@ M.COMPLETION = {
             vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
         end,
         config = source('lazy_cfg.cmp'),
+    },
+    {
+        'paopaol/cmp-doxygen',
+        lazy = true,
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-treesitter/nvim-treesitter-textobjects',
+        },
     },
     {
         'L3MON4D3/LuaSnip',
@@ -822,10 +826,22 @@ M.UI = {
         enabled = not in_console(),
     },
     {
+        'brenoprata10/nvim-highlight-colors',
+        name = 'HiColors',
+        main = 'nvim-highlight-colors',
+        version = false,
+        init = function()
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+        end,
+        config = source('lazy_cfg.hicolors'),
+        enabled = vim_exists('+termguicolors'),
+    },
+    {
         'norcalli/nvim-colorizer.lua',
         name = 'colorizer',
         version = false,
         config = source('lazy_cfg.colorizer'),
+        enabled = false,
     },
     {
         'akinsho/toggleterm.nvim',
@@ -926,6 +942,13 @@ if is_nil(called_lazy) then
             notify = true,
             frequency = 1800,
             check_pinned = false,
+        },
+        ui = {
+            backdrop = 55,
+            border = 'double',
+            title = 'L      A      Z      Y',
+            wrap = true,
+            title_pos = 'center',
         },
     })
 
