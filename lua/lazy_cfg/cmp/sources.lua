@@ -151,6 +151,16 @@ local ft = {
     },
 }
 
+if exists('neorg') then
+    ft['norg'] = {
+        sources = cmp.config.sources({
+            { name = 'neorg' },
+            async_path(),
+            buffer(),
+        }),
+    }
+end
+
 ---@type SetupSources
 local cmdline = {
     {

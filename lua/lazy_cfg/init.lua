@@ -273,27 +273,13 @@ M.ESSENTIAL = {
         lazy = false,
         priority = 1000,
         version = false,
-        --[[ opts = {
-            rocks = {
-                'fzy',
-                'pathlib.nvim',
-                'lua-utils.nvim',
-                'nvim-nio',
-            },
-            luarocks_buird_args = { '--local' },
-        }, ]]
         config = source('lazy_cfg.luarocks'),
         enabled = luarocks_set(),
     },
     {
         'nvim-neorg/neorg',
         dependencies = { 'luarocks.nvim' },
-        version = '*',
-        --[[ opts = {
-            load = {
-                ['core.defaults'] = {},
-            },
-        }, ]]
+        version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
