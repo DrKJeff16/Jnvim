@@ -1,0 +1,101 @@
+name: Bug Report
+description: File a bug/issue
+title: "[BUG]: Bug Title"
+labels: [bug]
+assignees: DrKJeff16
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before We Begin**: Make sure you have read the [README](https://github.com/DrKJeff16/Jnvim/blob/main/README.md).
+  - type: checkboxes
+    attributes:
+      label: Did you check docs and existing issues?
+      description: Make sure you checked all of the below before submitting an issue
+      options:
+        - label: If plugin-related, I have checked the plugin documentation.
+          required: true
+        - label: I have read the available documentation of this config's utilities.
+          required: true
+        - label: I checked the syntax of my custom code, if any.
+          required: true
+  - type: input
+    attributes:
+      label: "Neovim version (`nvim --version | head -n -1`)"
+      placeholder: "v0.11.0-dev-..."
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "Operating System (`uname -ors` for Unix, or manually set if using Windows)"
+      placeholder: Linux 6.9.5-x64v2-xanmod1-1 GNU/Linux
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is. Please include any related errors you see in Neovim.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: Steps to reproduce the behaviour.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Code Snippet
+      description: A code snippet of your custom code, or the code that causes the issues. Make sure to put enough context.
+      value: |
+        local User = require('user')
+        local Check = User.check
+
+        local exists = User.check.module
+
+        if not exists('foo') then
+        -- Custom return code
+        return
+        end
+
+        -- Rest of your code...
+      render: Lua
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Logs
+      description: |
+        If applicable, paste any stack trace message or notification
+        that may hint towards the source of the issue.
+        If you're using `Notify` and the default keybinds,
+        try pressing `<leader>fTeN` or typing `:Notifications`
+        in the Cmdline to get the notifications back
+      placeholder: <logs>...
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: This is particularly troublesome when...
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Feedback
+      description: If you have any feedback, please write it down here
+      placeholder: The use of X is not recommended because...
+    validations:
+      required: false
