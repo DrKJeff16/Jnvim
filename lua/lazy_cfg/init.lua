@@ -600,6 +600,8 @@ M.COMPLETION = {
 
             'hrsh7th/cmp-cmdline',
 
+            'cmp-doxygen',
+
             'saadparwaiz1/cmp_luasnip',
             'LuaSnip',
         },
@@ -608,6 +610,14 @@ M.COMPLETION = {
             vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
         end,
         config = source('lazy_cfg.cmp'),
+    },
+    {
+        'paopaol/cmp-doxygen',
+        lazy = true,
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-treesitter/nvim-treesitter-textobjects',
+        },
     },
     {
         'L3MON4D3/LuaSnip',
