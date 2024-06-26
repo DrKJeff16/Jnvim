@@ -940,6 +940,13 @@ if is_nil(called_lazy) then
             frequency = 1800,
             check_pinned = false,
         },
+        ui = {
+            backdrop = 55,
+            border = 'double',
+            title = 'L      A      Z      Y',
+            wrap = true,
+            title_pos = 'center',
+        },
     })
 
     _G.called_lazy = true
