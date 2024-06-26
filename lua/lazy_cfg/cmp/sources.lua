@@ -16,8 +16,9 @@ local empty = Check.value.empty
 
 local cmp = require('cmp')
 
----@type fun(priority: integer?): SourceBuf
-local buffer = function(priority)
+---@param priority? integer
+---@return SourceBuf
+local function buffer(priority)
     ---@type SourceBuf
     local res = {
         name = 'buffer',
@@ -41,8 +42,9 @@ local buffer = function(priority)
     return res
 end
 
----@type fun(priority: integer?): SourceAPath
-local async_path = function(priority)
+---@param priority? integer
+---@return SourceAPath
+local function async_path(priority)
     ---@type SourceAPath
     local res = {
         name = 'async_path',
@@ -171,7 +173,7 @@ local M = {
                 else
                     notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
                         title = 'lazy_cfg.cmp.sources',
-                        timeout = 2000,
+                        timeout = 500,
                     })
                 end
             end
@@ -188,7 +190,7 @@ local M = {
             else
                 notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
                     title = 'lazy_cfg.cmp.sources',
-                    timeout = 2000,
+                    timeout = 500,
                 })
             end
         end
@@ -206,7 +208,7 @@ local M = {
             else
                 notify("(lazy_cfg.cmp.sources.setup): Couldn't parse the input table value", 'error', {
                     title = 'lazy_cfg.cmp.sources',
-                    timeout = 2000,
+                    timeout = 500,
                 })
             end
         end
@@ -217,14 +219,7 @@ local M = {
 }
 
 function M.new()
-    local self = setmetatable({}, { __index = M })
-
-    self.new = M.new
-    self.setup = M.setup
-    self.buffer = M.buffer
-    self.async_path = M.async_path
-
-    return self
+    return setmetatable({}, { __index = M })
 end
 
 return M
