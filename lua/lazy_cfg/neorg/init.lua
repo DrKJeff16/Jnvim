@@ -112,7 +112,7 @@ Neorg.setup({
                     notes = '~/Documents/Notes',
                 },
                 index = 'index.norg',
-                open_last_workspace = true,
+                open_last_workspace = false,
                 use_popup = true,
             },
         },
