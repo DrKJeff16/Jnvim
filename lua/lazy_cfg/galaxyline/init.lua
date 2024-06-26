@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local Highlight = User.highlight
+local Types = User.types.galaxyline
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil

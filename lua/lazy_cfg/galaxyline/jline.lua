@@ -4,6 +4,7 @@
 local User = require('user')
 local Check = User.check
 local Highlight = User.highlight
+local Types = User.types.galaxyline
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -78,17 +79,6 @@ local SEPARATORS = {
     --- A right separator.
     right_separator = { provider = ' ' },
 }
----@class JLine.Highlight.Spec
-
----@class JLine.Section.Component
----@field condition? boolean
----@field highlight? JLine.Highlight.Spec
----@field separator_highlight? JLine.Highlight.Spec
----@field icon? string
----@field provider string|fun(...): string
----@field separator? string
-
----@alias JLine.Section JLine.Section.Component[]
 
 ---@type JLine.Section
 GL.section.left[1] = {
