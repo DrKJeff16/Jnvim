@@ -79,6 +79,12 @@ if Check.exists.modules({ 'lazy_cfg.telescope.file_browser' }) then
     require('lazy_cfg.telescope.file_browser').loadkeys()
 end
 
+if exists('persisted') then
+    Opts.extensions.persisted = {
+        layout_config = { width = 0.6, height = 0.6 },
+    }
+end
+
 Telescope.setup(Opts)
 
 if exists('telescope._extensions.file_browser') then
@@ -122,6 +128,7 @@ local Names = {
 ---@type table<string, TelExtension>
 local known_exts = {
     ['scope'] = { 'scope' },
+    ['persisted'] = { 'persisted' },
     ['project_nvim'] = {
         'projects',
         ---@type fun(): KeyMapDict
