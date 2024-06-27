@@ -144,6 +144,10 @@ end
 
 ---@param data BufData
 local function tree_open(data)
+    if not (is_str(data.file)) or empty(data.file) then
+        return
+    end
+
     local nbuf = data.buf
     local name = data.file
 
@@ -153,14 +157,14 @@ local function tree_open(data)
     local no_name = name == '' and buf.buftype == ''
     local dir = fn.isdirectory(name) == 1
 
-    if not real and not no_name then
+    if not (real or no_name) then
         return
     end
 
     local ft = buf.ft
     local noignore = {}
 
-    if empty(noignore) or not in_tbl(noignore, ft) then
+    if ft == '' or empty(noignore) or not in_tbl(noignore, ft) then
         return
     end
 
@@ -563,9 +567,9 @@ local hl_groups = {
 local au_cmds = {
     ['VimEnter'] = { callback = tree_open },
     ['WinClosed'] = {
+        nested = true,
         callback = function()
-            ---@type integer
-            local nwin = tonumber(fn.expand('<amatch>'))
+            local nwin = math.floor(tonumber(fn.expand('<amatch>')))
 
             local tabc = function()
                 return tab_win_close(nwin)
@@ -573,43 +577,18 @@ local au_cmds = {
 
             sched_wp(tabc)
         end,
-        nested = true,
     },
     ['VimResized'] = {
-        group = 'NvimTreeResize',
+        group = augroup('NvimTreeResize', { clear = true }),
         callback = function()
             if View.is_visible() then
-                View.close()
-                Tapi.open()
-            end
-        end,
-    },
-    ['BufEnter'] = {
-        nested = true,
-        callback = function()
-            local ATree = Api.tree
-
-            local togg = ATree.toggle
-
-            -- Only 1 window with nvim-tree left: we probably closed a file buffer
-            if api.nvim_list_wins() == 1 and ATree.is_tree_buf() then
-                -- Required to let the close event complete. An error is thrown without this.
-                vim.defer_fn(function()
-                    -- close nvim-tree: will go to the last hidden buffer used before closing
-                    togg({ find_file = true, focus = true })
-                    -- re-open nivm-tree
-                    togg({ find_file = true, focus = true })
-                    -- nvim-tree is still the active window. Go to the previous window.
-                    vim.cmd('wincmd p')
-                end, 0)
+                require('nvim-tree.view').close()
+                require('nvim-tree.api').tree.open()
             end
         end,
     },
 }
 
-augroup('NvimTreeResize', {
-    clear = true,
-})
 for k, v in next, au_cmds do
     if is_str(k) and is_tbl(v) then
         au(k, v)
