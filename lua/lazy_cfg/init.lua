@@ -97,7 +97,7 @@ local function tel_fzf_build()
 
     if is_windows and executable('mingw32-make') then
         cmd = 'mingw32-' .. cmd
-    elseif is_windows and not executable('make') then
+    elseif not executable('make') then
         cmd = ''
     end
 
@@ -286,7 +286,11 @@ M.ESSENTIAL = {
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
-    { 'vim-scripts/L9', lazy = false },
+    {
+        'vim-scripts/L9',
+        lazy = false,
+        version = false,
+    },
     {
         'echasnovski/mini.nvim',
         version = false,
@@ -444,8 +448,11 @@ M.EDITING = {
             'nvim-treesitter',
             'plenary.nvim',
         },
+        init = function()
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+        end,
         config = source('lazy_cfg.todo_comments'),
-        enabled = executable('rg'),
+        enabled = executable('rg') and not in_console(),
     },
     {
         'windwp/nvim-autopairs',
@@ -487,7 +494,7 @@ M.VCS = {
             'telescope.nvim',
         },
         config = source('lazy_cfg.lazygit'),
-        enabled = executable({ 'git', 'lazygit' }),
+        enabled = executable({ 'git', 'lazygit' }) and not in_console(),
     },
 }
 --- LSP Plugins
@@ -787,12 +794,6 @@ M.UI = {
         end,
         config = source('lazy_cfg.hicolors'),
         enabled = vim_exists('+termguicolors'),
-    },
-    {
-        'norcalli/nvim-colorizer.lua',
-        version = false,
-        config = source('lazy_cfg.colorizer'),
-        enabled = false,
     },
     {
         'akinsho/toggleterm.nvim',
