@@ -27,14 +27,9 @@ local map_dict = Maps.map_dict
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 --- Install `Lazy` automatically.
-if not vim.uv.fs_stat(lazypath) then
-    vim.fn.system({
-        'git',
-        'clone',
-        '--filter=blob:none',
-        'https://github.com/folke/lazy.nvim.git',
-        lazypath,
-    })
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+    vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
 end
 
 --- Add `Lazy` to runtimepath
@@ -884,11 +879,15 @@ if is_nil(called_lazy) then
         pkg = {
             cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
             versions = true,
-            sources = {
-                'lazy',
-                'rockspec',
-                'pathspec',
-            },
+            sources = (function()
+                return exists('pathspec')
+                        and {
+                            'lazy',
+                            'rockspec',
+                            'pathspec',
+                        }
+                    or { 'lazy', 'rockspec' }
+            end)(),
         },
         dev = {
             path = '~/Projects',
