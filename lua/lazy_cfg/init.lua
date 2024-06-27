@@ -382,6 +382,13 @@ M.NVIM = {
         event = 'BufReadPre',
         version = false,
         config = source('lazy_cfg.persistence'),
+        enabled = false,
+    },
+    {
+        'olimorris/persisted.nvim',
+        lazy = false,
+        version = false,
+        config = source('lazy_cfg.persisted'),
     },
 }
 
