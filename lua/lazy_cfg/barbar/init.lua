@@ -34,8 +34,8 @@ Bar.setup({
         -- 'NvimTree',
     },
 
-    focus_on_close = 'previous',
-    hide = { inactive = false, extensions = false },
+    focus_on_close = 'left',
+    hide = { inactive = false, extensions = true, alternate = true },
 
     highlight_alternate = false,
     highlight_inactive_file_icons = false,
@@ -59,8 +59,8 @@ Bar.setup({
         },
 
         filetype = {
-            custom_colors = false,
-            enabled = true,
+            custom_colors = true,
+            enabled = exists('nvim-web-devicons'),
         },
 
         separator = { left = '▎', right = '' },
@@ -70,25 +70,27 @@ Bar.setup({
         pinned = { button = '', filename = true },
 
         ---@type 'default'|'powerline'|'slanted'
-        preset = 'slanted',
+        preset = 'default',
 
-        alternate = { filetype = { enabled = true } },
+        alternate = { filetype = { enabled = false } },
         current = { buffer_index = false },
         inactive = { button = '×' },
-        visible = { modified = { buffer_number = false } },
+        visible = { modified = { buffer_number = true } },
     },
 
     insert_at_end = false,
     insert_at_start = false,
 
-    maximum_padding = 4,
+    maximum_padding = 2,
     minimum_padding = 0,
-    maximum_length = 32,
+    maximum_length = 28,
     minimum_length = 0,
 
     semantic_letters = true,
 
-    sidebar_filetypes = {},
+    sidebar_filetypes = {
+        NvimTree = true,
+    },
 
     letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
 

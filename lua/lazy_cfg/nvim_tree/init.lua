@@ -17,6 +17,7 @@ local is_str = Check.value.is_str
 local empty = Check.value.empty
 local hi = User.highlight.hl
 local desc = kmap.desc
+local map_dict = User.maps.map_dict
 
 local nmap = kmap.n
 
@@ -84,26 +85,9 @@ local function map_keys(keys, bufnr)
 
     for _, mode in next, { 'n', 'v' } do
         if WK.available() then
-            ---@type RegOpts
-            local opts = { mode = mode }
-
-            if not is_nil(bufnr) then
-                opts.buffer = bufnr
-            end
-
-            WK.register({ ['<leader>ft'] = { name = 'NvimTree' } }, opts)
-            WK.register(WK.convert_dict(keys), opts)
-        else
-            for lhs, v in next, keys do
-                v[2] = is_tbl(v[2]) and v[2] or {}
-
-                if not is_nil(bufnr) then
-                    v[2].buffer = bufnr
-                end
-
-                kmap[mode](lhs, v[1], v[2])
-            end
+            map_dict({ ['<leader>ft'] = { name = '+NvimTree' } }, 'wk.register', false, mode, bufnr or nil)
         end
+        map_dict(keys, 'wk.register', false, mode, bufnr or nil)
     end
 end
 
@@ -130,7 +114,7 @@ local my_maps = {
 
 map_keys(my_maps)
 
----@type fun(nwin: integer)
+---@param nwin integer
 local function tab_win_close(nwin)
     local ntab = get_tabpage(nwin)
     local nbuf = get_bufn(nwin)
@@ -158,7 +142,7 @@ local function tab_win_close(nwin)
     end
 end
 
----@type fun(data: BufData)
+---@param data BufData
 local function tree_open(data)
     local nbuf = data.buf
     local name = data.file
@@ -316,8 +300,10 @@ local on_attach = function(bufn)
     map_keys(keys, bufn)
 end
 
-local HEIGHT_RATIO = 6 / 7
-local WIDTH_RATIO = 2 / 3
+local USE_FLOAT = false
+
+local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
+local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 5 / 16
 
 Tree.setup({
     on_attach = on_attach,
@@ -345,8 +331,8 @@ Tree.setup({
 
     disable_netrw = true,
     hijack_netrw = true,
-    hijack_cursor = false,
-    hijack_unnamed_buffer_when_opening = true,
+    hijack_cursor = true,
+    hijack_unnamed_buffer_when_opening = false,
     hijack_directories = {
         enable = true,
         auto_open = true,
@@ -356,7 +342,7 @@ Tree.setup({
 
     view = {
         float = {
-            enable = true,
+            enable = USE_FLOAT,
             quit_on_focus_loss = true,
             open_win_config = function()
                 local cols = vim.opt.columns:get()
@@ -384,6 +370,7 @@ Tree.setup({
         width = function()
             return floor(vim.opt.columns:get() * WIDTH_RATIO)
         end,
+
         cursorline = true,
         preserve_window_proportions = true,
         number = false,
@@ -467,7 +454,7 @@ Tree.setup({
     git = {
         enable = true,
         cygwin_support = is_windows,
-        timeout = 750,
+        timeout = 500,
         show_on_dirs = true,
         show_on_open_dirs = true,
     },

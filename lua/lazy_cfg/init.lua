@@ -97,7 +97,7 @@ local function tel_fzf_build()
 
     if is_windows and executable('mingw32-make') then
         cmd = 'mingw32-' .. cmd
-    elseif is_windows and not executable('make') then
+    elseif not executable('make') then
         cmd = ''
     end
 
@@ -278,15 +278,15 @@ M.ESSENTIAL = {
     },
     {
         'nvim-neorg/neorg',
-        dependencies = {
-            'luarocks.nvim',
-            'zen-mode.nvim',
-        },
         version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
     },
-    { 'vim-scripts/L9', lazy = false },
+    {
+        'vim-scripts/L9',
+        lazy = false,
+        version = false,
+    },
     {
         'echasnovski/mini.nvim',
         version = false,
@@ -315,11 +315,11 @@ M.ESSENTIAL = {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
+        enabled = not in_console(),
     },
 
     {
         'rcarriga/nvim-notify',
-        priority = 1000,
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
@@ -351,7 +351,6 @@ M.NVIM = {
     {
         'folke/which-key.nvim',
         event = 'VeryLazy',
-        priority = 1000,
         main = 'which-key',
         version = false,
         init = function()
@@ -413,9 +412,11 @@ M.TS = {
     {
         'JoosepAlviste/nvim-ts-context-commentstring',
         lazy = true,
+        version = false,
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
+        lazy = true,
         version = false,
     },
 }
@@ -444,8 +445,11 @@ M.EDITING = {
             'nvim-treesitter',
             'plenary.nvim',
         },
+        init = function()
+            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+        end,
         config = source('lazy_cfg.todo_comments'),
-        enabled = executable('rg'),
+        enabled = executable('rg') and not in_console(),
     },
     {
         'windwp/nvim-autopairs',
@@ -455,6 +459,7 @@ M.EDITING = {
     },
     {
         'glepnir/template.nvim',
+        version = false,
         config = source('lazy_cfg.template'),
         enabled = false,
     },
@@ -487,7 +492,7 @@ M.VCS = {
             'telescope.nvim',
         },
         config = source('lazy_cfg.lazygit'),
-        enabled = executable({ 'git', 'lazygit' }),
+        enabled = executable({ 'git', 'lazygit' }) and not in_console(),
     },
 }
 --- LSP Plugins
@@ -522,10 +527,12 @@ M.LSP = {
     { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
+        lazy = false,
         version = false,
     },
     {
         'folke/trouble.nvim',
+        lazy = false,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         enabled = not in_console(),
@@ -632,6 +639,7 @@ M.TELESCOPE = {
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
+        version = false,
         dependencies = { 'plenary.nvim' },
         enabled = not in_console(),
     },
@@ -661,7 +669,6 @@ M.UI = {
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
-        priority = 1000,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -690,7 +697,6 @@ M.UI = {
     --- Tabline
     {
         'akinsho/bufferline.nvim',
-        priority = 1000,
         version = false,
         dependencies = {
             'nvim-web-devicons',
@@ -701,13 +707,11 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.bufferline'),
-        --- enabled = not in_console(),
-        enabled = false,
+        enabled = not in_console(),
     },
     --- Tabline
     {
         'romgrk/barbar.nvim',
-        priority = 1000,
         version = false,
         dependencies = {
             'gitsigns.nvim',
@@ -719,7 +723,8 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.barbar'),
-        enabled = not in_console(),
+        -- enabled = not in_console(),
+        enabled = false,
     },
     --- Indent Scope
     {
@@ -753,6 +758,7 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.nvim_tree'),
+        enable = not in_console(),
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
@@ -789,12 +795,6 @@ M.UI = {
         end,
         config = source('lazy_cfg.hicolors'),
         enabled = vim_exists('+termguicolors'),
-    },
-    {
-        'norcalli/nvim-colorizer.lua',
-        version = false,
-        config = source('lazy_cfg.colorizer'),
-        enabled = false,
     },
     {
         'akinsho/toggleterm.nvim',
@@ -881,6 +881,20 @@ if is_nil(called_lazy) then
             root = vim.fn.stdpath('data') .. '/lazy-rocks',
             server = 'https://nvim-neorocks.github.io/rocks-binaries/',
         },
+        pkg = {
+            cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
+            versions = true,
+            sources = {
+                'lazy',
+                'rockspec',
+                'pathspec',
+            },
+        },
+        dev = {
+            path = '~/Projects',
+            patterns = { 'DrKJeff16' },
+            fallback = false,
+        },
         change_detection = {
             enabled = true,
             notify = true,
@@ -892,11 +906,31 @@ if is_nil(called_lazy) then
             check_pinned = false,
         },
         ui = {
-            backdrop = 55,
+            backdrop = 75,
             border = 'double',
             title = 'L      A      Z      Y',
             wrap = true,
             title_pos = 'center',
+            pills = true,
+        },
+
+        readme = {
+            enabled = true,
+            root = vim.fn.stdpath('state') .. '/lazy/readme',
+            files = { 'README.md', 'lua/**/README.md' },
+
+            -- only generate markdown helptags for plugins that dont have docs
+            skip_if_doc_exists = false,
+        },
+
+        state = vim.fn.stdpath('state') .. '/lazzy/state.json',
+
+        profiling = {
+            -- Enables extra stats on the debug tab related to the loader cache.
+            -- Additionally gathers stats about all package.loaders
+            loader = true,
+            -- Track each new require in the Lazy profiling tab
+            require = true,
         },
     })
 

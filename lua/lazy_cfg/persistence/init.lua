@@ -3,14 +3,13 @@
 
 local User = require('user')
 local Check = User.check
-local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
 local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('persistence') then
     return
@@ -21,19 +20,17 @@ local stdpath = vim.fn.stdpath
 
 local Pst = require('persistence')
 
-local Opts = {
-    options = vim.opt.sessionoptions:get(),
-    dir = expand(stdpath('state') .. '/sessions/'), -- directory where session files are saved
-    pre_save = not exists('barbar') and nil or function()
+Pst.setup({
+    options = { 'buffers', 'curdir', 'tabpages', 'winsize' },
+    dir = vim.fn.stdpath('state') .. '/sessions/', -- directory where session files are saved
+    pre_save = exists('barbar') and function()
         vim.api.nvim_exec_autocmds('User', { pattern = 'SessionSavePre' })
-    end, -- a function to call before saving the session
+    end or nil, -- a function to call before saving the session
     post_save = nil, -- a function to call after saving the session
-    save_empty = false, -- don't save if there are no open file buffers
+    save_empty = true, -- don't save if there are no open file buffers
     pre_load = nil, -- a function to call before loading the session
     post_load = nil, -- a function to call after loading the session
-}
-
-Pst.setup(Opts)
+})
 
 ---@type table<MapModes, KeyMapDict>
 local Keys = {
@@ -65,17 +62,7 @@ local Names = {
     v = { ['<leader><C-S>'] = { name = '+Session (Persistence)' } },
 }
 
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            kmap[mode](lhs, v[1], v[2])
-        end
-    end
+if WK.available() then
+    map_dict(Names, 'wk.register', true, nil, 0)
 end
+map_dict(Keys, 'wk.register', true, nil, 0)
