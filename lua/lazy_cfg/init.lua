@@ -278,10 +278,6 @@ M.ESSENTIAL = {
     },
     {
         'nvim-neorg/neorg',
-        dependencies = {
-            'luarocks.nvim',
-            'zen-mode.nvim',
-        },
         version = false,
         config = source('lazy_cfg.neorg'),
         enabled = luarocks_set(),
@@ -319,11 +315,11 @@ M.ESSENTIAL = {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
+        enabled = not in_console(),
     },
 
     {
         'rcarriga/nvim-notify',
-        priority = 1000,
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
@@ -355,7 +351,6 @@ M.NVIM = {
     {
         'folke/which-key.nvim',
         event = 'VeryLazy',
-        priority = 1000,
         main = 'which-key',
         version = false,
         init = function()
@@ -417,9 +412,11 @@ M.TS = {
     {
         'JoosepAlviste/nvim-ts-context-commentstring',
         lazy = true,
+        version = false,
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
+        lazy = true,
         version = false,
     },
 }
@@ -462,6 +459,7 @@ M.EDITING = {
     },
     {
         'glepnir/template.nvim',
+        version = false,
         config = source('lazy_cfg.template'),
         enabled = false,
     },
@@ -529,10 +527,12 @@ M.LSP = {
     { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
+        lazy = false,
         version = false,
     },
     {
         'folke/trouble.nvim',
+        lazy = false,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         enabled = not in_console(),
@@ -639,6 +639,7 @@ M.TELESCOPE = {
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
+        version = false,
         dependencies = { 'plenary.nvim' },
         enabled = not in_console(),
     },
