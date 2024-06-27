@@ -21,8 +21,8 @@ local stdpath = vim.fn.stdpath
 local Pst = require('persistence')
 
 Pst.setup({
-    options = vim.opt.sessionoptions:get(),
-    dir = expand(stdpath('state') .. '/sessions/'), -- directory where session files are saved
+    options = { 'buffers', 'curdir', 'tabpages', 'winsize' },
+    dir = vim.fn.stdpath('state') .. '/sessions/', -- directory where session files are saved
     pre_save = exists('barbar') and function()
         vim.api.nvim_exec_autocmds('User', { pattern = 'SessionSavePre' })
     end or nil, -- a function to call before saving the session
