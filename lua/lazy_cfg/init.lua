@@ -881,6 +881,20 @@ if is_nil(called_lazy) then
             root = vim.fn.stdpath('data') .. '/lazy-rocks',
             server = 'https://nvim-neorocks.github.io/rocks-binaries/',
         },
+        pkg = {
+            cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
+            versions = true,
+            sources = {
+                'lazy',
+                'rockspec',
+                'pathspec',
+            },
+        },
+        dev = {
+            path = '~/Projects',
+            patterns = { 'DrKJeff16' },
+            fallback = false,
+        },
         change_detection = {
             enabled = true,
             notify = true,
@@ -892,11 +906,31 @@ if is_nil(called_lazy) then
             check_pinned = false,
         },
         ui = {
-            backdrop = 55,
+            backdrop = 75,
             border = 'double',
             title = 'L      A      Z      Y',
             wrap = true,
             title_pos = 'center',
+            pills = true,
+        },
+
+        readme = {
+            enabled = true,
+            root = vim.fn.stdpath('state') .. '/lazy/readme',
+            files = { 'README.md', 'lua/**/README.md' },
+
+            -- only generate markdown helptags for plugins that dont have docs
+            skip_if_doc_exists = false,
+        },
+
+        state = vim.fn.stdpath('state') .. '/lazzy/state.json',
+
+        profiling = {
+            -- Enables extra stats on the debug tab related to the loader cache.
+            -- Additionally gathers stats about all package.loaders
+            loader = true,
+            -- Track each new require in the Lazy profiling tab
+            require = true,
         },
     })
 
