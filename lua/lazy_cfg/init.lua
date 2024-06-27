@@ -661,7 +661,6 @@ M.UI = {
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
-        priority = 1000,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -690,7 +689,6 @@ M.UI = {
     --- Tabline
     {
         'akinsho/bufferline.nvim',
-        priority = 1000,
         version = false,
         dependencies = {
             'nvim-web-devicons',
@@ -701,13 +699,11 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.bufferline'),
-        --- enabled = not in_console(),
-        enabled = false,
+        enabled = not in_console(),
     },
     --- Tabline
     {
         'romgrk/barbar.nvim',
-        priority = 1000,
         version = false,
         dependencies = {
             'gitsigns.nvim',
@@ -719,7 +715,8 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.barbar'),
-        enabled = not in_console(),
+        -- enabled = not in_console(),
+        enabled = false,
     },
     --- Indent Scope
     {
@@ -753,6 +750,7 @@ M.UI = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('lazy_cfg.nvim_tree'),
+        enable = not in_console(),
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
