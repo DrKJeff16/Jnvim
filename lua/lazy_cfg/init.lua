@@ -925,7 +925,7 @@ if is_nil(called_lazy) then
             skip_if_doc_exists = false,
         },
 
-        state = vim.fn.stdpath('state') .. '/lazzy/state.json',
+        state = vim.fn.stdpath('state') .. '/lazy/state.json',
 
         profiling = {
             -- Enables extra stats on the debug tab related to the loader cache.
