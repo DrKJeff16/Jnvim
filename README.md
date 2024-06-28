@@ -86,15 +86,23 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── exists.lua  <== Existance checkers
 │   │   └── value.lua  <== Value checkers
+│   ├── commands.lua  <== User-defined commands
 │   ├── distro/  <== OS Utilities
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   └── archlinux.lua  <== Arch Linux utilities
 │   ├── highlight.lua  <== Highlight Functions
 │   ├── init.lua  <== API `init`, where entry points are defined
-│   ├── maps.lua  <== Mapping Functions
+│   ├── maps/  <== Mapping Utilities
+│   │   ├── init.lua  <== Entry points are defined here
+│   │   ├── buf_map.lua  <== `vim.api.nvim_buf_set_keymap` utilities
+│   │   ├── kmap.lua  <== `vim.keymap.set` utilities
+│   │   ├── map.lua  <== `vim.api.nvim_set_keymap` utilities
+│   │   └── wk.lua  <== `which_key` utilities (regardless if installed or not)
 │   ├── opts.lua  <== Vim Options
+│   ├── update.lua  <== Update utilities (WIP)
 │   ├── util/  <== Misc Utils
 │   │   ├── init.lua  <== Entry points are defined here
+│   │   ├── autocmd.lua  <== Autocommand utilities
 │   │   └── notify.lua  <== Notification utilities
 │   └── types/  <== Lua Type Annotations and Documentation
 │       ├── init.lua  <== Entry points are defined here
@@ -102,9 +110,11 @@ For these to work, the following executables must be installed and in your `$PAT
 │       │   ├── init.lua  <== Entry points are defined here
 │       │   ├── autocmd.lua  <== Autocommand annotations
 │       │   ├── check.lua  <== `check` module annotations
+│       │   ├── commands.lua  <== `commands` module annotations
 │       │   ├── highlight.lua  <== `highlight` module annotations
 │       │   ├── maps.lua  <== `maps` module annotations
 │       │   ├── opts.lua  <== `opts` module annotations
+│       │   ├── update.lua  <== `update` module annotations (WIP)
 │       │   └── util.lua  <== `util` module annotations
 │       └── ...  <== Other annotation
 ```
