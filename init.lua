@@ -310,8 +310,8 @@ if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, u
     _G.use_statusline = 'lualine'
 end
 
---- List of manually-callable plugins.
-_G.Pkg = require('lazy_cfg')
+--- List of manually-callable plugin.
+_G.Pkg = require('config.lazy')
 
 --- Set the keymaps previously stated
 if WK.available() then

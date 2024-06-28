@@ -59,8 +59,11 @@ function M.convert(rhs, opts)
 end
 
 function M.convert_dict(T)
-    if not is_tbl(T) or empty(T) then
-        error('(user.maps.wk.convert_dict): Argument empty or not a table')
+    if not is_tbl(T) then
+        error('(user.maps.wk.convert_dict): Argument of type `' .. type(T) .. '` is not a table')
+    end
+    if empty(T) then
+        error('(user.maps.wk.convert_dict): Argument is an empty table')
     end
 
     ---@type RegKeys|RegKeysNamed

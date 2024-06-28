@@ -1,0 +1,25 @@
+---@diagnostic disable:unused-function
+---@diagnostic disable:unused-local
+
+local User = require('user')
+local Check = User.check
+local CfgUtil = require('config.util')
+local types = User.types.lazy
+
+local source = CfgUtil.source
+local executable = Check.exists.executable
+
+---@type LazySpec[]
+local M = {
+    {
+        'rhysd/vim-syntax-codeowners',
+        version = false,
+    },
+    {
+        'vim-scripts/DoxygenToolkit.vim',
+        version = false,
+        enabled = executable('doxygen'),
+    },
+}
+
+return M
