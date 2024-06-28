@@ -25,7 +25,7 @@
 ---@field on_close? fun(...)
 ---@field keep? fun(...)
 ---@field render? string|fun(...)
----@field replace? integer|notify.Record
+---@field replace? integer
 ---@field hide_from_history? boolean Defaults to `false`
 ---@field animate? boolean Defaults to `true`
 

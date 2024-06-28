@@ -11,13 +11,7 @@ local function xor(x, y)
     return (x and not y) or (not x and y)
 end
 
----@type User.Util
----@diagnostic disable-next-line:missing-fields
-local M = {
-    xor = xor,
-}
-
-function M.strip_fields(T, fields)
+local function strip_fields(T, fields)
     local Value = require('user.check.value')
 
     local is_tbl = Value.is_tbl
@@ -62,7 +56,7 @@ function M.strip_fields(T, fields)
     return res
 end
 
-function M.strip_values(T, values, max_instances)
+local function strip_values(T, values, max_instances)
     local Value = require('user.check.value')
 
     local is_tbl = Value.is_tbl
@@ -116,17 +110,14 @@ local function ft_set(s, bufnr)
         end
     end
 end
-M.ft_set = ft_set
 
-function M.ft_get(bufnr)
+local function ft_get(bufnr)
     bufnr = require('user.check.value').is_int(bufnr) and bufnr or 0
 
     return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
 
-M.notify = require('user.util.notify')
-
-function M.assoc()
+local function assoc()
     local Value = require('user.check.value')
 
     local is_nil = Value.is_nil
@@ -268,7 +259,7 @@ function M.assoc()
     end
 end
 
-function M.displace_letter(c, direction, cycle)
+local function displace_letter(c, direction, cycle)
     local Value = require('user.check.value')
     direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction)) and direction or 'next'
     cycle = Value.is_bool(cycle) and cycle or false
@@ -402,5 +393,19 @@ function M.displace_letter(c, direction, cycle)
 
     error('(user.util.displace_letter): Invalid argument')
 end
+
+---@type User.Util
+---@diagnostic disable-next-line:missing-fields
+local M = {
+    notify = require('user.util.notify'),
+
+    assoc = assoc,
+    xor = xor,
+    strip_fields = strip_fields,
+    strip_values = strip_values,
+    displace_letter = displace_letter,
+    ft_get = ft_get,
+    ft_set = ft_set,
+}
 
 return M

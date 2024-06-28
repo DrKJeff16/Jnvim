@@ -15,15 +15,16 @@ local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
-local hi = User.highlight.hl
+local hi = User.highlight.hl_from_dict
 local desc = kmap.desc
 local map_dict = User.maps.map_dict
-
-local nmap = kmap.n
 
 if not exists('nvim-tree') then
     return
 end
+
+--- Use floating Tree? You decide
+local USE_FLOAT = false
 
 local api = vim.api
 local opt = vim.opt
@@ -36,7 +37,6 @@ local in_tbl = vim.tbl_contains
 local filter = vim.tbl_filter
 local tbl_map = vim.tbl_map
 
-local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 local get_tabpage = api.nvim_win_get_tabpage
 local get_bufn = api.nvim_win_get_buf
@@ -303,8 +303,6 @@ local on_attach = function(bufn)
 
     map_keys(keys, bufn)
 end
-
-local USE_FLOAT = false
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
 local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 5 / 16
@@ -581,9 +579,11 @@ local au_cmds = {
     ['VimResized'] = {
         group = augroup('NvimTreeResize', { clear = true }),
         callback = function()
-            if View.is_visible() then
-                require('nvim-tree.view').close()
-                require('nvim-tree.api').tree.open()
+            local V = require('nvim-tree.view')
+            local A = require('nvim-tree.api').tree
+            if V.is_visible() then
+                V.close()
+                A.open()
             end
         end,
     },
@@ -595,8 +595,4 @@ for k, v in next, au_cmds do
     end
 end
 
-for k, v in next, hl_groups do
-    if is_str(k) and is_tbl(v) and not empty(v) then
-        hi(k, v)
-    end
-end
+hi(hl_groups)
