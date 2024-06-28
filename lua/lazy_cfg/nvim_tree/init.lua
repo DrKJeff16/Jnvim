@@ -589,10 +589,5 @@ local au_cmds = {
     },
 }
 
-for k, v in next, au_cmds do
-    if is_str(k) and is_tbl(v) then
-        au(k, v)
-    end
-end
-
+User.util.au.au_from_dict(au_cmds)
 hi(hl_groups)

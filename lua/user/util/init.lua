@@ -128,7 +128,7 @@ local function assoc()
 
     local ft = ft_set
 
-    local au = vim.api.nvim_create_autocmd
+    local au_repeated_events = require('user.util.autocmd').au_repeated_events
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
@@ -225,37 +225,8 @@ local function assoc()
 
     local notify = require('user.util.notify').notify
 
-    for _, v in next, aus do
-        if not (is_str(v.events) or is_tbl(v.events)) or empty(v.events) then
-            notify('(user.assoc): Event type `' .. type(v.events) .. '` is neither string nor table', 'error')
-            goto continue
-        end
-
-        if not is_tbl(v.opts_tbl) or empty(v.opts_tbl) then
-            notify('(user.assoc): Event options are not in a table or it is empty', 'error')
-            goto continue
-        end
-
-        for _, o in next, v.opts_tbl do
-            if not is_tbl(o) or empty(o) then
-                notify('(user.assoc): Event option is not a table or an empty one', 'error')
-                goto continue
-            end
-
-            if not is_nil(o.pattern) and (not is_str(o.pattern) or empty(o.pattern)) then
-                notify('(user.assoc): Pattern is not a string or is an empty one', 'error')
-                goto continue
-            end
-
-            if not is_fun(o.callback) then
-                notify('(user.assoc): Callback is not a function', 'error')
-                goto continue
-            end
-
-            au(v.events, o)
-        end
-
-        ::continue::
+    for _, T in next, aus do
+        au_repeated_events(T)
     end
 end
 
@@ -398,6 +369,7 @@ end
 ---@diagnostic disable-next-line:missing-fields
 local M = {
     notify = require('user.util.notify'),
+    au = require('user.util.autocmd'),
 
     assoc = assoc,
     xor = xor,

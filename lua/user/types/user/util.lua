@@ -1,6 +1,8 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+require('user.types.user.autocmd')
+
 ---@alias VimNotifyLvl
 ---|0
 ---|1
@@ -32,6 +34,13 @@
 ---@class User.Util.Notify
 ---@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: NotifyOpts?)
 
+---@class User.Util.Autocmd
+---@field au_pair fun(T: AuPair)
+---@field au_repeated fun(T: AuRepeat)
+---@field au_from_arr fun(T: AuList)
+---@field au_from_dict fun(T: AuDict)
+---@field au_repeated_events fun(T: AuRepeatEvents)
+
 ---@class User.Util
 ---@field xor fun(x: boolean, y: boolean): boolean
 ---@field strip_fields fun(T: table, values: string|string[]): table
@@ -39,5 +48,6 @@
 ---@field ft_set fun(s: string, bufnr: integer?): fun()
 ---@field ft_get fun(bufnr: integer?): string
 ---@field notify User.Util.Notify
+---@field au User.Util.Autocmd
 ---@field assoc fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
