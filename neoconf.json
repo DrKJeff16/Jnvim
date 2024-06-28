@@ -126,7 +126,7 @@
 			"Lua.hover.viewString": true,
 			"Lua.hover.viewStringMax": 1000,
 			"Lua.runtime.fileEncoding": "utf8",
-			"Lua.runtime.pathStrict": true,
+			"Lua.runtime.pathStrict": false,
 			"Lua.runtime.unicodeName": false,
 			"Lua.runtime.version": "LuaJIT",
 			"Lua.semantic.annotation": true,
