@@ -1,6 +1,7 @@
 /lazy-lock.json
 /src
 /repro.lua
+/rtp.lua
 
 /patches
 *.patch
