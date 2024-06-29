@@ -73,15 +73,30 @@ For these to work, the following executables must be installed and in your `$PAT
 
 ```
 /lua
-├── lazy_cfg/  <== Folder containing all Lua plugin configurations
-│   ├── init.lua  <== Plugin Installation and entry points are called here
-│   ├── plugin1/
-│   │   ├── init.lua  <== If submodules exist, entry points are defined here
-│   │   └── ...
-│   ├── plugin2/
-│   │   └── init.lua
-│   └── ...
+├── config/  <== Folder containing all Lua plugin configurations
+│   ├── lazy.lua  <== Plugin Installation and entry points are called here
+│   └── util.lua  <== Utilities used in the file above (env checks, etc.)
+├── plugin/  <==  Plugins are configured in this directory
+│   ├── _spec/  <== Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
+│   │   ├── colorschemes.lua  <== Colorscheme plugins
+│   │   ├── completion.lua  <== Completion plugins
+│   │   ├── editing.lua  <== Editing enhancement plugins
+│   │   ├── lsp.lua  <== LSP-related plugins
+│   │   ├── syntax.lua  <== Syntax plugins
+│   │   ├── treesitter.lua  <== Treesitter plugins
+│   │   ├── telescope.lua  <== Telescope-related plugins
+│   │   ├── ui.lua  <== UI-enhancement plugins
+│   │   ├── vcs.lua  <== Version Control plugins
+│   │   ├── utils.lua  <== Utilitary plugins
+│   │   └── essentials.lua  <== Essential plugins. TREAT THIS ONE WITH CARE
+│   ├── plugin1/  <== Arbitrary plugin #1
+│   │   └── init.lua  <== Entry points
+│   ├── plugin2/  <== Arbitrary plugin #2
+│   │   ├── init.lua  <== Entry points
+│   │   └── submoule.lua  <== Arbitrary submodule
+│   └── ...  <==  More plugin configs...
 ├── user/  <== User API module
+│   ├── init.lua  <== API `init`, where entry points are defined
 │   ├── check/  <== Checker Functions
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── exists.lua  <== Existance checkers
@@ -91,7 +106,6 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   └── archlinux.lua  <== Arch Linux utilities
 │   ├── highlight.lua  <== Highlight Functions
-│   ├── init.lua  <== API `init`, where entry points are defined
 │   ├── maps/  <== Mapping Utilities
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── buf_map.lua  <== `vim.api.nvim_buf_set_keymap` utilities
@@ -116,19 +130,16 @@ For these to work, the following executables must be installed and in your `$PAT
 │       │   ├── opts.lua  <== `opts` module annotations
 │       │   ├── update.lua  <== `update` module annotations (WIP)
 │       │   └── util.lua  <== `util` module annotations
-│       └── ...  <== Other annotation
+└───────└── ...  <== Other annotation
 ```
 
 ### Plugins
 
 There's a lot of plugins included.
-Those may be found in [`lua/lazy_cfg/init.lua`](/lua/lazy_cfg/init.lua).
-They are ordered by category, and you can make your own.
-
-<br/>
-
-**NOTE:** _Please refer to
-[`lazy.nvim`](https://github.com/folke/lazy.nvim) for more info on how to install plugins._
+The plugins are installed based on the files in [`lua/plugin/_spec`](/lua/plugin/_spec).
+You can create your own category file, or expand from the existant files in said directory.
+_Just make sure to read the
+[`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins._
 
 <br/>
 
@@ -139,21 +150,21 @@ They are ordered by category, and you can make your own.
 
 <br/>
 
-* [`which-key.nvim`](https://github.com/folke/which-key.nvim)
-* [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
-* [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
-* [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
-* [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
-* [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
-* [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
-* [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
-* [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
-* [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
-* [`noice.nvim`](https://github.com/folke/noice.nvim)
-* [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
-* [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
-* [`BarBar`](https://github.com/romgrk/barbar.nvim)
-* [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
+- [`which-key.nvim`](https://github.com/folke/which-key.nvim)
+- [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
+- [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
+- [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
+- [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
+- [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
+- [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
+- [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
+- [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
+- [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
+- [`noice.nvim`](https://github.com/folke/noice.nvim)
+- [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
+- [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
+- [`BarBar`](https://github.com/romgrk/barbar.nvim)
+- [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
 
 </details>
 
