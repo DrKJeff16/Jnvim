@@ -3,7 +3,7 @@
 
 local User = require('user')
 local Check = User.check
-local CfgUtil = require('config.util')
+local CfgUtil = require('config.util') ---@see PluginUtils
 local types = User.types.lazy
 
 local source = CfgUtil.source
@@ -48,7 +48,6 @@ local M = {
     },
     {
         'rafamadriz/friendly-snippets',
-        lazy = true,
         version = false,
     },
     {
