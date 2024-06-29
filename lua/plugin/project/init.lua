@@ -7,12 +7,13 @@ local Util = User.util
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap
 local WK = User.maps.wk
-local UNotify = Util.notify
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local desc = kmap.desc
+local map_dict = User.maps.map_dict
+local notify = Util.notify.notify
 
 if not exists('project_nvim') then
     return
@@ -23,7 +24,7 @@ local Config = require('project_nvim.config')
 
 local recent_proj = Project.get_recent_projects
 
-local Opts = {
+Project.setup({
     -- Manual mode doesn't automatically change your root directory, so you have
     -- the option to manually do so using `:ProjectRoot` command.
     manual_mode = false,
@@ -45,7 +46,9 @@ local Opts = {
         '.svn',
         'Makefile',
         'package.json',
+        'package.lock',
         'pyproject.toml',
+        '.luarc.json',
         '.neoconf.json',
         'neoconf.json',
         'Pipfile',
@@ -62,6 +65,7 @@ local Opts = {
     -- Ex: { "~/.cargo/*", ... }
     exclude_dirs = {
         '~/Templates/^',
+        '~/.local/*',
     },
 
     -- Show hidden files in telescope
@@ -69,7 +73,7 @@ local Opts = {
 
     -- When set to false, you will get a message when project.nvim changes your
     -- directory.
-    silent_chdir = false,
+    silent_chdir = true,
 
     -- What scope to change the directory, valid options are
     -- * global (default)
@@ -79,58 +83,30 @@ local Opts = {
 
     -- Path where project.nvim will store the project history for use in
     -- telescope
-    datapath = vim.fn.stdpath('data'),
-}
+    datapath = vim.fn.stdpath('state') .. '/projects/',
+})
 
-Project.setup(Opts)
-
----@type table<MapModes,KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>pr'] = {
-            function()
-                local msg = ''
+    ['<leader>pr'] = {
+        function()
+            local msg = ''
 
-                for _, v in next, recent_proj() do
-                    msg = msg .. '\n- ' .. v
-                end
-                UNotify.notify(msg, 'info', { title = 'Recent Projects' })
-            end,
-            desc('Print Recent Projects'),
-        },
-    },
-    v = {
-        ['<leader>pr'] = {
-            function()
-                local msg = ''
-
-                for _, v in next, recent_proj() do
-                    msg = msg .. '\n- ' .. v
-                end
-                UNotify.notify(msg, 'info', { title = 'Recent Projects' })
-            end,
-            desc('Print Recent Projects'),
-        },
+            for _, v in next, recent_proj() do
+                msg = msg .. '\n- ' .. v
+            end
+            notify(msg, 'info', { title = 'Recent Projects', animate = true, timeout = 550, hide_from_history = false })
+        end,
+        desc('Print Recent Projects'),
     },
 }
 
----@type table<MapModes, RegKeysNamed>
+---@type RegKeysNamed
 local Names = {
-    n = { ['<leader>p'] = { name = '+Project' } },
-    v = { ['<leader>p'] = { name = '+Project' } },
+    ['<leader>p'] = { name = '+Project' },
 }
 
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
-
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-            kmap[mode](lhs, v[1], v[2] or {})
-        end
-    end
+if WK.available() then
+    map_dict(Names, 'wk.register', false, 'n', 0)
 end
+map_dict(Keys, 'wk.register', false, 'n', 0)

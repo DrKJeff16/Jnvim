@@ -46,17 +46,6 @@ local M = {
         enabled = luarocks_set(),
     },
     {
-        'folke/zen-mode.nvim',
-        version = false,
-        config = source('plugin.zen_mode'),
-    },
-    {
-        'nvim-neorg/neorg',
-        version = false,
-        config = source('plugin.neorg'),
-        enabled = luarocks_set(),
-    },
-    {
         'vim-scripts/L9',
         lazy = false,
         version = false,
