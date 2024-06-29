@@ -38,14 +38,4 @@ local M = {
     end,
 }
 
----@return User.Check
-function M.new()
-    local self = setmetatable({}, { __index = M })
-
-    self.value = require('user.check.value')
-    self.exists = require('user.check.exists')
-
-    return self
-end
-
 return M
