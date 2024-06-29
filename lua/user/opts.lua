@@ -14,7 +14,7 @@ local vim_exists = Exists.vim_exists
 local in_console = require('user.check').in_console
 local notify = require('user.util.notify').notify
 
----@type OptsTbl
+---@type User.Opts.Spec
 local opt_tbl = {
     autoindent = true,
     autoread = true,
@@ -108,7 +108,7 @@ end
 --- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
 --- respectively.
 --- ---
----@type fun(opts: OptsTbl)
+---@type fun(opts: User.Opts.Spec)
 local function optset(opts)
     for k, v in next, opts do
         if not is_nil(vim.opt[k]) then
