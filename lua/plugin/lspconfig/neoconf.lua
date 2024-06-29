@@ -36,7 +36,7 @@ local opts = {
     -- import existing settings from other plugins
     import = {
         vscode = true, -- local .vscode/settings.json
-        coc = false, -- global/local coc-settings.json
+        coc = true, -- global/local coc-settings.json
         nlsp = false, -- global/local nlsp-settings.nvim json settings
     },
     -- send new configuration to lsp clients when changing json settings

@@ -17,12 +17,6 @@ local M = {
     {
         'neovim/nvim-lspconfig',
         version = false,
-        dependencies = {
-            'lazydev.nvim',
-            'neoconf.nvim',
-            'trouble.nvim',
-            'SchemaStore',
-        },
         config = source('plugin.lspconfig'),
         enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
     },
@@ -41,7 +35,11 @@ local M = {
         config = source('plugin.lspconfig.lazydev'),
         enabled = executable('lua-language-server'),
     },
-    { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
+    {
+        'Bilal2453/luvit-meta',
+        lazy = true,
+        version = false,
+    }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
         lazy = false,
@@ -63,7 +61,21 @@ local M = {
     },
     {
         'smjonas/inc-rename.nvim',
+        version = false,
         config = source('plugin.lspconfig.inc_rename'),
+    },
+    {
+        'neoclide/coc.nvim',
+        version = '*',
+        build = 'npm ci',
+        init = function()
+            vim.opt.backup = false
+            vim.opt.writebackup = false
+            vim.opt.updatetime = 300
+            vim.opt.signcolumn = 'yes'
+        end,
+        config = source('plugin.coc'),
+        enabled = executable('npm') and vim_has('nvim-0.8'),
     },
 }
 

@@ -42,13 +42,11 @@ local M = {
     {
         'paopaol/cmp-doxygen',
         lazy = true,
-        dependencies = {
-            'nvim-treesitter-textobjects',
-        },
+        dependencies = { 'nvim-treesitter-textobjects' },
     },
     {
         'rafamadriz/friendly-snippets',
-        lazy = true,
+        event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
     },
     {
