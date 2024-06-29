@@ -71,11 +71,11 @@ while [[ $# -gt 0 ]]; do
     printf "\n%s\n" "Applying regex ${REGEX}:"
     for F in $(find . -type f -regex '.*\.lua$' | cut -d '/' -f2-); do
         echo -e "    ==> ${F}"
-        sed -i "${REGEX}" "$F" \
-            || error "Unable to replace contents of file \`$F\`. Skipping pattern \`$REGEX\`" \
-            && EC=1 \
-            && break
-
+        if ! sed -i "${REGEX}" "$F"; then
+            error "Unable to replace contents of file \`$F\`. Skipping pattern \`$REGEX\`"
+            EC=1
+            break
+        fi
     done
 
     shift
