@@ -140,4 +140,3 @@
 ---@field exists User.Check.Existance
 ---@field value User.Check.Value
 ---@field in_console fun(): boolean
----@field new? fun(): User.Check
