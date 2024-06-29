@@ -14,5 +14,5 @@
 
 ---@class User.Hl
 ---@field hl fun(name: string, opts: HlOpts, bufnr: integer?)
----@field hl_from_arr fun(arr: HlPairs)
----@field hl_from_dict fun(dict: HlDict)
+---@field hl_from_arr fun(A: HlPairs)
+---@field hl_from_dict fun(D: HlDict)

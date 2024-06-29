@@ -18,6 +18,20 @@ local desc = User.maps.kmap.desc
 local in_console = Check.in_console
 local map_dict = User.maps.map_dict
 
+---@param cmd 'ed'|'tabnew'|'split'|'vsplit'
+---@return fun()
+local function key_variant(cmd)
+    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
+
+    cmd = cmd .. ' '
+
+    return function()
+        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/plugins/init.lua'
+
+        vim.cmd(full_cmd)
+    end
+end
+
 --- Set installation dir for `Lazy`.
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
@@ -32,8 +46,15 @@ vim.opt.rtp:prepend(lazypath)
 
 local Lazy = require('lazy')
 
+local plugin_root = vim.fn.stdpath('data') .. '/lazy'
+
 Lazy.setup({
-    root = vim.fn.stdpath('data') .. '/lazy',
+    spec = {
+        { import = 'plugin._spec' },
+    },
+
+    root = plugin_root,
+
     performance = {
         rtp = {
             reset = true,
@@ -43,45 +64,52 @@ Lazy.setup({
             },
         },
     },
-    spec = {
-        { import = 'plugin._spec' },
-    },
+
     install = {
         colorscheme = { 'habamax' },
         missing = true,
     },
+
     rocks = {
+        enabled = require('config.util').luarocks_set(),
         root = vim.fn.stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
+
     pkg = {
         cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
         versions = true,
         sources = (function()
-            return executable('pathspec-find')
-                    and {
-                        'lazy',
-                        'rockspec',
-                        'pathspec',
-                    }
-                or { 'lazy', 'rockspec' }
+            local S = { 'lazy' }
+
+            if require('config.util').luarocks_set() then
+                table.insert(S, 'rockspec')
+            end
+            if executable('pathspec-find') then
+                table.insert(S, 'pathspec')
+            end
+
+            return S
         end)(),
     },
     dev = {
-        path = '~/Projects',
-        patterns = { 'DrKJeff16' },
-        fallback = false,
+        path = '~/Projects/nvim',
+        patterns = {},
+        fallback = true,
     },
+
     change_detection = {
         enabled = true,
-        notify = true,
+        notify = false,
     },
+
     checker = {
         enabled = true,
         notify = true,
         frequency = 1800,
         check_pinned = false,
     },
+
     ui = {
         backdrop = 75,
         border = 'double',
@@ -97,7 +125,7 @@ Lazy.setup({
         files = { 'README.md', 'lua/**/README.md' },
 
         -- only generate markdown helptags for plugins that dont have docs
-        skip_if_doc_exists = false,
+        skip_if_doc_exists = true,
     },
 
     state = vim.fn.stdpath('state') .. '/lazy/state.json',
@@ -115,20 +143,6 @@ Lazy.setup({
 local P = {
     colorschemes = require('plugin.colorschemes'),
 }
-
----@param cmd 'ed'|'tabnew'|'split'|'vsplit'
----@return fun()
-local key_variant = function(cmd)
-    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
-
-    cmd = cmd .. ' '
-
-    return function()
-        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/plugins/init.lua'
-
-        vim.cmd(full_cmd)
-    end
-end
 
 ---@type table<MapModes, KeyMapDict>
 local Keys = {
