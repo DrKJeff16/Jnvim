@@ -24,7 +24,7 @@ local Devicons = require('nvim-web-devicons')
 local GL = require('galaxyline')
 local Extensions = require('galaxyline.provider_extensions')
 
-local JLineUtils = require('lazy_cfg.galaxyline.util').new('tokyonight')
+local JLineUtils = require('plugin..galaxyline.util').new('tokyonight')
 
 local default_colors = JLineUtils:palette()
 
@@ -79,6 +79,6 @@ local SEPARATORS = {
     right_separator = { provider = ' ' },
 }
 
--- require('lazy_cfg.galaxyline.spaceline')
-require('lazy_cfg.galaxyline.eviline')
+-- require('plugin..galaxyline.spaceline')
+require('plugin..galaxyline.eviline')
 GL.load_galaxyline()
