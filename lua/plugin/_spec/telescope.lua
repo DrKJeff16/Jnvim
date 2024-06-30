@@ -39,6 +39,7 @@ local M = {
     {
         'ahmedkhalf/project.nvim',
         lazy = false,
+        dev = true,
         main = 'project_nvim',
         version = false,
         init = function()
