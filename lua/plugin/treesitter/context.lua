@@ -63,3 +63,5 @@ map_dict(Keys, 'wk.register', true, nil, 0)
 for k, v in next, hls do
     hi(k, v)
 end
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

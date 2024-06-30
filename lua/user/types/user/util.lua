@@ -51,3 +51,5 @@ require('user.types.user.autocmd')
 ---@field au User.Util.Autocmd
 ---@field assoc fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
