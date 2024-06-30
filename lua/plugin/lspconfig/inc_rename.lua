@@ -50,3 +50,5 @@ if WK.available() then
     map_dict(Names, 'wk.register', false, 'n')
 end
 map_dict(Keys, 'wk.register', false, 'n')
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

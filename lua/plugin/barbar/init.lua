@@ -165,3 +165,5 @@ local Names = {
 
 map_dict(Keys, 'wk.register', true)
 map_dict(Names, 'wk.register', true)
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

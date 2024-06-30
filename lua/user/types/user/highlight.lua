@@ -16,3 +16,5 @@
 ---@field hl fun(name: string, opts: HlOpts, bufnr: integer?)
 ---@field hl_from_arr fun(A: HlPairs)
 ---@field hl_from_dict fun(D: HlDict)
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
