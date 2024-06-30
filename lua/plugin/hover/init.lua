@@ -79,3 +79,5 @@ for lhs, v in next, Keys do
     v[2] = is_tbl(v[2]) and v[2] or {}
     nmap(lhs, v[1], v[2] or {})
 end
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
