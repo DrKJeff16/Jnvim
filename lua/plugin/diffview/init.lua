@@ -2,6 +2,7 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user')
+local types = User.types.diffview
 local Check = User.check
 local Maps = User.maps
 local WK = Maps.wk
@@ -17,25 +18,20 @@ end
 local DVW = require('diffview')
 local Actions = require('diffview.actions')
 
----@alias DiffView.Views
----|'diff1_plain'
----|'diff2_horizontal'
----|'diff2_vertical'
----|'diff3_horizontal'
----|'diff3_vertical'
----|'diff3_mixed'
----|'diff4_mixed'
----|-1
-
 DVW.setup({
-    diff_binaries = false, -- Show diffs for binaries
-    enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
-    git_cmd = { 'git' }, -- The git executable followed by default args.
-    hg_cmd = { 'hg' }, -- The hg executable followed by default args.
-    use_icons = exists('nvim-web-devicons'), -- Requires nvim-web-devicons
-    show_help_hints = true, -- Show hints for how to open the help panel
-    watch_index = true, -- Update views and index buffers when the git index changes.
-    icons = { -- Only applies when use_icons is true.
+    diff_binaries = false, --- Show diffs for binaries
+    enhanced_diff_hl = true, --- See `:h diffview-config-enhanced_diff_hl`
+    use_icons = exists('nvim-web-devicons'), --- Requires nvim-web-devicons
+    show_help_hints = true, --- Show hints for how to open the help panel
+    watch_index = true, --- Update views and index buffers when the git index changes
+
+    --- The git executable followed by default args
+    git_cmd = { 'git' },
+    --- The hg executable followed by default args
+    hg_cmd = { 'hg' },
+
+    --- Only applies when use_icons is true
+    icons = {
         folder_closed = '',
         folder_open = '',
     },
@@ -45,45 +41,55 @@ DVW.setup({
         done = '✓',
     },
     view = {
-        -- For more info, see ':h diffview-config-view.x.layout'.
+
+        --- For more info, see `:h diffview-config-view.x.layout`
         default = {
-            -- Config for changed files, and staged files in diff views.
+            --- Config for changed files, and staged files in diff views
             ---@type DiffView.Views
             layout = 'diff2_horizontal',
-            winbar_info = true, -- See ':h diffview-config-view.x.winbar_info'
+            --- See `:h diffview-config-view.x.winbar_info`
+            winbar_info = true,
         },
+
         merge_tool = {
-            -- Config for conflicted files in diff views during a merge or rebase.
+            --- Config for conflicted files in diff views during a merge or rebase
             ---@type DiffView.Views
             layout = 'diff3_horizontal',
-            disable_diagnostics = true, -- Temporarily disable diagnostics for conflict buffers while in the view.
-            winbar_info = true, -- See ':h diffview-config-view.x.winbar_info'
+            disable_diagnostics = true, --- Temporarily disable diagnostics for conflict buffers while in the view
+            winbar_info = true, --- See `:h diffview-config-view.x.winbar_info`
         },
+
         file_history = {
-            -- Config for changed files in file history views.
+            --- Config for changed files in file history views
             ---@type DiffView.Views
             layout = 'diff2_horizontal',
-            winbar_info = true, -- See ':h diffview-config-view.x.winbar_info'
+            --- See `:h diffview-config-view.x.winbar_info`
+            winbar_info = true,
         },
     },
+
     file_panel = {
-        ---@type 'list'|'tree'
-        listing_style = 'list', -- One of 'list' or 'tree'
-        tree_options = { -- Only applies when listing_style is 'tree'
-            flatten_dirs = true, -- Flatten dirs that only contain one single dir
-            folder_statuses = 'always', -- One of 'never', 'only_folded' or 'always'.
+        ---@type DiffView.ListStyle
+        listing_style = 'list',
+
+        --- Only applies when listing_style is `tree`
+        tree_options = {
+            --- Flatten dirs that only contain one single dir
+            flatten_dirs = true,
+            ---@type 'never'|'only_folded'|'always'
+            folder_statuses = 'always',
         },
 
         --- See `:h diffview-config-win_config`
         win_config = function()
             return {
-                ---@type 'float'|'split'
+                ---@type DiffView.WinConfig.Type
                 type = 'split',
-                ---@type 'left'|'top'|'right'|'bottom'
+                ---@type DiffView.WinConfig.Positon
                 position = 'left',
                 width = 25,
                 height = 20,
-                ---@type 'editor'|'win'
+                ---@type DiffView.WinConfig.Relative
                 relative = 'win',
                 win = vim.api.nvim_tabpage_list_wins(0)[1],
                 ---@type table|vim.wo
@@ -97,8 +103,11 @@ DVW.setup({
             }
         end,
     },
+
     file_history_panel = {
-        log_options = { -- See ':h diffview-config-log_options'
+
+        --- See `:h diffview-config-log_options`
+        log_options = {
             git = {
                 single_file = { diff_merges = 'combined' },
                 multi_file = { diff_merges = 'first-parent' },
@@ -110,7 +119,7 @@ DVW.setup({
             local c = { width = vim.opt.columns:get(), height = vim.opt.lines:get() }
 
             return {
-                ---@type 'left'|'top'|'right'|'bottom'
+                ---@type DiffView.WinConfig.Positon
                 position = 'bottom',
                 width = math.min(100, c.width),
                 height = math.min(24, c.height),
@@ -133,7 +142,7 @@ DVW.setup({
             local c = { width = vim.opt.columns:get(), height = vim.opt.lines:get() }
 
             return {
-                ---@type 'left'|'top'|'right'|'bottom'
+                ---@type DiffView.WinConfig.Positon
                 position = 'bottom',
                 width = math.min(100, c.width),
                 height = math.min(24, c.height),
@@ -150,26 +159,34 @@ DVW.setup({
             }
         end,
     },
-    default_args = { -- Default args prepended to the arg-list for the listed commands
+
+    --- Default args prepended to the arg-list for the listed commands
+    default_args = {
         DiffviewOpen = {},
         DiffviewFileHistory = {},
     },
+
+    --- See `:h diffview-config-hooks`
     hooks = {
+        ---@param bufnr integer
         diff_buf_read = function(bufnr)
-            -- Change local options in diff buffers
+            --- Change local options in diff buffers
             vim.opt_local.wrap = true
             vim.opt_local.list = true
             vim.opt_local.colorcolumn = { 120 }
         end,
+
+        ---@param view View
         view_opened = function(view)
             print(('A new %s was opened on tab page %d!'):format(view.class:name(), view.tabpage))
         end,
-    }, -- See ':h diffview-config-hooks'
+    },
+
     keymaps = {
-        disable_defaults = false, -- Disable the default keymaps
+        disable_defaults = false, --- Disable the default keymaps
+        --- The `view` bindings are active in the diff buffers, only when the current
+        --- tabpage is a Diffview
         view = {
-            -- The `view` bindings are active in the diff buffers, only when the current
-            -- tabpage is a Diffview.
             {
                 'n',
                 '<Tab>',
@@ -292,15 +309,15 @@ DVW.setup({
             },
         },
         diff1 = {
-            -- Mappings in single window diff layouts
+            --- Mappings in single window diff layouts
             { 'n', 'g?', Actions.help({ 'view', 'diff1' }), desc('Open the help panel', true, 0) },
         },
         diff2 = {
-            -- Mappings in 2-way diff layouts
+            --- Mappings in 2-way diff layouts
             { 'n', 'g?', Actions.help({ 'view', 'diff2' }), desc('Open the help panel', true, 0) },
         },
         diff3 = {
-            -- Mappings in 3-way diff layouts
+            --- Mappings in 3-way diff layouts
             {
                 { 'n', 'x' },
                 '2do',
@@ -321,7 +338,7 @@ DVW.setup({
             },
         },
         diff4 = {
-            -- Mappings in 4-way diff layouts
+            --- Mappings in 4-way diff layouts
             {
                 { 'n', 'x' },
                 '1do',
