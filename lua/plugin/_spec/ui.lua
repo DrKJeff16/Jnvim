@@ -26,7 +26,7 @@ local M = {
             vim.opt.showmode = false
         end,
         config = source('plugin.lualine'),
-        cond = not is_nil(use_statusline) and (use_statusline == 'lualine') or true,
+        cond = not is_nil(use_statusline) and (use_statusline == 'lualine') or false,
         enabled = not in_console(),
     },
     {
@@ -40,7 +40,7 @@ local M = {
             vim.opt.termguicolors = not in_console()
         end,
         config = source('plugin.galaxyline'),
-        cond = not is_nil(use_statusline) and (use_statusline == 'galaxyline') or false,
+        cond = not is_nil(use_statusline) and (use_statusline == 'galaxyline') or true,
         enabled = not in_console(),
     },
     --- Tabline
