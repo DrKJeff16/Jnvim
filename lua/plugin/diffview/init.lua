@@ -73,7 +73,8 @@ DVW.setup({
             flatten_dirs = true, -- Flatten dirs that only contain one single dir
             folder_statuses = 'always', -- One of 'never', 'only_folded' or 'always'.
         },
-        -- See ':h diffview-config-win_config'
+
+        --- See `:h diffview-config-win_config`
         win_config = function()
             return {
                 ---@type 'float'|'split'
@@ -103,13 +104,16 @@ DVW.setup({
                 multi_file = { diff_merges = 'first-parent' },
             },
         },
-        -- See ':h diffview-config-win_config'
+
+        --- See `:h diffview-config-win_config`
         win_config = function()
+            local c = { width = vim.opt.columns:get(), height = vim.opt.lines:get() }
+
             return {
                 ---@type 'left'|'top'|'right'|'bottom'
                 position = 'bottom',
-                width = math.min(100, vim.opt.columns:get()),
-                height = math.min(24, vim.opt.lines:get()),
+                width = math.min(100, c.width),
+                height = math.min(24, c.height),
                 col = math.floor(vim.opt.columns:get() * 0.5 - c.width * 0.5),
                 row = math.floor(vim.opt.lines:get() * 0.5 - c.height * 0.5),
                 ---@type table|vim.wo
@@ -124,12 +128,15 @@ DVW.setup({
         end,
     },
     commit_log_panel = {
+        --- See `:h diffview-config-win_config`
         win_config = function()
+            local c = { width = vim.opt.columns:get(), height = vim.opt.lines:get() }
+
             return {
                 ---@type 'left'|'top'|'right'|'bottom'
                 position = 'bottom',
-                width = math.min(100, vim.opt.columns:get()),
-                height = math.min(24, vim.opt.lines:get()),
+                width = math.min(100, c.width),
+                height = math.min(24, c.height),
                 col = math.floor(vim.opt.columns:get() * 0.5 - c.width * 0.5),
                 row = math.floor(vim.opt.lines:get() * 0.5 - c.height * 0.5),
                 ---@type table|vim.wo
