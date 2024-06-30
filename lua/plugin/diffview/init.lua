@@ -25,6 +25,7 @@ local Actions = require('diffview.actions')
 ---|'diff3_vertical'
 ---|'diff3_mixed'
 ---|'diff4_mixed'
+---|-1
 
 DVW.setup({
     diff_binaries = false, -- Show diffs for binaries
@@ -54,7 +55,7 @@ DVW.setup({
         merge_tool = {
             -- Config for conflicted files in diff views during a merge or rebase.
             ---@type DiffView.Views
-            layout = 'diff3_vertical',
+            layout = 'diff3_horizontal',
             disable_diagnostics = true, -- Temporarily disable diagnostics for conflict buffers while in the view.
             winbar_info = true, -- See ':h diffview-config-view.x.winbar_info'
         },
@@ -72,24 +73,28 @@ DVW.setup({
             flatten_dirs = true, -- Flatten dirs that only contain one single dir
             folder_statuses = 'always', -- One of 'never', 'only_folded' or 'always'.
         },
-        win_config = { -- See ':h diffview-config-win_config'
-            ---@type 'float'|'split'
-            type = 'float',
-            ---@type 'left'|'top'|'right'|'bottom'
-            position = 'top',
-            width = 25,
-            height = 20,
-            ---@type 'editor'|'win'
-            relative = 'editor',
-            ---@type table|vim.wo
-            win_opts = {
-                number = false,
-                wrap = true,
-                relativenumber = false,
-                signcolumn = 'no',
-                cursorline = true,
-            },
-        },
+        -- See ':h diffview-config-win_config'
+        win_config = function()
+            return {
+                ---@type 'float'|'split'
+                type = 'split',
+                ---@type 'left'|'top'|'right'|'bottom'
+                position = 'left',
+                width = 25,
+                height = 20,
+                ---@type 'editor'|'win'
+                relative = 'win',
+                win = vim.api.nvim_tabpage_list_wins(0)[1],
+                ---@type table|vim.wo
+                win_opts = {
+                    number = false,
+                    wrap = true,
+                    relativenumber = false,
+                    signcolumn = 'no',
+                    cursorline = true,
+                },
+            }
+        end,
     },
     file_history_panel = {
         log_options = { -- See ':h diffview-config-log_options'
@@ -98,30 +103,45 @@ DVW.setup({
                 multi_file = { diff_merges = 'first-parent' },
             },
         },
-        win_config = { -- See ':h diffview-config-win_config'
-            position = 'bottom',
-            height = 20,
-            ---@type table|vim.wo
-            win_opts = {
-                number = false,
-                wrap = false,
-                relativenumber = false,
-                signcolumn = 'no',
-                cursorline = true,
-            },
-        },
+        -- See ':h diffview-config-win_config'
+        win_config = function()
+            return {
+                ---@type 'left'|'top'|'right'|'bottom'
+                position = 'bottom',
+                width = math.min(100, vim.opt.columns:get()),
+                height = math.min(24, vim.opt.lines:get()),
+                col = math.floor(vim.opt.columns:get() * 0.5 - c.width * 0.5),
+                row = math.floor(vim.opt.lines:get() * 0.5 - c.height * 0.5),
+                ---@type table|vim.wo
+                win_opts = {
+                    number = false,
+                    wrap = false,
+                    relativenumber = false,
+                    signcolumn = 'no',
+                    cursorline = true,
+                },
+            }
+        end,
     },
     commit_log_panel = {
-        win_config = { -- See ':h diffview-config-win_config'
-            ---@type table|vim.wo
-            win_opts = {
-                number = false,
-                wrap = false,
-                relativenumber = false,
-                signcolumn = 'no',
-                cursorline = true,
-            },
-        },
+        win_config = function()
+            return {
+                ---@type 'left'|'top'|'right'|'bottom'
+                position = 'bottom',
+                width = math.min(100, vim.opt.columns:get()),
+                height = math.min(24, vim.opt.lines:get()),
+                col = math.floor(vim.opt.columns:get() * 0.5 - c.width * 0.5),
+                row = math.floor(vim.opt.lines:get() * 0.5 - c.height * 0.5),
+                ---@type table|vim.wo
+                win_opts = {
+                    number = false,
+                    wrap = false,
+                    relativenumber = false,
+                    signcolumn = 'no',
+                    cursorline = true,
+                },
+            }
+        end,
     },
     default_args = { -- Default args prepended to the arg-list for the listed commands
         DiffviewOpen = {},
