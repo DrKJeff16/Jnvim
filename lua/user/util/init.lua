@@ -117,7 +117,8 @@ local function ft_get(bufnr)
     return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
 
-local function assoc()
+---@param opts? AssocDefaults
+local function assoc(opts)
     local Value = require('user.check.value')
 
     local is_nil = Value.is_nil
@@ -125,6 +126,14 @@ local function assoc()
     local is_tbl = Value.is_tbl
     local is_str = Value.is_str
     local empty = Value.empty
+
+    ---@type AssocDefaults
+    DEFAULT_OPTS = {
+        use_defaults = false,
+        extra_autocmds = {},
+    }
+
+    opts = is_tbl(opts) and vim.tbl_extend('keep', opts, DEFAULT_OPTS) or vim.deepcopy(DEFAULT_OPTS)
 
     local ft = ft_set
 
@@ -152,14 +161,14 @@ local function assoc()
                     pattern = 'c',
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
-                        local opts = {
+                        local Opts = {
                             ['ts'] = 2,
                             ['sts'] = 2,
                             ['sw'] = 2,
                             ['et'] = true,
                         }
 
-                        for option, val in next, opts do
+                        for option, val in next, Opts do
                             optset(option, val, { buf = 0 })
                         end
                     end,
@@ -168,14 +177,14 @@ local function assoc()
                     pattern = 'cpp',
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
-                        local opts = {
+                        local Opts = {
                             ['ts'] = 2,
                             ['sts'] = 2,
                             ['sw'] = 2,
                             ['et'] = true,
                         }
 
-                        for option, val in next, opts do
+                        for option, val in next, Opts do
                             optset(option, val, { buf = 0 })
                         end
                     end,
@@ -184,14 +193,14 @@ local function assoc()
                     pattern = 'markdown',
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
-                        local opts = {
+                        local Opts = {
                             ['ts'] = 2,
                             ['sts'] = 2,
                             ['sw'] = 2,
                             ['et'] = true,
                         }
 
-                        for option, val in next, opts do
+                        for option, val in next, Opts do
                             optset(option, val, { buf = 0 })
                         end
                     end,
@@ -225,8 +234,16 @@ local function assoc()
 
     local notify = require('user.util.notify').notify
 
-    for _, T in next, aus do
-        au_repeated_events(T)
+    if opts.use_defaults then
+        for _, T in next, aus do
+            au_repeated_events(T)
+        end
+    end
+
+    if not empty(opts.extra_autocmds) then
+        for _, T in next, aus do
+            au_repeated_events(opts.extra_autocmds)
+        end
     end
 end
 

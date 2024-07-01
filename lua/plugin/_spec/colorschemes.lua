@@ -5,6 +5,10 @@ local User = require('user')
 local CfgUtil = require('config.util')
 local types = User.types.lazy
 
+--- NOTE: This is a global defined in `user`
+local Flags = ACTIVATION_FLAGS.plugins.colorschemes ---@see User.ActivationFlags
+
+local is_bool = require('user.check.value').is_bool
 local source = CfgUtil.source
 local colorscheme_init = CfgUtil.colorscheme_init
 
@@ -16,6 +20,7 @@ local M = {
         main = 'onedark',
         version = false,
         init = colorscheme_init('installed_onedark'),
+        enabled = is_bool(Flags.onedark) and Flags.onedark or true,
     },
     {
         'catppuccin/nvim',
@@ -24,6 +29,7 @@ local M = {
         main = 'catppuccin',
         version = false,
         init = colorscheme_init('installed_catppuccin'),
+        enabled = is_bool(Flags.catppuccin) and Flags.catppuccin or true,
     },
     {
         'folke/tokyonight.nvim',
@@ -31,6 +37,7 @@ local M = {
         main = 'tokyonight',
         version = false,
         init = colorscheme_init('installed_tokyonight'),
+        enabled = is_bool(Flags.tokyonight) and Flags.tokyonight or true,
     },
     {
         'EdenEast/nightfox.nvim',
@@ -38,6 +45,7 @@ local M = {
         main = 'nightfox',
         version = false,
         init = colorscheme_init('installed_nightfox'),
+        enabled = is_bool(Flags.nightfox) and Flags.nightfox or true,
     },
     {
         'bkegley/gloombuddy',
@@ -45,6 +53,7 @@ local M = {
         version = false,
         dependencies = { 'colorbuddy.vim' },
         init = colorscheme_init('installed_gloombuddy'),
+        enabled = is_bool(Flags.gloombuddy) and Flags.gloombuddy or true,
     },
     {
         'vigoux/oak',
@@ -55,6 +64,7 @@ local M = {
             ['installed_oak'] = 1,
             ['oak_virtualtext_bg'] = 1,
         }),
+        enabled = is_bool(Flags.oak) and Flags.oak or true,
     },
     {
         'tjdevries/colorbuddy.vim',
@@ -62,6 +72,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_colorbuddy'),
+        enabled = is_bool(Flags.colorbuddy) and Flags.colorbuddy or true,
     },
     {
         'pineapplegiant/spaceduck',
@@ -69,6 +80,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_spaceduck'),
+        enabled = is_bool(Flags.spaceduck) and Flags.spaceduck or true,
     },
     {
         'dracula/vim',
@@ -77,6 +89,7 @@ local M = {
         name = 'dracula',
         version = false,
         init = colorscheme_init('installed_dracula'),
+        enabled = is_bool(Flags.dracula) and Flags.dracula or true,
     },
     {
         'liuchengxu/space-vim-dark',
@@ -84,6 +97,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_space_vim_dark'),
+        enabled = is_bool(Flags.space_vim_dark) and Flags.space_vim_dark or true,
     },
     {
         'tomasr/molokai',
@@ -91,6 +105,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_molokai'),
+        enabled = is_bool(Flags.molokai) and Flags.molokai or true,
     },
     {
         'colepeters/spacemacs-theme.vim',
@@ -99,6 +114,7 @@ local M = {
         name = 'spacemacs',
         version = false,
         init = colorscheme_init('installed_spacemacs'),
+        enabled = is_bool(Flags.spacemacs) and Flags.spacemacs or true,
     },
 }
 

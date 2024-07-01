@@ -11,6 +11,10 @@ require('user.types.user.autocmd')
 ---|4
 ---|5
 
+---@class AssocDefaults
+---@field use_defaults boolean
+---@field extra_autocmds table|AuRepeatEvents[]
+
 ---@alias NotifyLvl
 ---|'debug'
 ---|'error'
@@ -49,7 +53,7 @@ require('user.types.user.autocmd')
 ---@field ft_get fun(bufnr: integer?): string
 ---@field notify User.Util.Notify
 ---@field au User.Util.Autocmd
----@field assoc fun()
+---@field assoc fun(opts: AssocDefaults?)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

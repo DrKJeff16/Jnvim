@@ -6,6 +6,9 @@ local Check = User.check
 local CfgUtil = require('config.util')
 local types = User.types.lazy
 
+--- NOTE: This is a global defined in `user`
+local Flags = ACTIVATION_FLAGS.plugins.essentials ---@see User.ActivationFlags
+
 local source = CfgUtil.source
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
@@ -27,7 +30,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.which_key'),
-        enabled = vim_has('nvim-0.9'),
+        enabled = Flags.which_key and vim_has('nvim-0.9'),
     },
     {
         'dstein64/vim-startuptime',
@@ -36,6 +39,7 @@ local M = {
             vim.g.installed_startuptime = 1
         end,
         config = source('plugin.startuptime'),
+        enabled = Flags.startuptime,
     },
     {
         'vhyrro/luarocks.nvim',
@@ -43,18 +47,13 @@ local M = {
         priority = 1000,
         version = false,
         config = source('plugin.luarocks'),
-        enabled = luarocks_set(),
-    },
-    {
-        'vim-scripts/L9',
-        lazy = false,
-        version = false,
+        enabled = Flags.luarocks and luarocks_set(),
     },
     {
         'echasnovski/mini.nvim',
         version = false,
         config = source('plugin.mini'),
-        enabled = not in_console(),
+        enabled = Flags.mini and not in_console(),
     },
     {
         'tiagovla/scope.nvim',
@@ -72,13 +71,14 @@ local M = {
             }
         end,
         config = source('plugin.scope'),
+        enabled = Flags.scope,
     },
 
     {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
-        enabled = not in_console(),
+        enabled = Flags.plenary and not in_console(),
     },
 
     {
@@ -90,7 +90,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.notify'),
-        enabled = not in_console(),
+        enabled = Flags.notify and not in_console(),
     },
 
     {
@@ -98,14 +98,14 @@ local M = {
         main = 'hover',
         version = false,
         config = source('plugin.hover'),
-        enabled = not in_console(),
+        enabled = Flags.hover,
     },
 
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
         version = false,
-        enabled = not in_console(),
+        enabled = Flags.nvim_web_devicons and not in_console(),
     },
 }
 

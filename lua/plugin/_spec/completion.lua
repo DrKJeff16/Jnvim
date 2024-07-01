@@ -6,6 +6,9 @@ local Check = User.check
 local CfgUtil = require('config.util') ---@see PluginUtils
 local types = User.types.lazy
 
+--- NOTE: This is a global defined in `user`
+local Flags = ACTIVATION_FLAGS.plugins.completion ---@see User.ActivationFlags
+
 local source = CfgUtil.source
 local luasnip_build = CfgUtil.luasnip_build
 
@@ -38,6 +41,7 @@ local M = {
             vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
         end,
         config = source('plugin.cmp'),
+        enabled = Flags.cmp,
     },
     {
         'paopaol/cmp-doxygen',
@@ -45,26 +49,32 @@ local M = {
         dependencies = {
             'nvim-treesitter-textobjects',
         },
+        enabled = Flags.cmp,
     },
     {
         'rafamadriz/friendly-snippets',
+        lazy = false,
         version = false,
+        enabled = Flags.luasnip and Flags.cmp,
     },
     {
         'L3MON4D3/LuaSnip',
         event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
         build = luasnip_build(),
+        enabled = Flags.luasnip,
     },
     {
         'vlime/vlime',
         ft = 'lisp',
         version = false,
+        enabled = Flags.vlime,
     },
     {
         'HiPhish/nvim-cmp-vlime',
         ft = 'lisp',
         version = false,
+        enabled = Flags.vlime,
     },
 }
 

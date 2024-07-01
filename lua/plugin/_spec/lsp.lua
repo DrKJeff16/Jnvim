@@ -41,7 +41,6 @@ local M = {
         config = source('plugin.lspconfig.lazydev'),
         enabled = executable('lua-language-server'),
     },
-    { 'Bilal2453/luvit-meta', lazy = true, version = false }, --- optional `vim.uv` typings
     {
         'folke/neoconf.nvim',
         lazy = false,

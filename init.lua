@@ -2,6 +2,86 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user') --- User API
+
+User.setup({
+    autocmds = {
+        jeffs_defaults = true,
+    },
+    plugins = {
+        essentials = {
+            notify = true,
+            luarocks = true,
+            startuptime = true,
+            which_key = true,
+            scope = true,
+        },
+        utils = {
+            mkdp = true,
+        },
+        vcs = {
+            diffview = true,
+            fugitive = true,
+            gitsigns = true,
+            lazygit = true,
+        },
+        completion = {
+            coc = false,
+            cmp = true,
+            luasnip = true,
+            vlime = true,
+        },
+        colorschemes = {},
+        editing = {
+            persisted = true,
+            persistence = false,
+            todo_comments = true,
+            template = false,
+        },
+        lsp = {
+            inc_rename = true,
+            clangd = true,
+            lazydev = true,
+            lspconfig = true,
+            neoconf = true,
+            schemastore = true,
+        },
+        syntax = {
+            codeowners = true,
+            doxygen_toolkit = true,
+        },
+        telescope = {
+            telescope = true,
+            file_browser = true,
+            fzf_native = false,
+            project = true,
+        },
+        treesitter = {
+            commentstring = true,
+            context = true,
+            textobjects = true,
+            ts = true,
+        },
+        ui = {
+            barbar = false,
+            bufferline = true,
+            colorful_winsep = false,
+            comment_box = false,
+            galaxyline = false,
+            lualine = true,
+            hicolors = true,
+            ibl = true,
+            neo_tree = false,
+            noice = true,
+            nvim_tree = true,
+            rainbow_delimiters = true,
+            startup = false,
+            toggleterm = true,
+            alpha = false,
+            dashboard = false,
+        },
+    },
+})
+
 local Check = User.check --- Checking utilities
 local Types = User.types --- Import docstrings and annotations
 local Maps = User.maps --- Mapping utilities
@@ -407,7 +487,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 end
 
 --- Call the user file associations and other autocmds
-Util.assoc()
+Util.assoc({ use_defaults = true, extra_autocmds = {} })
 
 vim.g.markdown_minlines = 500
 

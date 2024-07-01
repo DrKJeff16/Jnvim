@@ -1,18 +1,21 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
-local Check = User.check
-local types = User.types.lazy
+--- WARNING: DO NOT IMPORT THE `user` MODULE ALTOGETHER
 
-local exists = Check.exists.module
-local executable = Check.exists.executable
-local env_vars = Check.exists.env_vars
-local vim_exists = Check.exists.vim_exists
-local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
-local in_console = Check.in_console
+require('user.types.lazy')
+
+local Exists = require('user.check.exists')
+local Value = require('user.check.value')
+
+local exists = Exists.module
+local executable = Exists.executable
+local env_vars = Exists.env_vars
+local vim_exists = Exists.vim_exists
+local is_str = Value.is_str
+local is_tbl = Value.is_tbl
+local empty = Value.empty
+local in_console = require('user.check').in_console
 
 ---@type PluginUtils
 local M = {
