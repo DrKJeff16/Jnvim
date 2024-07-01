@@ -16,9 +16,7 @@ local empty = Value.empty
 local function module(mod, return_mod)
     return_mod = is_bool(return_mod) and return_mod or false
 
-    ---@type boolean
     local res
-    ---@type unknown
     local m
     res, m = pcall(require, mod)
 
