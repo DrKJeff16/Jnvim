@@ -16,11 +16,16 @@ if exists('tokyonight') then
     function M.setup()
         local TN = require('tokyonight')
 
-        ---@type Config
-        local Opts = {
+        TN.setup({
+            cache = false,
+
+            ---@param colors ColorScheme
             on_colors = function(colors)
                 colors.error = '#df4f4f'
             end,
+
+            ---@param hl tokyonight.Highlights
+            ---@param c ColorScheme
             on_highlights = function(hl, c)
                 local prompt = '#2d3149'
                 hl.TelescopeNormal = {
@@ -52,7 +57,7 @@ if exists('tokyonight') then
                 }
             end,
             terminal_colors = true,
-            transparent = false,
+            transparent = true,
             sidebars = {
                 'qf',
                 'help',
@@ -63,13 +68,14 @@ if exists('tokyonight') then
                 'TelescopePrompt',
                 'vista_kind',
                 'NvimTree',
+                'trouble',
             },
 
             style = 'moon',
             live_reload = true,
             use_background = true,
             hide_inactive_statusline = false,
-            lualine_bold = true,
+            lualine_bold = false,
             styles = {
                 comments = { italic = true },
                 keywords = { italic = false, bold = true },
@@ -78,9 +84,12 @@ if exists('tokyonight') then
                 sidebars = 'dark',
                 floats = 'transparent',
             },
-        }
 
-        TN.setup(Opts)
+            plugins = {
+                all = require('user.check.value').is_nil(package.loaded.lazy),
+                auto = true,
+            },
+        })
 
         vim.cmd(M.mod_cmd)
     end

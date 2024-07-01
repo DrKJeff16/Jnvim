@@ -10,7 +10,6 @@ local Kmap = Maps.kmap --- `vim.keymap.set` backend
 local WK = Maps.wk --- `which-key` backend
 local maps_t = Types.user.maps ---@see UserSubTypes.maps
 
-local exists = Check.exists.module ---@see User.Check.Existance.module
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
