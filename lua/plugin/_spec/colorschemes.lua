@@ -40,6 +40,14 @@ local M = {
         init = colorscheme_init('installed_nightfox'),
     },
     {
+        'rebelot/kanagawa.nvim',
+        lazy = false,
+        priority = 1000,
+        main = 'kanagawa',
+        version = false,
+        init = colorscheme_init('installed_kanagawa'),
+    },
+    {
         'ellisonleao/gruvbox.nvim',
         lazy = false,
         priority = 1000,
