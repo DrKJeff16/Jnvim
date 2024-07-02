@@ -6,17 +6,32 @@ local Check = User.check
 local csc_m = User.types.colorschemes
 
 local exists = Check.exists.module
+local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
+local is_tbl = Check.value.is_tbl
 
 local M = {
-    mod_pfx = 'plugin.colorschemes.tokyonight',
+    ---@type ('night'|'moon'|'day')[]
+    variants = {
+        'night',
+        'moon',
+        'day',
+    },
     mod_cmd = 'colorscheme tokyonight',
 }
 
 if exists('tokyonight') then
-    function M.setup()
+    ---@param variant? 'night'|'moon'|'day'
+    ---@param transparent? boolean
+    ---@param override? tokyonight.Config
+    function M:setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'moon'
+        transparent = is_bool(transparent) and transparent or false
+        override = is_tbl(override) and override or {}
+
         local TN = require('tokyonight')
 
-        TN.setup({
+        TN.setup(vim.tbl_extend('keep', override, {
             cache = false,
 
             ---@param colors ColorScheme
@@ -57,7 +72,7 @@ if exists('tokyonight') then
                 }
             end,
             terminal_colors = true,
-            transparent = true,
+            transparent = transparent,
             sidebars = {
                 'qf',
                 'help',
@@ -71,7 +86,7 @@ if exists('tokyonight') then
                 'trouble',
             },
 
-            style = 'moon',
+            style = variant,
             live_reload = true,
             use_background = true,
             hide_inactive_statusline = false,
@@ -89,10 +104,14 @@ if exists('tokyonight') then
                 all = require('user.check.value').is_nil(package.loaded.lazy),
                 auto = true,
             },
-        })
+        }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
+end
+
+function M.new()
+    return setmetatable({}, { __index = M })
 end
 
 return M

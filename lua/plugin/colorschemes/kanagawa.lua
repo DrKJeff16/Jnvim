@@ -6,20 +6,34 @@ local Check = User.check
 local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
+local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
+local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
 local M = {
-    mod_pfx = 'plugin.colorschemes.kanagawa',
+    ---@type ('dragon'|'wave'|'lotus')[]
+    variants = {
+        'dragon',
+        'wave',
+        'lotus',
+    },
     mod_cmd = 'colorscheme kanagawa',
 }
 
 if exists('kanagawa') then
-    local kanagawa_compile = true
+    ---@param variant? 'dragon'|'wave'|'lotus'
+    ---@param transparent? boolean
+    ---@param override? table
+    function M:setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant or 'wave'
+        transparent = is_bool(transparent) and transparent or false
+        override = is_tbl(override) and override or {}
 
-    function M.setup()
+        local kanagawa_compile = true
         local KGW = require('kanagawa')
 
-        KGW.setup({
+        KGW.setup(vim.tbl_extend('keep', override, {
             compile = kanagawa_compile, -- enable compiling the colorscheme
             undercurl = true, -- enable undercurls
             commentStyle = { italic = true },
@@ -27,7 +41,7 @@ if exists('kanagawa') then
             keywordStyle = { bold = true },
             statementStyle = { bold = true },
             typeStyle = { italic = true },
-            transparent = true, -- do not set background color
+            transparent = transparent, -- do not set background color
             dimInactive = true, -- dim inactive window `:h hl-NormalNC`
             terminalColors = true, -- define vim.g.terminal_color_{0,17}
             colors = { -- add/modify theme and palette colors
@@ -59,25 +73,25 @@ if exists('kanagawa') then
                     TelescopePreviewNormal = { bg = theme.ui.bg_dim },
                     TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
 
-                    Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
+                    Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1, blend = vim.o.pumblend }, -- add `blend = vim.o.pumblend` to enable transparency
                     PmenuSel = { fg = 'NONE', bg = theme.ui.bg_p2 },
                     PmenuSbar = { bg = theme.ui.bg_m1 },
                     PmenuThumb = { bg = theme.ui.bg_p2 },
                 }
             end,
-            theme = 'dragon', -- Load "wave" theme when 'background' option is not set
+            theme = variant, -- Load "wave" theme when 'background' option is not set
             background = { -- map the value of 'background' option to a theme
-                dark = 'dragon', -- try "dragon" !
+                dark = variant ~= 'lotus' and variant or 'wave', -- try "dragon" !
                 light = 'lotus',
             },
-        })
+        }))
 
-        if kanagawa_compile then
-            vim.cmd('KanagawaCompile')
-        end
-
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
+end
+
+function M.new()
+    return setmetatable({}, { __index = M })
 end
 
 return M

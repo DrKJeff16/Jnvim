@@ -329,7 +329,7 @@ if WK.available() then
 end
 map_dict(Keys, 'wk.register', true)
 
----@param T? CscSubMod|ODSubMod
+---@param T CscSubMod|ODSubMod|unknown
 ---@return boolean
 local function color_exists(T)
     return is_tbl(T) and is_fun(T.setup)
@@ -337,7 +337,9 @@ end
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes.
-    local Csc = Pkg.colorschemes
+    local C = Pkg.colorschemes
+
+    local Csc = C.new()
 
     ---@type table<MapModes, KeyMapDict>
     local CscKeys = {}
@@ -369,17 +371,20 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local csc_group = 'a'
     local i = 1
     local found_csc = 0
-    for _, c in next, selected do
-        if color_exists(Csc[c]) then
+    for _, name in next, selected do
+        if color_exists(Csc[name]) then
             found_csc = found_csc == 0 and i or found_csc
 
-            for mode, _ in next, CscKeys do
-                ---@type fun(...)
-                local setup = Csc[c].setup
+            ---@type CscSubMod|ODSubMod
+            local curr_color = Csc[name]
 
+            for mode, _ in next, CscKeys do
                 CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
-                    setup,
-                    desc('Setup Colorscheme `' .. c .. '`'),
+                    function()
+                        local color = curr_color.new()
+                        color:setup()
+                    end,
+                    desc('Setup Colorscheme `' .. name .. '`'),
                 }
             end
 
@@ -404,7 +409,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     map_dict(CscKeys, 'wk.register', true)
 
     if not empty(found_csc) then
-        Csc[selected[found_csc]].setup()
+        Csc[selected[found_csc]]:setup()
     end
 end
 

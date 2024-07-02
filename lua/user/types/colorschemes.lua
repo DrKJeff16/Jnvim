@@ -1,9 +1,8 @@
----@alias OD.style ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
-
+---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
 
 ---@class OD
----@field style? OD.style
+---@field style? OD.Variant
 ---@field transparent? boolean
 ---@field term_colors? boolean
 ---@field ending_tildes? boolean
@@ -17,7 +16,8 @@
 ---@field diagnostics? OD.Diagnostics
 
 --- A loadable color schemes table.
---- ---
+---
+--- ## Description
 --- Each colorscheme is a table with **three** items:
 --- * `mod_pfx`: A **protected** string for internal calls
 --- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
@@ -25,12 +25,14 @@
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
 ---@class CscSubMod
----@field setup? fun(...)
----@field protected mod_pfx string
+---@field setup? fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)
+---@field variants? string[]
 ---@field mod_cmd string
+---@field new? fun(): CscSubMod
 
 --- A loadable color schemes table.
---- ---
+---
+--- ## Description
 --- Each colorscheme is a table with **three** items:
 --- * `mod_pfx`: A **protected** string for internal calls
 --- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
@@ -38,25 +40,28 @@
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
 ---@class ODSubMod: CscSubMod
----@field setup? fun(style: OD.style?)
+---@field setup? fun(self: CscSubMod, variant: OD.Variant, transparent: boolean?, override: OD?)
+---@field new fun(): ODSubMod
 
 --- A table for each **explicitly** configured colorscheme.
---- ---
+---
+--- ## Description
 --- The colorschemes must comply with the `CscSubMod` type specifications.
---- ---
+---
 ---@class CscMod
----@field tokyonight? CscSubMod|nil
----@field onedark? ODSubMod|nil
----@field catppuccin? CscSubMod|nil
----@field nightfox? CscSubMod|nil
----@field gruvbox? CscSubMod|nil
----@field spaceduck? CscSubMod|nil
----@field dracula? CscSubMod|nil
----@field space_vim_dark? CscSubMod|nil
----@field spacemacs? CscSubMod|nil
----@field molokai? CscSubMod|nil
----@field gloombuddy? CscSubMod|nil
----@field oak? CscSubMod|nil
+---@field catppuccin? CscSubMod
+---@field dracula? CscSubMod
+---@field gloombuddy? CscSubMod
+---@field gruvbox? CscSubMod
+---@field kanagawa? CscSubMod
+---@field molokai? CscSubMod
+---@field nightfox? CscSubMod
+---@field oak? CscSubMod
+---@field onedark? ODSubMod
+---@field space_vim_dark? CscSubMod
+---@field spaceduck? CscSubMod
+---@field spacemacs? CscSubMod
+---@field tokyonight? CscSubMod
 ---@field new fun(): CscMod
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

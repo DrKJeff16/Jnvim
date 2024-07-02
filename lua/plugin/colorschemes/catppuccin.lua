@@ -6,25 +6,41 @@ local Check = User.check
 local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
+local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
+local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
 local M = {
-    mod_pfx = 'plugin.colorschemes.catppuccin',
+    ---@type ('frappe'|'latte'|'macchiato'|'mocha')[]
+    variants = {
+        'frappe',
+        'latte',
+        'macchiato',
+        'mocha',
+    },
     mod_cmd = 'colorscheme catppuccin',
 }
 
 if exists('catppuccin') then
-    function M.setup()
+    ---@param variant? 'frappe'|'macchiato'|'mocha'|'latte'
+    ---@param transparent? boolean
+    ---@param override? table
+    function M:setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant or 'macchiato'
+        transparent = is_bool(transparent) and transparent or false
+        override = is_tbl(override) and override or {}
+
         local Cppc = require('catppuccin')
 
-        Cppc.setup({
-            flavour = 'frappe', -- latte, frappe, macchiato, mocha
+        Cppc.setup(vim.tbl_extend('keep', override, {
+            flavour = variant, -- latte, frappe, macchiato, mocha
             -- flavour = "auto" -- will respect terminal's background
             background = { -- :h background
                 light = 'latte',
-                dark = 'mocha',
+                dark = variant ~= 'latte' and variant or 'mocha',
             },
-            transparent_background = false, -- disables setting the background color.
+            transparent_background = transparent, -- disables setting the background color.
             show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
             term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
             dim_inactive = {
@@ -51,8 +67,8 @@ if exists('catppuccin') then
                 -- miscs = {}, -- Uncomment to turn off hard-coded styles
             },
 
-            --[[ color_overrides = {},
-			custom_highlights = {}, ]]
+            color_overrides = {},
+            custom_highlights = {},
 
             default_integrations = true,
             integrations = {
@@ -92,9 +108,7 @@ if exists('catppuccin') then
                         information = { 'underline' },
                         ok = { 'underline' },
                     },
-                    inlay_hints = {
-                        background = true,
-                    },
+                    inlay_hints = { background = true },
                 },
                 noice = exists('noice'),
                 notify = exists('notify'),
@@ -109,10 +123,14 @@ if exists('catppuccin') then
                 which_key = exists('which-key'),
                 -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
             },
-        })
+        }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
+end
+
+function M.new()
+    return setmetatable({}, { __index = M })
 end
 
 return M
