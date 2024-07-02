@@ -33,11 +33,7 @@ local M = {
     file_readonly = function(icon)
         icon = (is_str(icon) and not empty(icon)) and icon or ''
 
-        if vim.bo.readonly and vim.bo.filetype ~= 'help' then
-            return ' ' .. icon .. ' '
-        end
-
-        return ''
+        return vim.bo.readonly and vim.bo.filetype ~= 'help' and ' ' .. icon .. ' ' or ''
     end,
 
     themes = {
@@ -47,8 +43,7 @@ local M = {
 }
 
 if exists('tokyonight') then
-    ---@type ColorScheme|nil
-    M.themes.tokyonight = require('tokyonight.colors').setup()
+    M.themes.tokyonight = require('tokyonight.colors').setup({ transform = true })
 end
 
 if exists('catppuccin.palettes') then
@@ -61,7 +56,28 @@ if exists('nightfox') then
     M.themes.nightfox = require('nightfox.palette').load()
 end
 
----@return ColorScheme|table
+function M:transform()
+    ---@type table<string, JLine.Theme.Spec>
+    local transform_tbl = {
+        default = self.themes.default,
+        tokyonight = {
+            bg = self.themes.tokyonight.bg_statusline,
+            fg = self.themes.tokyonight.fg_sidebar,
+            darkblue = self.themes.tokyonight.bg_float,
+            red = self.themes.tokyonight.red.base,
+            green = self.themes.tokyonight.green.base,
+            yellow = self.themes.tokyonight.yellow.base,
+            violet = self.themes.tokyonight.purple,
+            cyan = self.themes.tokyonight.teal,
+            blue = self.themes.tokyonight.blue.base,
+            magenta = self.themes.tokyonight.magenta.base,
+            orange = self.themes.tokyonight.orange.base,
+        },
+    }
+
+    self.curr_theme = transform_tbl
+end
+
 function M:palette()
     return not is_nil(self.themes[self.variant]) and self.themes[self.variant] or self.themes.default
 end
