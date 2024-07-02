@@ -16,9 +16,9 @@ local empty = Check.value.empty
 
 local cmp = require('cmp')
 
----@param priority? integer
+---@param group_index? integer
 ---@return SourceBuf
-local function buffer(priority)
+local function buffer(group_index)
     ---@type SourceBuf
     local res = {
         name = 'buffer',
@@ -35,16 +35,16 @@ local function buffer(priority)
         },
     }
 
-    if is_int(priority) then
-        res.priority = priority
+    if is_int(group_index) then
+        res.group_index = group_index
     end
 
     return res
 end
 
----@param priority? integer
+---@param group_index? integer
 ---@return SourceAPath
-local function async_path(priority)
+local function async_path(group_index)
     ---@type SourceAPath
     local res = {
         name = 'async_path',
@@ -55,8 +55,8 @@ local function async_path(priority)
         },
     }
 
-    if is_int(priority) then
-        res.priority = priority
+    if is_int(group_index) then
+        res.group_index = group_index
     end
 
     return res
@@ -65,19 +65,19 @@ end
 ---@type table<string, (cmp.SourceConfig|SourceBuf|SourceAPath)[]>
 local Sources = {
     c = {
-        { name = 'nvim_lsp' },
-        { name = 'nvim_lsp_signature_help' },
-        { name = 'luasnip' },
-        async_path(),
-        buffer(),
+        { name = 'nvim_lsp', group_index = 1 },
+        { name = 'nvim_lsp_signature_help', group_index = 2 },
+        { name = 'luasnip', group_index = 3 },
+        async_path(5),
+        buffer(4),
     },
 
     lua = {
-        { name = 'nvim_lsp' },
-        { name = 'nvim_lua' },
-        { name = 'nvim_lsp_signature_help' },
-        { name = 'luasnip' },
-        buffer(),
+        { name = 'nvim_lsp', group_index = 1 },
+        { name = 'nvim_lua', group_index = 3 },
+        { name = 'nvim_lsp_signature_help', group_index = 4 },
+        { name = 'luasnip', group_index = 5 },
+        buffer(6),
     },
 }
 
@@ -109,11 +109,11 @@ local ft = {
         },
         {
             sources = cmp.config.sources({
-                { name = 'nvim_lsp' },
-                async_path(),
-                { name = 'nvim_lsp_signature_help' },
-                { name = 'luasnip' },
-                buffer(),
+                { name = 'nvim_lsp', group_index = 1 },
+                async_path(3),
+                { name = 'nvim_lsp_signature_help', group_index = 2 },
+                { name = 'luasnip', group_index = 4 },
+                buffer(5),
             }),
         },
     },
@@ -121,8 +121,8 @@ local ft = {
         { 'conf', 'config', 'cfg', 'confini', 'gitconfig', 'toml' },
         {
             sources = cmp.config.sources({
-                async_path(),
-                buffer(),
+                async_path(2),
+                buffer(1),
             }),
         },
     },
@@ -137,16 +137,16 @@ local ft = {
     },
     ['lisp'] = {
         sources = cmp.config.sources({
-            { name = 'vlime' },
-            buffer(),
+            { name = 'vlime', group_index = 1 },
+            buffer(2),
         }),
     },
     ['gitcommit'] = {
         sources = cmp.config.sources({
-            { name = 'conventionalcommits' },
-            { name = 'git' },
-            async_path(),
-            buffer(),
+            { name = 'conventionalcommits', group_index = 1 },
+            { name = 'git', group_index = 2 },
+            async_path(3),
+            buffer(4),
         }),
     },
 }
@@ -154,9 +154,9 @@ local ft = {
 if exists('neorg') then
     ft['norg'] = {
         sources = cmp.config.sources({
-            { name = 'neorg' },
-            async_path(),
-            buffer(),
+            { name = 'neorg', group_index = 1 },
+            async_path(3),
+            buffer(2),
         }),
     }
 end
@@ -168,8 +168,8 @@ local cmdline = {
         {
             mapping = cmp.mapping.preset.cmdline(),
             sources = cmp.config.sources({
-                { name = 'nvim_lsp_document_symbol' },
-                buffer(),
+                { name = 'nvim_lsp_document_symbol', group_index = 1 },
+                buffer(2),
             }),
         },
     },
@@ -178,9 +178,10 @@ local cmdline = {
         sources = cmp.config.sources({
             {
                 name = 'cmdline',
+                group_index = 1,
                 option = { treat_trailing_slash = false },
             },
-            async_path(),
+            async_path(2),
         }),
 
         ---@diagnostic disable-next-line:missing-fields
