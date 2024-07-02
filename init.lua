@@ -346,10 +346,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     --- Reorder to your liking.
     local selected = {
+        'kanagawa',
         'tokyonight',
         'nightfox',
         'catppuccin',
         'onedark',
+        'gruvbox',
         'spacemacs',
         'molokai',
         'oak',
