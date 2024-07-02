@@ -8,6 +8,7 @@
 ---@field colorizer table
 ---@field colorschemes table
 ---@field comment table
+---@field galaxyline table
 ---@field diffview table
 ---@field gitsigns table
 ---@field lazy table
@@ -60,6 +61,7 @@ local M = {
     colorschemes = require('user.types.colorschemes'),
     cmp = require('user.types.cmp'),
     comment = require('user.types.comment'),
+    galaxyline = require('user.types.galaxyline'),
     diffview = require('user.types.diffview'),
     gitsigns = require('user.types.gitsigns'),
     lazy = require('user.types.lazy'),
