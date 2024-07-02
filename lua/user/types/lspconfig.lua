@@ -60,10 +60,10 @@ require('user.types.user.highlight')
 ---@field jsonls? LspServerOpts|nil
 ---@field marksman? LspServerOpts|nil
 ---@field pylsp? LspServerOpts|nil
+---@field taplo? LspServerOpts|nil
 ---@field texlab? LspServerOpts|nil
 ---@field yamlls? LspServerOpts|nil
----@field new? fun(): LspServers
----@field __index? LspServers
+---@field new fun(): LspServers
 
 ---@class LspSubs
 ---@field neoconf fun()|nil

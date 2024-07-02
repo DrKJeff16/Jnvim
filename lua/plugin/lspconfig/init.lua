@@ -143,6 +143,7 @@ local populate = function(T)
 end
 
 ---@type LspServers
+---@diagnostic disable-next-line:missing-fields
 local srv = {}
 
 srv.lua_ls = executable('lua-language-server') and {} or nil
@@ -156,6 +157,7 @@ srv.julials = executable('julia') and {} or nil
 srv.marksman = executable('marksman') and {} or nil
 srv.pylsp = executable('pylsp') and {} or nil
 srv.rust_analyzer = executable('rust-analyzer') and {} or nil
+srv.taplo = executable('taplo') and {} or nil
 srv.texlab = executable('texlab') and {} or nil
 srv.yamlls = executable('yaml-language-server') and {} or nil
 
