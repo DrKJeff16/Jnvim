@@ -19,13 +19,15 @@ local M = {
         lazy = true,
         version = false,
         config = source('plugin.zen_mode'),
+        enabled = false,
     },
     {
         'nvim-neorg/neorg',
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        enabled = luarocks_set(),
+        -- enabled = luarocks_set(),
+        enabled = false,
     },
 }
 

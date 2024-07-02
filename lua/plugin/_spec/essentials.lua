@@ -43,7 +43,8 @@ local M = {
         priority = 1000,
         version = false,
         config = source('plugin.luarocks'),
-        enabled = luarocks_set(),
+        -- enabled = luarocks_set(),
+        enabled = false,
     },
     {
         'vim-scripts/L9',
