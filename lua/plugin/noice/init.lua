@@ -39,15 +39,15 @@ Noice.setup({
         -- NOTE: If you enable messages, then the cmdline is enabled automatically.
         -- This is a current Neovim limitation.
         enabled = true, -- enables the Noice messages UI
-        view = 'mini', -- default view for messages
-        view_error = 'split', -- view for errors
+        view = 'notify', -- default view for messages
+        view_error = 'notify', -- view for errors
         view_warn = 'notify', -- view for warnings
-        view_history = false, -- view for :messages
-        view_search = false, -- view for search count messages. Set to `false` to disable
+        view_history = 'messages', -- view for :messages
+        view_search = 'virtualtext', -- view for search count messages. Set to `false` to disable
     },
     popupmenu = {
         enabled = true, -- enables the Noice popupmenu UI
-        ---@type "nui"|"cmp"
+        ---@type 'nui'|'cmp'
         backend = exists('cmp') and 'cmp' or 'nui', -- backend to use to show regular cmdline completions
         -- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
         ---@type NoicePopupmenuItemKind|false
@@ -74,6 +74,16 @@ Noice.setup({
             Value = ' ',
             Variable = ' ',
         }, -- set to `false` to disable icons
+        opts = {
+            win_options = {
+                concealcursor = '',
+                conceallevel = 3,
+                winhighlight = {
+                    Normal = 'NormalFloat',
+                    FloatBorder = 'FloatBorder',
+                },
+            },
+        },
     },
     -- default options for require('noice').redirect
     -- see the section on Command Redirection
@@ -81,13 +91,25 @@ Noice.setup({
     redirect = {
         view = 'popup',
         filter = { event = 'msg_show' },
-        opts = { enter = false, format = 'details' },
+        ---@type NoiceViewOptions
+        opts = {
+            enter = true,
+            format = 'details',
+            win_options = {
+                concealcursor = '',
+                conceallevel = 3,
+                winhighlight = {
+                    Normal = 'NormalFloat',
+                    FloatBorder = 'FloatBorder',
+                },
+            },
+        },
     },
     commands = {
         history = {
             -- options for the message history that you get with `:Noice`
             view = 'split',
-            opts = { enter = false, format = 'details' },
+            opts = { enter = true, format = 'details' },
             filter = {
                 any = {
                     { event = 'notify' },
@@ -116,17 +138,26 @@ Noice.setup({
         -- `:Noice errors`
         errors = {
             -- options for the message history that you get with `:Noice`
-            view = 'split',
+            view = 'notify',
             opts = { enter = false, format = 'details' },
-            filter = { error = true },
+            ---@type NoiceFilter
+            filter = { error = true, has = true, warning = true },
             filter_opts = { reverse = true },
         },
     },
     notify = {
-        enabled = true,
+        enabled = exists('notify'),
         view = 'notify',
-        opts = { enter = false, format = 'details' },
-        filter = { error = true },
+        opts = {
+            win_options = {
+                concealcursor = '',
+                conceallevel = 3,
+                winhighlight = {
+                    Normal = 'NormalFloat',
+                    FloatBorder = 'FloatBorder',
+                },
+            },
+        },
     },
     lsp = {
         progress = {
@@ -139,13 +170,28 @@ Noice.setup({
             format_done = 'lsp_progress_done',
             throttle = 1000 / 120, -- frequency to update lsp progress message
             view = 'mini',
-            opts = { enter = false, format = 'details', border = 'rounded' },
+            ---@type NoiceViewOptions
+            opts = { enter = false, border = 'rounded' },
         },
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
             ['vim.lsp.util.stylize_markdown'] = true,
             ['cmp.entry.get_documentation'] = true,
+        },
+        message = {
+            enabled = true,
+            view = 'notify',
+            opts = {
+                win_options = {
+                    concealcursor = '',
+                    conceallevel = 3,
+                    winhighlight = {
+                        Normal = 'NormalFloat',
+                        FloatBorder = 'FloatBorder',
+                    },
+                },
+            },
         },
         hover = {
             enabled = true,
@@ -159,6 +205,14 @@ Noice.setup({
                 timeout = 3500,
                 scrollbar = true,
                 enter = false,
+                win_options = {
+                    concealcursor = '',
+                    conceallevel = 3,
+                    winhighlight = {
+                        Normal = 'NormalFloat',
+                        FloatBorder = 'FloatBorder',
+                    },
+                },
             },
         },
         signature = {
@@ -172,12 +226,14 @@ Noice.setup({
             view = nil,
             ---@type NoiceViewOptions
             opts = {
-                border = 'shadow',
-                type = 'popup',
-                focusable = true,
-                zindex = 100,
-                timeout = 600,
-                scrollbar = true,
+                win_options = {
+                    concealcursor = '',
+                    conceallevel = 3,
+                    winhighlight = {
+                        Normal = 'NormalFloat',
+                        FloatBorder = 'FloatBorder',
+                    },
+                },
             },
         },
         documentation = {
@@ -188,12 +244,19 @@ Noice.setup({
                 replace = true,
                 render = 'plain',
                 format = { '{message}' },
-                win_options = { concealcursor = 'n', conceallevel = 3 },
+                win_options = {
+                    concealcursor = '',
+                    conceallevel = 3,
+                    winhighlight = {
+                        Normal = 'NormalFloat',
+                        FloatBorder = 'FloatBorder',
+                    },
+                },
             },
         },
     },
     all = {
-        view = 'split',
+        view = 'popup',
         opts = { enter = false, format = 'details' },
         filter = {},
     },
@@ -212,10 +275,10 @@ Noice.setup({
         },
     },
     health = { checker = true },
-    smart_move = {
+    --[[ smart_move = {
         enabled = true,
         excluded_filetypes = { 'cmp_menu', 'cmp_docs', 'notify' },
-    },
+    }, ]]
     -- you can enable a preset for easier configuration
     presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
@@ -229,30 +292,19 @@ Noice.setup({
     views = {}, ---@see section on views
     ---@type NoiceRouteConfig
     routes = {
-        view = 'split',
-        filter = { event = 'msg_show', min_height = 20, kind = 'search_count' },
-        opts = {
-            align = 'center',
-            skip = true,
+        {
+            filter = { event = 'msg_show', kind = 'search_count' },
+            opts = { skip = true },
+        },
+        {
+            view = 'split',
+            filter = { event = 'msg_show', min_height = 14 },
         },
     }, ---@see section on routes
     ---@type table<string, NoiceFilter>
     status = {}, ---@see section on statusline components
     ---@type NoiceFormatOptions
-    format = {
-        default = { '{level} ', '{title} ', '{message}' },
-        notify = { '{message}' },
-        details = {
-            '{level} ',
-            '{date} ',
-            '{event}',
-            { '{kind}', before = { '.', hl_group = 'NoiceFormatKind' } },
-            ' ',
-            '{title} ',
-            '{cmdline} ',
-            '{message}',
-        },
-    }, ---@see section on formatting
+    format = {}, ---@see section on formatting
 })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
