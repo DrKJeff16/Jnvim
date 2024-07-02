@@ -40,6 +40,14 @@ local M = {
         init = colorscheme_init('installed_nightfox'),
     },
     {
+        'ellisonleao/gruvbox.nvim',
+        lazy = false,
+        priority = 1000,
+        main = 'gruvbox',
+        version = false,
+        init = colorscheme_init('installed_gruvbox'),
+    },
+    {
         'bkegley/gloombuddy',
         priority = 1000,
         version = false,

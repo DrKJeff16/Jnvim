@@ -30,6 +30,7 @@ local submods = {
     'tokyonight',
     'catppuccin',
     'nightfox',
+    'gruvbox',
     'gloombuddy',
     'oak',
     'molokai',

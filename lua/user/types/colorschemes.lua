@@ -49,6 +49,7 @@
 ---@field onedark? ODSubMod|nil
 ---@field catppuccin? CscSubMod|nil
 ---@field nightfox? CscSubMod|nil
+---@field gruvbox? CscSubMod|nil
 ---@field spaceduck? CscSubMod|nil
 ---@field dracula? CscSubMod|nil
 ---@field space_vim_dark? CscSubMod|nil

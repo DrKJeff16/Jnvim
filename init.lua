@@ -350,6 +350,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         'nightfox',
         'catppuccin',
         'onedark',
+        'gruvbox',
         'spacemacs',
         'molokai',
         'oak',
