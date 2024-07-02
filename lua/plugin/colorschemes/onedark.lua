@@ -7,26 +7,35 @@ local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
-local empty = Check.value.empty
+local is_bool = Check.value.is_bool
+local is_tbl = Check.value.is_tbl
 
 ---@type ODSubMod
+---@diagnostic disable-next-line:missing-fields
 local M = {
-    mod_pfx = 'plugin.colorschemes.onedark',
+    variants = {
+        'cool',
+        'dark',
+        'darker',
+        'deep',
+        'light',
+        'warm',
+        'warmer',
+    },
     mod_cmd = 'colorscheme onedark',
 }
 
 if exists('onedark') then
-    function M.setup(style)
+    function M:setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'deep'
+        transparent = is_bool(transparent) and transparent or false
+        override = is_tbl(override) and override or {}
+
         local OD = require('onedark')
 
-        if not is_str or not vim.tbl_contains(OD.styles_list, style) then
-            style = 'deep'
-        end
-
-        ---@type OD
-        local opts = {
-            style = style,
-            transparent = false,
+        OD.setup(vim.tbl_extend('keep', override, {
+            style = variant,
+            transparent = transparent,
             term_colors = true,
             ending_tildes = true,
             cmp_itemkind_reverse = true,
@@ -35,7 +44,7 @@ if exists('onedark') then
             toggle_style_list = { 'deep', 'warmer', 'darker' },
 
             code_style = {
-                comments = 'altfont', -- Change the style of comments
+                comments = 'altfont',
                 conditionals = 'bold',
                 loops = 'bold',
                 functions = 'bold',
@@ -57,10 +66,14 @@ if exists('onedark') then
                 undercurl = true,
                 background = true,
             },
-        }
+        }))
 
         OD.load()
     end
+end
+
+function M.new()
+    return setmetatable({}, { __index = M })
 end
 
 return M

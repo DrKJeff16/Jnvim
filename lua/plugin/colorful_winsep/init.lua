@@ -12,7 +12,7 @@ end
 
 local CW = require('colorful-winsep')
 
-local Opts = {
+CW.setup({
     hi = {
         fg = '#16161E',
         bg = '#1F3442',
@@ -37,8 +37,6 @@ local Opts = {
         up = { width = 0, x = -1, y = 0 },
         bottom = { width = 0, x = 1, y = 0 },
     },
-}
-
-CW.setup(Opts)
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
