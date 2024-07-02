@@ -45,8 +45,6 @@ local M = src(submods)
 function M.new()
     local self = setmetatable({}, { __index = M })
 
-    self.new = M.new
-
     for _, c in next, submods do
         self[c] = exists(c, true) or nil
     end
