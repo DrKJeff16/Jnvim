@@ -14,7 +14,10 @@ vim.opt.timeout = true
 vim.opt.timeoutlen = 300
 
 local WK = require('which-key')
-local presets = require('which-key.plugin.presets')
+local Presets = require('which-key.plugins.presets')
+
+Presets.operators['v'] = nil
+Presets.text_objects = true
 
 WK.setup({
     plugins = {
@@ -103,7 +106,5 @@ WK.setup({
         filetypes = {},
     },
 })
-
-presets.operators['v'] = nil
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
