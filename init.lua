@@ -45,6 +45,9 @@ local NOP = {
     "'",
     '!',
     '"',
+    '.',
+    '/',
+    '?',
     'A',
     'B',
     'C',
@@ -377,6 +380,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
             ---@type CscSubMod|ODSubMod
             local curr_color = Csc[name]
+            NamesCsc.n['<leader>vc' .. csc_group] = {
+                name = '+Group ' .. csc_group,
+            }
+            NamesCsc.v['<leader>vc' .. csc_group] = {
+                name = '+Group ' .. csc_group,
+            }
 
             for mode, _ in next, CscKeys do
                 CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
@@ -388,12 +397,6 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
                 }
             end
 
-            NamesCsc.n['<leader>vc' .. csc_group] = {
-                name = '+Group ' .. csc_group,
-            }
-            NamesCsc.v['<leader>vc' .. csc_group] = {
-                name = '+Group ' .. csc_group,
-            }
             if i == 9 then
                 i = 0
                 csc_group = displace_letter(csc_group, 'next', true)
