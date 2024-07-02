@@ -6,6 +6,7 @@ local types = User.types.cmp
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
+local is_bool = Check.value.is_bool
 
 if not exists('cmp') or not exists('luasnip') then
     return
@@ -31,13 +32,14 @@ local cr_map = CmpUtil.cr_map
 
 local bs_map = CmpUtil.bs_map
 local buffer = Sources.buffer
+local async_path = Sources.async_path
 
 ---@type table<string, cmp.MappingClass|fun(fallback: function):nil>
 local Mappings = {
     ['<C-j>'] = cmp.mapping.scroll_docs(-4),
     ['<C-k>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.abort(), -- Same as `<Esc>`
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-Space>'] = cmp.mapping.complete({ reason = 'auto' }),
     ['<CR>'] = cmp.mapping(cr_map),
     ['<Tab>'] = cmp.mapping(tab_map),
     ['<S-Tab>'] = cmp.mapping(s_tab_map),
@@ -58,7 +60,7 @@ local Opts = {
             'checkhealth',
             'help',
             'lazy',
-            'qf',
+            'packer',
         }
 
         local enable_comments = {
@@ -81,12 +83,13 @@ local Opts = {
             'python',
             'scss',
             'sh',
+            'toml',
             'vim',
             'yaml',
         }
 
         ---@type string
-        local ft = vim.api.nvim_get_option_value('ft', { scope = 'local' })
+        local ft = require('user.util').ft_get(vim.api.nvim_get_current_buf())
 
         if tbl_contains(disable_ft, ft) then
             return false
@@ -113,26 +116,26 @@ local Opts = {
         end,
     },
 
+    preselect = cmp.PreselectMode.None,
+
     sorting = {
-        priority_weight = 2,
         comparators = {
-            Compare.kind,
             Compare.score,
-            Compare.locality,
-            Compare.scopes,
-            Compare.recently_used,
-            Compare.exact,
             Compare.offset,
-            Compare.sort_text,
-            Compare.length,
+            Compare.scopes,
+            Compare.locality,
+            Compare.kind,
             Compare.order,
+            Compare.exact,
+            Compare.recently_used,
+            Compare.length,
+            Compare.sort_text,
         },
     },
 
     experimental = { ghost_text = false },
 
     completion = {
-        completeopt = 'menu,menuone,noselect,noinsert,preview',
         keyword_length = 1,
     },
 
@@ -152,10 +155,11 @@ local Opts = {
     mapping = cmp.mapping.preset.insert(Mappings),
 
     sources = cmp.config.sources({
-        { name = 'nvim_lsp', priority = 4 },
-        { name = 'nvim_lsp_signature_help', priority = 3 },
-        { name = 'luasnip', priority = 2 },
-        buffer(1),
+        { name = 'nvim_lsp', group_index = 1 },
+        { name = 'nvim_lsp_signature_help', group_index = 2 },
+        { name = 'luasnip', group_index = 3 },
+        buffer(4),
+        async_path(5),
     }),
 }
 
@@ -167,7 +171,18 @@ if is_fun(Sks.vscode) then
     Sks.vscode()
 end
 
--- For debugging.
-Util.notify.notify('cmp loaded.', vim.log.levels.INFO)
+-- Run once
+if not is_bool(_G.CMP_ANNOUNCED) or not _G.CMP_ANNOUNCED then
+    -- For debugging.
+    Util.notify.notify('cmp loaded.', vim.log.levels.INFO, {
+        title = 'nvim-cmp',
+        timeout = 50,
+        hide_from_history = CMP_ANNOUNCED,
+        once = true,
+        on_open = function()
+            _G.CMP_ANNOUNCED = true
+        end,
+    })
+end
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

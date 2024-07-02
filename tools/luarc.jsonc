@@ -1,16 +1,16 @@
 {
     "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
     "addonManager": {
-        "enable": true
+        "enable": false
     },
     "codeLens": {
         "enable": true
     },
     "completion": {
+        "enable": true,
         "autoRequire": false,
         "callSnippet": "Replace",
         "displayContext": 8,
-        "enable": true,
         "keywordSnippet": "Replace",
         "postfix": "@",
         "requireSeparator": ".",

@@ -25,6 +25,8 @@ CW.setup({
         'qf',
         'TelescopePrompt',
         'mason',
+        'help',
+        'prompt',
     },
 
     symbols = { '━', '┃', '┏', '┓', '┗', '┛' },
