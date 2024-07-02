@@ -18,7 +18,7 @@ if exists('gruvbox') then
         local GVBX = require('gruvbox')
 
         GVBX.setup({
-            transparent_mode = true,
+            transparent_mode = false,
             dim_inactive = true,
             terminal_colors = true,
             undercurl = true,

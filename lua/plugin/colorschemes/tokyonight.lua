@@ -57,7 +57,7 @@ if exists('tokyonight') then
                 }
             end,
             terminal_colors = true,
-            transparent = true,
+            transparent = false,
             sidebars = {
                 'qf',
                 'help',
@@ -82,7 +82,7 @@ if exists('tokyonight') then
                 functions = { bold = true, italic = false },
                 variables = {},
                 sidebars = 'dark',
-                floats = 'transparent',
+                floats = 'dark',
             },
 
             plugins = {
