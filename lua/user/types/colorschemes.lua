@@ -49,6 +49,7 @@
 ---@field onedark? ODSubMod|nil
 ---@field catppuccin? CscSubMod|nil
 ---@field nightfox? CscSubMod|nil
+---@field gruvbox? CscSubMod|nil
 ---@field spaceduck? CscSubMod|nil
 ---@field dracula? CscSubMod|nil
 ---@field space_vim_dark? CscSubMod|nil
@@ -56,7 +57,6 @@
 ---@field molokai? CscSubMod|nil
 ---@field gloombuddy? CscSubMod|nil
 ---@field oak? CscSubMod|nil
----@field new? fun(): CscMod
----@field __index? CscMod
+---@field new fun(): CscMod
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
