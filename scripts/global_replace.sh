@@ -34,7 +34,9 @@ _cmd() {
 # Terminate the script, optionally set the exit code and abort message
 die() {
     local EC=1
-    while [[ "$(pwd)" == "$HOME/.build/nvim/"* ]]; do
+
+    # TODO: Sanitize this line
+    while [[ "$(pwd)" == *"nvim/"* ]] || [[ "$(pmd)" == *"neovim/"* ]]; do
         cd ..
     done
 
@@ -59,7 +61,7 @@ die() {
 
 EC=0
 while [[ $# -gt 0 ]]; do
-    if ! [[ "$1" =~ ^s/.+/.*/g$ ]] ; then
+    if ! [[ "$1" =~ ^s/.+/.*/g?$ ]] ; then
         error "Pattern \`$1\` not valid. Skipping..."
         EC=1
         shift
