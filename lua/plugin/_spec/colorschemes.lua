@@ -16,6 +16,7 @@ local M = {
         main = 'onedark',
         version = false,
         init = colorscheme_init('installed_onedark'),
+        enabled = vim.o.termguicolors,
     },
     {
         'catppuccin/nvim',
@@ -24,6 +25,7 @@ local M = {
         main = 'catppuccin',
         version = false,
         init = colorscheme_init('installed_catppuccin'),
+        enabled = vim.o.termguicolors,
     },
     {
         'folke/tokyonight.nvim',
@@ -31,6 +33,7 @@ local M = {
         main = 'tokyonight',
         version = false,
         init = colorscheme_init('installed_tokyonight'),
+        enabled = vim.o.termguicolors,
     },
     {
         'EdenEast/nightfox.nvim',
@@ -38,6 +41,7 @@ local M = {
         main = 'nightfox',
         version = false,
         init = colorscheme_init('installed_nightfox'),
+        enabled = vim.o.termguicolors,
     },
     {
         'rebelot/kanagawa.nvim',
@@ -46,6 +50,7 @@ local M = {
         main = 'kanagawa',
         version = false,
         init = colorscheme_init('installed_kanagawa'),
+        enabled = vim.o.termguicolors,
     },
     {
         'ellisonleao/gruvbox.nvim',
@@ -54,6 +59,7 @@ local M = {
         main = 'gruvbox',
         version = false,
         init = colorscheme_init('installed_gruvbox'),
+        enabled = vim.o.termguicolors,
     },
     {
         'bkegley/gloombuddy',
@@ -85,6 +91,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_spaceduck'),
+        enabled = vim.o.termguicolors,
     },
     {
         'dracula/vim',
@@ -93,6 +100,7 @@ local M = {
         name = 'dracula',
         version = false,
         init = colorscheme_init('installed_dracula'),
+        enabled = vim.o.termguicolors,
     },
     {
         'liuchengxu/space-vim-dark',
@@ -100,6 +108,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_space_vim_dark'),
+        enabled = vim.o.termguicolors,
     },
     {
         'tomasr/molokai',
@@ -107,6 +116,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_molokai'),
+        enabled = vim.o.termguicolors,
     },
     {
         'colepeters/spacemacs-theme.vim',
