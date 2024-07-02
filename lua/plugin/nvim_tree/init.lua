@@ -305,7 +305,7 @@ local on_attach = function(bufn)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
-local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 5 / 16
+local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 1 / 4
 
 Tree.setup({
     on_attach = on_attach,
@@ -379,6 +379,27 @@ Tree.setup({
         relativenumber = false,
         signcolumn = vim.opt_local.signcolumn:get(),
     },
+
+    diagnostics = {
+        enable = true,
+        severity = {
+            min = vim.diagnostic.severity.WARN,
+            max = vim.diagnostic.severity.ERROR,
+        },
+        icons = {
+            hint = '',
+            info = '',
+            warning = '',
+            error = '',
+        },
+    },
+
+    modified = {
+        enable = true,
+        show_on_dirs = true,
+        show_on_open_dirs = false,
+    },
+
     renderer = {
         group_empty = false,
         add_trailing = false,
@@ -420,6 +441,7 @@ Tree.setup({
                 diagnostics = true,
                 bookmarks = true,
             },
+
             glyphs = {
                 default = '',
                 symlink = '',
@@ -447,7 +469,11 @@ Tree.setup({
             },
         },
     },
-    filters = { dotfiles = false },
+    filters = {
+        dotfiles = false,
+        git_ignored = false,
+        no_buffer = true,
+    },
     live_filter = {
         prefix = '[FILTER]: ',
         always_show_folders = true,
@@ -587,6 +613,11 @@ local au_cmds = {
             end
         end,
     },
+    --[[ ['WinEnter'] = {
+        callback = function()
+
+        end,
+    } ]]
 }
 
 User.util.au.au_from_dict(au_cmds)

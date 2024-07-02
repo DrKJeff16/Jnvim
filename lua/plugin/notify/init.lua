@@ -11,7 +11,7 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local empty = Check.value.empty
-local hl = Highlight.hl
+local hl_from_dict = Highlight.hl_from_dict
 
 if not exists('notify') then
     return
@@ -19,8 +19,7 @@ end
 
 local notify = require('notify')
 
----@type notify.Config
-local Opts = {
+notify.setup({
     background_colour = 'NotifyBackground',
     fps = 60,
     icons = {
@@ -38,11 +37,9 @@ local Opts = {
         notification = '%T',
         notification_history = '%FT%T',
     },
-    timeout = 1500,
+    timeout = 1250,
     top_down = true,
-}
-
-notify.setup(Opts)
+})
 vim.notify = notify
 
 ---@type HlDict
@@ -69,8 +66,6 @@ local NotifyHl = {
     ['NotifyTRACEBody'] = { link = 'Normal' },
 }
 
-for name, opts in next, NotifyHl do
-    hl(name, opts)
-end
+hl_from_dict(NotifyHl)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

@@ -14,7 +14,10 @@ vim.opt.timeout = true
 vim.opt.timeoutlen = 300
 
 local WK = require('which-key')
-local presets = require('which-key.plugin.presets')
+local Presets = require('which-key.plugins.presets')
+
+Presets.operators['v'] = nil
+Presets.text_objects = true
 
 WK.setup({
     plugins = {
@@ -59,19 +62,19 @@ WK.setup({
     window = {
         border = 'single', -- none, single, double, shadow
         position = 'bottom', -- bottom, top
-        margin = { 2, 4, 2, 4 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
+        margin = { 2, 1, 2, 1 }, -- extra window margin [top, right, bottom, left]. When between 0 and 1, will be treated as a percentage of the screen size.
         padding = { 2, 1, 2, 1 }, -- extra window padding [top, right, bottom, left]
-        winblend = 20, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+        winblend = 35, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         zindex = 1000, -- positive value to position WhichKey above other floating windows.
     },
     layout = {
-        height = { min = 4, max = math.floor(vim.opt.lines:get() / 3) }, -- min and max height of the columns
+        height = { min = 4, max = math.floor(vim.opt.lines:get() * 4 / 7) }, -- min and max height of the columns
         width = { min = 25, max = math.floor(vim.opt.columns:get() * 3 / 4) }, -- min and max width of the columns
-        spacing = 1, -- spacing between columns
+        spacing = 3, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
     ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-    hidden = { '<silent>', '<cmd>', '<Cmd>', '<CR>', '^:', '^ ', '^call ', '^lua ' }, -- hide mapping boilerplate
+    hidden = { '<silent>', '<cmd>', '<Cmd>', '<CR>', '^:', '^ ', '^call ', '^lua ', '<nowait>' }, -- hide mapping boilerplate
     show_help = true, -- show a help message in the command line for using WhichKey
     show_keys = true, -- show the currently pressed key and its label as a message in the command line
     triggers = 'auto', -- automatically setup triggers
@@ -92,9 +95,8 @@ WK.setup({
     triggers_blacklist = {
         -- list of mode / prefixes that should never be hooked by WhichKey
         -- this is mostly relevant for keymaps that start with a native binding
-        i = { 'j', 'k', '<space>', '<leader>' },
-        v = { 'j', 'k', 'v' },
-        n = { 'j', 'k', 'v' },
+        i = { 'j', 'k' },
+        v = { 'j', 'k' },
     },
     -- disable the WhichKey popup for certain buf types and file types.
     -- Disabled by default for Telescope
@@ -103,7 +105,5 @@ WK.setup({
         filetypes = {},
     },
 })
-
-presets.operators['v'] = nil
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
