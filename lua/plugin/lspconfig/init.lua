@@ -61,13 +61,11 @@ end
 local Sub = {
     kinds = exists('plugin.lspconfig.kinds', true),
     neoconf = sub_fun('plugin.lspconfig.neoconf'),
-    clangd = sub_fun('plugin.lspconfig.clangd'),
     trouble = sub_fun('plugin.lspconfig.trouble'),
 }
 
 -- Now call each.
 Sub.neoconf()
-Sub.clangd()
 Sub.trouble()
 Sub.kinds.setup()
 
