@@ -23,6 +23,35 @@ local M = {
         config = source('plugin.md_preview'),
         enabled = not in_console(),
     },
+    --- Makefile viewer
+    {
+        'Zeioth/makeit.nvim',
+        ft = { 'make' },
+        version = false,
+        dependencies = { 'stevearc/overseer.nvim' },
+        opts = {},
+    },
+    --- The task runner used for `makeit.nvim`
+    {
+        'stevearc/overseer.nvim',
+        cmd = { 'MakeitOpen', 'MakeitToggleResults', 'MakeitRedo' },
+        version = false,
+        opts = {
+            task_list = {
+                direction = 'bottom',
+                min_height = 25,
+                max_height = 25,
+                default_detail = 1,
+            },
+        },
+    },
+    --- Docs viewer
+    {
+        'Zeioth/dooku.nvim',
+        event = 'VeryLazy',
+        version = false,
+        enabled = executable('doxygen'),
+    },
 }
 
 return M
