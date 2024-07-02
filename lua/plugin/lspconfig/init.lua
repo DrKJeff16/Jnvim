@@ -143,6 +143,7 @@ local populate = function(T)
 end
 
 ---@type LspServers
+---@diagnostic disable-next-line:missing-fields
 local srv = {}
 
 srv.lua_ls = executable('lua-language-server') and {} or nil
