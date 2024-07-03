@@ -57,17 +57,9 @@ local sub_fun = function(path)
     end
 end
 
----@type LspSubs
-local Sub = {
-    kinds = exists('plugin.lspconfig.kinds', true),
-    neoconf = sub_fun('plugin.lspconfig.neoconf'),
-    trouble = sub_fun('plugin.lspconfig.trouble'),
-}
-
--- Now call each.
-Sub.neoconf()
-Sub.trouble()
-Sub.kinds.setup()
+require('plugin.lspconfig.neoconf')
+require('plugin.lspconfig.trouble')
+require('plugin.lspconfig.kinds').setup()
 
 local border = {
     { '🭽', 'FloatBorder' },
@@ -94,7 +86,7 @@ local handlers = {
 }
 
 ---@type fun(T: LspServers): LspServers
-local populate = function(T)
+local function populate(T)
     ---@type LspServers
     local res = {}
 

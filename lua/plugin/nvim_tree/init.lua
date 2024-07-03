@@ -403,7 +403,7 @@ Tree.setup({
     renderer = {
         group_empty = false,
         add_trailing = false,
-        full_name = false,
+        full_name = true,
 
         indent_width = 2,
         indent_markers = {
@@ -472,7 +472,7 @@ Tree.setup({
     filters = {
         dotfiles = false,
         git_ignored = false,
-        no_buffer = true,
+        no_buffer = false,
     },
     live_filter = {
         prefix = '[FILTER]: ',

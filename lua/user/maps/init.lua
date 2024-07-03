@@ -33,7 +33,7 @@ local M = {
         end
 
         mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
-        if vim.tbl_contains({ 'i', 't', 'o', 'x' }, mode) then
+        if not vim.tbl_contains({ 'n', 'v' }, mode) then
             return
         end
 

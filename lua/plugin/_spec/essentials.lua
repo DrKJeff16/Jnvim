@@ -47,11 +47,6 @@ local M = {
         enabled = false,
     },
     {
-        'vim-scripts/L9',
-        lazy = false,
-        version = false,
-    },
-    {
         'echasnovski/mini.nvim',
         version = false,
         config = source('plugin.mini'),
