@@ -107,12 +107,12 @@ local Keys = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
 
-        ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully', false, nil, false) },
-        ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer', false, nil, false) },
-        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer', false, nil, false) },
-        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer', false, nil, false) },
-        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer', false, nil, false) },
-        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer', false, nil, false) },
+        ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully', true, nil, false) },
+        ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer', true, nil, false) },
+        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer', true, nil, false) },
+        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer', true, nil, false) },
+        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer', true, nil, false) },
+        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer', true, nil, false) },
 
         ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
@@ -184,13 +184,13 @@ local Keys = {
             desc('Source $MYVIMRC'),
         },
 
-        ['<leader>hS'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
-        ['<leader>hT'] = { ':tab h<CR>', desc('Open Help On New Tab') },
-        ['<leader>hV'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
-        ['<leader>hh'] = { ':h ', desc('Prompt For Help', false) },
-        ['<leader>hs'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
-        ['<leader>ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
-        ['<leader>hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
+        ['<leader>?S'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
+        ['<leader>?T'] = { ':tab h<CR>', desc('Open Help On New Tab') },
+        ['<leader>?V'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
+        ['<leader>?h'] = { ':h ', desc('Prompt For Help', false) },
+        ['<leader>?s'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
+        ['<leader>?t'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
+        ['<leader>?v'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
 
         ['<leader>wN'] = {
             function()
@@ -299,7 +299,7 @@ local Names = {
         ['<leader>fF'] = { name = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { name = '+Indent' }, --- Indent Control
         ['<leader>fv'] = { name = '+Script Files' }, --- Script File Handling
-        ['<leader>h'] = { name = '+Help' }, --- Help
+        ['<leader>?'] = { name = '+Help' }, --- Help
         ['<leader>q'] = { name = '+Quit Nvim' }, --- Exiting
         ['<leader>t'] = { name = '+Tabs' }, --- Tabs Handling
         ['<leader>v'] = { name = '+Vim' }, --- Vim
