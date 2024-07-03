@@ -23,7 +23,7 @@ local LG_Win = require('lazygit.window')
 
 local Opts = {
     ['floating_window_winblend'] = 0,
-    ['floating_window_scaling_factor'] = 0.9,
+    ['floating_window_scaling_factor'] = 1.0,
     ['floating_window_border_chars'] = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     ['floating_window_use_plenary'] = 1,
 
