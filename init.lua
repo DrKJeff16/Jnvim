@@ -332,12 +332,6 @@ if WK.available() then
 end
 map_dict(Keys, 'wk.register', true)
 
----@param T CscSubMod|ODSubMod|unknown
----@return boolean
-local function color_exists(T)
-    return is_tbl(T) and is_fun(T.setup)
-end
-
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes.
     local C = Pkg.colorschemes
@@ -373,13 +367,19 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     local csc_group = 'a'
     local i = 1
-    local found_csc = 0
-    for _, name in next, selected do
-        if color_exists(Csc[name]) then
-            found_csc = found_csc == 0 and i or found_csc
+    local found_csc = ''
+    for idx, name in next, selected do
+        if is_nil(Csc[name] == nil) then
+            goto continue
+        end
 
+        if not is_nil(Csc[name].setup) then
             ---@type CscSubMod|ODSubMod
-            local curr_color = Csc[name]
+            if found_csc == '' then
+                found_csc = name
+                Csc[name].setup()
+            end
+
             NamesCsc.n['<leader>vc' .. csc_group] = {
                 name = '+Group ' .. csc_group,
             }
@@ -389,10 +389,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
             for mode, _ in next, CscKeys do
                 CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
-                    function()
-                        local color = curr_color.new()
-                        color:setup()
-                    end,
+                    Csc[name].setup,
                     desc('Setup Colorscheme `' .. name .. '`'),
                 }
             end
@@ -400,10 +397,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
             if i == 9 then
                 i = 0
                 csc_group = displace_letter(csc_group, 'next', true)
-            else
+            elseif i < 9 then
                 i = i + 1
             end
         end
+
+        ::continue::
     end
 
     if WK.available() then
@@ -412,7 +411,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     map_dict(CscKeys, 'wk.register', true)
 
     if not empty(found_csc) then
-        Csc[selected[found_csc]]:setup()
+        Csc[found_csc].setup()
     end
 end
 

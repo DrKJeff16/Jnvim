@@ -20,14 +20,15 @@ local M = {
         'mocha',
     },
     mod_cmd = 'colorscheme catppuccin',
+    setup = nil,
 }
 
 if exists('catppuccin') then
     ---@param variant? 'frappe'|'macchiato'|'mocha'|'latte'
     ---@param transparent? boolean
     ---@param override? table
-    function M:setup(variant, transparent, override)
-        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant or 'macchiato'
+    function M.setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant or 'macchiato'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -125,7 +126,7 @@ if exists('catppuccin') then
             },
         }))
 
-        vim.cmd(self.mod_cmd)
+        vim.cmd(M.mod_cmd)
     end
 end
 

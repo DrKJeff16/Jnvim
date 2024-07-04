@@ -18,14 +18,15 @@ local M = {
         'day',
     },
     mod_cmd = 'colorscheme tokyonight',
+    setup = nil,
 }
 
 if exists('tokyonight') then
     ---@param variant? 'night'|'moon'|'day'
     ---@param transparent? boolean
-    ---@param override? tokyonight.Config
-    function M:setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'moon'
+    ---@param override? tokyonight.Config|table
+    function M.setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'moon'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -34,13 +35,13 @@ if exists('tokyonight') then
         TN.setup(vim.tbl_extend('keep', override, {
             cache = false,
 
-            ---@param colors ColorScheme
+            ---@param colors ColorScheme|table
             on_colors = function(colors)
                 colors.error = '#df4f4f'
             end,
 
-            ---@param hl tokyonight.Highlights
-            ---@param c ColorScheme
+            ---@param hl tokyonight.Highlights|table
+            ---@param c ColorScheme|table
             on_highlights = function(hl, c)
                 local prompt = '#2d3149'
                 hl.TelescopeNormal = {
@@ -106,7 +107,7 @@ if exists('tokyonight') then
             },
         }))
 
-        vim.cmd(self.mod_cmd)
+        vim.cmd(M.mod_cmd)
     end
 end
 
