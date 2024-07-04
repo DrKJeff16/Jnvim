@@ -91,6 +91,7 @@ local M = {
 
     {
         'lewis6991/hover.nvim',
+        event = 'VeryLazy',
         main = 'hover',
         version = false,
         config = source('plugin.hover'),
