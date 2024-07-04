@@ -128,12 +128,12 @@ local Keys = {
             end,
             desc('New Blank File', true, 0),
         },
-        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
-        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
-        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
+        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true, 0) },
+        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
+        ['<leader>fs'] = { ':w<CR>', desc('Save File', false, 0) },
+        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false, 0) },
+        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
         ['<leader>fvl'] = {
             function()
                 local ft = Util.ft_get()
