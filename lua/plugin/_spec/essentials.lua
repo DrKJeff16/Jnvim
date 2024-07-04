@@ -31,6 +31,7 @@ local M = {
     },
     {
         'dstein64/vim-startuptime',
+        lazy = false,
         version = false,
         init = function()
             vim.g.installed_startuptime = 1
@@ -48,6 +49,7 @@ local M = {
     },
     {
         'echasnovski/mini.nvim',
+        lazy = false,
         version = false,
         config = source('plugin.mini'),
         enabled = not in_console(),
@@ -69,16 +71,15 @@ local M = {
         end,
         config = source('plugin.scope'),
     },
-
     {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
         enabled = not in_console(),
     },
-
     {
         'rcarriga/nvim-notify',
+        lazy = false,
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
@@ -91,15 +92,16 @@ local M = {
 
     {
         'lewis6991/hover.nvim',
+        event = 'VeryLazy',
         main = 'hover',
         version = false,
         config = source('plugin.hover'),
         enabled = not in_console(),
     },
-
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
+        priority = 1000,
         version = false,
         enabled = not in_console(),
     },

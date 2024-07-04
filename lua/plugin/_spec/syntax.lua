@@ -13,10 +13,12 @@ local executable = Check.exists.executable
 local M = {
     {
         'rhysd/vim-syntax-codeowners',
+        event = 'VeryLazy',
         version = false,
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
+        event = 'VeryLazy',
         version = false,
         enabled = executable('doxygen'),
     },

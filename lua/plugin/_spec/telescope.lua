@@ -16,9 +16,7 @@ local M = {
     {
         'nvim-telescope/telescope.nvim',
         version = false,
-        dependencies = {
-            'plenary.nvim',
-        },
+        dependencies = { 'plenary.nvim' },
         config = source('plugin.telescope'),
         enabled = not in_console(),
     },
@@ -26,6 +24,7 @@ local M = {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
         version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
         enabled = not in_console(),
     },
     {
@@ -33,12 +32,13 @@ local M = {
         lazy = true,
         version = false,
         build = tel_fzf_build(),
+        dependencies = { 'nvim-telescope/telescope.nvim' },
         enabled = executable('fzf') and not in_console(),
     },
     --- Project Manager
     {
         'ahmedkhalf/project.nvim',
-        lazy = false,
+        event = 'VeryLazy',
         dev = true,
         main = 'project_nvim',
         version = false,
