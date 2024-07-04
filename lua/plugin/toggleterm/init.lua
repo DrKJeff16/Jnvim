@@ -5,13 +5,12 @@ local User = require('user')
 local Check = User.check
 local types = User.types.toggleterm
 local Maps = User.maps
-local kmap = Maps.kmap
 local WK = Maps.wk
 
 local empty = Check.value.empty
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 local map_dict = Maps.map_dict
 
 if not exists('toggleterm') then
@@ -67,7 +66,7 @@ local Opts = {
     persist_mode = true,
 
     float_opts = {
-        border = 'single',
+        border = 'double',
         title_pos = 'center',
         zindex = 100,
         winblend = 3,
@@ -76,7 +75,8 @@ local Opts = {
     winbar = {
         enabled = true,
 
-        ---@type fun(term: Terminal): string
+        ---@param term Terminal
+        ---@return string
         name_formatter = function(term)
             return term.name
         end,
@@ -90,7 +90,7 @@ local aus = {
     ['TermEnter'] = {
         pattern = { 'term://*toggleterm#*' },
         callback = function()
-            kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
+            User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
         end,
     },
 }

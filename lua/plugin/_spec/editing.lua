@@ -22,7 +22,7 @@ local M = {
     },
     {
         'olimorris/persisted.nvim',
-        lazy = false,
+        event = 'BufReadPre',
         version = false,
         config = source('plugin.persisted'),
     },

@@ -17,51 +17,47 @@
 
 --- A loadable color schemes table.
 ---
---- ## Description
---- Each colorscheme is a table with **three** items:
---- * `mod_pfx`: A **protected** string for internal calls
---- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
---- * `setup`: A function to setup and set the colorscheme.
+--- ## Fields
+--- - `variants`: An optional string array displaying the variants of said colorscheme.
+---             **NOTE: Need to check if it exists**.
+--- - `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
+--- - `setup`: If the colorscheme is found (either as a Lua module or a `vim.g` variable)
+---          it becomes a function to setup and set the colorscheme.
+---          Otherwise it defaults to `nil`
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
 ---@class CscSubMod
----@field setup? fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)
+---@field setup fun(variant: string?, transparent: boolean?, override: table?)|nil
 ---@field variants? string[]
 ---@field mod_cmd string
 ---@field new? fun(): CscSubMod
 
---- A loadable color schemes table.
----
---- ## Description
---- Each colorscheme is a table with **three** items:
---- * `mod_pfx`: A **protected** string for internal calls
---- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
---- * `setup`: A function to setup and set the colorscheme.
----
---- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
+---@see CscSubMod
+--- A `CscSubMod` variant but for the `onedark.nvim` colorscheme.
 ---@class ODSubMod: CscSubMod
----@field setup? fun(self: CscSubMod, variant: OD.Variant, transparent: boolean?, override: OD?)
----@field new fun(): ODSubMod
+---@field setup fun(variant: OD.Variant, transparent: boolean?, override: OD?)|nil
+---@field new? fun(): ODSubMod
 
+---@see CscSubMod
 --- A table for each **explicitly** configured colorscheme.
 ---
 --- ## Description
 --- The colorschemes must comply with the `CscSubMod` type specifications.
 ---
 ---@class CscMod
----@field catppuccin? CscSubMod
----@field dracula? CscSubMod
----@field gloombuddy? CscSubMod
----@field gruvbox? CscSubMod
----@field kanagawa? CscSubMod
----@field molokai? CscSubMod
----@field nightfox? CscSubMod
----@field oak? CscSubMod
----@field onedark? ODSubMod
----@field space_vim_dark? CscSubMod
----@field spaceduck? CscSubMod
----@field spacemacs? CscSubMod
----@field tokyonight? CscSubMod
+---@field catppuccin CscSubMod
+---@field dracula CscSubMod
+---@field gloombuddy CscSubMod
+---@field gruvbox CscSubMod
+---@field kanagawa CscSubMod
+---@field molokai CscSubMod
+---@field nightfox CscSubMod
+---@field oak CscSubMod
+---@field onedark ODSubMod
+---@field space_vim_dark CscSubMod
+---@field spaceduck CscSubMod
+---@field spacemacs CscSubMod
+---@field tokyonight CscSubMod
 ---@field new fun(): CscMod
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

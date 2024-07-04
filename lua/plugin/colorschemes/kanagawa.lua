@@ -19,14 +19,15 @@ local M = {
         'lotus',
     },
     mod_cmd = 'colorscheme kanagawa',
+    setup = nil,
 }
 
 if exists('kanagawa') then
     ---@param variant? 'dragon'|'wave'|'lotus'
     ---@param transparent? boolean
     ---@param override? table
-    function M:setup(variant, transparent, override)
-        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant or 'wave'
+    function M.setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant or 'wave'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -86,7 +87,7 @@ if exists('kanagawa') then
             },
         }))
 
-        vim.cmd(self.mod_cmd)
+        vim.cmd(M.mod_cmd)
     end
 end
 

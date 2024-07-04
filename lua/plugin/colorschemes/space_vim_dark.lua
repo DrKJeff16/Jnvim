@@ -7,11 +7,12 @@ local csc_t = User.types.colorschemes
 ---@type CscSubMod
 local M = {
     mod_cmd = 'colorscheme space-vim-dark',
+    setup = nil,
 }
 
 if vim.g.installed_space_vim_dark then
-    function M:setup(variant, transparent, override)
-        vim.cmd(self.mod_cmd)
+    function M.setup(variant, transparent, override)
+        vim.cmd(M.mod_cmd)
     end
 end
 

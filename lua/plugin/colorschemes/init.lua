@@ -57,7 +57,7 @@ function M.new()
 
     for k, v in next, self do
         if k ~= 'new' and not is_nil(v) then
-            self[k] = v.new()
+            self[k] = v
         end
     end
 

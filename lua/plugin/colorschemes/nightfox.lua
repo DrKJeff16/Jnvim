@@ -23,14 +23,15 @@ local M = {
         'terafox',
     },
     mod_cmd = 'colorscheme ', -- Leave a whitespace for variant selection
+    setup = nil,
 }
 
 if exists('nightfox') then
     ---@param variant? 'carbonfox'|'dayfox'|'nightfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
     ---@param transparent? boolean
     ---@param override? table
-    function M:setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'carbonfox'
+    function M.setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'carbonfox'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -94,7 +95,7 @@ if exists('nightfox') then
             },
         }))
 
-        vim.cmd(self.mod_cmd .. variant)
+        vim.cmd(M.mod_cmd .. variant)
 
         require('nightfox').compile()
     end
