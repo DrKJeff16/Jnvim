@@ -103,7 +103,7 @@ local Maps = {
         ['<leader>?H'] = { Builtin.help_tags, desc('Telescope Help Tags') },
         ['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
         ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
-        ['<leader>vcc'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
+        ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
         ['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
         ['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
@@ -139,12 +139,9 @@ local known_exts = {
 
             local pfx = Extensions.projects
 
-            ---@type KeyMapDict
-            local res = {
+            return {
                 ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
             }
-
-            return res
         end,
     },
     ['notify'] = {
@@ -153,12 +150,9 @@ local known_exts = {
         keys = exists('notify') and function()
             local pfx = Extensions.notify
 
-            ---@type KeyMapDict
-            local res = {
+            return {
                 ['<leader>fTeN'] = { pfx.notify, desc('Notify Picker') },
             }
-
-            return res
         end,
     },
     ['noice'] = {
