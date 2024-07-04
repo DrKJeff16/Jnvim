@@ -8,6 +8,7 @@ local types = User.types.mini
 local WK = User.maps.wk
 
 local exists = Check.exists.module
+local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
@@ -15,7 +16,8 @@ local empty = Check.value.empty
 local map_dict = User.maps.map_dict
 local notify = Util.notify.notify
 
----@type fun(min_mod: string, opts: table?)
+---@param mini_mod string
+---@param opts table|nil
 local function src(mini_mod, opts)
     if not is_str(mini_mod) or empty(mini_mod) then
         error('(plugin.mini:src): Invalid or empty Mini module.')
@@ -29,11 +31,16 @@ local function src(mini_mod, opts)
 
     local M = require(mini_mod)
 
-    opts = is_tbl(opts) and opts or {}
+    opts = is_tbl(opts) and opts or nil
 
     if is_fun(M.setup) then
         local ok
-        ok, _ = pcall(M.setup, opts)
+
+        if is_nil(opts) then
+            ok, _ = pcall(M.setup)
+        else
+            ok, _ = pcall(M.setup, opts)
+        end
 
         if not ok then
             notify(
@@ -139,7 +146,7 @@ local Mods = {
         silent = false,
     },
     ['cursorword'] = { delay = 2000 },
-    ['doc'] = {},
+    ['doc'] = nil,
     ['extra'] = {},
     ['move'] = {
         -- Module mappings. Use `''` (empty string) to disable one.
