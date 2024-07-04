@@ -8,31 +8,21 @@ local types = User.types.lazy
 
 local source = CfgUtil.source
 local luasnip_build = CfgUtil.luasnip_build
+local executable = User.check.exists.executable
 
 ---@type LazySpec[]
 local M = {
     {
+        'L3MON4D3/LuaSnip',
+        event = 'VeryLazy',
+        version = false,
+        build = luasnip_build(),
+    },
+    {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
-        dependencies = {
-            'onsails/lspkind.nvim',
-            'hrsh7th/cmp-nvim-lsp',
-            'hrsh7th/cmp-nvim-lsp-document-symbol',
-            'hrsh7th/cmp-nvim-lsp-signature-help',
-
-            'hrsh7th/cmp-buffer',
-
-            'hrsh7th/cmp-path',
-            'https://codeberg.org/FelipeLema/cmp-async-path',
-
-            'petertriho/cmp-git',
-            'davidsierradz/cmp-conventionalcommits',
-
-            'hrsh7th/cmp-cmdline',
-
-            'saadparwaiz1/cmp_luasnip',
-        },
+        dependencies = { 'onsails/lspkind.nvim' },
         init = function()
             vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
             vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
@@ -40,21 +30,62 @@ local M = {
         config = source('plugin.cmp'),
     },
     {
+        'hrsh7th/cmp-nvim-lsp',
+        version = false,
+        dependencies = { 'nvim-lspconfig' },
+    },
+    {
+        'hrsh7th/cmp-nvim-lsp-document-symbol',
+        version = false,
+        dependencies = { 'nvim-lspconfig' },
+    },
+    {
+        'hrsh7th/cmp-nvim-lsp-signature-help',
+        version = false,
+        dependencies = { 'nvim-lspconfig' },
+    },
+    {
+        'hrsh7th/cmp-buffer',
+        version = false,
+    },
+    {
+        'hrsh7th/cmp-path',
+        version = false,
+    },
+    {
+        'https://codeberg.org/FelipeLema/cmp-async-path',
+        version = false,
+    },
+    {
+        'petertriho/cmp-git',
+        version = false,
+        enabled = executable('git'),
+    },
+    {
+        'davidsierradz/cmp-conventionalcommits',
+        ft = 'gitcommit',
+        version = false,
+        enabled = executable('git'),
+    },
+    {
+        'hrsh7th/cmp-cmdline',
+        version = false,
+    },
+    {
+        'saadparwaiz1/cmp_luasnip',
+        version = false,
+        dependencies = { 'LuaSnip' },
+    },
+    {
         'paopaol/cmp-doxygen',
-        lazy = true,
-        dependencies = {
-            'nvim-treesitter-textobjects',
-        },
+        ft = 'doxygen',
+        dependencies = { 'nvim-treesitter-textobjects' },
+        enabled = executable('doxygen'),
     },
     {
         'rafamadriz/friendly-snippets',
+        event = 'VeryLazy',
         version = false,
-    },
-    {
-        'L3MON4D3/LuaSnip',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        build = luasnip_build(),
     },
     {
         'vlime/vlime',

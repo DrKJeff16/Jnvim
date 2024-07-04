@@ -28,9 +28,9 @@ local M = {
     },
     {
         'numToStr/Comment.nvim',
+        event = 'VeryLazy',
         version = false,
         dependencies = {
-            'nvim-treesitter',
             'nvim-ts-context-commentstring',
         },
         config = source('plugin.Comment'),
@@ -38,12 +38,13 @@ local M = {
 
     {
         'tpope/vim-endwise',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
     },
     --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
+        event = 'BufReadPre',
         version = false,
         dependencies = {
             'nvim-treesitter',
@@ -57,12 +58,14 @@ local M = {
     },
     {
         'windwp/nvim-autopairs',
+        event = 'VeryLazy',
         main = 'nvim-autopairs',
         version = false,
         config = source('plugin.autopairs'),
     },
     {
         'glepnir/template.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.template'),
         enabled = false,

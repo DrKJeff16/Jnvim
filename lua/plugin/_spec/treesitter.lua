@@ -11,7 +11,7 @@ local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'nvim-treesitter/nvim-treesitter',
@@ -23,17 +23,20 @@ local M = {
         'nvim-treesitter/nvim-treesitter-context',
         lazy = true,
         version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
         enabled = not in_console() and vim_exists('+termguicolors'),
     },
     {
         'JoosepAlviste/nvim-ts-context-commentstring',
         lazy = true,
         version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
         lazy = true,
         version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
     },
 }
 

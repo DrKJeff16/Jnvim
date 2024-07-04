@@ -13,7 +13,7 @@ local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 local is_nil = Check.value.is_nil
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     --- Statusline
     {
@@ -93,9 +93,7 @@ local M = {
         'nvim-tree/nvim-tree.lua',
         main = 'nvim-tree',
         version = false,
-        dependencies = {
-            'nvim-web-devicons',
-        },
+        dependencies = { 'nvim-web-devicons' },
         init = function()
             --- Disable `netrw`.
             vim.g.loaded_netrw = 1
@@ -113,7 +111,7 @@ local M = {
             'plenary.nvim',
             'nvim-web-devicons',
             'MunifTanjim/nui.nvim',
-            --- '3rd/image.nvim',
+            -- '3rd/image.nvim',
         },
         init = function()
             --- Disable `netrw`.
@@ -127,7 +125,7 @@ local M = {
     },
     {
         'nvim-zh/colorful-winsep.nvim',
-        event = { 'WinNew' },
+        event = 'WinNew',
         version = false,
         config = source('plugin.colorful_winsep'),
         enabled = not in_console(),
@@ -153,7 +151,6 @@ local M = {
         event = 'VeryLazy',
         version = false,
         dependencies = {
-            'inc-rename.nvim',
             'MunifTanjim/nui.nvim',
             'nvim-notify',
             'mini.nvim',
@@ -165,7 +162,6 @@ local M = {
         'LudoPinelli/comment-box.nvim',
         version = false,
         config = source('plugin.commentbox'),
-        --- enabled = not in_console(),
         enabled = false,
     },
     {
@@ -180,10 +176,7 @@ local M = {
         'startup-nvim/startup.nvim',
         event = 'VimEnter',
         version = false,
-        dependencies = {
-            'telescope.nvim',
-            'plenary.nvim',
-        },
+        dependencies = { 'plenary.nvim' },
         config = source('plugin.startup'),
         enabled = false,
     },
