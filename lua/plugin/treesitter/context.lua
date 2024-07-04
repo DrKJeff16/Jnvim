@@ -13,7 +13,7 @@ local Highlight = User.highlight
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local hi = Highlight.hl
+local hi = User.highlight.hl_from_dict
 local desc = kmap.desc
 local map_dict = Maps.map_dict
 
@@ -25,43 +25,47 @@ local Context = require('treesitter-context')
 local Config = require('treesitter-context.config')
 
 Context.setup({
-    mode = 'topline',
-    trim_scope = 'inner',
-    line_numbers = false,
-    min_window_height = 1,
-    zindex = 30,
     enable = true,
-    max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() or 1,
+    ---@type 'topline'|'cursor'
+    mode = 'cursor',
+    ---@type 'inner'|'outer'
+    trim_scope = 'outer',
+    line_numbers = true,
+    min_window_height = 0,
+    zindex = 20,
+    multiline_threshold = 20,
+    max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() + 1 or 3,
+    -- Separator between context and content. Should be a single character string, like '-'.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    separator = nil,
+    on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 })
 
 ---@type HlDict
 local hls = {
+    ['TreesitterContextBottom'] = { link = 'FloatBorder' },
     ['TreesitterContextLineNumberBottom'] = { underline = true, sp = 'Grey' },
+    ['TreesitterContext'] = { link = 'PmenuSel' },
 }
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>Cn'] = {
-            function()
-                Context.goto_context(vim.v.count1)
-            end,
-            desc('Previous Context'),
-        },
+    ['<leader>Cn'] = {
+        function()
+            pcall(Context.goto_context, vim.v.count1)
+        end,
+        desc('Previous Context'),
     },
 }
----@type table<MapModes, RegKeysNamed>
+---@type RegKeysNamed
 local Names = {
-    n = { ['<leader>C'] = { name = '+Context' } },
+    ['<leader>C'] = { name = '+Context' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', true, nil, 0)
+    map_dict(Names, 'wk.register', false, 'n', 0)
 end
-map_dict(Keys, 'wk.register', true, nil, 0)
-
-for k, v in next, hls do
-    hi(k, v)
-end
+map_dict(Keys, 'wk.register', false, 'n', 0)
+hi(hls)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
