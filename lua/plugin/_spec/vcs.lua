@@ -14,24 +14,27 @@ local in_console = Check.in_console
 local M = {
     {
         'tpope/vim-fugitive',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         enabled = executable('git'),
     },
     {
         'lewis6991/gitsigns.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.gitsigns'),
         enabled = executable('git') and not in_console(),
     },
     {
         'sindrets/diffview.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.diffview'),
         enabled = executable('git'),
     },
     {
         'kdheepak/lazygit.nvim',
+        event = 'VeryLazy',
         version = false,
         dependencies = {
             'plenary.nvim',

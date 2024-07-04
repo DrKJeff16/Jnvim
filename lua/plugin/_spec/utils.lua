@@ -16,6 +16,8 @@ local in_console = Check.in_console
 local M = {
     {
         'iamcco/markdown-preview.nvim',
+        ft = 'markdown',
+        version = false,
         build = executable('yarn') and 'cd app && yarn install' or '',
         init = function()
             vim.g.mkdp_filetypes = { 'markdown' }
