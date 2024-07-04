@@ -30,11 +30,11 @@ local M = {
         version = false,
         dependencies = { 'stevearc/overseer.nvim' },
         opts = {},
+        enabled = not in_console(),
     },
     --- The task runner used for `makeit.nvim`
     {
         'stevearc/overseer.nvim',
-        cmd = { 'MakeitOpen', 'MakeitToggleResults', 'MakeitRedo' },
         version = false,
         opts = {
             task_list = {
@@ -44,6 +44,7 @@ local M = {
                 default_detail = 1,
             },
         },
+        enabled = not in_console(),
     },
     --- Docs viewer
     {

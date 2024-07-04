@@ -2,8 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user') --- User API
-local Check = User.check --- Checking utilities
-local Types = User.types --- Import docstrings and annotations
+local Check = User.check ---@see User.Check Checking utilities
+local Types = User.types ---@see User.types Import docstrings and annotations
 local Maps = User.maps --- Mapping utilities
 local Util = User.util --- General utilities
 local Kmap = Maps.kmap --- `vim.keymap.set` backend
@@ -24,6 +24,7 @@ local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
 _G.is_windows = vim_has('win32')
+vim.g.markdown_minlines = 500
 
 --- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, silent = true, nowait = false })
@@ -127,12 +128,12 @@ local Keys = {
             end,
             desc('New Blank File', true, 0),
         },
-        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File', false) },
-        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
-        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
+        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true, 0) },
+        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
+        ['<leader>fs'] = { ':w<CR>', desc('Save File', false, 0) },
+        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false, 0) },
+        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
         ['<leader>fvl'] = {
             function()
                 local ft = Util.ft_get()
@@ -332,12 +333,6 @@ if WK.available() then
 end
 map_dict(Keys, 'wk.register', true)
 
----@param T CscSubMod|ODSubMod|unknown
----@return boolean
-local function color_exists(T)
-    return is_tbl(T) and is_fun(T.setup)
-end
-
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes.
     local C = Pkg.colorschemes
@@ -351,8 +346,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     --- Reorder to your liking.
     local selected = {
-        'kanagawa',
         'tokyonight',
+        'kanagawa',
         'nightfox',
         'catppuccin',
         'onedark',
@@ -373,13 +368,19 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     local csc_group = 'a'
     local i = 1
-    local found_csc = 0
-    for _, name in next, selected do
-        if color_exists(Csc[name]) then
-            found_csc = found_csc == 0 and i or found_csc
+    local found_csc = ''
+    for idx, name in next, selected do
+        if is_nil(Csc[name] == nil) then
+            goto continue
+        end
 
+        if not is_nil(Csc[name].setup) then
             ---@type CscSubMod|ODSubMod
-            local curr_color = Csc[name]
+            if found_csc == '' then
+                found_csc = name
+                Csc[name].setup()
+            end
+
             NamesCsc.n['<leader>vc' .. csc_group] = {
                 name = '+Group ' .. csc_group,
             }
@@ -389,10 +390,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
             for mode, _ in next, CscKeys do
                 CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
-                    function()
-                        local color = curr_color.new()
-                        color:setup()
-                    end,
+                    Csc[name].setup,
                     desc('Setup Colorscheme `' .. name .. '`'),
                 }
             end
@@ -400,10 +398,12 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
             if i == 9 then
                 i = 0
                 csc_group = displace_letter(csc_group, 'next', true)
-            else
+            elseif i < 9 then
                 i = i + 1
             end
         end
+
+        ::continue::
     end
 
     if WK.available() then
@@ -412,7 +412,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     map_dict(CscKeys, 'wk.register', true)
 
     if not empty(found_csc) then
-        Csc[selected[found_csc]]:setup()
+        Csc[found_csc].setup()
     end
 end
 

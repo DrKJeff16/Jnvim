@@ -12,10 +12,11 @@ local is_tbl = Check.value.is_tbl
 ---@type CscSubMod
 local M = {
     mod_cmd = 'colorscheme gruvbox',
+    setup = nil,
 }
 
 if exists('gruvbox') then
-    function M:setup(variant, transparent, override)
+    function M.setup(variant, transparent, override)
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -48,7 +49,7 @@ if exists('gruvbox') then
             palette_overrides = {},
         }))
 
-        vim.cmd(self.mod_cmd)
+        vim.cmd(M.mod_cmd)
     end
 end
 

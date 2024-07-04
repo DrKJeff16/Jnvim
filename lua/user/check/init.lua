@@ -9,12 +9,16 @@ require('user.types.user.check')
 ---@type User.Check
 local M = {
     --- Value checking utilities.
+    ---
+    --- ## Description
     --- Pretty much reserved for data checking, type checking and conditional operations
     ---@see User.Check.Value
     ---@type User.Check.Value
     value = require('user.check.value'),
 
     --- Exitstance checks.
+    ---
+    --- ## Description
     --- This contains many environment, module, namespace, etc. checkers.
     --- Also, simplified Vim functions can be found here
     ---@see User.Check.Existance
@@ -31,6 +35,7 @@ local M = {
     --- ---
     ---@return boolean
     in_console = function()
+        ---@type table<string, any>
         local env = vim.fn.environ()
 
         --- TODO: This is not a good enough check. Must find a better solution.

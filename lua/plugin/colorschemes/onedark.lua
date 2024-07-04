@@ -23,11 +23,12 @@ local M = {
         'warmer',
     },
     mod_cmd = 'colorscheme onedark',
+    setup = nil,
 }
 
 if exists('onedark') then
-    function M:setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'deep'
+    function M.setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'deep'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 

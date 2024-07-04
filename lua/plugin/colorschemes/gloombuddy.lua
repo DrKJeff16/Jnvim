@@ -11,12 +11,13 @@ local modules = Check.exists.modules
 ---@type CscSubMod
 local M = {
     mod_cmd = 'colorscheme gloombuddy',
+    setup = nil,
 }
 
 if modules({ 'colorbuddy', 'gloombuddy' }) then
-    function M:setup(variant, transparent, override)
+    function M.setup(variant, transparent, override)
         require('colorbuddy').colorscheme('gloombuddy')
-        vim.cmd(self.mod_cmd)
+        vim.cmd(M.mod_cmd)
     end
 end
 
