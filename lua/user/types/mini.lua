@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias MiniModules table<string, table>
+---@alias MiniModules table<string, table|nil>
 
 ---@class StarterItem.Spec
 ---@field name string

@@ -85,6 +85,7 @@ if exists('tokyonight') then
                 'vista_kind',
                 'NvimTree',
                 'trouble',
+                'diffview',
             },
 
             style = variant,
