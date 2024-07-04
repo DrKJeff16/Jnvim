@@ -2,8 +2,8 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user') --- User API
-local Check = User.check --- Checking utilities
-local Types = User.types --- Import docstrings and annotations
+local Check = User.check ---@see User.Check Checking utilities
+local Types = User.types ---@see User.types Import docstrings and annotations
 local Maps = User.maps --- Mapping utilities
 local Util = User.util --- General utilities
 local Kmap = Maps.kmap --- `vim.keymap.set` backend
@@ -24,6 +24,7 @@ local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
 _G.is_windows = vim_has('win32')
+vim.g.markdown_minlines = 500
 
 --- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, silent = true, nowait = false })
