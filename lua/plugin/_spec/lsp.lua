@@ -24,7 +24,7 @@ local M = {
         'b0o/SchemaStore',
         event = 'VeryLazy',
         version = false,
-        enabled = executable('vscode-json-language-server'),
+        cond = executable('vscode-json-language-server'),
     },
     --- Essential for Nvim Lua files.
     {
@@ -33,7 +33,7 @@ local M = {
         version = false,
         dependencies = { 'Bilal2453/luvit-meta' },
         config = source('plugin.lspconfig.lazydev'),
-        enabled = executable('lua-language-server'),
+        cond = executable('lua-language-server'),
     },
     { 'Bilal2453/luvit-meta', version = false }, --- optional `vim.uv` typings
     {
@@ -45,14 +45,14 @@ local M = {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'p00f/clangd_extensions.nvim',
         ft = { 'c', 'cpp' },
         version = false,
         config = source('plugin.lspconfig.clangd'),
-        enabled = executable('clangd') and not in_console(),
+        cond = executable('clangd') and not in_console(),
     },
     {
         'smjonas/inc-rename.nvim',

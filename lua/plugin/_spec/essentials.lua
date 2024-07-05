@@ -27,7 +27,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.which_key'),
-        enabled = vim_has('nvim-0.9'),
+        cond = vim_has('nvim-0.9'),
     },
     {
         'dstein64/vim-startuptime',
@@ -44,15 +44,14 @@ local M = {
         priority = 1000,
         version = false,
         config = source('plugin.luarocks'),
-        -- enabled = luarocks_set(),
-        enabled = false,
+        cond = luarocks_set(),
     },
     {
         'echasnovski/mini.nvim',
         lazy = false,
         version = false,
         config = source('plugin.mini'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'tiagovla/scope.nvim',
@@ -75,7 +74,7 @@ local M = {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'rcarriga/nvim-notify',
@@ -87,23 +86,22 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.notify'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
-
     {
         'lewis6991/hover.nvim',
         event = 'VeryLazy',
         main = 'hover',
         version = false,
         config = source('plugin.hover'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
         priority = 1000,
         version = false,
-        enabled = not in_console(),
+        cond = not in_console(),
     },
 }
 

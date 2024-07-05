@@ -20,7 +20,7 @@ local M = {
         'vim-scripts/DoxygenToolkit.vim',
         event = 'VeryLazy',
         version = false,
-        enabled = executable('doxygen'),
+        cond = executable('doxygen'),
     },
 }
 

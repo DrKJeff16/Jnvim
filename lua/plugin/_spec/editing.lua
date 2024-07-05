@@ -54,7 +54,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.todo_comments'),
-        enabled = executable('rg') and not in_console(),
+        cond = executable('rg') and not in_console(),
     },
     {
         'windwp/nvim-autopairs',

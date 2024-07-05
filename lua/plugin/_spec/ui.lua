@@ -27,7 +27,6 @@ local M = {
         end,
         config = source('plugin.lualine'),
         cond = not is_nil(use_statusline) and (use_statusline == 'lualine') or true,
-        enabled = not in_console(),
     },
     {
         'glepnir/galaxyline.nvim',
@@ -41,7 +40,6 @@ local M = {
         end,
         config = source('plugin.galaxyline'),
         cond = not is_nil(use_statusline) and (use_statusline == 'galaxyline') or false,
-        enabled = not in_console(),
     },
     --- Tabline
     {
@@ -56,7 +54,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.bufferline'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     --- Tabline
     {
@@ -71,7 +69,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.barbar'),
-        -- enabled = not in_console(),
+        -- cond = not in_console(),
         enabled = false,
     },
     --- Indent Scope
@@ -80,13 +78,13 @@ local M = {
         main = 'ibl',
         version = false,
         config = source('plugin.blank_line'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
         version = false,
         config = source('plugin.rainbow_delimiters'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     --- File Tree
     {
@@ -102,7 +100,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.nvim_tree'),
-        enable = not in_console(),
+        cond = not in_console(),
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
@@ -121,6 +119,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.neo_tree'),
+        cond = not in_console(),
         enabled = false,
     },
     {
@@ -128,7 +127,7 @@ local M = {
         event = 'WinNew',
         version = false,
         config = source('plugin.colorful_winsep'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'brenoprata10/nvim-highlight-colors',
@@ -138,13 +137,13 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.hicolors'),
-        enabled = vim_exists('+termguicolors'),
+        cond = vim_exists('+termguicolors'),
     },
     {
         'akinsho/toggleterm.nvim',
         version = false,
         config = source('plugin.toggleterm'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'folke/noice.nvim',
@@ -156,7 +155,7 @@ local M = {
             'mini.nvim',
         },
         config = source('plugin.noice'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'LudoPinelli/comment-box.nvim',
