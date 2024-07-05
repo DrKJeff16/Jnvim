@@ -38,7 +38,7 @@ local M = {
 
     {
         'tpope/vim-endwise',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
     },
     --- TODO COMMENTS
