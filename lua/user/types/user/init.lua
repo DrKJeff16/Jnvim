@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 ---@class UserSubTypes
 ---@field maps table
 ---@field highlight table

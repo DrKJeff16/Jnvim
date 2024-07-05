@@ -23,12 +23,10 @@
 ---@field treesitter table
 ---@field which_key table
 
----@class User.Opts
-
----@class User.Distro.Distrospec
+---@class User.Distro.Spec
 ---@field setup fun()
 
----@class User.Distro.Archlinux: User.Distro.Distrospec
+---@class User.Distro.Archlinux: User.Distro.Spec
 
 ---@class User.Distro
 ---@field archlinux? User.Distro.Archlinux

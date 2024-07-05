@@ -12,7 +12,7 @@ local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'neovim/nvim-lspconfig',
@@ -35,9 +35,15 @@ local M = {
         config = source('plugin.lspconfig.lazydev'),
         cond = executable('lua-language-server'),
     },
-    { 'Bilal2453/luvit-meta', version = false }, --- optional `vim.uv` typings
+    --- optional `vim.uv` typings
+    {
+        'Bilal2453/luvit-meta',
+        lazy = true,
+        version = false,
+    },
     {
         'folke/neoconf.nvim',
+        lazy = true,
         version = false,
     },
     {
