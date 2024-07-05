@@ -45,6 +45,7 @@ local M = {
         version = false,
         config = source('plugin.luarocks'),
         cond = luarocks_set(),
+        enabled = false,
     },
     {
         'echasnovski/mini.nvim',

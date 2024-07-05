@@ -26,7 +26,6 @@ local M = {
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        -- enabled = luarocks_set(),
         enabled = false,
     },
 }
