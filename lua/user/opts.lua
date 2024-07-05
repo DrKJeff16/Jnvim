@@ -8,6 +8,7 @@ local Exists = require('user.check.exists')
 
 local exists = Exists.vim_exists
 local is_nil = Value.is_nil
+local is_tbl = Value.is_tbl
 local executable = Exists.executable
 local vim_has = Exists.vim_has
 local vim_exists = Exists.vim_exists
@@ -15,30 +16,17 @@ local in_console = require('user.check').in_console
 local notify = require('user.util.notify').notify
 
 ---@type User.Opts.Spec
-local opt_tbl = {
+local DEFAULT_OPTIONS = {
     autoindent = true,
     autoread = true,
     backspace = { 'indent', 'eol', 'start' },
     backup = false,
     belloff = { 'all' },
-    background = 'dark',
     copyindent = true,
-    cmdwinheight = 3,
-    colorcolumn = { '+1' },
-    completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
-    confirm = true,
     encoding = 'utf-8',
-    equalalways = true,
     errorbells = false,
-    expandtab = true,
-    fileencoding = 'utf-8',
     fileignorecase = false,
-    formatoptions = 'bjlopqnw',
     hidden = true,
-    helplang = { 'en' },
-    hlsearch = true,
-    ignorecase = false,
-    incsearch = true,
     laststatus = 2,
     makeprg = 'make',
     matchpairs = {
@@ -52,79 +40,84 @@ local opt_tbl = {
     mouse = '', -- Get that mouse out of my sight!
     number = true,
     preserveindent = true,
-    relativenumber = false,
     ruler = true,
-    sessionoptions = {
-        'buffers',
-        'tabpages',
-        'globals',
-    },
-    shell = executable('bash') and 'bash' or 'sh',
-    scrolloff = 3,
     showcmd = true,
     showmatch = true,
     showmode = false,
     smartindent = true,
     signcolumn = 'yes',
     smartcase = true,
-    spell = false,
     splitbelow = true,
     splitright = true,
     smarttab = true,
-    showtabline = 2,
     softtabstop = 4,
     shiftwidth = 4,
     termguicolors = vim_exists('+termguicolors') and not in_console(),
-    title = true,
     tabstop = 4,
     updatecount = 100,
     updatetime = 1000,
     visualbell = false,
     wildmenu = true,
-    wrap = false,
 }
 
 if is_windows then
-    opt_tbl.fileignorecase = true
-    opt_tbl.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe' or opt_tbl.makeprg
+    DEFAULT_OPTIONS.fileignorecase = true
+    DEFAULT_OPTIONS.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe' or DEFAULT_OPTIONS.makeprg
 
-    opt_tbl.shell = 'cmd.exe'
+    DEFAULT_OPTIONS.shell = 'cmd.exe'
     if executable('bash.exe') then
-        opt_tbl.shell = 'bash.exe'
-        opt_tbl.shellcmdflag = '-c'
+        DEFAULT_OPTIONS.shell = 'bash.exe'
+        DEFAULT_OPTIONS.shellcmdflag = '-c'
     elseif executable('sh.exe') then
-        opt_tbl.shell = 'sh.exe'
-        opt_tbl.shellcmdflag = '-c'
+        DEFAULT_OPTIONS.shell = 'sh.exe'
+        DEFAULT_OPTIONS.shellcmdflag = '-c'
     else
-        opt_tbl.shell = 'cmd.exe'
+        DEFAULT_OPTIONS.shell = 'cmd.exe'
     end
 
-    opt_tbl.shellslash = true
+    DEFAULT_OPTIONS.shellslash = true
 end
 
---- Option setter for the aforementioned options dictionary.
---- ---
---- ## Parameters
---- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
---- respectively.
---- ---
----@type fun(opts: User.Opts.Spec)
-local function optset(opts)
-    for k, v in next, opts do
-        if not is_nil(vim.opt[k]) then
-            vim.opt[k] = v
-        elseif not is_nil(vim.o[k]) then
-            vim.o[k] = v
-        else
-            notify(
-                '(user.opts:optset): Unable to set option `' .. k .. '`',
-                'error',
-                { title = 'user.opts', hide_from_history = false, timeout = 3000 }
-            )
+---@type User.Opts
+---@diagnostic disable-next-line:missing-fields
+local M = {
+    --- Option setter for the aforementioned options dictionary.
+    --- ---
+    --- ## Parameters
+    --- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
+    --- respectively.
+    --- ---
+    ---@param opts User.Opts.Spec
+    optset = function(opts)
+        for k, v in next, opts do
+            if is_nil(v) then
+                goto continue
+            end
+
+            if not is_nil(vim.opt[k]) then
+                vim.opt[k] = v
+            elseif not is_nil(vim.o[k]) then
+                vim.o[k] = v
+            else
+                notify(
+                    '(user.opts.optset): Unable to set option `' .. k .. '`',
+                    'error',
+                    { title = 'user.opts', hide_from_history = false, timeout = 3000 }
+                )
+            end
+
+            ::continue::
         end
-    end
+    end,
+}
+
+---@param override User.Opts.Spec
+function M.setup(override)
+    override = is_tbl(override) and override or {}
+
+    M.optset(vim.tbl_extend('keep', override, DEFAULT_OPTIONS))
 end
 
-optset(opt_tbl)
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
