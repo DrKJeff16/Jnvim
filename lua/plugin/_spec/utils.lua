@@ -23,7 +23,7 @@ local M = {
             vim.g.mkdp_filetypes = { 'markdown' }
         end,
         config = source('plugin.md_preview'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     --- Makefile viewer
     {
@@ -32,7 +32,7 @@ local M = {
         version = false,
         dependencies = { 'stevearc/overseer.nvim' },
         opts = {},
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     --- The task runner used for `makeit.nvim`
     {
@@ -46,14 +46,14 @@ local M = {
                 default_detail = 1,
             },
         },
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',
         lazy = true,
         version = false,
-        enabled = executable('doxygen'),
+        cond = executable('doxygen'),
     },
 }
 

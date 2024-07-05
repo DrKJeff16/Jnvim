@@ -18,14 +18,14 @@ local M = {
         version = false,
         dependencies = { 'plenary.nvim' },
         config = source('plugin.telescope'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'nvim-telescope/telescope-fzf-native.nvim',
@@ -33,7 +33,7 @@ local M = {
         version = false,
         build = tel_fzf_build(),
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        enabled = executable('fzf') and not in_console(),
+        cond = executable('fzf') and not in_console(),
     },
     --- Project Manager
     {
