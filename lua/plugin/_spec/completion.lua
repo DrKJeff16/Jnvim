@@ -14,7 +14,7 @@ local executable = User.check.exists.executable
 local M = {
     {
         'L3MON4D3/LuaSnip',
-        event = 'VeryLazy',
+        event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
         build = luasnip_build(),
     },
@@ -59,13 +59,13 @@ local M = {
     {
         'petertriho/cmp-git',
         version = false,
-        enabled = executable('git'),
+        cond = executable('git'),
     },
     {
         'davidsierradz/cmp-conventionalcommits',
         ft = 'gitcommit',
         version = false,
-        enabled = executable('git'),
+        cond = executable('git'),
     },
     {
         'hrsh7th/cmp-cmdline',
@@ -80,7 +80,7 @@ local M = {
         'paopaol/cmp-doxygen',
         ft = 'doxygen',
         dependencies = { 'nvim-treesitter-textobjects' },
-        enabled = executable('doxygen'),
+        cond = executable('doxygen'),
     },
     {
         'rafamadriz/friendly-snippets',
