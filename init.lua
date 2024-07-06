@@ -70,9 +70,6 @@ vim.g.loaded_netrwPlugin = 1
 --- Uncomment to use system clipboard
 --- vim.o.clipboard = 'unnamedplus'
 
---- Setup keymaps
-require('config.keymaps').setup({}, {})
-
 if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
     ---@type 'lualine'|'galaxyline'
     _G.use_statusline = 'lualine'
@@ -80,6 +77,9 @@ end
 
 --- List of manually-callable plugin.
 _G.Pkg = require('config.lazy')
+
+--- Setup keymaps
+require('config.keymaps').setup()
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes.
