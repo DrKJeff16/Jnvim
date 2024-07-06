@@ -54,7 +54,7 @@ User.opts.setup({ ---@see User.Opts.Spec For more info
     splitright = true,
     tabstop = 4,
     title = true,
-    wrap = false,
+    wrap = true,
 })
 
 vim.g.markdown_minlines = 500
