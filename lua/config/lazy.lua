@@ -19,7 +19,7 @@ local function key_variant(cmd)
     cmd = cmd .. ' '
 
     return function()
-        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/plugins/init.lua'
+        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
         vim.cmd(full_cmd)
     end
