@@ -64,6 +64,7 @@ local M = {
             require('user.check.exists').module(mod_str, true)
         end
     end,
+
     --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
     ---
     --- ## Return
@@ -122,7 +123,7 @@ local M = {
     end,
 
     ---@return boolean
-    luarocks_set = function()
+    luarocks_check = function()
         return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })
     end,
 }

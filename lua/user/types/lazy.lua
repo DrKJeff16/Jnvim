@@ -15,6 +15,6 @@ require('user.types.user.maps')
 ---@field source fun(mod_str: string): fun()
 ---@field tel_fzf_build fun(): string
 ---@field luasnip_build fun(): string
----@field luarocks_set fun(): boolean
+---@field luarocks_check fun(): boolean
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
