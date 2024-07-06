@@ -129,6 +129,21 @@ local Names = {
 local known_exts = {
     ['scope'] = { 'scope' },
     ['persisted'] = { 'persisted' },
+    ['telescope-makefile'] = {
+        'make',
+        ---@type fun(): KeyMapDict
+        keys = function()
+            if is_nil(Extensions.make) then
+                return {}
+            end
+
+            local pfx = Extensions.make
+
+            return {
+                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker') },
+            }
+        end,
+    },
     ['project_nvim'] = {
         'projects',
         ---@type fun(): KeyMapDict
@@ -235,7 +250,7 @@ local au_tbl = {
         {
             pattern = 'TelescopePreviewerLoaded',
 
-            ---@type fun(args: TelAuArgs)
+            ---@param args TelAuArgs
             callback = function(args)
                 if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
                     vim.wo.number = true
