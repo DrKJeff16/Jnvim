@@ -44,11 +44,11 @@
 ---|CtpColors.Spec
 
 ---@class JLine.Themes
----@field default JLine.Theme.Spec
----@field tokyonight? ColorScheme|JLine.Theme.Spec
----@field catppuccin_mocha? JLine.Ctp.Spec|JLine.Theme.Spec
----@field catppuccin_macchiato? JLine.Ctp.Spec|JLine.Theme.Spec
----@field catppuccin_frappe? JLine.Ctp.Spec|JLine.Theme.Spec
+---@field default table|JLine.Theme.Spec
+---@field tokyonight? table|JLine.Theme.Spec
+---@field catppuccin_mocha? table|JLine.Theme.Spec
+---@field catppuccin_macchiato? table|JLine.Theme.Spec
+---@field catppuccin_frappe? table|JLine.Theme.Spec
 ---@field nightfox? table|JLine.Theme.Spec
 
 ---@class JLine.Util
