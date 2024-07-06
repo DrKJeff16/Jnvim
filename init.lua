@@ -173,6 +173,44 @@ User.opts.setup({ ---@see User.Opts.Spec For more info
 
 vim.g.markdown_minlines = 500
 
+--- WARNING: USE LONG NAMES. I'll try to fix it later
+---
+--- Vim `:set ...` global options setter
+---@see User.Opts.setup
+User.opts.setup({ ---@see User.Opts.Spec For more info
+    background = 'dark',
+    cmdwinheight = 3,
+    confirm = true,
+    equalalways = true,
+    expandtab = true,
+    formatoptions = 'bjlopqnw',
+    helplang = { 'en' },
+    hlsearch = true,
+    ignorecase = false,
+    incsearch = true,
+    matchtime = 30,
+    menuitems = 40,
+    number = true,
+    relativenumber = false,
+    ruler = true,
+    scrolloff = 3,
+    sessionoptions = { 'buffers', 'tabpages', 'globals' },
+    shiftwidth = 4,
+    showmatch = true,
+    showmode = false,
+    showtabline = 2,
+    signcolumn = 'yes',
+    softtabstop = 4,
+    spell = false,
+    splitbelow = true,
+    splitright = true,
+    tabstop = 4,
+    title = true,
+    wrap = false,
+})
+
+vim.g.markdown_minlines = 500
+
 --- Set `<Space>` as Leader Key.
 nop('<Space>', { noremap = true, silent = true, nowait = false })
 vim.g.mapleader = ' '
