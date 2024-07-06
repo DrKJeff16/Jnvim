@@ -24,7 +24,7 @@ local M = {
         lazy = true,
         version = false,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        enabled = not in_console() and vim_exists('+termguicolors'),
+        cond = not in_console() and vim_exists('+termguicolors'),
     },
     {
         'JoosepAlviste/nvim-ts-context-commentstring',

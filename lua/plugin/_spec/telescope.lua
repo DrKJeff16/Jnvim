@@ -35,6 +35,19 @@ local M = {
         dependencies = { 'nvim-telescope/telescope.nvim' },
         cond = executable('fzf') and not in_console(),
     },
+    {
+        'DrKJeff16/telescope-makefile',
+        ft = { 'make' },
+        dependencies = {
+            'nvim-telescope/telescope.nvim',
+            'akinsho/toggleterm.nvim',
+        },
+        config = function()
+            require('telescope-makefile').setup({})
+
+            require('telescope').load_extension('make')
+        end,
+    },
     --- Project Manager
     {
         'ahmedkhalf/project.nvim',
