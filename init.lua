@@ -3,9 +3,9 @@
 
 local User = require('user') --- User API
 local Types = User.types ---@see User.types Import docstrings and annotations
-local Check = User.check ---@see User.Check Checking utilities
-local Util = User.util --- General utilities
-local WK = User.maps.wk --- `which-key` backend
+local Check = User.check ---@see User.check Checking utilities
+local Util = User.util ---@see User.util General utilities
+local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -89,9 +89,10 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local Csc = C.new()
 
     ---@type table<MapModes, KeyMapDict>
-    local CscKeys = {}
-    CscKeys.n = {}
-    CscKeys.v = {}
+    local CscKeys = {
+        n = {},
+        v = {},
+    }
 
     --- Reorder to your liking.
     local selected = {
@@ -119,16 +120,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local i = 1
     local found_csc = ''
     for idx, name in next, selected do
-        if is_nil(Csc[name] == nil) then
-            goto continue
-        end
-
         if not is_nil(Csc[name].setup) then
-            ---@type CscSubMod|ODSubMod
-            if found_csc == '' then
-                found_csc = name
-                Csc[name].setup()
-            end
+            found_csc = found_csc ~= '' and found_csc or name
 
             NamesCsc.n['<leader>vc' .. csc_group] = {
                 name = '+Group ' .. csc_group,
@@ -146,13 +139,11 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
             if i == 9 then
                 i = 1
-                csc_group = displace_letter(csc_group, 'next', true)
+                csc_group = displace_letter(csc_group, 'next', false)
             elseif i < 9 then
                 i = i + 1
             end
         end
-
-        ::continue::
     end
 
     if WK.available() then

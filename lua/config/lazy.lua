@@ -6,16 +6,9 @@ local Check = User.check
 local types = User.types.lazy
 local WK = User.maps.wk
 
-local exists = Check.exists.module
 local executable = Check.exists.executable
-local env_vars = Check.exists.env_vars
-local vim_exists = Check.exists.vim_exists
-local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local desc = User.maps.kmap.desc
-local in_console = Check.in_console
 local map_dict = User.maps.map_dict
 
 ---@param cmd 'ed'|'tabnew'|'split'|'vsplit'
@@ -26,7 +19,7 @@ local function key_variant(cmd)
     cmd = cmd .. ' '
 
     return function()
-        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/plugins/init.lua'
+        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
         vim.cmd(full_cmd)
     end
@@ -51,6 +44,18 @@ local plugin_root = vim.fn.stdpath('data') .. '/lazy'
 Lazy.setup({
     spec = {
         { import = 'plugin._spec' },
+    },
+
+    git = {
+        -- defaults for the `Lazy log` command
+        -- log = { "--since=3 days ago" }, -- show commits from the last 3 days
+        log = { '-8' }, -- show the last 8 commits
+        timeout = 120, -- kill processes that take more than 2 minutes
+        url_format = 'https://github.com/%s.git',
+        -- lazy.nvim requires git >=2.19.0. If you really want to use lazy with an older version,
+        -- then set the below to false. This should work, but is NOT supported and will
+        -- increase downloads a lot.
+        filter = true,
     },
 
     root = plugin_root,
@@ -92,6 +97,7 @@ Lazy.setup({
             return S
         end)(),
     },
+
     dev = {
         path = '~/Projects/nvim',
         patterns = {},
