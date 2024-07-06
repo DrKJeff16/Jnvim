@@ -43,41 +43,59 @@ local M = {
 }
 
 if exists('tokyonight') then
-    M.themes.tokyonight = require('tokyonight.colors').setup({ transform = true })
+    M.themes.tokyonight = (function()
+        local TN = require('tokyonight.colors').setup({ transform = true })
+        ---@type JLine.Theme.Spec
+        return {
+            bg = TN.bg_statusline,
+            fg = TN.fg_sidebar,
+            darkblue = TN.bg_float,
+            red = TN.red.base,
+            green = TN.green.base,
+            yellow = TN.yellow.base,
+            violet = TN.purple,
+            cyan = TN.teal,
+            blue = TN.blue.base,
+            magenta = TN.magenta.base,
+            orange = TN.orange.base,
+        }
+    end)()
+end
+
+---@param variant 'frappe'|'mocha'|'macchiato'
+---@return JLine.Theme.Spec
+local function catppuccin_adapt(variant)
+    local CTP = require('catppuccin.palettes').get_palette(variant)
+
+    local op = require('catppuccin.utils.colors').darken
+
+    ---@type JLine.Theme.Spec
+    return {
+        bg = CTP.mantle,
+        fg = CTP.subtext1,
+        darkblue = CTP.bg_float,
+        red = CTP.red,
+        green = CTP.green,
+        yellow = CTP.yellow,
+        violet = op(CTP.mauve, 15, CTP.mantle),
+        cyan = CTP.teal,
+        blue = CTP.blue,
+        magenta = CTP.maroon,
+        orange = CTP.peach,
+    }
 end
 
 if exists('catppuccin.palettes') then
-    M.themes.catppuccin_macchiato = require('catppuccin.palettes').get_palette('macchiato')
-    M.themes.catppuccin_mocha = require('catppuccin.palettes').get_palette('mocha')
-    M.themes.catppuccin_frappe = require('catppuccin.palettes').get_palette('frappe')
+    M.themes.catppuccin_macchiato = catppuccin_adapt('macchiato')
+    M.themes.catppuccin_mocha = catppuccin_adapt('mocha')
+    M.themes.catppuccin_frappe = catppuccin_adapt('frappe')
 end
 
 if exists('nightfox') then
     M.themes.nightfox = require('nightfox.palette').load()
 end
 
-function M:transform()
-    ---@type table<string, JLine.Theme.Spec>
-    local transform_tbl = {
-        default = self.themes.default,
-        tokyonight = {
-            bg = self.themes.tokyonight.bg_statusline,
-            fg = self.themes.tokyonight.fg_sidebar,
-            darkblue = self.themes.tokyonight.bg_float,
-            red = self.themes.tokyonight.red.base,
-            green = self.themes.tokyonight.green.base,
-            yellow = self.themes.tokyonight.yellow.base,
-            violet = self.themes.tokyonight.purple,
-            cyan = self.themes.tokyonight.teal,
-            blue = self.themes.tokyonight.blue.base,
-            magenta = self.themes.tokyonight.magenta.base,
-            orange = self.themes.tokyonight.orange.base,
-        },
-    }
-
-    self.curr_theme = transform_tbl
-end
-
+---@return JLine.Theme.Spec
 function M:palette()
     return not is_nil(self.themes[self.variant]) and self.themes[self.variant] or self.themes.default
 end
@@ -92,6 +110,7 @@ function M:check_bg()
 end
 
 ---@param variant? string
+---@return JLine.Util
 M.new = function(variant)
     variant = (is_str(variant) and not empty(variant)) and variant or 'default'
 
