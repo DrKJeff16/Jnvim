@@ -3,9 +3,9 @@
 
 local User = require('user') --- User API
 local Types = User.types ---@see User.types Import docstrings and annotations
-local Check = User.check ---@see User.Check Checking utilities
-local Util = User.util --- General utilities
-local WK = User.maps.wk --- `which-key` backend
+local Check = User.check ---@see User.check Checking utilities
+local Util = User.util ---@see User.util General utilities
+local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
