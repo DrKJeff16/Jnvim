@@ -2,13 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user') --- User API
-local Check = User.check ---@see User.Check Checking utilities
 local Types = User.types ---@see User.types Import docstrings and annotations
-local Maps = User.maps --- Mapping utilities
+local Check = User.check ---@see User.Check Checking utilities
 local Util = User.util --- General utilities
-local Kmap = Maps.kmap --- `vim.keymap.set` backend
-local WK = Maps.wk --- `which-key` backend
-local maps_t = Types.user.maps ---@see UserSubTypes.maps
+local WK = User.maps.wk --- `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -17,10 +14,8 @@ local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local empty = Check.value.empty ---@see User.Check.Value.empty
 local vim_has = Check.exists.vim_has ---@see User.Check.Existance.vim_has
 local nop = User.maps.nop ---@see User.Maps.nop
-local desc = Kmap.desc ---@see User.Maps.Keymap.desc
-local ft_get = Util.ft_get ---@see User.Util.ft_get
-local notify = Util.notify.notify ---@see User.Util.Notify.notify
-local map_dict = Maps.map_dict ---@see User.Maps.map_dict
+local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
+local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
 _G.is_windows = vim_has('win32')
