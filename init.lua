@@ -2,13 +2,10 @@
 ---@diagnostic disable:unused-function
 
 local User = require('user') --- User API
-local Check = User.check ---@see User.Check Checking utilities
 local Types = User.types ---@see User.types Import docstrings and annotations
-local Maps = User.maps --- Mapping utilities
+local Check = User.check ---@see User.Check Checking utilities
 local Util = User.util --- General utilities
-local Kmap = Maps.kmap --- `vim.keymap.set` backend
-local WK = Maps.wk --- `which-key` backend
-local maps_t = Types.user.maps ---@see UserSubTypes.maps
+local WK = User.maps.wk --- `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -17,13 +14,49 @@ local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local empty = Check.value.empty ---@see User.Check.Value.empty
 local vim_has = Check.exists.vim_has ---@see User.Check.Existance.vim_has
 local nop = User.maps.nop ---@see User.Maps.nop
-local desc = Kmap.desc ---@see User.Maps.Keymap.desc
-local ft_get = Util.ft_get ---@see User.Util.ft_get
-local notify = Util.notify.notify ---@see User.Util.Notify.notify
-local map_dict = Maps.map_dict ---@see User.Maps.map_dict
+local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
+local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
 _G.is_windows = vim_has('win32')
+vim.g.markdown_minlines = 500
+
+--- WARNING: USE LONG NAMES. I'll try to fix it later
+---
+--- Vim `:set ...` global options setter
+---@see User.Opts.setup
+User.opts.setup({ ---@see User.Opts.Spec For more info
+    background = 'dark',
+    cmdwinheight = 3,
+    confirm = true,
+    equalalways = true,
+    expandtab = true,
+    formatoptions = 'bjlopqnw',
+    helplang = { 'en' },
+    hlsearch = true,
+    ignorecase = false,
+    incsearch = true,
+    matchtime = 30,
+    menuitems = 40,
+    number = true,
+    relativenumber = false,
+    ruler = true,
+    scrolloff = 3,
+    sessionoptions = { 'buffers', 'tabpages', 'globals' },
+    shiftwidth = 4,
+    showmatch = true,
+    showmode = false,
+    showtabline = 2,
+    signcolumn = 'yes',
+    softtabstop = 4,
+    spell = false,
+    splitbelow = true,
+    splitright = true,
+    tabstop = 4,
+    title = true,
+    wrap = false,
+})
+
 vim.g.markdown_minlines = 500
 
 --- WARNING: USE LONG NAMES. I'll try to fix it later
@@ -152,9 +185,6 @@ vim.g.loaded_netrwPlugin = 1
 --- Uncomment to use system clipboard
 --- vim.o.clipboard = 'unnamedplus'
 
---- Setup keymaps
-require('config.keymaps').setup({}, {})
-
 if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
     ---@type 'lualine'|'galaxyline'
     _G.use_statusline = 'galaxyline'
@@ -162,6 +192,9 @@ end
 
 --- List of manually-callable plugin.
 _G.Pkg = require('config.lazy')
+
+--- Setup keymaps
+require('config.keymaps').setup()
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes.

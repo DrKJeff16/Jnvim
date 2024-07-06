@@ -38,6 +38,7 @@ if exists('tokyonight') then
             ---@param colors ColorScheme|table
             on_colors = function(colors)
                 colors.error = '#df4f4f'
+                colors.info = colors.teal
             end,
 
             ---@param hl tokyonight.Highlights|table
