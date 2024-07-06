@@ -6,16 +6,9 @@ local Check = User.check
 local types = User.types.lazy
 local WK = User.maps.wk
 
-local exists = Check.exists.module
 local executable = Check.exists.executable
-local env_vars = Check.exists.env_vars
-local vim_exists = Check.exists.vim_exists
-local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local desc = User.maps.kmap.desc
-local in_console = Check.in_console
 local map_dict = User.maps.map_dict
 
 ---@param cmd 'ed'|'tabnew'|'split'|'vsplit'
