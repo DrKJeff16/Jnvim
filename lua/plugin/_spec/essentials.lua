@@ -102,6 +102,7 @@ local M = {
         lazy = true,
         priority = 1000,
         version = false,
+        config = source('plugin.web_devicons'),
         cond = not in_console(),
     },
 }
