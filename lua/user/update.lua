@@ -6,8 +6,8 @@ require('user.types.user.update')
 local notify = require('user.util.notify').notify
 
 ---@type User.Update
----@diagnostic disable-next-line:missing-fields
 local M = {
+    ---@return string
     update = function()
         local old_cwd = vim.fn.getcwd(0, 0)
 
@@ -19,9 +19,11 @@ local M = {
         }
 
         vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
-        vim.fn.system(cmd)
+        local res = vim.fn.system(cmd)
 
         vim.api.nvim_set_current_dir(old_cwd)
+
+        return res
     end,
 }
 
