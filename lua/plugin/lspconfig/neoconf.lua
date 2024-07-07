@@ -28,7 +28,7 @@ end
 
 local NC = require('neoconf')
 
-local opts = {
+local Opts = {
     -- name of the local settings files
     local_settings = '.neoconf.json',
     -- name of the global settings file in your Neovim config directory
@@ -68,6 +68,6 @@ local opts = {
     },
 }
 
-NC.setup(opts)
+NC.setup(Opts)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

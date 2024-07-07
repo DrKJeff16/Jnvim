@@ -21,50 +21,34 @@ local stdpath = vim.fn.stdpath
 local Pst = require('persistence')
 
 Pst.setup({
-    options = { 'buffers', 'curdir', 'tabpages', 'winsize' },
     dir = vim.fn.stdpath('state') .. '/sessions/', -- directory where session files are saved
-    pre_save = exists('barbar') and function()
-        vim.api.nvim_exec_autocmds('User', { pattern = 'SessionSavePre' })
-    end or nil, -- a function to call before saving the session
-    post_save = nil, -- a function to call after saving the session
-    save_empty = true, -- don't save if there are no open file buffers
-    pre_load = nil, -- a function to call before loading the session
-    post_load = nil, -- a function to call after loading the session
+    -- minimum number of file buffers that need to be open to save
+    -- Set to 0 to always save
+    need = 1,
+    branch = true, -- use git branch to save session
 })
 
 ---@type table<MapModes, KeyMapDict>
 local Keys = {
-    n = {
-        ['<leader>Sr'] = { Pst.load, desc('Restore Session') },
-        ['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
-        ['<leader>Sl'] = {
-            function()
-                Pst.load({ last = true })
-            end,
-            desc('Restore Last Session'),
-        },
+    ['<leader>Sr'] = { Pst.load, desc('Restore Session') },
+    ['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
+    ['<leader>Sl'] = {
+        function()
+            Pst.load({ last = true })
+        end,
+        desc('Restore Last Session'),
     },
-    v = {
-        ['<leader><C-S>r'] = { Pst.load, desc('Restore Session') },
-        ['<leader><C-S>d'] = { Pst.stop, desc("Don't Save Current Session") },
-        ['<leader><C-S>l'] = {
-            function()
-                Pst.load({ last = true })
-            end,
-            desc('Restore Last Session'),
-        },
-    },
+    ['<leader>Sq'] = { Pst.stop, desc('Stop Persistence') },
 }
 
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
-    n = { ['<leader>S'] = { name = '+Session (Persistence)' } },
-    v = { ['<leader><C-S>'] = { name = '+Session (Persistence)' } },
+    ['<leader>S'] = { name = '+Session (Persistence)' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', true, nil, 0)
+    map_dict(Names, 'wk.register', false, 'n', 0)
 end
-map_dict(Keys, 'wk.register', true, nil, 0)
+map_dict(Keys, 'wk.register', false, 'n', 0)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
