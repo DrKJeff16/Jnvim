@@ -116,17 +116,37 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local i = 1
     local found_csc = ''
     for idx, name in next, selected do
-        if not is_nil(Csc[name].setup) then
+        ---@type CscSubMod|ODSubMod|table
+        local TColor = Csc[name]
+
+        if not is_nil(TColor.setup) then
             found_csc = found_csc ~= '' and found_csc or name
 
             NamesCsc['<leader>vc' .. csc_group] = {
                 name = '+Group ' .. csc_group,
             }
 
-            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                Csc[name].setup,
-                desc('Setup Colorscheme `' .. name .. '`'),
-            }
+            if is_tbl(TColor.variants) and not empty(TColor.variants) then
+                local v = 'a'
+                for _, variant in next, TColor.variants do
+                    NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
+                        name = '+' .. name,
+                    }
+                    CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
+                        function()
+                            TColor.setup(variant)
+                        end,
+                        desc('Setup Colorscheme `' .. name .. '` (' .. variant .. ')'),
+                    }
+
+                    v = displace_letter(v, 'next', false)
+                end
+            else
+                CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+                    TColor.setup,
+                    desc('Setup Colorscheme `' .. name .. '`'),
+                }
+            end
 
             if i == 9 then
                 i = 1

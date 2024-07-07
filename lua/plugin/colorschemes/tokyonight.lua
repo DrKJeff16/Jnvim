@@ -11,7 +11,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 local M = {
-    ---@type ('night'|'moon'|'day')[]
+    ---@type TN.Variants
     variants = {
         'night',
         'moon',
