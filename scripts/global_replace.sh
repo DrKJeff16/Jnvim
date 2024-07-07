@@ -36,7 +36,7 @@ die() {
     local EC=1
 
     # TODO: Sanitize this line
-    while [[ "$(pwd)" == *"nvim/"* ]] || [[ "$(pmd)" == *"neovim/"* ]]; do
+    while [[ "$(pwd)" == *"nvim/"* ]] || [[ "$(pwd)" == *"neovim/"* ]]; do
         cd ..
     done
 

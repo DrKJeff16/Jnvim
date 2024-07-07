@@ -66,6 +66,20 @@ local M = {
         version = false,
         config = source('plugin.lspconfig.inc_rename'),
     },
+    {
+        'neoclide/coc.nvim',
+        version = '*',
+        build = 'npm ci',
+        init = function()
+            vim.opt.backup = false
+            vim.opt.writebackup = false
+            vim.opt.updatetime = 300
+            vim.opt.signcolumn = 'yes'
+        end,
+        config = source('plugin.coc'),
+        cond = false,
+        enabled = executable('npm') and vim_has('nvim-0.8'),
+    },
 }
 
 return M

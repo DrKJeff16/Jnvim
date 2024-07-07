@@ -15,14 +15,24 @@ local map_dict = User.maps.map_dict
 ---@return fun()
 local function key_variant(cmd)
     cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
+    local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
-    cmd = cmd .. ' '
+    local FUNCS = {
+        ['ed'] = function()
+            vim.cmd.ed(fpath)
+        end,
+        ['tabnew'] = function()
+            vim.cmd.tabnew(fpath)
+        end,
+        ['split'] = function()
+            vim.cmd.split(fpath)
+        end,
+        ['vsplit'] = function()
+            vim.cmd.vsplit(fpath)
+        end,
+    }
 
-    return function()
-        local full_cmd = cmd .. vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
-
-        vim.cmd(full_cmd)
-    end
+    return FUNCS[cmd]
 end
 
 --- Set installation dir for `Lazy`.
@@ -76,7 +86,7 @@ Lazy.setup({
     },
 
     rocks = {
-        enabled = require('config.util').luarocks_set(),
+        enabled = require('config.util').luarocks_check(),
         root = vim.fn.stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -85,11 +95,17 @@ Lazy.setup({
         cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
         versions = true,
         sources = (function()
+            ---@class LazySources
+            ---@field [1] 'lazy'
+            ---@field [2]? 'rockspec'|'pathspec'
+            ---@field [3]? 'pathspec'
             local S = { 'lazy' }
 
-            if require('config.util').luarocks_set() then
+            --- If `luarocks` is available and configured
+            if require('config.util').luarocks_check() then
                 table.insert(S, 'rockspec')
             end
+            --- If `pathspec-find` is available
             if executable('pathspec-find') then
                 table.insert(S, 'pathspec')
             end
@@ -106,7 +122,7 @@ Lazy.setup({
 
     change_detection = {
         enabled = true,
-        notify = false,
+        notify = true,
     },
 
     checker = {
@@ -117,8 +133,8 @@ Lazy.setup({
     },
 
     ui = {
-        backdrop = 75,
-        border = 'double',
+        backdrop = 70,
+        border = 'shadow',
         title = 'L      A      Z      Y',
         wrap = true,
         title_pos = 'center',
@@ -150,51 +166,31 @@ local P = {
     colorschemes = require('plugin.colorschemes'),
 }
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-        ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-        ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-        ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
-        ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-        ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-        ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-        ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-        ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-        ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
-        ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
-    },
-    v = {
-        ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-        ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-        ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-        ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
-        ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-        ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-        ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-        ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-        ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-        ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
-    },
+    ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+    ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+    ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+    ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+    ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+    ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+    ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+    ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+    ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+    ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+    ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
----@type table<MapModes, RegKeysNamed>
+---@type RegKeysNamed
 local Names = {
-    n = {
-        ['<leader>L'] = { name = '+Lazy' },
-        ['<leader>Le'] = { name = '+Edit Lazy File' },
-    },
-    v = {
-        ['<leader>L'] = { name = '+Lazy' },
-        ['<leader>Le'] = { name = '+Edit Lazy File' },
-    },
+    ['<leader>L'] = { name = '+Lazy' },
+    ['<leader>Le'] = { name = '+Edit Lazy File' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', true)
+    map_dict(Names, 'wk.register', false, 'n')
 end
 
-map_dict(Keys, 'wk.register', true)
+map_dict(Keys, 'wk.register', false, 'n')
 
 return P
 

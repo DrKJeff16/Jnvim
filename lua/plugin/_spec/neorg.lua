@@ -10,7 +10,7 @@ local source = CfgUtil.source
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
-local luarocks_set = CfgUtil.luarocks_set
+local luarocks_check = CfgUtil.luarocks_check
 
 ---@type LazySpec[]
 local M = {
