@@ -240,11 +240,8 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     local Csc = C.new()
 
-    ---@type table<MapModes, KeyMapDict>
-    local CscKeys = {
-        n = {},
-        v = {},
-    }
+    ---@type KeyMapDict
+    local CscKeys = {}
 
     --- Reorder to your liking.
     local selected = {
@@ -262,10 +259,9 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         'space_vim_dark',
     }
 
-    ---@type table<MapModes, RegKeysNamed>
+    ---@type RegKeysNamed
     local NamesCsc = {
-        n = { ['<leader>vc'] = { name = '+Colorschemes' } },
-        v = { ['<leader>vc'] = { name = '+Colorschemes' } },
+        ['<leader>vc'] = { name = '+Colorschemes' },
     }
 
     local csc_group = 'a'
@@ -275,19 +271,14 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         if not is_nil(Csc[name].setup) then
             found_csc = found_csc ~= '' and found_csc or name
 
-            NamesCsc.n['<leader>vc' .. csc_group] = {
-                name = '+Group ' .. csc_group,
-            }
-            NamesCsc.v['<leader>vc' .. csc_group] = {
+            NamesCsc['<leader>vc' .. csc_group] = {
                 name = '+Group ' .. csc_group,
             }
 
-            for mode, _ in next, CscKeys do
-                CscKeys[mode]['<leader>vc' .. csc_group .. tostring(i)] = {
-                    Csc[name].setup,
-                    desc('Setup Colorscheme `' .. name .. '`'),
-                }
-            end
+            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+                Csc[name].setup,
+                desc('Setup Colorscheme `' .. name .. '`'),
+            }
 
             if i == 9 then
                 i = 1
@@ -299,9 +290,9 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     end
 
     if WK.available() then
-        map_dict(NamesCsc, 'wk.register', true)
+        map_dict(NamesCsc, 'wk.register', false, 'n')
     end
-    map_dict(CscKeys, 'wk.register', true)
+    map_dict(CscKeys, 'wk.register', false, 'n')
 
     if not empty(found_csc) then
         Csc[found_csc].setup()
