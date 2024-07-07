@@ -15,6 +15,11 @@
 ---@field highlights? table
 ---@field diagnostics? OD.Diagnostics
 
+---@class TN.Variants
+---@field [1] 'night'
+---@field [2] 'moon'
+---@field [3] 'day'
+
 --- A loadable color schemes table.
 ---
 --- ## Fields
