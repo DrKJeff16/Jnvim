@@ -285,7 +285,11 @@ Noice.setup({
     },
     throttle = 1000 / 30,
     ---@type NoiceConfigViews
-    views = {}, ---@see section on views
+    views = {
+        split = {
+            enabled = true,
+        },
+    }, ---@see section on views
     ---@type NoiceRouteConfig
     routes = {
         {
