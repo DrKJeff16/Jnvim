@@ -127,7 +127,8 @@ local M = {
         event = 'WinNew',
         version = false,
         config = source('plugin.colorful_winsep'),
-        cond = not in_console(),
+        -- cond = not in_console(),
+        cond = false,
     },
     {
         'brenoprata10/nvim-highlight-colors',
