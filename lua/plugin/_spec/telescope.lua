@@ -20,6 +20,7 @@ local M = {
         config = source('plugin.telescope'),
         cond = not in_console(),
     },
+    -- TODO: ADD 'OliverChao/telescope-picker-list.nvim'
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
@@ -35,9 +36,32 @@ local M = {
         dependencies = { 'nvim-telescope/telescope.nvim' },
         cond = executable('fzf') and not in_console(),
     },
+    -- TODO: Split into its file
+    {
+        'LukasPietzschmann/telescope-tabs',
+        event = 'TabNew',
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+        config = function()
+            require('telescope').load_extension('telescope-tabs')
+            require('telescope-tabs').setup({
+                entry_formatter = function(tab_id, buffer_ids, file_names, file_paths, is_current)
+                    local entry_string = table.concat(file_names, ', ')
+                    return string.format('%d: %s%s', tab_id, entry_string, is_current and ' <' or '')
+                end,
+                entry_ordinal = function(tab_id, buffer_ids, file_names, file_paths, is_current)
+                    return table.concat(file_names, ' ')
+                end,
+                show_preview = true,
+                close_tab_shortcut_i = '<C-d>', -- if you're in insert mode
+                close_tab_shortcut_n = 'D', -- if you're in normal mode
+            })
+        end,
+    },
     {
         'DrKJeff16/telescope-makefile',
         ft = { 'make' },
+        version = false,
         dependencies = {
             'nvim-telescope/telescope.nvim',
             'akinsho/toggleterm.nvim',
@@ -47,6 +71,12 @@ local M = {
 
             require('telescope').load_extension('make')
         end,
+    },
+    {
+        'olacin/telescope-cc.nvim',
+        ft = { 'gitcommit' },
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
     },
     --- Project Manager
     {
