@@ -52,7 +52,7 @@ M.file_browser = {
     dir_icon_hl = 'Default',
     no_ignore = false,
     theme = 'ivy',
-    hijack_netrw = true,
+    hijack_netrw = not exists('nvim-tree'),
     mappings = {
         ['i'] = {
             ['<A-c>'] = Actions.create,
@@ -99,29 +99,21 @@ function M.loadkeys()
     local Keys = {
         n = {
             ['<leader>fTeb'] = {
-                function()
-                    require('telescope').extensions.file_browser.file_browser()
-                end,
+                require('telescope').extensions.file_browser.file_browser,
                 desc('File Browser'),
             },
             ['<leader>ff'] = {
-                function()
-                    require('telescope').extensions.file_browser.file_browser()
-                end,
+                require('telescope').extensions.file_browser.file_browser,
                 desc('Telescope File Browser'),
             },
         },
         v = {
             ['<leader>fTeb'] = {
-                function()
-                    require('telescope').extensions.file_browser.file_browser()
-                end,
+                require('telescope').extensions.file_browser.file_browser,
                 desc('File Browser'),
             },
             ['<leader>ff'] = {
-                function()
-                    require('telescope').extensions.file_browser.file_browser()
-                end,
+                require('telescope').extensions.file_browser.file_browser,
                 desc('Telescope File Browser'),
             },
         },
