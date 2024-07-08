@@ -24,13 +24,29 @@ local au = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
 local Telescope = require('telescope')
-local Builtin = require('telescope.builtin')
-local Themes = require('telescope.themes')
-local Actions = require('telescope.actions')
 local ActionLayout = require('telescope.actions.layout')
+local Actions = require('telescope.actions')
+local Builtin = require('telescope.builtin')
+local Config = require('telescope.config')
+local Previewers = require('telescope.previewers')
+local Pickers = require('telescope.pickers')
+local PickersLayout = require('telescope.pickers.layout')
+local Themes = require('telescope.themes')
 local Extensions = Telescope.extensions
+local Layout = require('nui.layout')
+local Popup = require('nui.popup')
+local Job = require('plenary.job')
 
 local load_ext = Telescope.load_extension
+
+-- Clone the default Telescope configuration
+local vimgrep_arguments = { unpack(Config.values.vimgrep_arguments) }
+
+-- I want to search in hidden/dot files.
+table.insert(vimgrep_arguments, '--hidden')
+-- I don't want to search in the `.git` directory.
+table.insert(vimgrep_arguments, '--glob')
+table.insert(vimgrep_arguments, '!**/.git/*')
 
 local Opts = {
     defaults = {
@@ -38,18 +54,31 @@ local Opts = {
         layout_config = {
             vertical = {
                 width = math.floor(vim.opt.columns:get() * 3 / 4),
+                height = math.floor(vim.opt.lines:get() * 3 / 5),
             },
         },
+
         mappings = {
             i = {
                 ['<C-h>'] = 'which_key',
-                ['<C-u>'] = false,
+                ['<C-u>'] = false, --- Clear prompt
                 ['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
                 ['<Esc>'] = Actions.close,
                 ['<C-e>'] = Actions.close,
                 ['<C-q>'] = Actions.close,
+                ['<C-s>'] = Actions.cycle_previewers_next,
+                ['<C-a>'] = Actions.cycle_previewers_prev,
+                ['<M-p>'] = ActionLayout.toggle_preview,
             },
-            n = {},
+            n = {
+                ['<M-p>'] = ActionLayout.toggle_preview,
+            },
+        },
+
+        vimgrep_arguments = vimgrep_arguments,
+
+        preview = {
+            filesize_limit = 0.5, -- MB
         },
     },
 
@@ -61,11 +90,16 @@ local Opts = {
         colorscheme = { theme = 'ivy' },
         commands = { theme = 'ivy' },
         current_buffer_fuzzy_find = { theme = 'cursor' },
-        find_files = { theme = 'dropdown' },
+        fd = { theme = 'dropdown' },
+        find_files = {
+            theme = 'dropdown',
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+        },
         git_branches = { theme = 'ivy' },
         git_status = { theme = 'dropdown' },
         git_stash = { theme = 'dropdown' },
-        highlights = { theme = 'ivy' },
+        highlights = { theme = 'dropdown' },
         lsp_definitions = { theme = 'cursor' },
         lsp_document_symbols = { theme = 'dropdown' },
         lsp_implementations = { theme = 'cursor' },
@@ -78,6 +112,8 @@ local Opts = {
         vim_options = { theme = 'ivy' },
     },
 }
+
+-- TODO: ADD `OliverChao/telescope-picker-list.nvim`
 
 if exists('trouble') then
     local open_with_trouble = require('trouble.sources.telescope').open
@@ -123,13 +159,13 @@ end
 
 ---@type KeyMapDict
 local Maps = {
-    ['<leader>Rr'] = { Builtin.reloader, desc('Telescope Reloader') },
     ['<leader><leader>'] = { open, desc('Open Telescope') },
     ['<leader>?H'] = { Builtin.help_tags, desc('Telescope Help Tags') },
     ['<leader>?M'] = { Builtin.man_pages, desc('Telescope Man Pages') },
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
-    ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },
     ['<leader>GS'] = { Builtin.git_stash, desc('Telescope Git Stash') },
+    ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },
+    ['<leader>Rr'] = { Builtin.reloader, desc('Telescope Reloader') },
     ['<leader>bB'] = { Builtin.buffers, desc('Telescope Buffers') },
     ['<leader>fD'] = { Builtin.diagnostics, desc('Telescope Diagnostics') },
     ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
@@ -139,6 +175,7 @@ local Maps = {
     ['<leader>li'] = { Builtin.lsp_implementations, desc('Telelcope Lsp Implementations') },
     ['<leader>lwD'] = { Builtin.lsp_dynamic_workspace_symbols, desc('Telescope Dynamic Workspace Symbols') },
     ['<leader>lwd'] = { Builtin.lsp_workspace_symbols, desc('Telescope Workspace Symbols') },
+    ['<leader>vC'] = { Builtin.highlights, desc('Telescope Highlights') },
     ['<leader>vK'] = { Builtin.keymaps, desc('Telescope Keymaps') },
     ['<leader>vO'] = { Builtin.vim_options, desc('Telescope Vim Options') },
     ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
@@ -146,7 +183,6 @@ local Maps = {
     ['<leader>fTb/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
     ['<leader>fTbA'] = { Builtin.autocommands, desc('Autocommands') },
     ['<leader>fTbC'] = { Builtin.commands, desc('Commands') },
-    ['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
     ['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
     ['<leader>fTbh'] = { Builtin.highlights, desc('Highlights') },
     ['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },

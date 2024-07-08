@@ -20,6 +20,7 @@ local M = {
         config = source('plugin.telescope'),
         cond = not in_console(),
     },
+    -- TODO: ADD 'OliverChao/telescope-picker-list.nvim'
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
