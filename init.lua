@@ -209,12 +209,9 @@ User.opts.setup({ ---@see User.Opts.Spec For more info
     wrap = false,
 })
 
-vim.g.markdown_minlines = 500
+require('config.keymaps').set_leader('<Space>')
 
---- Set `<Space>` as Leader Key.
-nop('<Space>', { noremap = true, silent = true, nowait = false })
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.markdown_minlines = 500
 
 --- Disable `netrw` regardless of whether `nvim_tree` exists or not
 vim.g.loaded_netrw = 1
