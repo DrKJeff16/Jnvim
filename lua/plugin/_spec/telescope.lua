@@ -92,6 +92,12 @@ local M = {
         dependencies = { 'nvim-telescope/telescope.nvim' },
         cond = not in_console(),
     },
+    {
+        'olacin/telescope-cc.nvim',
+        ft = { 'gitcommit' },
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+    },
     --- Project Manager
     {
         'DrKJeff16/project.nvim',
