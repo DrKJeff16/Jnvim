@@ -49,6 +49,12 @@ local M = {
             require('telescope').load_extension('make')
         end,
     },
+    {
+        'olacin/telescope-cc.nvim',
+        ft = { 'gitcommit' },
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+    },
     --- Project Manager
     {
         'ahmedkhalf/project.nvim',

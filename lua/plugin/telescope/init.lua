@@ -100,6 +100,11 @@ if exists('persisted') then
     }
 end
 
+if Check.exists.modules({ 'telescope._extensions.conventional_commits.actions', 'plugin.telescope.cc' }) then
+    Opts.extensions.conventional_commits = require('plugin.telescope.cc').cc
+    require('plugin.telescope.cc').loadkeys()
+end
+
 Telescope.setup(Opts)
 
 if exists('telescope._extensions.file_browser') then
@@ -107,6 +112,9 @@ if exists('telescope._extensions.file_browser') then
 end
 if exists('persisted') then
     load_ext('persisted')
+end
+if exists('plugin.telescope.cc') then
+    load_ext('conventional_commits')
 end
 
 local function open()
