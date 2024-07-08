@@ -71,9 +71,6 @@ local NOP = {
     'y',
     'z',
 }
-for _, mode in next, User.maps.modes do
-    nop(NOP, {}, mode, '<leader>')
-end
 
 --- Global keymaps, plugin-agnostic
 ---@type table<MapModes, KeyMapDict>
@@ -317,6 +314,45 @@ function M.setup(keys, names)
         map_dict(vim.tbl_extend('keep', names, DEFAULT_NAMES), 'wk.register', true)
     end
     map_dict(vim.tbl_extend('keep', keys, DEFAULT_KEYS), 'wk.register', true)
+
+    for _, mode in next, User.maps.modes do
+        nop(NOP, {}, mode, '<leader>')
+    end
+end
+
+---@param leader string
+---@param local_leader? string
+function M.set_leader(leader, local_leader)
+    leader = (is_str(leader) and not empty(leader)) and leader or '<Space>'
+    local_leader = (is_str(local_leader) and not empty(local_leader)) and local_leader or leader
+
+    local vim_vars = {
+        leader = '',
+        localleader = '',
+    }
+
+    if leader:lower() == '<space>' then
+        vim_vars.leader = ' '
+    elseif leader == ' ' then
+        leader = '<Space>'
+        vim_vars.leader = ' '
+    else
+        vim_vars.leader = leader
+    end
+
+    if local_leader:lower() == '<space>' then
+        vim_vars.localleader = ' '
+    elseif local_leader == ' ' then
+        local_leader = '<Space>'
+        vim_vars.localleader = ' '
+    else
+        vim_vars.localleader = local_leader
+    end
+
+    nop(leader, { noremap = true, nowait = false, silent = true })
+
+    vim.g.mapleader = vim_vars.leader
+    vim.g.maplocalleader = vim_vars.localleader
 end
 
 return M
