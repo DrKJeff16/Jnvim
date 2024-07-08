@@ -38,6 +38,7 @@ local M = {
     {
         'DrKJeff16/telescope-makefile',
         ft = { 'make' },
+        version = false,
         dependencies = {
             'nvim-telescope/telescope.nvim',
             'akinsho/toggleterm.nvim',

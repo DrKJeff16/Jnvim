@@ -4,7 +4,6 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.telescope
-local kmap = User.maps.kmap
 local WK = User.maps.wk
 
 local is_nil = Check.value.is_nil
@@ -12,7 +11,7 @@ local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 
 if not exists('telescope') then
@@ -57,10 +56,26 @@ local Opts = {
     extensions = {},
 
     pickers = {
-        colorscheme = { theme = 'dropdown' },
+        autocommands = { theme = 'ivy' },
+        buffers = { theme = 'dropdown' },
+        colorscheme = { theme = 'ivy' },
+        commands = { theme = 'ivy' },
+        current_buffer_fuzzy_find = { theme = 'cursor' },
         find_files = { theme = 'dropdown' },
-        lsp_definitions = { theme = 'dropdown' },
-        pickers = { theme = 'dropdown' },
+        git_branches = { theme = 'ivy' },
+        git_status = { theme = 'dropdown' },
+        git_stash = { theme = 'dropdown' },
+        highlights = { theme = 'ivy' },
+        lsp_definitions = { theme = 'cursor' },
+        lsp_document_symbols = { theme = 'dropdown' },
+        lsp_implementations = { theme = 'cursor' },
+        lsp_type_definitions = { theme = 'cursor' },
+        lsp_workspace_symbols = { theme = 'dropdown' },
+        man_pages = { theme = 'dropdown' },
+        pickers = { theme = 'ivy' },
+        planets = { theme = 'dropdown' },
+        reloader = { theme = 'dropdown' },
+        vim_options = { theme = 'ivy' },
     },
 }
 
@@ -90,39 +105,51 @@ Telescope.setup(Opts)
 if exists('telescope._extensions.file_browser') then
     load_ext('file_browser')
 end
+if exists('persisted') then
+    load_ext('persisted')
+end
 
 local function open()
     vim.cmd('Telescope')
 end
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapDict
 local Maps = {
-    n = {
-        ['<leader><leader>'] = { open, desc('Open Telescope') },
-        ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
-        ['<leader>?H'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-        ['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
-        ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
-        ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
+    ['<leader>Rr'] = { Builtin.reloader, desc('Telescope Reloader') },
+    ['<leader><leader>'] = { open, desc('Open Telescope') },
+    ['<leader>?H'] = { Builtin.help_tags, desc('Telescope Help Tags') },
+    ['<leader>?M'] = { Builtin.man_pages, desc('Telescope Man Pages') },
+    ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
+    ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },
+    ['<leader>GS'] = { Builtin.git_stash, desc('Telescope Git Stash') },
+    ['<leader>bB'] = { Builtin.buffers, desc('Telescope Buffers') },
+    ['<leader>fD'] = { Builtin.diagnostics, desc('Telescope Diagnostics') },
+    ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
+    ['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
+    ['<leader>lT'] = { Builtin.lsp_type_definitions, desc('Telescope Definitions') },
+    ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
+    ['<leader>li'] = { Builtin.lsp_implementations, desc('Telelcope Lsp Implementations') },
+    ['<leader>lwD'] = { Builtin.lsp_dynamic_workspace_symbols, desc('Telescope Dynamic Workspace Symbols') },
+    ['<leader>lwd'] = { Builtin.lsp_workspace_symbols, desc('Telescope Workspace Symbols') },
+    ['<leader>vK'] = { Builtin.keymaps, desc('Telescope Keymaps') },
+    ['<leader>vO'] = { Builtin.vim_options, desc('Telescope Vim Options') },
+    ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
-        ['<leader>fTbC'] = { Builtin.commands, desc('Colommands') },
-        ['<leader>fTbO'] = { Builtin.keymaps, desc('Vim Options') },
-        ['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
-        ['<leader>fTbb'] = { Builtin.buffers, desc('Buffers') },
-        ['<leader>fTbd'] = { Builtin.diagnostics, desc('Diagnostics') },
-        ['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
-        ['<leader>fTbk'] = { Builtin.keymaps, desc('Keymaps') },
-        ['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
-    },
+    ['<leader>fTb/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
+    ['<leader>fTbA'] = { Builtin.autocommands, desc('Autocommands') },
+    ['<leader>fTbC'] = { Builtin.commands, desc('Commands') },
+    ['<leader>fTbP'] = { Builtin.planets, desc('Planets') },
+    ['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
+    ['<leader>fTbh'] = { Builtin.highlights, desc('Highlights') },
+    ['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
 }
 
----@type table<MapModes, RegKeysNamed>
+---@type RegKeysNamed
 local Names = {
-    n = {
-        ['<leader>fT'] = { name = '+Telescope' },
-        ['<leader>fTb'] = { name = '+Builtins' },
-        ['<leader>fTe'] = { name = '+Extensions' },
-    },
+    ['<leader>R'] = { name = '+Reload' },
+    ['<leader>fT'] = { name = '+Telescope' },
+    ['<leader>fTb'] = { name = '+Builtins' },
+    ['<leader>fTe'] = { name = '+Extensions' },
 }
 
 ---@type table<string, TelExtension>
@@ -162,7 +189,7 @@ local known_exts = {
     ['notify'] = {
         'notify',
         ---@type fun(): KeyMapDict
-        keys = exists('notify') and function()
+        keys = function()
             local pfx = Extensions.notify
 
             return {
@@ -192,8 +219,8 @@ local known_exts = {
                 },
             }
 
-            if is_tbl(Names['n']) then
-                Names['n']['<leader>fTen'] = { name = '+Noice' }
+            if is_tbl(Names) then
+                Names['<leader>fTen'] = { name = '+Noice' }
             end
 
             return res
@@ -230,9 +257,7 @@ for mod, ext in next, known_exts do
 
     if is_fun(ext.keys) then
         for lhs, v in next, ext.keys() do
-            for mode, _ in next, Maps do
-                Maps[mode][lhs] = v
-            end
+            Maps[lhs] = v
         end
     end
 
@@ -240,9 +265,9 @@ for mod, ext in next, known_exts do
 end
 
 if WK.available() and is_tbl(Names) and not empty(Names) then
-    map_dict(Names, 'wk.register', true)
+    map_dict(Names, 'wk.register', false, 'n')
 end
-map_dict(Maps, 'wk.register', true)
+map_dict(Maps, 'wk.register', false, 'n')
 
 ---@type AuRepeat
 local au_tbl = {
@@ -254,7 +279,7 @@ local au_tbl = {
             callback = function(args)
                 if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
                     vim.wo.number = true
-                else
+                elseif args.data.bufname:match('*.csv') then
                     vim.wo.wrap = false
                 end
             end,
