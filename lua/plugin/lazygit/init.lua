@@ -22,14 +22,14 @@ local LG_Utils = require('lazygit.utils')
 local LG_Win = require('lazygit.window')
 
 local Opts = {
-    ['floating_window_winblend'] = 0,
-    ['floating_window_scaling_factor'] = 1.0,
-    ['floating_window_border_chars'] = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-    ['floating_window_use_plenary'] = 1,
+    floating_window_winblend = 0,
+    floating_window_scaling_factor = 1.0,
+    floating_window_border_chars = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+    floating_window_use_plenary = 1,
 
-    ['use_neovim_remote'] = 0,
+    use_neovim_remote = 0,
 
-    ['use_custom_config_file_path'] = 0,
+    use_custom_config_file_path = 0,
 }
 
 for k, v in next, Opts do
