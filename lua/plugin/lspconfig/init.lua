@@ -4,9 +4,7 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 local Highlight = User.highlight
 
 local exists = Check.exists.module
@@ -15,8 +13,8 @@ local empty = Check.value.empty
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 local hi = Highlight.hl
 
 if not exists('lspconfig') then
@@ -42,19 +40,6 @@ local on_windows = vim.uv.os_uname().version:match('Windows')
 local function join_paths(...)
     local path_sep = on_windows and '\\' or '/'
     return table.concat({ ... }, path_sep)
-end
-
----@type fun(path: string): nil|fun()
-local sub_fun = function(path)
-    if not is_str(path) or path == '' then
-        error('(plugin.lspconfig:sub_fun): Cannot generate function from type `' .. type(path) .. '`')
-    end
-
-    return function()
-        if exists(path) then
-            require(path)
-        end
-    end
 end
 
 require('plugin.lspconfig.neoconf')
@@ -88,6 +73,7 @@ local handlers = {
 ---@type fun(T: LspServers): LspServers
 local function populate(T)
     ---@type LspServers
+    ---@diagnostic disable-next-line
     local res = {}
 
     for k, v in next, T do
@@ -207,37 +193,10 @@ local Keys = {
             desc('Start Server'),
         },
     },
-    v = {
-        ['<leader>lI'] = {
-            function()
-                vim.cmd('LspInfo')
-            end,
-            desc('Get LSP Config Info'),
-        },
-        ['<leader>lR'] = {
-            function()
-                vim.cmd('LspRestart')
-            end,
-            desc('Restart Server'),
-        },
-        ['<leader>lH'] = {
-            function()
-                vim.cmd('LspStop')
-            end,
-            desc('Stop Server'),
-        },
-        ['<leader>lS'] = {
-            function()
-                vim.cmd('LspStart')
-            end,
-            desc('Start Server'),
-        },
-    },
 }
 
 local Names = {
     n = { ['<leader>l'] = { name = '+LSP' } },
-    v = { ['<leader>l'] = { name = '+LSP' } },
 }
 
 if WK.available() then
@@ -249,17 +208,41 @@ if WK.available() then
 end
 
 au('LspAttach', {
-    group = augroup('UserLspConfig', { clear = true }),
+    group = augroup('UserLspConfig', { clear = false }),
 
     callback = function(args)
         local buf = args.buf
         local client = Lsp.get_client_by_id(args.data.client_id)
 
-        if client.server_capabilities.completionProvider then
+        if client.supports_method('textDocument/completion') then
             bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+            Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
         end
-        if client.server_capabilities.definitionProvider then
+
+        --[[ if client.supports_method('textDocument/formatting') then
+            au('BufWritePre', {
+                buffer = args.buf,
+                callback = function()
+                    Lsp.buf.format({ bufnr = args.buf, id = client.id })
+                end,
+            })
+        end ]]
+
+        if client.supports_method('textDocument/definition') then
             bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+        end
+
+        if client.supports_method('textDocument/references') then
+            local on_references = Lsp.handlers['textDocument/references']
+            Lsp.handlers['textDocument/references'] = Lsp.with(on_references, {
+                loclist = true,
+            })
+        end
+        if client.supports_method('textDocument/publishDiagnostics') then
+            Lsp.handlers['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+                signs = true,
+                virtual_text = true,
+            })
         end
 
         ---@type table<MapModes, KeyMapDict>
@@ -316,10 +299,20 @@ au('LspAttach', {
             map_dict(Names2, 'wk.register', true, nil, buf)
         end
         map_dict(K, 'wk.register', true, nil, buf)
+        au({ 'CursorHold', 'CursorHoldI' }, {
+            group = augroup('UserLspConfig', { clear = false }),
+            buffer = args.buf,
+            callback = vim.lsp.buf.document_highlight,
+        })
+        au('CursorMoved', {
+            group = augroup('UserLspConfig', { clear = false }),
+            buffer = args.buf,
+            callback = vim.lsp.buf.clear_references,
+        })
     end,
 })
 au('LspDetach', {
-    group = augroup('UserLspConfig', { clear = false }),
+    group = augroup('UserLspConfig', { clear = true }),
 
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -331,21 +324,9 @@ au('LspProgress', {
     group = augroup('UserLspConfig', { clear = false }),
     pattern = '*',
     callback = function()
-        vim.cmd.redrawstatus()
+        vim.cmd('redrawstatus')
     end,
 })
---[[ au('LspTokenUpdate', {
-    group = augroup('UserLspConfig', { clear = false }),
-    callback = function(args)
-        local token = args.data.token
-
-        if token.type == 'variable' and not token.modifiers.readonly then
-            vim.lsp.semantic_tokens.highlight_token(
-                token, args.buf, args.data.client_id, 'MyMutableVariableHighlight'
-            )
-        end
-    end,
-}) ]]
 
 Diag.config({
     virtual_text = true,
@@ -362,17 +343,13 @@ local aus = {
         {
             pattern = '*',
             callback = function()
-                ---@type HlOpts
-                local opts = { bg = '#2c1a3a' }
-                hi('NormalFloat', opts)
+                hi('NormalFloat', { bg = '#2c1a3a' })
             end,
         },
         {
             pattern = '*',
             callback = function()
-                ---@type HlOpts
-                local opts = { fg = '#f0efbf', bg = '#2c1a3a' }
-                hi('FloatBorder', opts)
+                hi('FloatBorder', { fg = '#f0efbf', bg = '#2c1a3a' })
             end,
         },
     },
@@ -383,16 +360,5 @@ for event, opts_arr in next, aus do
         au(event, opts)
     end
 end
-
---[[ ---@type HlDict
-local Highlights = {
-    ['@lsp.type.variable.lua'] = { fg = '#35c7aa' },
-    ['@lsp.mod.deprecated'] = { strikethrough = true },
-    ['@lsp.typemod.function.async'] = { fg = '#a142c0' },
-}
-
-for name, opts in next, Highlights do
-    hi(name, opts)
-end ]]
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
