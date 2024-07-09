@@ -23,7 +23,7 @@
 --- * `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
 --- * `setup`: A function to setup and set the colorscheme.
 ---
---- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
+--- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
 ---@class CscSubMod
 ---@field setup? fun(...)
 ---@field protected mod_pfx string
