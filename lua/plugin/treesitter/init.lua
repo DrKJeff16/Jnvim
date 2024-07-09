@@ -15,12 +15,9 @@ end
 local fs_stat = vim.uv.fs_stat
 local buf_name = vim.api.nvim_buf_get_name
 
-local Ts = require('nvim-treesitter')
 local Cfg = require('nvim-treesitter.configs')
-local Install = require('nvim-treesitter.install')
-local TSUtils = require('nvim-treesitter.ts_utils')
 
-Install.prefer_git = true
+require('nvim-treesitter.install').prefer_git = true
 
 local ensure = {
     'bash',
@@ -69,7 +66,9 @@ local ensure = {
     'yaml',
 }
 
-Cfg.setup({
+---@type TSConfig
+---@diagnostic disable-next-line
+local Opts = {
     auto_install = true,
     sync_install = false,
     ignore_install = {},
@@ -98,14 +97,27 @@ Cfg.setup({
 
     indent = { enable = false },
     incremental_selection = { enable = false },
-    modules = {},
-})
+}
 
-exists('plugin.treesitter.context', true)
+if exists('nvim-treesitter-refactor') then
+    Opts.refactor = {
+        refactor = {
+            highlight_definitions = {
+                enable = true,
+                clear_on_cursor_move = true,
+            },
+            highlight_current_scope = { enable = true },
+        },
+    }
+end
+
+Cfg.setup(Opts)
+
+require('plugin.treesitter.context')
 
 if exists('ts_context_commentstring') then
     require('ts_context_commentstring').setup({
-        enable_autocmd = true,
+        enable_autocmd = not exists('Comment'),
     })
 end
 
