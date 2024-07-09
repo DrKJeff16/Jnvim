@@ -3,7 +3,10 @@
 
 require('user.types.user.update')
 
+local wk_available = require('user.maps.wk').available
 local notify = require('user.util.notify').notify
+local desc = require('user.maps.kmap').desc
+local map_dict = require('user.maps').map_dict
 
 ---@type User.Update
 local M = {
@@ -26,6 +29,11 @@ local M = {
         return res
     end,
 }
+
+if wk_available() then
+    map_dict({ ['<leader>U'] = { name = '+User API' } }, 'wk.register', false, 'n')
+end
+map_dict({ ['<leader>Uu'] = { M.update, desc('Update User Config') } }, 'wk.register', false, 'n')
 
 return M
 
