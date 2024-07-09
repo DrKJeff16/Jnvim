@@ -11,7 +11,7 @@ local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'folke/persistence.nvim',

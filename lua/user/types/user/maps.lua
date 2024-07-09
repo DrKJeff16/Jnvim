@@ -62,7 +62,7 @@ require('user.types.which_key')
 ---@field rhs string|fun()
 ---@field opts? User.Maps.Keymap.Opts
 
---- The same as `ApiMapTbl`, just add `bufnr` as field.
+--- The same as `ApiMapTbl`, just add `bufnr` as field
 ---@class BufMapTbl: ApiMapTbl
 ---@field bufnr integer
 

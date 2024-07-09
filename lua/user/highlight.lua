@@ -49,7 +49,7 @@ local M = {
         end
     end,
 
-    --- Set hl groups based on a dict input.
+    --- Set hl groups based on a dict input
     ---
     --- Example of a valid table:
     --- ```lua

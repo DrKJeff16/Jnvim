@@ -55,7 +55,7 @@ end
 ---@type MiniModules
 local Mods = {
     ['align'] = {
-        -- Module mappings. Use `''` (empty string) to disable one.
+        -- Module mappings. Use `''` (empty string) to disable one
         mappings = {
             start = 'ga',
             start_with_preview = 'gA',
@@ -149,9 +149,9 @@ local Mods = {
     ['doc'] = nil,
     ['extra'] = {},
     ['move'] = {
-        -- Module mappings. Use `''` (empty string) to disable one.
+        -- Module mappings. Use `''` (empty string) to disable one
         mappings = {
-            -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl.
+            -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl
             left = '<leader>Ml',
             right = '<leader>Mr',
             down = '<leader>Md',

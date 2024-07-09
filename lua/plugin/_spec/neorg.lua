@@ -12,7 +12,7 @@ local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 local luarocks_check = CfgUtil.luarocks_check
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'folke/zen-mode.nvim',
@@ -25,7 +25,7 @@ local M = {
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        enabled = luarocks_check(),
+        enabled = luarocks_check() and vim_has('nvim-0.10'),
     },
 }
 

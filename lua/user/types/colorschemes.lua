@@ -20,17 +20,17 @@
 ---@field [2] 'moon'
 ---@field [3] 'day'
 
---- A loadable color schemes table.
+--- A loadable color schemes table
 ---
 --- ## Fields
 --- - `variants`: An optional string array displaying the variants of said colorscheme.
----             **NOTE: Need to check if it exists**.
---- - `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`.
+---             **NOTE: Need to check if it exists**
+--- - `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`
 --- - `setup`: If the colorscheme is found (either as a Lua module or a `vim.g` variable)
 ---          it becomes a function to setup and set the colorscheme.
 ---          Otherwise it defaults to `nil`
 ---
---- If the colorscheme is not a lua plugin, use `vim.g` as a check instead.
+--- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
 ---@class CscSubMod
 ---@field setup fun(variant: string?, transparent: boolean?, override: table?)|nil
 ---@field variants? string[]
@@ -38,16 +38,16 @@
 ---@field new? fun(): CscSubMod
 
 ---@see CscSubMod
---- A `CscSubMod` variant but for the `onedark.nvim` colorscheme.
+--- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
 ---@class ODSubMod: CscSubMod
 ---@field setup fun(variant: OD.Variant, transparent: boolean?, override: OD?)|nil
 ---@field new? fun(): ODSubMod
 
 ---@see CscSubMod
---- A table for each **explicitly** configured colorscheme.
+--- A table for each **explicitly** configured colorscheme
 ---
 --- ## Description
---- The colorschemes must comply with the `CscSubMod` type specifications.
+--- The colorschemes must comply with the `CscSubMod` type specifications
 ---
 ---@class CscMod
 ---@field catppuccin CscSubMod

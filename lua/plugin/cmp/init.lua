@@ -173,7 +173,7 @@ end
 
 -- Run once
 if not is_bool(_G.CMP_ANNOUNCED) or not _G.CMP_ANNOUNCED then
-    -- For debugging.
+    -- For debugging
     Util.notify.notify('cmp loaded.', vim.log.levels.INFO, {
         title = 'nvim-cmp',
         timeout = 50,

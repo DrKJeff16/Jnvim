@@ -24,7 +24,7 @@ local function theme_select(theme, force_auto)
     force_auto = is_bool(force_auto) and force_auto or false
 
     -- If `auto` theme and permitted to select from fallbacks.
-    -- Keep in mind these fallbacks are the same strings as their `require()` module strings.
+    -- Keep in mind these fallbacks are the same strings as their `require()` module strings
     if theme == 'auto' and not force_auto then
         for _, t in next, { 'nightfox', 'onedark', 'catppuccin', 'tokyonight' } do
             if exists(t) then

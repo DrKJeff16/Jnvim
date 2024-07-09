@@ -42,11 +42,13 @@ local load_ext = Telescope.load_extension
 -- Clone the default Telescope configuration
 local vimgrep_arguments = { unpack(Config.values.vimgrep_arguments) }
 
--- I want to search in hidden/dot files.
+-- Search in hidden/dot files
 table.insert(vimgrep_arguments, '--hidden')
--- I don't want to search in the `.git` directory.
+-- Don't search in these hidden directories
 table.insert(vimgrep_arguments, '--glob')
 table.insert(vimgrep_arguments, '!**/.git/*')
+table.insert(vimgrep_arguments, '!**/.ropeproject/*')
+table.insert(vimgrep_arguments, '!**/.mypy_cache/*')
 
 local Opts = {
     defaults = {
@@ -93,7 +95,7 @@ local Opts = {
         fd = { theme = 'dropdown' },
         find_files = {
             theme = 'dropdown',
-            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`'d
             find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
         },
         git_branches = { theme = 'ivy' },
@@ -291,7 +293,7 @@ local known_exts = {
     },
 }
 
---- Load and Set Keymaps for available extensions.
+--- Load and Set Keymaps for available extensions
 for mod, ext in next, known_exts do
     if not (exists(mod) and is_str(ext[1])) then
         goto continue
