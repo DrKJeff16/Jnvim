@@ -142,7 +142,7 @@ Neorg.setup({
                 default_keybinds = false,
                 hook = function(keybinds)
                     -- Want to move one keybind into the other? `remap_key` moves the data of the
-                    -- first keybind to the second keybind, then unbinds the first keybind.
+                    -- first keybind to the second keybind, then unbinds the first keybind
                     keybinds.remap_key('norg', 'n', '<C-Space>', '<leader>nt')
 
                     -- Binds to move items up or down

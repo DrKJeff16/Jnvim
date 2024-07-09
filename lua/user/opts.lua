@@ -81,11 +81,11 @@ end
 ---@type User.Opts
 ---@diagnostic disable-next-line:missing-fields
 local M = {
-    --- Option setter for the aforementioned options dictionary.
+    --- Option setter for the aforementioned options dictionary
     --- ---
     --- ## Parameters
     --- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
-    --- respectively.
+    --- respectively
     --- ---
     ---@param opts User.Opts.Spec
     optset = function(opts)

@@ -25,7 +25,7 @@ Exts.setup({
         -- You can make this { "CursorMoved" } or { "CursorMoved,CursorMovedI" } but
         -- not that this may cause  higher CPU usage.
         -- This option is only respected when only_current_line and
-        -- autoSetHints both are true.
+        -- autoSetHints both are true
         only_current_line_autocmd = { 'CursorHold' },
         -- whether to show parameter hints with the inlay hints or not
         show_parameter_hints = false,

@@ -90,8 +90,8 @@ TODO.setup({
         TEST = { icon = '⏲ ', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
     },
     gui_style = {
-        fg = 'BOLD', -- The gui style to use for the fg highlight group.
-        bg = 'NONE', -- The gui style to use for the bg highlight group.
+        fg = 'BOLD', -- The gui style to use for the fg highlight group
+        bg = 'NONE', -- The gui style to use for the bg highlight group
     },
     merge_keywords = true, -- when true, custom keywords will be merged with the defaults
     -- highlighting of the line containing the todo comment

@@ -11,7 +11,7 @@ local tel_fzf_build = CfgUtil.tel_fzf_build
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'nvim-telescope/telescope.nvim',

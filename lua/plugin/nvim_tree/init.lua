@@ -114,8 +114,10 @@ local my_maps = {
 
 map_keys(my_maps)
 
----@param nwin integer
+---@param nwin? integer
 local function tab_win_close(nwin)
+    nwin = is_int(nwin) and nwin or vim.api.nvim_get_current_tabpage()
+
     local ntab = get_tabpage(nwin)
     local nbuf = get_bufn(nwin)
     local buf_info = fn.getbufinfo(nbuf)[1]

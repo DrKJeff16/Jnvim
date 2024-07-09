@@ -20,7 +20,7 @@ local Opts = {
     popup_border_style = 'rounded',
     enable_git_status = true,
     enable_diagnostics = true,
-    enable_normal_mode_for_inputs = false, -- Enable normal mode for input dialogs.
+    enable_normal_mode_for_inputs = false, -- Enable normal mode for input dialogs
     open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf', 'lazy', 'checkhealth' }, -- when opening files, do not use windows containing these filetypes or buftypes
     sort_case_insensitive = false, -- used when sorting files and directories in the tree
     sort_function = function(a, b)
@@ -54,7 +54,7 @@ local Opts = {
             folder_open = '',
             folder_empty = '󰜌',
             -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-            -- then these will never be used.
+            -- then these will never be used
             default = '*',
             highlight = 'NeoTreeFileIcon',
         },
@@ -148,7 +148,7 @@ local Opts = {
                     show_path = 'relative', -- "none", "relative", "absolute"
                 },
             },
-            ['A'] = 'add_directory', -- also accepts the optional config.show_path option like "add". this also supports BASH style brace expansion.
+            ['A'] = 'add_directory', -- also accepts the optional config.show_path option like "add". this also supports BASH style brace expansion
             ['d'] = 'delete',
             ['r'] = 'rename',
             ['y'] = 'copy_to_clipboard',
@@ -161,7 +161,7 @@ local Opts = {
 					show_path = "none" -- "none", "relative", "absolute"
 				}
 			} ]]
-            ['m'] = 'move', -- takes text input for destination, also accepts the optional config.show_path option like "add".
+            ['m'] = 'move', -- takes text input for destination, also accepts the optional config.show_path option like "add"
             ['q'] = 'close_window',
             ['R'] = 'refresh',
             ['?'] = 'show_help',
@@ -197,7 +197,7 @@ local Opts = {
         },
         follow_current_file = {
             enabled = false, -- This will find and focus the file in the active buffer every time
-            --               -- the current file is changed while the tree is open.
+            --               -- the current file is changed while the tree is open
             leave_dirs_open = true, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
         },
         group_empty_dirs = true, -- when true, empty folders will be grouped together
@@ -207,7 +207,7 @@ local Opts = {
         -- window like netrw would, regardless of window.position
         -- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
         use_libuv_file_watcher = true, -- This will use the OS level file watchers to detect changes
-        -- instead of relying on nvim autocmd events.
+        -- instead of relying on nvim autocmd events
         window = {
             mappings = {
                 ['<bs>'] = 'navigate_up',
@@ -249,7 +249,7 @@ local Opts = {
     buffers = {
         follow_current_file = {
             enabled = true, -- This will find and focus the file in the active buffer every time
-            --              -- the current file is changed while the tree is open.
+            --              -- the current file is changed while the tree is open
             leave_dirs_open = true, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
         },
         group_empty_dirs = true, -- when true, empty folders will be grouped together

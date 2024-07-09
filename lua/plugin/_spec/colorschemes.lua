@@ -9,7 +9,7 @@ local source = CfgUtil.source
 local colorscheme_init = CfgUtil.colorscheme_init
 local vim_exists = User.check.exists.vim_exists
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'navarasu/onedark.nvim',

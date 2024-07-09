@@ -35,18 +35,18 @@ local Opts = {
     warn_no_results = true, -- show a warning when there are no results
     open_no_results = false, -- open the trouble window when there are no results
     ---@type trouble.Window.opts
-    win = {}, -- window options for the results window. Can be a split or a floating window.
+    win = {}, -- window options for the results window. Can be a split or a floating window
     -- Window options for the preview window. Can be a split, floating window,
-    -- or `main` to show the preview in the main editor window.
+    -- or `main` to show the preview in the main editor window
     ---@type trouble.Window.opts
     preview = {
         type = 'main',
         -- when a buffer is not yet loaded, the preview window will be created
         -- in a scratch buffer with only syntax highlighting enabled.
-        -- Set to false, if you want the preview to always be a real loaded buffer.
+        -- Set to false, if you want the preview to always be a real loaded buffer
         scratch = true,
     },
-    --- Throttle/Debounce settings. Should usually not be changed.
+    --- Throttle/Debounce settings. Should usually not be changed
     ---@type table<string, number|{ms:number, debounce?:boolean}>
     throttle = {
         refresh = 20, -- fetches new data when needed
@@ -56,7 +56,7 @@ local Opts = {
         preview = { ms = 100, debounce = true }, -- shows the preview for the current item
     },
     -- Key mappings can be set to the name of a builtin action,
-    -- or you can define your own custom action.
+    -- or you can define your own custom action
     ---@type table<string, string|trouble.Action>
     keys = {
         ['?'] = 'help',

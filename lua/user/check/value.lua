@@ -5,19 +5,19 @@
 
 require('user.types.user.check')
 
---- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil.
+--- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
 --- ## Parameters
 ---
 --- * `var`: Any data type to be checked if it's nil.
 ---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
----          Otherwise it will be flagged as non-existant and the function will return `true`.
+---          Otherwise it will be flagged as non-existant and the function will return `true`
 ---
 --- * `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---               If set to `true`, every element of the table will be checked.
----               If **any** element doesn't exist or is `nil`, the function automatically returns false.
+---               If **any** element doesn't exist or is `nil`, the function automatically returns false
 ---
 --- ## Return
---- A boolean value indicating whether the data is `nil` or doesn't exist.
+--- A boolean value indicating whether the data is `nil` or doesn't exist
 --- ---
 local is_nil = function(var, multiple)
     multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false

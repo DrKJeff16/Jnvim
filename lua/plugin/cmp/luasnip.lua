@@ -60,7 +60,7 @@ end
 local function char_count_same(c1, c2)
     local line = api.nvim_get_current_line()
     -- '%'-escape chars to force explicit match (gsub accepts patterns).
-    -- second return value is number of substitutions.
+    -- second return value is number of substitutions
     local _, ct1 = string.gsub(line, '%' .. c1, '')
     local _, ct2 = string.gsub(line, '%' .. c2, '')
     return ct1 == ct2
@@ -85,10 +85,10 @@ local function part(fn, ...)
     end
 end
 
--- This makes creation of pair-type snippets easier.
+-- This makes creation of pair-type snippets easier
 local function pair(pair_begin, pair_end, expand_func, ...)
     -- triggerd by opening part of pair, wordTrig=false to trigger anywhere.
-    -- ... is used to pass any args following the expand_func to it.
+    -- ... is used to pass any args following the expand_func to it
     return s({
         trig = pair_begin,
         wordTrig = false,
@@ -101,7 +101,7 @@ local function pair(pair_begin, pair_end, expand_func, ...)
     })
 end
 
--- these should be inside your snippet-table.
+-- these should be inside your snippet-table
 pair('(', ')', neg, char_count_same)
 pair('{', '}', neg, char_count_same)
 pair('[', ']', neg, char_count_same)
@@ -130,12 +130,12 @@ Config.setup({
             end
             snip:focus()
             -- make sure the inner nodes will all shift to one side when the
-            -- entire text is replaced.
+            -- entire text is replaced
             snip:subtree_set_rgrav(true)
-            -- fix own extmark-gravities, subtree_set_rgrav affects them as well.
+            -- fix own extmark-gravities, subtree_set_rgrav affects them as well
             snip.mark:set_rgravs(false, true)
 
-            -- SELECT all text inside the snippet.
+            -- SELECT all text inside the snippet
             if not no_move then
                 api.nvim_feedkeys(api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true)
                 node_util.select_node(snip)
@@ -146,7 +146,7 @@ Config.setup({
         function snippetNode:extmarks_valid()
             -- the contents of this snippetNode are supposed to be deleted, and
             -- we don't want the snippet to be considered invalid because of
-            -- that -> always return true.
+            -- that -> always return true
             return true
         end
 
@@ -163,7 +163,7 @@ Config.setup({
         function snippetNode:jump_into(dir, no_move, dry_run)
             self:init_dry_run_active(dry_run)
             if self:is_active(dry_run) then
-                -- inside snippet, but not selected.
+                -- inside snippet, but not selected
                 if dir == 1 then
                     self:input_leave(no_move, dry_run)
                     return self.next:jump_into(dir, no_move, dry_run)
@@ -172,7 +172,7 @@ Config.setup({
                     return self
                 end
             else
-                -- jumping in from outside snippet.
+                -- jumping in from outside snippet
                 self:input_enter(no_move, dry_run)
                 if dir == 1 then
                     select(self, no_move, dry_run)
@@ -183,7 +183,7 @@ Config.setup({
             end
         end
 
-        -- this is called only if the snippet is currently selected.
+        -- this is called only if the snippet is currently selected
         function snippetNode:jump_from(dir, no_move, dry_run)
             if dir == 1 then
                 if original_extmarks_valid(snippetNode) then
@@ -225,7 +225,7 @@ local function window_for_choiceNode(choiceNode)
     api.nvim_buf_set_text(buf, 0, 0, 0, 0, buf_text)
     local w, h = vim.lsp.util._make_floating_popup_size(buf_text, {})
 
-    -- adding highlight so we can see which one is been selected.
+    -- adding highlight so we can see which one is been selected
     local extmark = api.nvim_buf_set_extmark(
         buf,
         current_nsid,
@@ -234,7 +234,7 @@ local function window_for_choiceNode(choiceNode)
         { hl_group = 'incsearch', end_line = row_selection + row_offset }
     )
 
-    -- shows window at a beginning of choiceNode.
+    -- shows window at a beginning of choiceNode
     local win = api.nvim_open_win(buf, false, {
         relative = 'win',
         width = w,
@@ -249,7 +249,7 @@ local function window_for_choiceNode(choiceNode)
 end
 
 local function choice_popup(choiceNode)
-    -- build stack for nested choiceNodes.
+    -- build stack for nested choiceNodes
     if current_win then
         api.nvim_win_close(current_win.win_id, true)
         api.nvim_buf_del_extmark(current_win.buf, current_nsid, current_win.extmark)
@@ -279,7 +279,7 @@ local function choice_popup_close()
     -- now we are checking if we still have previous choice we were in after exit nested choice
     current_win = current_win.prev
     if current_win then
-        -- reopen window further down in the stack.
+        -- reopen window further down in the stack
         local create_win = window_for_choiceNode(current_win.node)
         current_win.win_id = create_win.win_id
         current_win.extmark = create_win.extmark

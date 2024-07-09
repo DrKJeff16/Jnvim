@@ -10,7 +10,7 @@ local source = CfgUtil.source
 local luasnip_build = CfgUtil.luasnip_build
 local executable = User.check.exists.executable
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'L3MON4D3/LuaSnip',
