@@ -10,7 +10,7 @@ local source = CfgUtil.source
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'tpope/vim-fugitive',

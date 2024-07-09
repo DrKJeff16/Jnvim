@@ -9,7 +9,7 @@ local types = User.types.lazy
 local source = CfgUtil.source
 local executable = Check.exists.executable
 
----@type LazySpec[]
+---@type (LazySpec)[]
 local M = {
     {
         'rhysd/vim-syntax-codeowners',

@@ -11,7 +11,6 @@ if not exists('noice') then
 end
 
 local Noice = require('noice')
-local NUtil = require('noice.util')
 
 Noice.setup({
     cmdline = {
@@ -161,17 +160,29 @@ Noice.setup({
     },
     lsp = {
         progress = {
-            enabled = true,
+            enabled = false,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
             -- See the section on formatting for more details on how to customize.
             --- @type NoiceFormat|string
             format = 'lsp_progress',
             --- @type NoiceFormat|string
             format_done = 'lsp_progress_done',
-            throttle = 1000 / 120, -- frequency to update lsp progress message
+            throttle = 1000 / 30, -- frequency to update lsp progress message
             view = 'mini',
             ---@type NoiceViewOptions
-            opts = { enter = false, border = 'rounded' },
+            opts = {
+                enter = false,
+                border = 'rounded',
+                focusable = false,
+                win_options = {
+                    concealcursor = '',
+                    conceallevel = 3,
+                    winhighlight = {
+                        Normal = 'NormalFloat',
+                        FloatBorder = 'FloatBorder',
+                    },
+                },
+            },
         },
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
