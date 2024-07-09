@@ -24,7 +24,7 @@ local DEFAULT = {
     css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
     css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
     -- Available modes: foreground, background
-    mode = 'background', -- Set the display mode.
+    mode = 'background', -- Set the display mode
 }
 function DEFAULT.new()
     local self = setmetatable({}, { __index = DEFAULT })

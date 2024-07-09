@@ -138,7 +138,7 @@ au('BufEnter', {
 
 vim.cmd([[
 " NOTE: added lazygit check to avoid lua error
-" NOTE: added "silent!" to avoid error when FZF terminal window is closed.
+" NOTE: added "silent!" to avoid error when FZF terminal window is closed
 autocmd TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
 ]])
 

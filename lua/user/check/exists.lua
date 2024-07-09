@@ -55,7 +55,7 @@ local function modules(mod, need_all)
             else
                 res = r
 
-                -- Break when a module is not found.
+                -- Break when a module is not found
                 if not r then
                     break
                 end

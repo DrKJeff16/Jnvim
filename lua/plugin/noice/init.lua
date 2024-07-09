@@ -19,7 +19,7 @@ Noice.setup({
         view = 'cmdline_popup',
         ---@type NoiceFormatOptions
         format = {
-            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern
             -- view: (default is cmdline view)
             -- opts: any options passed to the view
             -- icon_hl_group: optional hl_group for the icon
@@ -36,7 +36,7 @@ Noice.setup({
     },
     messages = {
         -- NOTE: If you enable messages, then the cmdline is enabled automatically.
-        -- This is a current Neovim limitation.
+        -- This is a current Neovim limitation
         enabled = true, -- enables the Noice messages UI
         view = 'mini', -- default view for messages
         view_error = 'notify', -- view for errors
@@ -162,7 +162,7 @@ Noice.setup({
         progress = {
             enabled = false,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
-            -- See the section on formatting for more details on how to customize.
+            -- See the section on formatting for more details on how to customize
             --- @type NoiceFormat|string
             format = 'lsp_progress',
             --- @type NoiceFormat|string

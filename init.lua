@@ -72,14 +72,14 @@ if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, u
     _G.use_statusline = 'lualine'
 end
 
---- List of manually-callable plugin.
+--- List of manually-callable plugin
 _G.Pkg = require('config.lazy')
 
 --- Setup keymaps
 require('config.keymaps').setup()
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
-    --- A table containing various possible colorschemes.
+    --- A table containing various possible colorschemes
     local C = Pkg.colorschemes
 
     local Csc = C.new()
@@ -87,7 +87,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     ---@type KeyMapDict
     local CscKeys = {}
 
-    --- Reorder to your liking.
+    --- Reorder to your liking
     local selected = {
         'tokyonight',
         'kanagawa',

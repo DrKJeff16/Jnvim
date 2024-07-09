@@ -93,7 +93,7 @@ local M = {
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
-            --- Disable `netrw`.
+            --- Disable `netrw`
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
@@ -112,7 +112,7 @@ local M = {
             -- '3rd/image.nvim',
         },
         init = function()
-            --- Disable `netrw`.
+            --- Disable `netrw`
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 

@@ -26,7 +26,7 @@ local M = {
         version = false,
         cond = executable('vscode-json-language-server'),
     },
-    --- Essential for Nvim Lua files.
+    --- Essential for Nvim Lua files
     {
         'folke/lazydev.nvim',
         ft = 'lua',

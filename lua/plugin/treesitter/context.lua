@@ -36,7 +36,7 @@ Context.setup({
     multiline_threshold = 20,
     max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() + 1 or 3,
     -- Separator between context and content. Should be a single character string, like '-'.
-    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline
     separator = nil,
     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 })

@@ -35,10 +35,10 @@ local function key_variant(cmd)
     return FUNCS[cmd]
 end
 
---- Set installation dir for `Lazy`.
+--- Set installation dir for `Lazy`
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
---- Install `Lazy` automatically.
+--- Install `Lazy` automatically
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
     vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, lazypath })
@@ -64,7 +64,7 @@ Lazy.setup({
         url_format = 'https://github.com/%s.git',
         -- lazy.nvim requires git >=2.19.0. If you really want to use lazy with an older version,
         -- then set the below to false. This should work, but is NOT supported and will
-        -- increase downloads a lot.
+        -- increase downloads a lot
         filter = true,
     },
 

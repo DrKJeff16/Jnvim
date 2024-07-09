@@ -14,7 +14,7 @@ local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local empty = Check.value.empty ---@see User.Check.Value.empty
 
---- Avoid executing these keys when attempting `<leader>` sequences.
+--- Avoid executing these keys when attempting `<leader>` sequences
 local NOP = {
     "'",
     '!',
