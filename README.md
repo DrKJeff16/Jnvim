@@ -74,6 +74,7 @@ For these to work, the following executables must be installed and in your `$PAT
 ```
 /lua
 ├── config/  <== Folder containing all Lua plugin configurations
+│   ├── keymaps.lua  <== Setup default, non-plugin keymaps here
 │   ├── lazy.lua  <== Plugin Installation and entry points are called here
 │   └── util.lua  <== Utilities used in the file above (env checks, etc.)
 ├── plugin/  <==  Plugins are configured in this directory
@@ -82,21 +83,22 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── completion.lua  <== Completion plugins
 │   │   ├── editing.lua  <== Editing enhancement plugins
 │   │   ├── lsp.lua  <== LSP-related plugins
+│   │   ├── neorg.lua  <== Neorg-related plugins
 │   │   ├── syntax.lua  <== Syntax plugins
-│   │   ├── treesitter.lua  <== Treesitter plugins
 │   │   ├── telescope.lua  <== Telescope-related plugins
+│   │   ├── treesitter.lua  <== Treesitter plugins
 │   │   ├── ui.lua  <== UI-enhancement plugins
-│   │   ├── vcs.lua  <== Version Control plugins
 │   │   ├── utils.lua  <== Utilitary plugins
+│   │   ├── vcs.lua  <== Version Control plugins
 │   │   └── essentials.lua  <== Essential plugins. TREAT THIS ONE WITH CARE
 │   ├── plugin1/  <== Arbitrary plugin #1
-│   │   └── init.lua  <== Entry points
+│   │   └── init.lua  <== Entry points + setup
 │   ├── plugin2/  <== Arbitrary plugin #2
-│   │   ├── init.lua  <== Entry points
+│   │   ├── init.lua  <== Entry points + setup
 │   │   └── submoule.lua  <== Arbitrary submodule
 │   └── ...  <==  More plugin configs...
 ├── user/  <== User API module
-│   ├── init.lua  <== API `init`, where entry points are defined
+│   ├── init.lua  <== API entry points
 │   ├── check/  <== Checker Functions
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── exists.lua  <== Existance checkers
@@ -113,7 +115,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── map.lua  <== `vim.api.nvim_set_keymap` utilities
 │   │   └── wk.lua  <== `which_key` utilities (regardless if installed or not)
 │   ├── opts.lua  <== Vim Options
-│   ├── update.lua  <== Update utilities (WIP)
+│   ├── update.lua  <== Update utilities
 │   ├── util/  <== Misc Utils
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── autocmd.lua  <== Autocommand utilities
