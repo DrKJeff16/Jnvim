@@ -4,9 +4,7 @@
 local User = require('user')
 local Check = User.check
 local types = User.types.lspconfig
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 local Highlight = User.highlight
 
 local exists = Check.exists.module
@@ -15,8 +13,8 @@ local empty = Check.value.empty
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 local hi = Highlight.hl
 
 if not exists('lspconfig') then
@@ -216,11 +214,35 @@ au('LspAttach', {
         local buf = args.buf
         local client = Lsp.get_client_by_id(args.data.client_id)
 
-        if client.server_capabilities.completionProvider then
+        if client.supports_method('textDocument/completion') then
             bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+            Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
         end
-        if client.server_capabilities.definitionProvider then
+
+        --[[ if client.supports_method('textDocument/formatting') then
+            au('BufWritePre', {
+                buffer = args.buf,
+                callback = function()
+                    Lsp.buf.format({ bufnr = args.buf, id = client.id })
+                end,
+            })
+        end ]]
+
+        if client.supports_method('textDocument/definition') then
             bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+        end
+
+        if client.supports_method('textDocument/references') then
+            local on_references = Lsp.handlers['textDocument/references']
+            Lsp.handlers['textDocument/references'] = Lsp.with(on_references, {
+                loclist = true,
+            })
+        end
+        if client.supports_method('textDocument/publishDiagnostics') then
+            Lsp.handlers['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+                signs = true,
+                virtual_text = true,
+            })
         end
 
         ---@type table<MapModes, KeyMapDict>
@@ -277,6 +299,16 @@ au('LspAttach', {
             map_dict(Names2, 'wk.register', true, nil, buf)
         end
         map_dict(K, 'wk.register', true, nil, buf)
+        au({ 'CursorHold', 'CursorHoldI' }, {
+            group = augroup('UserLspConfig', { clear = false }),
+            buffer = args.buf,
+            callback = vim.lsp.buf.document_highlight,
+        })
+        au('CursorMoved', {
+            group = augroup('UserLspConfig', { clear = false }),
+            buffer = args.buf,
+            callback = vim.lsp.buf.clear_references,
+        })
     end,
 })
 au('LspDetach', {
@@ -292,7 +324,7 @@ au('LspProgress', {
     group = augroup('UserLspConfig', { clear = false }),
     pattern = '*',
     callback = function()
-        vim.cmd.redrawstatus()
+        vim.cmd('redrawstatus')
     end,
 })
 
