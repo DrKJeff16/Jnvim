@@ -21,20 +21,22 @@ local M = {
     },
     {
         'nvim-treesitter/nvim-treesitter-context',
-        lazy = true,
         version = false,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         cond = not in_console() and vim_exists('+termguicolors'),
     },
     {
         'JoosepAlviste/nvim-ts-context-commentstring',
-        lazy = true,
         version = false,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
-        lazy = true,
+        version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    },
+    {
+        'nvim-treesitter/nvim-treesitter-refactor',
         version = false,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
     },
