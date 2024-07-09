@@ -3,7 +3,10 @@
 
 require('user.types.user.update')
 
+local wk_available = require('user.maps.wk').available
 local notify = require('user.util.notify').notify
+local desc = require('user.maps.kmap').desc
+local map_dict = require('user.maps').map_dict
 
 ---@type User.Update
 ---@diagnostic disable-next-line:missing-fields
