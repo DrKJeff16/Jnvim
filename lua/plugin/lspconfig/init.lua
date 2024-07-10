@@ -29,10 +29,8 @@ local Diag = vim.diagnostic
 local lsp_buf = Lsp.buf
 local lsp_handlers = Lsp.handlers
 
-local insp = vim.inspect
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
-local rt_file = api.nvim_get_runtime_file
 
 local on_windows = vim.uv.os_uname().version:match('Windows')
 
@@ -152,64 +150,65 @@ function srv.new()
     self.marksman = srv.marksman
     self.pylsp = srv.pylsp
     self.rust_analyzer = srv.rust_analyzer
+    self.taplo = srv.taplo
     self.texlab = srv.texlab
     self.yamlls = srv.yamlls
 
     return self
 end
 
-srv = populate(srv.new())
+SERVERS = populate(srv.new())
 
 local lspconfig = require('lspconfig')
 
-for k, v in next, srv do
+for k, v in next, SERVERS do
     lspconfig[k].setup(v)
 end
 
----@type table<MapModes,KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>lI'] = {
-            function()
-                vim.cmd('LspInfo')
-            end,
-            desc('Get LSP Config Info'),
-        },
-        ['<leader>lR'] = {
-            function()
-                vim.cmd('LspRestart')
-            end,
-            desc('Restart Server'),
-        },
-        ['<leader>lH'] = {
-            function()
-                vim.cmd('LspStop')
-            end,
-            desc('Stop Server'),
-        },
-        ['<leader>lS'] = {
-            function()
-                vim.cmd('LspStart')
-            end,
-            desc('Start Server'),
-        },
+    ['<leader>lI'] = {
+        function()
+            vim.cmd('LspInfo')
+        end,
+        desc('Get LSP Config Info'),
+    },
+    ['<leader>lR'] = {
+        function()
+            vim.cmd('LspRestart')
+        end,
+        desc('Restart Server'),
+    },
+    ['<leader>lH'] = {
+        function()
+            vim.cmd('LspStop')
+        end,
+        desc('Stop Server'),
+    },
+    ['<leader>lS'] = {
+        function()
+            vim.cmd('LspStart')
+        end,
+        desc('Start Server'),
     },
 }
-
+---@type RegKeysNamed
 local Names = {
-    n = { ['<leader>l'] = { name = '+LSP' } },
+    ['<leader>l'] = { name = '+LSP' },
 }
 
 if WK.available() then
     if WK.available() then
-        map_dict(Names, 'wk.register', true)
+        map_dict(Names, 'wk.register', false, 'n')
     end
 
-    map_dict(Keys, 'wk.register', true)
+    map_dict(Keys, 'wk.register', false, 'n')
 end
 
+local group = augroup('UserLspConfig', { clear = true })
+
 au('LspAttach', {
-    group = augroup('UserLspConfig', { clear = false }),
+    group = group,
 
     callback = function(args)
         local buf = args.buf
@@ -251,7 +250,7 @@ au('LspAttach', {
             n = {
                 ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration', true, buf) },
                 ['<leader>lfd'] = { lsp_buf.definition, desc('Definition', true, buf) },
-                ['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
+                -- ['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
                 ['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
                 ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
                 ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
@@ -300,20 +299,24 @@ au('LspAttach', {
             map_dict(Names2, 'wk.register', true, nil, buf)
         end
         map_dict(K, 'wk.register', true, nil, buf)
-        au({ 'CursorHold', 'CursorHoldI' }, {
-            group = augroup('UserLspConfig', { clear = false }),
-            buffer = args.buf,
-            callback = vim.lsp.buf.document_highlight,
-        })
-        au('CursorMoved', {
-            group = augroup('UserLspConfig', { clear = false }),
-            buffer = args.buf,
-            callback = vim.lsp.buf.clear_references,
-        })
+
+        if client.name == 'lua_ls' then
+            require('plugin.lspconfig.lazydev')
+        end
     end,
 })
+au({ 'CursorHold', 'CursorHoldI' }, {
+    group = group,
+    buffer = vim.api.nvim_get_current_buf(),
+    callback = vim.lsp.buf.document_highlight,
+})
+au('CursorMoved', {
+    group = group,
+    buffer = vim.api.nvim_get_current_buf(),
+    callback = vim.lsp.buf.clear_references,
+})
 au('LspDetach', {
-    group = augroup('UserLspConfig', { clear = true }),
+    group = group,
 
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -322,7 +325,7 @@ au('LspDetach', {
     end,
 })
 au('LspProgress', {
-    group = augroup('UserLspConfig', { clear = false }),
+    group = group,
     pattern = '*',
     callback = function()
         vim.cmd('redrawstatus')
@@ -345,11 +348,6 @@ local aus = {
             pattern = '*',
             callback = function()
                 hi('NormalFloat', { bg = '#2c1a3a' })
-            end,
-        },
-        {
-            pattern = '*',
-            callback = function()
                 hi('FloatBorder', { fg = '#f0efbf', bg = '#2c1a3a' })
             end,
         },
