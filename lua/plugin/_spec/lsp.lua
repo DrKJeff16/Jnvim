@@ -67,6 +67,15 @@ local M = {
         config = source('plugin.lspconfig.inc_rename'),
     },
     {
+        'williamboman/mason-lspconfig.nvim',
+        lazy = true,
+        version = false,
+        dependencies = {
+            'williamboman/mason.nvim',
+            'neovim/nvim-lspconfig',
+        },
+    },
+    {
         'neoclide/coc.nvim',
         version = '*',
         build = 'npm ci',

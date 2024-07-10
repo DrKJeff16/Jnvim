@@ -42,6 +42,7 @@ local function join_paths(...)
     return table.concat({ ... }, path_sep)
 end
 
+require('plugin.lspconfig.mason')
 require('plugin.lspconfig.neoconf')
 require('plugin.lspconfig.trouble')
 require('plugin.lspconfig.kinds').setup()
