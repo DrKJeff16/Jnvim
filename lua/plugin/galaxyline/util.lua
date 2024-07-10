@@ -16,6 +16,10 @@ end
 
 local opt_get = vim.api.nvim_get_option_value
 
+local Devicons = require('nvim-web-devicons')
+
+local buf_init_devicons = Devicons.get_icon_cterm_color_by_filetype
+
 ---@type JLine.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {
@@ -44,7 +48,7 @@ local M = {
 
 if exists('tokyonight') then
     M.themes.tokyonight = (function()
-        local TN = require('tokyonight.colors').setup({ transform = true })
+        local TN = require('tokyonight.colors').setup({ transform = false })
         ---@type JLine.Theme.Spec
         return {
             bg = TN.bg_statusline,
@@ -93,6 +97,21 @@ end
 
 if exists('nightfox') then
     M.themes.nightfox = require('nightfox.palette').load()
+end
+
+--- Set buffer variables for file icon and color.
+---@return { color: string, icon: string }
+function M.buf_init_devicons()
+    local icon, color = Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
+    local dev_icons = { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
+
+    vim.b.dev_icons = dev_icons
+    return dev_icons
+end
+
+--- @return { color: string|integer, icon: string }
+function M.filetype_info()
+    return vim.b.dev_icons or M.buf_init_devicons()
 end
 
 ---@return JLine.Theme.Spec

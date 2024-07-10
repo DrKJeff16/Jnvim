@@ -20,28 +20,26 @@ local opt_get = vim.api.nvim_get_option_value
 
 local GROUP = augroup('JLine', { clear = false })
 
-local Devicons = require('nvim-web-devicons')
 local GL = require('galaxyline')
 local Extensions = require('galaxyline.provider_extensions')
-
-local JLineUtils = require('plugin..galaxyline.util').new('tokyonight')
-
-local default_colors = JLineUtils:palette()
 
 _G.VistaPlugin = Extensions.vista_nearest
 
 GL.short_line_list = {
     'LuaTree',
     'NvimTree',
-    'vista',
     'dbui',
-    'startify',
-    'term',
-    'nerdtree',
     'fugitive',
     'fugitiveblame',
+    'lazy',
+    'nerdtree',
     'plug',
     'plugins',
+    'qf',
+    'startify',
+    'term',
+    'toggleterm',
+    'vista',
 }
 
 local Providers = {
@@ -55,21 +53,6 @@ local Providers = {
     lsp = require('galaxyline.provider_lsp'),
 }
 
---- Set buffer variables for file icon and color.
----@return { color: string, icon: string }
-local function buf_init_devicons()
-    local icon, color = Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
-    local dev_icons = { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
-
-    vim.b.dev_icons = dev_icons
-    return dev_icons
-end
-
---- @return { color: string|integer, icon: string }
-local function filetype_info()
-    return vim.b.dev_icons or buf_init_devicons()
-end
-
 local SEPARATORS = {
     --- Components separated by this component will be padded with an equal number of spaces.
     align = { provider = '%=' },
@@ -79,8 +62,10 @@ local SEPARATORS = {
     right_separator = { provider = ' ' },
 }
 
+vim.cmd.redrawstatus()
 -- require('plugin..galaxyline.spaceline')
-require('plugin..galaxyline.eviline')
+-- require('plugin..galaxyline.eviline')
+require('plugin..galaxyline.jline')
 GL.load_galaxyline()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
