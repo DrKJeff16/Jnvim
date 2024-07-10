@@ -101,7 +101,16 @@ local DEFAULT_KEYS = {
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
         ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File', false, 0) },
+        ['<leader>fs'] = {
+            function()
+                if vim.bo.modifiable then
+                    vim.cmd.write()
+                else
+                    require('user.util.notify').notify('Not writeable.')
+                end
+            end,
+            desc('Save File', false, 0),
+        },
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false, 0) },
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
         ['<leader>fvl'] = {
