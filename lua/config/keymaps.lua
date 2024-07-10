@@ -99,9 +99,18 @@ local DEFAULT_KEYS = {
             desc('New Blank File', true, 0),
         },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true, 0) },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
-        ['<leader>fs'] = { ':w<CR>', desc('Save File', false, 0) },
+        ['<leader>fs'] = {
+            function()
+                if vim.bo.modifiable then
+                    vim.cmd.write()
+                else
+                    require('user.util.notify').notify('Not writeable.')
+                end
+            end,
+            desc('Save File', false, 0),
+        },
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false, 0) },
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
         ['<leader>fvl'] = {
@@ -167,9 +176,9 @@ local DEFAULT_KEYS = {
             desc('Source $MYVIMRC'),
         },
 
-        ['<leader>?S'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
-        ['<leader>?T'] = { ':tab h<CR>', desc('Open Help On New Tab') },
-        ['<leader>?V'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
+        ['<leader>?S'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
+        ['<leader>?T'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
+        ['<leader>?V'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
         ['<leader>?h'] = { ':h ', desc('Prompt For Help', false) },
         ['<leader>?s'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
         ['<leader>?t'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
@@ -177,12 +186,12 @@ local DEFAULT_KEYS = {
 
         ['<leader>wN'] = {
             function()
-                local ft = require('user.util').ft_get(0)
+                local ft = require('user.util').ft_get()
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 
                 vim.bo.modifiable = true
-                vim.api.nvim_set_option_value('ft', ft, { buf = 0 })
+                vim.api.nvim_set_option_value('ft', ft, { buf = vim.api.nvim_get_current_buf() })
             end,
             desc('New Blank File', true, 0),
         },
@@ -190,49 +199,49 @@ local DEFAULT_KEYS = {
             function()
                 vim.cmd.wincmd('=')
             end,
-            desc('Resize all windows equally', true, 0),
+            desc('Resize all windows equally'),
         },
         ['<leader>w<Left>'] = {
             function()
                 vim.cmd.wincmd('h')
             end,
-            desc('Go To Window On The Left', true, 0),
+            desc('Go To Window On The Left'),
         },
         ['<leader>w<Right>'] = {
             function()
                 vim.cmd.wincmd('l')
             end,
-            desc('Go To Window On The Right', true, 0),
+            desc('Go To Window On The Right'),
         },
         ['<leader>w<Up>'] = {
             function()
                 vim.cmd.wincmd('k')
             end,
-            desc('Go To Window Above', true, 0),
+            desc('Go To Window Above'),
         },
         ['<leader>w<Down>'] = {
             function()
                 vim.cmd.wincmd('j')
             end,
-            desc('Go To Window Below', true, 0),
+            desc('Go To Window Below'),
         },
         ['<leader>wd'] = {
             function()
                 vim.cmd.wincmd('q')
             end,
-            desc('Close Window', true, 0),
+            desc('Close Window'),
         },
         ['<leader>wn'] = {
             function()
                 vim.cmd.wincmd('w')
             end,
-            desc('Next Window', true, 0),
+            desc('Next Window'),
         },
         ['<leader>wp'] = {
             function()
                 vim.cmd.wincmd('W')
             end,
-            desc('Previous Window', true, 0),
+            desc('Previous Window'),
         },
         ['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
         ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
@@ -240,13 +249,13 @@ local DEFAULT_KEYS = {
             function()
                 vim.cmd.wincmd('s')
             end,
-            desc('Horizontal Split', true, 0),
+            desc('Horizontal Split'),
         },
         ['<leader>wsv'] = {
             function()
                 vim.cmd.wincmd('v')
             end,
-            desc('Vertical Split', true, 0),
+            desc('Vertical Split'),
         },
 
         ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
