@@ -11,38 +11,6 @@
 ---@field magenta string
 ---@field orange string
 
----@class CtpColors.Spec
----@field base? string
----@field blue? string
----@field crust? string
----@field flamingo? string
----@field green? string
----@field lavender? string
----@field mantle? string
----@field maroon? string
----@field mauve? string
----@field overlay0? string
----@field overlay1? string
----@field overlay2? string
----@field peach? string
----@field pink? string
----@field red? string
----@field rosewater? string
----@field sapphire? string
----@field sky? string
----@field subtext0? string
----@field subtext1? string
----@field surface0? string
----@field surface1? string
----@field surface2? string
----@field teal? string
----@field text? string
----@field yellow? string
-
----@alias JLine.Ctp.Spec
----|CtpColors<string>
----|CtpColors.Spec
-
 ---@class JLine.Themes
 ---@field default table|JLine.Theme.Spec
 ---@field tokyonight? table|JLine.Theme.Spec
@@ -56,6 +24,7 @@
 ---@field themes JLine.Themes
 ---@field file_readonly fun(icon: string?): ''|string
 ---@field dimensions fun(): { integer: integer, integer: integer }
+---@field palette fun(self: JLine.Util): JLine.Theme.Spec
 
 --- TODO: Do this
 ---@class JLine.Highlight.Spec

@@ -24,25 +24,26 @@ local Devicons = require('nvim-web-devicons')
 local GL = require('galaxyline')
 local Extensions = require('galaxyline.provider_extensions')
 
-local JLineUtils = require('plugin..galaxyline.util').new('tokyonight')
+local JLineUtils = require('plugin..galaxyline.util')
 
-local default_colors = JLineUtils:palette()
+local default_colors = JLineUtils.themes.catppuccin_frappe
 
 _G.VistaPlugin = Extensions.vista_nearest
 
 GL.short_line_list = {
     'LuaTree',
     'NvimTree',
-    'vista',
     'dbui',
+    'fugitive',
+    'fugitiveblame',
+    'lazy',
+    'nerdtree',
+    'plug',
+    'plugins',
     'startify',
     'term',
     'toggleterm',
-    'nerdtree',
-    'fugitive',
-    'fugitiveblame',
-    'plug',
-    'plugins',
+    'vista',
 }
 
 local Providers = {
@@ -86,19 +87,19 @@ GL.section.left[1] = {
         provider = function()
             -- auto change color() according the vim mode
             local mode_colorpairs = {
-                R = { default_colors.magenta, default_colors.bg_visual },
-                Rv = { default_colors.magenta, default_colors.bg_visual },
-                S = { default_colors.orange, default_colors.dark3 },
-                V = { default_colors.orange, default_colors.bg_visual },
+                R = { default_colors.magenta, default_colors.darkblue },
+                Rv = { default_colors.magenta, default_colors.bg },
+                S = { default_colors.orange, default_colors.bg },
+                V = { default_colors.orange, default_colors.bg },
                 ['!'] = { default_colors.magenta, default_colors.cyan },
                 [''] = { default_colors.blue, 'NONE' },
-                ['r?'] = { default_colors.cyan, default_colors.bg_visual },
-                c = { default_colors.red, default_colors.bg_float },
-                ce = { default_colors.red, default_colors.bg_float },
-                cv = { default_colors.red, default_colors.bg_float },
-                i = { default_colors.blue, default_colors.bg_statusline },
-                ic = { default_colors.yellow, default_colors.bg_sidebar },
-                n = { default_colors.green, default_colors.bg_statusline },
+                ['r?'] = { default_colors.cyan, default_colors.bg },
+                c = { default_colors.red, default_colors.bg },
+                ce = { default_colors.red, default_colors.bg },
+                cv = { default_colors.red, default_colors.bg },
+                i = { default_colors.blue, default_colors.bg },
+                ic = { default_colors.yellow, default_colors.bg },
+                n = { default_colors.green, default_colors.bg },
                 no = { default_colors.magenta, default_colors.bg },
                 r = { default_colors.red, default_colors.bg },
                 rm = { default_colors.red, default_colors.bg },
@@ -132,9 +133,9 @@ GL.section.left[2] = {
         end,
 
         icon = '  ',
-        highlight = { default_colors.teal, default_colors.bg_float },
+        highlight = { default_colors.cyan, default_colors.bg },
         separator = SEPARATORS.right_separator.provider,
-        separator_highlight = { default_colors.purple, default_colors.terminal_black },
+        separator_highlight = { default_colors.violet, default_colors.bg },
     },
 
     ---@type JLine.Section.Component
@@ -142,7 +143,7 @@ GL.section.left[2] = {
         provider = 'GitBranch',
         condition = Providers.vcs.check_git_workspace,
         icon = '  ',
-        separator_highlight = { default_colors.pink, default_colors.bg_popup },
+        separator_highlight = { default_colors.cyan, default_colors.bg },
         separator = SEPARATORS.right_separator.provider,
     },
 }
