@@ -43,6 +43,7 @@ jupyterlab = "*"
 json5 = "*"
 argh = "*"
 argcomplete = "*"
+jsonschema = {extras = ["format"], version = "*"}
 
 [requires]
 python_version = "3.12"
