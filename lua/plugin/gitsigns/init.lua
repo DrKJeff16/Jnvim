@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local types = User.types.gitsigns
 local Maps = User.maps
@@ -117,17 +117,17 @@ GS.setup({
 
     ---@type GitSigns
     signs = {
-        add = { text = '┃' },
+        add = { text = '+' },
         change = { text = '┃' },
-        delete = { text = '_' },
+        delete = { text = '-' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
         untracked = { text = '┆' },
     },
     signs_staged = {
-        add = { text = '┃' },
+        add = { text = '+' },
         change = { text = '┃' },
-        delete = { text = '_' },
+        delete = { text = '-' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
         untracked = { text = '┆' },
@@ -146,9 +146,9 @@ GS.setup({
     current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 1700,
+        delay = 1500,
         ignore_whitespace = false,
-        virt_text_priority = 7,
+        virt_text_priority = 3,
     },
     current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
     sign_priority = 6,

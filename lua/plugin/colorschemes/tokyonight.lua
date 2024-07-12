@@ -1,7 +1,7 @@
 ---@diagnostic disable: unused-local
 ---@diagnostic disable: unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local csc_m = User.types.colorschemes
 
@@ -104,7 +104,7 @@ if exists('tokyonight') then
             },
 
             plugins = {
-                all = require('user.check.value').is_nil(package.loaded.lazy),
+                all = require('user_api.check.value').is_nil(package.loaded.lazy),
                 auto = true,
             },
         }))

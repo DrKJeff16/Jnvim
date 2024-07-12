@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local types = User.types.lazy
 
@@ -61,7 +61,7 @@ local M = {
     ---@return fun()
     source = function(mod_str)
         return function()
-            require('user.check.exists').module(mod_str, true)
+            require('user_api.check.exists').module(mod_str, true)
         end
     end,
 

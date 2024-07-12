@@ -1,0 +1,385 @@
+---@diagnostic disable:unused-function
+---@diagnostic disable:unused-local
+
+require('user_api.types.user.util')
+
+local function xor(x, y)
+    if not require('user_api.check.value').is_bool({ x, y }, true) then
+        error('(user.util.xor): An argument is not of boolean type')
+    end
+
+    return (x and not y) or (not x and y)
+end
+
+local function strip_fields(T, fields)
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
+    local field = Value.fields
+
+    if not is_tbl(T) then
+        error('(user.util.strip_fields): Argument is not a table')
+    end
+
+    if empty(T) then
+        return T
+    end
+
+    if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
+        return T
+    end
+
+    ---@type User.Maps.Keymap.Opts
+    local res = {}
+
+    if is_str(fields) then
+        if not field(fields, T) then
+            return T
+        end
+
+        for k, v in next, T do
+            if k ~= fields then
+                res[k] = v
+            end
+        end
+    else
+        for k, v in next, T do
+            if not vim.tbl_contains(fields, k) then
+                res[k] = v
+            end
+        end
+    end
+
+    return res
+end
+
+local function strip_values(T, values, max_instances)
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_nil = Value.is_nil
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
+
+    if not is_tbl(T) then
+        error('(user.util.strip_values): Not a table')
+    end
+    if not is_tbl(values) or empty(values) then
+        error('(user.util.strip_values): No values given')
+    end
+
+    max_instances = is_int(max_instances) and max_instances or 0
+
+    local res = {}
+    local count = 0
+
+    for k, v in next, T do
+        if xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
+            if not vim.tbl_contains(values, v) and is_int(k) then
+                table.insert(res, v)
+            elseif not vim.tbl_contains(values, v) then
+                res[k] = v
+            else
+                count = count + 1
+            end
+        elseif is_int(k) then
+            table.insert(res, v)
+        else
+            res[k] = v
+        end
+    end
+
+    return res
+end
+
+local function ft_set(s, bufnr)
+    local Value = require('user_api.check.value')
+
+    local is_int = Value.is_int
+    local is_str = Value.is_str
+
+    bufnr = is_int(bufnr) and bufnr or 0
+
+    return function()
+        if is_str(s) then
+            vim.api.nvim_set_option_value('ft', s, { buf = bufnr })
+        end
+    end
+end
+
+local function ft_get(bufnr)
+    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or 0
+
+    return vim.api.nvim_get_option_value('ft', { buf = bufnr })
+end
+
+local function assoc()
+    local Value = require('user_api.check.value')
+
+    local is_nil = Value.is_nil
+    local is_fun = Value.is_fun
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local empty = Value.empty
+
+    local ft = ft_set
+
+    local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
+
+    local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
+
+    local retab = function()
+        vim.cmd('%retab')
+    end
+
+    ---@type AuRepeatEvents[]
+    local aus = {
+        {
+            events = { 'BufNewFile', 'BufReadPre' },
+            opts_tbl = {
+                { pattern = '.spacemacs', callback = ft('lisp'), group = group },
+                { pattern = '.clangd', callback = ft('yaml'), group = group },
+            },
+        },
+        {
+            events = { 'FileType' },
+            opts_tbl = {
+                {
+                    pattern = 'c',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
+                {
+                    pattern = 'cpp',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
+                {
+                    pattern = 'markdown',
+                    callback = function()
+                        local optset = vim.api.nvim_set_option_value
+                        local opts = {
+                            ['ts'] = 2,
+                            ['sts'] = 2,
+                            ['sw'] = 2,
+                            ['et'] = true,
+                        }
+
+                        for option, val in next, opts do
+                            optset(option, val, { buf = 0 })
+                        end
+                    end,
+                },
+                {
+                    pattern = 'lua',
+                    callback = function()
+                        local map_dict = require('user_api.maps').map_dict
+                        local WK = require('user_api.maps.wk')
+                        local desc = require('user_api.maps.kmap').desc
+
+                        if require('user_api.check.exists').executable('stylua') then
+                            map_dict({
+                                ['<leader><C-l>'] = {
+                                    ':silent !stylua %<CR>',
+                                    desc('Format with Stylua', true, 0),
+                                },
+                            }, 'wk.register', false, 'n', 0)
+                        end
+                    end,
+                },
+            },
+        },
+    }
+
+    local ok, _ = pcall(require, 'orgmode')
+
+    if ok then
+        table.insert(aus[1].opts_tbl, { pattern = '*.org', callback = ft('org'), group = group })
+    end
+
+    local notify = require('user_api.util.notify').notify
+
+    for _, T in next, aus do
+        au_repeated_events(T)
+    end
+end
+
+local function displace_letter(c, direction, cycle)
+    local Value = require('user_api.check.value')
+    direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction)) and direction or 'next'
+    cycle = Value.is_bool(cycle) and cycle or false
+
+    if c == '' then
+        return 'a'
+    end
+
+    local lower_map_next = {
+        a = 'b',
+        b = 'c',
+        c = 'd',
+        d = 'e',
+        e = 'f',
+        f = 'g',
+        g = 'h',
+        h = 'i',
+        i = 'j',
+        j = 'k',
+        k = 'l',
+        l = 'm',
+        m = 'n',
+        n = 'o',
+        o = 'p',
+        p = 'q',
+        q = 'r',
+        r = 's',
+        s = 't',
+        t = 'u',
+        u = 'v',
+        v = 'w',
+        w = 'x',
+        x = 'y',
+        y = 'z',
+        z = cycle and 'a' or 'A',
+    }
+    local lower_map_prev = {
+        a = cycle and 'z' or 'Z',
+        b = 'a',
+        c = 'b',
+        d = 'c',
+        e = 'd',
+        f = 'e',
+        g = 'f',
+        h = 'g',
+        i = 'h',
+        j = 'i',
+        k = 'j',
+        l = 'k',
+        m = 'l',
+        n = 'm',
+        o = 'n',
+        p = 'o',
+        q = 'p',
+        r = 'q',
+        s = 'r',
+        t = 's',
+        u = 't',
+        v = 'u',
+        w = 'v',
+        x = 'w',
+        y = 'x',
+        z = 'y',
+    }
+    local upper_map_prev = {
+        A = cycle and 'Z' or 'z',
+        B = 'A',
+        C = 'B',
+        D = 'C',
+        E = 'D',
+        F = 'E',
+        G = 'F',
+        H = 'G',
+        I = 'H',
+        J = 'I',
+        K = 'J',
+        L = 'K',
+        M = 'L',
+        N = 'M',
+        O = 'N',
+        P = 'O',
+        Q = 'P',
+        R = 'Q',
+        S = 'R',
+        T = 'S',
+        U = 'T',
+        V = 'U',
+        W = 'V',
+        X = 'W',
+        Y = 'X',
+        Z = 'Y',
+    }
+    local upper_map_next = {
+        A = 'B',
+        B = 'C',
+        C = 'D',
+        D = 'E',
+        E = 'F',
+        F = 'G',
+        G = 'H',
+        H = 'I',
+        I = 'J',
+        J = 'K',
+        K = 'L',
+        L = 'M',
+        M = 'N',
+        N = 'O',
+        O = 'P',
+        P = 'Q',
+        Q = 'R',
+        R = 'S',
+        S = 'T',
+        T = 'U',
+        U = 'V',
+        V = 'W',
+        W = 'X',
+        X = 'Y',
+        Y = 'Z',
+        Z = cycle and 'A' or 'a',
+    }
+
+    if direction == 'next' and Value.fields(c, lower_map_next) then
+        return lower_map_next[c]
+    elseif direction == 'next' and Value.fields(c, upper_map_next) then
+        return upper_map_next[c]
+    elseif direction == 'prev' and Value.fields(c, lower_map_prev) then
+        return lower_map_prev[c]
+    elseif direction == 'prev' and Value.fields(c, upper_map_prev) then
+        return upper_map_prev[c]
+    end
+
+    error('(user.util.displace_letter): Invalid argument')
+end
+
+---@type User.Util
+---@diagnostic disable-next-line:missing-fields
+local M = {
+    notify = require('user_api.util.notify'),
+    au = require('user_api.util.autocmd'),
+
+    assoc = assoc,
+    xor = xor,
+    strip_fields = strip_fields,
+    strip_values = strip_values,
+    displace_letter = displace_letter,
+    ft_get = ft_get,
+    ft_set = ft_set,
+}
+
+return M
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:

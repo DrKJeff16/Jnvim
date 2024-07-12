@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local Util = User.util
 local types = User.types.cmp
@@ -92,7 +92,7 @@ local Opts = {
         }
 
         ---@type string
-        local ft = require('user.util').ft_get(vim.api.nvim_get_current_buf())
+        local ft = require('user_api.util').ft_get(vim.api.nvim_get_current_buf())
 
         if tbl_contains(disable_ft, ft) then
             return false
