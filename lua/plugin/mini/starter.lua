@@ -19,23 +19,6 @@ local gen_hook = MS.gen_hook
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
---[[ local footer_n_seconds = (function()
-    local timer = vim.uv.new_timer()
-    local n_seconds = 0
-    timer:start(0, 1000, vim.schedule_wrap(function()
-        if vim.bo.filetype ~= 'starter' then
-            timer:stop()
-            return
-        end
-        n_seconds = n_seconds + 1
-        MS.refresh()
-    end))
-
-    return function()
-        return 'Number of seconds since opening: ' .. tostring(n_seconds)
-    end
-end)() ]]
-
 M.simple = {
     evaluate_single = false,
 
@@ -72,7 +55,7 @@ M.telescope = {
     },
 
     autoopen = true,
-    silent = false,
+    silent = true,
     footer = nil,
     header = 'TELESCOPE',
     query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',

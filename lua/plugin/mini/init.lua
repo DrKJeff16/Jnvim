@@ -118,11 +118,11 @@ local Mods = {
         },
 
         -- Whether to disable showing non-error feedback
-        silent = false,
+        silent = true,
     },
     ['basics'] = {
         options = {
-            basic = false,
+            basic = true,
             extra_ui = true,
             win_borders = 'single',
         },
@@ -143,9 +143,9 @@ local Mods = {
     },
     ['bufremove'] = {
         set_vim_settings = true,
-        silent = false,
+        silent = true,
     },
-    ['cursorword'] = { delay = 2000 },
+    ['cursorword'] = { delay = 1000 },
     ['doc'] = nil,
     ['extra'] = {},
     ['move'] = {
@@ -170,7 +170,7 @@ local Mods = {
             reindent_linewise = true,
         },
     },
-    ['starter'] = exists('plugin.mini.starter') and require('plugin.mini.starter').telescope or {
+    --[[ ['starter'] = exists('plugin.mini.starter') and require('plugin.mini.starter').telescope or {
         autoopen = true,
         -- Whether to evaluate action of single active item
         evaluate_single = false,
@@ -180,7 +180,7 @@ local Mods = {
         content_hooks = nil,
         query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
         silent = true,
-    },
+    }, ]]
     ['trailspace'] = { only_in_normal_buffers = true },
 }
 
