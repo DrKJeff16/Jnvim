@@ -27,7 +27,8 @@ if exists('kanagawa') then
     ---@param transparent? boolean
     ---@param override? table
     function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant or 'wave'
+        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant
+            or 'wave'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -91,9 +92,7 @@ if exists('kanagawa') then
     end
 end
 
-function M.new()
-    return setmetatable({}, { __index = M })
-end
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

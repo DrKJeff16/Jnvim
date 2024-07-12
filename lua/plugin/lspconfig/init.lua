@@ -168,27 +168,19 @@ end
 ---@type KeyMapDict
 local Keys = {
     ['<leader>lI'] = {
-        function()
-            vim.cmd('LspInfo')
-        end,
+        function() vim.cmd('LspInfo') end,
         desc('Get LSP Config Info'),
     },
     ['<leader>lR'] = {
-        function()
-            vim.cmd('LspRestart')
-        end,
+        function() vim.cmd('LspRestart') end,
         desc('Restart Server'),
     },
     ['<leader>lH'] = {
-        function()
-            vim.cmd('LspStop')
-        end,
+        function() vim.cmd('LspStop') end,
         desc('Stop Server'),
     },
     ['<leader>lS'] = {
-        function()
-            vim.cmd('LspStart')
-        end,
+        function() vim.cmd('LspStart') end,
         desc('Start Server'),
     },
 }
@@ -239,10 +231,11 @@ au('LspAttach', {
             })
         end
         if client.supports_method('textDocument/publishDiagnostics') then
-            Lsp.handlers['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
-                signs = true,
-                virtual_text = true,
-            })
+            Lsp.handlers['textDocument/publishDiagnostics'] =
+                Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+                    signs = true,
+                    virtual_text = true,
+                })
         end
 
         ---@type table<MapModes, KeyMapDict>
@@ -254,8 +247,14 @@ au('LspAttach', {
                 ['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
                 ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
                 ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
-                ['<leader>lwa'] = { lsp_buf.add_workspace_folder, desc('Add Workspace Folder', true, buf) },
-                ['<leader>lwr'] = { lsp_buf.remove_workspace_folder, desc('Remove Workspace Folder', true, buf) },
+                ['<leader>lwa'] = {
+                    lsp_buf.add_workspace_folder,
+                    desc('Add Workspace Folder', true, buf),
+                },
+                ['<leader>lwr'] = {
+                    lsp_buf.remove_workspace_folder,
+                    desc('Remove Workspace Folder', true, buf),
+                },
                 ['<leader>lwl'] = {
                     function()
                         local out = lsp_buf.list_workspace_folders()
@@ -274,9 +273,7 @@ au('LspAttach', {
                 ['<leader>lfR'] = { lsp_buf.rename, desc('Rename...', true, buf) },
                 ['<leader>lfr'] = { lsp_buf.references, desc('References', true, buf) },
                 ['<leader>lff'] = {
-                    function()
-                        lsp_buf.format({ async = true })
-                    end,
+                    function() lsp_buf.format({ async = true }) end,
                     desc('Format File', true, buf),
                 },
                 ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
@@ -327,9 +324,7 @@ au('LspDetach', {
 au('LspProgress', {
     group = group,
     pattern = '*',
-    callback = function()
-        vim.cmd('redrawstatus')
-    end,
+    callback = function() vim.cmd('redrawstatus') end,
 })
 
 Diag.config({

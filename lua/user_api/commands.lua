@@ -28,9 +28,7 @@ function M.redir()
     end, { nargs = '+', complete = 'command' })
 end
 
-function M.setup_commands(self)
-    self.redir()
-end
+function M.setup_commands(self) self.redir() end
 
 function M.new()
     local self = setmetatable({}, { __index = M })

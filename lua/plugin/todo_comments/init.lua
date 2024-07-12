@@ -147,9 +147,7 @@ local function jump(direction, keyword)
         prev = TODO.jump_prev,
     }
 
-    return function()
-        direction_map[direction]({ keywords = { keyword } })
-    end
+    return function() direction_map[direction]({ keywords = { keyword } }) end
 end
 
 ---@type KeyMapDict

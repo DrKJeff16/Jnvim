@@ -132,9 +132,7 @@ local function assoc()
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
-    local retab = function()
-        vim.cmd('%retab')
-    end
+    local retab = function() vim.cmd('%retab') end
 
     ---@type AuRepeatEvents[]
     local aus = {
@@ -232,7 +230,9 @@ end
 
 local function displace_letter(c, direction, cycle)
     local Value = require('user_api.check.value')
-    direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction)) and direction or 'next'
+    direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
+            and direction
+        or 'next'
     cycle = Value.is_bool(cycle) and cycle or false
 
     if c == '' then

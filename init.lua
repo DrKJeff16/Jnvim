@@ -123,9 +123,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
                         name = '+' .. name,
                     }
                     CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                        function()
-                            TColor.setup(variant)
-                        end,
+                        function() TColor.setup(variant) end,
                         desc('Setup Colorscheme `' .. name .. '` (' .. variant .. ')'),
                     }
 

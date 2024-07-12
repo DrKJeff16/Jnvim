@@ -31,7 +31,8 @@ if exists('nightfox') then
     ---@param transparent? boolean
     ---@param override? table
     function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'carbonfox'
+        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant
+            or 'carbonfox'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -101,9 +102,7 @@ if exists('nightfox') then
     end
 end
 
-function M.new()
-    return setmetatable({}, { __index = M })
-end
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

@@ -118,11 +118,20 @@ local Keys = {
         ['<leader>bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
         ['<leader>b<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
         ['<leader>b<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
-        ['<leader>b<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
-        ['<leader>b<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
+        ['<leader>b<C-b>'] = {
+            '<CMD>BufferOrderByBufferNumber<CR>',
+            desc('Order Buffer By Number'),
+        },
+        ['<leader>b<C-d>'] = {
+            '<CMD>BufferOrderByDirectory<CR>',
+            desc('Order Buffer By Directory'),
+        },
         ['<leader>b<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
         ['<leader>b<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
-        ['<leader>b<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
+        ['<leader>b<C-w>'] = {
+            '<CMD>BufferOrderByWindowNumber<CR>',
+            desc('Order Buffer By Window Number'),
+        },
     },
     v = {
         ['<leader>bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
@@ -143,11 +152,20 @@ local Keys = {
         ['<leader>bd'] = { '<CMD>BufferClose<CR>', desc('Close Buffer') },
         ['<leader>b<C-p>'] = { '<CMD>BufferPin<CR>', desc('Pin Buffer') },
         ['<leader>b<C-P>'] = { '<CMD>BufferPick<CR>', desc('Pick Buffer') },
-        ['<leader>b<C-b>'] = { '<CMD>BufferOrderByBufferNumber<CR>', desc('Order Buffer By Number') },
-        ['<leader>b<C-d>'] = { '<CMD>BufferOrderByDirectory<CR>', desc('Order Buffer By Directory') },
+        ['<leader>b<C-b>'] = {
+            '<CMD>BufferOrderByBufferNumber<CR>',
+            desc('Order Buffer By Number'),
+        },
+        ['<leader>b<C-d>'] = {
+            '<CMD>BufferOrderByDirectory<CR>',
+            desc('Order Buffer By Directory'),
+        },
         ['<leader>b<C-l>'] = { '<CMD>BufferOrderByLanguage<CR>', desc('Order Buffer By Language') },
         ['<leader>b<C-n>'] = { '<CMD>BufferOrderByName<CR>', desc('Order Buffer By Name') },
-        ['<leader>b<C-w>'] = { '<CMD>BufferOrderByWindowNumber<CR>', desc('Order Buffer By Window Number') },
+        ['<leader>b<C-w>'] = {
+            '<CMD>BufferOrderByWindowNumber<CR>',
+            desc('Order Buffer By Window Number'),
+        },
     },
 }
 

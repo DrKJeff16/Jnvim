@@ -20,7 +20,11 @@ local function au_pair(T)
         error('(user.util.autocmd.au_pair): Empty table')
     end
 
-    if (is_str(T.event) or is_tbl(T.event)) and is_tbl(T.opts) and not (empty(T.opts) or empty(T.event)) then
+    if
+        (is_str(T.event) or is_tbl(T.event))
+        and is_tbl(T.opts)
+        and not (empty(T.opts) or empty(T.event))
+    then
         au(T.event, T.opts)
     elseif (is_str(T[1]) or is_tbl(T[1])) and is_tbl(T[2]) and not (empty(T[2]) or empty(T[1])) then
         au(T[1], T[2])
@@ -46,13 +50,21 @@ local function au_from_arr(T)
     end
 
     for _, v in next, T do
-        if (is_str(v.event) or is_tbl(v.event)) and is_tbl(v.opts) and not (empty(v.opts) or empty(v.event)) then
+        if
+            (is_str(v.event) or is_tbl(v.event))
+            and is_tbl(v.opts)
+            and not (empty(v.opts) or empty(v.event))
+        then
             if not is_fun(v.opts.callback) then
                 error('(user.util.autocmd.au_from_arr): Missing `callback` field')
             end
 
             au(v.event, v.opts)
-        elseif (is_str(v[1]) or is_tbl(v[1])) and is_tbl(v[2]) and not (empty(v[2]) or empty(v[1])) then
+        elseif
+            (is_str(v[1]) or is_tbl(v[1]))
+            and is_tbl(v[2])
+            and not (empty(v[2]) or empty(v[1]))
+        then
             au(v[1], v[2])
         else
             error('(user.util.autocmd.au_from_arr): Table given is not of supported type')

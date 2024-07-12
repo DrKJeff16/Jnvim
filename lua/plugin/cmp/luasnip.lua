@@ -73,16 +73,12 @@ local function even_count(count)
 end
 
 ---@type fun(fn: fun(...), ...): boolean
-local function neg(fn, ...)
-    return not fn(...)
-end
+local function neg(fn, ...) return not fn(...) end
 
 ---@type fun(fn: fun(...), ...): fun(): any
 local function part(fn, ...)
     local args = { ... }
-    return function()
-        return fn(unpack(args))
-    end
+    return function() return fn(unpack(args)) end
 end
 
 -- This makes creation of pair-type snippets easier
@@ -294,16 +290,12 @@ local AUCMDS = {
         {
             pattern = 'LuasnipChoiceNodeEnter',
             group = group,
-            callback = function()
-                choice_popup(ls.session.event_node)
-            end,
+            callback = function() choice_popup(ls.session.event_node) end,
         },
         {
             pattern = 'LuasnipChangeChoice',
             group = group,
-            callback = function()
-                update_choice_popup(ls.session.event_node)
-            end,
+            callback = function() update_choice_popup(ls.session.event_node) end,
         },
         {
             pattern = 'LuasnipChoiceNodeLeave',

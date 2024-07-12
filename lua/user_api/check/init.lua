@@ -39,7 +39,8 @@ local M = {
         local env = vim.fn.environ()
 
         --- TODO: This is not a good enough check. Must find a better solution
-        return vim.tbl_contains({ 'linux' }, env['TERM']) and not require('user_api.check.value').fields('DISPLAY', env)
+        return vim.tbl_contains({ 'linux' }, env['TERM'])
+            and not require('user_api.check.value').fields('DISPLAY', env)
     end,
 }
 

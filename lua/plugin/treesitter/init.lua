@@ -88,7 +88,10 @@ local Opts = {
 
             local res = false
 
-            res = vim.tbl_contains(disable_ft, vim.api.nvim_get_option_value('ft', { scope = 'local' }))
+            res = vim.tbl_contains(
+                disable_ft,
+                vim.api.nvim_get_option_value('ft', { scope = 'local' })
+            )
 
             return res or ok and not is_nil(stats) and stats.size > max_fs
         end,

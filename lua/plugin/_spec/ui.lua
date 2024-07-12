@@ -134,9 +134,7 @@ local M = {
         'brenoprata10/nvim-highlight-colors',
         main = 'nvim-highlight-colors',
         version = false,
-        init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
-        end,
+        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
         config = source('plugin.hicolors'),
         cond = vim_exists('+termguicolors'),
     },

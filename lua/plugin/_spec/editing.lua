@@ -50,9 +50,7 @@ local M = {
             'nvim-treesitter',
             'plenary.nvim',
         },
-        init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
-        end,
+        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
         config = source('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },

@@ -151,8 +151,18 @@ Neorg.setup({
 
                     -- text objects, these binds are available as `vaH` to "visual select around a header" or
                     -- `diH` to "delete inside a header"
-                    keybinds.remap_event('norg', { 'o', 'x' }, 'iH', 'core.text-objects.textobject.heading.inner')
-                    keybinds.remap_event('norg', { 'o', 'x' }, 'aH', 'core.text-objects.textobject.heading.outer')
+                    keybinds.remap_event(
+                        'norg',
+                        { 'o', 'x' },
+                        'iH',
+                        'core.text-objects.textobject.heading.inner'
+                    )
+                    keybinds.remap_event(
+                        'norg',
+                        { 'o', 'x' },
+                        'aH',
+                        'core.text-objects.textobject.heading.outer'
+                    )
                 end,
             },
         },

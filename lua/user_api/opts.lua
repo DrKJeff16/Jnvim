@@ -62,7 +62,8 @@ local DEFAULT_OPTIONS = {
 
 if is_windows then
     DEFAULT_OPTIONS.fileignorecase = true
-    DEFAULT_OPTIONS.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe' or DEFAULT_OPTIONS.makeprg
+    DEFAULT_OPTIONS.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe'
+        or DEFAULT_OPTIONS.makeprg
 
     DEFAULT_OPTIONS.shell = 'cmd.exe'
     if executable('bash.exe') then

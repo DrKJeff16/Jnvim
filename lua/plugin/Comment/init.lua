@@ -12,9 +12,7 @@ end
 
 local Comment = require('Comment')
 
-local pre_hook = function(ctx)
-    return vim.bo.commentstring
-end
+local pre_hook = function(ctx) return vim.bo.commentstring end
 
 if exists('ts_context_commentstring') then
     pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()

@@ -77,9 +77,7 @@ local Opts = {
 
         ---@param term Terminal
         ---@return string
-        name_formatter = function(term)
-            return term.name
-        end,
+        name_formatter = function(term) return term.name end,
     },
 }
 
@@ -89,9 +87,7 @@ TT.setup(Opts)
 local aus = {
     ['TermEnter'] = {
         pattern = { 'term://*toggleterm#*' },
-        callback = function()
-            User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
-        end,
+        callback = function() User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
     },
 }
 
