@@ -305,9 +305,7 @@ NeoTree.setup(Opts)
 ---@type KeyMapDict
 local Keys = {
     ['<leader>ftt'] = {
-        function()
-            vim.cmd('Neotree reveal')
-        end,
+        function() vim.cmd('Neotree reveal') end,
         { desc = 'Reveal NeoTree' },
     },
 }

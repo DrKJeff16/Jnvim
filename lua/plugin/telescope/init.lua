@@ -138,7 +138,12 @@ if exists('persisted') then
     }
 end
 
-if Check.exists.modules({ 'telescope._extensions.conventional_commits.actions', 'plugin.telescope.cc' }) then
+if
+    Check.exists.modules({
+        'telescope._extensions.conventional_commits.actions',
+        'plugin.telescope.cc',
+    })
+then
     Opts.extensions.conventional_commits = require('plugin.telescope.cc').cc
     require('plugin.telescope.cc').loadkeys()
 end
@@ -155,9 +160,7 @@ if exists('plugin.telescope.cc') then
     load_ext('conventional_commits')
 end
 
-local function open()
-    vim.cmd('Telescope')
-end
+local function open() vim.cmd('Telescope') end
 
 ---@type KeyMapDict
 local Maps = {
@@ -175,7 +178,10 @@ local Maps = {
     ['<leader>lT'] = { Builtin.lsp_type_definitions, desc('Telescope Definitions') },
     ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
     ['<leader>li'] = { Builtin.lsp_implementations, desc('Telelcope Lsp Implementations') },
-    ['<leader>lwD'] = { Builtin.lsp_dynamic_workspace_symbols, desc('Telescope Dynamic Workspace Symbols') },
+    ['<leader>lwD'] = {
+        Builtin.lsp_dynamic_workspace_symbols,
+        desc('Telescope Dynamic Workspace Symbols'),
+    },
     ['<leader>lwd'] = { Builtin.lsp_workspace_symbols, desc('Telescope Workspace Symbols') },
     ['<leader>vC'] = { Builtin.highlights, desc('Telescope Highlights') },
     ['<leader>vK'] = { Builtin.keymaps, desc('Telescope Keymaps') },
@@ -252,15 +258,11 @@ local known_exts = {
             ---@type KeyMapDict
             local res = {
                 ['<leader>fTenl'] = {
-                    function()
-                        Noice.cmd('last')
-                    end,
+                    function() Noice.cmd('last') end,
                     desc('NoiceLast'),
                 },
                 ['<leader>fTenh'] = {
-                    function()
-                        Noice.cmd('history')
-                    end,
+                    function() Noice.cmd('history') end,
                     desc('NoiceHistory'),
                 },
             }
@@ -323,7 +325,13 @@ local au_tbl = {
 
             ---@param args TelAuArgs
             callback = function(args)
-                if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
+                if
+                    not (
+                        is_tbl(args.data)
+                        and is_str(args.data.filetype)
+                        and args.data.filetype == 'help'
+                    )
+                then
                     vim.wo.number = true
                 elseif args.data.bufname:match('*.csv') then
                     vim.wo.wrap = false

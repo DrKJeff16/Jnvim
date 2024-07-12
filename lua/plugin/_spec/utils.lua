@@ -19,9 +19,7 @@ local M = {
         ft = 'markdown',
         version = false,
         build = executable('yarn') and 'cd app && yarn install' or '',
-        init = function()
-            vim.g.mkdp_filetypes = { 'markdown' }
-        end,
+        init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
         config = source('plugin.md_preview'),
         cond = not in_console(),
     },

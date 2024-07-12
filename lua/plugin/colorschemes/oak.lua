@@ -12,14 +12,10 @@ local M = {
 }
 
 if vim.g.installed_oak == 1 then
-    function M.setup(variant, transparent, override)
-        vim.cmd(M.mod_cmd)
-    end
+    function M.setup(variant, transparent, override) vim.cmd(M.mod_cmd) end
 end
 
-function M.new()
-    return setmetatable({}, { __index = M })
-end
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

@@ -114,9 +114,7 @@ local Opts = {
 
     snippet = {
         ---@type fun(args: cmp.SnippetExpansionParams)
-        expand = function(args)
-            Luasnip.lsp_expand(args.body)
-        end,
+        expand = function(args) Luasnip.lsp_expand(args.body) end,
     },
 
     preselect = cmp.PreselectMode.None,
@@ -182,9 +180,7 @@ if not is_bool(_G.CMP_ANNOUNCED) or not _G.CMP_ANNOUNCED then
         timeout = 50,
         hide_from_history = CMP_ANNOUNCED,
         once = true,
-        on_open = function()
-            _G.CMP_ANNOUNCED = true
-        end,
+        on_open = function() _G.CMP_ANNOUNCED = true end,
     })
 end
 

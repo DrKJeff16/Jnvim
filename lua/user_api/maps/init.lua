@@ -83,7 +83,9 @@ local M = {
             ['wk.register'] = WK.register,
         }
 
-        if not field(map_func, map_choices) or (map_func == 'wk.register' and not WK.available()) then
+        if
+            not field(map_func, map_choices) or (map_func == 'wk.register' and not WK.available())
+        then
             map_func = 'kmap'
         end
 

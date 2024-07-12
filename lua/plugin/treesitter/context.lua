@@ -51,9 +51,7 @@ local hls = {
 ---@type KeyMapDict
 local Keys = {
     ['<leader>Cn'] = {
-        function()
-            pcall(Context.goto_context, vim.v.count1)
-        end,
+        function() pcall(Context.goto_context, vim.v.count1) end,
         desc('Previous Context'),
     },
 }

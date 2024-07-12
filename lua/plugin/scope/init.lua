@@ -46,14 +46,10 @@ local tab_hook = function()
     ---@type fun(tabnr: integer?): fun()
     local function tab_cmd(tabnr)
         if not is_int(tabnr) or empty(tabnr) then
-            return function()
-                vim.cmd('ScopeMoveBuf')
-            end
+            return function() vim.cmd('ScopeMoveBuf') end
         end
 
-        return function()
-            vim.cmd('ScopeMoveBuf' .. tostring(tabnr))
-        end
+        return function() vim.cmd('ScopeMoveBuf' .. tostring(tabnr)) end
     end
 
     local prefix = '<leader>b<C-t>'

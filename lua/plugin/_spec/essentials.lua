@@ -33,9 +33,7 @@ local M = {
         'dstein64/vim-startuptime',
         lazy = false,
         version = false,
-        init = function()
-            vim.g.installed_startuptime = 1
-        end,
+        init = function() vim.g.installed_startuptime = 1 end,
         config = source('plugin.startuptime'),
     },
     {
@@ -82,9 +80,7 @@ local M = {
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
-        init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
-        end,
+        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
         config = source('plugin.notify'),
         cond = not in_console(),
     },

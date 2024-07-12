@@ -21,9 +21,7 @@ if modules({ 'colorbuddy', 'gloombuddy' }) then
     end
 end
 
-function M.new()
-    return setmetatable({}, { __index = M })
-end
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

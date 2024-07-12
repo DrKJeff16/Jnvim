@@ -87,7 +87,10 @@ local Mods = {
                 table.insert(steps.pre_justify, trim_high)
             end,
             T = function(steps, _)
-                table.insert(steps.pre_justify, require('mini.align').gen_step.trim('both', 'remove'))
+                table.insert(
+                    steps.pre_justify,
+                    require('mini.align').gen_step.trim('both', 'remove')
+                )
             end,
             j = function(_, opts)
                 local next_option = ({

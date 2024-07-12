@@ -60,9 +60,7 @@ local M = {
     ---@param mod_str string
     ---@return fun()
     source = function(mod_str)
-        return function()
-            require('user_api.check.exists').module(mod_str, true)
-        end
+        return function() require('user_api.check.exists').module(mod_str, true) end
     end,
 
     --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
@@ -111,7 +109,8 @@ local M = {
     --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
     ---@return string
     luasnip_build = function()
-        local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp'
+        local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp'
+            or 'make install_jsregexp'
 
         if is_windows and executable('mingw32-make') then
             cmd = 'mingw32-' .. cmd
