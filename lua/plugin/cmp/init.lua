@@ -39,15 +39,15 @@ local Mappings = {
     ['<C-j>'] = cmp.mapping.scroll_docs(-4),
     ['<C-k>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.abort(), -- Same as `<Esc>`
-    ['<C-Space>'] = cmp.mapping.complete({ reason = 'auto' }),
+    ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping(cr_map),
     ['<Tab>'] = cmp.mapping(tab_map),
     ['<S-Tab>'] = cmp.mapping(s_tab_map),
     ['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
     ['<Down>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
     ['<Up>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-    ['<Right>'] = cmp.mapping(bs_map, { 'i', 's' }),
-    ['<Left>'] = cmp.mapping(bs_map, { 'i', 's' }),
+    ['<Right>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
+    ['<Left>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 }
 
 ---@type cmp.ConfigSchema
@@ -61,6 +61,7 @@ local Opts = {
             'help',
             'lazy',
             'packer',
+            'qf',
         }
 
         local enable_comments = {

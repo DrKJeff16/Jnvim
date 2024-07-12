@@ -20,12 +20,10 @@ local cmp = require('cmp')
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
 
-local api = vim.api
-
 local tbl_contains = vim.tbl_contains
-local get_mode = api.nvim_get_mode
-local buf_lines = api.nvim_buf_get_lines
-local win_cursor = api.nvim_win_get_cursor
+local get_mode = vim.api.nvim_get_mode
+local buf_lines = vim.api.nvim_buf_get_lines
+local win_cursor = vim.api.nvim_win_get_cursor
 
 local M = {}
 
@@ -33,7 +31,7 @@ local M = {}
 function M.has_words_before()
     unpack = unpack or table.unpack
 
-    local line, col = unpack(win_cursor(0))
+    local line, col = unpack(win_cursor(vim.api.nvim_get_current_win()))
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
