@@ -17,4 +17,4 @@ require('user_api.types.user.maps')
 ---@field luasnip_build fun(): string
 ---@field luarocks_check fun(): boolean
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

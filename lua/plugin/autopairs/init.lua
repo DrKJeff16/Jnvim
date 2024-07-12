@@ -91,4 +91,4 @@ if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
     ap_cmp.on()
 end
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
