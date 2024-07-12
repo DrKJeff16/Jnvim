@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user')
 local Check = User.check
 local Util = User.util
@@ -34,20 +36,20 @@ local bs_map = CmpUtil.bs_map
 local buffer = Sources.buffer
 local async_path = Sources.async_path
 
----@type table<string, cmp.MappingClass|fun(fallback: function):nil>
+---@type table<string, cmp.MappingClass|fun(...)>
 local Mappings = {
     ['<C-j>'] = cmp.mapping.scroll_docs(-4),
     ['<C-k>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.abort(), -- Same as `<Esc>`
-    ['<C-Space>'] = cmp.mapping.complete({ reason = 'auto' }),
+    ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping(cr_map),
     ['<Tab>'] = cmp.mapping(tab_map),
     ['<S-Tab>'] = cmp.mapping(s_tab_map),
     ['<BS>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
     ['<Down>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
     ['<Up>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
-    ['<Right>'] = cmp.mapping(bs_map, { 'i', 's' }),
-    ['<Left>'] = cmp.mapping(bs_map, { 'i', 's' }),
+    ['<Right>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
+    ['<Left>'] = cmp.mapping(bs_map, { 'i', 's', 'c' }),
 }
 
 ---@type cmp.ConfigSchema
@@ -61,6 +63,7 @@ local Opts = {
             'help',
             'lazy',
             'packer',
+            'qf',
         }
 
         local enable_comments = {
