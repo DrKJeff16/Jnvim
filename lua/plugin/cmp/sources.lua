@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-local
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local Util = User.util
 local types = User.types.cmp
@@ -193,7 +193,7 @@ local cmdline = {
 ---@diagnostic disable-next-line:missing-fields
 local M = {
     setup = function(T)
-        local notify = require('user.util.notify').notify
+        local notify = require('user_api.util.notify').notify
 
         if is_tbl(T) and not empty(T) then
             for k, v in next, T do

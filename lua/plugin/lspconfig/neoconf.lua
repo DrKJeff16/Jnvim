@@ -3,7 +3,7 @@
 
 local Lspconfig = require('lspconfig')
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local Util = User.util
 local types = User.types.lspconfig

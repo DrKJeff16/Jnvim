@@ -1,4 +1,4 @@
-local User = require('user') --- User API
+local User = require('user_api') --- User API
 local Check = User.check ---@see User.Check Checking utilities
 local Maps = User.maps --- Mapping utilities
 local Kmap = Maps.kmap --- `vim.keymap.set` backend
@@ -89,7 +89,7 @@ local DEFAULT_KEYS = {
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
         ['<leader>fN'] = {
             function()
-                local ft = require('user.util').ft_get(0)
+                local ft = require('user_api.util').ft_get(0)
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 
@@ -106,7 +106,7 @@ local DEFAULT_KEYS = {
                 if vim.bo.modifiable then
                     vim.cmd.write()
                 else
-                    require('user.util.notify').notify('Not writeable.')
+                    require('user_api.util.notify').notify('Not writeable.')
                 end
             end,
             desc('Save File', false, 0),
@@ -115,18 +115,18 @@ local DEFAULT_KEYS = {
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
         ['<leader>fvl'] = {
             function()
-                local ft = require('user.util').ft_get()
+                local ft = require('user_api.util').ft_get()
                 local err_msg = 'Filetype `' .. ft .. '` not sourceable by Lua'
 
                 if ft == 'lua' then
                     vim.cmd('luafile %')
-                    require('user.util.notify').notify(
+                    require('user_api.util.notify').notify(
                         'Sourced current Lua file',
                         'info',
                         { title = 'Lua', timeout = 150, hide_from_history = true }
                     )
                 else
-                    require('user.util.notify').notify(
+                    require('user_api.util.notify').notify(
                         err_msg,
                         'error',
                         { title = 'Lua', timeout = 250, hide_from_history = true }
@@ -137,18 +137,18 @@ local DEFAULT_KEYS = {
         },
         ['<leader>fvv'] = {
             function()
-                local ft = require('user.util').ft_get()
+                local ft = require('user_api.util').ft_get()
                 local err_msg = 'Filetype `' .. ft .. '` not sourceable by Vim'
 
                 if ft == 'vim' then
                     vim.cmd('so %')
-                    require('user.util.notify').notify(
+                    require('user_api.util.notify').notify(
                         'Sourced current Vim file',
                         'info',
                         { title = 'Vim', timeout = 150, hide_from_history = true }
                     )
                 else
-                    require('user.util.notify').notify(
+                    require('user_api.util.notify').notify(
                         err_msg,
                         'error',
                         { title = 'Vim', timeout = 250, hide_from_history = true }
@@ -167,7 +167,7 @@ local DEFAULT_KEYS = {
         ['<leader>vs'] = {
             function()
                 vim.cmd('luafile $MYVIMRC')
-                require('user.util.notify').notify(
+                require('user_api.util.notify').notify(
                     'Sourced `init.lua`',
                     'info',
                     { title = 'luafile', timeout = 250, hide_from_history = true }
@@ -186,7 +186,7 @@ local DEFAULT_KEYS = {
 
         ['<leader>wN'] = {
             function()
-                local ft = require('user.util').ft_get()
+                local ft = require('user_api.util').ft_get()
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 

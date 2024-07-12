@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:missing-fields
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
 
