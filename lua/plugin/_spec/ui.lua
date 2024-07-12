@@ -100,7 +100,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.nvim_tree'),
-        cond = not in_console(),
+        cond = vim_exists('nvim-0.9') and not in_console(),
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
