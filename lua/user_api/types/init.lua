@@ -60,7 +60,6 @@ local M = {
     cmp = require('user_api.types.cmp'),
     comment = require('user_api.types.comment'),
     diffview = require('user_api.types.diffview'),
-    galaxyline = require('user_api.types.galaxyline'),
     gitsigns = require('user_api.types.gitsigns'),
     lazy = require('user_api.types.lazy'),
     lspconfig = require('user_api.types.lspconfig'),
