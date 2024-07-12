@@ -102,21 +102,22 @@ end
 --- Set buffer variables for file icon and color.
 ---@return { color: string, icon: string }
 function M.buf_init_devicons()
-    local icon, color = Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
-    local dev_icons = { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
+    local icon, color =
+        Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
+    local dev_icons =
+        { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
 
     vim.b.dev_icons = dev_icons
     return dev_icons
 end
 
 --- @return { color: string|integer, icon: string }
-function M.filetype_info()
-    return vim.b.dev_icons or M.buf_init_devicons()
-end
+function M.filetype_info() return vim.b.dev_icons or M.buf_init_devicons() end
 
 ---@return JLine.Theme.Spec
 function M:palette()
-    return not is_nil(self.themes[self.variant]) and self.themes[self.variant] or self.themes.default
+    return not is_nil(self.themes[self.variant]) and self.themes[self.variant]
+        or self.themes.default
 end
 
 ---@return string

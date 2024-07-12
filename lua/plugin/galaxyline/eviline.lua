@@ -6,9 +6,7 @@ GL.short_line_list = { 'NvimTree', 'vista', 'dbui', 'packer', 'lazy' }
 
 GLS.left[1] = {
     RainbowRed = {
-        provider = function()
-            return '▊ '
-        end,
+        provider = function() return '▊ ' end,
         highlight = { colors.blue, colors.bg },
     },
 }
@@ -155,9 +153,7 @@ GLS.right[2] = {
 
 GLS.right[3] = {
     GitIcon = {
-        provider = function()
-            return '  '
-        end,
+        provider = function() return '  ' end,
         condition = condition.check_git_workspace,
         separator = ' ',
         separator_highlight = { 'NONE', colors.bg },
@@ -200,9 +196,7 @@ GLS.right[7] = {
 
 GLS.right[8] = {
     RainbowBlue = {
-        provider = function()
-            return ' ▊'
-        end,
+        provider = function() return ' ▊' end,
         highlight = { colors.blue, colors.bg },
     },
 }

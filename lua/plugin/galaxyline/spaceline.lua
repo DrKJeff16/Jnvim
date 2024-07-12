@@ -16,23 +16,25 @@ local colors = {
     red = '#ec5f67',
 }
 
-local buffer_not_empty = function()
-    return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
-end
+local buffer_not_empty = function() return vim.fn.empty(vim.fn.expand('%:t')) ~= 1 end
 
 GLS.left[1] = {
     FirstElement = {
-        provider = function()
-            return '▋'
-        end,
+        provider = function() return '▋' end,
         highlight = { colors.blue, colors.yellow },
     },
 }
 GLS.left[2] = {
     ViMode = {
         provider = function()
-            local alias =
-                { n = 'NORMAL', i = 'INSERT', c = 'COMMAND', v = 'VISUAL', V = 'VISUAL LINE', [''] = 'VISUAL BLOCK' }
+            local alias = {
+                n = 'NORMAL',
+                i = 'INSERT',
+                c = 'COMMAND',
+                v = 'VISUAL',
+                V = 'VISUAL LINE',
+                [''] = 'VISUAL BLOCK',
+            }
             return alias[vim.fn.mode()]
         end,
         separator = '',
@@ -67,9 +69,7 @@ GLS.left[4] = {
 
 GLS.left[5] = {
     GitIcon = {
-        provider = function()
-            return '  '
-        end,
+        provider = function() return '  ' end,
         condition = buffer_not_empty,
         highlight = { colors.orange, colors.purple },
     },
@@ -82,9 +82,7 @@ GLS.left[6] = {
     },
 }
 
-local checkwidth = function()
-    return vim.fn.winwidth(0) / 2 > 40
-end
+local checkwidth = function() return vim.fn.winwidth(0) / 2 > 40 end
 
 GLS.left[7] = {
     DiffAdd = {
@@ -112,9 +110,7 @@ GLS.left[9] = {
 }
 GLS.left[10] = {
     LeftEnd = {
-        provider = function()
-            return ''
-        end,
+        provider = function() return '' end,
         separator = '',
         separator_highlight = { colors.purple, colors.bg },
         highlight = { colors.purple, colors.purple },
@@ -129,9 +125,7 @@ GLS.left[11] = {
 }
 GLS.left[12] = {
     Space = {
-        provider = function()
-            return ' '
-        end,
+        provider = function() return ' ' end,
     },
 }
 GLS.left[13] = {

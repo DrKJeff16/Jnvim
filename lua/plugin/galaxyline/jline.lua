@@ -60,17 +60,17 @@ local Providers = {
 --- Set buffer variables for file icon and color.
 ---@return { color: string, icon: string }
 local function buf_init_devicons()
-    local icon, color = Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
-    local dev_icons = { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
+    local icon, color =
+        Devicons.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })
+    local dev_icons =
+        { color = vim.api.nvim_get_hl(0, { link = false, name = color }).fg, icon = icon }
 
     vim.b.dev_icons = dev_icons
     return dev_icons
 end
 
 --- @return { color: string, icon: string }
-local function filetype_info()
-    return vim.b.dev_icons or buf_init_devicons()
-end
+local function filetype_info() return vim.b.dev_icons or buf_init_devicons() end
 
 local SEPARATORS = {
     --- Components separated by this component will be padded with an equal number of spaces.
@@ -128,9 +128,7 @@ GL.section.left[2] = {
     ---@type JLine.Section.Component
     FileSize = {
         provider = 'FileSize',
-        condition = function()
-            return empty(vim.fn.expand('%:t')) ~= 1
-        end,
+        condition = function() return empty(vim.fn.expand('%:t')) ~= 1 end,
 
         icon = '  ',
         highlight = { default_colors.cyan, default_colors.bg },
