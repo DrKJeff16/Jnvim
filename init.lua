@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
@@ -23,7 +20,7 @@ _G.is_windows = Check.exists.vim_has('win32')
 ---@see User.Opts.setup
 User.opts.setup({ ---@see User.Opts.Spec For more info
     background = 'dark',
-    cmdwinheight = 3,
+    cmdwinheight = 5,
     confirm = true,
     equalalways = true,
     expandtab = true,
@@ -175,4 +172,4 @@ filetype plugin indent on
 syntax on
 ]])
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:confirm:fenc=utf-8:noignorecase:smartcase:ru:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

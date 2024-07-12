@@ -2,39 +2,18 @@
 
 ## Table Of Contents
 
-<ol>
-<li>
-<a href="#about">About</a>
-
-<ol>
-<li><a href="#requirements">Requirements</a></li>
-<li><a href="#structure">Structure</a></li>
-<li><a href="#plugins">Plugins</a></li>
-</ol>
-
-</li>
-<li>
-<a href="#api">User API</a>
-
-<ol>
-<li><a href="#types"><code>user.types</code></a></li>
-<li><a href="#util"><code>user.util</code></a></li>
-<li><a href="#opts"><code>user.opts</code></a></li>
-<li><a href="#check"><code>user.check</code></a></li>
-<li><a href="#maps"><code>user.maps</code></a>
-
-<ol>
-<li><a href="#wk">
-<code>user.maps.wk</code>
-</a>
-</ol>
-</li>
-
-<li><a href="#highlight"><code>user.highlight</code></a>
-</ol>
-
-</li>
-</ol>
+1. [About](#about)
+    1. [Requirements](#requirements)
+    2. [Structure](#structure)
+    3. [Plugins](#plugins)
+2. [User API](#api)
+    1. [`user.types`](#types)
+    2. [`user.util`](#util)
+    3. [`user.opts`](#opts)
+    4. [`user.check`](#check)
+    5. [`user.maps`](#maps)
+        1. [`user.maps.wk`](#wk)
+    6. [`user.highlight`](#highlight)
 
 ---
 
@@ -98,7 +77,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── init.lua  <== Entry points + setup
 │   │   └── submoule.lua  <== Arbitrary submodule
 │   └── ...  <==  More plugin configs...
-├── user/  <== User API module
+├── user_api/  <== User API module
 │   ├── init.lua  <== API entry points
 │   ├── check/  <== Checker Functions
 │   │   ├── init.lua  <== Entry points are defined here
