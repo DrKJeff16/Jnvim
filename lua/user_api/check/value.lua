@@ -246,7 +246,9 @@ local function fields(field, T)
     local empty = M.empty
 
     if not is_tbl(T) then
-        error('(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T))
+        error(
+            '(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T)
+        )
     end
 
     if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then

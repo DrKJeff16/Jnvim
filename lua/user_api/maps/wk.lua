@@ -18,9 +18,7 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 --- `which_key` API entrypoints
 ---@type User.Maps.WK
 M = {
-    available = function()
-        return Check.exists.module('which-key')
-    end,
+    available = function() return Check.exists.module('which-key') end,
 }
 
 function M.convert(rhs, opts)

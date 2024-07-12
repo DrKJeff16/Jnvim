@@ -196,65 +196,45 @@ local DEFAULT_KEYS = {
             desc('New Blank File', true, 0),
         },
         ['<leader>w='] = {
-            function()
-                vim.cmd.wincmd('=')
-            end,
+            function() vim.cmd.wincmd('=') end,
             desc('Resize all windows equally'),
         },
         ['<leader>w<Left>'] = {
-            function()
-                vim.cmd.wincmd('h')
-            end,
+            function() vim.cmd.wincmd('h') end,
             desc('Go To Window On The Left'),
         },
         ['<leader>w<Right>'] = {
-            function()
-                vim.cmd.wincmd('l')
-            end,
+            function() vim.cmd.wincmd('l') end,
             desc('Go To Window On The Right'),
         },
         ['<leader>w<Up>'] = {
-            function()
-                vim.cmd.wincmd('k')
-            end,
+            function() vim.cmd.wincmd('k') end,
             desc('Go To Window Above'),
         },
         ['<leader>w<Down>'] = {
-            function()
-                vim.cmd.wincmd('j')
-            end,
+            function() vim.cmd.wincmd('j') end,
             desc('Go To Window Below'),
         },
         ['<leader>wd'] = {
-            function()
-                vim.cmd.wincmd('q')
-            end,
+            function() vim.cmd.wincmd('q') end,
             desc('Close Window'),
         },
         ['<leader>wn'] = {
-            function()
-                vim.cmd.wincmd('w')
-            end,
+            function() vim.cmd.wincmd('w') end,
             desc('Next Window'),
         },
         ['<leader>wp'] = {
-            function()
-                vim.cmd.wincmd('W')
-            end,
+            function() vim.cmd.wincmd('W') end,
             desc('Previous Window'),
         },
         ['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
         ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
         ['<leader>wss'] = {
-            function()
-                vim.cmd.wincmd('s')
-            end,
+            function() vim.cmd.wincmd('s') end,
             desc('Horizontal Split'),
         },
         ['<leader>wsv'] = {
-            function()
-                vim.cmd.wincmd('v')
-            end,
+            function() vim.cmd.wincmd('v') end,
             desc('Vertical Split'),
         },
 

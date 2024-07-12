@@ -17,9 +17,7 @@ vim.g.startuptime_tries = 10
 
 local KEY = {
     ['<leader>vS'] = {
-        function()
-            vim.cmd('StartupTime')
-        end,
+        function() vim.cmd('StartupTime') end,
         desc('Run StartupTime'),
     },
 }

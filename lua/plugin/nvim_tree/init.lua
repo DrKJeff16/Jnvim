@@ -85,7 +85,13 @@ local function map_keys(keys, bufnr)
 
     for _, mode in next, { 'n', 'v' } do
         if WK.available() then
-            map_dict({ ['<leader>ft'] = { name = '+NvimTree' } }, 'wk.register', false, mode, bufnr or nil)
+            map_dict(
+                { ['<leader>ft'] = { name = '+NvimTree' } },
+                'wk.register',
+                false,
+                mode,
+                bufnr or nil
+            )
         end
         map_dict(keys, 'wk.register', false, mode, bufnr or nil)
     end
@@ -122,9 +128,7 @@ local function tab_win_close(nwin)
     local nbuf = get_bufn(nwin)
     local buf_info = fn.getbufinfo(nbuf)[1]
 
-    local tab_wins = filter(function(w)
-        return w - nwin
-    end, win_list(ntab))
+    local tab_wins = filter(function(w) return w - nwin end, win_list(ntab))
     local tab_bufs = tbl_map(get_bufn, tab_wins)
 
     if buf_info.name:match('.*NvimTree_%d*$') and not empty(tab_bufs) then
@@ -371,9 +375,7 @@ Tree.setup({
                 }
             end,
         },
-        width = function()
-            return floor(vim.opt.columns:get() * WIDTH_RATIO)
-        end,
+        width = function() return floor(vim.opt.columns:get() * WIDTH_RATIO) end,
 
         cursorline = true,
         preserve_window_proportions = true,
@@ -597,9 +599,7 @@ local au_cmds = {
         callback = function()
             local nwin = math.floor(tonumber(fn.expand('<amatch>')))
 
-            local tabc = function()
-                return tab_win_close(nwin)
-            end
+            local tabc = function() return tab_win_close(nwin) end
 
             sched_wp(tabc)
         end,

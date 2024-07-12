@@ -202,10 +202,14 @@ local M = {
                 elseif is_str(k) and is_tbl(v) then
                     ft[k] = v
                 else
-                    notify("(plugin.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-                        title = 'plugin.cmp.sources',
-                        timeout = 500,
-                    })
+                    notify(
+                        "(plugin.cmp.sources.setup): Couldn't parse the input table value",
+                        'error',
+                        {
+                            title = 'plugin.cmp.sources',
+                            timeout = 500,
+                        }
+                    )
                 end
             end
         end
@@ -219,10 +223,14 @@ local M = {
             elseif is_str(k) and is_tbl(v) then
                 cmp.setup.filetype(k, v)
             else
-                notify("(plugin.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-                    title = 'plugin.cmp.sources',
-                    timeout = 500,
-                })
+                notify(
+                    "(plugin.cmp.sources.setup): Couldn't parse the input table value",
+                    'error',
+                    {
+                        title = 'plugin.cmp.sources',
+                        timeout = 500,
+                    }
+                )
             end
         end
 
@@ -237,10 +245,14 @@ local M = {
             elseif is_str(k) and is_tbl(v) then
                 cmp.setup.cmdline(k, v)
             else
-                notify("(plugin.cmp.sources.setup): Couldn't parse the input table value", 'error', {
-                    title = 'plugin.cmp.sources',
-                    timeout = 500,
-                })
+                notify(
+                    "(plugin.cmp.sources.setup): Couldn't parse the input table value",
+                    'error',
+                    {
+                        title = 'plugin.cmp.sources',
+                        timeout = 500,
+                    }
+                )
             end
         end
     end,
@@ -249,9 +261,7 @@ local M = {
     async_path = async_path,
 }
 
-function M.new()
-    return setmetatable({}, { __index = M })
-end
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

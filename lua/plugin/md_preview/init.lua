@@ -52,41 +52,29 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
         local Keys = {
             n = {
                 ['<leader>f<C-m>t'] = {
-                    function()
-                        vim.cmd('MarkdownPreviewToggle')
-                    end,
+                    function() vim.cmd('MarkdownPreviewToggle') end,
                     desc('Toggle Markdown Preview'),
                 },
                 ['<leader>f<C-m>p'] = {
-                    function()
-                        vim.cmd('MarkdownPreview')
-                    end,
+                    function() vim.cmd('MarkdownPreview') end,
                     desc('Run Markdown Preview'),
                 },
                 ['<leader>f<C-m>s'] = {
-                    function()
-                        vim.cmd('MarkdownPreviewStop')
-                    end,
+                    function() vim.cmd('MarkdownPreviewStop') end,
                     desc('Stop Markdown Preview'),
                 },
             },
             v = {
                 ['<leader>f<C-m>t'] = {
-                    function()
-                        vim.cmd('MarkdownPreviewToggle')
-                    end,
+                    function() vim.cmd('MarkdownPreviewToggle') end,
                     desc('Toggle Markdown Preview'),
                 },
                 ['<leader>f<C-m>p'] = {
-                    function()
-                        vim.cmd('MarkdownPreview')
-                    end,
+                    function() vim.cmd('MarkdownPreview') end,
                     desc('Run Markdown Preview'),
                 },
                 ['<leader>f<C-m>s'] = {
-                    function()
-                        vim.cmd('MarkdownPreviewStop')
-                    end,
+                    function() vim.cmd('MarkdownPreviewStop') end,
                     desc('Stop Markdown Preview'),
                 },
             },

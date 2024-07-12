@@ -95,7 +95,12 @@ local Keys = {
             for _, v in next, recent_proj() do
                 msg = msg .. '\n- ' .. v
             end
-            notify(msg, 'info', { title = 'Recent Projects', animate = true, timeout = 550, hide_from_history = false })
+            notify(msg, 'info', {
+                title = 'Recent Projects',
+                animate = true,
+                timeout = 550,
+                hide_from_history = false,
+            })
         end,
         desc('Print Recent Projects'),
     },
