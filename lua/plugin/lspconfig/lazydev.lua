@@ -14,10 +14,6 @@ if not (exists('lazydev') and executable('lua-language-server') and not exists('
     return
 end
 
-local stdpath = vim.fn.stdpath
-
-local config = stdpath('config')
-
 local LazyDev = require('lazydev')
 
 ---@type lazydev.Library.spec[]
@@ -29,7 +25,7 @@ LazyDev.setup({
 
     library = library,
 
-    ---@type boolean|(fun(root_dir):boolean?)
+    ---@type boolean|(fun(root_dir): boolean?)
     enabled = function(root_dir)
         return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
     end,
