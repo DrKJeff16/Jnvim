@@ -301,16 +301,6 @@ au('LspAttach', {
         end
     end,
 })
-au({ 'CursorHold', 'CursorHoldI' }, {
-    group = group,
-    buffer = vim.api.nvim_get_current_buf(),
-    callback = vim.lsp.buf.document_highlight,
-})
-au('CursorMoved', {
-    group = group,
-    buffer = vim.api.nvim_get_current_buf(),
-    callback = vim.lsp.buf.clear_references,
-})
 au('LspDetach', {
     group = group,
 
