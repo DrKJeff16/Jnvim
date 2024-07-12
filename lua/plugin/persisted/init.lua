@@ -32,6 +32,7 @@ Pstd.setup({
             'qf',
             'TelescopePrompt',
             'sudoers',
+            'toggleterm',
         }
 
         if vim.tbl_contains(excluded, vim.bo.filetype) then
@@ -40,7 +41,7 @@ Pstd.setup({
 
         return true
     end, -- function to determine if a session should be autosaved
-    autoload = true, -- automatically load the session for the cwd on Neovim startup
+    autoload = false, -- automatically load the session for the cwd on Neovim startup
     on_autoload_no_session = function()
         require('user.util.notify').notify(
             '(persisted): No session found',
