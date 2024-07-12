@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user') --- User API
+local User = require('user') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
@@ -10,16 +10,12 @@ local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
-local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local empty = Check.value.empty ---@see User.Check.Value.empty
-local vim_has = Check.exists.vim_has ---@see User.Check.Existance.vim_has
-local nop = User.maps.nop ---@see User.Maps.nop
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
-_G.is_windows = vim_has('win32')
-vim.g.markdown_minlines = 500
+_G.is_windows = Check.exists.vim_has('win32')
 
 --- WARNING: USE LONG NAMES. I'll try to fix it later
 ---
