@@ -1,5 +1,6 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
+---@diagnostic disable:missing-fields
 
 local User = require('user')
 local Check = User.check
@@ -20,24 +21,22 @@ local cmp = require('cmp')
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
 
-local api = vim.api
-
 local tbl_contains = vim.tbl_contains
-local get_mode = api.nvim_get_mode
-local buf_lines = api.nvim_buf_get_lines
-local win_cursor = api.nvim_win_get_cursor
+local get_mode = vim.api.nvim_get_mode
+local buf_lines = vim.api.nvim_buf_get_lines
+local win_cursor = vim.api.nvim_win_get_cursor
 
 local M = {}
 
----@type fun(): boolean
+---@return boolean
 function M.has_words_before()
     unpack = unpack or table.unpack
 
-    local line, col = unpack(win_cursor(0))
+    local line, col = unpack(win_cursor(vim.api.nvim_get_current_win()))
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
----@type fun(fallback: fun())
+---@param fallback fun()
 function M.n_select(fallback)
     local jumpable = Luasnip.expand_or_locally_jumpable
     ---@type cmp.SelectOption
@@ -57,7 +56,7 @@ function M.n_select(fallback)
     end
 end
 
----@type fun(fallback: fun())
+---@param fallback fun()
 function M.n_shift_select(fallback)
     local jumpable = Luasnip.jumpable
     ---@type cmp.SelectOption
@@ -77,7 +76,8 @@ function M.n_shift_select(fallback)
     end
 end
 
----@type fun(opts: cmp.ConfirmationConfig?): fun(fallback: fun())
+---@param opts? cmp.ConfirmationConfig
+---@return fun(fallback: fun())
 function M.confirm(opts)
     opts = is_tbl(opts) and opts or {}
     opts.behavior = not is_nil(opts.behavior) and opts.behavior or cmp.ConfirmBehavior.Replace
@@ -98,7 +98,7 @@ M.tab_map = {
     i = M.n_select,
     s = M.n_select,
 
-    ---@type fun(fallback: fun())
+    ---@param fallback fun()
     c = function(fallback)
         local opts = { behavior = cmp.SelectBehavior.Insert }
 
@@ -116,7 +116,7 @@ M.s_tab_map = {
     i = M.n_shift_select,
     s = M.n_shift_select,
 
-    ---@type fun(fallback: fun())
+    ---@param fallback fun()
     c = function(fallback)
         local opts = { behavior = cmp.SelectBehavior.Select }
 
@@ -134,11 +134,10 @@ M.s_tab_map = {
 M.cr_map = {
     i = M.confirm(),
     s = M.confirm(),
-    ---@diagnostic disable-next-line:missing-fields
     c = M.confirm({ select = true }),
 }
 
----@type fun(fallback: fun())
+---@param fallback fun()
 function M.bs_map(fallback)
     if cmp.visible() then
         cmp.close()
