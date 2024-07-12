@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user')
 local Check = User.check
 local Util = User.util
@@ -34,7 +36,7 @@ local bs_map = CmpUtil.bs_map
 local buffer = Sources.buffer
 local async_path = Sources.async_path
 
----@type table<string, cmp.MappingClass|fun(fallback: function):nil>
+---@type table<string, cmp.MappingClass|fun(...)>
 local Mappings = {
     ['<C-j>'] = cmp.mapping.scroll_docs(-4),
     ['<C-k>'] = cmp.mapping.scroll_docs(4),
