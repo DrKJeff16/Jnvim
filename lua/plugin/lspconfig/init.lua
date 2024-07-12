@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
 local WK = User.maps.wk
@@ -261,7 +261,7 @@ au('LspAttach', {
                         local out = lsp_buf.list_workspace_folders()
                         local msg = ''
 
-                        local notify = require('user.util.notify').notify
+                        local notify = require('user_api.util.notify').notify
                         for _, v in next, out do
                             msg = msg .. '\n - ' .. v
                         end

@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-local
 
-local user = require('user')
+local user = require('user_api')
 local Check = user.check
 local types = user.types.lualine
 

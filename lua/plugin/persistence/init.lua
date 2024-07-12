@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-label
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local WK = User.maps.wk
 

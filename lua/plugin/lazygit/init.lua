@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local Maps = User.maps
 local kmap = Maps.kmap
@@ -130,7 +130,7 @@ au('BufEnter', {
 --[[ au('TermClose', {
     pattern = '*',
     function()
-        if require('user.util').ft_get() ~= 'lazygit' and not vim.v.event['status'] then
+        if require('user_api.util').ft_get() ~= 'lazygit' and not vim.v.event['status'] then
             vim.fn.execute('bdelete! ' .. vim.fn.expand('<abuf>'), 'silent!')
         end
     end,

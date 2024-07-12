@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
 local kmap = User.maps.kmap

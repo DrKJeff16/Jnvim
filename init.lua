@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
-local User = require('user') ---@see User User API
+local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
@@ -166,7 +166,7 @@ Util.assoc()
 vim.g.markdown_minlines = 500
 
 --- Call runtimepath optimizations for arch linux
-require('user.distro.archlinux').setup()
+require('user_api.distro.archlinux').setup()
 
 User.commands:setup_commands()
 

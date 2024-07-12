@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:unused-label
 
-local User = require('user')
+local User = require('user_api')
 local Check = User.check
 local WK = User.maps.wk
 
@@ -43,7 +43,7 @@ Pstd.setup({
     end, -- function to determine if a session should be autosaved
     autoload = false, -- automatically load the session for the cwd on Neovim startup
     on_autoload_no_session = function()
-        require('user.util.notify').notify(
+        require('user_api.util.notify').notify(
             '(persisted): No session found',
             'error',
             { title = 'Persisted', hide_from_history = true, timeout = 500 }
