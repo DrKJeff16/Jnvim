@@ -62,12 +62,13 @@ This config relies on essential plugins that improve the readability and underst
 of how it works.
 For these to work, the following executables must be installed and in your `$PATH`:
 
-* `git`
-* [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
-* [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
-* [`ripgreg`](https://github.com/BurntSushi/ripgrep)
-* **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf), [`fd`](https://github.com/sharkdp/fd)
-* **(Optional _(for `Neorg`)_)** `luarocks`
+- `git`
+- A [patched font](https://www.nerdfonts.com)
+- [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
+- [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
+- [`ripgreg`](https://github.com/BurntSushi/ripgrep)
+- **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf), [`fd`](https://github.com/sharkdp/fd)
+- **(Optional _(for `Neorg`)_)** `luarocks`
 
 ### Structure
 
