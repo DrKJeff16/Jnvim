@@ -8,6 +8,7 @@ local Value = require('user_api.check.value')
 
 local is_nil = Value.is_nil
 local is_tbl = Value.is_tbl
+local is_fun = Value.is_fun
 local is_str = Value.is_str
 local is_int = Value.is_int
 local is_bool = Value.is_bool
@@ -38,10 +39,6 @@ local M = {
         end
 
         opts = is_tbl(opts) and opts or {}
-
-        for _, v in next, { 'nowait', 'noremap' } do
-            opts[v] = is_bool(opts[v]) and opts[v] or false
-        end
 
         opts.silent = is_bool(opts.silent) and opts.silent or true
 
@@ -103,16 +100,34 @@ local M = {
                         func(lhs, v[1], v[2])
                     end
                 else
-                    func = map_choices['wk.register']
+                    for lhs, v in next, t do
+                        local tbl = {}
+                        if is_str(lhs) then
+                            table.insert(tbl, lhs)
+                        else
+                            goto continue
+                        end
 
-                    ---@type RegOpts
-                    local wk_opts = { mode = mode_choice }
+                        if
+                            not is_nil(v[1])
+                            and ((is_str(v[1]) and v[1] ~= 'which_key_ignore') or is_fun(v[1]))
+                        then
+                            tbl[2] = v[1]
+                        end
 
-                    if not is_nil(bufnr) then
-                        wk_opts.buffer = bufnr
+                        tbl.mode = mode
+
+                        if is_str(v.group) then
+                            tbl.group = v.group
+                        elseif is_str(v.name) then
+                            tbl.group = v.name
+                        elseif is_tbl(v[2]) and is_str(v[2].desc) then
+                            tbl.desc = v[2].desc
+                        end
+                        require('which-key').add(tbl)
+
+                        ::continue::
                     end
-
-                    func(WK.convert_dict(t), wk_opts)
                 end
             end
         elseif map_func == 'kmap' or map_func == 'map' then
@@ -125,16 +140,34 @@ local M = {
                 func(lhs, v[1], v[2])
             end
         else
-            func = map_choices['wk.register']
+            for lhs, v in next, T do
+                local tbl = {}
+                if is_str(lhs) then
+                    table.insert(tbl, lhs)
+                else
+                    goto continue
+                end
 
-            ---@type RegOpts
-            local wk_opts = { mode = mode }
+                if
+                    not is_nil(v[1])
+                    and ((is_str(v[1]) and v[1] ~= 'which_key_ignore') or is_fun(v[1]))
+                then
+                    tbl[2] = v[1]
+                end
 
-            if not is_nil(bufnr) then
-                wk_opts.buffer = bufnr
+                tbl.mode = mode
+
+                if is_str(v.group) then
+                    tbl.group = v.group
+                elseif is_str(v.name) then
+                    tbl.group = v.name
+                elseif is_tbl(v[2]) and is_str(v[2].desc) then
+                    tbl.desc = v[2].desc
+                end
+                require('which-key').add(tbl)
+
+                ::continue::
             end
-
-            func(WK.convert_dict(T), wk_opts)
         end
     end,
 }

@@ -55,7 +55,7 @@ M.cc = {
 
 function M.loadkeys()
     if WK.available() then
-        map_dict({ ['<leader>Gc'] = { name = '+Commit' } }, 'wk.register', false, 'n')
+        map_dict({ ['<leader>Gc'] = { group = '+Commit' } }, 'wk.register', false, 'n')
     end
     map_dict({
         ['<leader>GcC'] = {

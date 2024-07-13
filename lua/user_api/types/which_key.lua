@@ -4,19 +4,14 @@
 ---@alias ModeEnum MapModes
 
 ---@class RegKey
----@field [1] string|fun()
----@field [2] string
----@field noremap? boolean
----@field nowait? boolean
----@field silent? boolean
+---@field [1] string
+---@field [2] string|fun()
+---@field group? string
+---@field hidden? boolean
 
----@class RegPfx
----@field name string
----@field noremap? boolean
----@field nowait? boolean
----@field silent? boolean
+---@alias RegPfx RegKey
 
----@alias RegKeys table<string, RegKey|'which_key_ignore'|string|{ integer: string }>
+---@alias RegKeys table<string, RegKey>
 ---@alias RegKeysNamed table<string, RegPfx>
 
 ---@class RegOpts

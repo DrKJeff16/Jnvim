@@ -57,7 +57,7 @@ local Keys = {
 }
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>C'] = { name = '+Context' },
+    ['<leader>C'] = { group = '+Context' },
 }
 
 if WK.available() then

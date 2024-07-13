@@ -117,7 +117,7 @@ local Keys = {
 
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
-    n = { ['<leader>T'] = { name = '+Toggleterm' } },
+    n = { ['<leader>T'] = { group = '+Toggleterm' } },
 }
 
 if WK.available() then

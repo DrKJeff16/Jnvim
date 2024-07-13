@@ -91,12 +91,12 @@ local Keys = {
 ---@type table <MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>u'] = { name = '+UI' },
-        ['<leader>uC'] = { name = '+Color Highlighting' },
+        ['<leader>u'] = { group = '+UI' },
+        ['<leader>uC'] = { group = '+Color Highlighting' },
     },
     v = {
-        ['<leader>u'] = { name = '+UI' },
-        ['<leader>uC'] = { name = '+Color Highlighting' },
+        ['<leader>u'] = { group = '+UI' },
+        ['<leader>uC'] = { group = '+Color Highlighting' },
     },
 }
 

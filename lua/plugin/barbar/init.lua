@@ -172,12 +172,12 @@ local Keys = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>b'] = { name = '+Barbar Buffer' },
-        ['<leader>bM'] = { name = '+Buffer Move' },
+        ['<leader>b'] = { group = '+Barbar Buffer' },
+        ['<leader>bM'] = { group = '+Buffer Move' },
     },
     v = {
-        ['<leader>b'] = { name = '+Barbar Buffer' },
-        ['<leader>bM'] = { name = '+Buffer Move' },
+        ['<leader>b'] = { group = '+Barbar Buffer' },
+        ['<leader>bM'] = { group = '+Buffer Move' },
     },
 }
 

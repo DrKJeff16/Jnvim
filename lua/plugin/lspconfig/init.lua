@@ -186,7 +186,7 @@ local Keys = {
 }
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>l'] = { name = '+LSP' },
+    ['<leader>l'] = { group = '+LSP' },
 }
 
 if WK.available() then
@@ -285,11 +285,11 @@ au('LspAttach', {
         ---@type table<MapModes, RegKeysNamed>
         local Names2 = {
             n = {
-                ['<leader>lc'] = { name = '+Code Actions' },
-                ['<leader>lf'] = { name = '+File Analysis' },
-                ['<leader>lw'] = { name = '+Workspace' },
+                ['<leader>lc'] = { group = '+Code Actions' },
+                ['<leader>lf'] = { group = '+File Analysis' },
+                ['<leader>lw'] = { group = '+Workspace' },
             },
-            v = { ['<leader>lc'] = { name = '+Code Actions' } },
+            v = { ['<leader>lc'] = { group = '+Code Actions' } },
         }
 
         if WK.available() then

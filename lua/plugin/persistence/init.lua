@@ -41,7 +41,7 @@ local Keys = {
 
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
-    ['<leader>S'] = { name = '+Session (Persistence)' },
+    ['<leader>S'] = { group = '+Session (Persistence)' },
 }
 
 if WK.available() then
