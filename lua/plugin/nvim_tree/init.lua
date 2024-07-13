@@ -86,7 +86,7 @@ local function map_keys(keys, bufnr)
     for _, mode in next, { 'n', 'v' } do
         if WK.available() then
             map_dict(
-                { ['<leader>ft'] = { name = '+NvimTree' } },
+                { ['<leader>ft'] = { group = '+NvimTree' } },
                 'wk.register',
                 false,
                 mode,

@@ -759,7 +759,12 @@ DVW.setup({
             },
         },
         option_panel = {
-            { 'n', '<Tab>', Actions.select_entry, desc('Change the current option', true, 0) },
+            {
+                'n',
+                '<Tab>',
+                Actions.select_entry,
+                desc('Change the current option', true, 0),
+            },
             { 'n', 'q', Actions.close, desc('Close the panel', true, 0) },
             { 'n', 'g?', Actions.help('option_panel'), desc('Open the help panel', true, 0) },
         },
@@ -777,8 +782,8 @@ local Keys = {
 }
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>G'] = { name = '+Git' },
-    ['<leader>GD'] = { name = '+DiffView' },
+    ['<leader>G'] = { group = '+Git' },
+    ['<leader>GD'] = { group = '+DiffView' },
 }
 
 if WK.available() then

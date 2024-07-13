@@ -266,25 +266,25 @@ local DEFAULT_KEYS = {
 ---@type table<MapModes, RegKeysNamed>
 local DEFAULT_NAMES = {
     n = {
-        ['<leader>b'] = { name = '+Buffer', noremap = false }, --- Buffer Handling
-        ['<leader>f'] = { name = '+File' }, --- File Handling
-        ['<leader>fF'] = { name = '+Folding' }, --- Folding Control
-        ['<leader>fi'] = { name = '+Indent' }, --- Indent Control
-        ['<leader>fv'] = { name = '+Script Files' }, --- Script File Handling
-        ['<leader>?'] = { name = '+Help' }, --- Help
-        ['<leader>q'] = { name = '+Quit Nvim' }, --- Exiting
-        ['<leader>t'] = { name = '+Tabs' }, --- Tabs Handling
-        ['<leader>v'] = { name = '+Vim' }, --- Vim
-        ['<leader>ve'] = { name = '+Edit $MYVIMRC' }, --- `init.lua` Editing
-        ['<leader>w'] = { name = '+Window' }, --- Window Handling
-        ['<leader>ws'] = { name = '+Split' }, --- Window Splitting
+        ['<leader>b'] = { group = '+Buffer', noremap = false }, --- Buffer Handling
+        ['<leader>f'] = { group = '+File' }, --- File Handling
+        ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
+        ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
+        ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
+        ['<leader>?'] = { group = '+Help' }, --- Help
+        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
+        ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
+        ['<leader>v'] = { group = '+Vim' }, --- Vim
+        ['<leader>ve'] = { group = '+Edit $MYVIMRC' }, --- `init.lua` Editing
+        ['<leader>w'] = { group = '+Window' }, --- Window Handling
+        ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
     },
     v = {
-        ['<leader>f'] = { name = '+File' }, --- File Handling
-        ['<leader>fF'] = { name = '+Folding' }, --- Folding
-        ['<leader>h'] = { name = '+Help' }, --- Help
-        ['<leader>i'] = { name = '+Indent' }, --- Indent Control
-        ['<leader>v'] = { name = '+Vim' }, --- Vim
+        ['<leader>f'] = { group = '+File' }, --- File Handling
+        ['<leader>fF'] = { group = '+Folding' }, --- Folding
+        ['<leader>h'] = { group = '+Help' }, --- Help
+        ['<leader>i'] = { group = '+Indent' }, --- Indent Control
+        ['<leader>v'] = { group = '+Vim' }, --- Vim
     },
 }
 

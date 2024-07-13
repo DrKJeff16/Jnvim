@@ -9,6 +9,7 @@ local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
+local map_dict = User.maps.map_dict
 
 if not exists('scope') then
     return
@@ -35,84 +36,5 @@ if exists('barbar') then
 end
 
 Scope.setup(opts)
-
-local tab_hook = function()
-    local kmap = User.maps.kmap
-    local WK = User.maps.wk
-
-    local desc = kmap.desc
-    local nop = User.maps.nop
-
-    ---@type fun(tabnr: integer?): fun()
-    local function tab_cmd(tabnr)
-        if not is_int(tabnr) or empty(tabnr) then
-            return function() vim.cmd('ScopeMoveBuf') end
-        end
-
-        return function() vim.cmd('ScopeMoveBuf' .. tostring(tabnr)) end
-    end
-
-    local prefix = '<leader>b<C-t>'
-    local nop_opts = { noremap = false, nowait = false, silent = true }
-    local tab_count = #vim.api.nvim_list_tabpages()
-
-    ---@type KeyMapDict
-    local Keys = {
-        [prefix .. 't'] = { tab_cmd(), desc('Prompt To Move Buf To Tab') },
-    }
-
-    if tab_count > 1 then
-        local i = 1
-
-        while i < 10 do
-            local i_str = tostring(i)
-
-            if i <= tab_count then
-                Keys[prefix .. i_str] = { tab_cmd(i), desc('Move Current Buffer To Tab ' .. i_str) }
-            else
-                nop(prefix .. i_str, nop_opts, 'n')
-            end
-
-            i = i + 1
-        end
-
-        if WK.available() then
-            WK.register({ [prefix] = { name = '+Move Buff To Tab' } }, { mode = 'n' })
-
-            WK.register(WK.convert_dict(Keys), { mode = 'n' })
-        else
-            for lhs, v in next, Keys do
-                v[2] = is_tbl(v[2]) and v[2] or {}
-
-                kmap.n(lhs, v[1], v[2])
-            end
-        end
-    else
-        --- TODO: Fix parsing for `'which_key_ignore'` in `maps.wk.register`
-        --- HACK: Use `which-key` directly due to unnacounted behaviour
-        if WK.available() then
-            require('which-key').register({ [prefix] = 'which_key_ignore' }, { mode = 'n' })
-        end
-
-        local i = 1
-
-        while i < 10 do
-            local i_str = tostring(i)
-
-            nop(prefix .. i_str, nop_opts, 'n')
-
-            i = i + 1
-        end
-    end
-end
-
-au({ 'TabNew', 'TabNewEntered' }, {
-    group = augroup('ScopeMapHook', { clear = false }),
-    callback = tab_hook,
-})
-au('TabClosed', {
-    group = augroup('ScopeMapHook', { clear = false }),
-    callback = tab_hook,
-})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

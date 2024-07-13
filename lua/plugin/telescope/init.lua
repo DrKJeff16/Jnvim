@@ -198,10 +198,10 @@ local Maps = {
 
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>R'] = { name = '+Reload' },
-    ['<leader>fT'] = { name = '+Telescope' },
-    ['<leader>fTb'] = { name = '+Builtins' },
-    ['<leader>fTe'] = { name = '+Extensions' },
+    ['<leader>R'] = { group = '+Reload' },
+    ['<leader>fT'] = { group = '+Telescope' },
+    ['<leader>fTb'] = { group = '+Builtins' },
+    ['<leader>fTe'] = { group = '+Extensions' },
 }
 
 ---@type table<string, TelExtension>
@@ -268,7 +268,7 @@ local known_exts = {
             }
 
             if is_tbl(Names) then
-                Names['<leader>fTen'] = { name = '+Noice' }
+                Names['<leader>fTen'] = { group = '+Noice' }
             end
 
             return res

@@ -175,8 +175,8 @@ local Keys = {
 }
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>L'] = { name = '+Lazy' },
-    ['<leader>Le'] = { name = '+Edit Lazy File' },
+    ['<leader>L'] = { group = '+Lazy' },
+    ['<leader>Le'] = { group = '+Edit Lazy File' },
 }
 
 if WK.available() then

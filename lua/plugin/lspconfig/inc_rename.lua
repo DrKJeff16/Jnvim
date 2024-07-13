@@ -44,7 +44,7 @@ local Keys = {
     },
 }
 ---@type RegKeysNamed
-local Names = { ['<leader>r'] = { name = '+IncRename' } }
+local Names = { ['<leader>r'] = { group = '+IncRename' } }
 
 if WK.available() then
     map_dict(Names, 'wk.register', false, 'n')
