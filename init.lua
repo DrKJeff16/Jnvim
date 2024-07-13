@@ -99,7 +99,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     ---@type RegKeysNamed
     local NamesCsc = {
-        ['<leader>vc'] = { name = '+Colorschemes' },
+        ['<leader>vc'] = { group = 'Colorschemes' },
     }
 
     local csc_group = 'a'
@@ -113,14 +113,14 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
             found_csc = found_csc ~= '' and found_csc or name
 
             NamesCsc['<leader>vc' .. csc_group] = {
-                name = '+Group ' .. csc_group,
+                group = 'Group ' .. csc_group,
             }
 
             if is_tbl(TColor.variants) and not empty(TColor.variants) then
                 local v = 'a'
                 for _, variant in next, TColor.variants do
                     NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                        name = '+' .. name,
+                        group = name,
                     }
                     CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
                         function() TColor.setup(variant) end,

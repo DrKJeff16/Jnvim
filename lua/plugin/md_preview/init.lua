@@ -82,8 +82,8 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
 
         ---@type table<MapModes, RegKeysNamed>
         local Names = {
-            n = { ['<leader>f<C-m>'] = { name = '+MarkdownPreview' } },
-            v = { ['<leader>f<C-m>'] = { name = '+MarkdownPreview' } },
+            n = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
+            v = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
         }
 
         local bufnr = vim.api.nvim_get_current_buf()

@@ -145,50 +145,50 @@ local Opts = {
             },
         },
     },
-	-- stylua: ignore
-	icons = {
-		---@type trouble.Indent.symbols
-		indent        = {
-			top         = "│ ",
-			middle      = "├╴",
-			last        = "└╴",
-			-- last          = "-╴",
-			-- last       = "╰╴", -- rounded
-			fold_open   = " ",
-			fold_closed = " ",
-			ws          = "  ",
-		},
-		folder_closed = " ",
-		folder_open   = " ",
-		kinds         = {
-			Array         = " ",
-			Boolean       = "󰨙 ",
-			Class         = " ",
-			Constant      = "󰏿 ",
-			Constructor   = " ",
-			Enum          = " ",
-			EnumMember    = " ",
-			Event         = " ",
-			Field         = " ",
-			File          = " ",
-			Function      = "󰊕 ",
-			Interface     = " ",
-			Key           = " ",
-			Method        = "󰊕 ",
-			Module        = " ",
-			Namespace     = "󰦮 ",
-			Null          = " ",
-			Number        = "󰎠 ",
-			Object        = " ",
-			Operator      = " ",
-			Package       = " ",
-			Property      = " ",
-			String        = " ",
-			Struct        = "󰆼 ",
-			TypeParameter = " ",
-			Variable      = "󰀫 ",
-		},
-	},
+    -- stylua: ignore
+    icons = {
+        ---@type trouble.Indent.symbols
+        indent        = {
+            top         = "│ ",
+            middle      = "├╴",
+            last        = "└╴",
+            -- last          = "-╴",
+            -- last       = "╰╴", -- rounded
+            fold_open   = " ",
+            fold_closed = " ",
+            ws          = "  ",
+        },
+        folder_closed = " ",
+        folder_open   = " ",
+        kinds         = {
+            Array         = " ",
+            Boolean       = "󰨙 ",
+            Class         = " ",
+            Constant      = "󰏿 ",
+            Constructor   = " ",
+            Enum          = " ",
+            EnumMember    = " ",
+            Event         = " ",
+            Field         = " ",
+            File          = " ",
+            Function      = "󰊕 ",
+            Interface     = " ",
+            Key           = " ",
+            Method        = "󰊕 ",
+            Module        = " ",
+            Namespace     = "󰦮 ",
+            Null          = " ",
+            Number        = "󰎠 ",
+            Object        = " ",
+            Operator      = " ",
+            Package       = " ",
+            Property      = " ",
+            String        = " ",
+            Struct        = "󰆼 ",
+            TypeParameter = " ",
+            Variable      = "󰀫 ",
+        },
+    },
 }
 
 Trouble.setup(Opts)
@@ -242,8 +242,8 @@ local Keys = {
 }
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
-    n = { ['<leader>lx'] = { name = '+Trouble' } },
-    v = { ['<leader>lx'] = { name = '+Trouble' } },
+    n = { ['<leader>lx'] = { group = '+Trouble' } },
+    v = { ['<leader>lx'] = { group = '+Trouble' } },
 }
 
 for mode, t in next, Keys do

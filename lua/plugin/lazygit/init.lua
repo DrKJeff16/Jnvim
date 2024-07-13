@@ -87,12 +87,12 @@ local Keys = {
 ---@type table<MapModes, RegKeysNamed>
 local Names = {
     n = {
-        ['<leader>G'] = { name = '+Git' },
-        ['<leader>Gl'] = { name = '+LazyGit' },
+        ['<leader>G'] = { group = '+Git' },
+        ['<leader>Gl'] = { group = '+LazyGit' },
     },
     v = {
-        ['<leader>G'] = { name = '+Git' },
-        ['<leader>Gl'] = { name = '+LazyGit' },
+        ['<leader>G'] = { group = '+Git' },
+        ['<leader>Gl'] = { group = '+LazyGit' },
     },
 }
 

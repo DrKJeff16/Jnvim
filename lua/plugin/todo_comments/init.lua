@@ -185,10 +185,10 @@ local Keys = {
 
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>c'] = { name = '+TODO Comments' },
-    ['<leader>cw'] = { name = "+'WARNING'" },
-    ['<leader>ce'] = { name = "+'ERROR'" },
-    ['<leader>ct'] = { name = "+'TODO'" },
+    ['<leader>c'] = { group = '+TODO Comments' },
+    ['<leader>cw'] = { group = "+'WARNING'" },
+    ['<leader>ce'] = { group = "+'ERROR'" },
+    ['<leader>ct'] = { group = "+'TODO'" },
 }
 
 if WK.available() then

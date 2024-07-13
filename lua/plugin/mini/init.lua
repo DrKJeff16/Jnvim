@@ -211,8 +211,8 @@ for mod, opts in next, Mods do
     src(mod, opts)
 
     if mod == 'move' and WK.available() then
-        map_dict({ ['<leader>M'] = { name = '+Mini Move' } }, 'wk.register', false, 'n')
-        map_dict({ ['<leader>M'] = { name = '+Mini Move' } }, 'wk.register', false, 'v')
+        map_dict({ ['<leader>M'] = { group = '+Mini Move' } }, 'wk.register', false, 'n')
+        map_dict({ ['<leader>M'] = { group = '+Mini Move' } }, 'wk.register', false, 'v')
     end
 end
 

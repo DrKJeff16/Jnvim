@@ -90,13 +90,13 @@ GS.setup({
         ---@type table<MapModes, RegKeysNamed>
         local Names = {
             n = {
-                ['<leader>G'] = { name = '+Git' },
-                ['<leader>Gh'] = { name = '+GitSigns Hunks' },
-                ['<leader>Gt'] = { name = '+GitSigns Toggles' },
+                ['<leader>G'] = { group = '+Git' },
+                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
+                ['<leader>Gt'] = { group = '+GitSigns Toggles' },
             },
             v = {
-                ['<leader>G'] = { name = '+Git' },
-                ['<leader>Gh'] = { name = '+GitSigns Hunks' },
+                ['<leader>G'] = { group = '+Git' },
+                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
             },
         }
 
