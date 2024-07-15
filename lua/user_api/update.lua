@@ -10,7 +10,7 @@ local map_dict = require('user_api.maps').map_dict
 
 ---@type User.Update
 local M = {
-    ---@return string
+    ---@return string?
     update = function()
         local old_cwd = vim.fn.getcwd(0, 0)
 
