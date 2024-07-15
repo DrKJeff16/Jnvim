@@ -23,16 +23,14 @@ local Scope = require('scope')
 
 local opts = { hooks = {} }
 
-if exists('barbar') then
-    function opts.hooks.pre_tab_leave()
-        au_exec('User', { pattern = 'ScopeTabLeavePre' })
-        -- [other statements]
-    end
+function opts.hooks.pre_tab_leave()
+    au_exec('User', { pattern = 'ScopeTabLeavePre' })
+    -- [other statements]
+end
 
-    function opts.hooks.post_tab_enter()
-        au_exec('User', { pattern = 'ScopeTabEnterPost' })
-        -- [other statements]
-    end
+function opts.hooks.post_tab_enter()
+    au_exec('User', { pattern = 'ScopeTabEnterPost' })
+    -- [other statements]
 end
 
 Scope.setup(opts)

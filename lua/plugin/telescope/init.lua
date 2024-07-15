@@ -89,7 +89,7 @@ local Opts = {
     pickers = {
         autocommands = { theme = 'ivy' },
         buffers = { theme = 'dropdown' },
-        colorscheme = { theme = 'ivy' },
+        colorscheme = { theme = 'dropdown' },
         commands = { theme = 'ivy' },
         current_buffer_fuzzy_find = { theme = 'cursor' },
         fd = { theme = 'dropdown' },
