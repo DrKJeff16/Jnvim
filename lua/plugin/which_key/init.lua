@@ -20,7 +20,7 @@ WK.setup({
     preset = 'modern',
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
-    delay = function(ctx) return ctx.plugin and 0 or 100 end,
+    delay = function(ctx) return ctx.plugin and 0 or 50 end,
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
     spec = {},
@@ -48,7 +48,7 @@ WK.setup({
         presets = {
             operators = true, -- adds help for operators like d, y, ...
             motions = true, -- adds help for motions
-            text_objects = false, -- help for text objects triggered after entering an operator
+            text_objects = true, -- help for text objects triggered after entering an operator
             windows = true, -- default bindings on <c-w>
             nav = true, -- misc bindings to work with windows
             z = false, -- bindings for folds, spelling and others prefixed with z
@@ -56,10 +56,12 @@ WK.setup({
         },
     },
     ---@type wk.Win
+    ---@diagnostic disable-next-line:missing-fields
     win = {
         -- width = { min = 30, max = 50 },
         -- height = { min = 4, max = 25 },
         -- col = 0,
+        no_overlap = true,
         row = 0,
         border = 'single',
         padding = { 1, 1 }, -- extra window padding [top/bottom, right/left]
@@ -69,11 +71,11 @@ WK.setup({
         -- Additional vim.wo and vim.bo options
         bo = {},
         wo = {
-            winblend = 30, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+            winblend = require('user_api.check').in_console() and 0 or 30, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         },
     },
     layout = {
-        width = { min = 20 }, -- min and max width of the columns
+        width = { min = 20, max = vim.opt_local.columns:get() }, -- min and max width of the columns
         spacing = 2, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
@@ -84,7 +86,7 @@ WK.setup({
     ---@type (string|wk.Sorter)[]
     --- Add "manual" as the first element to use the order the mappings were registered
     --- Other sorters: "desc"
-    sort = { 'manual', 'local', 'group', 'order', 'mod', 'alphanum' },
+    sort = { 'order', 'manual', 'local', 'group', 'mod', 'alphanum' },
     expand = 0, -- expand groups when <= n mappings
     ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
     replace = {
