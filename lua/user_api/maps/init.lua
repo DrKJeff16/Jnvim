@@ -108,14 +108,11 @@ local M = {
                             goto continue
                         end
 
-                        if
-                            not is_nil(v[1])
-                            and ((is_str(v[1]) and v[1] ~= 'which_key_ignore') or is_fun(v[1]))
-                        then
+                        if not is_nil(v[1]) then
                             tbl[2] = v[1]
                         end
 
-                        tbl.mode = mode
+                        tbl.mode = { mode_choice }
 
                         if is_str(v.group) then
                             tbl.group = v.group
@@ -124,7 +121,12 @@ local M = {
                         elseif is_tbl(v[2]) and is_str(v[2].desc) then
                             tbl.desc = v[2].desc
                         end
-                        require('which-key').add(tbl)
+
+                        if not is_nil(bufnr) then
+                            tbl.buffer = bufnr
+                        end
+
+                        require('which-key').add(tbl, { create = true })
 
                         ::continue::
                     end
@@ -148,14 +150,11 @@ local M = {
                     goto continue
                 end
 
-                if
-                    not is_nil(v[1])
-                    and ((is_str(v[1]) and v[1] ~= 'which_key_ignore') or is_fun(v[1]))
-                then
+                if not is_nil(v[1]) then
                     tbl[2] = v[1]
                 end
 
-                tbl.mode = mode
+                tbl.mode = { mode }
 
                 if is_str(v.group) then
                     tbl.group = v.group
@@ -164,7 +163,12 @@ local M = {
                 elseif is_tbl(v[2]) and is_str(v[2].desc) then
                     tbl.desc = v[2].desc
                 end
-                require('which-key').add(tbl)
+
+                if not is_nil(bufnr) then
+                    tbl.buffer = bufnr
+                end
+
+                require('which-key').add(tbl, { create = true })
 
                 ::continue::
             end
