@@ -18,8 +18,9 @@ local M = {
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
-        event = 'VeryLazy',
+        ft = { 'c', 'cpp' },
         version = false,
+        config = source('plugin.doxygen'),
         cond = executable('doxygen'),
     },
 }
