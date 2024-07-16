@@ -97,6 +97,7 @@ local M = {
         ft = { 'gitcommit' },
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
+        cond = not in_console(),
     },
     --- Project Manager
     {
