@@ -126,8 +126,6 @@ local function assoc()
     local is_str = Value.is_str
     local empty = Value.empty
 
-    local ft = ft_set
-
     local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
@@ -136,11 +134,27 @@ local function assoc()
 
     ---@type AuRepeatEvents[]
     local aus = {
-        {
+        { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
-                { pattern = '.spacemacs', callback = ft('lisp'), group = group },
-                { pattern = '.clangd', callback = ft('yaml'), group = group },
+                { pattern = '.spacemacs', callback = ft_set('lisp'), group = group },
+                { pattern = '.clangd', callback = ft_set('yaml'), group = group },
+            },
+        },
+        {
+            events = { 'BufRead', 'WinEnter' },
+            opts_tbl = {
+                {
+                    pattern = '*.txt',
+                    group = group,
+                    callback = function()
+                        if ft_get() ~= 'help' then
+                            return
+                        end
+
+                        vim.cmd.wincmd('=')
+                    end,
+                },
             },
         },
         {
@@ -148,6 +162,7 @@ local function assoc()
             opts_tbl = {
                 {
                     pattern = 'c',
+                    group = group,
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
                         local opts = {
@@ -164,6 +179,7 @@ local function assoc()
                 },
                 {
                     pattern = 'cpp',
+                    group = group,
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
                         local opts = {
@@ -180,6 +196,7 @@ local function assoc()
                 },
                 {
                     pattern = 'markdown',
+                    group = group,
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
                         local opts = {
@@ -196,6 +213,7 @@ local function assoc()
                 },
                 {
                     pattern = 'lua',
+                    group = group,
                     callback = function()
                         local map_dict = require('user_api.maps').map_dict
                         local WK = require('user_api.maps.wk')
@@ -218,7 +236,10 @@ local function assoc()
     local ok, _ = pcall(require, 'orgmode')
 
     if ok then
-        table.insert(aus[1].opts_tbl, { pattern = '*.org', callback = ft('org'), group = group })
+        table.insert(
+            aus[1].opts_tbl,
+            { pattern = '*.org', callback = ft_set('org'), group = group }
+        )
     end
 
     local notify = require('user_api.util.notify').notify
