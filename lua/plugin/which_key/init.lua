@@ -35,6 +35,20 @@ WK.setup({
         o = true, -- Operator pending mode
         t = true, -- Terminal mode
         c = true, -- Command mode
+        -- Start hidden and wait for a key to be pressed before showing the popup
+        -- Only used by enabled xo mapping modes.
+        -- Set to false to show the popup immediately (after the delay)
+        defer = {
+            ['<C-V>'] = true,
+            V = true,
+            v = true,
+            ["'"] = true,
+            g = false,
+            ['"'] = true,
+            ['!'] = true,
+            ['<Space>'] = false,
+            ['<Esc>'] = true,
+        },
     },
     plugins = {
         marks = true, -- shows a list of your marks on ' and `
@@ -63,7 +77,7 @@ WK.setup({
         -- col = 0,
         no_overlap = true,
         row = 0,
-        border = 'single',
+        border = 'rounded',
         padding = { 1, 1 }, -- extra window padding [top/bottom, right/left]
         title = true,
         title_pos = 'center',
@@ -87,7 +101,10 @@ WK.setup({
     --- Add "manual" as the first element to use the order the mappings were registered
     --- Other sorters: "desc"
     sort = { 'order', 'manual', 'local', 'group', 'mod', 'alphanum' },
-    expand = 0, -- expand groups when <= n mappings
+    -- expand = 0, -- expand groups when <= n mappings
+    expand = function(node)
+        return not node.desc -- expand all nodes without a description
+    end,
     ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
     replace = {
         key = {
@@ -113,7 +130,7 @@ WK.setup({
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
         ---@type wk.IconRule[]|false
-        rules = false,
+        rules = {},
         -- use the highlights from mini.icons
         -- When `false`, it will use `WhichKeyIcon` instead
         colors = true,
