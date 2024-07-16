@@ -68,6 +68,7 @@ local M = {
                 close_tab_shortcut_n = 'D', -- if you're in normal mode
             })
         end,
+        cond = not in_console(),
     },
     {
         'DrKJeff16/telescope-makefile',
@@ -82,6 +83,14 @@ local M = {
 
             require('telescope').load_extension('make')
         end,
+        cond = (executable('make') or executable('mingw32-make')) and not in_console(),
+    },
+    {
+        'olacin/telescope-cc.nvim',
+        ft = { 'gitcommit' },
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+        cond = not in_console(),
     },
     {
         'olacin/telescope-cc.nvim',
@@ -91,9 +100,8 @@ local M = {
     },
     --- Project Manager
     {
-        'ahmedkhalf/project.nvim',
+        'DrKJeff16/project.nvim',
         event = 'VeryLazy',
-        dev = true,
         main = 'project_nvim',
         version = false,
         init = function()
