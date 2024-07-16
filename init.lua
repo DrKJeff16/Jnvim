@@ -21,6 +21,7 @@ _G.is_windows = Check.exists.vim_has('win32')
 User.opts.setup({ ---@see User.Opts.Spec For more info
     background = 'dark',
     cmdwinheight = 5,
+    copyindent = false,
     confirm = true,
     equalalways = true,
     expandtab = true,
@@ -32,6 +33,7 @@ User.opts.setup({ ---@see User.Opts.Spec For more info
     matchtime = 30,
     menuitems = 40,
     number = true,
+    preserveindent = false,
     relativenumber = false,
     ruler = true,
     scrolloff = 3,
