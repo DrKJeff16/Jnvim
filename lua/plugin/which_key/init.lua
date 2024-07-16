@@ -87,7 +87,10 @@ WK.setup({
     --- Add "manual" as the first element to use the order the mappings were registered
     --- Other sorters: "desc"
     sort = { 'order', 'manual', 'local', 'group', 'mod', 'alphanum' },
-    expand = 0, -- expand groups when <= n mappings
+    -- expand = 0, -- expand groups when <= n mappings
+    expand = function(node)
+        return not node.desc -- expand all nodes without a description
+    end,
     ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
     replace = {
         key = {
@@ -113,7 +116,7 @@ WK.setup({
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
         ---@type wk.IconRule[]|false
-        rules = false,
+        rules = {},
         -- use the highlights from mini.icons
         -- When `false`, it will use `WhichKeyIcon` instead
         colors = true,
