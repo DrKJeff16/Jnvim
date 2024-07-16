@@ -31,7 +31,7 @@ local M = {
 }
 
 if wk_available() then
-    map_dict({ ['<leader>U'] = { name = '+User API' } }, 'wk.register', false, 'n')
+    map_dict({ ['<leader>U'] = { group = '+User API' } }, 'wk.register', false, 'n')
 end
 map_dict({ ['<leader>Uu'] = { M.update, desc('Update User Config') } }, 'wk.register', false, 'n')
 
