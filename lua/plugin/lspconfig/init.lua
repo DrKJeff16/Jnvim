@@ -86,6 +86,10 @@ local function populate(T)
 
         if exists('cmp_nvim_lsp') then
             res[k].capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+            if k == 'jsonls' then
+                res[k].capabilities.textDocument.completion.completionItem.snippetSupport = true
+            end
         end
 
         if exists('schemastore') then
@@ -94,19 +98,14 @@ local function populate(T)
             if k == 'jsonls' then
                 res[k].settings = {}
                 res[k].settings.json = {
-                    schemas = SchSt.json.schemas({
-                        select = {
-                            '.eslintrc',
-                            'package.json',
-                        },
-                    }),
+                    schemas = SchSt.json.schemas(),
                     validate = { enable = true },
                 }
             elseif k == 'yamlls' then
                 res[k].settings = {}
                 res[k].settings.yaml = {
                     schemaStore = { enable = false, url = '' },
-                    schemas = SchSt.yaml.schemas({}),
+                    schemas = SchSt.yaml.schemas(),
                 }
             end
         end
