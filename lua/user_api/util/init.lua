@@ -215,11 +215,11 @@ local function assoc()
                     pattern = 'lua',
                     group = group,
                     callback = function()
-                        local map_dict = require('user_api.maps').map_dict
-                        local WK = require('user_api.maps.wk')
-                        local desc = require('user_api.maps.kmap').desc
-
                         if require('user_api.check.exists').executable('stylua') then
+                            local map_dict = require('user_api.maps').map_dict
+                            local WK = require('user_api.maps.wk')
+                            local desc = require('user_api.maps.kmap').desc
+
                             map_dict({
                                 ['<leader><C-l>'] = {
                                     ':silent !stylua %<CR>',

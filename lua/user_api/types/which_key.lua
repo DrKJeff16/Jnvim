@@ -1,26 +1,29 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@alias ModeEnum MapModes
-
 ---@class RegKey
 ---@field [1] string
 ---@field [2] string|fun()
+---@field desc? string
 ---@field group? string
 ---@field hidden? boolean
-
----@alias RegPfx RegKey
+---@field mode? MapModes
 
 ---@alias RegKeys table<string, RegKey>
----@alias RegKeysNamed table<string, RegPfx>
+---@alias RegKeysNamed RegKeys
+---@alias ModeRegKeys table<MapModes, RegKeys>
+---@alias ModeRegKeysNamed ModeRegKeys
+
+---@class RegKeyOpts
+---@field desc? string
+---@field mode? MapModes
+---@field hidden? boolean
+---@field group? string
+---@field name? string
 
 ---@class RegOpts
----@field buffer? integer|nil
----@field mode MapModes
----@field prefix? string
----@field silent? boolean
----@field noremap? boolean
----@field nowait? boolean
----@field expr? boolean
+---@field create? boolean
+---@field notify? boolean
+---@field version? number
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
