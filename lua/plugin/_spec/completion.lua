@@ -69,6 +69,7 @@ local M = {
     },
     {
         'hrsh7th/cmp-cmdline',
+        event = 'CmdlineEnter',
         version = false,
     },
     {

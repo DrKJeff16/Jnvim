@@ -112,13 +112,15 @@ local M = {
                             tbl[2] = v[1]
                         end
 
-                        tbl.mode = { mode_choice }
+                        tbl.mode = mode_choice
 
                         if is_str(v.group) then
                             tbl.group = v.group
                         elseif is_str(v.name) then
                             tbl.group = v.name
-                        elseif is_tbl(v[2]) and is_str(v[2].desc) then
+                        end
+
+                        if is_tbl(v[2]) and is_str(v[2].desc) then
                             tbl.desc = v[2].desc
                         end
 
@@ -154,13 +156,15 @@ local M = {
                     tbl[2] = v[1]
                 end
 
-                tbl.mode = { mode }
+                tbl.mode = mode
 
                 if is_str(v.group) then
                     tbl.group = v.group
                 elseif is_str(v.name) then
                     tbl.group = v.name
-                elseif is_tbl(v[2]) and is_str(v[2].desc) then
+                end
+
+                if is_tbl(v[2]) and is_str(v[2].desc) then
                     tbl.desc = v[2].desc
                 end
 
