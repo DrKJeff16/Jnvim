@@ -31,6 +31,10 @@ function M.convert(lhs, rhs, opts)
     ---@type RegKey
     local res = { lhs, rhs }
 
+    if is_bool(opts.hidden) and not empty(opts.hidden) then
+        res.hidden = opts.hidden
+    end
+
     if is_str(opts.group) and not empty(opts.group) then
         res.group = opts.group
         return res
@@ -41,9 +45,6 @@ function M.convert(lhs, rhs, opts)
 
     if is_str(opts.desc) and not empty(opts.desc) then
         res.desc = opts.desc
-    end
-    if is_bool(opts.hidden) and not empty(opts.hidden) then
-        res.hidden = opts.hidden
     end
 
     return res

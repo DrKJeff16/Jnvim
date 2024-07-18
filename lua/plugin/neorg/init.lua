@@ -32,7 +32,6 @@ Neorg.setup({
             },
         },
         ['core.summary'] = {},
-        ['core.mode'] = {},
         ['core.itero'] = {},
         ['core.esupports.indent'] = {},
         ['core.esupports.metagen'] = {},

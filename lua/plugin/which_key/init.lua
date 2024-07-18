@@ -16,40 +16,17 @@ vim.opt.timeoutlen = 300
 local WK = require('which-key')
 
 WK.setup({
-    ---@type false | "classic" | "modern" | "helix"
-    preset = 'modern',
+    ---@type false|'classic'|'modern'|'helix'
+    preset = 'classic',
     -- Delay before showing the popup. Can be a number or a function that returns a number.
-    ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
-    delay = function(ctx) return ctx.plugin and 0 or 50 end,
+    ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
+    delay = function(ctx) return ctx.plugin and 0 or 100 end,
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
     spec = {},
     -- show a warning when issues were detected with your mappings
     notify = true,
     -- Enable/disable WhichKey for certain mapping modes
-    modes = {
-        n = true, -- Normal mode
-        i = true, -- Insert mode
-        x = true, -- Visual mode
-        s = true, -- Select mode
-        o = true, -- Operator pending mode
-        t = true, -- Terminal mode
-        c = true, -- Command mode
-        -- Start hidden and wait for a key to be pressed before showing the popup
-        -- Only used by enabled xo mapping modes.
-        -- Set to false to show the popup immediately (after the delay)
-        defer = {
-            ['<C-V>'] = true,
-            V = true,
-            v = true,
-            ["'"] = true,
-            g = false,
-            ['"'] = true,
-            ['!'] = true,
-            ['<Space>'] = false,
-            ['<Esc>'] = true,
-        },
-    },
     plugins = {
         marks = true, -- shows a list of your marks on ' and `
         registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -75,10 +52,11 @@ WK.setup({
         -- width = { min = 30, max = 50 },
         -- height = { min = 4, max = 25 },
         -- col = 0,
+        fixed = true,
         no_overlap = true,
         row = 0,
         border = 'rounded',
-        padding = { 1, 1 }, -- extra window padding [top/bottom, right/left]
+        padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
         title = true,
         title_pos = 'center',
         zindex = 1000,
@@ -105,7 +83,7 @@ WK.setup({
     expand = function(node)
         return not node.desc -- expand all nodes without a description
     end,
-    ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
+    ---@type table<string, ({[1]: string, [2]: string}|fun(str:string): string)[]>
     replace = {
         key = {
             function(key) return require('which-key.view').format(key) end,
@@ -130,7 +108,10 @@ WK.setup({
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
         ---@type wk.IconRule[]|false
-        rules = {},
+        rules = {
+            { pattern = 'toggleterm', icon = ' ', color = 'cyan' },
+            { pattern = 'lsp', icon = ' ', color = 'purple' },
+        },
         -- use the highlights from mini.icons
         -- When `false`, it will use `WhichKeyIcon` instead
         colors = true,
@@ -157,6 +138,18 @@ WK.setup({
             Space = 'SPC ',
             -- Tab = '󰌒 ',
             Tab = 'TAB ',
+            F1 = '󱊫',
+            F2 = '󱊬',
+            F3 = '󱊭',
+            F4 = '󱊮',
+            F5 = '󱊯',
+            F6 = '󱊰',
+            F7 = '󱊱',
+            F8 = '󱊲',
+            F9 = '󱊳',
+            F10 = '󱊴',
+            F11 = '󱊵',
+            F12 = '󱊶',
         },
     },
     show_help = true, -- show a help message in the command line for using WhichKey
@@ -164,7 +157,11 @@ WK.setup({
     -- Which-key automatically sets up triggers for your mappings.
     -- But you can disable this and setup the triggers yourself.
     -- Be aware, that triggers are not needed for visual and operator pending mode.
-    triggers = true, -- automatically setup triggers
+    ---@type wk.Spec
+    triggers = {
+        { '<auto>', mode = 'nixsotc' },
+        { '<leader>', mode = { 'n', 'v' } },
+    },
     disable = {
         -- disable WhichKey for certain buf types and file types.
         ft = {},
