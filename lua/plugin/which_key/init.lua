@@ -52,10 +52,11 @@ WK.setup({
         -- width = { min = 30, max = 50 },
         -- height = { min = 4, max = 25 },
         -- col = 0,
+        fixed = true,
         no_overlap = true,
         row = 0,
         border = 'rounded',
-        padding = { 1, 1 }, -- extra window padding [top/bottom, right/left]
+        padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
         title = true,
         title_pos = 'center',
         zindex = 1000,
@@ -82,7 +83,7 @@ WK.setup({
     expand = function(node)
         return not node.desc -- expand all nodes without a description
     end,
-    ---@type table<string, ({[1]:string, [2]:string}|fun(str:string):string)[]>
+    ---@type table<string, ({[1]: string, [2]: string}|fun(str:string): string)[]>
     replace = {
         key = {
             function(key) return require('which-key.view').format(key) end,
@@ -107,7 +108,10 @@ WK.setup({
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
         ---@type wk.IconRule[]|false
-        rules = {},
+        rules = {
+            { pattern = 'toggleterm', icon = ' ', color = 'cyan' },
+            { pattern = 'lsp', icon = ' ', color = 'purple' },
+        },
         -- use the highlights from mini.icons
         -- When `false`, it will use `WhichKeyIcon` instead
         colors = true,
@@ -134,6 +138,18 @@ WK.setup({
             Space = 'SPC ',
             -- Tab = '󰌒 ',
             Tab = 'TAB ',
+            F1 = '󱊫',
+            F2 = '󱊬',
+            F3 = '󱊭',
+            F4 = '󱊮',
+            F5 = '󱊯',
+            F6 = '󱊰',
+            F7 = '󱊱',
+            F8 = '󱊲',
+            F9 = '󱊳',
+            F10 = '󱊴',
+            F11 = '󱊵',
+            F12 = '󱊶',
         },
     },
     show_help = true, -- show a help message in the command line for using WhichKey
