@@ -16,40 +16,17 @@ vim.opt.timeoutlen = 300
 local WK = require('which-key')
 
 WK.setup({
-    ---@type false | "classic" | "modern" | "helix"
-    preset = 'modern',
+    ---@type false|'classic'|'modern'|'helix'
+    preset = 'classic',
     -- Delay before showing the popup. Can be a number or a function that returns a number.
-    ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
-    delay = function(ctx) return ctx.plugin and 0 or 50 end,
+    ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
+    delay = function(ctx) return ctx.plugin and 0 or 100 end,
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
     spec = {},
     -- show a warning when issues were detected with your mappings
     notify = true,
     -- Enable/disable WhichKey for certain mapping modes
-    modes = {
-        n = true, -- Normal mode
-        i = true, -- Insert mode
-        x = true, -- Visual mode
-        s = true, -- Select mode
-        o = true, -- Operator pending mode
-        t = true, -- Terminal mode
-        c = true, -- Command mode
-        -- Start hidden and wait for a key to be pressed before showing the popup
-        -- Only used by enabled xo mapping modes.
-        -- Set to false to show the popup immediately (after the delay)
-        defer = {
-            ['<C-V>'] = true,
-            V = true,
-            v = true,
-            ["'"] = true,
-            g = false,
-            ['"'] = true,
-            ['!'] = true,
-            ['<Space>'] = false,
-            ['<Esc>'] = true,
-        },
-    },
     plugins = {
         marks = true, -- shows a list of your marks on ' and `
         registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
@@ -164,7 +141,11 @@ WK.setup({
     -- Which-key automatically sets up triggers for your mappings.
     -- But you can disable this and setup the triggers yourself.
     -- Be aware, that triggers are not needed for visual and operator pending mode.
-    triggers = true, -- automatically setup triggers
+    ---@type wk.Spec
+    triggers = {
+        { '<auto>', mode = 'nixsotc' },
+        { '<leader>', mode = { 'n', 'v' } },
+    },
     disable = {
         -- disable WhichKey for certain buf types and file types.
         ft = {},
