@@ -84,7 +84,7 @@ local M = {
     },
     {
         'rafamadriz/friendly-snippets',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
     },
     {
