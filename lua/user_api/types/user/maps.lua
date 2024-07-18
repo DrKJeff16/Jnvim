@@ -56,8 +56,6 @@ require('user_api.types.which_key')
 ---@field rhs string
 ---@field opts? User.Maps.Api.Opts
 
----@class MapTbl: ApiMapTbl
-
 ---@class KeyMapTbl: ApiMapTbl
 ---@field rhs string|fun()
 ---@field opts? User.Maps.Keymap.Opts
@@ -66,9 +64,9 @@ require('user_api.types.which_key')
 ---@class BufMapTbl: ApiMapTbl
 ---@field bufnr integer
 
----@alias ApiMapFunction fun(lhs: string, rhs: string, opts: User.Maps.Api.Opts?)
----@alias KeyMapFunction fun(lhs: string, rhs: string|fun(), opts: User.Maps.Keymap.Opts?)
----@alias BufMapFunction fun(b: integer, lhs: string, rhs: string, opts: User.Maps.Api.Opts?)
+---@alias ApiMapFunction fun(lhs: string, rhs: User.Maps.Api.Rhs, opts: User.Maps.Api.Opts?)
+---@alias KeyMapFunction fun(lhs: string, rhs: User.Maps.Keymap.Rhs, opts: User.Maps.Keymap.Opts?)
+---@alias BufMapFunction fun(b: integer, lhs: string, rhs: User.Maps.Api.Rhs, opts: User.Maps.Api.Opts?)
 
 ---@alias ApiMapModeDicts table<MapModes, ApiMapTbl[]>
 ---@alias KeyMapModeDicts table<MapModes, KeyMapTbl[]>
@@ -78,9 +76,7 @@ require('user_api.types.which_key')
 ---@alias KeyMapModeDict table<MapModes, KeyMapDict>
 ---@alias BufMapModeDict table<MapModes, ApiMapDict>
 
----@alias MapFuncs
----|fun(mode: string, lhs: string|string[], rhs: string|fun(), opts:(User.Maps.Api.Opts|User.Maps.Keymap.Opts)?)
----|fun(bufnr: integer, mode: string, lhs: string|string[], rhs: string, opts: User.Maps.Buf.Opts?)
+---@alias MapFuncs ApiMapFunction|KeyMapFunction|BufMapFunction
 
 ---@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Api.Opts
 ---@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Buf.Opts
@@ -115,9 +111,9 @@ require('user_api.types.which_key')
 
 ---@class User.Maps.WK
 ---@field available fun(): boolean
----@field convert fun(rhs: User.Maps.Keymap.Rhs|User.Maps.Api.Rhs|RegPfx|RegKey, opts: (User.Maps.Api.Opts|User.Maps.Keymap.Opts|User.Maps.Buf.Opts)?): RegKey|RegPfx|'which_key_ignore'
----@field convert_dict fun(T: KeyMapDict|ApiMapDict|RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
----@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false|nil
+---@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|User.Maps.Api.Rhs|RegKey, opts: (User.Maps.Api.Opts|User.Maps.Keymap.Opts|User.Maps.Buf.Opts|RegKeyOpts)?): RegKey
+---@field convert_dict fun(T: KeyMapDict|ApiMapDict|RegKeys): RegKeys
+---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false?
 
 ---@class User.Maps
 ---@field kmap User.Maps.Keymap

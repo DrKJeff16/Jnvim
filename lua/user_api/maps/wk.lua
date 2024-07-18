@@ -18,7 +18,7 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 --- `which_key` API entrypoints
 ---@type User.Maps.WK
 M = {
-    available = function() return Check.exists.module('which-key') end,
+    available = function() return require('user_api.check.exists').module('which-key') end,
 }
 
 function M.convert(lhs, rhs, opts)
@@ -42,7 +42,7 @@ function M.convert(lhs, rhs, opts)
     if is_str(opts.desc) and not empty(opts.desc) then
         res.desc = opts.desc
     end
-    if is_str(opts.hidden) and not empty(opts.hidden) then
+    if is_bool(opts.hidden) and not empty(opts.hidden) then
         res.hidden = opts.hidden
     end
 
@@ -78,7 +78,7 @@ function M.register(T, opts)
     local filtered = {}
 
     for _, val in next, T do
-        table.insert(filtered, t)
+        table.insert(filtered, val)
     end
 
     WK.add(filtered)
