@@ -156,7 +156,7 @@ local M = {
                     table.insert(tbl, v[1])
                 end
 
-                tbl.mode = { mode }
+                tbl.mode = mode
 
                 if is_str(v.group) then
                     tbl.group = v.group
