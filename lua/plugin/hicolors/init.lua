@@ -24,18 +24,18 @@ HiColors.setup({
     virtual_symbol = '■',
 
     ---Set virtual symbol suffix (defaults to '')
-    virtual_symbol_prefix = '',
+    virtual_symbol_prefix = ' ',
 
     ---Set virtual symbol suffix (defaults to ' ')
-    virtual_symbol_suffix = ' ',
+    virtual_symbol_suffix = '',
 
-    ---Set virtual symbol position()
-    ---@usage 'inline'|'eol'|'eow'
-    ---inline mimics VS Code style
-    ---eol stands for `end of column` - Recommended to set `virtual_symbol_suffix = ''` when used.
-    ---eow stands for `end of word` - Recommended to set `virtual_symbol_prefix = ' ' and virtual_symbol_suffix = ''` when used
+    --- Set virtual symbol position()
+    ---
+    --- `inline` mimics VS Code style
+    --- `eol` stands for `end of column` - Recommended to set `virtual_symbol_suffix = ''` when used.
+    --- `eow` stands for `end of word` - Recommended to set `virtual_symbol_prefix = ' ' and virtual_symbol_suffix = ''` when used
     ---@type 'inline'|'eol'|'eow'
-    virtual_symbol_position = 'inline',
+    virtual_symbol_position = 'eow',
 
     ---Highlight hex colors, e.g. '#FFFFFF'
     enable_hex = true,
@@ -67,42 +67,35 @@ HiColors.setup({
     },
 
     -- Exclude filetypes or buftypes from highlighting e.g. 'exclude_buftypes = {'text'}'
-    exclude_filetypes = {},
-    exclude_buftypes = {
-        'text',
+    exclude_filetypes = {
         'gitcommit',
         'gitignore',
+        'lazy',
+        'NvimTree',
+        'packer',
+        'prompt',
+    },
+    exclude_buftypes = {
+        'terminal',
+        'prompt',
     },
 })
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>uCt'] = { HiColors.toggle, desc('Toggle Color Highlighting') },
-        ['<leader>uC+'] = { HiColors.turnOn, desc('Turn Color Highlighting On') },
-        ['<leader>uC-'] = { HiColors.turnOff, desc('Turn Color Highlighting Off') },
-    },
-    v = {
-        ['<leader>uCt'] = { HiColors.toggle, desc('Toggle Color Highlighting') },
-        ['<leader>uC+'] = { HiColors.turnOn, desc('Turn Color Highlighting On') },
-        ['<leader>uC-'] = { HiColors.turnOff, desc('Turn Color Highlighting Off') },
-    },
+    ['<leader>uCt'] = { HiColors.toggle, desc('Toggle Color Highlighting') },
+    ['<leader>uC+'] = { HiColors.turnOn, desc('Turn Color Highlighting On') },
+    ['<leader>uC-'] = { HiColors.turnOff, desc('Turn Color Highlighting Off') },
 }
----@type table <MapModes, RegKeysNamed>
+---@type table RegKeysNamed
 local Names = {
-    n = {
-        ['<leader>u'] = { group = '+UI' },
-        ['<leader>uC'] = { group = '+Color Highlighting' },
-    },
-    v = {
-        ['<leader>u'] = { group = '+UI' },
-        ['<leader>uC'] = { group = '+Color Highlighting' },
-    },
+    ['<leader>u'] = { group = '+UI' },
+    ['<leader>uC'] = { group = '+Color Highlighting' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', true)
+    map_dict(Names, 'wk.register', false, 'n')
 end
-map_dict(Keys, 'wk.register', true)
+map_dict(Keys, 'wk.register', false, 'n')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
