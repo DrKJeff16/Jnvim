@@ -128,7 +128,7 @@ local M = {
                             tbl.buffer = bufnr
                         end
 
-                        require('which-key').add(tbl, { create = true })
+                        require('which-key').add(tbl)
 
                         ::continue::
                     end
@@ -172,7 +172,7 @@ local M = {
                     tbl.buffer = bufnr
                 end
 
-                require('which-key').add(tbl, { create = true })
+                require('which-key').add(tbl)
 
                 ::continue::
             end
