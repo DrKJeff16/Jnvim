@@ -167,6 +167,8 @@ require('user_api.distro.archlinux').setup()
 
 User.commands:setup_commands()
 
+User.update.setup_maps()
+
 vim.cmd([[
 filetype plugin indent on
 syntax on

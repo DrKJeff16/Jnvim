@@ -16,7 +16,6 @@ local luarocks_check = CfgUtil.luarocks_check
 local M = {
     {
         'folke/which-key.nvim',
-        event = 'VeryLazy',
         main = 'which-key',
         version = false,
         init = function()
@@ -39,7 +38,6 @@ local M = {
     {
         'vhyrro/luarocks.nvim',
         lazy = false,
-        priority = 1000,
         version = false,
         config = source('plugin.luarocks'),
         cond = luarocks_check(),
@@ -96,7 +94,6 @@ local M = {
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
-        priority = 1000,
         version = false,
         config = source('plugin.web_devicons'),
         cond = not in_console(),

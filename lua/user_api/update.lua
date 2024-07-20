@@ -9,6 +9,7 @@ local desc = require('user_api.maps.kmap').desc
 local map_dict = require('user_api.maps').map_dict
 
 ---@type User.Update
+---@diagnostic disable-next-line:missing-fields
 local M = {
     ---@return string?
     update = function()
@@ -29,11 +30,17 @@ local M = {
         return res
     end,
 }
-
-if wk_available() then
-    map_dict({ ['<leader>U'] = { group = '+User API' } }, 'wk.register', false, 'n')
+function M.setup_maps()
+    if wk_available() then
+        map_dict({ ['<leader>U'] = { group = '+User API' } }, 'wk.register', false, 'n')
+    end
+    map_dict(
+        { ['<leader>Uu'] = { M.update, desc('Update User Config') } },
+        'wk.register',
+        false,
+        'n'
+    )
 end
-map_dict({ ['<leader>Uu'] = { M.update, desc('Update User Config') } }, 'wk.register', false, 'n')
 
 return M
 
