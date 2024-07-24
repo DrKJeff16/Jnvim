@@ -109,7 +109,7 @@ local M = {
                         end
 
                         if not is_nil(v[1]) then
-                            tbl[2] = v[1]
+                            table.insert(tbl, v[1])
                         end
 
                         tbl.mode = mode_choice
@@ -153,7 +153,7 @@ local M = {
                 end
 
                 if not is_nil(v[1]) then
-                    tbl[2] = v[1]
+                    table.insert(tbl, v[1])
                 end
 
                 tbl.mode = mode

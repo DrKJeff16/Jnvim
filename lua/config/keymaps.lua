@@ -76,7 +76,7 @@ local NOP = {
 ---@type table<MapModes, KeyMapDict>
 local DEFAULT_KEYS = {
     n = {
-        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
+        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
 
         ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully') },
         ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer') },
