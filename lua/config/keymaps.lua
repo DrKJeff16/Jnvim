@@ -99,7 +99,7 @@ local DEFAULT_KEYS = {
             desc('New Blank File', true, 0),
         },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true, 0) },
         ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
         ['<leader>fs'] = {
             function()
