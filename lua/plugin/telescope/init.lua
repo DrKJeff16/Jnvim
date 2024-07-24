@@ -28,14 +28,8 @@ local ActionLayout = require('telescope.actions.layout')
 local Actions = require('telescope.actions')
 local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
-local Previewers = require('telescope.previewers')
 local Pickers = require('telescope.pickers')
-local PickersLayout = require('telescope.pickers.layout')
-local Themes = require('telescope.themes')
 local Extensions = Telescope.extensions
-local Layout = require('nui.layout')
-local Popup = require('nui.popup')
-local Job = require('plenary.job')
 
 local load_ext = Telescope.load_extension
 
