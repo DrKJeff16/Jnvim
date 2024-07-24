@@ -30,9 +30,6 @@ local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
 local Pickers = require('telescope.pickers')
 local Extensions = Telescope.extensions
-local Layout = require('nui.layout')
-local Popup = require('nui.popup')
-local Job = require('plenary.job')
 
 local load_ext = Telescope.load_extension
 
