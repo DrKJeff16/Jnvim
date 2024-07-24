@@ -4,7 +4,9 @@
 local User = require('user_api')
 local Check = User.check
 
+local in_console = Check.in_console
 local exists = Check.exists.module
+local desc = User.maps.kmap.desc
 
 if not exists('which-key') then
     return
@@ -17,10 +19,34 @@ WK.setup({
     preset = 'classic',
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
-    delay = function(ctx) return ctx.plugin and 0 or 100 end,
+    delay = function(ctx) return ctx.plugin and 0 or 50 end,
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
-    spec = {},
+    spec = {
+        {
+            '<leader>?',
+            function() WK.show({ global = false }) end,
+            desc = 'Buffer Local Keymaps (which_key)',
+            noremap = true,
+            buffer = 0,
+            nowait = true,
+            silent = true,
+        },
+    },
+    -- Start hidden and wait for a key to be pressed before showing the popup
+    -- Only used by enabled xo mapping modes.
+    ---@param ctx { mode: string, operator: string }
+    defer = function(ctx)
+        local deferred_keys = {
+            'v',
+            'V',
+            '<C-v>',
+            '<C-V>',
+            '<C-e>',
+            '<ESC>',
+        }
+        return vim.tbl_contains(deferred_keys, ctx.mode)
+    end,
     -- show a warning when issues were detected with your mappings
     notify = true,
     -- Enable/disable WhichKey for certain mapping modes
@@ -49,9 +75,9 @@ WK.setup({
         -- width = { min = 30, max = 50 },
         -- height = { min = 4, max = 25 },
         -- col = 0,
+        -- row = 0,
         fixed = true,
         no_overlap = true,
-        row = 0,
         border = 'rounded',
         padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
         title = true,
@@ -60,11 +86,11 @@ WK.setup({
         -- Additional vim.wo and vim.bo options
         bo = {},
         wo = {
-            winblend = require('user_api.check').in_console() and 0 or 30, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+            winblend = in_console() and 0 or 30, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         },
     },
     layout = {
-        width = { min = 20, max = vim.opt_local.columns:get() }, -- min and max width of the columns
+        width = { min = 20, max = math.floor(vim.opt_local.columns:get() * 2 / 3) }, -- min and max width of the columns
         spacing = 2, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
@@ -75,7 +101,7 @@ WK.setup({
     ---@type (string|wk.Sorter)[]
     --- Add "manual" as the first element to use the order the mappings were registered
     --- Other sorters: "desc"
-    sort = { 'order', 'manual', 'local', 'group', 'mod', 'alphanum' },
+    sort = { 'alphanum', 'order', 'manual', 'local', 'group', 'mod' },
     -- expand = 0, -- expand groups when <= n mappings
     expand = function(node)
         return not node.desc -- expand all nodes without a description
@@ -119,17 +145,14 @@ WK.setup({
             Left = '',
             Right = '',
             -- C = '󰘴 ',
-            C = 'C-',
+            C = 'CTRL-',
             M = '󰘵 ',
             S = '󰘶 ',
-            -- CR = '󰌑 ',
-            CR = 'RET ',
-            -- Esc = '󱊷 ',
-            Esc = 'ESC ',
+            CR = '󰌑 ',
+            Esc = '󱊷 ',
             ScrollWheelDown = '󱕐 ',
             ScrollWheelUp = '󱕑 ',
-            -- NL = '󰌑 ',
-            NL = 'RET ',
+            NL = '󰌑 ',
             BS = '⌫',
             -- Space = '󱁐 ',
             Space = 'SPC ',
@@ -156,7 +179,7 @@ WK.setup({
     -- Be aware, that triggers are not needed for visual and operator pending mode.
     ---@type wk.Spec
     triggers = {
-        { '<auto>', mode = 'nixsotc' },
+        { '<auto>', mode = 'nxsot' },
         { '<leader>', mode = { 'n', 'v' } },
     },
     disable = {
