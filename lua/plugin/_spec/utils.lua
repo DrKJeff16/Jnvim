@@ -14,15 +14,6 @@ local in_console = Check.in_console
 
 ---@type (LazySpec)[]
 local M = {
-    {
-        'iamcco/markdown-preview.nvim',
-        ft = 'markdown',
-        version = false,
-        build = executable('yarn') and 'cd app && yarn install' or '',
-        init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
-        config = source('plugin.md_preview'),
-        cond = not in_console(),
-    },
     --- Makefile viewer
     {
         'Zeioth/makeit.nvim',
