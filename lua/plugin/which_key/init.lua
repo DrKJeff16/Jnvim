@@ -10,9 +10,6 @@ if not exists('which-key') then
     return
 end
 
-vim.opt.timeout = true
-vim.opt.timeoutlen = 300
-
 local WK = require('which-key')
 
 WK.setup({

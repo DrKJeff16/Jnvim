@@ -135,6 +135,8 @@ GS.setup({
 
     signs_staged_enable = true,
 
+    signs_staged_enable = true,
+
     signcolumn = vim.opt.signcolumn:get() == 'yes', -- Toggle with `:Gitsigns toggle_signs`
     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
     linehl = true, -- Toggle with `:Gitsigns toggle_linehl`

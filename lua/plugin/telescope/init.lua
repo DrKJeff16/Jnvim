@@ -28,10 +28,7 @@ local ActionLayout = require('telescope.actions.layout')
 local Actions = require('telescope.actions')
 local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
-local Previewers = require('telescope.previewers')
 local Pickers = require('telescope.pickers')
-local PickersLayout = require('telescope.pickers.layout')
-local Themes = require('telescope.themes')
 local Extensions = Telescope.extensions
 local Layout = require('nui.layout')
 local Popup = require('nui.popup')
@@ -134,7 +131,7 @@ end
 
 if exists('persisted') then
     Opts.extensions.persisted = {
-        layout_config = { width = 0.6, height = 0.6 },
+        layout_config = { width = 0.75, height = 0.75 },
     }
 end
 
@@ -219,7 +216,7 @@ local known_exts = {
             local pfx = Extensions.make
 
             return {
-                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker') },
+                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker', true, 0) },
             }
         end,
     },
@@ -234,7 +231,7 @@ local known_exts = {
             local pfx = Extensions.projects
 
             return {
-                ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
+                ['<leader>fTep'] = { pfx.projects, desc('Project Picker', true, 0) },
             }
         end,
     },
@@ -242,6 +239,10 @@ local known_exts = {
         'notify',
         ---@type fun(): KeyMapDict
         keys = function()
+            if is_nil(Extensions.notify) then
+                return {}
+            end
+
             local pfx = Extensions.notify
 
             return {
@@ -253,21 +254,19 @@ local known_exts = {
         'noice',
         ---@type fun(): KeyMapDict
         keys = function()
-            local Noice = require('noice')
-
             ---@type KeyMapDict
             local res = {
                 ['<leader>fTenl'] = {
-                    function() Noice.cmd('last') end,
+                    function() require('noice').cmd('last') end,
                     desc('NoiceLast'),
                 },
                 ['<leader>fTenh'] = {
-                    function() Noice.cmd('history') end,
+                    function() require('noice').cmd('history') end,
                     desc('NoiceHistory'),
                 },
             }
 
-            if is_tbl(Names) then
+            if require('user_api.maps.wk').available() and is_tbl(Names) then
                 Names['<leader>fTen'] = { group = '+Noice' }
             end
 

@@ -78,12 +78,12 @@ local DEFAULT_KEYS = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
 
-        ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully', true, nil, false) },
-        ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer', true, nil, false) },
-        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer', true, nil, false) },
-        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer', true, nil, false) },
-        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer', true, nil, false) },
-        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer', true, nil, false) },
+        ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully') },
+        ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer') },
+        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
+        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer') },
+        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer') },
+        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer') },
 
         ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
@@ -94,7 +94,7 @@ local DEFAULT_KEYS = {
                 vim.cmd.wincmd('o')
 
                 vim.bo.modifiable = true
-                vim.api.nvim_set_option_value('ft', ft, { buf = 0 })
+                vim.api.nvim_set_option_value('ft', ft, { buf = vim.api.nvim_get_current_buf() })
             end,
             desc('New Blank File', true, 0),
         },
@@ -133,7 +133,7 @@ local DEFAULT_KEYS = {
                     )
                 end
             end,
-            desc('Source Current File As Lua File'),
+            desc('Source Current File As Lua File', true, 0),
         },
         ['<leader>fvv'] = {
             function()
@@ -155,7 +155,7 @@ local DEFAULT_KEYS = {
                     )
                 end
             end,
-            desc('Source Current File As VimScript File'),
+            desc('Source Current File As VimScript File', true, 0),
         },
 
         ['<leader>vH'] = { ':checkhealth ', desc('Prompt For Checkhealth', false) },
@@ -251,22 +251,22 @@ local DEFAULT_KEYS = {
         ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
     },
     v = {
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false) },
-        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false) },
+        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false, 0) },
+        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false, 0) },
 
-        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false) },
-        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false) },
+        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false, 0) },
+        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false, 0) },
 
-        ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false) },
+        ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false, 0) },
 
-        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
+        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false, 0) },
     },
 }
 --- `which-key` map group prefixes
 ---@type table<MapModes, RegKeysNamed>
 local DEFAULT_NAMES = {
     n = {
-        ['<leader>b'] = { group = '+Buffer', noremap = false }, --- Buffer Handling
+        ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
         ['<leader>f'] = { group = '+File' }, --- File Handling
         ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
