@@ -26,7 +26,7 @@ local M = {
             vim.opt.showmode = false
         end,
         config = source('plugin.lualine'),
-        cond = not is_nil(use_statusline) and (use_statusline == 'lualine') or true,
+        cond = use_statusline == 'lualine' and not in_console(),
     },
     {
         'glepnir/galaxyline.nvim',
@@ -39,7 +39,7 @@ local M = {
             vim.opt.termguicolors = not in_console()
         end,
         config = source('plugin.galaxyline'),
-        cond = not is_nil(use_statusline) and (use_statusline == 'galaxyline') or false,
+        cond = use_statusline == 'galaxyline' and not in_console(),
     },
     --- Tabline
     {
@@ -69,7 +69,7 @@ local M = {
             vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
         end,
         config = source('plugin.barbar'),
-        -- cond = not in_console(),
+        cond = not in_console(),
         enabled = false,
     },
     --- Indent Scope
@@ -84,7 +84,6 @@ local M = {
         'HiPhish/rainbow-delimiters.nvim',
         version = false,
         config = source('plugin.rainbow_delimiters'),
-        cond = not in_console(),
     },
     --- File Tree
     {
@@ -127,8 +126,8 @@ local M = {
         event = 'WinNew',
         version = false,
         config = source('plugin.colorful_winsep'),
-        -- cond = not in_console(),
-        cond = false,
+        cond = not in_console(),
+        enabled = false,
     },
     {
         'brenoprata10/nvim-highlight-colors',

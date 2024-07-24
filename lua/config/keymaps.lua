@@ -76,7 +76,7 @@ local NOP = {
 ---@type table<MapModes, KeyMapDict>
 local DEFAULT_KEYS = {
     n = {
-        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search') },
+        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
 
         ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully') },
         ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer') },
@@ -176,13 +176,13 @@ local DEFAULT_KEYS = {
             desc('Source $MYVIMRC'),
         },
 
-        ['<leader>?S'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
-        ['<leader>?T'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
-        ['<leader>?V'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
-        ['<leader>?h'] = { ':h ', desc('Prompt For Help', false) },
-        ['<leader>?s'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
-        ['<leader>?t'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
-        ['<leader>?v'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
+        ['<leader>HS'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
+        ['<leader>HT'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
+        ['<leader>HV'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
+        ['<leader>Hh'] = { ':h ', desc('Prompt For Help', false) },
+        ['<leader>Hs'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split', false) },
+        ['<leader>Ht'] = { ':tab h ', desc('Prompt For Help On New Tab', false) },
+        ['<leader>Hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split', false) },
 
         ['<leader>wN'] = {
             function()
@@ -271,7 +271,7 @@ local DEFAULT_NAMES = {
         ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
         ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
-        ['<leader>?'] = { group = '+Help' }, --- Help
+        ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
         ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
         ['<leader>v'] = { group = '+Vim' }, --- Vim
