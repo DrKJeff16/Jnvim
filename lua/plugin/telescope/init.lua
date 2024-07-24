@@ -128,7 +128,7 @@ end
 
 if exists('persisted') then
     Opts.extensions.persisted = {
-        layout_config = { width = 0.6, height = 0.6 },
+        layout_config = { width = 0.75, height = 0.75 },
     }
 end
 
