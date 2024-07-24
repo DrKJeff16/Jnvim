@@ -162,8 +162,8 @@ local function open() vim.cmd('Telescope') end
 ---@type KeyMapDict
 local Maps = {
     ['<leader><leader>'] = { open, desc('Open Telescope') },
-    ['<leader>?H'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-    ['<leader>?M'] = { Builtin.man_pages, desc('Telescope Man Pages') },
+    ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
+    ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
     ['<leader>GS'] = { Builtin.git_stash, desc('Telescope Git Stash') },
     ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },

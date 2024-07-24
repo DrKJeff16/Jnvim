@@ -13,10 +13,44 @@ local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
+---@class KeyMapOpts: vim.keymap.set.Opts
+---@field new fun(T: (table|table<string, any>)?): KeyMapOpts
+---@field add fun(self: KeyMapOpts, T: table<string, any>): KeyMapOpts
+
+---@type KeyMapOpts
+local MapOpts = {}
+
+---@param T? table|table<string, any>
+---@return KeyMapOpts
+function MapOpts.new(T)
+    T = is_tbl(T) and T or {}
+
+    local self = setmetatable(T, { __index = MapOpts })
+
+    return self
+end
+
+---@param T table<string, any>
+---@return KeyMapOpts
+function MapOpts:add(T)
+    if not is_tbl(T) or empty(T) then
+        return self
+    end
+
+    for k, v in next, T do
+        if is_str(k) then
+            self[T] = v
+        end
+    end
+
+    return self
+end
+
 ---@type Modes
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
----@type fun(mode: string): KeyMapFunction
+---@param mode string
+---@return KeyMapFunction
 local function variant(mode)
     ---@type KeyMapFunction
     return function(lhs, rhs, opts)
@@ -34,17 +68,17 @@ end
 ---@type User.Maps.Keymap
 local M = {
     desc = function(msg, silent, bufnr, noremap, nowait, expr)
-        ---@type User.Maps.Keymap.Opts
-        local res = {
+        ---@type KeyMapOpts
+        local res = MapOpts.new({
             desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
             silent = is_bool(silent) and silent or true,
             noremap = is_bool(noremap) and noremap or true,
             nowait = is_bool(nowait) and nowait or true,
             expr = is_bool(expr) and expr or false,
-        }
+        })
 
         if is_int(bufnr) then
-            res.buffer = bufnr
+            res:add({ buffer = bufnr })
         end
 
         return res
