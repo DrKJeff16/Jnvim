@@ -5,13 +5,12 @@ local User = require('user_api')
 local Check = User.check
 local Util = User.util
 local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
 local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 local notify = Util.notify.notify
 
@@ -39,6 +38,7 @@ Project.setup({
     -- detection_methods
     patterns = {
         '.git',
+        '!.git/worktrees',
         '.github',
         '_darcs',
         '.hg',
@@ -48,7 +48,6 @@ Project.setup({
         'package.json',
         'package.lock',
         'pyproject.toml',
-        '.luarc.json',
         '.neoconf.json',
         'neoconf.json',
         'Pipfile',
@@ -59,13 +58,20 @@ Project.setup({
         '.stylua.toml',
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
+        '.clangd',
+        '=src',
     },
 
     -- Don't calculate root dir on specific directories
     -- Ex: { "~/.cargo/*", ... }
     exclude_dirs = {
-        '~/Templates/^',
+        '~/Templates/*',
         '~/.local/*',
+        '~/.cargo/*',
+        '~/.luarocks/*',
+        '~/.conda/*',
+        '~/Public/*',
+        '~/Desktop/*',
     },
 
     -- Show hidden files in telescope
@@ -73,7 +79,7 @@ Project.setup({
 
     -- When set to false, you will get a message when project.nvim changes your
     -- directory
-    silent_chdir = true,
+    silent_chdir = false,
 
     -- What scope to change the directory, valid options are
     -- * global (default)
