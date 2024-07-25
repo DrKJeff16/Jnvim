@@ -41,7 +41,9 @@ Pstd.setup({
 
         return true
     end, -- function to determine if a session should be autosaved
+
     autoload = false, -- automatically load the session for the cwd on Neovim startup
+
     on_autoload_no_session = function()
         require('user_api.util.notify').notify(
             '(persisted): No session found',
