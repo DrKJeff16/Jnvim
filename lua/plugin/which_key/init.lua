@@ -47,6 +47,12 @@ WK.setup({
         }
         return vim.tbl_contains(deferred_keys, ctx.mode)
     end,
+    ---@param mapping wk.Mapping
+    filter = function(mapping)
+        -- example to exclude mappings without a description
+        -- return mapping.desc and mapping.desc ~= ""
+        return true
+    end,
     -- show a warning when issues were detected with your mappings
     notify = true,
     -- Enable/disable WhichKey for certain mapping modes
@@ -99,9 +105,16 @@ WK.setup({
         scroll_up = '<c-u>', -- binding to scroll up inside the popup
     },
     ---@type (string|wk.Sorter)[]
-    --- Add "manual" as the first element to use the order the mappings were registered
-    --- Other sorters: "desc"
-    sort = { 'alphanum', 'order', 'manual', 'local', 'group', 'mod' },
+    --- Mappings are sorted using configured sorters and natural sort of the keys
+    --- Available sorters:
+    --- * local: buffer-local mappings first
+    --- * order: order of the items (Used by plugins like marks / registers)
+    --- * group: groups last
+    --- * alphanum: alpha-numerical first
+    --- * mod: special modifier keys last
+    --- * manual: the order the mappings were added
+    --- * case: lower-case first
+    sort = { 'local', 'alphanum', 'order', 'manual', 'group', 'mod' },
     -- expand = 0, -- expand groups when <= n mappings
     expand = function(node)
         return not node.desc -- expand all nodes without a description
