@@ -11,7 +11,7 @@ local is_str = Check.value.is_str
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 
----@param cmd 'ed'|'tabnew'|'split'|'vsplit'
+---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
 ---@return fun()
 local function key_variant(cmd)
     cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd
@@ -120,7 +120,7 @@ Lazy.setup({
 
     checker = {
         enabled = true,
-        notify = true,
+        notify = false,
         frequency = 1800,
         check_pinned = false,
     },
