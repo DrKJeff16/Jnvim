@@ -1,4 +1,10 @@
+<div align="center">
+
 # Jnvim
+
+</div>
+
+<div align="center">
 
 ## Table Of Contents
 
@@ -14,6 +20,8 @@
     5. [`user.maps`](#maps)
         1. [`user.maps.wk`](#wk)
     6. [`user.highlight`](#highlight)
+
+</div>
 
 ---
 
@@ -168,7 +176,7 @@ code structures and to simplify configuration.
 </h3>
 
 This submodule includes type annotations and documentation.
-It can be found in [`user/types`](/lua/user/types).
+It can be found in [`user_api/types`](/lua/user_api/types).
 
 <br/>
 
@@ -180,7 +188,7 @@ require('user.types[.<type_module>]')
 --- require('user').types[.<type_module>]
 ```
 
-For API-specific documentation, you can use the submodule [`types/user`](/lua/user/types/user):
+For API-specific documentation, you can use the submodule [`types/user`](/lua/user_api/types/user):
 
 ```lua
 require('user.types.user[.<type_module>]')
@@ -195,7 +203,7 @@ sourced by the `init.lua` file in it.
 <u><code>user.opts</code></u>
 </h3>
 
-This submodule can be found at [`here`](/lua/user/opts.lua).
+This submodule can be found at [`here`](/lua/user_api/opts.lua).
 The options are defined in a table to be processed
 by the local funtion `optset()`. Modify these at your leisure, but be sure to be compatible with how you'd
 use the `vim.opt` table.
@@ -203,12 +211,22 @@ use the `vim.opt` table.
 To call the options:
 
 ```lua
-require('user.opts')
+require('user.opts').setup()
 --- Or by using the entry point:
---- require('user').opts
+require('user').opts.setup()
 ```
 
-- **NOTE**: This is still a very early WIP.
+The `setup()` function optionally accepts a table with <u><b>long-named</b> vim options</u>.
+It overwrites some of the default options as defined in [`opts.lua`](/lua/user_api/opts.lua)
+
+As an example:
+
+```lua
+require('user.opts').setup({
+    completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
+    wrap = false,
+})
+```
 
 <h3 id="check">
 <u><code>user.check</code></u>
@@ -227,7 +245,7 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 
 Used for value checking, differentiation and conditional code, aswell as
 for optional parameters in functions.
-It can be found in [`user/check/value.lua`](/lua/user/check/value.lua).
+It can be found in [`user_api/check/value.lua`](/lua/user_api/check/value.lua).
 
 <br/>
 
@@ -251,7 +269,7 @@ It can be found in [`user/check/value.lua`](/lua/user/check/value.lua).
 <b><u><code>user.check.exists</code></u></b>
 
 Used for data existance checks, conditional module loading and fallback operations.
-It can be found in [`user/check/exists.lua`](/lua/user/check/exists.lua).
+It can be found in [`user_api/check/exists.lua`](/lua/user_api/check/exists.lua).
 
 |   function   |                                                                                                                                                                                              description                                                                                                                              |                       parameter types                           |            return type            |
 |:------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------:|
@@ -346,7 +364,7 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 
 The `maps` API also includes integration with
 [`which_key`](https://github.com/folke/which-key.nvim) as `user.maps.wk`.
-It can be found found in [`user/maps.lua`](/lua/user/maps.lua)
+It can be found found in [`user_api/maps.lua`](/lua/user_api/maps.lua)
 
 This module creates mappings using custom-made functions that convert
 a specific type of mapping dictionary to a format compatible with `which_key`.
@@ -499,7 +517,7 @@ An options table with the structure specified in [the `which_key` repository](ht
     ---@type boolean
     noremap = true, -- use `noremap` when creating keymaps
 
-    --- NOTE: If processing a group keymap field (`['...'] = { name = '...' }`)
+    --- NOTE: If processing a group keymap field (`['...'] = { group = '...' }`)
     ---       the default value is `false`
     ---@type boolean
     nowait = true, -- use `nowait` when creating keymaps
@@ -527,10 +545,10 @@ You can also process <u>group names</u> the following way:
 
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>X'] = { name = '+Group X' },
-    ['<leader>X1'] = { name = '+Subgroup X1' },
+    ['<leader>X'] = { group = '+Group X' },
+    ['<leader>X1'] = { group = '+Subgroup X1' },
 
-    ['<leader>t'] = { name = '+Group t' },
+    ['<leader>t'] = { group = '+Group t' },
 }
 
 WK.register(Names, { mode = <whatever mode> })
@@ -548,7 +566,7 @@ completein the future.</b></u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
-It can be found in [`user/highlight.lua`](/lua/user/highlight.lua).
+It can be found in [`user_api/highlight.lua`](/lua/user_api/highlight.lua).
 
 <b><u>A description will be pending until further notice, i.e. when the module is
 structured in a satisfactory manner.</u></b>
