@@ -4,9 +4,7 @@
 local User = require('user_api')
 local Check = User.check
 local types = User.types.gitsigns
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -16,8 +14,8 @@ local is_int = Check.value.is_int
 local is_num = Check.value.is_num
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not executable('git') or not exists('gitsigns') then
     return
@@ -42,7 +40,7 @@ GS.setup({
                             GS.nav_hunk('next')
                         end
                     end,
-                    desc('Next Hunk', true, 0, true, true, true),
+                    desc('Next Hunk', true, bufnr, true, true, true),
                 },
                 ['<leader>Gh['] = {
                     function()
@@ -52,36 +50,36 @@ GS.setup({
                             GS.nav_hunk('prev')
                         end
                     end,
-                    desc('Previous Hunk', true, 0, true, true, true),
+                    desc('Previous Hunk', true, bufnr, true, true, true),
                 },
 
                 -- Actions
-                ['<leader>Ghs'] = { GS.stage_hunk, desc('Stage Current Hunk') },
-                ['<leader>Ghr'] = { GS.reset_hunk, desc('Reset Current Hunk') },
-                ['<leader>Ghu'] = { GS.undo_stage_hunk, desc('Undo Hunk Stage') },
-                ['<leader>Ghp'] = { GS.preview_hunk, desc('Preview Current Hunk') },
-                ['<leader>GhS'] = { GS.stage_buffer, desc('Stage The Whole Buffer') },
-                ['<leader>GhR'] = { GS.reset_buffer, desc('Reset The Whole Buffer') },
+                ['<leader>Ghs'] = { GS.stage_hunk, desc('Stage Current Hunk', true, bufnr) },
+                ['<leader>Ghr'] = { GS.reset_hunk, desc('Reset Current Hunk', true, bufnr) },
+                ['<leader>Ghu'] = { GS.undo_stage_hunk, desc('Undo Hunk Stage', true, bufnr) },
+                ['<leader>Ghp'] = { GS.preview_hunk, desc('Preview Current Hunk', true, bufnr) },
+                ['<leader>GhS'] = { GS.stage_buffer, desc('Stage The Whole Buffer', true, bufnr) },
+                ['<leader>GhR'] = { GS.reset_buffer, desc('Reset The Whole Buffer', true, bufnr) },
                 ['<leader>Ghb'] = {
                     function() GS.blame_line({ full = true }) end,
-                    desc('Blame Current Line'),
+                    desc('Blame Current Line', true, bufnr),
                 },
-                ['<leader>Ghd'] = { GS.diffthis, desc('Diff Against Index') },
+                ['<leader>Ghd'] = { GS.diffthis, desc('Diff Against Index', true, bufnr) },
                 ['<leader>GhD'] = {
                     function() GS.diffthis('~') end,
-                    desc('Diff This'),
+                    desc('Diff This', true, bufnr),
                 },
-                ['<leader>Gtb'] = { GS.toggle_current_line_blame, desc('Toggle Line Blame') },
-                ['<leader>Gtd'] = { GS.toggle_deleted, desc('Toggle Deleted') },
+                ['<leader>Gtb'] = { GS.toggle_current_line_blame, desc('Toggle Line Blame', true, bufnr) },
+                ['<leader>Gtd'] = { GS.toggle_deleted, desc('Toggle Deleted', true, bufnr) },
             },
             v = {
                 ['<leader>Ghs'] = {
                     function() GS.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
-                    desc('Stage Selected Hunks'),
+                    desc('Stage Selected Hunks', true, bufnr),
                 },
                 ['<leader>Ghr'] = {
                     function() GS.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
-                    desc('Reset Selected Hunks'),
+                    desc('Reset Selected Hunks', true, bufnr),
                 },
             },
             o = { ['ih'] = { ':<C-U>Gitsigns select_hunk<CR>' } },
@@ -127,14 +125,14 @@ GS.setup({
 
     signs_staged_enable = true,
 
-    signcolumn = vim.opt.signcolumn:get() == 'yes', -- Toggle with `:Gitsigns toggle_signs`
+    signcolumn = vim.bo.signcolumn == 'yes', -- Toggle with `:Gitsigns toggle_signs`
     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
     linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
     word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
     watch_gitdir = { follow_files = true },
     auto_attach = true,
     attach_to_untracked = true,
-    current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
     current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
