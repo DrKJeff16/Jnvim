@@ -311,7 +311,7 @@ local on_attach = function(bufn)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
-local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 1 / 4
+local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 3 / 7
 
 Tree.setup({
     on_attach = on_attach,
