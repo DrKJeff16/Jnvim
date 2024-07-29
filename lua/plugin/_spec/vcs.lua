@@ -14,13 +14,11 @@ local in_console = Check.in_console
 local M = {
     {
         'tpope/vim-fugitive',
-        event = 'VeryLazy',
         version = false,
         cond = executable('git'),
     },
     {
         'lewis6991/gitsigns.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.gitsigns'),
         cond = executable('git') and not in_console(),
@@ -41,7 +39,7 @@ local M = {
             'telescope.nvim',
         },
         config = source('plugin.lazygit'),
-        cond = executable({ 'git', 'lazygit' }) and not in_console(),
+        cond = executable({ 'git', 'lazygit' }),
     },
 }
 
