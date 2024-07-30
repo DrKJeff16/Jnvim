@@ -7,7 +7,6 @@ local Util = User.util
 local types = User.types.cmp
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
 local is_int = Check.value.is_int
 local is_tbl = Check.value.is_tbl
@@ -74,10 +73,10 @@ local Sources = {
 
     lua = {
         { name = 'nvim_lsp', group_index = 1 },
+        { name = 'nvim_lsp_signature_help', group_index = 2 },
         { name = 'nvim_lua', group_index = 3 },
-        { name = 'nvim_lsp_signature_help', group_index = 4 },
-        { name = 'luasnip', group_index = 5 },
-        buffer(6),
+        { name = 'luasnip', group_index = 4 },
+        buffer(5),
     },
 }
 
@@ -96,33 +95,34 @@ end
 local ft = {
     {
         {
-            'sh',
             'bash',
             'crontab',
-            'zsh',
             'html',
-            'markdown',
             'json',
             'json5',
             'jsonc',
+            'markdown',
+            'sh',
+            'toml',
             'yaml',
+            'zsh',
         },
         {
             sources = cmp.config.sources({
                 { name = 'nvim_lsp', group_index = 1 },
-                async_path(3),
                 { name = 'nvim_lsp_signature_help', group_index = 2 },
+                async_path(3),
                 { name = 'luasnip', group_index = 4 },
                 buffer(5),
             }),
         },
     },
     {
-        { 'conf', 'config', 'cfg', 'confini', 'gitconfig', 'toml' },
+        { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
         {
             sources = cmp.config.sources({
-                async_path(2),
                 buffer(1),
+                async_path(2),
             }),
         },
     },
@@ -155,8 +155,8 @@ if exists('neorg') then
     ft['norg'] = {
         sources = cmp.config.sources({
             { name = 'neorg', group_index = 1 },
-            async_path(3),
             buffer(2),
+            async_path(3),
         }),
     }
 end
