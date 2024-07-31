@@ -1,7 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
----@diagnostic disable:missing-fields
-
 require('user_api.types.user.maps')
 
 local Check = require('user_api.check')
@@ -14,33 +10,30 @@ local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
 ---@class KeyMapOpts: vim.keymap.set.Opts
----@field new fun(T: (table|table<string, any>)?): KeyMapOpts
----@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table<string, any>): KeyMapOpts
+---@field new fun(T: (User.Maps.Keymap.Opts|table)?): KeyMapOpts
+---@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table)
 
 ---@type KeyMapOpts
+---@diagnostic disable-next-line:missing-fields
 local MapOpts = {}
 
+---@param T? User.Maps.Keymap.Opts|table
 ---@return KeyMapOpts
-function MapOpts.new()
-    local self = setmetatable({}, { __index = MapOpts })
+function MapOpts.new(T)
+    T = is_tbl(T) and T or {}
+
+    local self = setmetatable(T, { __index = MapOpts })
 
     return self
 end
 
 ---@param T table<string, any>
----@return KeyMapOpts
 function MapOpts:add(T)
-    if not is_tbl(T) or empty(T) then
-        return self
-    end
-
     for k, v in next, T do
         if is_str(k) then
             self[T] = v
         end
     end
-
-    return self
 end
 
 ---@type Modes
@@ -63,12 +56,11 @@ local function variant(mode)
 end
 
 ---@type User.Maps.Keymap
+---@diagnostic disable-next-line:missing-fields
 local M = {
     desc = function(msg, silent, bufnr, noremap, nowait, expr)
         ---@type KeyMapOpts
-        local res = MapOpts.new()
-
-        res:add({
+        local res = MapOpts.new({
             desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
             silent = is_bool(silent) and silent or true,
             noremap = is_bool(noremap) and noremap or true,
@@ -76,8 +68,8 @@ local M = {
             expr = is_bool(expr) and expr or false,
         })
 
-        if is_int(bufnr) then
-            res:add({ buffer = bufnr })
+        if bufnr and is_int(bufnr) then
+            res.buffer = bufnr
         end
 
         return res
