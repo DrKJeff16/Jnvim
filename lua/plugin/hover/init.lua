@@ -1,14 +1,10 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 
 if not exists('hover') then
@@ -24,7 +20,9 @@ Hover.setup({
             require('hover.providers.lsp')
         end
 
-        require('hover.providers.man')
+        if require('user_api.check.exists').executable('man') then
+            require('hover.providers.man')
+        end
 
         --- Github
         require('hover.providers.gh')
@@ -58,8 +56,8 @@ local HOpts = {
 
 ---@type KeyMapDict
 local Keys = {
-    ['K'] = { Hover.hover, desc('Hover', false, HOpts.bufnr()) },
-    ['gK'] = { Hover.hover_select, desc('Hover Select', false, HOpts.bufnr()) },
+    ['K'] = { Hover.hover, desc('Hover', true, HOpts.bufnr()) },
+    ['gK'] = { Hover.hover_select, desc('Hover Select', true, HOpts.bufnr()) },
     ['<C-p>'] = {
         function() Hover.hover_switch('previous', HOpts) end,
         desc('Previous Hover', true, HOpts.bufnr()),
