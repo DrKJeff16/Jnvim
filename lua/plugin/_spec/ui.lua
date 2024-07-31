@@ -155,28 +155,6 @@ local M = {
         config = source('plugin.noice'),
         cond = not in_console(),
     },
-    {
-        'LudoPinelli/comment-box.nvim',
-        version = false,
-        config = source('plugin.commentbox'),
-        enabled = false,
-    },
-    {
-        'nvimdev/dashboard-nvim',
-        event = 'VimEnter',
-        version = false,
-        dependencies = { 'nvim-web-devicons' },
-        config = source('plugin.dashboard'),
-        enabled = false,
-    },
-    {
-        'startup-nvim/startup.nvim',
-        event = 'VimEnter',
-        version = false,
-        dependencies = { 'plenary.nvim' },
-        config = source('plugin.startup'),
-        enabled = false,
-    },
 }
 
 return M
