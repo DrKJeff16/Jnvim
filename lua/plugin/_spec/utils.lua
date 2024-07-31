@@ -42,7 +42,7 @@ local M = {
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',
-        lazy = true,
+        event = 'VeryLazy',
         version = false,
         cond = executable('doxygen') and not in_console(),
     },
