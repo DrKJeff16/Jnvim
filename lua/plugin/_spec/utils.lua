@@ -37,15 +37,13 @@ local M = {
         },
         cond = not in_console(),
     },
-    --- TODO: Configure this
-    ---
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',
         event = 'VeryLazy',
         version = false,
         config = source('plugin.dooku'),
-        cond = executable('doxygen') and not in_console(),
+        cond = not in_console(),
     },
 }
 
