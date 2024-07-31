@@ -10,6 +10,7 @@ local source = CfgUtil.source
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
+local is_root = Check.is_root
 local luarocks_check = CfgUtil.luarocks_check
 
 ---@type (LazySpec)[]
@@ -18,14 +19,14 @@ local M = {
         'folke/zen-mode.nvim',
         lazy = true,
         version = false,
-        config = source('plugin.zen_mode'),
+        config = source('plugin.zen_mode') and not is_root(),
     },
     {
         'nvim-neorg/neorg',
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        enabled = luarocks_check() and vim_has('nvim-0.10'),
+        enabled = luarocks_check() and vim_has('nvim-0.10') and not is_root(),
     },
 }
 

@@ -11,6 +11,7 @@ local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
+local is_root = Check.is_root
 
 ---@type (LazySpec)[]
 local M = {
@@ -74,20 +75,7 @@ local M = {
             'williamboman/mason.nvim',
             'neovim/nvim-lspconfig',
         },
-    },
-    {
-        'neoclide/coc.nvim',
-        version = '*',
-        build = 'npm ci',
-        init = function()
-            vim.opt.backup = false
-            vim.opt.writebackup = false
-            vim.opt.updatetime = 300
-            vim.opt.signcolumn = 'yes'
-        end,
-        config = source('plugin.coc'),
-        cond = false,
-        enabled = executable('npm') and vim_has('nvim-0.8'),
+        cond = not is_root(),
     },
 }
 
