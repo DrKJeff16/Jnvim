@@ -8,6 +8,7 @@ local types = User.types.lazy
 
 local source = CfgUtil.source
 local executable = Check.exists.executable
+local is_root = Check.is_root
 
 ---@type (LazySpec)[]
 local M = {
@@ -15,6 +16,7 @@ local M = {
         'rhysd/vim-syntax-codeowners',
         event = 'VeryLazy',
         version = false,
+        cond = not is_root(),
     },
     {
         'vim-scripts/DoxygenToolkit.vim',

@@ -10,6 +10,7 @@ local source = CfgUtil.source
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
+local is_root = Check.is_root
 local luarocks_check = CfgUtil.luarocks_check
 
 ---@type (LazySpec)[]
@@ -40,7 +41,7 @@ local M = {
         lazy = false,
         version = false,
         config = source('plugin.luarocks'),
-        cond = luarocks_check(),
+        cond = luarocks_check() and not is_root(),
         enabled = false,
     },
     {

@@ -11,6 +11,7 @@ local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
+local is_root = Check.is_root
 
 ---@type (LazySpec)[]
 local M = {
@@ -21,11 +22,12 @@ local M = {
         build = executable('yarn') and 'cd app && yarn install' or '',
         init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
         config = source('plugin.markdown.md_preview'),
-        cond = not in_console(),
+        cond = not (in_console() or is_root()),
     },
     {
         'tadmccorkle/markdown.nvim',
         ft = 'markdown',
+        version = false,
         config = source('plugin.markdown'),
     },
 }
