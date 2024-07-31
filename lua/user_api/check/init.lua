@@ -42,6 +42,14 @@ local M = {
         return vim.tbl_contains({ 'linux' }, env['TERM'])
             and not require('user_api.check.value').fields('DISPLAY', env)
     end,
+
+    ---@return boolean
+    is_root = function()
+        ---@type table<string, any>
+        local env = vim.fn.environ()
+
+        return env['USER'] == 'root'
+    end,
 }
 
 return M
