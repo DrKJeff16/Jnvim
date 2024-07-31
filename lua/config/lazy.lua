@@ -50,6 +50,11 @@ Lazy.setup({
         { import = 'plugin._spec' },
     },
 
+    defaults = {
+        lazy = false,
+        version = false,
+    },
+
     root = plugin_root,
 
     performance = {
