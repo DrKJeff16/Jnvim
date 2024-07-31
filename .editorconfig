@@ -6,18 +6,19 @@ indent_size = 4
 tab_width = 4
 end_of_line = lf
 insert_final_newline = true
-max_line_length = 120
+max_line_length = 100
 
 [*.py]
+indent_style = space
 max_line_length = 100
 
 [{Makefile,*.mk}]
-indent_style = tab
-tab_width = 8
-indent_size = 8
+indent_style = space
+tab_width = 4
+indent_size = 4
 
 [*.txt]
-indent_style = tab
-tab_width = 8
-indent_size = 8
-max_line_length = 200
+indent_style = space
+tab_width = 4
+indent_size = 4
+max_line_length = 120
