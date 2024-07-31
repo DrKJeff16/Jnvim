@@ -14,9 +14,9 @@ argh = "*"
 pynvim = "*"
 neovim = "*"
 wheel = "*"
+setuptools = "*"
 
 [dev-packages]
-setuptools = "*"
 pip = "*"
 mypy = "*"
 mypy-extensions = "*"
