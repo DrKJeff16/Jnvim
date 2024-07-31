@@ -61,13 +61,6 @@ local M = {
         version = false,
         config = source('plugin.autopairs'),
     },
-    {
-        'glepnir/template.nvim',
-        event = 'VeryLazy',
-        version = false,
-        config = source('plugin.template'),
-        enabled = false,
-    },
 }
 
 return M
