@@ -15,17 +15,14 @@ local empty = Check.value.empty
 
 ---@class KeyMapOpts: vim.keymap.set.Opts
 ---@field new fun(T: (table|table<string, any>)?): KeyMapOpts
----@field add fun(self: KeyMapOpts, T: table<string, any>): KeyMapOpts
+---@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table<string, any>): KeyMapOpts
 
 ---@type KeyMapOpts
 local MapOpts = {}
 
----@param T? table|table<string, any>
 ---@return KeyMapOpts
-function MapOpts.new(T)
-    T = is_tbl(T) and T or {}
-
-    local self = setmetatable(T, { __index = MapOpts })
+function MapOpts.new()
+    local self = setmetatable({}, { __index = MapOpts })
 
     return self
 end
@@ -69,7 +66,9 @@ end
 local M = {
     desc = function(msg, silent, bufnr, noremap, nowait, expr)
         ---@type KeyMapOpts
-        local res = MapOpts.new({
+        local res = MapOpts.new()
+
+        res:add({
             desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
             silent = is_bool(silent) and silent or true,
             noremap = is_bool(noremap) and noremap or true,
