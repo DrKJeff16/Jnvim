@@ -10,6 +10,7 @@ local executable = Check.exists.executable
 local is_str = Check.value.is_str
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
+local in_console = Check.in_console
 
 ---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
 ---@return fun()
@@ -47,18 +48,6 @@ local plugin_root = vim.fn.stdpath('data') .. '/lazy'
 Lazy.setup({
     spec = {
         { import = 'plugin._spec' },
-    },
-
-    git = {
-        -- defaults for the `Lazy log` command
-        -- log = { "--since=3 days ago" }, -- show commits from the last 3 days
-        log = { '-8' }, -- show the last 8 commits
-        timeout = 120, -- kill processes that take more than 2 minutes
-        url_format = 'https://github.com/%s.git',
-        -- lazy.nvim requires git >=2.19.0. If you really want to use lazy with an older version,
-        -- then set the below to false. This should work, but is NOT supported and will
-        -- increase downloads a lot
-        filter = true,
     },
 
     root = plugin_root,
@@ -120,13 +109,13 @@ Lazy.setup({
 
     checker = {
         enabled = true,
-        notify = false,
+        notify = true,
         frequency = 1800,
         check_pinned = false,
     },
 
     ui = {
-        backdrop = 70,
+        backdrop = in_console() and 65 or 100,
         border = 'shadow',
         title = 'L      A      Z      Y',
         wrap = true,
