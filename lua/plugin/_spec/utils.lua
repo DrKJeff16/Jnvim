@@ -44,6 +44,7 @@ local M = {
         'Zeioth/dooku.nvim',
         event = 'VeryLazy',
         version = false,
+        config = source('plugin.dooku'),
         cond = executable('doxygen') and not in_console(),
     },
 }
