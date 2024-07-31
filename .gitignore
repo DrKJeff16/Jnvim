@@ -26,12 +26,15 @@
 *.a
 *.as
 
-/.env
+.env
 
 .mypy_cache/
 .ropeproject/
 
 *.list
 *.log
+*.bak
+*.old
+*.new
 
-Pipfile.lock
+*.lock
