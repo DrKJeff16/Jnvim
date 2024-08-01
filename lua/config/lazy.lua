@@ -11,6 +11,7 @@ local is_str = Check.value.is_str
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 local in_console = Check.in_console
+local is_root = Check.is_root
 
 ---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
 ---@return fun()
@@ -88,7 +89,7 @@ Lazy.setup({
     },
 
     rocks = {
-        enabled = require('config.util').luarocks_check(),
+        enabled = not is_root() and require('config.util').luarocks_check(),
         root = vim.fn.stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -103,13 +104,15 @@ Lazy.setup({
             ---@field [3]? 'pathspec'
             local S = { 'lazy' }
 
-            --- If `luarocks` is available and configured
-            if require('config.util').luarocks_check() then
-                table.insert(S, 'rockspec')
-            end
-            --- If `pathspec-find` is available
-            if executable('pathspec-find') then
-                table.insert(S, 'pathspec')
+            if not is_root() then
+                --- If `luarocks` is available and configured
+                if require('config.util').luarocks_check() then
+                    table.insert(S, 'rockspec')
+                end
+                --- If `pathspec-find` is available
+                if executable('pathspec-find') then
+                    table.insert(S, 'pathspec')
+                end
             end
 
             return S
@@ -135,7 +138,7 @@ Lazy.setup({
     },
 
     ui = {
-        backdrop = in_console() and 65 or 100,
+        backdrop = not in_console() and 60 or 100,
         border = 'shadow',
         title = 'L      A      Z      Y',
         wrap = true,
