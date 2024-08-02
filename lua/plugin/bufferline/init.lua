@@ -11,6 +11,7 @@ if not exists('bufferline') or exists('barbar') then
 end
 
 local BLine = require('bufferline')
+local SP = BLine.style_preset
 
 ---@param count integer
 ---@param lvl 'error'|'warning'
@@ -56,7 +57,7 @@ BLine.setup({
         fill = {
             bold = true,
             italic = false,
-            underline = false,
+            underline = true,
             undercurl = false,
         },
     },
@@ -64,11 +65,11 @@ BLine.setup({
         mode = 'tabs',
 
         --[[ style_preset = {
-            BLine.style_preset.no_italic,
-            BLine.style_preset.minimal,
+            SP.no_italic,
+            SP.minimal,
         }, ]]
 
-        style_preset = BLine.style_preset.default,
+        style_preset = SP.default,
         themable = true,
 
         numbers = 'both',
@@ -79,7 +80,7 @@ BLine.setup({
 
         indicator = {
             icon = '▎',
-            style = 'underline',
+            style = 'none',
         },
 
         buffer_close_icon = '󰅖',
@@ -88,10 +89,10 @@ BLine.setup({
         left_trunc_marker = '',
         right_trunc_marker = '',
 
-        max_name_length = 25,
-        max_prefix_length = 15,
+        max_name_length = 28,
+        max_prefix_length = 16,
         truncate_names = true,
-        tab_size = 20,
+        tab_size = 18,
 
         diagnostics = 'nvim_lsp',
         diagnostics_update_in_insert = false,
@@ -107,7 +108,7 @@ BLine.setup({
 
         persist_buffer_sort = true,
 
-        move_wraps_at_ends = false,
+        move_wraps_at_ends = true,
         get_element_icon = function(element)
             -- element consists of {filetype: string, path: string, extension: string, directory: string}
             -- This can be used to change how bufferline fetches the icon
@@ -131,7 +132,7 @@ BLine.setup({
         },
 
         hover = {
-            enabled = false,
+            enabled = true,
             delay = 250,
             reveal = { 'close' },
         },
