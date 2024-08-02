@@ -69,25 +69,41 @@ TODO.setup({
             icon = ' ',
             color = 'warning',
             alt = {
+                'ATTENTION',
+                'ISSUE',
+                'PROBLEM',
                 'WARNING',
                 'XXX',
-                'PROBLEM',
-                'ISSUE',
             },
         },
-        PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
+        PERF = {
+            icon = ' ',
+            color = 'info',
+            alt = {
+                'OPTIM',
+                'OPTIMIZED',
+                'PERFORMANCE',
+            },
+        },
         NOTE = {
             icon = ' ',
             color = 'hint',
             alt = {
                 'INFO',
                 'MINDTHIS',
-                'WATCH',
-                'ATTENTION',
                 'TONOTE',
+                'WATCH',
             },
         },
-        TEST = { icon = '⏲ ', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
+        TEST = {
+            icon = '⏲ ',
+            color = 'test',
+            alt = {
+                'TESTING',
+                'PASSED',
+                'FAILED',
+            },
+        },
     },
     gui_style = {
         fg = 'BOLD', -- The gui style to use for the fg highlight group
@@ -103,8 +119,8 @@ TODO.setup({
         multiline_pattern = '^.', -- lua pattern to match the next multiline from the start of the matched keyword
         multiline_context = 3, -- extra lines that will be re-evaluated when changing a line
         before = '', -- 'fg' or 'bg' or empty
-        keyword = 'wide_bg', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-        after = 'fg', -- 'fg' or 'bg' or empty
+        keyword = 'wide_fg', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+        after = '', -- 'fg' or 'bg' or empty
         pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
         comments_only = true, -- uses treesitter to match keywords in comments only
         max_line_len = 250, -- ignore lines longer than this
@@ -132,12 +148,13 @@ TODO.setup({
         -- regex that will be used to match keywords.
         -- don't replace the (KEYWORDS) placeholder
         pattern = [[\b(KEYWORDS):]], -- ripgrep regex
-        -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
     },
 })
 
----@type fun(direction: 'next'|'prev', keyword: string): fun()
-local function jump(direction, keyword)
+---@param direction 'next'|'prev'
+---@param keywords string[]
+---@return fun()
+local function jump(direction, keywords)
     if not (is_str(direction) or vim.tbl_contains({ 'next', 'prev' }, direction)) then
         error('(plugin.todo_comments:jump): Invalid direction')
     end
@@ -147,39 +164,49 @@ local function jump(direction, keyword)
         prev = TODO.jump_prev,
     }
 
-    return function() direction_map[direction]({ keywords = { keyword } }) end
+    return function() direction_map[direction]({ keywords = keywords }) end
 end
 
 ---@type KeyMapDict
 local Keys = {
     -- `TODO`
     ['<leader>ctn'] = {
-        jump('next', 'TODO'),
+        jump('next', { 'TODO' }),
         desc("Next 'TODO' Comment"),
     },
     ['<leader>ctp'] = {
-        jump('prev', 'TODO'),
+        jump('prev', { 'TODO' }),
         desc("Previous 'TODO' Comment"),
     },
 
     -- `ERROR`
     ['<leader>cen'] = {
-        jump('next', 'ERROR'),
+        jump('next', { 'ERROR' }),
         desc("Next 'ERROR' Comment"),
     },
     ['<leader>cep'] = {
-        jump('prev', 'ERROR'),
+        jump('prev', { 'ERROR' }),
         desc("Previous 'ERROR' Comment"),
     },
 
     -- `WARNING`
     ['<leader>cwn'] = {
-        jump('next', 'WARNING'),
+        jump('next', { 'WARNING' }),
         desc("Next 'WARNING' Comment"),
     },
     ['<leader>cwp'] = {
-        jump('prev', 'WARNING'),
+        jump('prev', { 'WARNING' }),
         desc("Previous 'WARNING' Comment"),
+    },
+
+    -- `NOTE`
+    ['<leader>cnn'] = {
+        jump('next', { 'NOTE' }),
+        desc("Next 'NOTE' Comment"),
+    },
+    ['<leader>cnp'] = {
+        jump('prev', { 'NOTE' }),
+        desc("Previous 'NOTE' Comment"),
     },
 }
 
@@ -189,6 +216,7 @@ local Names = {
     ['<leader>cw'] = { group = "+'WARNING'" },
     ['<leader>ce'] = { group = "+'ERROR'" },
     ['<leader>ct'] = { group = "+'TODO'" },
+    ['<leader>cn'] = { group = "+'NOTE'" },
 }
 
 if WK.available() then
