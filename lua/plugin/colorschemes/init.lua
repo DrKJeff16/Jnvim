@@ -23,6 +23,9 @@ local M = {
     nightfox = exists('plugin.colorschemes.nightfox') and (function()
         return require('plugin.colorschemes.nightfox')
     end)() or nil,
+    vscode = exists('plugin.colorschemes.vscode') and (function()
+        return require('plugin.colorschemes.vscode')
+    end)() or nil,
     gruvbox = exists('plugin.colorschemes.gruvbox') and (function()
         return require('plugin.colorschemes.gruvbox')
     end)() or nil,

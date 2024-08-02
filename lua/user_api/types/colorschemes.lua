@@ -63,6 +63,7 @@
 ---@field spaceduck CscSubMod
 ---@field spacemacs CscSubMod
 ---@field tokyonight CscSubMod
+---@field vscode CscSubMod
 ---@field new fun(): CscMod
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

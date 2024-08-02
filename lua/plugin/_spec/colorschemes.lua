@@ -59,6 +59,16 @@ local M = {
         cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
     },
     {
+        'Mofiqul/vscode.nvim',
+        lazy = false,
+        priority = 1000,
+        main = 'vscode',
+        version = false,
+        init = colorscheme_init('installed_vscode'),
+        ---@diagnostic disable-next-line
+        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+    },
+    {
         'ellisonleao/gruvbox.nvim',
         lazy = false,
         priority = 1000,

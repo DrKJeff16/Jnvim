@@ -89,6 +89,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         'kanagawa',
         'nightfox',
         'catppuccin',
+        'vscode',
         'onedark',
         'gruvbox',
         'spacemacs',
