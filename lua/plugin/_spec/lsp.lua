@@ -30,6 +30,7 @@ local M = {
     --- Essential for Nvim Lua files
     {
         'folke/lazydev.nvim',
+        event = 'VeryLazy',
         ft = 'lua',
         version = false,
         dependencies = { 'Bilal2453/luvit-meta' },
