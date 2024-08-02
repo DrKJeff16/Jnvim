@@ -25,8 +25,9 @@ local TT = require('toggleterm')
 
 local FACTOR = floor(vim.opt.columns:get() * 0.85)
 
-local Opts = {
-    ---@type fun(term: Terminal): integer
+TT.setup({
+    ---@param term Terminal
+    ---@return integer
     size = function(term)
         if term.direction == 'vertical' then
             return floor(vim.opt.columns:get() * 0.65)
@@ -35,9 +36,14 @@ local Opts = {
         return FACTOR
     end,
 
+    open_mapping = [[<c-t>]],
+
     autochdir = true,
     hide_numbers = true,
+
+    ---@type 'float'|'tab'|'horizontal'|'vertical'
     direction = 'float',
+
     close_on_exit = true,
 
     opts = {
@@ -55,18 +61,23 @@ local Opts = {
         },
     },
 
+    shade_filetypes = {},
     shade_terminals = true,
+    shading_factor = -30,
+    shading_ratio = -3,
 
     start_in_insert = true,
     insert_mappings = true,
-    shell = vim.opt.shell:get(),
+    terminal_mappings = true,
+    shell = vim.o.shell,
     auto_scroll = true,
 
     persist_size = true,
     persist_mode = true,
 
     float_opts = {
-        border = 'double',
+        border = 'curved',
+        ---@type 'left'|'center'|'right'
         title_pos = 'center',
         zindex = 100,
         winblend = 3,
@@ -79,43 +90,63 @@ local Opts = {
         ---@return string
         name_formatter = function(term) return term.name end,
     },
-}
+})
 
-TT.setup(Opts)
+function _G.set_terminal_keymaps()
+    ---@type KeyMapDict
+    local K = {
+        ['<esc>'] = {
+            [[<C-\><C-n>]],
+            desc('Escape Terminal', true, 0),
+        },
+        ['<C-h>'] = {
+            function() vim.cmd.wincmd('h') end,
+            desc('Goto Left Window', true, 0),
+        },
+        ['<C-j>'] = {
+            function() vim.cmd.wincmd('j') end,
+            desc('Goto Down Window', true, 0),
+        },
+        ['<C-k>'] = {
+            function() vim.cmd.wincmd('k') end,
+            desc('Goto Up Window', true, 0),
+        },
+        ['<C-l>'] = {
+            function() vim.cmd.wincmd('l') end,
+            desc('Goto Right Window', true, 0),
+        },
+        ['<C-w>'] = {
+            [[<C-\><C-n><C-w>]],
+            { buffer = 0, silent = true, noremap = true, nowait = false },
+        },
+    }
 
----@type AuDict
-local aus = {
-    ['TermEnter'] = {
-        pattern = { 'term://*toggleterm#*' },
-        callback = function() User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
-    },
-}
-
-for event, v in next, aus do
-    au(event, v)
+    require('user_api.maps').map_dict(K, 'wk.register', false, 't', 0)
 end
+
+local cmd_str = '<CMD>exe v:count1 . "ToggleTerm"<CR>'
 
 ---@type table<MapModes, KeyMapDict>
 local Keys = {
     n = {
         ['<c-t>'] = {
-            '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-            desc('Toggle'),
+            cmd_str,
+            desc('Toggle', true, 0),
         },
         ['<leader>Tt'] = {
-            '<CMD>exe v:count1 . "ToggleTerm"<CR>',
-            desc('Toggle'),
+            cmd_str,
+            desc('Toggle', true, 0),
         },
     },
     i = {
         ['<c-t>'] = {
-            '<Esc><CMD>exe v:count1 . "ToggleTerm"<CR>',
-            desc('Toggle'),
+            '<Esc>' .. cmd_str,
+            desc('Toggle', true, 0),
         },
     },
 }
 
----@type table<MapModes, RegKeysNamed>
+---@type table<MapModes, RegKeys>
 local Names = {
     n = { ['<leader>T'] = { group = '+Toggleterm' } },
 }
@@ -124,5 +155,20 @@ if WK.available() then
     map_dict(Names, 'wk.register', true)
 end
 map_dict(Keys, 'wk.register', true)
+
+---@type AuDict
+local aus = {
+    ['TermEnter'] = {
+        pattern = { 'term://*toggleterm#*' },
+        callback = function() User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
+    },
+    ['TermOpen'] = {
+        callback = function() set_terminal_keymaps() end,
+    },
+}
+
+for event, v in next, aus do
+    au(event, v)
+end
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
