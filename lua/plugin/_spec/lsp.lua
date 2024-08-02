@@ -34,7 +34,7 @@ local M = {
         ft = 'lua',
         version = false,
         dependencies = { 'Bilal2453/luvit-meta' },
-        config = source('plugin.lspconfig.lazydev'),
+        config = source('plugin.lazydev'),
         cond = executable('lua-language-server'),
     },
     --- optional `vim.uv` typings

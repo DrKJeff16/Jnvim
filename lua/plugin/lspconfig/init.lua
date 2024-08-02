@@ -297,7 +297,7 @@ au('LspAttach', {
         map_dict(K, 'wk.register', true, nil, buf)
 
         if client.name == 'lua_ls' then
-            require('plugin.lspconfig.lazydev')
+            require('plugin.lazydev')
         end
     end,
 })
