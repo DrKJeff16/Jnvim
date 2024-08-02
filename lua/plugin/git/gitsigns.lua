@@ -69,7 +69,10 @@ GS.setup({
                     function() GS.diffthis('~') end,
                     desc('Diff This', true, bufnr),
                 },
-                ['<leader>Gtb'] = { GS.toggle_current_line_blame, desc('Toggle Line Blame', true, bufnr) },
+                ['<leader>Gtb'] = {
+                    GS.toggle_current_line_blame,
+                    desc('Toggle Line Blame', true, bufnr),
+                },
                 ['<leader>Gtd'] = { GS.toggle_deleted, desc('Toggle Deleted', true, bufnr) },
             },
             v = {
