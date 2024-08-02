@@ -28,9 +28,6 @@ numpydoc = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
 pre-commit = "*"
 pyproject-toml = "*"
-pyyaml = "*"
-pytoml = "*"
-json5 = "*"
 jsonschema = {extras = ["format"], version = "*"}
 
 [requires]
