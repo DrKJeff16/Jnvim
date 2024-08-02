@@ -20,14 +20,14 @@ local M = {
     {
         'lewis6991/gitsigns.nvim',
         version = false,
-        config = source('plugin.gitsigns'),
+        config = source('plugin.git.gitsigns'),
         cond = executable('git') and not in_console(),
     },
     {
         'sindrets/diffview.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.diffview'),
+        config = source('plugin.git.diffview'),
         cond = executable('git'),
     },
     {
@@ -38,7 +38,7 @@ local M = {
             'plenary.nvim',
             'telescope.nvim',
         },
-        config = source('plugin.lazygit'),
+        config = source('plugin.git.lazygit'),
         cond = executable({ 'git', 'lazygit' }),
     },
 }
