@@ -35,11 +35,6 @@ _cmd() {
 die() {
     local EC=1
 
-    # TODO: Sanitize this line
-    while [[ "$(pwd)" == *"nvim/"* ]] || [[ "$(pwd)" == *"neovim/"* ]]; do
-        cd ..
-    done
-
     if [[ $# -ge 1 ]] && [[ $1 =~ ^(0|-?[1-9][0-9]*)$ ]]; then
         EC=$1
         shift

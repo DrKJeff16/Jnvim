@@ -1,6 +1,6 @@
 set nocompatible
 
-set backspace=indent,eol,start mouse= nospell helplang=en
+set backspace=indent,eol,start mouse=ni nospell helplang=en
 set title bg=dark ls=2 stal=2
 
 set guifont=FiraCode\ Nerd\ Font\ Mono:h19
