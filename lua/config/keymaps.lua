@@ -78,8 +78,20 @@ local DEFAULT_KEYS = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
 
-        ['<leader>bD'] = { '<CMD>bdel!<CR>', desc('Close Buffer Forcefully') },
-        ['<leader>bd'] = { '<CMD>bdel<CR>', desc('Close Buffer') },
+        ['<leader>bD'] = {
+            function()
+                vim.cmd('bdel!')
+                vim.cmd('bprevious')
+            end,
+            desc('Close Buffer Forcefully'),
+        },
+        ['<leader>bd'] = {
+            function()
+                vim.cmd('bdel')
+                vim.cmd('bprevious')
+            end,
+            desc('Close Buffer'),
+        },
         ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
         ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer') },
         ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer') },

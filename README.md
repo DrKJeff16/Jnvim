@@ -4,8 +4,6 @@
 
 </div>
 
-<div align="center">
-
 ## Table Of Contents
 
 1. [About](#about)
@@ -20,8 +18,6 @@
     5. [`user.maps`](#maps)
         1. [`user.maps.wk`](#wk)
     6. [`user.highlight`](#highlight)
-
-</div>
 
 ---
 
