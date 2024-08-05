@@ -62,7 +62,8 @@ vim.opt.rtp:prepend(lazypath)
 --- ---
 ---@type fun(): string
 local function luasnip_build()
-    local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp' or 'make install_jsregexp'
+    local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp'
+        or 'make install_jsregexp'
 
     if is_windows and executable('mingw32-make') then
         cmd = 'mingw32-' .. cmd
@@ -75,27 +76,33 @@ end
 
 ---@type fun(): boolean
 local function luarocks_set()
-    local has_luarocks = executable('luarocks', function()
-        require('user.util.notify').notify(
-            [[
+    local has_luarocks = executable(
+        'luarocks',
+        function()
+            require('user.util.notify').notify(
+                [[
         (lazy_cfg:luarocks_set): `luarocks` is not installed. Can't install both `luarocks.nvim` and `Neorg`.
         Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
         ]],
-            'error',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+                'error',
+                { title = 'Luarocks', timeout = 3000, hide_from_history = false }
+            )
+        end
+    )
 
-    local configured_luarocks = env_vars({ 'LUA_PATH', 'LUA_CPATH' }, function()
-        require('user.util.notify').notify(
-            [[
+    local configured_luarocks = env_vars(
+        { 'LUA_PATH', 'LUA_CPATH' },
+        function()
+            require('user.util.notify').notify(
+                [[
         (lazy_cfg:luarocks_set): Either `LUA_PATH` or `LUA_CPATH` are not initialized. Can't install both `luarocks.nvim` and `Neorg`.
         Comment them out in your packages file or install it and configure `LUA_PATH` and `LUA_CPATH` variables.
         ]],
-            'warn',
-            { title = 'Luarocks', timeout = 3000, hide_from_history = false }
-        )
-    end)
+                'warn',
+                { title = 'Luarocks', timeout = 3000, hide_from_history = false }
+            )
+        end
+    )
 
     return has_luarocks and configured_luarocks
 end
@@ -148,9 +155,7 @@ end
 --- ---
 ---@type fun(mod_str: string): fun()
 local function source(mod_str)
-    return function()
-        exists(mod_str, true)
-    end
+    return function() exists(mod_str, true) end
 end
 
 --- Set the global condition for a later submodule call.
@@ -291,17 +296,13 @@ M.ESSENTIAL = {
         keys = {
             {
                 '<leader>vs',
-                function()
-                    vim.cmd('StartupTime')
-                end,
+                function() vim.cmd('StartupTime') end,
                 desc = 'Run StartupTime',
             },
         },
         name = 'StartupTime',
         version = false,
-        config = function()
-            vim.g.startuptime_tries = 10
-        end,
+        config = function() vim.g.startuptime_tries = 10 end,
     },
     {
         'vhyrro/luarocks.nvim',
@@ -372,9 +373,7 @@ M.ESSENTIAL = {
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
-        init = function()
-            vim.opt.termguicolors = vim_exists('+termguicolors')
-        end,
+        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') end,
         config = source('lazy_cfg.notify'),
         enabled = not in_console(),
     },
@@ -898,9 +897,7 @@ M.UTILS = {
         'iamcco/markdown-preview.nvim',
         name = 'md_preview',
         build = executable('yarn') and 'cd app && yarn install' or '',
-        init = function()
-            vim.g.mkdp_filetypes = { 'markdown' }
-        end,
+        init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
         config = source('lazy_cfg.md_preview'),
         enabled = not in_console(),
     },
@@ -924,7 +921,8 @@ local P = {
 
 ---@type fun(cmd: 'ed'|'tabnew'|'split'|'vsplit'): fun()
 local key_variant = function(cmd)
-    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
+    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd
+        or 'ed'
 
     cmd = cmd .. ' '
 

@@ -91,9 +91,7 @@ if exists('telescope._extensions.file_browser') then
     load_ext('file_browser')
 end
 
-local function open()
-    vim.cmd('Telescope')
-end
+local function open() vim.cmd('Telescope') end
 
 ---@type table<MapModes, KeyMapDict>
 local Maps = {
@@ -170,15 +168,11 @@ local known_exts = {
             ---@type KeyMapDict
             local res = {
                 ['<leader>fTenl'] = {
-                    function()
-                        Noice.cmd('last')
-                    end,
+                    function() Noice.cmd('last') end,
                     desc('NoiceLast'),
                 },
                 ['<leader>fTenh'] = {
-                    function()
-                        Noice.cmd('history')
-                    end,
+                    function() Noice.cmd('history') end,
                     desc('NoiceHistory'),
                 },
             }
@@ -243,7 +237,13 @@ local au_tbl = {
 
             ---@type fun(args: TelAuArgs)
             callback = function(args)
-                if not (is_tbl(args.data) and is_str(args.data.filetype) and args.data.filetype == 'help') then
+                if
+                    not (
+                        is_tbl(args.data)
+                        and is_str(args.data.filetype)
+                        and args.data.filetype == 'help'
+                    )
+                then
                     vim.wo.number = true
                 else
                     vim.wo.wrap = false
