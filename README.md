@@ -11,13 +11,13 @@
     2. [Structure](#structure)
     3. [Plugins](#plugins)
 2. [User API](#api)
-    1. [`user.types`](#types)
-    2. [`user.util`](#util)
-    3. [`user.opts`](#opts)
-    4. [`user.check`](#check)
-    5. [`user.maps`](#maps)
-        1. [`user.maps.wk`](#wk)
-    6. [`user.highlight`](#highlight)
+    1. [`user_api.types`](#types)
+    2. [`user_api.util`](#util)
+    3. [`user_api.opts`](#opts)
+    4. [`user_api.check`](#check)
+    5. [`user_api.maps`](#maps)
+        1. [`user_api.maps.wk`](#wk)
+    6. [`user_api.highlight`](#highlight)
 
 ---
 
@@ -168,7 +168,7 @@ code structures and to simplify configuration.
 <br/>
 
 <h3 id="types">
-<u><code>user.types</code></u>
+<u><code>user_api.types</code></u>
 </h3>
 
 This submodule includes type annotations and documentation.
@@ -179,24 +179,24 @@ It can be found in [`user_api/types`](/lua/user_api/types).
 You can include it by using the following code snippet:
 
 ```lua
-require('user.types[.<type_module>]')
---- Or by using the entry point:
---- require('user').types[.<type_module>]
+require('user_api.types.module_name')
+-- Or by using the entry point:
+require('user_api').types.module_name
 ```
 
 For API-specific documentation, you can use the submodule [`types/user`](/lua/user_api/types/user):
 
 ```lua
-require('user.types.user[.<type_module>]')
---- Or by using the entry point:
---- require('user').types.user[.<type_module>]
+require('user_api.types.user.module_name')
+-- Or by using the entry point:
+require('user_api').types.user.module_name
 ```
 
 Each directory serves as an entry point for its pertinent files,
 sourced by the `init.lua` file in it.
 
 <h3 id="opts">
-<u><code>user.opts</code></u>
+<u><code>user_api.opts</code></u>
 </h3>
 
 This submodule can be found at [`here`](/lua/user_api/opts.lua).
@@ -207,9 +207,9 @@ use the `vim.opt` table.
 To call the options:
 
 ```lua
-require('user.opts').setup()
+require('user_api.opts').setup()
 --- Or by using the entry point:
-require('user').opts.setup()
+require('user_api').opts.setup()
 ```
 
 The `setup()` function optionally accepts a table with <u><b>long-named</b> vim options</u>.
@@ -218,14 +218,14 @@ It overwrites some of the default options as defined in [`opts.lua`](/lua/user_a
 As an example:
 
 ```lua
-require('user.opts').setup({
+require('user_api.opts').setup({
     completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
     wrap = false,
 })
 ```
 
 <h3 id="check">
-<u><code>user.check</code></u>
+<u><code>user_api.check</code></u>
 </h3>
 
 _**This is the most important utility for this config.**_ It currently provides a table with two
@@ -237,7 +237,7 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 
 <ul>
 <li>
-<b><u><code>user.check.value</code></u></b>
+<b><u><code>user_api.check.value</code></u></b>
 
 Used for value checking, differentiation and conditional code, aswell as
 for optional parameters in functions.
@@ -262,7 +262,7 @@ It can be found in [`user_api/check/value.lua`](/lua/user_api/check/value.lua).
 
 <li>
 
-<b><u><code>user.check.exists</code></u></b>
+<b><u><code>user_api.check.exists</code></u></b>
 
 Used for data existance checks, conditional module loading and fallback operations.
 It can be found in [`user_api/check/exists.lua`](/lua/user_api/check/exists.lua).
@@ -283,7 +283,7 @@ It can be found in [`user_api/check/exists.lua`](/lua/user_api/check/exists.lua)
 <hr/>
 
 <h3 id="maps">
-<u><code>user.maps</code></u>
+<u><code>user_api.maps</code></u>
 </h3>
 
 This module provides keymapping utilities in a more
@@ -355,11 +355,11 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 <br/>
 
 <h4 id="wk">
-<u><code>user.maps.wk</code></u>
+<u><code>user_api.maps.wk</code></u>
 </h4>
 
 The `maps` API also includes integration with
-[`which_key`](https://github.com/folke/which-key.nvim) as `user.maps.wk`.
+[`which_key`](https://github.com/folke/which-key.nvim) as `user_api.maps.wk`.
 It can be found found in [`user_api/maps.lua`](/lua/user_api/maps.lua)
 
 This module creates mappings using custom-made functions that convert
@@ -373,8 +373,8 @@ Use it, for example, to setup a fallback for setting keys, like in the
 following example:
 
 ```lua
-local Kmap = require('user').maps.kmap
-local WK = require('user').maps.wk
+local Kmap = require('user_api').maps.kmap
+local WK = require('user_api').maps.wk
 
 local my_keys = {
     --- Your maps go here...
@@ -558,7 +558,7 @@ completein the future.</b></u>
 ---
 
 <h3 id="highlight">
-<u><code>user.highlight</code></u>
+<u><code>user_api.highlight</code></u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
