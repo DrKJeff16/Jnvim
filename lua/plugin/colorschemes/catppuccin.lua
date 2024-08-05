@@ -70,7 +70,14 @@ if exists('catppuccin') then
             },
 
             color_overrides = {},
-            custom_highlights = {},
+            custom_highlights = function(colors)
+                return {
+                    NvimTreeNormal = { fg = colors.none },
+                    CmpBorder = { fg = colors.surface2 },
+                    Pmenu = { bg = colors.none },
+                    TabLineSel = { bg = colors.pink },
+                }
+            end,
 
             default_integrations = true,
             integrations = {
