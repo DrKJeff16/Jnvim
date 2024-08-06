@@ -16,7 +16,6 @@ pynvim = "*"
 mypy = "*"
 mypy-extensions = "*"
 isort = "*"
-rope = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
 pre-commit = "*"
 
