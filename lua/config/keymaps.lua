@@ -1,18 +1,16 @@
 local User = require('user_api') --- User API
-local Check = User.check ---@see User.Check Checking utilities
-local Maps = User.maps --- Mapping utilities
-local Kmap = Maps.kmap --- `vim.keymap.set` backend
-local WK = Maps.wk --- `which-key` backend
+local Check = User.check ---@see User.check Checking utilities
+local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 local maps_t = User.types.user.maps ---@see UserSubTypes.maps
 
-local nop = User.maps.nop ---@see User.Maps.nop
-local desc = Kmap.desc ---@see User.Maps.Keymap.desc
-local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local empty = Check.value.empty ---@see User.Check.Value.empty
+local nop = User.maps.nop ---@see User.Maps.nop
+local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
+local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
 --- Avoid executing these keys when attempting `<leader>` sequences
 local NOP = {
@@ -285,6 +283,9 @@ local DEFAULT_KEYS = {
         ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false, 0) },
         ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false, 0) },
     },
+    t = {
+        ['<Esc>'] = { '<C-\\><C-n>', { buffer = 0 } },
+    },
 }
 --- `which-key` map group prefixes
 ---@type table<MapModes, RegKeysNamed>
@@ -312,8 +313,6 @@ local DEFAULT_NAMES = {
         ['<leader>v'] = { group = '+Vim' }, --- Vim
     },
 }
-
-Kmap.t('<Esc>', '<C-\\><C-n>', { buffer = 0 })
 
 local M = {}
 
