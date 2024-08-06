@@ -54,17 +54,38 @@ GS.setup({
                 },
 
                 -- Actions
-                ['<leader>Ghs'] = { GS.stage_hunk, desc('Stage Current Hunk', true, bufnr) },
-                ['<leader>Ghr'] = { GS.reset_hunk, desc('Reset Current Hunk', true, bufnr) },
-                ['<leader>Ghu'] = { GS.undo_stage_hunk, desc('Undo Hunk Stage', true, bufnr) },
-                ['<leader>Ghp'] = { GS.preview_hunk, desc('Preview Current Hunk', true, bufnr) },
-                ['<leader>GhS'] = { GS.stage_buffer, desc('Stage The Whole Buffer', true, bufnr) },
-                ['<leader>GhR'] = { GS.reset_buffer, desc('Reset The Whole Buffer', true, bufnr) },
+                ['<leader>Ghs'] = {
+                    GS.stage_hunk,
+                    desc('Stage Current Hunk', true, bufnr),
+                },
+                ['<leader>Ghr'] = {
+                    GS.reset_hunk,
+                    desc('Reset Current Hunk', true, bufnr),
+                },
+                ['<leader>Ghu'] = {
+                    GS.undo_stage_hunk,
+                    desc('Undo Hunk Stage', true, bufnr),
+                },
+                ['<leader>Ghp'] = {
+                    GS.preview_hunk,
+                    desc('Preview Current Hunk', true, bufnr),
+                },
+                ['<leader>GhS'] = {
+                    GS.stage_buffer,
+                    desc('Stage The Whole Buffer', true, bufnr),
+                },
+                ['<leader>GhR'] = {
+                    GS.reset_buffer,
+                    desc('Reset The Whole Buffer', true, bufnr),
+                },
                 ['<leader>Ghb'] = {
                     function() GS.blame_line({ full = true }) end,
                     desc('Blame Current Line', true, bufnr),
                 },
-                ['<leader>Ghd'] = { GS.diffthis, desc('Diff Against Index', true, bufnr) },
+                ['<leader>Ghd'] = {
+                    GS.diffthis,
+                    desc('Diff Against Index', true, bufnr),
+                },
                 ['<leader>GhD'] = {
                     function() GS.diffthis('~') end,
                     desc('Diff This', true, bufnr),
@@ -73,7 +94,10 @@ GS.setup({
                     GS.toggle_current_line_blame,
                     desc('Toggle Line Blame', true, bufnr),
                 },
-                ['<leader>Gtd'] = { GS.toggle_deleted, desc('Toggle Deleted', true, bufnr) },
+                ['<leader>Gtd'] = {
+                    GS.toggle_deleted,
+                    desc('Toggle Deleted', true, bufnr),
+                },
             },
             v = {
                 ['<leader>Ghs'] = {
