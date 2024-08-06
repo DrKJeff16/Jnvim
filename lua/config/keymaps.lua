@@ -263,27 +263,39 @@ local DEFAULT_KEYS = {
         ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
     },
     v = {
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false, 0) },
-        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false, 0) },
-
         ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false, 0) },
         ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false, 0) },
+        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false, 0) },
+        ['<leader>fs'] = {
+            function()
+                if vim.bo.modifiable then
+                    vim.cmd.write()
+                else
+                    require('user_api.util.notify').notify('Not writeable.')
+                end
+            end,
+            desc('Save File', false, 0),
+        },
 
         ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false, 0) },
 
-        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false, 0) },
+        ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
+        ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
+
+        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false, 0) },
+        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false, 0) },
     },
 }
 --- `which-key` map group prefixes
 ---@type table<MapModes, RegKeysNamed>
 local DEFAULT_NAMES = {
     n = {
+        ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
         ['<leader>f'] = { group = '+File' }, --- File Handling
         ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
         ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
-        ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
         ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
         ['<leader>v'] = { group = '+Vim' }, --- Vim
@@ -296,6 +308,7 @@ local DEFAULT_NAMES = {
         ['<leader>fF'] = { group = '+Folding' }, --- Folding
         ['<leader>h'] = { group = '+Help' }, --- Help
         ['<leader>i'] = { group = '+Indent' }, --- Indent Control
+        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
         ['<leader>v'] = { group = '+Vim' }, --- Vim
     },
 }
