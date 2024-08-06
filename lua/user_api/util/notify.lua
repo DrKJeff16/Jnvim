@@ -1,7 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
----@diagnostic disable:missing-fields
-
 require('user_api.types.user.util')
 
 --- Can't use `check.exists.module()` here as its module might require this module,
@@ -34,6 +30,7 @@ local M = {
         }
 
         ---@type notify.Options
+        ---@diagnostic disable-next-line:missing-fields
         local DEFAULT_OPTS = {
             animate = true,
             hide_from_history = false,
