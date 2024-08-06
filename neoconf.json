@@ -17,10 +17,10 @@
             "clangd.checkUpdates": false,
             "clangd.detectExtensionConflicts": true,
             "clangd.enableCodeCompletion": true,
-            "clangd.inactiveRegions.opacity": 0.85,
+            "clangd.inactiveRegions.opacity": 0.95,
             "clangd.inactiveRegions.useBackgroundHighlight": true,
             "clangd.onConfigChanged": "restart",
-            "clangd.path": "/usr/bin/clangd",
+            "clangd.path": "clangd",
             "clangd.restartAfterCrash": true,
             "clangd.serverCompletionRanking": true
         },
