@@ -63,6 +63,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │   └── util.lua  <== Utilities used in the file above (env checks, etc.)
 ├── plugin/  <==  Plugins are configured in this directory
 │   ├── _spec/  <== Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
+│   │   ├── essentials.lua  <== Essential plugins. TREAT THIS ONE WITH CARE
 │   │   ├── colorschemes.lua  <== Colorscheme plugins
 │   │   ├── completion.lua  <== Completion plugins
 │   │   ├── editing.lua  <== Editing enhancement plugins
@@ -73,8 +74,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── treesitter.lua  <== Treesitter plugins
 │   │   ├── ui.lua  <== UI-enhancement plugins
 │   │   ├── utils.lua  <== Utilitary plugins
-│   │   ├── vcs.lua  <== Version Control plugins
-│   │   └── essentials.lua  <== Essential plugins. TREAT THIS ONE WITH CARE
+│   │   └── vcs.lua  <== Version Control plugins
 │   ├── plugin1/  <== Arbitrary plugin #1
 │   │   └── init.lua  <== Entry points + setup
 │   ├── plugin2/  <== Arbitrary plugin #2
