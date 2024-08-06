@@ -283,7 +283,7 @@ local function choice_popup_close()
     end
 end
 
-local group = augroup('choice_popup', { clear = true })
+local group = augroup('choice_popup', { clear = false })
 ---@type AuRepeat
 local AUCMDS = {
     ['User'] = {
