@@ -7,7 +7,6 @@ name = "pypi"
 typing = "*"
 typing-extensions = "*"
 argparse = "*"
-argcomplete = "*"
 wheel = "*"
 setuptools = "*"
 
@@ -17,8 +16,6 @@ pynvim = "*"
 mypy = "*"
 mypy-extensions = "*"
 isort = "*"
-rope = "*"
-numpydoc = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
 pre-commit = "*"
 
