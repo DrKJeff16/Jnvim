@@ -3,11 +3,8 @@ repos:
     rev: v4.6.0
     hooks:
       - id: detect-private-key
-        verbose: true
       - id: check-shebang-scripts-are-executable
-        verbose: true
       - id: check-executables-have-shebangs
-        verbose: true
       - id: mixed-line-ending
         verbose: true
       - id: end-of-file-fixer
