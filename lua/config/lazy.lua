@@ -1,34 +1,15 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.lazy
 local WK = User.maps.wk
 
+local key_variant = require('config.util').key_variant
 local executable = Check.exists.executable
 local is_str = Check.value.is_str
-local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 local in_console = Check.in_console
 local is_root = Check.is_root
-
----@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
----@return fun()
-local function key_variant(cmd)
-    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd
-        or 'ed'
-    local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
-
-    local FUNCS = {
-        ['ed'] = function() vim.cmd.ed(fpath) end,
-        ['tabnew'] = function() vim.cmd.tabnew(fpath) end,
-        ['split'] = function() vim.cmd.split(fpath) end,
-        ['vsplit'] = function() vim.cmd.vsplit(fpath) end,
-    }
-
-    return FUNCS[cmd]
-end
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 --- Set installation dir for `Lazy`
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
