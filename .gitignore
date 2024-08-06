@@ -37,4 +37,9 @@
 *.old
 *.new
 
+.luarc.json
+.luarc.jsonc
+luarc.json
+luarc.jsonc
+
 *.lock
