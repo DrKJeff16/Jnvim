@@ -6,17 +6,13 @@ repos:
       - id: check-shebang-scripts-are-executable
       - id: check-executables-have-shebangs
       - id: mixed-line-ending
-        verbose: true
       - id: end-of-file-fixer
-        verbose: true
       - id: trailing-whitespace
-        verbose: true
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
     hooks:
       - id: remove-crlf
-        verbose: true
 
   - repo: local
     hooks:
