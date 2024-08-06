@@ -33,7 +33,7 @@ as the default plugin manager.
 Please read the [Plugins section](#plugins) to get an understanding of how this works.
 
 This configuration has its core entirely dependant on the
-[`user`](/lua/user) module, which provides a customized
+[`user_api`](/lua/user_api) module, which provides a customized
 **_API_** which includes **_module checking_**,
 **_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
@@ -149,7 +149,6 @@ _Just make sure to read the
 - [`noice.nvim`](https://github.com/folke/noice.nvim)
 - [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 - [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
-- [`BarBar`](https://github.com/romgrk/barbar.nvim)
 - [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
 
 </details>
@@ -157,10 +156,10 @@ _Just make sure to read the
 <br/>
 
 <h2 id="api">
-The <code>User</code> API
+The `user` API
 </h2>
 
-The `User` API can be found in [`lua/user`](/lua/user).
+The `user` API can be found in [`lua/user_api`](/lua/user_api).
 It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
