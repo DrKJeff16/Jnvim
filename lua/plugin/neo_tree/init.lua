@@ -1,13 +1,11 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
+local WK = User.maps.wk
 
 local exists = Check.exists.module
-local nmap = kmap.n
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('neo-tree') then
     return
@@ -15,7 +13,7 @@ end
 
 local NeoTree = require('neo-tree')
 
-local Opts = {
+NeoTree.setup({
     close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
     popup_border_style = 'rounded',
     enable_git_status = true,
@@ -178,7 +176,7 @@ local Opts = {
             hide_gitignored = false,
             hide_hidden = false, -- only works on Windows for hidden files/directories
             hide_by_name = {
-                --"node_modules"
+                'node_modules',
             },
             hide_by_pattern = { -- uses glob style patterns
                 --"*.meta",
@@ -196,7 +194,7 @@ local Opts = {
             },
         },
         follow_current_file = {
-            enabled = false, -- This will find and focus the file in the active buffer every time
+            enabled = true, -- This will find and focus the file in the active buffer every time
             --               -- the current file is changed while the tree is open
             leave_dirs_open = true, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
         },
@@ -211,7 +209,7 @@ local Opts = {
         window = {
             mappings = {
                 ['<bs>'] = 'navigate_up',
-                -- ["."] = "set_root",
+                ['.'] = 'set_root',
                 ['H'] = 'toggle_hidden',
                 ['/'] = 'fuzzy_finder',
                 -- ["D"] = "fuzzy_finder_directory",
@@ -257,8 +255,8 @@ local Opts = {
         window = {
             mappings = {
                 ['bd'] = 'buffer_delete',
-                -- ["<bs>"] = "navigate_up",
-                -- ["."] = "set_root",
+                ['<bs>'] = 'navigate_up',
+                ['.'] = 'set_root',
                 ['o'] = {
                     'show_help',
                     nowait = false,
@@ -298,20 +296,23 @@ local Opts = {
             },
         },
     },
-}
-
-NeoTree.setup(Opts)
+})
 
 ---@type KeyMapDict
 local Keys = {
     ['<leader>ftt'] = {
         function() vim.cmd('Neotree reveal') end,
-        { desc = 'Reveal NeoTree' },
+        desc('Reveal NeoTree'),
     },
 }
+---@type RegKeysNamed
+local Names = {
+    ['<leader>ft'] = { group = '+NeoTree' },
+}
 
-for lhs, v in next, Keys do
-    nmap(lhs, v[1], v[2] or {})
+if WK.available() then
+    map_dict(Names, 'wk.register', false, 'n')
 end
+map_dict(Keys, 'wk.register', false, 'n')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
