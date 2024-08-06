@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.lazy
@@ -49,9 +46,11 @@ local M = {
     ---
     --- ## Parameters
     --- * `mod_str` This parameter must comply with the following format:
+    ---
     ---```lua
     --- source('plugin.<plugin_name>[.<...>]')
     --- ```
+    ---
     --- as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
     --- **_That being said_**, you can use any module path if you wish to do so.
     ---
@@ -98,13 +97,17 @@ local M = {
     ---
     --- ### Unix
     --- **The return string could be empty** or something akin to
+    ---
     --- ```sh
     --- $ make install_jsregexp
     --- ```
+    ---
     --- If `nproc` is found in `PATH` or a valid executable then the string could look like
+    ---
     --- ```sh
     --- $ make -j"$(nproc)" install_jsregexp
     --- ```
+    ---
     --- ### Windows
     --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
     ---@return string
@@ -124,6 +127,23 @@ local M = {
     ---@return boolean
     luarocks_check = function()
         return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })
+    end,
+
+    ---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
+    ---@return fun()
+    key_variant = function(cmd)
+        cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd
+            or 'ed'
+        local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
+
+        local FUNCS = {
+            ['ed'] = function() vim.cmd.ed(fpath) end,
+            ['tabnew'] = function() vim.cmd.tabnew(fpath) end,
+            ['split'] = function() vim.cmd.split(fpath) end,
+            ['vsplit'] = function() vim.cmd.vsplit(fpath) end,
+        }
+
+        return FUNCS[cmd]
     end,
 }
 
