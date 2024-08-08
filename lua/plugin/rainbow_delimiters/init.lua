@@ -20,11 +20,11 @@ vim.g.rainbow_delimiters = {
     },
     query = {
         [''] = 'rainbow-delimiters',
+        latex = 'rainbow-blocks',
         lua = 'rainbow-blocks',
     },
     priority = {
-        [''] = 110,
-        lua = 210,
+        [''] = 210,
     },
     highlight = {
         'RainbowDelimiterRed',
