@@ -7,27 +7,27 @@ local CfgUtil = require('config.util') ---@see PluginUtils
 local types = User.types.lazy
 
 local source = CfgUtil.source
-local luasnip_build = CfgUtil.luasnip_build
 local executable = User.check.exists.executable
 
 ---@type (LazySpec)[]
 local M = {
     {
-        'L3MON4D3/LuaSnip',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        build = luasnip_build(),
-    },
-    {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
-        dependencies = { 'onsails/lspkind.nvim' },
+        dependencies = {
+            'onsails/lspkind.nvim',
+            'hrsh7th/vim-vsnip',
+        },
         init = function()
             vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
             vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
         end,
         config = source('plugin.cmp'),
+    },
+    {
+        'hrsh7th/vim-vsnip',
+        version = false,
     },
     {
         'hrsh7th/cmp-nvim-lsp',
@@ -71,11 +71,6 @@ local M = {
         'hrsh7th/cmp-cmdline',
         event = 'CmdlineEnter',
         version = false,
-    },
-    {
-        'saadparwaiz1/cmp_luasnip',
-        version = false,
-        dependencies = { 'LuaSnip' },
     },
     {
         'paopaol/cmp-doxygen',
