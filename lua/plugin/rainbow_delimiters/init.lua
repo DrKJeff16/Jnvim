@@ -1,10 +1,8 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
+local hl_from_dict = User.highlight.hl_from_dict
 
 if not exists('rainbow-delimiters') then
     return
@@ -13,18 +11,21 @@ end
 local RD = require('rainbow-delimiters')
 
 ---@type rainbow_delimiters.config
-vim.g.rainbow_delimiters = {
+require('rainbow-delimiters.setup').setup({
     strategy = {
         [''] = RD.strategy['global'],
+        commonlisp = RD.strategy['local'],
+        html = RD.strategy['local'],
         vim = RD.strategy['local'],
     },
     query = {
         [''] = 'rainbow-delimiters',
+        html = 'rainbow-blocks',
+        latex = 'rainbow-blocks',
         lua = 'rainbow-blocks',
     },
     priority = {
-        [''] = 110,
-        lua = 210,
+        [''] = 210,
     },
     highlight = {
         'RainbowDelimiterRed',
@@ -35,6 +36,14 @@ vim.g.rainbow_delimiters = {
         'RainbowDelimiterViolet',
         'RainbowDelimiterCyan',
     },
+    blacklist = {},
+})
+
+---@type HlDict
+local HL = {
+    ['RainbowDelimiterRed'] = { link = 'WarningMsg' },
 }
+
+hl_from_dict(HL)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
