@@ -20,7 +20,7 @@
             "clangd.inactiveRegions.opacity": 0.95,
             "clangd.inactiveRegions.useBackgroundHighlight": true,
             "clangd.onConfigChanged": "restart",
-            "clangd.path": "clangd",
+            "clangd.path": "/usr/bin/clangd",
             "clangd.restartAfterCrash": true,
             "clangd.serverCompletionRanking": true
         },
