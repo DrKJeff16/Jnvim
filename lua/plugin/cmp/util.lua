@@ -12,11 +12,10 @@ local is_nil = Check.value.is_nil
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
-if not modules({ 'cmp', 'luasnip' }) then
-    error('Either `cmp` or `luasnip` are not installed.')
+if not exists('cmp') then
+    error('Either `cmp` is not installed.')
 end
 
-local Luasnip = exists('plugin.cmp.luasnip') and require('plugin.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')
 local Types = require('cmp.types')
 local CmpTypes = require('cmp.types.cmp')
@@ -36,16 +35,19 @@ function M.has_words_before()
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
+function M.feedkey(key, mode)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
 ---@param fallback fun()
 function M.n_select(fallback)
-    local jumpable = Luasnip.expand_or_locally_jumpable
     ---@type cmp.SelectOption
     local opts = { behavior = cmp.SelectBehavior.Insert }
 
     if cmp.visible() then
         cmp.select_next_item(opts)
-    elseif jumpable() then
-        Luasnip.expand_or_jump()
+    elseif vim.fn['vsnip#available'](1) == 1 then
+        M.feedkey('<Plug>(vsnip-expand-or-jump)', '')
     elseif M.has_words_before() then
         cmp.complete()
         if cmp.visible() then
@@ -58,14 +60,13 @@ end
 
 ---@param fallback fun()
 function M.n_shift_select(fallback)
-    local jumpable = Luasnip.jumpable
     ---@type cmp.SelectOption
     local opts = { behavior = cmp.SelectBehavior.Replace }
 
     if cmp.visible() then
         cmp.select_prev_item(opts)
-    elseif jumpable(-1) then
-        Luasnip.jump(-1)
+    elseif vim.fn['vsnip#jumpable'](-1) == 1 then
+        M.feedkey('<Plug>(vsnip-jump-prev)', '')
     elseif M.has_words_before() then
         cmp.complete()
         if cmp.visible() then

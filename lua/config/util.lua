@@ -91,39 +91,6 @@ local M = {
         return cmd
     end,
 
-    --- Returns the string for the `build` field for `LuaSnip` depending on certain conditions
-    ---
-    --- ## Return
-    ---
-    --- ### Unix
-    --- **The return string could be empty** or something akin to
-    ---
-    --- ```sh
-    --- $ make install_jsregexp
-    --- ```
-    ---
-    --- If `nproc` is found in `PATH` or a valid executable then the string could look like
-    ---
-    --- ```sh
-    --- $ make -j"$(nproc)" install_jsregexp
-    --- ```
-    ---
-    --- ### Windows
-    --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
-    ---@return string
-    luasnip_build = function()
-        local cmd = executable('nproc') and 'make -j"$(nproc)" install_jsregexp'
-            or 'make install_jsregexp'
-
-        if is_windows and executable('mingw32-make') then
-            cmd = 'mingw32-' .. cmd
-        elseif is_windows and not executable('make') then
-            cmd = ''
-        end
-
-        return cmd
-    end,
-
     ---@return boolean
     luarocks_check = function()
         return executable('luarocks') and env_vars({ 'LUA_PATH', 'LUA_CPATH' })

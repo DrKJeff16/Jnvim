@@ -10,7 +10,7 @@ local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_bool = Check.value.is_bool
 
-if not exists('cmp') or not exists('luasnip') then
+if not exists('cmp') then
     return
 end
 
@@ -24,7 +24,6 @@ local Sks = require('plugin.cmp.kinds')
 local CmpUtil = require('plugin.cmp.util')
 local Sources = require('plugin.cmp.sources').new()
 
-local Luasnip = exists('plugin.cmp.luasnip') and require('plugin.cmp.luasnip') or require('luasnip')
 local cmp = require('cmp')
 local Compare = require('cmp.config.compare')
 
@@ -114,7 +113,7 @@ local Opts = {
 
     snippet = {
         ---@type fun(args: cmp.SnippetExpansionParams)
-        expand = function(args) Luasnip.lsp_expand(args.body) end,
+        expand = function(args) vim.fn['vsnip#anonymous'](args.body) end,
     },
 
     preselect = cmp.PreselectMode.None,
@@ -158,7 +157,7 @@ local Opts = {
     sources = cmp.config.sources({
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 2 },
-        { name = 'luasnip', group_index = 3 },
+        { name = 'vsnip', group_index = 3 },
         buffer(4),
         async_path(5),
     }),
