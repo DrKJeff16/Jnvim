@@ -66,7 +66,7 @@ local Sources = {
     c = {
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 2 },
-        { name = 'luasnip', group_index = 3 },
+        { name = 'vsnip', group_index = 3 },
         async_path(5),
         buffer(4),
     },
@@ -75,7 +75,7 @@ local Sources = {
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 2 },
         { name = 'nvim_lua', group_index = 3 },
-        { name = 'luasnip', group_index = 4 },
+        { name = 'vsnip', group_index = 4 },
         buffer(5),
     },
 }
@@ -112,7 +112,7 @@ local ft = {
                 { name = 'nvim_lsp', group_index = 1 },
                 { name = 'nvim_lsp_signature_help', group_index = 2 },
                 async_path(3),
-                { name = 'luasnip', group_index = 4 },
+                { name = 'vsnip', group_index = 4 },
                 buffer(5),
             }),
         },

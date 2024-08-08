@@ -14,7 +14,6 @@ require('user_api.types.user.maps')
 ---@field colorscheme_init fun(fields: string|table<string, any>): fun()
 ---@field source fun(mod_str: string): fun()
 ---@field tel_fzf_build fun(): string
----@field luasnip_build fun(): string
 ---@field luarocks_check fun(): boolean
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 
