@@ -65,7 +65,7 @@ vim.g.loaded_netrwPlugin = 1
 
 if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
     ---@type 'lualine'|'galaxyline'
-    _G.use_statusline = 'lualine'
+    _G.use_statusline = 'galaxyline'
 end
 
 --- List of manually-callable plugin

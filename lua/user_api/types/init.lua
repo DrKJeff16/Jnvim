@@ -8,6 +8,7 @@
 ---@field colorizer table
 ---@field colorschemes table
 ---@field comment table
+---@field galaxyline table
 ---@field diffview table
 ---@field gitsigns table
 ---@field lazy table
