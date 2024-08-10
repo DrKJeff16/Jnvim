@@ -1,5 +1,6 @@
 local User = require('user_api') --- User API
 local Check = User.check ---@see User.check Checking utilities
+local Util = User.util ---@see User.util Utilities
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 local maps_t = User.types.user.maps ---@see UserSubTypes.maps
 
@@ -7,10 +8,45 @@ local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
+local is_bool = Check.value.is_bool ---@see User.Check.Value.is_bool
 local empty = Check.value.empty ---@see User.Check.Value.empty
+local ft_get = Util.ft_get ---@see User.Util.ft_get
 local nop = User.maps.nop ---@see User.Maps.nop
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
+
+local curr_buf = vim.api.nvim_get_current_buf
+
+---@param force? boolean
+---@return fun()
+local function buf_del(force)
+    force = is_bool(force) and force or false
+
+    local cmd = force and 'bdel!' or 'bdel'
+    local triggers = {
+        'NvimTree',
+        'help',
+    }
+    local pre_exceptions = {
+        'lazy',
+        'NvimTree',
+    }
+
+    return function()
+        local prev_ft = ft_get(curr_buf())
+        vim.cmd(cmd)
+
+        if vim.tbl_contains(pre_exceptions, prev_ft) then
+            return
+        end
+
+        local ft = ft_get(curr_buf())
+
+        if vim.tbl_contains(triggers, ft) then
+            vim.cmd('bprev')
+        end
+    end
+end
 
 --- Avoid executing these keys when attempting `<leader>` sequences
 local NOP = {
@@ -77,17 +113,11 @@ local DEFAULT_KEYS = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
 
         ['<leader>bD'] = {
-            function()
-                vim.cmd('bdel!')
-                vim.cmd('bprevious')
-            end,
+            buf_del(true),
             desc('Close Buffer Forcefully'),
         },
         ['<leader>bd'] = {
-            function()
-                vim.cmd('bdel')
-                vim.cmd('bprevious')
-            end,
+            buf_del(false),
             desc('Close Buffer'),
         },
         ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
