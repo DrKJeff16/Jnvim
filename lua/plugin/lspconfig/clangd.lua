@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -39,7 +36,7 @@ Exts.setup({
         -- padding from the left if max_len_align is true
         max_len_align_padding = 1,
         -- whether to align to the extreme right or not
-        right_align = false,
+        right_align = true,
         -- padding from the right if right_align is true
         right_align_padding = 7,
         -- The color of the hints
@@ -70,8 +67,8 @@ Exts.setup({
 
         highlights = { detail = 'Comment' },
     },
-    memory_usage = { border = 'none' },
-    symbol_info = { border = 'none' },
+    memory_usage = { border = 'rounded' },
+    symbol_info = { border = 'shadow' },
 })
 
 Inlay.setup_autocmd()
