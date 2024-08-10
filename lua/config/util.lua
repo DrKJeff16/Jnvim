@@ -61,7 +61,7 @@ local M = {
     ---@param mod_str string
     ---@return fun()
     source = function(mod_str)
-        return function() require('user_api.check.exists').module(mod_str, true) end
+        return function() exists(mod_str, true) end
     end,
 
     --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
