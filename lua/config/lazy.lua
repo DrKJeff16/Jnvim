@@ -2,10 +2,10 @@ local User = require('user_api')
 local Check = User.check
 local types = User.types.lazy
 local WK = User.maps.wk
+local CfgUtil = require('config.util')
 
-local key_variant = require('config.util').key_variant
+local key_variant = CfgUtil.key_variant
 local executable = Check.exists.executable
-local is_str = Check.value.is_str
 local in_console = Check.in_console
 local is_root = Check.is_root
 local desc = User.maps.kmap.desc
@@ -70,7 +70,7 @@ Lazy.setup({
     },
 
     rocks = {
-        enabled = not is_root() and require('config.util').luarocks_check(),
+        enabled = not is_root() and require('config.util').luarocks_check() or false,
         root = vim.fn.stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -114,13 +114,13 @@ Lazy.setup({
     checker = {
         enabled = true,
         notify = true,
-        frequency = 1800,
+        frequency = 900,
         check_pinned = false,
     },
 
     ui = {
         backdrop = not in_console() and 60 or 100,
-        border = 'shadow',
+        border = 'rounded',
         title = 'L      A      Z      Y',
         wrap = true,
         title_pos = 'center',

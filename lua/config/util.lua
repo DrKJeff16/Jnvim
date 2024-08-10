@@ -14,14 +14,15 @@ local in_console = Check.in_console
 ---@type PluginUtils
 local M = {
     --- Set the global condition for a later submodule call
-    ---
+    --- ---
     --- ## Parameters
-    --- * `field`: Either a `string` that will be the name of a vim `g:...` variable, or
-    --- a `dictionary` with the keys as the vim `g:...` variable names, and the value
-    --- as whatever said variables are set to respectively.
+    --- - `field`: Either a `string` that will be the name of a vim `g:...` variable, or
+    ---            a `dictionary` with the keys as the vim `g:...` variable names, and the value
+    ---            as whatever said variables are set to respectively.
     ---
     --- ## Return
-    --- A `function` that sets the pre-loading for the colorscheme and initializes the `g:field` variable(s)
+    --- A function that sets the pre-loading for the colorscheme
+    --- and initializes the `vim.g.<field>` variable(s)
     ---@param fields string|table<string, any>
     ---@return fun()
     colorscheme_init = function(fields)
@@ -42,12 +43,13 @@ local M = {
         end
     end,
 
-    --- A `config` function to call your plugin
-    ---
+    --- A `config` function to call your plugin from a `lazy` spec
+    --- ---
     --- ## Parameters
-    --- * `mod_str` This parameter must comply with the following format:
     ---
-    ---```lua
+    --- - `mod_str` This parameter must comply with the following format:
+    ---
+    --- ```lua
     --- source('plugin.<plugin_name>[.<...>]')
     --- ```
     ---
@@ -55,26 +57,30 @@ local M = {
     --- **_That being said_**, you can use any module path if you wish to do so.
     ---
     --- ## Return
-    --- A function that attempts to `require` the given `mod_str`
+    --- A function that attempts to import the given module from `mod_str`
     ---@param mod_str string
     ---@return fun()
     source = function(mod_str)
-        return function() require('user_api.check.exists').module(mod_str, true) end
+        return function() exists(mod_str, true) end
     end,
 
     --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
-    ---
+    --- ---
     --- ## Return
     ---
     --- ### Unix
     --- **The return string could be empty** or something akin to
+    ---
     --- ```sh
     --- $ make
     --- ```
+    ---
     --- If `nproc` is found in `PATH` or a valid executable then the string could look like
+    ---
     --- ```sh
     --- $ make -j"$(nproc)"
     --- ```
+    ---
     --- ### Windows
     --- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
     --- If unsuccessful, **it'll return an empty string**
