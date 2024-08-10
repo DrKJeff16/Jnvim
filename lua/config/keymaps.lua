@@ -48,6 +48,15 @@ local function buf_del(force)
     end
 end
 
+---@class CfgKeymaps
+---@field NOP string[]
+---@field Keys table<MapModes, KeyMapDict>
+---@field Names table<MapModes, RegKeysNamed>
+---@field set_leader fun(leader: string, local_leader: string?)
+---@field setup fun(keys: ModeRegKeys|table<MapModes, KeyMapDict>, names: ModeRegKeys)
+
+---@type CfgKeymaps
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 --- Table of keys to no-op after `<leader>` is pressed
