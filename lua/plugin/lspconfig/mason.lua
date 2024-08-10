@@ -3,14 +3,18 @@
 
 local User = require('user_api')
 local Check = User.check
+local WK = User.maps.wk
 
 local exists = Check.exists.module
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('mason') then
     return
 end
 
 local Mason = require('mason')
+local Util = require('mason.api.command')
 
 Mason.setup({
     install_root_dir = vim.fn.stdpath('state') .. '/mason',
@@ -133,3 +137,19 @@ MLSP.setup({
     },
     automatic_installation = false,
 })
+
+---@type KeyMapDict
+local Keys = {
+    ['<leader>lMo'] = { Util.Mason, desc('Open Mason UI') },
+    ['<leader>lML'] = { Util.MasonLog, desc('Mason Log') },
+    ['<leader>lMu'] = { Util.MasonUpdate, desc('Update Mason') },
+}
+---@type RegKeysNamed
+local Names = {
+    ['<leader>lM'] = { group = '+Mason' },
+}
+
+if WK.available() then
+    map_dict(Names, 'wk.register', false, 'n')
+end
+map_dict(Keys, 'wk.register', false, 'n')
