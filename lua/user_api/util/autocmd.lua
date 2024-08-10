@@ -1,8 +1,6 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 require('user_api.types.user.util')
 
+local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
 ---@param T AuPair

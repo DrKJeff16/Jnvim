@@ -389,7 +389,7 @@ function M.setup(keys, names)
 
     --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, User.maps.modes do
-        nop(M.NOP, { noremap = false }, mode, '<leader>')
+        nop(M.NOP, { noremap = false, nowait = false }, mode, '<leader>')
     end
 end
 

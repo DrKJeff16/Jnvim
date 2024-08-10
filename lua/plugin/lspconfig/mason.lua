@@ -1,19 +1,20 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
+local WK = User.maps.wk
 
 local exists = Check.exists.module
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('mason') then
     return
 end
 
 local Mason = require('mason')
+local Util = require('mason.api.command')
 
 Mason.setup({
-    install_root_dir = vim.fn.stdpath('data') .. '/mason',
+    install_root_dir = vim.fn.stdpath('state') .. '/mason',
 
     PATH = 'prepend',
 
@@ -114,22 +115,37 @@ local MLSP = require('mason-lspconfig')
 
 MLSP.setup({
     ensure_installed = {
-        'lua_ls',
-        'jsonls',
+        'autotools_ls',
+        'css_variables',
+        'cssls',
+        'cssmodules_ls',
+        'mesonlsp',
         -- 'bashls',
+        -- 'clangd',
+        -- 'cmake',
+        -- 'jsonls',
+        -- 'lua_ls',
+        -- 'marksman',
         -- 'pylsp',
         -- 'taplo',
         -- 'vimls',
         -- 'yamlls',
-        -- 'mesonlsp',
-        -- 'marksman',
-        -- 'cssls',
-        -- 'cssmodules_ls',
-        -- 'css_variables',
-        -- 'cmake',
-        -- 'clangd',
-        -- 'autotools_ls',
-        -- 'pkgbuild_language_server',
     },
     automatic_installation = false,
 })
+
+---@type KeyMapDict
+local Keys = {
+    ['<leader>lMo'] = { Util.Mason, desc('Open Mason UI') },
+    ['<leader>lML'] = { Util.MasonLog, desc('Mason Log') },
+    ['<leader>lMu'] = { Util.MasonUpdate, desc('Update Mason') },
+}
+---@type RegKeysNamed
+local Names = {
+    ['<leader>lM'] = { group = '+Mason' },
+}
+
+if WK.available() then
+    map_dict(Names, 'wk.register', false, 'n')
+end
+map_dict(Keys, 'wk.register', false, 'n')

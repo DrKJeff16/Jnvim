@@ -3,6 +3,9 @@
 
 require('user_api.types.user.util')
 
+---@param x boolean
+---@param y boolean
+---@return boolean
 local function xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
         error('(user.util.xor): An argument is not of boolean type')
@@ -11,6 +14,9 @@ local function xor(x, y)
     return (x and not y) or (not x and y)
 end
 
+---@param T table
+---@param fields string|table
+---@return table
 local function strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -96,6 +102,9 @@ local function strip_values(T, values, max_instances)
     return res
 end
 
+---@param s string
+---@param bufnr? integer
+---@return fun()
 local function ft_set(s, bufnr)
     local Value = require('user_api.check.value')
 
@@ -111,6 +120,8 @@ local function ft_set(s, bufnr)
     end
 end
 
+---@param bufnr? integer
+---@return string
 local function ft_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or 0
 
@@ -142,13 +153,18 @@ local function assoc()
             },
         },
         {
-            events = { 'BufRead', 'WinEnter' },
+            events = { 'BufRead', 'WinEnter', 'BufReadPost' },
             opts_tbl = {
                 {
                     pattern = '*.txt',
                     group = group,
                     callback = function()
-                        if ft_get() ~= 'help' then
+                        local buftype = vim.api.nvim_get_option_value(
+                            'bt',
+                            { buf = vim.api.nvim_get_current_buf() }
+                        )
+
+                        if ft_get() ~= 'help' or buftype ~= 'help' then
                             return
                         end
 
@@ -160,6 +176,21 @@ local function assoc()
         {
             events = { 'FileType' },
             opts_tbl = {
+                {
+                    pattern = 'help',
+                    group = group,
+                    callback = function()
+                        local buftype = vim.api.nvim_get_option_value(
+                            'bt',
+                            { buf = vim.api.nvim_get_current_buf() }
+                        )
+                        if buftype ~= 'help' then
+                            return
+                        end
+
+                        vim.cmd.wincmd('=')
+                    end,
+                },
                 {
                     pattern = 'c',
                     group = group,
@@ -249,6 +280,10 @@ local function assoc()
     end
 end
 
+---@param c string
+---@param direction? 'next'|'prev'
+---@param cycle? boolean
+---@return string
 local function displace_letter(c, direction, cycle)
     local Value = require('user_api.check.value')
     direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
