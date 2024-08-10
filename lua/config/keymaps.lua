@@ -48,19 +48,42 @@ local function buf_del(force)
     end
 end
 
---- Avoid executing these keys when attempting `<leader>` sequences
-local NOP = {
+---@class CfgKeymaps
+---@field NOP string[]
+---@field Keys table<MapModes, KeyMapDict>
+---@field Names table<MapModes, RegKeysNamed>
+---@field set_leader fun(leader: string, local_leader: string?)
+---@field setup fun(keys: ModeRegKeys|table<MapModes, KeyMapDict>, names: ModeRegKeys)
+
+---@type CfgKeymaps
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
+--- Table of keys to no-op after `<leader>` is pressed
+M.NOP = {
     "'",
     '!',
     '"',
+    '#',
+    '$',
+    '%',
+    '&',
+    '(',
+    ')',
+    '*',
+    '+',
+    ',',
+    '-',
     '.',
     '/',
+    '=',
     '?',
     'A',
     'B',
     'C',
     'D',
     'E',
+    'F',
     'G',
     'I',
     'J',
@@ -79,11 +102,17 @@ local NOP = {
     'X',
     'Y',
     'Z',
+    '[',
+    ']',
+    '^',
+    '_',
+    '`',
     'a',
     'b',
     'c',
     'd',
     'e',
+    'f',
     'g',
     'h',
     'i',
@@ -104,11 +133,13 @@ local NOP = {
     'x',
     'y',
     'z',
+    '{',
+    '}',
+    '~',
 }
 
 --- Global keymaps, plugin-agnostic
----@type table<MapModes, KeyMapDict>
-local DEFAULT_KEYS = {
+M.Keys = {
     n = {
         ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
 
@@ -318,8 +349,7 @@ local DEFAULT_KEYS = {
     },
 }
 --- `which-key` map group prefixes
----@type table<MapModes, RegKeysNamed>
-local DEFAULT_NAMES = {
+M.Names = {
     n = {
         ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
@@ -344,27 +374,34 @@ local DEFAULT_NAMES = {
     },
 }
 
-local M = {}
-
----@param keys? table|table<MapModes, KeyMapDict>[]
----@param names? table|table<MapModes, RegKeysNamed>[]
+---@param keys? table<MapModes, KeyMapDict>|ModeRegKeys
+---@param names? ModeRegKeysNamed
 function M.setup(keys, names)
     keys = is_tbl(keys) and keys or {}
     names = is_tbl(names) and names or {}
 
-    --- Set the keymaps previously stated
+    --- Set keymap groups
     if WK.available() then
-        map_dict(vim.tbl_extend('keep', names, DEFAULT_NAMES), 'wk.register', true)
+        map_dict(vim.tbl_extend('keep', names, M.Names), 'wk.register', true)
     end
-    map_dict(vim.tbl_extend('keep', keys, DEFAULT_KEYS), 'wk.register', true)
+    --- Set keymaps
+    map_dict(vim.tbl_extend('keep', keys, M.Keys), 'wk.register', true)
 
+    --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, User.maps.modes do
-        nop(NOP, {}, mode, '<leader>')
+        nop(M.NOP, { noremap = false }, mode, '<leader>')
     end
 end
 
----@param leader string
----@param local_leader? string
+--- Set the `<leader>` key and, if desired, the `<localleader>` aswell
+--- ---
+--- ## Description
+--- Setup a key as `<leader>` and `<localleader>`, but you can also set `<localleader>` to
+--- a different key if you want.
+---
+--- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
+---@param leader? string _`<leader>`_ key string (defaults to `<Space>`)
+---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 function M.set_leader(leader, local_leader)
     leader = (is_str(leader) and not empty(leader)) and leader or '<Space>'
     local_leader = (is_str(local_leader) and not empty(local_leader)) and local_leader or leader
@@ -392,7 +429,14 @@ function M.set_leader(leader, local_leader)
         vim_vars.localleader = local_leader
     end
 
-    nop(leader, { noremap = true, nowait = false, silent = true })
+    --- No-op the target `<leader>` key
+    nop(leader, { noremap = true, silent = true })
+
+    --- If target `<leader>` and `<localleader>` keys aren't the same
+    --- then noop `local_leader` aswell
+    if leader ~= local_leader then
+        nop(local_leader, { noremap = true, silent = true })
+    end
 
     vim.g.mapleader = vim_vars.leader
     vim.g.maplocalleader = vim_vars.localleader
