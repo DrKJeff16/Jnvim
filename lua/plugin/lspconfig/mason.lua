@@ -13,7 +13,7 @@ end
 local Mason = require('mason')
 
 Mason.setup({
-    install_root_dir = vim.fn.stdpath('data') .. '/mason',
+    install_root_dir = vim.fn.stdpath('state') .. '/mason',
 
     PATH = 'prepend',
 
