@@ -2,7 +2,7 @@ local User = require('user_api') --- User API
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util Utilities
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
-local maps_t = User.types.user.maps ---@see UserSubTypes.maps
+local maps_t = User.types.user.maps ---@see UserSubTypes.maps Mapping type annotations
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
