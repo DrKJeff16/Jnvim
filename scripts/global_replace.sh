@@ -14,21 +14,20 @@ error() {
 # Returns 1 if at least one command is not found
 # Returns 127 if no arguments were given
 _cmd() {
-    if [[ $# -eq 1 ]]; then
-        command -v "$1" &> /dev/null
-        return $?
-    elif [[ $# -gt 1 ]]; then
-        local STATUS=0
+    [[ $# -eq 0 ]] && return 127
 
-        while [[ $# -gt 0 ]] && [[ $STATUS -eq 0 ]]; do
-            command -v "$1" &> /dev/null || STATUS=1
-            shift
-        done
+    local STATUS=0
 
-        return $STATUS
-    fi
+    while [[ $# -gt 0 ]]; do
+        if ! command -v "$1" &> /dev/null; then
+            STATUS=1
+            break
+        fi
 
-    return 127
+        shift
+    done
+
+    return "$STATUS"
 }
 
 # Terminate the script, optionally set the exit code and abort message
