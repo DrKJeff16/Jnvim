@@ -14,7 +14,6 @@ local is_root = Check.is_root
 local M = {
     {
         'rhysd/vim-syntax-codeowners',
-        event = 'VeryLazy',
         version = false,
         cond = not is_root(),
     },
