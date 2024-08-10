@@ -153,13 +153,18 @@ local function assoc()
             },
         },
         {
-            events = { 'BufRead', 'WinEnter' },
+            events = { 'BufRead', 'WinEnter', 'BufReadPost' },
             opts_tbl = {
                 {
                     pattern = '*.txt',
                     group = group,
                     callback = function()
-                        if ft_get() ~= 'help' then
+                        local buftype = vim.api.nvim_get_option_value(
+                            'bt',
+                            { buf = vim.api.nvim_get_current_buf() }
+                        )
+
+                        if ft_get() ~= 'help' or buftype ~= 'help' then
                             return
                         end
 
@@ -171,6 +176,21 @@ local function assoc()
         {
             events = { 'FileType' },
             opts_tbl = {
+                {
+                    pattern = 'help',
+                    group = group,
+                    callback = function()
+                        local buftype = vim.api.nvim_get_option_value(
+                            'bt',
+                            { buf = vim.api.nvim_get_current_buf() }
+                        )
+                        if buftype ~= 'help' then
+                            return
+                        end
+
+                        vim.cmd.wincmd('=')
+                    end,
+                },
                 {
                     pattern = 'c',
                     group = group,
