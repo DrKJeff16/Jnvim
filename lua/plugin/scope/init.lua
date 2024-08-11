@@ -55,17 +55,19 @@ local tab_hook = function()
 
     ---@type KeyMapDict
     local Keys = {
-        [prefix .. 't'] = { tab_cmd(), desc('Prompt To Move Buf To Tab') },
+        [prefix .. 't'] = { tab_cmd(), desc('Prompt Moving Buf To Tab') },
     }
 
     if tab_count > 1 then
+        ---@type integer
         local i = 1
 
         while i < 10 do
             local i_str = tostring(i)
 
             if i <= tab_count then
-                Keys[prefix .. i_str] = { tab_cmd(i), desc('Move Current Buffer To Tab ' .. i_str) }
+                Keys[prefix .. i_str] =
+                    { tab_cmd(i), desc('Move Current Buffer To Tab #' .. i_str) }
             else
                 nop(prefix .. i_str, nop_opts, 'n')
             end
@@ -74,15 +76,16 @@ local tab_hook = function()
         end
 
         if WK.available() then
-            map_dict({ [prefix] = { name = '+Move Buff To Tab' } }, 'wk.register', false, 'n', 0)
+            map_dict({ [prefix] = { group = '+Move Buf To Tab' } }, 'wk.register', false, 'n', 0)
         end
 
         map_dict(Keys, 'wk.register', false, 'n', 0)
     else
         if WK.available() then
-            require('which-key').add({ prefix, hidden = true, mode = 'n' })
+            require('which-key').add({ prefix, hidden = true, mode = 'n' }, { create = true })
         end
 
+        ---@type integer
         local i = 1
 
         while i < 10 do
@@ -95,12 +98,10 @@ local tab_hook = function()
     end
 end
 
-au({ 'TabNew', 'TabNewEntered' }, {
-    group = augroup('ScopeMapHook', { clear = false }),
-    callback = tab_hook,
-})
-au('TabClosed', {
-    group = augroup('ScopeMapHook', { clear = false }),
+local group = augroup('ScopeMapHook', { clear = false })
+
+au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
+    group = group,
     callback = tab_hook,
 })
 

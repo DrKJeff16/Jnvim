@@ -2,7 +2,6 @@ require('user_api.types.which_key')
 
 ---@alias User.Maps.Api.Opts vim.api.keyset.keymap
 ---@alias User.Maps.Keymap.Opts vim.keymap.set.Opts
----@alias User.Maps.Buf.Opts User.Maps.Api.Opts
 
 --- `Rhs` for use in `vim.keymap.set`
 ---@alias User.Maps.Keymap.Rhs string|fun()
@@ -38,10 +37,8 @@ require('user_api.types.which_key')
 ---@field [2] string
 ---@field [3]? User.Maps.Api.Opts
 
----@class BufMapArr: ApiMapArr
-
 --- Array for `vim.keymap.set` arguments
----@class KeyMapArr: ApiMapArr
+---@class KeyMapArr
 ---@field [1] string
 ---@field [2] string|fun()
 ---@field [3]? User.Maps.Keymap.Opts
@@ -56,7 +53,8 @@ require('user_api.types.which_key')
 ---@field rhs string
 ---@field opts? User.Maps.Api.Opts
 
----@class KeyMapTbl: ApiMapTbl
+---@class KeyMapTbl
+---@field lhs string
 ---@field rhs string|fun()
 ---@field opts? User.Maps.Keymap.Opts
 
@@ -79,8 +77,8 @@ require('user_api.types.which_key')
 ---@alias MapFuncs ApiMapFunction|KeyMapFunction|BufMapFunction
 
 ---@alias ApiDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Api.Opts
----@alias BufDescFun fun(msg: string, silent: boolean?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Buf.Opts
----@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts
+---@alias BufDescFun ApiDescFun
+---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts|table
 
 ---@class User.Maps.Api
 ---@field n ApiMapFunction
@@ -111,8 +109,8 @@ require('user_api.types.which_key')
 
 ---@class User.Maps.WK
 ---@field available fun(): boolean
----@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|User.Maps.Api.Rhs|RegKey, opts: (User.Maps.Api.Opts|User.Maps.Keymap.Opts|User.Maps.Buf.Opts|RegKeyOpts)?): RegKey
----@field convert_dict fun(T: KeyMapDict|ApiMapDict|RegKeys): RegKeys
+---@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|User.Maps.Api.Rhs|RegKey|RegPfx, opts: (User.Maps.Api.Opts|User.Maps.Keymap.Opts|RegKeyOpts)?): RegKey|RegPfx
+---@field convert_dict fun(T: KeyMapDict|ApiMapDict|RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
 ---@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts?): false?
 
 ---@class User.Maps
@@ -122,6 +120,6 @@ require('user_api.types.which_key')
 ---@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
 ---@field wk User.Maps.WK
 ---@field modes Modes
----@field map_dict fun(T: ApiMapModeDict|KeyMapModeDict|ApiMapDict|KeyMapDict, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: MapModes|nil?, bufnr: integer|nil?)
+---@field map_dict fun(T: KeyMapModeDict|KeyMapDict|RegKeysNamed|RegKeys, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
