@@ -115,17 +115,17 @@ local MLSP = require('mason-lspconfig')
 
 MLSP.setup({
     ensure_installed = {
-        'autotools_ls',
-        'css_variables',
-        'cssls',
-        'cssmodules_ls',
-        'mesonlsp',
+        -- 'autotools_ls',
         -- 'bashls',
         -- 'clangd',
         -- 'cmake',
+        -- 'css_variables',
+        -- 'cssls',
+        -- 'cssmodules_ls',
         -- 'jsonls',
         -- 'lua_ls',
         -- 'marksman',
+        -- 'mesonlsp',
         -- 'pylsp',
         -- 'taplo',
         -- 'vimls',
