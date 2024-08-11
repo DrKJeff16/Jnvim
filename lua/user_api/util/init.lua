@@ -8,7 +8,7 @@ require('user_api.types.user.util')
 ---@return boolean
 local function xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
-        error('(user.util.xor): An argument is not of boolean type')
+        error('(user_api.util.xor): An argument is not of boolean type')
     end
 
     return (x and not y) or (not x and y)
@@ -27,7 +27,7 @@ local function strip_fields(T, fields)
     local field = Value.fields
 
     if not is_tbl(T) then
-        error('(user.util.strip_fields): Argument is not a table')
+        error('(user_api.util.strip_fields): Argument is not a table')
     end
 
     if empty(T) then
@@ -72,10 +72,10 @@ local function strip_values(T, values, max_instances)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.strip_values): Not a table')
+        error('(user_api.util.strip_values): Not a table')
     end
     if not is_tbl(values) or empty(values) then
-        error('(user.util.strip_values): No values given')
+        error('(user_api.util.strip_values): No values given')
     end
 
     max_instances = is_int(max_instances) and max_instances or 0
@@ -418,11 +418,10 @@ local function displace_letter(c, direction, cycle)
         return upper_map_prev[c]
     end
 
-    error('(user.util.displace_letter): Invalid argument')
+    error('(user_api.util.displace_letter): Invalid argument')
 end
 
 ---@type User.Util
----@diagnostic disable-next-line:missing-fields
 local M = {
     notify = require('user_api.util.notify'),
     au = require('user_api.util.autocmd'),
