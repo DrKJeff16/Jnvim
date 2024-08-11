@@ -60,10 +60,10 @@ end
 
 ---@class CfgKeymaps
 ---@field NOP string[]
----@field Keys table<MapModes, KeyMapDict>
----@field Names table<MapModes, RegKeysNamed>
+---@field Keys KeyMapModeDict
+---@field Names ModeRegKeysNamed
 ---@field set_leader fun(leader: string, local_leader: string?)
----@field setup fun(keys: (ModeRegKeys|table<MapModes, KeyMapDict>)?, names: ModeRegKeys?)
+---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
 
 ---@type CfgKeymaps
 ---@diagnostic disable-next-line:missing-fields
