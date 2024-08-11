@@ -122,4 +122,4 @@ require('user_api.types.which_key')
 ---@field modes Modes
 ---@field map_dict fun(T: KeyMapModeDict|KeyMapDict|RegKeysNamed|RegKeys, map_func: 'wk.register'|'kmap'|'map', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
