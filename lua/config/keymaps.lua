@@ -25,18 +25,28 @@ local function buf_del(force)
     local cmd = force and 'bdel!' or 'bdel'
     local triggers = {
         'NvimTree',
-        'help',
     }
     local pre_exceptions = {
-        'lazy',
-        'NvimTree',
+        ft = {
+            'lazy',
+            'help',
+            'noice',
+        },
+        bt = {
+            'help',
+        },
     }
 
     return function()
         local prev_ft = ft_get(curr_buf())
+        local prev_bt = vim.api.nvim_get_option_value('bt', { buf = curr_buf() })
+
         vim.cmd(cmd)
 
-        if vim.tbl_contains(pre_exceptions, prev_ft) then
+        if vim.tbl_contains(pre_exceptions.ft, prev_ft) then
+            return
+        end
+        if vim.tbl_contains(pre_exceptions.bt, prev_bt) then
             return
         end
 
