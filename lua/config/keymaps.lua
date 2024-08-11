@@ -95,8 +95,10 @@ M.NOP = {
     'E',
     'F',
     'G',
+    'H',
     'I',
     'J',
+    'K',
     'L',
     'M',
     'N',
@@ -187,7 +189,7 @@ M.Keys = {
                 if vim.bo.modifiable then
                     vim.cmd.write()
                 else
-                    require('user_api.util.notify').notify('Not writeable.')
+                    require('user_api.util.notify').notify('Not writeable')
                 end
             end,
             desc('Save File', false, 0),
