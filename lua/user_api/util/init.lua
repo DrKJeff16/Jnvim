@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 require('user_api.types.user.util')
 
 ---@param T table<string|integer, any>
@@ -8,10 +5,12 @@ require('user_api.types.user.util')
 ---@param direction? 'l'|'r'
 ---@return table<string|integer, any> res
 local function mv_tbl_values(T, steps, direction)
-    local is_tbl = require('user_api.check.value').is_tbl
-    local is_str = require('user_api.check.value').is_str
-    local is_int = require('user_api.check.value').is_int
-    local empty = require('user_api.check.value').empty
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
 
     if not is_tbl(T) then
         error("(user_api.util.mv_tbl_values): Input isn't a table")
@@ -21,22 +20,27 @@ local function mv_tbl_values(T, steps, direction)
         return T
     end
 
-    ---@cast T table<(string|integer), any>
-
     steps = (is_int(steps) and steps > 0) and steps or 1
-    direction = (is_str(direction) and vim.tbl_contains({ 'l', 'r' }, direction)) and direction
-        or 'r'
+    direction = vim.tbl_contains({ 'l', 'r' }, direction) and direction or 'r'
 
+    ---@class DirectionFuns
+    ---@field r fun(t: table<string|integer, any>): res: table<string|integer, any>
+    ---@field l fun(t: table<string|integer, any>): res: table<string|integer, any>
+
+    ---@type DirectionFuns
     local direction_funcs = {
         ---@param t table<string|integer, any>
         ---@return table<string|integer, any> res
         r = function(t)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
+            table.sort(keys)
             local n_keys = #keys
 
             ---@type table<string|integer, any>
-            local res = {}
+            local res = vim.deepcopy(t)
+
+            local idx = 1
 
             for i, v in next, keys do
                 if i == 1 then
@@ -53,15 +57,16 @@ local function mv_tbl_values(T, steps, direction)
         l = function(t)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
+            table.sort(keys)
             local n_keys = #keys
 
             ---@type table<string|integer, any>
-            local res = {}
+            local res = vim.deepcopy(t)
 
             for i, v in next, keys do
                 if i == n_keys then
                     res[v] = t[keys[1]]
-                else
+                elseif i < n_keys and i > 0 then
                     res[v] = t[keys[i + 1]]
                 end
             end
@@ -70,10 +75,10 @@ local function mv_tbl_values(T, steps, direction)
         end,
     }
 
-    local res = T
+    local res = vim.deepcopy(T)
 
-    while steps > 0 and steps > -1 do
-        res = direction_funcs[direction](res)
+    while steps > 0 do
+        res = direction_funcs[direction](vim.deepcopy(res))
         steps = steps - 1
     end
 
@@ -92,7 +97,7 @@ local function xor(x, y)
 end
 
 ---@param T table<string|integer, any>
----@param fields string|table
+---@param fields string|integer|(string|integer)[]
 ---@return table<string|integer, any> res
 local function strip_fields(T, fields)
     local Value = require('user_api.check.value')
@@ -500,14 +505,11 @@ local function displace_letter(c, direction, cycle)
         return upper_map_prev[c]
     end
 
-    error('(user_api.util.displace_letter): Invalid argument')
+    error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
 end
 
 ---@type User.Util
 local M = {
-    notify = require('user_api.util.notify'),
-    au = require('user_api.util.autocmd'),
-
     assoc = assoc,
     xor = xor,
     strip_fields = strip_fields,
@@ -515,7 +517,8 @@ local M = {
     displace_letter = displace_letter,
     ft_get = ft_get,
     ft_set = ft_set,
-    mv_tbl_values = mv_tbl_values,
+    notify = require('user_api.util.notify'),
+    au = require('user_api.util.autocmd'),
 }
 
 return M

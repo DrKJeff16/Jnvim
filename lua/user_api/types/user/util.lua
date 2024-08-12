@@ -3,13 +3,7 @@
 
 require('user_api.types.user.autocmd')
 
----@alias VimNotifyLvl
----|0
----|1
----|2
----|3
----|4
----|5
+---@alias VimNotifyLvl 0|1|2|3|4|5
 
 ---@alias NotifyLvl
 ---|'debug'
@@ -42,15 +36,15 @@ require('user_api.types.user.autocmd')
 ---@field au_repeated_events fun(T: AuRepeatEvents)
 
 ---@class User.Util
----@field xor fun(x: boolean, y: boolean): boolean
----@field strip_fields fun(T: table, values: string|string[]): table
----@field strip_values fun(T: table, values: any[], max_instances: integer?): table
----@field ft_set fun(s: string, bufnr: integer?): fun()
----@field ft_get fun(bufnr: integer?): string
 ---@field notify User.Util.Notify
 ---@field au User.Util.Autocmd
+---@field xor fun(x: boolean, y: boolean): boolean
+---@field strip_fields fun(T: table<string|integer, any>, values: string|string[]): table
+---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
+---@field ft_set fun(s: string, bufnr: integer?): fun()
+---@field ft_get fun(bufnr: integer?): string
 ---@field assoc fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
----@field mv_tbl_values fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?)
+---@field mv_tbl_values? fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
