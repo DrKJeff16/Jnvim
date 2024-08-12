@@ -3,6 +3,83 @@
 
 require('user_api.types.user.util')
 
+---@param T table|table<string|integer, any>
+---@param steps? integer
+---@param direction? 'l'|'r'
+---@return table|table<string|integer, any>
+local function mv_tbl_values(T, steps, direction)
+    local is_tbl = require('user_api.check.value').is_tbl
+    local is_str = require('user_api.check.value').is_str
+    local is_int = require('user_api.check.value').is_int
+    local empty = require('user_api.check.value').empty
+
+    if not is_tbl(T) then
+        error("(user_api.util.mv_tbl_values): Input isn't a table")
+    end
+
+    if empty(T) then
+        return T
+    end
+
+    ---@cast T table<(string|integer), any>
+
+    steps = (is_int(steps) and steps > 0) and steps or 1
+    direction = (is_str(direction) and vim.tbl_contains({ 'l', 'r' }, direction)) and direction
+        or 'r'
+
+    local direction_funcs = {
+        ---@param t table<string|integer, any>
+        ---@return table<string|integer, any> res
+        r = function(t)
+            ---@type (string|integer)[]
+            local keys = vim.tbl_keys(t)
+            local n_keys = #keys
+
+            ---@type table<string|integer, any>
+            local res = {}
+
+            for i, v in next, keys do
+                if i == 1 then
+                    res[v] = t[keys[n_keys]]
+                else
+                    res[v] = t[keys[i - 1]]
+                end
+            end
+
+            return res
+        end,
+        ---@param t table<string|integer, any>
+        ---@return table<string|integer, any> res
+        l = function(t)
+            ---@type (string|integer)[]
+            local keys = vim.tbl_keys(t)
+            local n_keys = #keys
+
+            ---@type table<string|integer, any>
+            local res = {}
+
+            for i, v in next, keys do
+                if i == n_keys then
+                    res[v] = t[keys[1]]
+                else
+                    res[v] = t[keys[i + 1]]
+                end
+            end
+
+            return res
+        end,
+    }
+
+    local res = T
+
+    while steps > 0 and steps > -1 do
+        res = direction_funcs[direction](res)
+        steps = steps - 1
+    end
+
+    return res
+end
+
 ---@param x boolean
 ---@param y boolean
 ---@return boolean
@@ -14,9 +91,9 @@ local function xor(x, y)
     return (x and not y) or (not x and y)
 end
 
----@param T table
+---@param T table<string|integer, any>
 ---@param fields string|table
----@return table
+---@return table<string|integer, any> res
 local function strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -62,6 +139,10 @@ local function strip_fields(T, fields)
     return res
 end
 
+---@param T table<string|integer, any>
+---@param values any[]
+---@param max_instances? integer
+---@return table<string|integer, any> res
 local function strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
@@ -80,6 +161,7 @@ local function strip_values(T, values, max_instances)
 
     max_instances = is_int(max_instances) and max_instances or 0
 
+    ---@type table<string|integer, any>
     local res = {}
     local count = 0
 
@@ -433,6 +515,7 @@ local M = {
     displace_letter = displace_letter,
     ft_get = ft_get,
     ft_set = ft_set,
+    mv_tbl_values = mv_tbl_values,
 }
 
 return M
