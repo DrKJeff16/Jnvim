@@ -183,4 +183,4 @@ if not is_bool(_G.CMP_ANNOUNCED) or not _G.CMP_ANNOUNCED then
     })
 end ]]
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

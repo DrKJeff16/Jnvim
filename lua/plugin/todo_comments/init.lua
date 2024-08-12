@@ -4,9 +4,7 @@
 local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -14,8 +12,8 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local empty = Check.value.empty
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('todo-comments') then
     return
@@ -26,7 +24,7 @@ local TODO = require('todo-comments')
 -- TODO: Test
 TODO.setup({
     signs = true, -- show icons in the signs column
-    sign_priority = 50, -- sign priority
+    sign_priority = 80, -- sign priority
     -- keywords recognized as todo comments
     keywords = {
         TITLE = {
@@ -212,7 +210,7 @@ local Keys = {
 
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>c'] = { group = '+TODO Comments' },
+    ['<leader>c'] = { group = '+Comments' },
     ['<leader>cw'] = { group = "+'WARNING'" },
     ['<leader>ce'] = { group = "+'ERROR'" },
     ['<leader>ct'] = { group = "+'TODO'" },
@@ -221,7 +219,9 @@ local Names = {
 
 if WK.available() then
     map_dict(Names, 'wk.register', false, 'n')
+    map_dict(Names, 'wk.register', false, 'v')
 end
 map_dict(Keys, 'wk.register', false, 'n')
+map_dict(Keys, 'wk.register', false, 'v')
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
