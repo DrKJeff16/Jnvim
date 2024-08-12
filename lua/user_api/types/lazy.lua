@@ -17,4 +17,4 @@ require('user_api.types.user.maps')
 ---@field luarocks_check fun(): boolean
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -72,4 +72,4 @@ require('user_api.types.user.highlight')
 ---@field clangd? fun()|nil
 ---@field kinds LspKindsMod
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

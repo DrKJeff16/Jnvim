@@ -25,18 +25,28 @@ local function buf_del(force)
     local cmd = force and 'bdel!' or 'bdel'
     local triggers = {
         'NvimTree',
-        'help',
     }
     local pre_exceptions = {
-        'lazy',
-        'NvimTree',
+        ft = {
+            'lazy',
+            'help',
+            'noice',
+        },
+        bt = {
+            'help',
+        },
     }
 
     return function()
         local prev_ft = ft_get(curr_buf())
+        local prev_bt = vim.api.nvim_get_option_value('bt', { buf = curr_buf() })
+
         vim.cmd(cmd)
 
-        if vim.tbl_contains(pre_exceptions, prev_ft) then
+        if vim.tbl_contains(pre_exceptions.ft, prev_ft) then
+            return
+        end
+        if vim.tbl_contains(pre_exceptions.bt, prev_bt) then
             return
         end
 
@@ -50,10 +60,10 @@ end
 
 ---@class CfgKeymaps
 ---@field NOP string[]
----@field Keys table<MapModes, KeyMapDict>
----@field Names table<MapModes, RegKeysNamed>
+---@field Keys KeyMapModeDict
+---@field Names ModeRegKeysNamed
 ---@field set_leader fun(leader: string, local_leader: string?)
----@field setup fun(keys: (ModeRegKeys|table<MapModes, KeyMapDict>)?, names: ModeRegKeys?)
+---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
 
 ---@type CfgKeymaps
 ---@diagnostic disable-next-line:missing-fields
@@ -85,8 +95,10 @@ M.NOP = {
     'E',
     'F',
     'G',
+    'H',
     'I',
     'J',
+    'K',
     'L',
     'M',
     'N',
@@ -177,7 +189,7 @@ M.Keys = {
                 if vim.bo.modifiable then
                     vim.cmd.write()
                 else
-                    require('user_api.util.notify').notify('Not writeable.')
+                    require('user_api.util.notify').notify('Not writeable')
                 end
             end,
             desc('Save File', false, 0),

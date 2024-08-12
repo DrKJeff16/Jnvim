@@ -1,22 +1,104 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 require('user_api.types.user.util')
+
+---@param T table<string|integer, any>
+---@param steps? integer
+---@param direction? 'l'|'r'
+---@return table<string|integer, any> res
+local function mv_tbl_values(T, steps, direction)
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
+
+    if not is_tbl(T) then
+        error("(user_api.util.mv_tbl_values): Input isn't a table")
+    end
+
+    if empty(T) then
+        return T
+    end
+
+    steps = (is_int(steps) and steps > 0) and steps or 1
+    direction = vim.tbl_contains({ 'l', 'r' }, direction) and direction or 'r'
+
+    ---@class DirectionFuns
+    ---@field r fun(t: table<string|integer, any>): res: table<string|integer, any>
+    ---@field l fun(t: table<string|integer, any>): res: table<string|integer, any>
+
+    ---@type DirectionFuns
+    local direction_funcs = {
+        ---@param t table<string|integer, any>
+        ---@return table<string|integer, any> res
+        r = function(t)
+            ---@type (string|integer)[]
+            local keys = vim.tbl_keys(t)
+            table.sort(keys)
+            local n_keys = #keys
+
+            ---@type table<string|integer, any>
+            local res = vim.deepcopy(t)
+
+            local idx = 1
+
+            for i, v in next, keys do
+                if i == 1 then
+                    res[v] = t[keys[n_keys]]
+                else
+                    res[v] = t[keys[i - 1]]
+                end
+            end
+
+            return res
+        end,
+        ---@param t table<string|integer, any>
+        ---@return table<string|integer, any> res
+        l = function(t)
+            ---@type (string|integer)[]
+            local keys = vim.tbl_keys(t)
+            table.sort(keys)
+            local n_keys = #keys
+
+            ---@type table<string|integer, any>
+            local res = vim.deepcopy(t)
+
+            for i, v in next, keys do
+                if i == n_keys then
+                    res[v] = t[keys[1]]
+                elseif i < n_keys and i > 0 then
+                    res[v] = t[keys[i + 1]]
+                end
+            end
+
+            return res
+        end,
+    }
+
+    local res = vim.deepcopy(T)
+
+    while steps > 0 do
+        res = direction_funcs[direction](vim.deepcopy(res))
+        steps = steps - 1
+    end
+
+    return res
+end
 
 ---@param x boolean
 ---@param y boolean
 ---@return boolean
 local function xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
-        error('(user.util.xor): An argument is not of boolean type')
+        error('(user_api.util.xor): An argument is not of boolean type')
     end
 
     return (x and not y) or (not x and y)
 end
 
----@param T table
----@param fields string|table
----@return table
+---@param T table<string|integer, any>
+---@param fields string|integer|(string|integer)[]
+---@return table<string|integer, any> res
 local function strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -27,7 +109,7 @@ local function strip_fields(T, fields)
     local field = Value.fields
 
     if not is_tbl(T) then
-        error('(user.util.strip_fields): Argument is not a table')
+        error('(user_api.util.strip_fields): Argument is not a table')
     end
 
     if empty(T) then
@@ -62,6 +144,10 @@ local function strip_fields(T, fields)
     return res
 end
 
+---@param T table<string|integer, any>
+---@param values any[]
+---@param max_instances? integer
+---@return table<string|integer, any> res
 local function strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
@@ -72,14 +158,15 @@ local function strip_values(T, values, max_instances)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.strip_values): Not a table')
+        error('(user_api.util.strip_values): Not a table')
     end
     if not is_tbl(values) or empty(values) then
-        error('(user.util.strip_values): No values given')
+        error('(user_api.util.strip_values): No values given')
     end
 
     max_instances = is_int(max_instances) and max_instances or 0
 
+    ---@type table<string|integer, any>
     local res = {}
     local count = 0
 
@@ -418,15 +505,11 @@ local function displace_letter(c, direction, cycle)
         return upper_map_prev[c]
     end
 
-    error('(user.util.displace_letter): Invalid argument')
+    error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
 end
 
 ---@type User.Util
----@diagnostic disable-next-line:missing-fields
 local M = {
-    notify = require('user_api.util.notify'),
-    au = require('user_api.util.autocmd'),
-
     assoc = assoc,
     xor = xor,
     strip_fields = strip_fields,
@@ -434,8 +517,10 @@ local M = {
     displace_letter = displace_letter,
     ft_get = ft_get,
     ft_set = ft_set,
+    notify = require('user_api.util.notify'),
+    au = require('user_api.util.autocmd'),
 }
 
 return M
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

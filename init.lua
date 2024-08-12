@@ -102,10 +102,10 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
 
     ---@type RegKeysNamed
     local NamesCsc = {
-        ['<leader>vc'] = { group = 'Colorschemes' },
+        ['<leader>vc'] = { group = '+Colorschemes' },
     }
 
-    local csc_group = 'a'
+    local csc_group = 'A'
     local i = 1
     local found_csc = ''
     for idx, name in next, selected do
@@ -116,14 +116,15 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
             found_csc = found_csc ~= '' and found_csc or name
 
             NamesCsc['<leader>vc' .. csc_group] = {
-                group = 'Group ' .. csc_group,
+                group = '+Group ' .. csc_group,
             }
 
             if is_tbl(TColor.variants) and not empty(TColor.variants) then
                 local v = 'a'
                 for _, variant in next, TColor.variants do
                     NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                        group = name,
+                        -- TODO: Make a `capitalize()` function for strings
+                        group = '+' .. name,
                     }
                     CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
                         function() TColor.setup(variant) end,
@@ -175,4 +176,4 @@ filetype plugin indent on
 syntax on
 ]])
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

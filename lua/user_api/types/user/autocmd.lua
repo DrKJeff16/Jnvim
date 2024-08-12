@@ -16,4 +16,4 @@
 ---@alias AuRepeat table<string, AuOpts[]>
 ---@alias AuList AuPair[]
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
