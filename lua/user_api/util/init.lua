@@ -3,10 +3,10 @@
 
 require('user_api.types.user.util')
 
----@param T table|table<string|integer, any>
+---@param T table<string|integer, any>
 ---@param steps? integer
 ---@param direction? 'l'|'r'
----@return table|table<string|integer, any>
+---@return table<string|integer, any> res
 local function mv_tbl_values(T, steps, direction)
     local is_tbl = require('user_api.check.value').is_tbl
     local is_str = require('user_api.check.value').is_str

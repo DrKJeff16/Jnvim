@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
----@diagnostic disable:need-check-nil
 ---@diagnostic disable:missing-fields
 
 require('user_api.types.user.check')
@@ -234,7 +231,7 @@ function M.empty(v)
     notify(
         "(user.check.value.empty): Value isn't a table, string nor a number",
         'warn',
-        { title = 'user_api.value.empty' }
+        { title = 'user_api.value.empty', hide_from_history = true, timeout = 200 }
     )
     return true
 end
