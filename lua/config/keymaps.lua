@@ -17,6 +17,8 @@ local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
 local curr_buf = vim.api.nvim_get_current_buf
 
+_G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
+
 ---@param force? boolean
 ---@return fun()
 local function buf_del(force)
@@ -242,14 +244,14 @@ M.Keys = {
         },
 
         ['<leader>vH'] = { ':checkhealth ', desc('Prompt For Checkhealth', false) },
-        ['<leader>vee'] = { '<CMD>ed $MYVIMRC<CR>', desc('Open In Current Window') },
-        ['<leader>ves'] = { '<CMD>split $MYVIMRC<CR>', desc('Open In Horizontal Split') },
-        ['<leader>vet'] = { '<CMD>tabnew $MYVIMRC<CR>', desc('Open In New Tab') },
-        ['<leader>vev'] = { '<CMD>vsplit $MYVIMRC<CR>', desc('Open In Vertical Split') },
+        ['<leader>vee'] = { '<CMD>ed ' .. MYVIMRC .. '<CR>', desc('Open In Current Window') },
+        ['<leader>ves'] = { '<CMD>split ' .. MYVIMRC .. '<CR>', desc('Open In Horizontal Split') },
+        ['<leader>vet'] = { '<CMD>tabnew ' .. MYVIMRC .. '<CR>', desc('Open In New Tab') },
+        ['<leader>vev'] = { '<CMD>vsplit ' .. MYVIMRC .. '<CR>', desc('Open In Vertical Split') },
         ['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
         ['<leader>vs'] = {
             function()
-                vim.cmd('luafile $MYVIMRC')
+                vim.cmd('luafile ' .. MYVIMRC)
                 require('user_api.util.notify').notify(
                     'Sourced `init.lua`',
                     'info',
@@ -372,7 +374,7 @@ M.Names = {
         ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
         ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
         ['<leader>v'] = { group = '+Vim' }, --- Vim
-        ['<leader>ve'] = { group = '+Edit $MYVIMRC' }, --- `init.lua` Editing
+        ['<leader>ve'] = { group = '+Edit Nvim Config File' }, --- `init.lua` Editing
         ['<leader>w'] = { group = '+Window' }, --- Window Handling
         ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
     },
