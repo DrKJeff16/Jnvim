@@ -1,26 +1,25 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
 ---@class User.Types
 ---@field user UserSubTypes
----@field autopairs table
----@field cmp table
----@field colorizer table
----@field colorschemes table
----@field comment table
----@field diffview table
----@field gitsigns table
----@field lazy table
----@field lspconfig table
----@field lualine table
----@field mini table
----@field notify table
----@field nvim_tree table
----@field telescope table
----@field todo_comments table
----@field toggleterm table
----@field treesitter table
----@field which_key table
+---@field autopairs nil
+---@field cmp nil
+---@field colorizer nil
+---@field colorschemes nil
+---@field comment nil
+---@field diffview nil
+---@field gitsigns nil
+---@field lazy nil
+---@field lspconfig nil
+---@field lualine nil
+---@field mini nil
+---@field notify nil
+---@field nvim_tree nil
+---@field telescope nil
+---@field todo_comments nil
+---@field toggleterm nil
+---@field treesitter nil
+---@field which_key nil
 
 ---@class User.Distro.Spec
 ---@field setup fun()

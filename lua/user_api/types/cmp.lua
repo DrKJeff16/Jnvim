@@ -1,5 +1,4 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
 ---@alias CmpModes ('i'|'s'|'t')
 

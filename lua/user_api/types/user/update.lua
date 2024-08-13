@@ -1,3 +1,5 @@
+---@meta
+
 ---@class User.Update
 ---@field update fun(): string?
 ---@field setup_maps fun()

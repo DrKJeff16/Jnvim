@@ -1,3 +1,5 @@
+---@meta
+
 ---@alias SectionComponentStr
 ---|'branch'
 ---|'buffers'

@@ -1,3 +1,5 @@
+---@meta
+
 ---@alias CtxFun fun(ctx: table): any?
 
 ---@class User.Commands

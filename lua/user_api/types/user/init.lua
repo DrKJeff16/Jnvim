@@ -1,3 +1,5 @@
+---@meta
+
 ---@class UserSubTypes
 ---@field maps table
 ---@field highlight table

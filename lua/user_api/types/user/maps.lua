@@ -1,3 +1,5 @@
+---@meta
+
 require('user_api.types.which_key')
 
 ---@alias User.Maps.Api.Opts vim.api.keyset.keymap
