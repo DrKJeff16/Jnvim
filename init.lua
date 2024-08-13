@@ -75,7 +75,24 @@ end
 _G.Pkg = require('config.lazy')
 
 --- Setup keymaps
-require('config.keymaps').setup()
+require('config.keymaps').setup({
+    n = {
+        ['<leader>fii'] = {
+            function()
+                if not vim.bo.modifiable then
+                    return
+                end
+
+                local curr_win = vim.api.nvim_get_current_win
+                local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
+                vim.api.nvim_feedkeys('gg=G', 'n', false)
+
+                vim.api.nvim_win_set_cursor(curr_win(), saved_pos)
+            end,
+            desc('Indent Whole File', true, 0),
+        },
+    },
+})
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes

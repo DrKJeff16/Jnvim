@@ -23,8 +23,10 @@ local function buf_del(force)
     force = is_bool(force) and force or false
 
     local cmd = force and 'bdel!' or 'bdel'
-    local triggers = {
+    local ft_triggers = {
         'NvimTree',
+        'noice',
+        'trouble',
     }
     local pre_exceptions = {
         ft = {
@@ -52,24 +54,22 @@ local function buf_del(force)
 
         local ft = ft_get(curr_buf())
 
-        if vim.tbl_contains(triggers, ft) then
+        if vim.tbl_contains(ft_triggers, ft) then
             vim.cmd('bprev')
         end
     end
 end
 
----@class CfgKeymaps
----@field NOP string[]
+---@class Config.Keymaps
+---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
 ---@field Keys KeyMapModeDict
 ---@field Names ModeRegKeysNamed
----@field set_leader fun(leader: string, local_leader: string?)
+---@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
 ---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
 
----@type CfgKeymaps
----@diagnostic disable-next-line:missing-fields
+---@type Config.Keymaps
 local M = {}
 
---- Table of keys to no-op after `<leader>` is pressed
 M.NOP = {
     "'",
     '!',
@@ -386,18 +386,51 @@ M.Names = {
     },
 }
 
----@param keys? table<MapModes, KeyMapDict>|ModeRegKeys
+---@param keys? KeyMapModeDict|ModeRegKeys
 ---@param names? ModeRegKeysNamed
 function M.setup(keys, names)
+    local MODES = require('user_api.maps').modes
+    local notify = require('user_api.util.notify').notify
+
+    if not leader_set then
+        notify(
+            [[[WARNING(config.keymaps.setup)]: Leader hasn't been set through `config.keymaps.set_leader()`.]],
+            'warn',
+            { hide_from_history = false, timeout = 400 }
+        )
+    end
+
     keys = is_tbl(keys) and keys or {}
     names = is_tbl(names) and names or {}
 
+    local checker_tbl = { keys, names }
+
+    for i, T in next, checker_tbl do
+        if empty(T) then
+            goto continue
+        end
+
+        for k, v in next, T do
+            if not vim.tbl_contains(MODES, k) then
+                vim.notify(
+                    "(config.keymaps): Your input tables aren't using Vim modes as dictionary keys, ignoring"
+                )
+
+                keys = {}
+                names = {}
+                break
+            end
+        end
+
+        ::continue::
+    end
+
     --- Set keymap groups
     if WK.available() then
-        map_dict(vim.tbl_extend('keep', names, M.Names), 'wk.register', true)
+        map_dict(vim.tbl_deep_extend('keep', names, M.Names), 'wk.register', true)
     end
     --- Set keymaps
-    map_dict(vim.tbl_extend('keep', keys, M.Keys), 'wk.register', true)
+    map_dict(vim.tbl_deep_extend('keep', keys, M.Keys), 'wk.register', true)
 
     --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, User.maps.modes do
@@ -414,9 +447,15 @@ end
 --- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
 ---@param leader? string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
-function M.set_leader(leader, local_leader)
+---@param force? boolean Force leader switch (defaults to `false`)
+function M.set_leader(leader, local_leader, force)
     leader = (is_str(leader) and not empty(leader)) and leader or '<Space>'
     local_leader = (is_str(local_leader) and not empty(local_leader)) and local_leader or leader
+    force = is_bool(force) and force or false
+
+    if leader_set and not force then
+        return
+    end
 
     local vim_vars = {
         leader = '',
@@ -452,6 +491,8 @@ function M.set_leader(leader, local_leader)
 
     vim.g.mapleader = vim_vars.leader
     vim.g.maplocalleader = vim_vars.localleader
+
+    _G.leader_set = true
 end
 
 return M
