@@ -23,7 +23,7 @@ _G.is_windows = Check.exists.vim_has('win32')
 ---@see User.Opts.setup
 User.opts.setup({ ---@see User.Opts.Spec For more info
     background = 'dark',
-    cmdwinheight = 5,
+    cmdwinheight = 7,
     copyindent = false,
     confirm = true,
     equalalways = true,
