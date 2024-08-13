@@ -1,3 +1,6 @@
+_G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
+_G.inspect = inspect or vim.inspect
+
 local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities

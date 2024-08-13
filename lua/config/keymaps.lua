@@ -17,8 +17,6 @@ local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
 local curr_buf = vim.api.nvim_get_current_buf
 
-_G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
-
 ---@param force? boolean
 ---@return fun()
 local function buf_del(force)
