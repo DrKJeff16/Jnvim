@@ -69,7 +69,7 @@ local extra_hls = {
     PmenuSel = { bg = '#282C34', fg = 'NONE' },
     Pmenu = { fg = '#C5CDD9', bg = '#22252A' },
 
-    CmpItemAbbrDeprecated = { fg = '#7E8294', bg = 'NONE', strikethrough = true },
+    CmpItemAbbrDeprecated = { bg = '#7E8294', fg = 'NONE', strikethrough = true },
     CmpItemAbbrMatch = { fg = '#82AAFF', bg = 'NONE', bold = true },
     CmpItemAbbrMatchFuzzy = { fg = '#82AAFF', bg = 'NONE', bold = true },
     CmpItemMenu = { fg = '#C792EA', bg = 'NONE', italic = true },
@@ -78,13 +78,13 @@ local extra_hls = {
     CmpItemKindProperty = { fg = '#EED8DA', bg = '#B5585F' },
     CmpItemKindEvent = { fg = '#EED8DA', bg = '#B5585F' },
 
-    CmpItemKindText = { fg = '#C3E88D', bg = '#9FBD73' },
-    CmpItemKindEnum = { fg = '#C3E88D', bg = '#9FBD73' },
-    CmpItemKindKeyword = { fg = '#C3E88D', bg = '#9FBD73' },
+    CmpItemKindText = { fg = '#C3E88D', bg = '#A079A4' },
+    CmpItemKindEnum = { fg = '#C3E88D', bg = '#A079A4' },
+    CmpItemKindKeyword = { fg = '#C3E88D', bg = '#A079A4' },
 
-    CmpItemKindConstant = { fg = '#FFE082', bg = '#D4BB6C' },
-    CmpItemKindConstructor = { fg = '#FFE082', bg = '#D4BB6C' },
-    CmpItemKindReference = { fg = '#FFE082', bg = '#D4BB6C' },
+    CmpItemKindConstant = { fg = '#FFE082', bg = '#6B9B68' },
+    CmpItemKindConstructor = { fg = '#FFE082', bg = '#6B9B68' },
+    CmpItemKindReference = { fg = '#FFE082', bg = '#6B9B68' },
 
     CmpItemKindFunction = { fg = '#EADFF0', bg = '#A377BF' },
     CmpItemKindStruct = { fg = '#EADFF0', bg = '#A377BF' },
@@ -92,12 +92,12 @@ local extra_hls = {
     CmpItemKindModule = { fg = '#EADFF0', bg = '#A377BF' },
     CmpItemKindOperator = { fg = '#EADFF0', bg = '#A377BF' },
 
-    CmpItemKindVariable = { fg = '#C5CDD9', bg = '#7E8294' },
-    CmpItemKindFile = { fg = '#C5CDD9', bg = '#7E8294' },
+    CmpItemKindVariable = { fg = '#C5CDD9', bg = '#5E6274' },
+    CmpItemKindFile = { fg = '#C5CDD9', bg = '#5E6274' },
 
-    CmpItemKindUnit = { fg = '#F5EBD9', bg = '#D4A959' },
-    CmpItemKindSnippet = { fg = '#F5EBD9', bg = '#D4A959' },
-    CmpItemKindFolder = { fg = '#F5EBD9', bg = '#D4A959' },
+    CmpItemKindUnit = { fg = '#F5EBD9', bg = '#845939' },
+    CmpItemKindSnippet = { fg = '#F5EBD9', bg = '#845939' },
+    CmpItemKindFolder = { fg = '#F5EBD9', bg = '#845939' },
 
     CmpItemKindMethod = { fg = '#DDE5F5', bg = '#6C8ED4' },
     CmpItemKindValue = { fg = '#DDE5F5', bg = '#6C8ED4' },
