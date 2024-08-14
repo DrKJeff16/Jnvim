@@ -18,9 +18,9 @@ local M = {
 }
 
 ---@param pathstr string
-function M.register_plugin(pathstr)
-    local exists = require('user_api.check.exists').module
-
+---@param i? integer
+function M.register_plugin(pathstr, i)
+    i = (M.check.value.is_int(i) and i >= 1) and i or 0
     if not M.check.value.is_str(pathstr) or M.check.value.empty(pathstr) then
         error('(User.register_plugin): Invalid path for plugin')
     end
