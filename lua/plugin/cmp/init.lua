@@ -1,8 +1,5 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
 local types = User.types.cmp
 
 local exists = Check.exists.module
@@ -118,6 +115,7 @@ local Opts = {
 
     preselect = cmp.PreselectMode.None,
 
+    ---@diagnostic disable-next-line:missing-fields
     sorting = {
         comparators = {
             Compare.score,
@@ -167,20 +165,11 @@ cmp.setup(Opts)
 
 Sources.setup()
 
-if is_fun(Sks.vscode) then
+--[[ if is_fun(Sks.vscode) then
     Sks.vscode()
-end
-
---[[ -- Run once
-if not is_bool(_G.CMP_ANNOUNCED) or not _G.CMP_ANNOUNCED then
-    -- For debugging
-    Util.notify.notify('cmp loaded.', vim.log.levels.INFO, {
-        title = 'nvim-cmp',
-        timeout = 50,
-        hide_from_history = CMP_ANNOUNCED,
-        once = true,
-        on_open = function() _G.CMP_ANNOUNCED = true end,
-    })
 end ]]
+if is_fun(Sks.hilite) then
+    vim.schedule(Sks.hilite)
+end
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

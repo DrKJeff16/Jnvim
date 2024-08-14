@@ -1,17 +1,7 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
-local Check = User.check
-local utypes = User.types.cmp
+local Types = User.types.cmp
 
-local mods_exist = Check.exists.modules
-local hl = User.highlight.hl
-
-local api = vim.api
-
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
+local hl_dict = User.highlight.hl_from_dict
 
 local cmp = require('cmp')
 local LK = require('lspkind')
@@ -74,44 +64,6 @@ local kind_codicons = {
     Variable = '  ',
 }
 
-local function vscode()
-    ---@type HlDict
-    local vscode_hls = {
-        -- gray
-        CmpItemAbbrDeprecated = { bg = 'NONE', strikethrough = true, fg = '#808080' },
-        -- blue
-        CmpItemAbbrMatch = { bg = 'NONE', fg = '#569CD6' },
-        CmpItemAbbrMatchFuzzy = { link = 'CmpIntemAbbrMatch' },
-        -- light blue
-        CmpItemKindVariable = { bg = 'NONE', fg = '#9CDCFE' },
-        CmpItemKindInterface = { link = 'CmpItemKindVariable' },
-        CmpItemKindText = { link = 'CmpItemKindVariable' },
-        -- pink
-        CmpItemKindFunction = { bg = 'NONE', fg = '#C586C0' },
-        CmpItemKindMethod = { link = 'CmpItemKindFunction' },
-        -- front
-        CmpItemKindKeyword = { bg = 'NONE', fg = '#D4D4D4' },
-        CmpItemKindProperty = { link = 'CmpItemKindKeyword' },
-        CmpItemKindUnit = { link = 'CmpItemKindKeyword' },
-    }
-
-    for n, o in next, vscode_hls do
-        hl(n, o)
-    end
-end
-
----@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
-local function vscode_fmt(entry, vim_item)
-    vim_item.kind = kind_codicons[vim_item.kind] or ''
-    return vim_item
-end
-
----@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
-local function fmt(entry, vim_item)
-    vim_item.kind = (kind_codicons[vim_item.kind] or '')
-    return vim_item
-end
-
 ---@type HlDict
 local extra_hls = {
     PmenuSel = { bg = '#282C34', fg = 'NONE' },
@@ -158,31 +110,53 @@ local extra_hls = {
 
 ---@type CmpKindMod
 local M = {
-    ---@protected
     kind_icons = kind_icons,
     kind_codicons = kind_codicons,
     formatting = {
         expandable_indicator = true,
         fields = { 'kind', 'abbr' },
-        format = fmt,
+        format = function(entry, vim_item)
+            vim_item.kind = kind_codicons[vim_item.kind] or ''
+            return vim_item
+        end,
     },
     window = {
         documentation = cmp.config.window.bordered(),
         completion = cmp.config.window.bordered(),
     },
     view = {
-        entries = { name = 'custom', selection_order = 'top_down' },
+        entries = {
+            name = 'custom',
+            selection_order = 'top_down',
+        },
         docs = { auto_open = true },
     },
-    vscode = vscode,
-    extra_hls = extra_hls,
-}
+    vscode = function()
+        ---@type HlDict
+        local vscode_hls = {
+            -- gray
+            CmpItemAbbrDeprecated = { bg = 'NONE', strikethrough = true, fg = '#808080' },
+            -- blue
+            CmpItemAbbrMatch = { bg = 'NONE', fg = '#569CD6' },
+            CmpItemAbbrMatchFuzzy = { link = 'CmpIntemAbbrMatch' },
+            -- light blue
+            CmpItemKindVariable = { bg = 'NONE', fg = '#9CDCFE' },
+            CmpItemKindInterface = { link = 'CmpItemKindVariable' },
+            CmpItemKindText = { link = 'CmpItemKindVariable' },
+            -- pink
+            CmpItemKindFunction = { bg = 'NONE', fg = '#C586C0' },
+            CmpItemKindMethod = { link = 'CmpItemKindFunction' },
+            -- front
+            CmpItemKindKeyword = { bg = 'NONE', fg = '#D4D4D4' },
+            CmpItemKindProperty = { link = 'CmpItemKindKeyword' },
+            CmpItemKindUnit = { link = 'CmpItemKindKeyword' },
+        }
 
-function M.hilite()
-    for n, o in next, M.extra_hls do
-        hl(n, o)
-    end
-end
+        hl_dict(vscode_hls)
+    end,
+    extra_hls = extra_hls,
+    hilite = function() hl_dict(extra_hls) end,
+}
 
 return M
 

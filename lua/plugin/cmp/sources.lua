@@ -1,9 +1,5 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
 local types = User.types.cmp
 
 local exists = Check.exists.module
@@ -11,26 +7,42 @@ local is_num = Check.value.is_num
 local is_int = Check.value.is_int
 local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
 local cmp = require('cmp')
 
+local gen_sources = cmp.config.sources
+
+---@return integer[]
+local function source_all_bufs()
+    ---@type table<integer, boolean>
+    local bufs = {}
+    for _, win in next, vim.api.nvim_list_wins() do
+        bufs[vim.api.nvim_win_get_buf(win)] = true
+    end
+    return vim.tbl_keys(bufs)
+end
+
+---@return integer[]
+local function source_curr_buf()
+    local win = vim.api.nvim_get_current_win()
+    return vim.tbl_keys({ [vim.api.nvim_win_get_buf(win)] = true })
+end
+
 ---@param group_index? integer
+---@param all_bufs? boolean
 ---@return SourceBuf
-local function buffer(group_index)
+local function buffer(group_index, all_bufs)
+    all_bufs = is_bool(all_bufs) and all_bufs or true
+
     ---@type SourceBuf
     local res = {
         name = 'buffer',
         option = {
             -- keyword_pattern = [[\k\+]],
             keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%([\-.]\w*\)*\)]],
-            get_bufnrs = function()
-                local bufs = {}
-                for _, win in next, vim.api.nvim_list_wins() do
-                    bufs[vim.api.nvim_win_get_buf(win)] = true
-                end
-                return vim.tbl_keys(bufs)
-            end,
+            get_bufnrs = all_bufs and source_all_bufs or source_curr_buf,
         },
     }
 
@@ -42,9 +54,9 @@ local function buffer(group_index)
 end
 
 ---@param group_index? integer
----@return SourceAPath
+---@return SourceAsyncPath
 local function async_path(group_index)
-    ---@type SourceAPath
+    ---@type SourceAsyncPath
     local res = {
         name = 'async_path',
         option = {
@@ -61,7 +73,7 @@ local function async_path(group_index)
     return res
 end
 
----@type table<string, (cmp.SourceConfig|SourceBuf|SourceAPath)[]>
+---@type table<string, (cmp.SourceConfig|SourceBuf|SourceAsyncPath)[]>
 local Sources = {
     c = {
         { name = 'nvim_lsp', group_index = 1 },
@@ -108,7 +120,7 @@ local ft = {
             'zsh',
         },
         {
-            sources = cmp.config.sources({
+            sources = gen_sources({
                 { name = 'nvim_lsp', group_index = 1 },
                 { name = 'nvim_lsp_signature_help', group_index = 2 },
                 async_path(3),
@@ -120,7 +132,7 @@ local ft = {
     {
         { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
         {
-            sources = cmp.config.sources({
+            sources = gen_sources({
                 buffer(1),
                 async_path(2),
             }),
@@ -129,20 +141,20 @@ local ft = {
     {
         { 'c', 'cpp' },
         {
-            sources = cmp.config.sources(Sources.c),
+            sources = gen_sources(Sources.c),
         },
     },
     ['lua'] = {
-        sources = cmp.config.sources(Sources.lua),
+        sources = gen_sources(Sources.lua),
     },
     ['lisp'] = {
-        sources = cmp.config.sources({
+        sources = gen_sources({
             { name = 'vlime', group_index = 1 },
             buffer(2),
         }),
     },
     ['gitcommit'] = {
-        sources = cmp.config.sources({
+        sources = gen_sources({
             { name = 'conventionalcommits', group_index = 1 },
             { name = 'git', group_index = 2 },
             async_path(3),
@@ -153,7 +165,7 @@ local ft = {
 
 if exists('neorg') then
     ft['norg'] = {
-        sources = cmp.config.sources({
+        sources = gen_sources({
             { name = 'neorg', group_index = 1 },
             buffer(2),
             async_path(3),
@@ -167,7 +179,7 @@ local cmdline = {
         { '/', '?' },
         {
             mapping = cmp.mapping.preset.cmdline(),
-            sources = cmp.config.sources({
+            sources = gen_sources({
                 { name = 'nvim_lsp_document_symbol', group_index = 1 },
                 buffer(2),
             }),
@@ -175,7 +187,7 @@ local cmdline = {
     },
     [':'] = {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
+        sources = gen_sources({
             {
                 name = 'cmdline',
                 group_index = 1,
