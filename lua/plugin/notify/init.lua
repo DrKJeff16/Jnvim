@@ -29,14 +29,14 @@ notify.setup({
         WARN = '',
     },
     level = vim.log.levels.INFO,
-    minimum_width = 15,
+    minimum_width = 12,
     render = 'default',
     stages = 'fade_in_slide_out',
     time_formats = {
         notification = '%T',
         notification_history = '%FT%T',
     },
-    timeout = 1250,
+    timeout = 1000,
     top_down = true,
 })
 vim.notify = notify
