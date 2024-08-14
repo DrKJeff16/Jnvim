@@ -1,3 +1,6 @@
+_G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
+_G.inspect = inspect or vim.inspect
+
 local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
@@ -20,7 +23,7 @@ _G.is_windows = Check.exists.vim_has('win32')
 ---@see User.Opts.setup
 User.opts.setup({ ---@see User.Opts.Spec For more info
     background = 'dark',
-    cmdwinheight = 5,
+    cmdwinheight = 7,
     copyindent = false,
     confirm = true,
     equalalways = true,
@@ -72,7 +75,24 @@ end
 _G.Pkg = require('config.lazy')
 
 --- Setup keymaps
-require('config.keymaps').setup()
+require('config.keymaps').setup({
+    n = {
+        ['<leader>fii'] = {
+            function()
+                if not vim.bo.modifiable then
+                    return
+                end
+
+                local curr_win = vim.api.nvim_get_current_win
+                local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
+                vim.api.nvim_feedkeys('gg=G', 'n', false)
+
+                vim.api.nvim_win_set_cursor(curr_win(), saved_pos)
+            end,
+            desc('Indent Whole File', true, 0),
+        },
+    },
+})
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes

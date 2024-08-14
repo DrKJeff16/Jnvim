@@ -16,6 +16,8 @@ if not exists('ibl') then
     return
 end
 
+User.register_plugin('plugin.blank_line')
+
 local Ibl = require('ibl')
 local Hooks = require('ibl.hooks')
 

@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-label
-
 local User = require('user_api')
 local Check = User.check
 local WK = User.maps.wk
@@ -15,6 +12,8 @@ if not exists('persistence') then
     return
 end
 
+User.register_plugin('plugin.persistence')
+
 local expand = vim.fn.expand
 local stdpath = vim.fn.stdpath
 
@@ -28,7 +27,7 @@ Pst.setup({
     branch = true, -- use git branch to save session
 })
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapModeDict
 local Keys = {
     ['<leader>Sr'] = { Pst.load, desc('Restore Session') },
     ['<leader>Sd'] = { Pst.stop, desc("Don't Save Current Session") },
@@ -39,14 +38,14 @@ local Keys = {
     ['<leader>Sq'] = { Pst.stop, desc('Stop Persistence') },
 }
 
----@type table<MapModes, RegKeysNamed>
+---@type ModeRegKeysNamed
 local Names = {
     ['<leader>S'] = { group = '+Session (Persistence)' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n', 0)
+    map_dict(Names, 'wk.register', false, 'n')
 end
-map_dict(Keys, 'wk.register', false, 'n', 0)
+map_dict(Keys, 'wk.register', false, 'n')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

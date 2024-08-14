@@ -3,7 +3,7 @@
 
 local User = require('user_api')
 local Check = User.check
-local types = User.types.autopairs
+local Types = User.types.autopairs
 
 local mods_exist = Check.exists.modules
 

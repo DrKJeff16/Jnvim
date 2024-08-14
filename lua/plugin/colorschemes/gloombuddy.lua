@@ -15,6 +15,7 @@ local M = {
 }
 
 if modules({ 'colorbuddy', 'gloombuddy' }) then
+    User.register_plugin('plugin.colorschemes.gloombuddy')
     function M.setup(variant, transparent, override)
         require('colorbuddy').colorscheme('gloombuddy')
         vim.cmd(M.mod_cmd)

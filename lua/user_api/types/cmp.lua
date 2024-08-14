@@ -1,11 +1,11 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
----@alias CmpModes ('i'|'s'|'t')
+---@alias CmpModes ('i'|'s'|'c')
 
----@alias CmpMap table<CmpModes, fun(fallback: fun())>
----@alias TabMap CmpMap
----@alias CrMap CmpMap
+---@class CmpMap
+---@field c fun(fallback: fun())
+---@field i fun(fallback: fun())
+---@field s fun(fallback: fun())
 
 ---@class FmtKindIcons
 ---@field Class? string
@@ -34,7 +34,7 @@
 ---@field Value? string
 ---@field Variable? string
 
----@alias FmtOptsMenu table<'buffer'|'nvim_lsp'|'luasnip'|'nvim_lua'|'latex_symbols', string>
+---@alias FmtOptsMenu table<string, string>
 
 ---@class CmpKindMod
 ---@field protected kind_icons FmtKindIcons
@@ -43,6 +43,7 @@
 ---@field window cmp.WindowConfig
 ---@field view cmp.ViewConfig
 ---@field vscode fun()
+---@field hilite fun()
 
 ---@class SourceTypeOpts
 ---@field keyword_pattern? string
@@ -56,7 +57,7 @@
 ---@field option? SourceTypeOpts
 ---@field priority? integer
 
----@class SourceAPathOpts: SourceTypeOpts
+---@class SourceAsyncPathOpts: SourceTypeOpts
 ---@field trailing_slash? boolean
 ---@field label_trailing_slash? boolean
 ---@field get_cwd? fun(): string
@@ -65,8 +66,8 @@
 ---@class SourceBufOpts: SourceTypeOpts
 ---@field get_bufnrs? fun(): table
 
----@class SourceAPath: SourceType
----@field option? SourceAPathOpts
+---@class SourceAsyncPath: SourceType
+---@field option? SourceAsyncPathOpts
 
 ---@class SourceBuf: SourceType
 ---@field option? SourceBufOpts
@@ -75,6 +76,17 @@
 ---@field [1] string[]
 ---@field [2] cmp.ConfigSchema
 
+---@class CmpUtil
+---@field feedkey fun(key: string, mode: MapModes|'')
+---@field has_words_before fun(): boolean
+---@field confirm fun(opts: cmp.ConfirmationConfig?): fun(fallback: fun())
+---@field bs_map fun(fallback: fun())
+---@field n_select fun(fallback: fun())
+---@field n_shift_select fun(fallback: fun())
+---@field tab_map CmpMap
+---@field s_tab_map CmpMap
+---@field cr_map CmpMap
+
 ---@alias SetupSources table<string, cmp.ConfigSchema>|MultiSources[]
 
 ---@class Sources
@@ -82,6 +94,6 @@
 ---@field __index? Sources
 ---@field setup fun(T: SetupSources?)
 ---@field buffer fun(priority: integer?): SourceBuf
----@field async_path? fun(priority: integer?): SourceAPath
+---@field async_path? fun(priority: integer?): SourceAsyncPath
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

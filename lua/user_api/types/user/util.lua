@@ -1,5 +1,4 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
 require('user_api.types.user.autocmd')
 

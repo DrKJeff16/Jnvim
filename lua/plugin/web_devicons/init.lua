@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 
@@ -9,6 +6,8 @@ local exists = Check.exists.module
 if not exists('nvim-web-devicons') then
     return
 end
+
+User.register_plugin('plugin.web_devicons')
 
 local WDI = require('nvim-web-devicons')
 

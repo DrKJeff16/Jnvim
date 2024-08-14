@@ -1,3 +1,5 @@
+---@meta
+
 ---@alias User.Opts.Spec table|vim.bo|vim.wo
 
 ---@class User.Opts

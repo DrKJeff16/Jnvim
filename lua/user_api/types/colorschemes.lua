@@ -1,3 +1,5 @@
+---@meta
+
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
 

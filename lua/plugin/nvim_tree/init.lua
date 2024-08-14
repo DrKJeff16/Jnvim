@@ -1,9 +1,5 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
-local kmap = User.maps.kmap
 local types = User.types.nvim_tree
 local WK = User.maps.wk
 
@@ -16,12 +12,14 @@ local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 local hi = User.highlight.hl_from_dict
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 
 if not exists('nvim-tree') then
     return
 end
+
+User.register_plugin('plugin.nvim_tree')
 
 --- Use floating Tree? You decide
 local USE_FLOAT = false

@@ -1,10 +1,6 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
-local maps_t = User.types.user.maps
 local WK = User.maps.wk
 
 local exists = Check.exists.module
@@ -17,6 +13,8 @@ local notify = Util.notify.notify
 if not exists('project_nvim') then
     return
 end
+
+User.register_plugin('plugin.project')
 
 local Project = require('project_nvim')
 local Config = require('project_nvim.config')

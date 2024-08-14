@@ -1,9 +1,6 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
-local types = User.types.gitsigns
+local Types = User.types.gitsigns
 local WK = User.maps.wk
 
 local exists = Check.exists.module
@@ -20,6 +17,8 @@ local map_dict = User.maps.map_dict
 if not executable('git') or not exists('gitsigns') then
     return
 end
+
+User.register_plugin('plugin.git.gitsigns')
 
 local GS = require('gitsigns')
 

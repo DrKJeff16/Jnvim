@@ -1,17 +1,7 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
-local Check = User.check
-local utypes = User.types.cmp
+local Types = User.types.cmp
 
-local mods_exist = Check.exists.modules
-local hl = User.highlight.hl
-
-local api = vim.api
-
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
+local hl_dict = User.highlight.hl_from_dict
 
 local cmp = require('cmp')
 local LK = require('lspkind')
@@ -74,50 +64,12 @@ local kind_codicons = {
     Variable = '  ',
 }
 
-local function vscode()
-    ---@type HlDict
-    local vscode_hls = {
-        -- gray
-        CmpItemAbbrDeprecated = { bg = 'NONE', strikethrough = true, fg = '#808080' },
-        -- blue
-        CmpItemAbbrMatch = { bg = 'NONE', fg = '#569CD6' },
-        CmpItemAbbrMatchFuzzy = { link = 'CmpIntemAbbrMatch' },
-        -- light blue
-        CmpItemKindVariable = { bg = 'NONE', fg = '#9CDCFE' },
-        CmpItemKindInterface = { link = 'CmpItemKindVariable' },
-        CmpItemKindText = { link = 'CmpItemKindVariable' },
-        -- pink
-        CmpItemKindFunction = { bg = 'NONE', fg = '#C586C0' },
-        CmpItemKindMethod = { link = 'CmpItemKindFunction' },
-        -- front
-        CmpItemKindKeyword = { bg = 'NONE', fg = '#D4D4D4' },
-        CmpItemKindProperty = { link = 'CmpItemKindKeyword' },
-        CmpItemKindUnit = { link = 'CmpItemKindKeyword' },
-    }
-
-    for n, o in next, vscode_hls do
-        hl(n, o)
-    end
-end
-
----@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
-local function vscode_fmt(entry, vim_item)
-    vim_item.kind = kind_codicons[vim_item.kind] or ''
-    return vim_item
-end
-
----@type fun(entry: cmp.Entry, vim_item: vim.CompletedItem): vim.CompletedItem
-local function fmt(entry, vim_item)
-    vim_item.kind = (kind_codicons[vim_item.kind] or '')
-    return vim_item
-end
-
 ---@type HlDict
 local extra_hls = {
     PmenuSel = { bg = '#282C34', fg = 'NONE' },
     Pmenu = { fg = '#C5CDD9', bg = '#22252A' },
 
-    CmpItemAbbrDeprecated = { fg = '#7E8294', bg = 'NONE', strikethrough = true },
+    CmpItemAbbrDeprecated = { bg = '#7E8294', fg = 'NONE', strikethrough = true },
     CmpItemAbbrMatch = { fg = '#82AAFF', bg = 'NONE', bold = true },
     CmpItemAbbrMatchFuzzy = { fg = '#82AAFF', bg = 'NONE', bold = true },
     CmpItemMenu = { fg = '#C792EA', bg = 'NONE', italic = true },
@@ -126,13 +78,13 @@ local extra_hls = {
     CmpItemKindProperty = { fg = '#EED8DA', bg = '#B5585F' },
     CmpItemKindEvent = { fg = '#EED8DA', bg = '#B5585F' },
 
-    CmpItemKindText = { fg = '#C3E88D', bg = '#9FBD73' },
-    CmpItemKindEnum = { fg = '#C3E88D', bg = '#9FBD73' },
-    CmpItemKindKeyword = { fg = '#C3E88D', bg = '#9FBD73' },
+    CmpItemKindText = { fg = '#C3E88D', bg = '#A079A4' },
+    CmpItemKindEnum = { fg = '#C3E88D', bg = '#A079A4' },
+    CmpItemKindKeyword = { fg = '#C3E88D', bg = '#A079A4' },
 
-    CmpItemKindConstant = { fg = '#FFE082', bg = '#D4BB6C' },
-    CmpItemKindConstructor = { fg = '#FFE082', bg = '#D4BB6C' },
-    CmpItemKindReference = { fg = '#FFE082', bg = '#D4BB6C' },
+    CmpItemKindConstant = { fg = '#FFE082', bg = '#6B9B68' },
+    CmpItemKindConstructor = { fg = '#FFE082', bg = '#6B9B68' },
+    CmpItemKindReference = { fg = '#FFE082', bg = '#6B9B68' },
 
     CmpItemKindFunction = { fg = '#EADFF0', bg = '#A377BF' },
     CmpItemKindStruct = { fg = '#EADFF0', bg = '#A377BF' },
@@ -140,12 +92,12 @@ local extra_hls = {
     CmpItemKindModule = { fg = '#EADFF0', bg = '#A377BF' },
     CmpItemKindOperator = { fg = '#EADFF0', bg = '#A377BF' },
 
-    CmpItemKindVariable = { fg = '#C5CDD9', bg = '#7E8294' },
-    CmpItemKindFile = { fg = '#C5CDD9', bg = '#7E8294' },
+    CmpItemKindVariable = { fg = '#C5CDD9', bg = '#5E6274' },
+    CmpItemKindFile = { fg = '#C5CDD9', bg = '#5E6274' },
 
-    CmpItemKindUnit = { fg = '#F5EBD9', bg = '#D4A959' },
-    CmpItemKindSnippet = { fg = '#F5EBD9', bg = '#D4A959' },
-    CmpItemKindFolder = { fg = '#F5EBD9', bg = '#D4A959' },
+    CmpItemKindUnit = { fg = '#F5EBD9', bg = '#845939' },
+    CmpItemKindSnippet = { fg = '#F5EBD9', bg = '#845939' },
+    CmpItemKindFolder = { fg = '#F5EBD9', bg = '#845939' },
 
     CmpItemKindMethod = { fg = '#DDE5F5', bg = '#6C8ED4' },
     CmpItemKindValue = { fg = '#DDE5F5', bg = '#6C8ED4' },
@@ -158,31 +110,53 @@ local extra_hls = {
 
 ---@type CmpKindMod
 local M = {
-    ---@protected
     kind_icons = kind_icons,
     kind_codicons = kind_codicons,
     formatting = {
         expandable_indicator = true,
         fields = { 'kind', 'abbr' },
-        format = fmt,
+        format = function(entry, vim_item)
+            vim_item.kind = kind_codicons[vim_item.kind] or ''
+            return vim_item
+        end,
     },
     window = {
         documentation = cmp.config.window.bordered(),
         completion = cmp.config.window.bordered(),
     },
     view = {
-        entries = { name = 'custom', selection_order = 'top_down' },
+        entries = {
+            name = 'custom',
+            selection_order = 'top_down',
+        },
         docs = { auto_open = true },
     },
-    vscode = vscode,
-    extra_hls = extra_hls,
-}
+    vscode = function()
+        ---@type HlDict
+        local vscode_hls = {
+            -- gray
+            CmpItemAbbrDeprecated = { bg = 'NONE', strikethrough = true, fg = '#808080' },
+            -- blue
+            CmpItemAbbrMatch = { bg = 'NONE', fg = '#569CD6' },
+            CmpItemAbbrMatchFuzzy = { link = 'CmpIntemAbbrMatch' },
+            -- light blue
+            CmpItemKindVariable = { bg = 'NONE', fg = '#9CDCFE' },
+            CmpItemKindInterface = { link = 'CmpItemKindVariable' },
+            CmpItemKindText = { link = 'CmpItemKindVariable' },
+            -- pink
+            CmpItemKindFunction = { bg = 'NONE', fg = '#C586C0' },
+            CmpItemKindMethod = { link = 'CmpItemKindFunction' },
+            -- front
+            CmpItemKindKeyword = { bg = 'NONE', fg = '#D4D4D4' },
+            CmpItemKindProperty = { link = 'CmpItemKindKeyword' },
+            CmpItemKindUnit = { link = 'CmpItemKindKeyword' },
+        }
 
-function M.hilite()
-    for n, o in next, M.extra_hls do
-        hl(n, o)
-    end
-end
+        hl_dict(vscode_hls)
+    end,
+    extra_hls = extra_hls,
+    hilite = function() hl_dict(extra_hls) end,
+}
 
 return M
 

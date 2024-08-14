@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
@@ -13,6 +10,8 @@ local is_nil = Check.value.is_nil
 if not (exists('lazydev') and executable('lua-language-server') and not exists('neodev')) then
     return
 end
+
+User.register_plugin('plugin.lazydev')
 
 local LazyDev = require('lazydev')
 

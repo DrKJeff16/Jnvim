@@ -1,10 +1,7 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
-local types = User.types.mini
+local Types = User.types.mini
 local WK = User.maps.wk
 
 local exists = Check.exists.module
@@ -15,6 +12,8 @@ local is_str = Check.value.is_str
 local empty = Check.value.empty
 local map_dict = User.maps.map_dict
 local notify = Util.notify.notify
+
+User.register_plugin('plugin.mini')
 
 ---@param mini_mod string
 ---@param opts table|nil

@@ -1,6 +1,6 @@
 local User = require('user_api')
 local Check = User.check
-local types = User.types.lazy
+local Types = User.types.lazy
 local WK = User.maps.wk
 local CfgUtil = require('config.util')
 

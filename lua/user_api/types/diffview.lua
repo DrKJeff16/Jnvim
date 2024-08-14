@@ -1,3 +1,5 @@
+---@meta
+
 ---@alias DiffView.Views
 ---|'diff1_plain'
 ---|'diff2_horizontal'

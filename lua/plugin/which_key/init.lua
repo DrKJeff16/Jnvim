@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -11,6 +8,8 @@ local desc = User.maps.kmap.desc
 if not exists('which-key') then
     return
 end
+
+User.register_plugin('plugin.which_key')
 
 local WK = require('which-key')
 

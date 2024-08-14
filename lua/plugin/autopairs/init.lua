@@ -3,7 +3,7 @@
 
 local User = require('user_api')
 local Check = User.check
-local types = User.types.autopairs
+local Types = User.types.autopairs
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
@@ -12,6 +12,8 @@ local is_fun = Check.value.is_fun
 if not exists('nvim-autopairs') then
     return
 end
+
+User.register_plugin('plugin.autopairs')
 
 local Ap = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')

@@ -1,5 +1,4 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
 ---@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table')
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean

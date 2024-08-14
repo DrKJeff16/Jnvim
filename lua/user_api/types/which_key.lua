@@ -1,3 +1,5 @@
+---@meta
+
 ---@class RegKey: vim.keymap.set.Opts
 ---@field [1] string
 ---@field [2] string|fun()

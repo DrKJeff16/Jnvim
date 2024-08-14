@@ -1,5 +1,4 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@meta
 
 ---@alias AuOpts vim.api.keyset.create_autocmd
 ---@alias AuGroupOpts vim.api.keyset.create_augroup

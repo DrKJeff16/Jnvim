@@ -1,9 +1,5 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
-local maps_t = User.types.user.maps
 local WK = User.maps.wk
 
 local exists = Check.exists.module
@@ -18,6 +14,8 @@ local map_dict = User.maps.map_dict
 if not exists('todo-comments') then
     return
 end
+
+User.register_plugin('plugin.todo_comments')
 
 local TODO = require('todo-comments')
 

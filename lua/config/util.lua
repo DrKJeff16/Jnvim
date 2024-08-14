@@ -1,6 +1,6 @@
 local User = require('user_api')
 local Check = User.check
-local types = User.types.lazy
+local Types = User.types.lazy
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -10,6 +10,8 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local in_console = Check.in_console
+
+User.register_plugin('config.util')
 
 ---@type PluginUtils
 local M = {

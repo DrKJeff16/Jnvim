@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local hl_t = User.types.user.highlight
@@ -17,6 +14,8 @@ if not exists('notify') then
     return
 end
 
+User.register_plugin('plugin.notify')
+
 local notify = require('notify')
 
 notify.setup({
@@ -30,14 +29,14 @@ notify.setup({
         WARN = '',
     },
     level = vim.log.levels.INFO,
-    minimum_width = 15,
+    minimum_width = 12,
     render = 'default',
     stages = 'fade_in_slide_out',
     time_formats = {
         notification = '%T',
         notification_history = '%FT%T',
     },
-    timeout = 1250,
+    timeout = 1000,
     top_down = true,
 })
 vim.notify = notify

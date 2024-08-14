@@ -5,7 +5,6 @@ local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
 local WK = User.maps.wk
-local Highlight = User.highlight
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -15,17 +14,18 @@ local is_tbl = Check.value.is_tbl
 local is_nil = Check.value.is_nil
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
-local hi = Highlight.hl
+local hi = User.highlight.hl
 
 if not exists('lspconfig') then
     return
 end
 
+User.register_plugin('plugin.lspconfig')
+
 local api = vim.api
 local bo = vim.bo
 local Lsp = vim.lsp
 local Diag = vim.diagnostic
-
 local lsp_buf = Lsp.buf
 local lsp_handlers = Lsp.handlers
 
@@ -69,7 +69,8 @@ local handlers = {
     }),
 }
 
----@type fun(T: LspServers): LspServers
+---@param T LspServers
+---@return LspServers
 local function populate(T)
     ---@type LspServers
     ---@diagnostic disable-next-line

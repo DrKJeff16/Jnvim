@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
@@ -11,6 +8,8 @@ local is_nil = Check.value.is_nil
 if not exists('nvim-treesitter') then
     return
 end
+
+User.register_plugin('plugin.treesitter')
 
 local fs_stat = vim.uv.fs_stat
 local buf_name = vim.api.nvim_buf_get_name

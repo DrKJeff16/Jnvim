@@ -16,6 +16,11 @@ pynvim = "*"
 mypy = "*"
 mypy-extensions = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
+pylsp-mypy = "*"
+pylsp-rope = "*"
+python-lsp-isort = "*"
+isort = "*"
+whatthepatch = "*"
 pre-commit = "*"
 
 [requires]

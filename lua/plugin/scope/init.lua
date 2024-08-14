@@ -1,9 +1,5 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
-local maps_t = User.types.user.maps
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
@@ -11,13 +7,15 @@ local is_int = Check.value.is_int
 local empty = Check.value.empty
 local map_dict = User.maps.map_dict
 
+local au_exec = vim.api.nvim_exec_autocmds
+local augroup = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
+
 if not exists('scope') then
     return
 end
 
-local au_exec = vim.api.nvim_exec_autocmds
-local augroup = vim.api.nvim_create_augroup
-local au = vim.api.nvim_create_autocmd
+User.register_plugin('scope')
 
 local Scope = require('scope')
 

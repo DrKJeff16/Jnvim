@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 require('user_api.types.user.commands')
 local Check = require('user_api.check')
 local Util = require('user_api.util')
