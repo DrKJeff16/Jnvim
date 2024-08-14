@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -12,6 +9,8 @@ local empty = Check.value.empty
 if not exists('lualine') then
     return
 end
+
+User.register_plugin('plugin.lualine')
 
 local Lualine = require('lualine')
 

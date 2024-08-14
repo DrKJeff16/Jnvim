@@ -11,6 +11,8 @@ if not exists('neo-tree') then
     return
 end
 
+User.register_plugin('plugin.neo_tree')
+
 local NeoTree = require('neo-tree')
 
 NeoTree.setup({

@@ -3,10 +3,7 @@
 
 local User = require('user_api')
 local Check = User.check
-local Maps = User.maps
-local maps_t = User.types.user.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -17,12 +14,14 @@ local is_bool = Check.value.is_bool
 local is_int = Check.value.is_int
 local is_fun = Check.value.is_bool
 local empty = Check.value.empty
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('inc_rename') then
     return
 end
+
+User.register_plugin('plugin.lspconfig.inc_rename')
 
 local IR = require('inc_rename')
 

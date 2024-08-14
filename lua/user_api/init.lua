@@ -14,7 +14,38 @@ local M = {
     distro = require('user_api.distro'),
     update = require('user_api.update'),
     commands = require('user_api.commands'):new(),
+    registered_plugins = {},
 }
+
+---@param pathstr string
+function M.register_plugin(pathstr)
+    local exists = require('user_api.check.exists').module
+
+    if not M.check.value.is_str(pathstr) or M.check.value.empty(pathstr) then
+        error('(User.register_plugin): Invalid path for plugin')
+    end
+
+    if not vim.tbl_contains(M.registered_plugins, pathstr) then
+        table.insert(M.registered_plugins, pathstr)
+    end
+end
+
+---@param self User
+---@return string[]?
+function M:reload_plugins()
+    for _, plugin in next, self.registered_plugins do
+        require(plugin)
+    end
+end
+
+---@param o? table
+---@return User|table self
+function M.new(o)
+    o = M.check.value.is_tbl(o) and o or {}
+    local self = setmetatable(o, { __index = M })
+
+    return self
+end
 
 return M
 

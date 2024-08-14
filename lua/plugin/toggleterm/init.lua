@@ -1,21 +1,19 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.toggleterm
-local Maps = User.maps
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local empty = Check.value.empty
 local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = Maps.map_dict
+local map_dict = User.maps.map_dict
 
 if not exists('toggleterm') then
     return
 end
+
+User.register_plugin('plugin.toggleterm')
 
 local floor = math.floor
 
@@ -126,7 +124,7 @@ end
 
 local cmd_str = '<CMD>exe v:count1 . "ToggleTerm"<CR>'
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapModeDict
 local Keys = {
     n = {
         ['<c-t>'] = {
@@ -146,7 +144,7 @@ local Keys = {
     },
 }
 
----@type table<MapModes, RegKeys>
+---@type ModeRegKeysNamed
 local Names = {
     n = { ['<leader>T'] = { group = '+Toggleterm' } },
 }

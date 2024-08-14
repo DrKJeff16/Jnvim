@@ -11,6 +11,8 @@ local M = {
 }
 
 if vim.g.installed_molokai == 1 then
+    User.register_plugin('plugin.colorschemes.molokai')
+
     function M.setup(variant, transparent, override) vim.cmd(M.mod_cmd) end
 end
 

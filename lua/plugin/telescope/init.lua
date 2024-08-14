@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.telescope
@@ -17,6 +14,8 @@ local map_dict = User.maps.map_dict
 if not exists('telescope') then
     return
 end
+
+User.register_plugin('plugin.telescope')
 
 local in_tbl = vim.tbl_contains
 local empty = vim.tbl_isempty

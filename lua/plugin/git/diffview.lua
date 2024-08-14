@@ -1,19 +1,17 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
-local types = User.types.diffview
+local Types = User.types.diffview
 local Check = User.check
-local Maps = User.maps
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local exists = Check.exists.module
-local desc = Maps.kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('diffview') then
     return
 end
+
+User.register_plugin('plugin.git.diffview')
 
 local DVW = require('diffview')
 local Actions = require('diffview.actions')

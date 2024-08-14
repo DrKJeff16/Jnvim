@@ -16,6 +16,8 @@ if not exists('barbar') then
     return
 end
 
+User.register_plugin('plugin.barbar')
+
 local Bar = require('barbar')
 
 vim.g.barbar_auto_setup = 0

@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local hl_t = User.types.user.highlight
@@ -16,6 +13,8 @@ local hl_from_dict = Highlight.hl_from_dict
 if not exists('notify') then
     return
 end
+
+User.register_plugin('plugin.notify')
 
 local notify = require('notify')
 

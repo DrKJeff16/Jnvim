@@ -11,6 +11,8 @@ if not exists('cmp') then
     return
 end
 
+User.register_plugin('plugin.cmp')
+
 local tbl_contains = vim.tbl_contains
 local get_mode = vim.api.nvim_get_mode
 

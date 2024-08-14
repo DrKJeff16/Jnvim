@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -9,6 +6,8 @@ local exists = Check.exists.module
 if not exists('luarocks-nvim') then
     return
 end
+
+User.register_plugin('plugin.luarocks')
 
 local Rocks = require('luarocks-nvim')
 

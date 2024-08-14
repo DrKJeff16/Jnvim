@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-label
-
 local User = require('user_api')
 local Check = User.check
 local WK = User.maps.wk
@@ -14,6 +11,8 @@ local map_dict = User.maps.map_dict
 if not exists('persisted') then
     return
 end
+
+User.register_plugin('plugin.persisted')
 
 local Pstd = require('persisted')
 

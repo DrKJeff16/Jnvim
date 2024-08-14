@@ -15,6 +15,8 @@ local nop = User.maps.nop ---@see User.Maps.nop
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
+User.register_plugin('config.keymaps')
+
 local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param force? boolean

@@ -10,6 +10,8 @@ if not exists('colorful-winsep') then
     return
 end
 
+User.register_plugin('plugin.colorful_winsep')
+
 local CW = require('colorful-winsep')
 
 CW.setup({

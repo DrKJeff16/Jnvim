@@ -1,15 +1,14 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
-local types = User.types.mini
+local Types = User.types.mini
 
 local exists = Check.exists.module
 
 if not exists('mini.starter') then
     return
 end
+
+User.register_plugin('plugin.mini.starter')
 
 local MS = require('mini.starter')
 local Sections = MS.sections

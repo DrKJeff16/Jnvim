@@ -1,6 +1,5 @@
 local User = require('user_api')
 local Check = User.check
-local maps_t = User.types.user.maps
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
@@ -10,6 +9,8 @@ local map_dict = User.maps.map_dict
 if not exists('hover') then
     return
 end
+
+User.register_plugin('plugin.hover')
 
 local Hover = require('hover')
 

@@ -1,3 +1,14 @@
+local User = require('user_api')
+local Check = User.check
+
+local executable = Check.exists.executable
+
+if not executable('doxygen') then
+    return
+end
+
+User.register_plugin('plugin.doxygen')
+
 vim.g.DoxygenToolkit_briefTag_pre = '@Synopsis  '
 vim.g.DoxygenToolkit_paramTag_pre = '@Param '
 vim.g.DoxygenToolkit_returnTag = '@Returns   '

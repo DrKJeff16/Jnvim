@@ -1,6 +1,3 @@
----@diagnostic disable: unused-local
----@diagnostic disable: unused-function
-
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -27,6 +24,8 @@ local M = {
 }
 
 if exists('nightfox') then
+    User.register_plugin('plugin.colorschemes.nightfox')
+
     ---@param variant? 'carbonfox'|'dayfox'|'nightfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
     ---@param transparent? boolean
     ---@param override? table

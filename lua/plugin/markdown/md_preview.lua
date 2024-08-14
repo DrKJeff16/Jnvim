@@ -1,20 +1,18 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
-local kmap = User.maps.kmap
 local WK = User.maps.wk
-
-local desc = kmap.desc
 
 local executable = Check.exists.executable
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
+
+User.register_plugin('plugin.markdown.md_preview')
 
 local Fields = {
     mkdp_auto_start = 0,
@@ -48,7 +46,7 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
     group = augroup('MarkdownPreviewInitHook', { clear = true }),
     pattern = '*.md',
     callback = function()
-        ---@type table<MapModes, KeyMapDict>
+        ---@type KeyMapModeDict
         local Keys = {
             n = {
                 ['<leader>f<C-m>t'] = {
@@ -80,7 +78,7 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
             },
         }
 
-        ---@type table<MapModes, RegKeysNamed>
+        ---@type ModeRegKeysNamed
         local Names = {
             n = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
             v = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
@@ -88,20 +86,8 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
 
         local bufnr = vim.api.nvim_get_current_buf()
 
-        for mode, t in next, Keys do
-            if WK.available() then
-                if is_tbl(Names[mode]) and not empty(Names[mode]) then
-                    WK.register(Names[mode], { mode = mode, buffer = bufnr })
-                end
-
-                WK.register(WK.convert_dict(t), { mode = mode, buffer = bufnr })
-            else
-                for lhs, v in next, t do
-                    v[2] = is_tbl(v[2]) and v[2] or {}
-
-                    kmap[mode](lhs, v[1], v[2])
-                end
-            end
+        if WK.available() then
+            map_dict(Names, 'wk.register', true, nil, 0)
         end
     end,
 })

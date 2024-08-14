@@ -1,20 +1,17 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
+local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not (exists('lazygit.utils') and executable({ 'git', 'lazygit' })) then
     return
 end
+
+User.register_plugin('plugin.git.lazygit')
 
 local au = vim.api.nvim_create_autocmd
 
