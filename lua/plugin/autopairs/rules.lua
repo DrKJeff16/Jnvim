@@ -19,10 +19,11 @@ local Conds = require('nvim-autopairs.conds')
 local Handlers = require('nvim-autopairs.completion.handlers')
 local ts_conds = require('nvim-autopairs.ts-conds')
 
-local bpairs = {
+local BPAIRS = {
     { '(', ')' },
     { '[', ']' },
     { '{', '}' },
+    { '<', '>' },
 }
 
 local rule2 = function(a1, ins, a2, lang)
@@ -48,9 +49,9 @@ local Rules = {
         :with_pair(function(opts)
             local pair = opts.line:sub(opts.col - 1, opts.col)
             return vim.tbl_contains({
-                bpairs[1][1] .. bpairs[1][2],
-                bpairs[2][1] .. bpairs[2][2],
-                bpairs[3][1] .. bpairs[3][2],
+                BPAIRS[1][1] .. BPAIRS[1][2],
+                BPAIRS[2][1] .. BPAIRS[2][2],
+                BPAIRS[3][1] .. BPAIRS[3][2],
             }, pair)
         end)
         :with_move(Conds.none())
@@ -59,9 +60,9 @@ local Rules = {
             local col = api.nvim_win_get_cursor(0)[2]
             local context = opts.line:sub(col - 1, col + 2)
             return vim.tbl_contains({
-                bpairs[1][1] .. '  ' .. bpairs[1][2],
-                bpairs[2][1] .. '  ' .. bpairs[2][2],
-                bpairs[3][1] .. '  ' .. bpairs[3][2],
+                BPAIRS[1][1] .. '  ' .. BPAIRS[1][2],
+                BPAIRS[2][1] .. '  ' .. BPAIRS[2][2],
+                BPAIRS[3][1] .. '  ' .. BPAIRS[3][2],
             }, context)
         end),
 
@@ -105,7 +106,7 @@ local Rules = {
         :use_regex(true),
 }
 
-for _, bracket in next, bpairs do
+for _, bracket in next, BPAIRS do
     table.insert(
         Rules,
         -- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
