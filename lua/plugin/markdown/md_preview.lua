@@ -43,8 +43,8 @@ for k, v in next, Fields do
 end
 
 au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
-    group = augroup('MarkdownPreviewInitHook', { clear = true }),
-    pattern = '*.md',
+    group = augroup('MarkdownPreviewInitHook', { clear = false }),
+    pattern = { '*.md', '*.markdown', '*.MD' },
     callback = function()
         ---@type KeyMapModeDict
         local Keys = {
