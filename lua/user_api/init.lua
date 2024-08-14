@@ -1,11 +1,9 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local Types = require('user_api.types') ---@see User.Types
 local Check = require('user_api.check') ---@see User.Check
 local Util = require('user_api.util') ---@see User.Util
 
 ---@type User
+---@diagnostic disable-next-line:missing-fields
 local M = {
     types = require('user_api.types'),
     util = require('user_api.util'),
