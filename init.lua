@@ -191,6 +191,42 @@ User.commands:setup_commands()
 
 User.update.setup_maps()
 
+if WK.available() then
+    map_dict({
+        ['<leader>U'] = { group = '+User API' },
+        ['<leader>UP'] = { group = '+Plugins' },
+    }, 'wk.register', false, 'n')
+end
+map_dict({
+    ['<leader>UPr'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+            notify('Reloading...', 'info', {
+                hide_from_history = true,
+                title = 'User API',
+                timeout = 400,
+            })
+            local res = User:reload_plugins()
+
+            if not is_nil(res) then
+                notify((inspect or vim.inspect)(res), 'error', {
+                    hide_from_history = false,
+                    timeout = 1000,
+                    title = 'User API [ERROR]',
+                    animate = true,
+                })
+            else
+                notify('Success!', 'info', {
+                    hide_from_history = true,
+                    timeout = 200,
+                    title = 'User API',
+                })
+            end
+        end,
+        desc('Reload All Plugins'),
+    },
+}, 'wk.register', false, 'n')
+
 vim.cmd([[
 filetype plugin indent on
 syntax on

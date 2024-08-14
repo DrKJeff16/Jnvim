@@ -45,8 +45,8 @@
 ---@field update User.Update
 ---@field commands User.Commands
 ---@field registered_plugins string[]
----@field register_plugin fun(path: string)
----@field reload_plugins fun(self: User): string[]?
+---@field register_plugin fun(pathstr: string, i: integer?)
+---@field reload_plugins fun(self: User): string[]|nil
 ---@field new fun(o: table?): User
 
 ---@type User.Types
