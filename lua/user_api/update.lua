@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 require('user_api.types.user.update')
 
 local wk_available = require('user_api.maps.wk').available
@@ -24,8 +21,17 @@ local M = {
 
         vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
         local res = vim.fn.system(cmd)
+        if vim.v.shell_error ~= 0 then
+            vim.api.nvim_echo({
+                { 'Failed to update Jnvim:\n', 'ErrorMsg' },
+                { res, 'WarningMsg' },
+                { '\nPress any key to exit...' },
+            }, true, {})
+            vim.fn.getchar()
+            os.exit(1)
+        end
 
-        vim.api.nvim_set_current_dir(old_cwd)
+        vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
 
         return res
     end,
