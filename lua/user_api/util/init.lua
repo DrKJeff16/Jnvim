@@ -225,13 +225,12 @@ local function assoc()
     local empty = Value.empty
 
     local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
+    local retab = function() vim.cmd('%retab') end
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
-    local retab = function() vim.cmd('%retab') end
-
     ---@type AuRepeatEvents[]
-    local aus = {
+    local AUS = {
         { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
@@ -400,14 +399,12 @@ local function assoc()
 
     if ok then
         table.insert(
-            aus[1].opts_tbl,
+            AUS[1].opts_tbl,
             { pattern = '*.org', callback = ft_set('org'), group = group }
         )
     end
 
-    local notify = require('user_api.util.notify').notify
-
-    for _, T in next, aus do
+    for _, T in next, AUS do
         au_repeated_events(T)
     end
 end
