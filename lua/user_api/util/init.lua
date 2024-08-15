@@ -225,13 +225,12 @@ local function assoc()
     local empty = Value.empty
 
     local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
+    local retab = function() vim.cmd('%retab') end
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
-    local retab = function() vim.cmd('%retab') end
-
     ---@type AuRepeatEvents[]
-    local aus = {
+    local AUS = {
         { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
@@ -279,36 +278,81 @@ local function assoc()
                     end,
                 },
                 {
-                    pattern = 'c',
+                    pattern = { 'c', 'cpp' },
                     group = group,
                     callback = function()
+                        local wk_avail = require('user_api.maps.wk').available
+                        local desc = require('user_api.maps.kmap').desc
+                        local map_dict = require('user_api.maps').map_dict
                         local optset = vim.api.nvim_set_option_value
-                        local opts = {
-                            ['ts'] = 2,
-                            ['sts'] = 2,
-                            ['sw'] = 2,
-                            ['et'] = true,
+
+                        local buf_opts = {
+                            ts = 2,
+                            sts = 2,
+                            sw = 2,
+                            ai = true,
+                            si = true,
+                            et = true,
                         }
 
-                        for option, val in next, opts do
+                        for option, val in next, buf_opts do
                             optset(option, val, { buf = 0 })
                         end
-                    end,
-                },
-                {
-                    pattern = 'cpp',
-                    group = group,
-                    callback = function()
-                        local optset = vim.api.nvim_set_option_value
-                        local opts = {
-                            ['ts'] = 2,
-                            ['sts'] = 2,
-                            ['sw'] = 2,
-                            ['et'] = true,
-                        }
 
-                        for option, val in next, opts do
-                            optset(option, val, { buf = 0 })
+                        if vim.g.installed_a_vim == 1 then
+                            ---@type KeyMapDict
+                            local Keys = {
+                                ['<leader><C-h>s'] = {
+                                    ':A<CR>',
+                                    desc('Cycle Header/Source', true, 0),
+                                },
+                                ['<leader><C-h>x'] = {
+                                    ':AS<CR>',
+                                    desc('Horizontal Cycle Header/Source', true, 0),
+                                },
+                                ['<leader><C-h>v'] = {
+                                    ':AV<CR>',
+                                    desc('Vertical Cycle Header/Source', true, 0),
+                                },
+                                ['<leader><C-h>t'] = {
+                                    ':AT<CR>',
+                                    desc('Tab Cycle Header/Source', true, 0),
+                                },
+                                ['<leader><C-h>S'] = {
+                                    ':IH<CR>',
+                                    desc('Cycle Header/Source (Cursor)', true, 0),
+                                },
+                                ['<leader><C-h>X'] = {
+                                    ':IHS<CR>',
+                                    desc('Horizontal Cycle Header/Source (Cursor)', true, 0),
+                                },
+                                ['<leader><C-h>V'] = {
+                                    ':IHV<CR>',
+                                    desc('Vertical Cycle Header/Source (Cursor)', true, 0),
+                                },
+                                ['<leader><C-h>T'] = {
+                                    ':IHT<CR>',
+                                    desc('Tab Cycle Header/Source (Cursor)', true, 0),
+                                },
+                            }
+                            ---@type RegKeysNamed
+                            local Names = {
+                                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
+                            }
+                            if wk_avail() then
+                                map_dict(Names, 'wk.register', false, 'n', 0)
+                            end
+                            map_dict(Keys, 'wk.register', false, 'n', 0)
+
+                            require('user_api.maps').nop({
+                                'ih',
+                                'is',
+                                'ihn',
+                            }, {
+                                noremap = true,
+                                silent = true,
+                                buffer = 0,
+                            }, 'n', '<leader>')
                         end
                     end,
                 },
@@ -355,14 +399,12 @@ local function assoc()
 
     if ok then
         table.insert(
-            aus[1].opts_tbl,
+            AUS[1].opts_tbl,
             { pattern = '*.org', callback = ft_set('org'), group = group }
         )
     end
 
-    local notify = require('user_api.util.notify').notify
-
-    for _, T in next, aus do
+    for _, T in next, AUS do
         au_repeated_events(T)
     end
 end
