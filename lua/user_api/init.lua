@@ -21,13 +21,37 @@ M.registered_plugins = {}
 ---@param pathstr string
 ---@param i? integer
 function M.register_plugin(pathstr, i)
+    local is_nil = M.check.value.is_nil
+    local is_str = M.check.value.is_str
+    local empty = M.check.value.empty
+    local notify = M.util.notify.notify
+
     i = (M.check.value.is_int(i) and i >= 1) and i or 0
-    if not M.check.value.is_str(pathstr) or M.check.value.empty(pathstr) then
-        error('(User.register_plugin): Invalid path for plugin')
+    if not is_str(pathstr) or empty(pathstr) then
+        error('(user_api.register_plugin): Plugin must be a non-empty string')
     end
 
-    if not vim.tbl_contains(M.registered_plugins, pathstr) then
+    if vim.tbl_contains(M.registered_plugins, pathstr) then
+        return
+    end
+
+    ---@type nil|string
+    local warning = nil
+
+    if i >= 1 and i <= #M.registered_plugins then
+        table.insert(M.registered_plugins, i, pathstr)
+    elseif i < 0 or i > #M.registered_plugins then
+        warning = '(user_api.register_plugin): Invalid index, appending instead'
+    else
         table.insert(M.registered_plugins, pathstr)
+    end
+
+    if not is_nil(warning) then
+        notify(warning, 'warn', {
+            hide_from_history = false,
+            timeout = 350,
+            title = 'User API',
+        })
     end
 end
 
