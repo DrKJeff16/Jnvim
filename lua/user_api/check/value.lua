@@ -229,7 +229,7 @@ function M.empty(v)
     end
 
     notify(
-        "(user.check.value.empty): Value isn't a table, string nor a number",
+        "(user_api.check.value.empty): Value isn't a table, string nor a number",
         'warn',
         { title = 'user_api.value.empty', hide_from_history = true, timeout = 200 }
     )
@@ -244,12 +244,13 @@ local function fields(field, T)
 
     if not is_tbl(T) then
         error(
-            '(user.check.value.fields): Cannot look up a field in the following type: ' .. type(T)
+            '(user_api.check.value.fields): Cannot look up a field in the following type: '
+                .. type(T)
         )
     end
 
     if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
-        error('(user.check.value.fields): Field type `' .. type(T) .. '` not parseable')
+        error('(user_api.check.value.fields): Field type `' .. type(T) .. '` not parseable')
     end
 
     if not is_tbl(field) then
@@ -264,6 +265,7 @@ local function fields(field, T)
 
     return true
 end
+
 M.fields = fields
 
 function M.tbl_values(values, T, return_keys)
@@ -274,11 +276,15 @@ function M.tbl_values(values, T, return_keys)
     local empty = M.empty
 
     if not is_tbl(values) or empty(values) then
-        error('(user.check.value.tbl_values): Value argument is either not a table or an empty one')
+        error(
+            '(user_api.check.value.tbl_values): Value argument is either not a table or an empty one'
+        )
     end
 
     if not is_tbl(T) or empty(T) then
-        error('(user.check.value.tbl_values): Table to check is either not a table or an empty one')
+        error(
+            '(user_api.check.value.tbl_values): Table to check is either not a table or an empty one'
+        )
     end
 
     return_keys = is_bool(return_keys) and return_keys or false
@@ -330,15 +336,15 @@ function M.single_type_tbl(type_str, T)
     }
 
     if not is_str(type_str) then
-        error('(user.check.value.single_type_tbl): You need to define a type as a string')
+        error('(user_api.check.value.single_type_tbl): You need to define a type as a string')
     end
 
     if not vim.tbl_contains(ALLOWED_TYPES, type_str) then
-        error('(user.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type')
+        error('(user_api.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type')
     end
 
     if not is_tbl(T) or empty(T) then
-        error('(user.check.value.single_type_tbl): Expected a NON-EMPTY TABLE')
+        error('(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE')
     end
 
     for _, v in next, T do

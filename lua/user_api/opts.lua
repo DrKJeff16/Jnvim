@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 require('user_api.types.user.opts')
 
 local Value = require('user_api.check.value')
@@ -13,7 +10,6 @@ local executable = Exists.executable
 local vim_has = Exists.vim_has
 local vim_exists = Exists.vim_exists
 local in_console = require('user_api.check').in_console
-local notify = require('user_api.util.notify').notify
 
 ---@type User.Opts.Spec
 local DEFAULT_OPTIONS = {
@@ -100,7 +96,7 @@ local M = {
             elseif not is_nil(vim.o[k]) then
                 vim.o[k] = v
             else
-                notify(
+                require('user_api.util.notify').notify(
                     '(user.opts.optset): Unable to set option `' .. k .. '`',
                     'error',
                     { title = 'user_api.opts', hide_from_history = false, timeout = 3000 }

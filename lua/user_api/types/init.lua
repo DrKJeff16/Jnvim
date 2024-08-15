@@ -46,8 +46,9 @@
 ---@field commands User.Commands
 ---@field registered_plugins string[]
 ---@field register_plugin fun(pathstr: string, i: integer?)
----@field reload_plugins fun(self: User): string[]|nil
+---@field reload_plugins fun(self: User): (failed: string[]|nil)
 ---@field new fun(o: table?): User
+---@field print_loaded_plugins fun(self: User)
 
 ---@type User.Types
 local M = {

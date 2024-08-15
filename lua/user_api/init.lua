@@ -14,8 +14,9 @@ local M = {
     distro = require('user_api.distro'),
     update = require('user_api.update'),
     commands = require('user_api.commands'):new(),
-    registered_plugins = {},
 }
+
+M.registered_plugins = {}
 
 ---@param pathstr string
 ---@param i? integer
@@ -31,7 +32,7 @@ function M.register_plugin(pathstr, i)
 end
 
 ---@param self User
----@return string[]|nil
+---@return string[]|nil failed
 function M:reload_plugins()
     ---@type table|string[]
     local failed = {}
