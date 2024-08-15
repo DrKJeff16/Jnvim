@@ -1,13 +1,13 @@
 ---@meta
 
 ---@class UserSubTypes
----@field maps table
----@field highlight table
----@field autocmd table
----@field opts table
----@field check table
----@field util table
----@field update table
+---@field maps nil
+---@field highlight nil
+---@field autocmd nil
+---@field opts nil
+---@field check nil
+---@field util nil
+---@field update nil
 
 ---@type UserSubTypes
 local M = {

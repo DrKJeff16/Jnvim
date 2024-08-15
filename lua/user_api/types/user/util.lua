@@ -27,6 +27,29 @@ require('user_api.types.user.autocmd')
 ---@class User.Util.Notify
 ---@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: NotifyOpts?)
 
+---@class User.Util.Strings.Alphabet
+---@field upper_list string[]
+---@field lower_list string[]
+---@field upper_map table<string, string>
+---@field lower_map table<string, string>
+
+---@class User.Util.Strings.Vowels: User.Util.Strings.Alphabet
+---@field upper_map { ['A']: 'A', ['E']: 'E', ['I']: 'I', ['O']: 'O', ['U']: 'U' }
+---@field lower_map { ['a']: 'a', ['e']: 'e', ['i']: 'i', ['o']: 'o', ['u']: 'u' }
+
+---@class User.Util.Strings.Digits
+---@field all table<string, string>
+---@field odd_list ('1'|'3'|'5'|'7'|'9')[]
+---@field even_list ('0'|'2'|'4'|'6'|'8')[]
+---@field odd_map { ['1']: '1', ['3']: '3', ['5']: '5', ['7']: '7', ['9']: '9' }
+---@field even_map { ['0']: '0', ['2']: '2', ['4']: '4', ['6']: '6', ['8']: '8' }
+
+---@class User.Util.Strings
+---@field alphabet User.Util.Strings.Alphabet
+---@field vowels User.Util.Strings.Vowels
+---@field digits User.Util.Strings.Digits
+---@field capitalize fun(s: string, use_dot: boolean?, triggers: string[]): (new_str: string)
+
 ---@class User.Util.Autocmd
 ---@field au_pair fun(T: AuPair)
 ---@field au_repeated fun(T: AuRepeat)

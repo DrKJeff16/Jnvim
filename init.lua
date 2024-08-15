@@ -5,6 +5,7 @@ local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
+local Opts = User.opts ---@see User.opts Option setting
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
@@ -21,8 +22,9 @@ _G.is_windows = Check.exists.vim_has('win32')
 ---
 --- Vim `:set ...` global options setter
 ---@see User.Opts.setup
-User.opts.setup({ ---@see User.Opts.Spec For more info
+Opts:setup({ ---@see User.Opts.Spec For more info
     background = 'dark',
+    bs = { 'indent', 'eol', 'start' },
     cmdwinheight = 7,
     copyindent = false,
     confirm = true,
@@ -30,7 +32,7 @@ User.opts.setup({ ---@see User.Opts.Spec For more info
     expandtab = true,
     formatoptions = 'bjlopqnw',
     helplang = { 'en' },
-    hlsearch = true,
+    hls = true,
     ignorecase = false,
     incsearch = true,
     matchtime = 30,
@@ -87,7 +89,7 @@ require('config.keymaps').setup({
                 local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
-                vim.api.nvim_win_set_cursor(curr_win(), saved_pos)
+                vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
             end,
             desc('Indent Whole File', true, 0),
         },
@@ -224,6 +226,10 @@ map_dict({
             end
         end,
         desc('Reload All Plugins'),
+    },
+    ['<leader>UPl'] = {
+        function() User:print_loaded_plugins() end,
+        desc('Print Loaded Plugins'),
     },
 }, 'wk.register', false, 'n')
 
