@@ -61,6 +61,12 @@ local M = {
         version = false,
         config = source('plugin.autopairs'),
     },
+    {
+        'vim-scripts/a.vim',
+        ft = { 'c', 'cpp' },
+        version = false,
+        init = function() vim.g.installed_a_vim = 1 end,
+    },
 }
 
 return M
