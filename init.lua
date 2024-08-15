@@ -225,6 +225,10 @@ map_dict({
         end,
         desc('Reload All Plugins'),
     },
+    ['<leader>UPl'] = {
+        function() User:print_loaded_plugins() end,
+        desc('Print Loaded Plugins'),
+    },
 }, 'wk.register', false, 'n')
 
 vim.cmd([[
