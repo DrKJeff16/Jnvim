@@ -73,6 +73,21 @@ function M:reload_plugins()
     return nil
 end
 
+---@param self User
+function M:print_loaded_plugins()
+    local notify = self.util.notify.notify
+
+    local msg = '{'
+
+    for _, P in next, self.registered_plugins do
+        msg = msg .. string.char(10) .. '  ' .. P
+    end
+
+    msg = msg .. string.char(10) .. '}'
+
+    notify(msg)
+end
+
 ---@param o? table
 ---@return User|table self
 function M.new(o)
