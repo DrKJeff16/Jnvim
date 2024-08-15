@@ -6,6 +6,7 @@ local Types = User.types ---@see User.types Import docstrings and annotations
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
 local Opts = User.opts ---@see User.opts Option setting
+local Commands = User.commands ---@see User.commands User command generation (WIP)
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
@@ -16,7 +17,8 @@ local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
-_G.is_windows = Check.exists.vim_has('win32')
+-- _G.is_windows = Check.exists.vim_has('win32')
+_G.is_windows = not is_nil(vim.uv.os_uname().version:match('Windows'))
 
 --- WARNING: USE LONG NAMES. I'll try to fix it later
 ---
@@ -189,7 +191,7 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for arch linux
 require('user_api.distro.archlinux').setup()
 
-User.commands:setup_commands()
+Commands:setup_commands()
 
 User.update.setup_maps()
 
