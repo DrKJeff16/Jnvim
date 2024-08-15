@@ -87,7 +87,7 @@ require('config.keymaps').setup({
                 local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
-                vim.api.nvim_win_set_cursor(curr_win(), saved_pos)
+                vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
             end,
             desc('Indent Whole File', true, 0),
         },
