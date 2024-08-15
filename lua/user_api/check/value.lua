@@ -332,7 +332,7 @@ function M.single_type_tbl(type_str, T)
         'string',
         'table',
         'thread',
-        'user_apidata',
+        'userdata',
     }
 
     if not is_str(type_str) then
