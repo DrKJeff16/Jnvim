@@ -1,8 +1,6 @@
 local User = require('user_api') --- User API
 local Check = User.check ---@see User.check Checking utilities
-local Util = User.util ---@see User.util Utilities
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
-local maps_t = User.types.user.maps ---@see UserSubTypes.maps Mapping type annotations
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -10,14 +8,12 @@ local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local is_bool = Check.value.is_bool ---@see User.Check.Value.is_bool
 local empty = Check.value.empty ---@see User.Check.Value.empty
-local ft_get = Util.ft_get ---@see User.Util.ft_get
+local ft_get = User.util.ft_get ---@see User.Util.ft_get
 local nop = User.maps.nop ---@see User.Maps.nop
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
 User.register_plugin('config.keymaps')
-
-local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param force? boolean
 ---@return fun()
@@ -42,8 +38,8 @@ local function buf_del(force)
     }
 
     return function()
-        local prev_ft = ft_get(curr_buf())
-        local prev_bt = vim.api.nvim_get_option_value('bt', { buf = curr_buf() })
+        local prev_ft = ft_get(0)
+        local prev_bt = vim.api.nvim_get_option_value('buftype', { buf = 0 })
 
         vim.cmd(cmd)
 
@@ -54,7 +50,7 @@ local function buf_del(force)
             return
         end
 
-        local ft = ft_get(curr_buf())
+        local ft = ft_get(0)
 
         if vim.tbl_contains(ft_triggers, ft) then
             vim.cmd('bprev')
@@ -70,6 +66,7 @@ end
 ---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
 
 ---@type Config.Keymaps
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 M.NOP = {
