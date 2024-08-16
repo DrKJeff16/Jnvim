@@ -152,7 +152,10 @@ M.NOP = {
 --- Global keymaps, plugin-agnostic
 M.Keys = {
     n = {
-        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
+        ['<Esc><Esc>'] = {
+            vim.cmd.nohls,
+            desc('Remove Highlighted Search'),
+        },
 
         ['<leader>bD'] = {
             buf_del(true),
