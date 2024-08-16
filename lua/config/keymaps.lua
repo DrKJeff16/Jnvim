@@ -1,8 +1,6 @@
 local User = require('user_api') --- User API
 local Check = User.check ---@see User.check Checking utilities
-local Util = User.util ---@see User.util Utilities
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
-local maps_t = User.types.user.maps ---@see UserSubTypes.maps Mapping type annotations
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -10,14 +8,12 @@ local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
 local is_bool = Check.value.is_bool ---@see User.Check.Value.is_bool
 local empty = Check.value.empty ---@see User.Check.Value.empty
-local ft_get = Util.ft_get ---@see User.Util.ft_get
+local ft_get = User.util.ft_get ---@see User.Util.ft_get
 local nop = User.maps.nop ---@see User.Maps.nop
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
 User.register_plugin('config.keymaps')
-
-local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param force? boolean
 ---@return fun()
@@ -42,8 +38,8 @@ local function buf_del(force)
     }
 
     return function()
-        local prev_ft = ft_get(curr_buf())
-        local prev_bt = vim.api.nvim_get_option_value('bt', { buf = curr_buf() })
+        local prev_ft = ft_get(0)
+        local prev_bt = vim.api.nvim_get_option_value('buftype', { buf = 0 })
 
         vim.cmd(cmd)
 
@@ -54,7 +50,7 @@ local function buf_del(force)
             return
         end
 
-        local ft = ft_get(curr_buf())
+        local ft = ft_get(0)
 
         if vim.tbl_contains(ft_triggers, ft) then
             vim.cmd('bprev')
@@ -70,6 +66,7 @@ end
 ---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
 
 ---@type Config.Keymaps
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 M.NOP = {
@@ -155,7 +152,10 @@ M.NOP = {
 --- Global keymaps, plugin-agnostic
 M.Keys = {
     n = {
-        ['<Esc><Esc>'] = { vim.cmd.nohls, desc('Remove Highlighted Search'):add({ hidden = true }) },
+        ['<Esc><Esc>'] = {
+            vim.cmd.nohls,
+            desc('Remove Highlighted Search'),
+        },
 
         ['<leader>bD'] = {
             buf_del(true),
@@ -165,10 +165,10 @@ M.Keys = {
             buf_del(false),
             desc('Close Buffer'),
         },
-        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
-        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer') },
-        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer') },
-        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer') },
+        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer') },
+        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer') },
+        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer') },
+        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer') },
 
         ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
@@ -181,11 +181,11 @@ M.Keys = {
                 vim.bo.modifiable = true
                 vim.api.nvim_set_option_value('ft', ft, { buf = vim.api.nvim_get_current_buf() })
             end,
-            desc('New Blank File', true, 0),
+            desc('New Blank File', true),
         },
-        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false, 0) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true, 0) },
-        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false, 0) },
+        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true) },
+        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
         ['<leader>fs'] = {
             function()
                 if vim.bo.modifiable then
@@ -194,10 +194,10 @@ M.Keys = {
                     require('user_api.util.notify').notify('Not writeable')
                 end
             end,
-            desc('Save File', false, 0),
+            desc('Save File', false),
         },
-        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false, 0) },
-        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false, 0) },
+        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
+        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
         ['<leader>fvl'] = {
             function()
                 local ft = require('user_api.util').ft_get()
@@ -218,7 +218,7 @@ M.Keys = {
                     )
                 end
             end,
-            desc('Source Current File As Lua File', true, 0),
+            desc('Source Current File As Lua File', true),
         },
         ['<leader>fvv'] = {
             function()
@@ -240,7 +240,7 @@ M.Keys = {
                     )
                 end
             end,
-            desc('Source Current File As VimScript File', true, 0),
+            desc('Source Current File As VimScript File', true),
         },
 
         ['<leader>vH'] = { ':checkhealth ', desc('Prompt For Checkhealth', false) },
@@ -278,7 +278,7 @@ M.Keys = {
                 vim.bo.modifiable = true
                 vim.api.nvim_set_option_value('ft', ft, { buf = vim.api.nvim_get_current_buf() })
             end,
-            desc('New Blank File', true, 0),
+            desc('New Blank File', true),
         },
         ['<leader>w='] = {
             function() vim.cmd.wincmd('=') end,
@@ -336,9 +336,9 @@ M.Keys = {
         ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
     },
     v = {
-        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false, 0) },
-        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false, 0) },
-        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false, 0) },
+        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false) },
+        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false) },
+        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
         ['<leader>fs'] = {
             function()
                 if vim.bo.modifiable then
@@ -347,16 +347,16 @@ M.Keys = {
                     require('user_api.util.notify').notify('Not writeable.')
                 end
             end,
-            desc('Save File', false, 0),
+            desc('Save File', false),
         },
 
-        ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false, 0) },
+        ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false) },
 
         ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
         ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
 
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false, 0) },
-        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false, 0) },
+        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false) },
+        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false) },
     },
     t = {
         ['<Esc>'] = { '<C-\\><C-n>', { buffer = 0 } },

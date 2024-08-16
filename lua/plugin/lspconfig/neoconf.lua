@@ -1,26 +1,24 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
-local Lspconfig = require('lspconfig')
-
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
-local types = User.types.lspconfig
+local Types = User.types.lspconfig
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
+local notify = User.util.notify.notify
+
+local Lspconfig = require('lspconfig')
 
 if not exists('neoconf') then
     return
 end
 
 if is_num(neoconf_configured) and neoconf_configured == 1 then
-    local msg = "Neoconf can't be re-sourced."
-
-    Util.notify.notify(msg, 'error', { title = 'NeoConf' })
-
+    notify("Neoconf can't be re-sourced.", 'error', {
+        title = 'NeoConf',
+        hide_from_history = true,
+        timeout = 250,
+    })
     return
 else
     _G.neoconf_configured = 1
@@ -28,7 +26,7 @@ end
 
 local NC = require('neoconf')
 
-local Opts = {
+NC.setup({
     -- name of the local settings files
     local_settings = '.neoconf.json',
     -- name of the global settings file in your Neovim config directory
@@ -66,8 +64,6 @@ local Opts = {
             enabled = true,
         },
     },
-}
-
-NC.setup(Opts)
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
