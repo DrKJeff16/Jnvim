@@ -51,7 +51,7 @@ die() {
     exit "$EC"
 }
 
-[[ $# -eq 0 ]] && error "No arguments were given. Aborting" && exit 127
+[[ $# -eq 0 ]] && die 127 "No arguments were given. Aborting"
 
 EC=0
 while [[ $# -gt 0 ]]; do
@@ -68,9 +68,9 @@ while [[ $# -gt 0 ]]; do
     for F in $(find . -type f -regex '.*\.lua$' | cut -d '/' -f2-); do
         echo -e "    ==> ${F}"
         if ! sed -i "${REGEX}" "$F"; then
-            error "Unable to replace contents of file \`$F\`. Skipping pattern \`$REGEX\`"
+            error "Unable to replace contents of file \`$F\`. Skipping file"
             EC=1
-            break
+            continue
         fi
     done
 
