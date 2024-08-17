@@ -23,25 +23,28 @@ local au = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
 local Telescope = require('telescope')
-local ActionLayout = require('telescope.actions.layout')
 local Actions = require('telescope.actions')
+local ActionsLayout = require('telescope.actions.layout')
 local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
 local Pickers = require('telescope.pickers')
-local Extensions = Telescope.extensions
-
-local load_ext = Telescope.load_extension
+local Themes = require('telescope.themes')
 
 -- Clone the default Telescope configuration
-local vimgrep_arguments = { unpack(Config.values.vimgrep_arguments) }
+local vimgrep_arguments = { (unpack or table.unpack)(Config.values.vimgrep_arguments) }
+local extra_args = {
+    -- Search in hidden/dot files
+    '--hidden',
+    -- Don't search in these hidden directories
+    '--glob',
+    '!**/.git/*',
+    '!**/.ropeproject/*',
+    '!**/.mypy_cache/*',
+}
 
--- Search in hidden/dot files
-table.insert(vimgrep_arguments, '--hidden')
--- Don't search in these hidden directories
-table.insert(vimgrep_arguments, '--glob')
-table.insert(vimgrep_arguments, '!**/.git/*')
-table.insert(vimgrep_arguments, '!**/.ropeproject/*')
-table.insert(vimgrep_arguments, '!**/.mypy_cache/*')
+for _, arg in next, extra_args do
+    table.insert(vimgrep_arguments, arg)
+end
 
 local Opts = {
     defaults = {
@@ -63,17 +66,17 @@ local Opts = {
                 ['<C-q>'] = Actions.close,
                 ['<C-s>'] = Actions.cycle_previewers_next,
                 ['<C-a>'] = Actions.cycle_previewers_prev,
-                ['<M-p>'] = ActionLayout.toggle_preview,
+                ['<M-p>'] = ActionsLayout.toggle_preview,
             },
             n = {
-                ['<M-p>'] = ActionLayout.toggle_preview,
+                ['<M-p>'] = ActionsLayout.toggle_preview,
             },
         },
 
         vimgrep_arguments = vimgrep_arguments,
 
         preview = {
-            filesize_limit = 0.5, -- MB
+            filesize_limit = 0.75, -- MB
         },
     },
 
@@ -95,34 +98,60 @@ local Opts = {
         git_status = { theme = 'dropdown' },
         git_stash = { theme = 'dropdown' },
         highlights = { theme = 'dropdown' },
-        lsp_definitions = { theme = 'cursor' },
+        lsp_definitions = { theme = 'dropdown' },
         lsp_document_symbols = { theme = 'dropdown' },
-        lsp_implementations = { theme = 'cursor' },
-        lsp_type_definitions = { theme = 'cursor' },
+        lsp_implementations = { theme = 'dropdown' },
+        lsp_type_definitions = { theme = 'dropdown' },
         lsp_workspace_symbols = { theme = 'dropdown' },
         man_pages = { theme = 'dropdown' },
-        pickers = { theme = 'ivy' },
+        pickers = { theme = 'dropdown' },
+        picker_list = { theme = 'dropdown' },
         planets = { theme = 'dropdown' },
         reloader = { theme = 'dropdown' },
         vim_options = { theme = 'ivy' },
     },
 }
 
--- TODO: ADD `OliverChao/telescope-picker-list.nvim`
+if exists('telescope._extensions.picker_list') then
+    Opts.extensions.picker_list = {
+        theme = 'dropdown',
+        opts = {
+            projects = { display_type = 'full' },
+            project = { display_type = 'full' },
+            notify = Themes.get_dropdown({}),
+        },
 
-if exists('trouble') then
-    local open_with_trouble = require('trouble.sources.telescope').open
+        excluded_pickers = {
+            'fzf',
+            'fd',
+            'live_grep',
+        },
 
+        user_pickers = {
+            'todo-comments',
+            function() vim.cmd('TodoTelescope theme=dropdown') end,
+        },
+    }
+end
+
+if exists('trouble.sources.telescope') then
+    local pfx = require('trouble.sources.telescope')
+
+    local open_with_trouble = pfx.open
     -- Use this to add more results without clearing the trouble list
-    local add_to_trouble = require('trouble.sources.telescope').add
+    local add_to_trouble = pfx.add
 
     Opts.defaults.mappings.i['<C-T>'] = open_with_trouble
     Opts.defaults.mappings.n['<C-T>'] = open_with_trouble
 end
 
-if Check.exists.modules({ 'plugin.telescope.file_browser' }) then
-    Opts.extensions.file_browser = require('plugin.telescope.file_browser').file_browser
-    require('plugin.telescope.file_browser').loadkeys()
+if exists('plugin.telescope.file_browser') then
+    local pfx = require('plugin.telescope.file_browser')
+
+    if not is_nil(pfx) then
+        Opts.extensions.file_browser = pfx.file_browser
+        pfx.loadkeys()
+    end
 end
 
 if exists('persisted') then
@@ -131,33 +160,38 @@ if exists('persisted') then
     }
 end
 
-if
-    Check.exists.modules({
-        'telescope._extensions.conventional_commits.actions',
-        'plugin.telescope.cc',
-    })
-then
-    Opts.extensions.conventional_commits = require('plugin.telescope.cc').cc
-    require('plugin.telescope.cc').loadkeys()
+if exists('plugin.telescope.cc') then
+    local pfx = require('plugin.telescope.cc')
+
+    if not is_nil(pfx) then
+        Opts.extensions.conventional_commits = pfx.cc
+        pfx.loadkeys()
+    end
 end
 
 Telescope.setup(Opts)
 
-if exists('telescope._extensions.file_browser') then
-    load_ext('file_browser')
-end
-if exists('persisted') then
-    load_ext('persisted')
-end
-if exists('plugin.telescope.cc') then
-    load_ext('conventional_commits')
-end
+local load_ext = exists('telescope._extensions.picker_list.main')
+        ---@param name string
+        and function(name)
+            Telescope.load_extension(name)
 
-local function open() vim.cmd('Telescope') end
+            -- Make sure `picker_list` doesn't load itself
+            if name == 'picker_list' then
+                _G.telescope_picker_list_loaded = true
+                return
+            end
+
+            -- If `picker_list` is loaded, also register extension with it
+            if telescope_picker_list_loaded then
+                require('telescope._extensions.picker_list.main').register(name)
+            end
+        end
+    or Telescope.load_extension
 
 ---@type KeyMapDict
-local Maps = {
-    ['<leader><leader>'] = { open, desc('Open Telescope') },
+local Keys = {
+    ['<leader><leader>'] = { function() vim.cmd('Telescope') end, desc('Open Telescope') },
     ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
     ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
@@ -197,13 +231,18 @@ local Names = {
     ['<leader>fTe'] = { group = '+Extensions' },
 }
 
+local Extensions = Telescope.extensions
+
 ---@type table<string, TelExtension>
 local known_exts = {
-    ['scope'] = { 'scope' },
-    ['persisted'] = { 'persisted' },
+    ['telescope._extensions.file_browser'] = { 'file_browser' },
+    ['plugin.telescope.cc'] = { 'conventional_commits' },
+    scope = { 'scope' },
+    persisted = { 'persisted' },
     ['telescope-makefile'] = {
         'make',
-        ---@type fun(): KeyMapDict
+
+        ---@return table|KeyMapDict
         keys = function()
             if is_nil(Extensions.make) then
                 return {}
@@ -212,13 +251,14 @@ local known_exts = {
             local pfx = Extensions.make
 
             return {
-                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker', true, 0) },
+                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker') },
             }
         end,
     },
-    ['project_nvim'] = {
+    project_nvim = {
         'projects',
-        ---@type fun(): KeyMapDict
+
+        ---@return table|KeyMapDict
         keys = function()
             if is_nil(Extensions.projects) then
                 return {}
@@ -227,13 +267,14 @@ local known_exts = {
             local pfx = Extensions.projects
 
             return {
-                ['<leader>fTep'] = { pfx.projects, desc('Project Picker', true, 0) },
+                ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
             }
         end,
     },
-    ['notify'] = {
+    notify = {
         'notify',
-        ---@type fun(): KeyMapDict
+
+        ---@return table|KeyMapDict
         keys = function()
             if is_nil(Extensions.notify) then
                 return {}
@@ -246,9 +287,10 @@ local known_exts = {
             }
         end,
     },
-    ['noice'] = {
+    noice = {
         'noice',
-        ---@type fun(): KeyMapDict
+
+        ---@return table|KeyMapDict
         keys = function()
             ---@type KeyMapDict
             local res = {
@@ -272,7 +314,7 @@ local known_exts = {
     ['lazygit.utils'] = {
         'lazygit',
 
-        ---@type fun(): KeyMapDict
+        ---@return table|KeyMapDict
         keys = function()
             if is_nil(Extensions.lazygit) then
                 return {}
@@ -288,10 +330,31 @@ local known_exts = {
             return res
         end,
     },
+
+    -- WARN: MUST BE LAST IN THIS LIST
+    ['telescope-picker-list'] = {
+        'picker_list',
+
+        ---@return table|KeyMapDict
+        keys = function()
+            if is_nil(Extensions.picker_list) then
+                return {}
+            end
+
+            local pfx = Extensions.picker_list
+
+            return {
+                ['<leader>fTeP'] = { pfx.picker_list, desc('Picker List') },
+                ['<leader>fTbp'] = { pfx.picker_list, desc('Picker List (Extension)') },
+                ['<leader><leader>'] = { pfx.picker_list, desc('Telescope Picker List') },
+            }
+        end,
+    },
 }
 
 --- Load and Set Keymaps for available extensions
 for mod, ext in next, known_exts do
+    -- If extension is unavailable/invalid
     if not (exists(mod) and is_str(ext[1])) then
         goto continue
     end
@@ -300,17 +363,17 @@ for mod, ext in next, known_exts do
 
     if is_fun(ext.keys) then
         for lhs, v in next, ext.keys() do
-            Maps[lhs] = v
+            Keys[lhs] = v
         end
     end
 
     ::continue::
 end
 
-if WK.available() and is_tbl(Names) and not empty(Names) then
+if WK.available() then
     map_dict(Names, 'wk.register', false, 'n')
 end
-map_dict(Maps, 'wk.register', false, 'n')
+map_dict(Keys, 'wk.register', false, 'n')
 
 ---@type AuRepeat
 local au_tbl = {

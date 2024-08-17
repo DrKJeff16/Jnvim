@@ -22,6 +22,13 @@ local M = {
     },
     -- TODO: ADD 'OliverChao/telescope-picker-list.nvim'
     {
+        'OliverChao/telescope-picker-list.nvim',
+        lazy = true,
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+        cond = not in_console(),
+    },
+    {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
         version = false,

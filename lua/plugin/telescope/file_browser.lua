@@ -9,8 +9,10 @@ local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local executable = Check.exists.executable
 
+local M = nil
+
 if not exists('telescope') or not exists('telescope._extensions.file_browser') then
-    return
+    return M
 end
 
 local in_tbl = vim.tbl_contains
@@ -22,12 +24,28 @@ local Telescope = require('telescope')
 local Actions = require('telescope._extensions.file_browser.actions')
 local Finders = require('telescope._extensions.file_browser.finders')
 
-local load_ext = Telescope.load_extension
+local load_ext = exists('telescope._extensions.picker_list.main')
+        ---@param name string
+        and function(name)
+            Telescope.load_extension(name)
 
-local M = {}
+            -- Make sure `picker_list` doesn't load itself
+            if name == 'picker_list' then
+                _G.telescope_picker_list_loaded = true
+                return
+            end
+
+            -- If `picker_list` is loaded, also register extension with it
+            if telescope_picker_list_loaded then
+                require('telescope._extensions.picker_list.main').register(name)
+            end
+        end
+    or Telescope.load_extension
+
+M = {}
 M.file_browser = {
     cwd_to_path = true,
-    grouped = false,
+    grouped = true,
     files = true,
     add_dirs = true,
     depth = 1,
@@ -87,36 +105,22 @@ M.file_browser = {
 }
 
 function M.loadkeys()
-    local Maps = User.maps
+    local map_dict = require('user_api.maps').map_dict
+    local desc = require('user_api.maps.kmap').desc
 
-    local map_dict = Maps.map_dict
-    local desc = Maps.kmap.desc
-
-    ---@type table<MapModes, KeyMapDict>
+    ---@type KeyMapDict
     local Keys = {
-        n = {
-            ['<leader>fTeb'] = {
-                require('telescope').extensions.file_browser.file_browser,
-                desc('File Browser'),
-            },
-            ['<leader>ff'] = {
-                require('telescope').extensions.file_browser.file_browser,
-                desc('Telescope File Browser'),
-            },
+        ['<leader>fTeb'] = {
+            require('telescope').extensions.file_browser.file_browser,
+            desc('File Browser'),
         },
-        v = {
-            ['<leader>fTeb'] = {
-                require('telescope').extensions.file_browser.file_browser,
-                desc('File Browser'),
-            },
-            ['<leader>ff'] = {
-                require('telescope').extensions.file_browser.file_browser,
-                desc('Telescope File Browser'),
-            },
+        ['<leader>ff'] = {
+            require('telescope').extensions.file_browser.file_browser,
+            desc('Telescope File Browser'),
         },
     }
 
-    map_dict(Keys, 'wk.register', true, nil, 0)
+    map_dict(Keys, 'wk.register', false, 'n')
 end
 
 return M
