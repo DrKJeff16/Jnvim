@@ -16,7 +16,7 @@ User.register_plugin('plugin.markdown.md_preview')
 
 local Fields = {
     mkdp_auto_start = 0,
-    mkdp_browser = executable('firefox') and '/usr/bin/firefox' or '',
+    mkdp_browser = executable('firefox') and '/usr/bin/firefox' or 'xdg-open',
     mkdp_echo_preview_url = 1,
     mkdp_open_to_the_world = 0,
     mkdp_auto_close = 1,
@@ -42,53 +42,40 @@ for k, v in next, Fields do
     vim.g[k] = v
 end
 
-au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead' }, {
+au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
     group = augroup('MarkdownPreviewInitHook', { clear = false }),
     pattern = { '*.md', '*.markdown', '*.MD' },
     callback = function()
-        ---@type KeyMapModeDict
+        ---@type KeyMapDict
         local Keys = {
-            n = {
-                ['<leader>f<C-m>t'] = {
-                    function() vim.cmd('MarkdownPreviewToggle') end,
-                    desc('Toggle Markdown Preview'),
-                },
-                ['<leader>f<C-m>p'] = {
-                    function() vim.cmd('MarkdownPreview') end,
-                    desc('Run Markdown Preview'),
-                },
-                ['<leader>f<C-m>s'] = {
-                    function() vim.cmd('MarkdownPreviewStop') end,
-                    desc('Stop Markdown Preview'),
-                },
+            ['<leader>f<C-M>t'] = {
+                function() vim.cmd('MarkdownPreviewToggle') end,
+                desc('Toggle Markdown Preview', true, 0),
             },
-            v = {
-                ['<leader>f<C-m>t'] = {
-                    function() vim.cmd('MarkdownPreviewToggle') end,
-                    desc('Toggle Markdown Preview'),
-                },
-                ['<leader>f<C-m>p'] = {
-                    function() vim.cmd('MarkdownPreview') end,
-                    desc('Run Markdown Preview'),
-                },
-                ['<leader>f<C-m>s'] = {
-                    function() vim.cmd('MarkdownPreviewStop') end,
-                    desc('Stop Markdown Preview'),
-                },
+            ['<leader>f<C-M>p'] = {
+                function() vim.cmd('MarkdownPreview') end,
+                desc('Run Markdown Preview', true, 0),
+            },
+            ['<leader>f<C-M>s'] = {
+                function() vim.cmd('MarkdownPreviewStop') end,
+                desc('Stop Markdown Preview', true, 0),
             },
         }
 
-        ---@type ModeRegKeysNamed
+        ---@type RegKeysNamed
         local Names = {
-            n = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
-            v = { ['<leader>f<C-m>'] = { group = '+MarkdownPreview' } },
+            ['<leader>f<C-M>'] = { group = '+MarkdownPreview' },
         }
 
         local bufnr = vim.api.nvim_get_current_buf()
 
         if WK.available() then
-            map_dict(Names, 'wk.register', true, nil, 0)
+            map_dict(Names, 'wk.register', false, 'n', 0)
+            map_dict(Names, 'wk.register', false, 'v', 0)
         end
+
+        map_dict(Keys, 'wk.register', false, 'n', 0)
+        map_dict(Keys, 'wk.register', false, 'v', 0)
     end,
 })
 
