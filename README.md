@@ -10,7 +10,7 @@
     1. [Requirements](#requirements)
     2. [Structure](#structure)
     3. [Plugins](#plugins)
-2. [User API](#api)
+2. [User API](#the-user-api)
     1. [`user_api.types`](#types)
     2. [`user_api.util`](#util)
     3. [`user_api.opts`](#opts)
@@ -26,14 +26,14 @@
 This is a [Nvim](https://github.com/neovim/neovim) configuration,
 configured in a **modular**, **_obsessively documented_**, **portable**
 and **platform-independant** way.
-<u>Type checking is supported and documentation is included.</u>
+<u>Typed documentation is included.</u>
 
 This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim)
 as the default plugin manager.
 Please read the [Plugins section](#plugins) to get an understanding of how this works.
 
 This configuration has its core entirely dependant on the
-[`user_api`](/lua/user_api) module, which provides a customized
+[`user_api`](lua/user_api) module, which provides a customized
 **_API_** which includes **_module checking_**,
 **_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
@@ -41,17 +41,21 @@ For more info make sure to check the [User API](#api) section.
 
 ### Requirements
 
+- **(Optional, but recommended)** A [patched font](https://www.nerdfonts.com)
+
 This config relies on essential plugins that improve the readability and understanding
 of how it works.
 For these to work, the following executables must be installed and in your `$PATH`:
 
 - `git`
-- A [patched font](https://www.nerdfonts.com)
 - [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
 - [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
 - [`ripgreg`](https://github.com/BurntSushi/ripgrep)
-- **(Optional _(for `telescope`)_)** [`fzf`](https://github.com/junegunn/fzf), [`fd`](https://github.com/sharkdp/fd)
-- **(Optional _(for `Neorg`)_)** `luarocks`
+- **(Optional _(for `telescope`)_)**:
+    - [`fzf`](https://github.com/junegunn/fzf)
+    - [`fd`](https://github.com/sharkdp/fd)
+- **(Optional _(for `Lazy` and/or `Neorg`)_)**:
+    - `luarocks`
 
 ### Structure
 
@@ -122,7 +126,7 @@ For these to work, the following executables must be installed and in your `$PAT
 ### Plugins
 
 There's a lot of plugins included.
-The plugins are installed based on the files in [`lua/plugin/_spec`](/lua/plugin/_spec).
+The plugins are installed based on the files in [`lua/plugin/_spec`](lua/plugin/_spec).
 You can create your own category file, or expand from the existant files in said directory.
 _Just make sure to read the
 [`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins._
@@ -137,15 +141,13 @@ _Just make sure to read the
 <br/>
 
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
+- [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
 - [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
 - [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
 - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
 - [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
 - [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
 - [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
-- [`cmp-nvim-lsp`](https://github.com/hrsh7th/cmp-nvim-lsp)
-- [`LuaSnip`](https://github.com/L3MON4D3/LuaSnip)
-- [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
 - [`noice.nvim`](https://github.com/folke/noice.nvim)
 - [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 - [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
@@ -155,11 +157,9 @@ _Just make sure to read the
 
 <br/>
 
-<h2 id="api">
-The `user` API
-</h2>
+## The `user` API
 
-The `user` API can be found in [`lua/user_api`](/lua/user_api).
+The `user` API can be found in [`lua/user_api`](lua/user_api).
 It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
@@ -171,7 +171,7 @@ code structures and to simplify configuration.
 </h3>
 
 This submodule includes type annotations and documentation.
-It can be found in [`user_api/types`](/lua/user_api/types).
+It can be found in [`user_api/types`](lua/user_api/types).
 
 <br/>
 
@@ -183,7 +183,7 @@ require('user_api.types.module_name')
 require('user_api').types.module_name
 ```
 
-For API-specific documentation, you can use the submodule [`types/user`](/lua/user_api/types/user):
+For API-specific documentation, you can find them in the submodule [`user_api/types/user`](lua/user_api/types/user):
 
 ```lua
 require('user_api.types.user.module_name')
@@ -198,10 +198,9 @@ sourced by the `init.lua` file in it.
 <u><code>user_api.opts</code></u>
 </h3>
 
-This submodule can be found at [`here`](/lua/user_api/opts.lua).
-The options are defined in a table to be processed
-by the local funtion `optset()`. Modify these at your leisure, but be sure to be compatible with how you'd
-use the `vim.opt` table.
+This submodule can be found at [`here`](lua/user_api/opts.lua).
+The options are defined in a default table to be processed
+by the funtion `opts.setup()`.
 
 To call the options:
 
@@ -211,14 +210,24 @@ require('user_api.opts').setup()
 require('user_api').opts.setup()
 ```
 
-The `setup()` function optionally accepts a table with <u><b>long-named</b> vim options</u>.
-It overwrites some of the default options as defined in [`opts.lua`](/lua/user_api/opts.lua)
+The `setup()` function optionally accepts a dictionary-like table with your own vim options.
+It overwrites some of the default options as defined in [`opts.lua`](lua/user_api/opts.lua).
+****MAKE SURE THEY CAN BE ACCEPTED BY `vim.opt`**.
 
 As an example:
 
 ```lua
 require('user_api.opts').setup({
     completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
+    nu = false, -- `:set nonumber`
+
+    -- These equate to `:set tabstop=4 softtabstop=4 shiftwidth=4 expandtab`
+    -- In the cmdline
+    ts = 4,
+    sts = 4,
+    sw = 4,
+    et = true,
+
     wrap = false,
 })
 ```
@@ -240,7 +249,7 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 
 Used for value checking, differentiation and conditional code, aswell as
 for optional parameters in functions.
-It can be found in [`user_api/check/value.lua`](/lua/user_api/check/value.lua).
+It can be found in [`user_api/check/value.lua`](lua/user_api/check/value.lua).
 
 <br/>
 
@@ -264,7 +273,7 @@ It can be found in [`user_api/check/value.lua`](/lua/user_api/check/value.lua).
 <b><u><code>user_api.check.exists</code></u></b>
 
 Used for data existance checks, conditional module loading and fallback operations.
-It can be found in [`user_api/check/exists.lua`](/lua/user_api/check/exists.lua).
+It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
 
 |   function   |                                                                                                                                                                                              description                                                                                                                              |                       parameter types                           |            return type            |
 |:------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------:|
@@ -359,7 +368,7 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 
 The `maps` API also includes integration with
 [`which_key`](https://github.com/folke/which-key.nvim) as `user_api.maps.wk`.
-It can be found found in [`user_api/maps.lua`](/lua/user_api/maps.lua)
+It can be found found in [`user_api/maps.lua`](lua/user_api/maps.lua)
 
 This module creates mappings using custom-made functions that convert
 a specific type of mapping dictionary to a format compatible with `which_key`.
@@ -531,12 +540,11 @@ You can also process <u>group names</u> the following way:
 
 ```lua
 ---@class RegPfx
----@field name string The map group name. Should look like `'+Group'`
----@field noremap? boolean Defaults to `true`
----@field nowait? boolean Defaults to `false`
----@field silent? boolean Defaults to `true`
+---@field group string The map group name. Should look like `'+Group'`
+---@field hidden? boolean Whether to the map in `which-key`
+---@field mode? MapModes @see user_api.types.user.maps
 
----@alias RegKeysNamed table<string, RegPfx> The key string is the keymap prefix that defines the group
+---@alias RegKeysNamed table<string, RegKeysNamed>
 
 ---@type RegKeysNamed
 local Names = {
@@ -561,7 +569,7 @@ completein the future.</b></u>
 </h3>
 
 This module provides utilities for setting highlights in an easier way.
-It can be found in [`user_api/highlight.lua`](/lua/user_api/highlight.lua).
+It can be found in [`user_api/highlight.lua`](lua/user_api/highlight.lua).
 
-<b><u>A description will be pending until further notice, i.e. when the module is
-structured in a satisfactory manner.</u></b>
+<u>A description will be pending until further notice, i.e. when the module is
+structured in a satisfactory manner.</u>
