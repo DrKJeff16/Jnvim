@@ -63,7 +63,7 @@ end
 ---@field Keys KeyMapModeDict
 ---@field Names ModeRegKeysNamed
 ---@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
----@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
+---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeysNamed?)
 
 ---@type Config.Keymaps
 ---@diagnostic disable-next-line:missing-fields
@@ -396,9 +396,9 @@ function M.setup(keys, names)
 
     if not leader_set then
         notify(
-            [[[WARNING(config.keymaps.setup)]: Leader hasn't been set through `config.keymaps.set_leader()`.]],
+            [[Leader hasn't been set through `config.keymaps.set_leader()`.]],
             'warn',
-            { hide_from_history = false, timeout = 400 }
+            { hide_from_history = false, timeout = 850, title = '[WARNING] (config.keymaps.setup)' }
         )
     end
 

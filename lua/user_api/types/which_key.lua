@@ -4,12 +4,11 @@
 ---@field [1] string
 ---@field [2] string|fun()
 ---@field desc? string
----@field group? string
 ---@field hidden? boolean
 ---@field mode? MapModes
 
 ---@class RegPfx
----@field group? string
+---@field group string
 ---@field hidden? boolean
 ---@field mode? MapModes
 

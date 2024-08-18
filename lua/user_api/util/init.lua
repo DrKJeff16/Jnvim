@@ -52,6 +52,7 @@ local function mv_tbl_values(T, steps, direction)
 
             return res
         end,
+
         ---@param t table<string|integer, any>
         ---@return table<string|integer, any> res
         l = function(t)
@@ -120,7 +121,7 @@ local function strip_fields(T, fields)
         return T
     end
 
-    ---@type User.Maps.Keymap.Opts
+    ---@type table<string|integer, any>
     local res = {}
 
     if is_str(fields) then
@@ -198,7 +199,7 @@ local function ft_set(s, bufnr)
     local is_int = Value.is_int
     local is_str = Value.is_str
 
-    bufnr = is_int(bufnr) and bufnr or 0
+    bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
     return function()
         if is_str(s) then
@@ -225,7 +226,7 @@ local function assoc()
     local empty = Value.empty
 
     local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
-    local retab = function() vim.cmd('%retab') end
+    local function retab() vim.cmd('%retab') end
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
@@ -239,17 +240,15 @@ local function assoc()
             },
         },
         {
-            events = { 'BufRead', 'WinEnter', 'BufReadPost' },
+            events = { 'BufRead', 'WinEnter', 'BufReadPost', 'TabEnter' },
             opts_tbl = {
                 {
                     pattern = '*.txt',
                     group = group,
                     callback = function()
-                        local buftype = vim.api.nvim_get_option_value(
-                            'bt',
-                            { buf = vim.api.nvim_get_current_buf() }
-                        )
-
+                        local buftype = vim.api.nvim_get_option_value('bt', {
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
                         if ft_get() ~= 'help' or buftype ~= 'help' then
                             return
                         end
@@ -266,10 +265,9 @@ local function assoc()
                     pattern = 'help',
                     group = group,
                     callback = function()
-                        local buftype = vim.api.nvim_get_option_value(
-                            'bt',
-                            { buf = vim.api.nvim_get_current_buf() }
-                        )
+                        local buftype = vim.api.nvim_get_option_value('bt', {
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
                         if buftype ~= 'help' then
                             return
                         end
@@ -296,7 +294,7 @@ local function assoc()
                         }
 
                         for option, val in next, buf_opts do
-                            optset(option, val, { buf = 0 })
+                            optset(option, val, { buf = vim.api.nvim_get_current_buf() })
                         end
 
                         if vim.g.installed_a_vim == 1 then
@@ -344,12 +342,13 @@ local function assoc()
                             end
                             map_dict(Keys, 'wk.register', false, 'n', 0)
 
+                            -- Kill plugin-defined mappings
                             require('user_api.maps').nop({
                                 'ih',
                                 'is',
                                 'ihn',
                             }, {
-                                noremap = true,
+                                noremap = false,
                                 silent = true,
                                 buffer = 0,
                             }, 'n', '<leader>')
@@ -362,14 +361,16 @@ local function assoc()
                     callback = function()
                         local optset = vim.api.nvim_set_option_value
                         local opts = {
-                            ['ts'] = 2,
-                            ['sts'] = 2,
-                            ['sw'] = 2,
-                            ['et'] = true,
+                            ts = 2,
+                            sts = 2,
+                            sw = 2,
+                            et = true,
+                            ai = true,
+                            si = true,
                         }
 
                         for option, val in next, opts do
-                            optset(option, val, { buf = 0 })
+                            optset(option, val, { buf = vim.api.nvim_get_current_buf() })
                         end
                     end,
                 },
@@ -379,13 +380,29 @@ local function assoc()
                     callback = function()
                         if require('user_api.check.exists').executable('stylua') then
                             local map_dict = require('user_api.maps').map_dict
-                            local WK = require('user_api.maps.wk')
                             local desc = require('user_api.maps.kmap').desc
 
                             map_dict({
                                 ['<leader><C-l>'] = {
                                     ':silent !stylua %<CR>',
-                                    desc('Format with Stylua', true, 0),
+                                    desc('Format With `stylua`', true, 0),
+                                },
+                            }, 'wk.register', false, 'n', 0)
+                        end
+                    end,
+                },
+                {
+                    pattern = 'python',
+                    group = group,
+                    callback = function()
+                        if require('user_api.check.exists').executable('isort') then
+                            local map_dict = require('user_api.maps').map_dict
+                            local desc = require('user_api.maps.kmap').desc
+
+                            map_dict({
+                                ['<leader><C-l>'] = {
+                                    ':silent !isort %<CR>',
+                                    desc('Format With `isort`', true, 0),
                                 },
                             }, 'wk.register', false, 'n', 0)
                         end
