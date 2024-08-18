@@ -63,7 +63,7 @@ end
 ---@field Keys KeyMapModeDict
 ---@field Names ModeRegKeysNamed
 ---@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
----@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeys?)
+---@field setup fun(keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeysNamed?)
 
 ---@type Config.Keymaps
 ---@diagnostic disable-next-line:missing-fields

@@ -120,7 +120,7 @@ local function strip_fields(T, fields)
         return T
     end
 
-    ---@type User.Maps.Keymap.Opts
+    ---@type table<string|integer, any>
     local res = {}
 
     if is_str(fields) then
@@ -344,6 +344,7 @@ local function assoc()
                             end
                             map_dict(Keys, 'wk.register', false, 'n', 0)
 
+                            -- Kill plugin-defined mappings
                             require('user_api.maps').nop({
                                 'ih',
                                 'is',
