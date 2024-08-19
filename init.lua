@@ -1,5 +1,6 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.inspect = inspect or vim.inspect
+_G.newline = string.char(10)
 
 local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
@@ -9,6 +10,8 @@ local Opts = User.opts ---@see User.opts Option setting
 local Commands = User.commands ---@see User.commands User command generation (WIP)
 local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
+local Keymaps = require('config.keymaps')
+
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Check.value.is_str ---@see User.Check.Value.is_str
@@ -17,8 +20,10 @@ local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 
+local curr_win = vim.api.nvim_get_current_win
+
 -- _G.is_windows = Check.exists.vim_has('win32')
-_G.is_windows = not is_nil(vim.uv.os_uname().version:match('Windows'))
+_G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
 --- WARNING: USE LONG NAMES. I'll try to fix it later
 ---
@@ -32,7 +37,16 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     confirm = true,
     equalalways = true,
     et = true,
-    formatoptions = 'bjlopqnw',
+    formatoptions = {
+        b = true,
+        j = true,
+        l = true,
+        o = true,
+        p = true,
+        q = true,
+        n = true,
+        w = true,
+    },
     helplang = { 'en' },
     hls = true,
     ignorecase = false,
@@ -59,7 +73,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     wrap = true,
 })
 
-require('config.keymaps').set_leader('<Space>')
+Keymaps:set_leader('<Space>')
 
 vim.g.markdown_minlines = 500
 
@@ -79,7 +93,7 @@ end
 _G.Pkg = require('config.lazy')
 
 --- Setup keymaps
-require('config.keymaps').setup({
+Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
@@ -87,7 +101,6 @@ require('config.keymaps').setup({
                     return
                 end
 
-                local curr_win = vim.api.nvim_get_current_win
                 local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 

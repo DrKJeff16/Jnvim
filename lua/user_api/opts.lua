@@ -2,7 +2,6 @@ require('user_api.types.user.opts')
 
 local Value = require('user_api.check.value')
 local Exists = require('user_api.check.exists')
-local Util = require('user_api.util')
 
 local exists = Exists.vim_exists
 local is_nil = Value.is_nil
@@ -12,7 +11,10 @@ local vim_has = Exists.vim_has
 local vim_exists = Exists.vim_exists
 local in_console = require('user_api.check').in_console
 
-local ALL_OPTIONS = {
+---@type User.Opts
+local M = {}
+
+M.ALL_OPTIONS = {
     ['allowrevins'] = 'ari',
     ['ambiwidth'] = 'ambw',
     ['arabic'] = 'arab',
@@ -349,7 +351,7 @@ local ALL_OPTIONS = {
 }
 
 ---@type User.Opts.Spec
-local DEFAULT_OPTIONS = {
+M.DEFAULT_OPTIONS = {
     autoindent = true,
     autoread = true,
     backspace = { 'indent', 'eol', 'start' },
@@ -359,8 +361,8 @@ local DEFAULT_OPTIONS = {
     encoding = 'utf-8',
     errorbells = false,
     fileignorecase = false,
-    hidden = true,
-    laststatus = 2,
+    hid = true,
+    ls = 2,
     makeprg = 'make',
     matchpairs = {
         '(:)',
@@ -395,60 +397,39 @@ local DEFAULT_OPTIONS = {
 }
 
 if is_windows then
-    DEFAULT_OPTIONS.fileignorecase = true
-    DEFAULT_OPTIONS.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe'
-        or DEFAULT_OPTIONS.makeprg
-
-    DEFAULT_OPTIONS.shell = executable('pwsh.exe') and 'pwsh.exe' or 'cmd.exe'
-    if executable('bash.exe') then
-        DEFAULT_OPTIONS.shell = 'bash.exe'
-        DEFAULT_OPTIONS.shellcmdflag = '-c'
-    elseif executable('sh.exe') then
-        DEFAULT_OPTIONS.shell = 'sh.exe'
-        DEFAULT_OPTIONS.shellcmdflag = '-c'
-    else
-        DEFAULT_OPTIONS.shell = 'cmd.exe'
+    if executable('mingw32-make') then
+        M.DEFAULT_OPTIONS.makeprg = 'mingw32-make'
     end
 
-    DEFAULT_OPTIONS.shellslash = true
+    M.DEFAULT_OPTIONS.shell = executable('pwsh') and 'pwsh' or 'cmd'
+    if executable('bash') then
+        M.DEFAULT_OPTIONS.shell = 'bash'
+        M.DEFAULT_OPTIONS.shellcmdflag = '-c'
+    elseif executable('sh') then
+        M.DEFAULT_OPTIONS.shell = 'sh'
+        M.DEFAULT_OPTIONS.shellcmdflag = '-c'
+    else
+        M.DEFAULT_OPTIONS.shell = 'cmd'
+    end
+
+    M.DEFAULT_OPTIONS.fileignorecase = true
+    M.DEFAULT_OPTIONS.shellslash = true
 end
 
----@type User.Opts
----@diagnostic disable-next-line:missing-fields
-local M = {
-    --- Option setter for the aforementioned options dictionary
-    --- ---
-    --- ## Parameters
-    --- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
-    --- respectively
-    --- ---
-    ---@param opts User.Opts.Spec
-    optset = function(opts)
-        local notify = require('user_api.util.notify').notify
-        for k, v in next, opts do
-            if is_nil(v) then
-                goto continue
-            end
+--- Option setter for the aforementioned options dictionary
+--- ---
+--- ## Parameters
+--- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
+--- respectively
+--- ---
+---@param opts User.Opts.Spec
+function M.optset(opts)
+    opts = require('user_api.check.value').is_tbl(opts) and opts or {}
 
-            if not is_nil(vim.opt[k]) then
-                vim.opt[k] = v
-            elseif not is_nil(vim.o[k]) then
-                vim.o[k] = v
-            else
-                notify('Unable to set option `' .. k .. '`', 'error', {
-                    title = '(user_api.opts.optset)',
-                    hide_from_history = false,
-                    timeout = 1000,
-                })
-            end
-
-            ::continue::
-        end
-    end,
-
-    DEFAULT_OPTIONS = DEFAULT_OPTIONS,
-    options = ALL_OPTIONS,
-}
+    for k, v in next, opts do
+        vim.opt[k] = v
+    end
+end
 
 ---@param self User.Opts
 ---@param override User.Opts.Spec
@@ -466,9 +447,9 @@ function M:setup(override)
     local msg = ''
 
     for opt, val in next, opts do
-        local keys = vim.tbl_keys(self.options)
+        local keys = vim.tbl_keys(self.ALL_OPTIONS)
         -- If neither long nor short (known) option, append to warning
-        if not vim.tbl_contains(keys, opt) and not Value.tbl_values({ opt }, self.options) then
+        if not vim.tbl_contains(keys, opt) and not Value.tbl_values({ opt }, self.ALL_OPTIONS) then
             msg = msg .. 'Option ' .. inspect(opt) .. 'not valid. Ignoring' .. nwl
         else
             parsed_opts[opt] = val

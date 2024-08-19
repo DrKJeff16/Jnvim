@@ -72,3 +72,5 @@ MD.setup({
     },
     on_attach = nil, -- (fun(bufnr: integer)) callback when plugin attaches to a buffer
 })
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

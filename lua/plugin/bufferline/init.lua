@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -13,6 +10,7 @@ end
 User.register_plugin('plugin.bufferline')
 
 local BLine = require('bufferline')
+local Groups = require('bufferline.groups')
 local SP = BLine.style_preset
 
 ---@param count integer
@@ -105,8 +103,9 @@ BLine.setup({
         mode = 'tabs',
 
         --[[ style_preset = {
-            SP.no_italic,
             SP.minimal,
+            SP.no_bold,
+            SP.no_italic,
         }, ]]
 
         style_preset = SP.default,
@@ -150,14 +149,14 @@ BLine.setup({
 
         move_wraps_at_ends = true,
         get_element_icon = function(element)
+            local DEVIC = require('nvim-web-devicons')
             -- element consists of {filetype: string, path: string, extension: string, directory: string}
             -- This can be used to change how bufferline fetches the icon
             -- e.g.
             -- for an element e.g. a buffer or a tab
-            local icon, hl = require('nvim-web-devicons').get_icon_by_filetype(
-                element.filetype,
-                { default = false }
-            )
+            local icon, hl = DEVIC.get_icon_by_filetype(element.filetype, {
+                default = false,
+            })
             return icon, hl
         end,
 
@@ -168,7 +167,7 @@ BLine.setup({
 
         groups = {
             options = { toggle_hidden_on_enter = true },
-            items = { require('bufferline.groups').builtin.pinned:with({ icon = '' }) },
+            items = { Groups.builtin.pinned:with({ icon = '' }) },
         },
 
         hover = {

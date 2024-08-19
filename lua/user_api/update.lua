@@ -10,7 +10,9 @@ local map_dict = require('user_api.maps').map_dict
 local M = {
     ---@return string?
     update = function()
-        local old_cwd = vim.fn.getcwd(0, 0)
+        local curr_win = vim.api.nvim_get_current_win
+        local curr_tab = vim.api.nvim_get_current_tabpage
+        local old_cwd = vim.fn.getcwd(curr_win(), curr_tab())
 
         local cmd = {
             'git',
@@ -24,11 +26,14 @@ local M = {
         if vim.v.shell_error ~= 0 then
             vim.api.nvim_echo({
                 { 'Failed to update Jnvim:\n', 'ErrorMsg' },
-                { res, 'WarningMsg' },
                 { '\nPress any key to exit...' },
             }, true, {})
             vim.fn.getchar()
             os.exit(1)
+        else
+            vim.api.nvim_echo({
+                { res, 'WarningMsg' },
+            }, true, { verbose = true })
         end
 
         vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
