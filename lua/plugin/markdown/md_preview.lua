@@ -1,12 +1,12 @@
 local User = require('user_api')
 local Check = User.check
 local maps_t = User.types.user.maps
-local WK = User.maps.wk
 
 local executable = Check.exists.executable
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local desc = User.maps.kmap.desc
+local wk_avail = User.maps.wk.available
 local map_dict = User.maps.map_dict
 
 local augroup = vim.api.nvim_create_augroup
@@ -69,7 +69,7 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
 
         local bufnr = vim.api.nvim_get_current_buf()
 
-        if WK.available() then
+        if wk_avail() then
             map_dict(Names, 'wk.register', false, 'n', 0)
             map_dict(Names, 'wk.register', false, 'v', 0)
         end
