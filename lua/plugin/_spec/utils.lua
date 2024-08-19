@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -14,6 +11,12 @@ local in_console = Check.in_console
 
 ---@type (LazySpec)[]
 local M = {
+    {
+        'vim-scripts/UTL.vim',
+        lazy = false,
+        version = false,
+        init = function() vim.g.utl_installed = 1 end,
+    },
     --- Makefile viewer
     {
         'Zeioth/makeit.nvim',
@@ -26,15 +29,9 @@ local M = {
     --- The task runner used for `makeit.nvim`
     {
         'stevearc/overseer.nvim',
+        event = 'VeryLazy',
         version = false,
-        opts = {
-            task_list = {
-                direction = 'bottom',
-                min_height = 25,
-                max_height = 25,
-                default_detail = 1,
-            },
-        },
+        config = source('plugin.overseer'),
         cond = not in_console(),
     },
     --- Docs viewer
