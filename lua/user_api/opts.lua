@@ -373,6 +373,7 @@ local DEFAULT_OPTIONS = {
     mouse = '', -- Get that mouse out of my sight!
     number = true,
     preserveindent = true,
+    rnu = true,
     ruler = true,
     showcmd = true,
     showmatch = true,
@@ -398,7 +399,7 @@ if is_windows then
     DEFAULT_OPTIONS.makeprg = executable('mingw32-make.exe') and 'mingw32-make.exe'
         or DEFAULT_OPTIONS.makeprg
 
-    DEFAULT_OPTIONS.shell = 'cmd.exe'
+    DEFAULT_OPTIONS.shell = executable('pwsh.exe') and 'pwsh.exe' or 'cmd.exe'
     if executable('bash.exe') then
         DEFAULT_OPTIONS.shell = 'bash.exe'
         DEFAULT_OPTIONS.shellcmdflag = '-c'
@@ -423,6 +424,7 @@ local M = {
     --- ---
     ---@param opts User.Opts.Spec
     optset = function(opts)
+        local notify = require('user_api.util.notify').notify
         for k, v in next, opts do
             if is_nil(v) then
                 goto continue
@@ -433,11 +435,11 @@ local M = {
             elseif not is_nil(vim.o[k]) then
                 vim.o[k] = v
             else
-                require('user_api.util.notify').notify(
-                    '(user.opts.optset): Unable to set option `' .. k .. '`',
-                    'error',
-                    { title = 'user_api.opts', hide_from_history = false, timeout = 3000 }
-                )
+                notify('Unable to set option `' .. k .. '`', 'error', {
+                    title = '(user_api.opts.optset)',
+                    hide_from_history = false,
+                    timeout = 1000,
+                })
             end
 
             ::continue::
@@ -451,6 +453,8 @@ local M = {
 ---@param self User.Opts
 ---@param override User.Opts.Spec
 function M:setup(override)
+    local inspect = inspect or vim.inspect
+    local nwl = newline or string.char(10)
     override = is_tbl(override) and override or {}
 
     ---@type table|vim.wo|vim.bo
@@ -462,16 +466,10 @@ function M:setup(override)
     local msg = ''
 
     for opt, val in next, opts do
+        local keys = vim.tbl_keys(self.options)
         -- If neither long nor short (known) option, append to warning
-        if
-            not vim.tbl_contains(vim.tbl_keys(self.options), opt)
-            and not Value.tbl_values({ opt }, self.options)
-        then
-            msg = msg
-                .. 'Option '
-                .. (inspect or vim.inspect)(opt)
-                .. 'not valid, ignoring'
-                .. string.char(10)
+        if not vim.tbl_contains(keys, opt) and not Value.tbl_values({ opt }, self.options) then
+            msg = msg .. 'Option ' .. inspect(opt) .. 'not valid. Ignoring' .. nwl
         else
             parsed_opts[opt] = val
         end
@@ -481,7 +479,7 @@ function M:setup(override)
         vim.notify(msg)
     end
 
-    M.optset(parsed_opts)
+    self.optset(parsed_opts)
 end
 
 return M
