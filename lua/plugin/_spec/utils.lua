@@ -31,14 +31,7 @@ local M = {
         'stevearc/overseer.nvim',
         event = 'VeryLazy',
         version = false,
-        opts = {
-            task_list = {
-                direction = 'bottom',
-                min_height = 25,
-                max_height = 25,
-                default_detail = 1,
-            },
-        },
+        config = source('plugin.overseer'),
         cond = not in_console(),
     },
     --- Docs viewer
