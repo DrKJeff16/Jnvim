@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -50,7 +47,7 @@ local M = {
             'nvim-treesitter',
             'plenary.nvim',
         },
-        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
+        init = CfgUtil.set_tgc(),
         config = source('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },
@@ -65,7 +62,7 @@ local M = {
         'vim-scripts/a.vim',
         ft = { 'c', 'cpp' },
         version = false,
-        init = function() vim.g.installed_a_vim = 1 end,
+        init = CfgUtil.flag_installed('a_vim'),
     },
 }
 

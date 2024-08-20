@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -19,7 +16,8 @@ local M = {
         'folke/zen-mode.nvim',
         lazy = true,
         version = false,
-        config = source('plugin.zen_mode') and not is_root(),
+        config = source('plugin.zen_mode'),
+        cond = not is_root(),
         enabled = false,
     },
     {

@@ -167,9 +167,9 @@ cmp.setup(Opts)
 
 Sources.setup()
 
---[[ if is_fun(Sks.vscode) then
-    Sks.vscode()
-end ]]
+if is_fun(Sks.vscode) then
+    vim.schedule(Sks.vscode)
+end
 if is_fun(Sks.hilite) then
     vim.schedule(Sks.hilite)
 end

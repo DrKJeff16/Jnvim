@@ -10,6 +10,8 @@ require('user_api.types.user.maps')
 ---@alias LazyPlugs (LazyPlug)[]
 
 ---@class PluginUtils
+---@field set_tgc fun(force: boolean?)
+---@field flag_installed fun(name: string): fun()
 ---@field colorscheme_init fun(fields: string|table<string, any>): fun()
 ---@field source fun(mod_str: string): fun()
 ---@field tel_fzf_build fun(): string
