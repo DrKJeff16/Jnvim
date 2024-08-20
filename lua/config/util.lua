@@ -45,7 +45,7 @@ function M.flag_installed(name)
     end
 
     if not is_nil(vim.g[flag]) then
-        vim.notify('The flag `' .. flag .. '` is being overwritten', vim.log.levels.WARN)
+        vim.notify('`g:' .. flag .. '` is being overwritten', vim.log.levels.WARN)
     end
 
     return function() vim.g[flag] = 1 end
@@ -66,16 +66,12 @@ end
 ---@param fields string|table<string, any>
 ---@return fun()
 function M.colorscheme_init(fields)
-    if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
-        error('(config.util.colorscheme_init): Unable to initialize colorscheme')
-    end
-
     return function()
         M.set_tgc()
 
         if is_str(fields) then
             M.flag_installed(fields)
-        else
+        elseif is_tbl(fields) and not empty(fields) then
             for field, val in next, fields do
                 vim.g[field] = val
             end
@@ -155,6 +151,12 @@ function M.key_variant(cmd)
     }
 
     return FUNCS[cmd]
+end
+
+---@return boolean
+function M.has_tgc()
+    ---@diagnostic disable-next-line
+    return vim_exists('+termguicolors') and vim.opt.termguicolors:get()
 end
 
 return M

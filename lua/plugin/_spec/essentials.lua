@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local flag_installed = CfgUtil.flag_installed
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
@@ -30,7 +31,7 @@ local M = {
         'dstein64/vim-startuptime',
         lazy = false,
         version = false,
-        init = CfgUtil.flag_installed('startuptime'),
+        init = flag_installed('startuptime'),
         config = source('plugin.startuptime'),
     },
     {

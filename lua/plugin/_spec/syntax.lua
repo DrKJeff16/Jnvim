@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local is_root = Check.is_root
 
@@ -12,14 +13,14 @@ local M = {
     {
         'rhysd/vim-syntax-codeowners',
         version = false,
-        init = CfgUtil.flag_installed('codeowners'),
+        init = flag_installed('codeowners'),
         cond = not is_root(),
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
         ft = { 'c', 'cpp' },
         version = false,
-        init = CfgUtil.flag_installed('doxygen_toolkit'),
+        init = flag_installed('doxygen_toolkit'),
         config = source('plugin.doxygen'),
         cond = executable('doxygen'),
     },
