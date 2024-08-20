@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local CfgUtil = require('config.util')
 local types = User.types.lazy
@@ -125,8 +122,6 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_space_vim_dark'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
     },
     {
         'tomasr/molokai',

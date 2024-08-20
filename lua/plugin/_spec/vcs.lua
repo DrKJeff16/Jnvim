@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -15,6 +12,7 @@ local M = {
     {
         'tpope/vim-fugitive',
         version = false,
+        init = CfgUtil.flag_installed('fugitive'),
         cond = executable('git'),
     },
     {

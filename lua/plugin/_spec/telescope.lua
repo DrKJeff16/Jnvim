@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -102,7 +99,6 @@ local M = {
     --- Project Manager
     {
         'DrKJeff16/project.nvim',
-        event = 'VeryLazy',
         main = 'project_nvim',
         version = false,
         init = function()

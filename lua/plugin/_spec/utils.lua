@@ -15,12 +15,12 @@ local M = {
         'vim-scripts/UTL.vim',
         lazy = false,
         version = false,
-        init = function() vim.g.utl_installed = 1 end,
+        init = CfgUtil.flag_installed('utl'),
     },
     --- Makefile viewer
     {
         'Zeioth/makeit.nvim',
-        ft = { 'make' },
+        ft = 'make',
         version = false,
         dependencies = { 'stevearc/overseer.nvim' },
         opts = {},

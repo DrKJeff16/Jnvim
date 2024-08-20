@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util') ---@see PluginUtils
@@ -77,11 +74,6 @@ local M = {
         ft = 'doxygen',
         dependencies = { 'nvim-treesitter-textobjects' },
         cond = executable('doxygen'),
-    },
-    {
-        'rafamadriz/friendly-snippets',
-        lazy = false,
-        version = false,
     },
     {
         'vlime/vlime',

@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -51,26 +48,10 @@ local M = {
         },
         init = function()
             vim.opt.stal = 2
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+            CfgUtil.set_tgc()
         end,
         config = source('plugin.bufferline'),
         cond = not in_console(),
-    },
-    --- Tabline
-    {
-        'romgrk/barbar.nvim',
-        version = false,
-        dependencies = {
-            'nvim-web-devicons',
-            'scope.nvim',
-        },
-        init = function()
-            vim.opt.stal = 2
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
-        end,
-        config = source('plugin.barbar'),
-        cond = not in_console(),
-        enabled = false,
     },
     --- Indent Scope
     {
@@ -96,7 +77,7 @@ local M = {
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+            CfgUtil.set_tgc()
         end,
         config = source('plugin.nvim_tree'),
         cond = not in_console(),
@@ -108,14 +89,14 @@ local M = {
             'plenary.nvim',
             'nvim-web-devicons',
             'MunifTanjim/nui.nvim',
-            -- '3rd/image.nvim',
+            '3rd/image.nvim',
         },
         init = function()
             --- Disable `netrw`
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+            CfgUtil.set_tgc()
         end,
         config = source('plugin.neo_tree'),
         cond = not in_console(),
@@ -133,7 +114,7 @@ local M = {
         'brenoprata10/nvim-highlight-colors',
         main = 'nvim-highlight-colors',
         version = false,
-        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
+        init = CfgUtil.set_tgc,
         config = source('plugin.hicolors'),
         cond = vim_exists('+termguicolors'),
     },
@@ -145,7 +126,6 @@ local M = {
     },
     {
         'folke/noice.nvim',
-        event = 'VeryLazy',
         version = false,
         dependencies = {
             'MunifTanjim/nui.nvim',

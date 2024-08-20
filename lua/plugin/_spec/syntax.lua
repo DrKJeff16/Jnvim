@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -15,12 +12,14 @@ local M = {
     {
         'rhysd/vim-syntax-codeowners',
         version = false,
+        init = CfgUtil.flag_installed('codeowners'),
         cond = not is_root(),
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
         ft = { 'c', 'cpp' },
         version = false,
+        init = CfgUtil.flag_installed('doxygen_toolkit'),
         config = source('plugin.doxygen'),
         cond = executable('doxygen'),
     },

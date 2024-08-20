@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
@@ -24,7 +21,7 @@ local M = {
             vim.opt.timeoutlen = 300
             vim.opt.ttimeout = true
             vim.opt.ttimeoutlen = -1
-            vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+            CfgUtil.set_tgc()
         end,
         config = source('plugin.which_key'),
         cond = vim_has('nvim-0.9'),
@@ -33,7 +30,7 @@ local M = {
         'dstein64/vim-startuptime',
         lazy = false,
         version = false,
-        init = function() vim.g.installed_startuptime = 1 end,
+        init = CfgUtil.flag_installed('startuptime'),
         config = source('plugin.startuptime'),
     },
     {
@@ -71,7 +68,6 @@ local M = {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
-        cond = not in_console(),
     },
     {
         'rcarriga/nvim-notify',
@@ -79,14 +75,13 @@ local M = {
         main = 'notify',
         version = false,
         dependencies = { 'plenary.nvim' },
-        init = function() vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console() end,
+        init = CfgUtil.set_tgc(),
         config = source('plugin.notify'),
         cond = not in_console(),
     },
     {
         'lewis6991/hover.nvim',
         event = 'VeryLazy',
-        main = 'hover',
         version = false,
         config = source('plugin.hover'),
         cond = not in_console(),
