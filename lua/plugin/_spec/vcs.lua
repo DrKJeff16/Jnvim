@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
@@ -12,7 +13,7 @@ local M = {
     {
         'tpope/vim-fugitive',
         version = false,
-        init = CfgUtil.flag_installed('fugitive'),
+        init = flag_installed('fugitive'),
         cond = executable('git'),
     },
     {

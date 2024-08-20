@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
@@ -62,7 +63,7 @@ local M = {
         'vim-scripts/a.vim',
         ft = { 'c', 'cpp' },
         version = false,
-        init = CfgUtil.flag_installed('a_vim'),
+        init = flag_installed('a_vim'),
     },
 }
 

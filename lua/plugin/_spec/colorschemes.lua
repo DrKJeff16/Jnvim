@@ -3,6 +3,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local has_tgc = CfgUtil.has_tgc
 local colorscheme_init = CfgUtil.colorscheme_init
 local vim_exists = User.check.exists.vim_exists
 
@@ -14,8 +15,7 @@ local M = {
         main = 'onedark',
         version = false,
         init = colorscheme_init('installed_onedark'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'catppuccin/nvim',
@@ -24,8 +24,7 @@ local M = {
         main = 'catppuccin',
         version = false,
         init = colorscheme_init('installed_catppuccin'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'folke/tokyonight.nvim',
@@ -33,8 +32,7 @@ local M = {
         main = 'tokyonight',
         version = false,
         init = colorscheme_init('installed_tokyonight'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'EdenEast/nightfox.nvim',
@@ -42,8 +40,7 @@ local M = {
         main = 'nightfox',
         version = false,
         init = colorscheme_init('installed_nightfox'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'rebelot/kanagawa.nvim',
@@ -52,8 +49,7 @@ local M = {
         main = 'kanagawa',
         version = false,
         init = colorscheme_init('installed_kanagawa'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'Mofiqul/vscode.nvim',
@@ -62,8 +58,7 @@ local M = {
         main = 'vscode',
         version = false,
         init = colorscheme_init('installed_vscode'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'ellisonleao/gruvbox.nvim',
@@ -72,8 +67,7 @@ local M = {
         main = 'gruvbox',
         version = false,
         init = colorscheme_init('installed_gruvbox'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'bkegley/gloombuddy',
@@ -105,8 +99,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_spaceduck'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'dracula/vim',
@@ -129,8 +122,7 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_molokai'),
-        ---@diagnostic disable-next-line
-        cond = vim_exists('+termguicolors') and vim.opt.termguicolors:get(),
+        cond = has_tgc(),
     },
     {
         'colepeters/spacemacs-theme.vim',
