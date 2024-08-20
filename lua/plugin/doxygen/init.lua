@@ -3,7 +3,7 @@ local Check = User.check
 
 local executable = Check.exists.executable
 
-if not executable('doxygen') then
+if not executable('doxygen') or vim.g.installed_doxygen_toolkit ~= 1 then
     return
 end
 
