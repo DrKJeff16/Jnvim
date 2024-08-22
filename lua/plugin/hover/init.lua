@@ -17,9 +17,9 @@ local Hover = require('hover')
 Hover.setup({
     --- Setup Providers
     init = function()
-        exists('hover.providers.lsp', true)
         exists('hover.providers.fold_preview', true)
         exists('hover.providers.diagnostic', true)
+        exists('hover.providers.lsp', true)
 
         if executable('man') then
             exists('hover.providers.man', true)
@@ -33,7 +33,7 @@ Hover.setup({
         end
 
         --- Dictionary
-        exists('hover.providers.dictionary', true)
+        -- exists('hover.providers.dictionary', true)
 
         --- Jira
         -- exists('hover.providers.jira', true)
@@ -73,9 +73,11 @@ local Keys = {
     },
 }
 
--- Mouse support
-Keys['<MouseMove>'] = { Hover.hover_mouse, desc('Mouse Hover', true, HOpts.bufnr()) }
-vim.opt.mousemoveevent = true
+-- Mouse support (if mouse enabled)
+if vim.opt.mouse:get()['a'] then
+    Keys['<MouseMove>'] = { Hover.hover_mouse, desc('Mouse Hover', true, HOpts.bufnr()) }
+    vim.opt.mousemoveevent = true
+end
 
 map_dict(Keys, 'wk.register', false, 'n', HOpts.bufnr())
 
