@@ -3,6 +3,11 @@
 require('user_api.types.colorschemes')
 require('user_api.types.user.maps')
 
+---@class LazySources
+---@field [1] 'lazy'
+---@field [2]? 'rockspec'|'pathspec'
+---@field [3]? 'rockspec'|'pathspec'
+
 ---@class LazyMods
 ---@field colorschemes CscMod
 

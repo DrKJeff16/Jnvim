@@ -54,7 +54,7 @@ Lazy.setup({
             disabled_plugins = {
                 -- 'gzip',
                 -- 'matchit',
-                -- 'matchparen',
+                'matchparen',
                 'netrwPlugin',
                 'tarPlugin',
                 -- 'tohtml',
@@ -70,7 +70,7 @@ Lazy.setup({
     },
 
     rocks = {
-        enabled = not is_root() and require('config.util').luarocks_check() or false,
+        enabled = not is_root() and CfgUtil.luarocks_check() or false,
         root = vim.fn.stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -79,10 +79,7 @@ Lazy.setup({
         cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
         versions = true,
         sources = (function()
-            ---@class LazySources
-            ---@field [1] 'lazy'
-            ---@field [2]? 'rockspec'|'pathspec'
-            ---@field [3]? 'pathspec'
+            ---@type LazySources
             local S = { 'lazy' }
 
             if not is_root() then
