@@ -12,6 +12,7 @@ local vim_exists = Exists.vim_exists
 local in_console = require('user_api.check').in_console
 
 ---@type User.Opts
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 M.ALL_OPTIONS = {
@@ -357,10 +358,21 @@ M.DEFAULT_OPTIONS = {
     backspace = { 'indent', 'eol', 'start' },
     backup = false,
     belloff = { 'all' },
-    copyindent = true,
+    copyindent = false,
     encoding = 'utf-8',
     errorbells = false,
     fileignorecase = false,
+    fo = {
+        b = true,
+        c = false,
+        j = true,
+        l = true,
+        n = true,
+        o = true,
+        p = true,
+        q = true,
+        w = true,
+    },
     hid = true,
     ls = 2,
     makeprg = 'make',
@@ -372,9 +384,11 @@ M.DEFAULT_OPTIONS = {
     },
     matchtime = 30,
     menuitems = 40,
-    mouse = '', -- Get that mouse out of my sight!
+    mouse = {
+        a = false,
+    }, -- Get that mouse out of my sight!
     number = true,
-    preserveindent = true,
+    preserveindent = false,
     rnu = true,
     ruler = true,
     showcmd = true,
@@ -427,7 +441,11 @@ function M.optset(opts)
     opts = require('user_api.check.value').is_tbl(opts) and opts or {}
 
     for k, v in next, opts do
-        vim.opt[k] = v
+        if type(vim.opt[k]:get()) == type(v) then
+            vim.opt[k] = v
+        else
+            vim.notify('Option `' .. k .. '` could not be parsed', vim.log.levels.WARN)
+        end
     end
 end
 
