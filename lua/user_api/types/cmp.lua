@@ -37,8 +37,8 @@
 ---@alias FmtOptsMenu table<string, string>
 
 ---@class CmpKindMod
----@field protected kind_icons FmtKindIcons
----@field protected kind_codicons FmtKindIcons
+---@field kind_icons FmtKindIcons
+---@field kind_codicons FmtKindIcons
 ---@field formatting cmp.FormattingConfig
 ---@field window cmp.WindowConfig
 ---@field view cmp.ViewConfig
@@ -55,22 +55,32 @@
 ---@class SourceType
 ---@field name string
 ---@field option? SourceTypeOpts
----@field priority? integer
+---@field group_index? integer
 
----@class SourceAsyncPathOpts: SourceTypeOpts
+---@class LspKeywordPatterns
+---@field keyword_pattern? string
+
+---@alias SourceLspOpts table|table<string, LspKeywordPatterns>
+
+---@class SourcePathOpts
 ---@field trailing_slash? boolean
 ---@field label_trailing_slash? boolean
 ---@field get_cwd? fun(): string
+
+---@class SourceAsyncPathOpts: SourcePathOpts
 ---@field show_hidden_files_by_default? boolean
 
 ---@class SourceBufOpts: SourceTypeOpts
----@field get_bufnrs? fun(): table
+---@field get_bufnrs? fun(): integer[]
 
 ---@class SourceAsyncPath: SourceType
 ---@field option? SourceAsyncPathOpts
 
 ---@class SourceBuf: SourceType
 ---@field option? SourceBufOpts
+
+---@class SourceLsp: SourceType
+---@field option? SourceLspOpts
 
 ---@class MultiSources
 ---@field [1] string[]

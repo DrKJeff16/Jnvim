@@ -1,6 +1,5 @@
 local User = require('user_api')
 local Check = User.check
-local types = User.types.cmp
 
 local exists = Check.exists.module
 local is_num = Check.value.is_num
@@ -12,6 +11,9 @@ local empty = Check.value.empty
 
 local cmp = require('cmp')
 
+local win_buf = vim.api.nvim_win_get_buf
+local tbl_keys = vim.tbl_keys
+
 local gen_sources = cmp.config.sources
 
 ---@return integer[]
@@ -19,15 +21,15 @@ local function source_all_bufs()
     ---@type table<integer, boolean>
     local bufs = {}
     for _, win in next, vim.api.nvim_list_wins() do
-        bufs[vim.api.nvim_win_get_buf(win)] = true
+        bufs[win_buf(win)] = true
     end
-    return vim.tbl_keys(bufs)
+    return tbl_keys(bufs)
 end
 
 ---@return integer[]
 local function source_curr_buf()
     local win = vim.api.nvim_get_current_win()
-    return vim.tbl_keys({ [vim.api.nvim_win_get_buf(win)] = true })
+    return tbl_keys({ [win_buf(win)] = true })
 end
 
 ---@param group_index? integer
