@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local Types = User.types.autopairs
@@ -29,6 +26,7 @@ Ap.setup({
         'help',
         'lazy',
         'NvimTree',
+        'packer',
     },
 
     disable_in_macro = false, -- disable when recording or executing a macro
@@ -38,7 +36,7 @@ Ap.setup({
     enable_afterquote = true, -- add bracket pairs after quote
     enable_check_bracket_line = true, --- check bracket in same line
     enable_bracket_in_quote = true,
-    enable_abbr = false, -- trigger abbreviation
+    enable_abbr = true, -- trigger abbreviation
     break_undo = true, -- switch for basic rule break undo sequence
     check_ts = true,
     ts_config = {
@@ -52,14 +50,17 @@ Ap.setup({
 
     map_cr = true, -- Map the `<CR>` key
     map_bs = true, -- Map the `<BS>` key
-    map_c_h = false, -- Map the `<C-h>` key to delete a pair
-    map_c_w = false, -- Map `<C-w>` to delete a pair if possible
+    map_c_h = true, -- Map the `<C-h>` key to delete a pair
+    map_c_w = true, -- Map `<C-w>` to delete a pair if possible
     map_char = {
         all = '(',
         tex = '{',
         html = '<',
         markdown = '<',
         xml = '<',
+        lua = '<',
+        c = '<',
+        cpp = '<',
     },
 
     fast_wrap = {
@@ -77,7 +78,7 @@ Ap.setup({
 
 ---@type APMods
 local M = {
-    cmp = function() return exists('plugin.autopairs.cmp', true) or nil end,
+    cmp = function() return exists('plugin.autopairs.cmp', true) end,
     rules = function() return exists('plugin.autopairs.rules', true) end,
 }
 
