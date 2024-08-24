@@ -181,11 +181,12 @@ function M.is_int(var, multiple)
     local is_tbl = M.is_tbl
     local is_bool = M.is_bool
     local is_num = M.is_num
+    local floor = math.floor
 
     multiple = is_bool(multiple) and multiple or false
 
     if not multiple then
-        return is_num(var) and var >= 0 and var == math.floor(var)
+        return is_num(var) and var >= 0 and var == floor(var)
     end
 
     if not is_tbl(var) then
@@ -193,7 +194,7 @@ function M.is_int(var, multiple)
     end
 
     for _, v in next, var do
-        if not (is_num(v) and v >= 0 and v == math.floor(v)) then
+        if not (is_num(v) and v >= 0 and v == floor(v)) then
             return false
         end
     end
