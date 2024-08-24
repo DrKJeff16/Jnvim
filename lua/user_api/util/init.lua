@@ -578,6 +578,7 @@ local M = {
     ft_set = ft_set,
     notify = require('user_api.util.notify'),
     au = require('user_api.util.autocmd'),
+    string = require('user_api.util.string'),
 }
 
 return M

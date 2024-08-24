@@ -1,6 +1,6 @@
 require('user_api.types.user.util')
 
----@type User.Util.Strings
+---@type User.Util.String
 ---@diagnostic disable-next-line:missing-fields
 local M = {
     alphabet = {
@@ -252,8 +252,6 @@ function M.capitalize(s, use_dot, triggers)
 
     return new_str
 end
-
-_G.capitalize = M.capitalize
 
 return M
 
