@@ -101,13 +101,16 @@ Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
-                if not vim.bo.modifiable then
+                local curr_buf = vim.api.nvim_get_current_buf
+
+                if not vim.bo[curr_buf()].modifiable then
                     return
                 end
 
                 local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
+                -- Wait for `feedkeys` to end, then reset to position
                 vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
             end,
             desc('Indent Whole File', true, 0),
@@ -149,6 +152,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local csc_group = 'A'
     local i = 1
     local found_csc = ''
+
     for idx, name in next, selected do
         ---@type CscSubMod|ODSubMod|table
         local TColor = Csc[name]
