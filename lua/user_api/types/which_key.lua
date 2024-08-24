@@ -17,8 +17,7 @@
 ---@alias ModeRegKeys table<MapModes, RegKeys>
 ---@alias ModeRegKeysNamed table<MapModes, RegKeysNamed>
 
----@class RegKeyOpts
----@field desc? string
+---@class RegKeyOpts: vim.keymap.set.Opts
 ---@field mode? MapModes
 ---@field hidden? boolean
 ---@field group? string
