@@ -1,8 +1,7 @@
 local User = require('user_api')
+local CfgUtil = require('config.util')
 local Check = User.check
 local Types = User.types.lazy
-local WK = User.maps.wk
-local CfgUtil = require('config.util')
 
 local key_variant = CfgUtil.key_variant
 local executable = Check.exists.executable
@@ -10,6 +9,7 @@ local in_console = Check.in_console
 local is_root = Check.is_root
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
+local wk_avail = User.maps.wk.available
 
 --- Set installation dir for `Lazy`
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -54,9 +54,9 @@ Lazy.setup({
             disabled_plugins = {
                 -- 'gzip',
                 -- 'matchit',
-                'matchparen',
+                -- 'matchparen',
                 'netrwPlugin',
-                'tarPlugin',
+                -- 'tarPlugin',
                 -- 'tohtml',
                 'tutor',
                 -- 'zipPlugin',
@@ -118,7 +118,7 @@ Lazy.setup({
     ui = {
         backdrop = not in_console() and 60 or 100,
         border = 'rounded',
-        title = 'L      A      Z      Y',
+        title = 'L        A        Z        Y',
         wrap = true,
         title_pos = 'center',
         pills = true,
@@ -169,7 +169,7 @@ local Names = {
     ['<leader>Le'] = { group = '+Edit Lazy File' },
 }
 
-if WK.available() then
+if wk_avail() then
     map_dict(Names, 'wk.register', false, 'n')
 end
 
