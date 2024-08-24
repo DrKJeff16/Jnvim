@@ -54,7 +54,7 @@ require('user_api.types.user.autocmd')
 ---@field alphabet User.Util.String.Alphabet
 ---@field vowels User.Util.String.Vowels
 ---@field digits User.Util.String.Digits
----@field capitalize fun(s: string, use_dot: boolean?, triggers: string[]): (new_str: string)
+---@field capitalize fun(s: string, use_dot: boolean?, triggers: string[]?): (new_str: string)
 
 ---@class User.Util.Autocmd
 ---@field au_pair fun(T: AuPair)
