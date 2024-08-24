@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 require('user_api.types.user.check')
 
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
@@ -16,6 +14,9 @@ require('user_api.types.user.check')
 --- ## Return
 --- A boolean value indicating whether the data is `nil` or doesn't exist
 --- ---
+---@param var any
+---@param multiple? boolean
+---@return boolean
 local is_nil = function(var, multiple)
     multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
@@ -38,6 +39,7 @@ local is_nil = function(var, multiple)
 end
 
 ---@type User.Check.Value
+---@diagnostic disable-next-line:missing-fields
 local M = {
     -- NOTE: We define `is_nil` first as it's used by the other checkers.
 
@@ -58,7 +60,8 @@ local M = {
     is_nil = is_nil,
 }
 
----@type fun(t: Types): ValueFunc
+---@param t Types `'thread'|'userdata'` are not parsed
+---@return ValueFunc
 local function type_fun(t)
     return function(var, multiple)
         multiple = (not is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
@@ -228,14 +231,18 @@ function M.empty(v)
         return vim.tbl_isempty(v)
     end
 
-    notify(
-        "(user_api.check.value.empty): Value isn't a table, string nor a number",
-        'warn',
-        { title = 'user_api.value.empty', hide_from_history = true, timeout = 200 }
-    )
+    notify("Value isn't a table, string nor a number", 'warn', {
+        title = '(user_api.value.empty)',
+        hide_from_history = true,
+        timeout = 200,
+    })
+
     return true
 end
 
+---@param field string|integer|(string|integer)[]
+---@param T table<string|integer, any>
+---@return boolean
 local function fields(field, T)
     local is_tbl = M.is_tbl
     local is_str = M.is_str
@@ -244,8 +251,9 @@ local function fields(field, T)
 
     if not is_tbl(T) then
         error(
-            '(user_api.check.value.fields): Cannot look up a field in the following type: '
+            '(user_api.check.value.fields): Cannot look up a field in the following type: `'
                 .. type(T)
+                .. '`'
         )
     end
 
@@ -268,6 +276,10 @@ end
 
 M.fields = fields
 
+---@param values any[]|table<string, any>
+---@param T table
+---@param return_keys boolean
+---@return boolean|string|integer|(string|integer)[] res
 function M.tbl_values(values, T, return_keys)
     local is_tbl = M.is_tbl
     local is_str = M.is_str
@@ -319,6 +331,8 @@ function M.tbl_values(values, T, return_keys)
     return res
 end
 
+---@param type_str Types
+---@param T table
 function M.single_type_tbl(type_str, T)
     local is_str = M.is_str
     local is_tbl = M.is_tbl
@@ -348,7 +362,10 @@ function M.single_type_tbl(type_str, T)
     end
 
     for _, v in next, T do
-        if type(v) ~= type_str then
+        if type_str ~= 'nil' and type(v) ~= type_str then
+            return false
+        end
+        if type_str == 'nil' and v ~= nil then
             return false
         end
     end

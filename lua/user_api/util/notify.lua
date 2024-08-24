@@ -1,8 +1,10 @@
 require('user_api.types.user.util')
 
---- Can't use `check.exists.module()` here as its module might require this module,
---- so let's avoid an import loop, shall we?
----@type fun(mod: string): boolean
+--- Can't use `check.exists.module()` here as said module might
+--- end up requiring this module, so let's avoid an import loop,
+--- shall we?
+---@param mod string
+---@return boolean ok
 local function exists(mod)
     local ok, _ = pcall(require, mod)
 

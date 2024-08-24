@@ -1,6 +1,6 @@
 ---@meta
 
----@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table')
+---@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table'|'thread'|'userdata')
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
 ---@class User.Check.Existance
@@ -133,7 +133,7 @@
 ---@field empty fun(v: string|table|number): boolean
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
----@field single_type_tbl fun(type_str: string, T: table): boolean
+---@field single_type_tbl fun(type_str: Types, T: table): boolean
 
 ---@class User.Check
 ---@field exists User.Check.Existance

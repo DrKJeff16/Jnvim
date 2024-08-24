@@ -2,7 +2,13 @@
 
 require('user_api.types.user.autocmd')
 
----@alias VimNotifyLvl 0|1|2|3|4|5
+---@alias VimNotifyLvl
+---|0
+---|1
+---|2
+---|3
+---|4
+---|5
 
 ---@alias NotifyLvl
 ---|'debug'
@@ -15,7 +21,7 @@ require('user_api.types.user.autocmd')
 ---@class NotifyOpts
 ---@field title? string Defaults to `'Message'`
 ---@field icon? string
----@field timeout? number|boolean Defaults to `1500`
+---@field timeout? integer|boolean Defaults to `700`
 ---@field on_open? fun(...)
 ---@field on_close? fun(...)
 ---@field keep? fun(...)
