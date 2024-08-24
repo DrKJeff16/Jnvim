@@ -17,12 +17,13 @@ local SP = BLine.style_preset
 ---@param lvl 'error'|'warning'
 ---@param diags? table<string, any>
 ---@param context? table
----@return string
+---@return string s
 local diagnostics_indicator = function(count, lvl, diags, context)
     if not context.buffer:current() then
         return ''
     end
 
+    ---@type string
     local s = ' '
 
     for e, n in next, diags do
@@ -113,7 +114,7 @@ BLine.setup({
 
         numbers = 'both',
 
-        close_command = 'bdelete! %d',
+        close_command = 'bdelete %d',
         right_mouse_command = nil,
         left_mouse_command = nil,
 
@@ -131,7 +132,7 @@ BLine.setup({
         max_name_length = 28,
         max_prefix_length = 16,
         truncate_names = true,
-        tab_size = 18,
+        tab_size = 16,
 
         diagnostics = 'nvim_lsp',
         diagnostics_update_in_insert = false,
@@ -142,23 +143,26 @@ BLine.setup({
         show_buffer_close_icons = false,
         show_tab_indicators = true,
 
-        show_duplicate_prefix = true,
+        show_duplicate_prefix = false,
         duplicates_across_groups = true,
 
         persist_buffer_sort = true,
 
         move_wraps_at_ends = true,
-        get_element_icon = function(element)
-            local DEVIC = require('nvim-web-devicons')
-            -- element consists of {filetype: string, path: string, extension: string, directory: string}
-            -- This can be used to change how bufferline fetches the icon
-            -- e.g.
-            -- for an element e.g. a buffer or a tab
-            local icon, hl = DEVIC.get_icon_by_filetype(element.filetype, {
-                default = false,
-            })
-            return icon, hl
-        end,
+
+        get_element_icon = exists('nvim-web-devicons')
+                and function(element)
+                    local DEVIC = require('nvim-web-devicons')
+                    -- element consists of {filetype: string, path: string, extension: string, directory: string}
+                    -- This can be used to change how bufferline fetches the icon
+                    -- e.g.
+                    -- for an element e.g. a buffer or a tab
+                    local icon, hl = DEVIC.get_icon_by_filetype(element.filetype, {
+                        default = false,
+                    })
+                    return icon, hl
+                end
+            or nil,
 
         separator_style = 'padded_slope',
         enforce_regular_tabs = true,
@@ -166,13 +170,13 @@ BLine.setup({
         auto_toggle_bufferline = true,
 
         groups = {
-            options = { toggle_hidden_on_enter = true },
+            options = { toggle_hidden_on_enter = false },
             items = { Groups.builtin.pinned:with({ icon = '' }) },
         },
 
         hover = {
             enabled = true,
-            delay = 250,
+            delay = 150,
             reveal = { 'close' },
         },
 
@@ -184,6 +188,12 @@ BLine.setup({
                 text = 'Nvim Tree',
                 text_align = 'center',
                 separator = true,
+            },
+            {
+                filetype = 'lazy',
+                text = 'Lazy',
+                text_align = 'center',
+                separator = false,
             },
         },
     },
