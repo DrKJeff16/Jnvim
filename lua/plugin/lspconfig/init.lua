@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
@@ -45,7 +42,7 @@ require('plugin.lspconfig.neoconf')
 require('plugin.lspconfig.trouble')
 require('plugin.lspconfig.kinds').setup()
 
-local border = {
+--[[ local border = {
     { '🭽', 'FloatBorder' },
     { '▔', 'FloatBorder' },
     { '🭾', 'FloatBorder' },
@@ -54,15 +51,21 @@ local border = {
     { '▁', 'FloatBorder' },
     { '🭼', 'FloatBorder' },
     { '▏', 'FloatBorder' },
-}
+} ]]
 
 -- LSP settings (for overriding per client)
 local handlers = {
-    ['textDocument/hover'] = Lsp.with(lsp_handlers.hover, { border = border }),
-    ['textDocument/signatureHelp'] = Lsp.with(lsp_handlers.signature_help, { border = border }),
+    ['textDocument/hover'] = Lsp.with(lsp_handlers.hover, {
+        border = 'rounded',
+        title = 'LSP',
+    }),
+    ['textDocument/signatureHelp'] = Lsp.with(lsp_handlers.signature_help, {
+        border = 'rounded',
+    }),
     ['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
         signs = true,
         virtual_text = true,
+        underline = true,
     }),
     ['textDocument/references'] = Lsp.with(Lsp.handlers['textDocument/references'], {
         loclist = true,
@@ -241,19 +244,19 @@ au('LspAttach', {
         ---@type table<MapModes, KeyMapDict>
         local K = {
             n = {
-                ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration', true, buf) },
-                ['<leader>lfd'] = { lsp_buf.definition, desc('Definition', true, buf) },
-                -- ['<leader>lk'] = { lsp_buf.hover, desc('Hover', true, buf) },
-                ['K'] = { lsp_buf.hover, desc('Hover', true, buf) },
-                ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation', true, buf) },
-                ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help', true, buf) },
+                ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration') },
+                ['<leader>lfd'] = { lsp_buf.definition, desc('Definition') },
+                -- ['<leader>lk'] = { lsp_buf.hover, desc('Hover') },
+                ['K'] = { lsp_buf.hover, desc('Hover') },
+                ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation') },
+                ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help') },
                 ['<leader>lwa'] = {
                     lsp_buf.add_workspace_folder,
-                    desc('Add Workspace Folder', true, buf),
+                    desc('Add Workspace Folder'),
                 },
                 ['<leader>lwr'] = {
                     lsp_buf.remove_workspace_folder,
-                    desc('Remove Workspace Folder', true, buf),
+                    desc('Remove Workspace Folder'),
                 },
                 ['<leader>lwl'] = {
                     function()
@@ -265,22 +268,26 @@ au('LspAttach', {
                             msg = msg .. '\n - ' .. v
                         end
 
-                        notify(msg, 'info', { title = 'Workspace Folders' })
+                        notify(msg, 'info', {
+                            title = 'Workspace Folders',
+                            hide_from_history = false,
+                            timeout = 500,
+                        })
                     end,
-                    desc('List Workspace Folders', true, buf),
+                    desc('List Workspace Folders'),
                 },
-                ['<leader>lfT'] = { lsp_buf.type_definition, desc('Type Definition', true, buf) },
-                ['<leader>lfR'] = { lsp_buf.rename, desc('Rename...', true, buf) },
-                ['<leader>lfr'] = { lsp_buf.references, desc('References', true, buf) },
+                ['<leader>lfT'] = { lsp_buf.type_definition, desc('Type Definition') },
+                ['<leader>lfR'] = { lsp_buf.rename, desc('Rename...') },
+                ['<leader>lfr'] = { lsp_buf.references, desc('References') },
                 ['<leader>lff'] = {
                     function() lsp_buf.format({ async = true }) end,
-                    desc('Format File', true, buf),
+                    desc('Format File'),
                 },
-                ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) },
-                ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float', true, buf) },
-                ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist', true, buf) },
+                ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
+                ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
+                ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
             },
-            v = { ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions', true, buf) } },
+            v = { ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') } },
         }
         ---@type table<MapModes, RegKeysNamed>
         local Names2 = {
