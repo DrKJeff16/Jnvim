@@ -9,12 +9,16 @@ end
 
 User.register_plugin('plugin.doxygen')
 
-vim.g.DoxygenToolkit_briefTag_pre = '@Synopsis  '
-vim.g.DoxygenToolkit_paramTag_pre = '@Param '
-vim.g.DoxygenToolkit_returnTag = '@Returns   '
-vim.g.DoxygenToolkit_blockHeader =
-    '--------------------------------------------------------------------------'
-vim.g.DoxygenToolkit_blockFooter =
-    '----------------------------------------------------------------------------'
-vim.g.DoxygenToolkit_authorName = 'Mathias Lorente'
-vim.g.DoxygenToolkit_licenseTag = 'My own license'
+local g_vars = {
+    DoxygenToolkit_briefTag_pre = '@brief  ',
+    DoxygenToolkit_paramTag_pre = '@param ',
+    DoxygenToolkit_returnTag = '@return ',
+    DoxygenToolkit_blockHeader = '--------------------------------------------------------------------------',
+    DoxygenToolkit_blockFooter = '----------------------------------------------------------------------------',
+    DoxygenToolkit_authorName = 'Guennadi "DrKJeff16" Maximov C',
+    DoxygenToolkit_licenseTag = 'MIT',
+}
+
+for k, v in next, g_vars do
+    vim.g[k] = v
+end
