@@ -126,10 +126,10 @@ For these to work, the following executables must be installed and in your `$PAT
 ### Plugins
 
 There's a lot of plugins included.
-The plugins are installed based on the files in [`lua/plugin/_spec`](lua/plugin/_spec).
-You can create your own category file, or expand from the existant files in said directory.
-_Just make sure to read the
-[`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins._
+The plugins are installed based on the files in the [`lua/plugin/_spec`](lua/plugin/_spec) directory.
+_You can create your own category file or expand from the existant files in said directory._
+Just make sure to read the
+[`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins.
 
 <br/>
 
@@ -300,9 +300,9 @@ complete, extensible and (hopefully) smarter way for the end user.
 There are 3 fields which are tables that have the same function names,
 but each one follows a specific behaviour:
 
-* `maps.map`: Follows the behaviour of `vim.api.nvim_set_keymap()`.
+* ~~`maps.map`: Follows the behaviour of `vim.api.nvim_set_keymap()`.~~
 * `maps.kmap`: Follows the behaviour of `vim.keymap.set()`.
-* `maps.buf_map`: Follows the behaviour of `vim.api.nvim_buf_set_keymap()`.
+* ~~`maps.buf_map`: Follows the behaviour of `vim.api.nvim_buf_set_keymap()`.~~
 
 Parameters and/or parameter types are tweaked for their respective table.
 Each table has a function for each mode available,
@@ -339,6 +339,7 @@ maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 
 </li>
 
+<!--
 <br/>
 
 <li>
@@ -358,6 +359,8 @@ maps.map.desc(msg, silent, noremap, nowait, expr)
 ```
 
 </li>
+--->
+
 </ul>
 
 <br/>
@@ -402,10 +405,7 @@ return `false` and refuse to process your keymaps altogether.
 If you want to convert a keymap table, you must first structure it as follows:
 
 ```lua
---- Using `vim.keymap.set()` (`User.maps.kmap`) as an example.
---- You can translate a `User.maps.map` equivalent the same way, but
---- you'll have to define the buffer number externally if you use
---- `User.maps.buf_map`
+-- Using `vim.keymap.set()` (`User.maps.kmap`) as an example.
 
 ---@class KeyMapRhsOptsArr
 ---@field [1] User.Maps.Keymap.Rhs
@@ -413,40 +413,50 @@ If you want to convert a keymap table, you must first structure it as follows:
 
 ---@alias KeyMapDict table<string, KeyMapRhsOptsArr> A dict with the key as lhs and the value as the class above
 
+---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')[] Vim Modes
+
+-- Without modes
 ---@type KeyMapDict
-local Keys = {
+local Keys1 = {
     ['lhs1'] = { 'rhs1', { desc = 'Keymap 1' } },
     ['lhs2'] = { function() print('this is rhs2') end, { desc = 'Keymap 1', noremap = true } }
+}
+
+-- With modes
+---@type table<MapModes, KeyMapDict>
+local Keys2 = {
+    -- Normal Mode Keys
+    n = {
+        ['n_lhs1'] = { 'n_rhs1', { desc = 'Keymap 1' } },
+        ['n_lhs2'] = { function() print('this is n_rhs2') end, { desc = 'Keymap 1', noremap = true } },
+    },
+    v = {
+        ['v_lhs1'] = { 'v_rhs1', { desc = 'Keymap 1 (Visual Mode)' } },
+    }
 }
 ```
 
 <br/>
 
-With this dictionary, you can convert it and then map it using `WK.convert_dict()`
-and `WK.register()` respectively.
+You can then pass this dictionary to [`user_api.maps.map_dict()`](lua/user_api/maps/init.lua):
 
 <ul>
 <li>
 
 <details>
 <summary>
-<b><u>Example 1</u></b>
+<u>Example 1</u>
 </summary>
 
 ```lua
 --- Following the code above the examples...
 
-local Keys_WK = WK.convert_dict()
+-- NOTE: Third parameter is `false` because the `Keys1` table doesn't tell what mode to use
+require('user_api.maps').map_dict(Keys1, 'wk.register', false, 'n')
 
-if WK.available() then
-    WK.register(Keys_WK, opts?) --- `opts` defaults to `{ mode = 'n' }`
-else
-    for lhs, v in next, Keys do
-        --- `v[1]` is `rhs`
-        --- `v[2]` is `vim.keymap.set.Opts` (in this case using `kmap`)
-        Kmap.<vim_mode>(lhs, v[1], v[2])
-    end
-end
+-- NOTE: Third parameter is `true` because the `Keys2` table tells us what modes to use,
+-- so fourth param can be `nil`
+require('user_api.maps').map_dict(Keys2, 'wk.register', true, nil)
 ```
 
 </details>
@@ -454,35 +464,11 @@ end
 
 <br/>
 
-<li>
-
-<details>
-<summary>
-<b><u>Example 2</u></b>
-</summary>
-
-```lua
---- Following the code above the examples...
-
-if WK.available() then
-    WK.register(WK.convert_dict(Keys), opts?) -- `opts` defaults to `{ mode = 'n' }`
-    -- Wk.register(WK.convert_dict(Keys), { mode = 'n' })
-else
-    for lhs, v in next, Keys do
-        --- `v[1]` is `rhs`
-        --- `v[2]` is `vim.keymap.set.Opts` (in this case using `kmap`)
-        Kmap.<vim_mode>(lhs, v[1], v[2])
-    end
-end
-```
-
-</details>
-</li>
 </ul>
 
 <br/>
 
-<code>wk.register()</code> <u>has two arguments</u>:
+<!-- <code>wk.register()</code> <u>has two arguments</u>:
 
 <br/>
 
@@ -534,17 +520,19 @@ An options table with the structure specified in [the `which_key` repository](ht
 </li>
 </ol>
 
-<br/>
+<br/> -->
 
 You can also process <u>group names</u> the following way:
 
 ```lua
 ---@class RegPfx
 ---@field group string The map group name. Should look like `'+Group'`
----@field hidden? boolean Whether to the map in `which-key`
+---@field hidden? boolean Whether to show the map in `which-key`
 ---@field mode? MapModes @see user_api.types.user.maps
 
 ---@alias RegKeysNamed table<string, RegKeysNamed>
+
+local wk_avail = require('user_api.maps.wk').available
 
 ---@type RegKeysNamed
 local Names = {
@@ -554,13 +542,16 @@ local Names = {
     ['<leader>t'] = { group = '+Group t' },
 }
 
-WK.register(Names, { mode = <whatever mode> })
+-- If `which_key` is available
+if wk_avail() then
+    require('user_api.maps').map_dict(Names, 'wk.register', false, 'n')
+end
 ```
 
 <br/>
 
 <u><b>This API component is in early design so it will be simpler and more
-completein the future.</b></u>
+complete in the future.</b></u>
 
 ---
 
