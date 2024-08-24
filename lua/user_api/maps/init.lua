@@ -11,7 +11,7 @@ local is_int = Value.is_int
 local is_bool = Value.is_bool
 local empty = Value.empty
 local field = Value.fields
-local strip_fields = require('user_api.util').strip_fields
+local strip_fields = Util.strip_fields
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
