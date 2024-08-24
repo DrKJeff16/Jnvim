@@ -23,7 +23,7 @@ User.register_plugin('plugin.git.gitsigns')
 local GS = require('gitsigns')
 
 GS.setup({
-    ---@param bufnr integer
+    ---@param bufnr? integer
     on_attach = function(bufnr)
         bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
@@ -151,8 +151,8 @@ GS.setup({
 
     signs_staged_enable = true,
 
-    signcolumn = vim.o.signcolumn == 'yes', -- Toggle with `:Gitsigns toggle_signs`
-    numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
+    signcolumn = vim.wo.signcolumn == 'yes', -- Toggle with `:Gitsigns toggle_signs`
+    numhl = vim.wo.number, -- Toggle with `:Gitsigns toggle_numhl`
     linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
     word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
     watch_gitdir = { follow_files = true },
@@ -160,7 +160,7 @@ GS.setup({
     attach_to_untracked = true,
     current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
     current_line_blame_opts = {
-        virt_text = true,
+        virt_text = false,
         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
         delay = 1500,
         ignore_whitespace = false,
@@ -172,7 +172,7 @@ GS.setup({
     max_file_length = 40000, -- Disable if file is longer than this (in lines)
     status_formatter = nil,
     preview_config = {
-        border = 'single',
+        border = 'rounded',
         style = 'minimal',
         relative = 'cursor',
         row = 0,

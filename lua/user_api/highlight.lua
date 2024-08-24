@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 require('user_api.types.user.highlight')
 
 ---@param name string
@@ -73,14 +70,14 @@ local M = {
         local empty = Value.empty
 
         if not is_tbl(D) or empty(D) then
-            error('(user.highlight.hl_from_dict): Unable to parse argument.')
+            error('(user_api.highlight.hl_from_dict): Unable to parse argument.')
         end
 
         for k, v in next, D do
             if (is_str(k) and is_tbl(v)) and not empty(k) then
                 hl(k, v)
             else
-                error('(user.highlight.hl_from_dict): A highlight value is not permitted!')
+                error('(user_api.highlight.hl_from_dict): A highlight value is not permitted!')
             end
         end
     end,

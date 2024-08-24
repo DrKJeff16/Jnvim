@@ -10,7 +10,7 @@ end
 
 local cmp = require('cmp')
 local cmp_ap = require('nvim-autopairs.completion.cmp')
-local handlers = require('nvim-autopairs.completion.handlers')
+local Handlers = require('nvim-autopairs.completion.handlers')
 
 local cmp_lsp = cmp.lsp
 local insp = vim.inspect
@@ -24,7 +24,7 @@ local ft_handles = {
                     cmp_lsp.CompletionItemKind.Function,
                     cmp_lsp.CompletionItemKind.Method,
                 },
-                handler = handlers['*'],
+                handler = Handlers['*'],
             },
         },
         tex = false,

@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.autopairs
@@ -36,10 +33,10 @@ local rule2 = function(a1, ins, a2, lang)
             :with_cr(Conds.none())
             :with_del(function(opts)
                 local col = api.nvim_win_get_cursor(0)[2]
+                local line = opts.line
 
                 -- insert only works for #ins == 1 anyway
-                return a1 .. ins .. ins .. a2
-                    == opts.line:sub(col - #a1 - #ins + 1, col + #ins + #a2)
+                return a1 .. ins .. ins .. a2 == line:sub(col - #a1 - #ins + 1, col + #ins + #a2)
             end),
     })
 end
@@ -71,7 +68,7 @@ local Rules = {
         :with_pair(
             Conds.not_after_regex('%%')
         )
-        -- don't add a pair if  the previous character is xxx
+        -- don't add a pair if the previous character is xxx
         :with_pair(
             Conds.not_before_regex('xxx', 3)
         )
@@ -90,7 +87,20 @@ local Rules = {
         end
     end),
 
-    Rule('<', '>', { 'markdown', 'html' }),
+    Rule('<', '>', { 'markdown', 'html', 'xml', 'xhtml' })
+        :with_move(Conds.none())
+        :with_del(Conds.not_after_regex('%s*/')),
+
+    Rule('<', '>', { 'lua' })
+        :with_pair(Conds.before_regex('--.*'))
+        :with_move(Conds.none())
+        :with_cr(Conds.none())
+        :with_move(Conds.none()),
+
+    Rule('<', '>', { 'c', 'cpp' })
+        :with_pair(Conds.before_regex('%s*%#include%s*'))
+        :with_cr(Conds.none())
+        :with_move(Conds.none()),
 
     Rule('\\start(%w*) $', 'tex')
         :replace_endpair(function(opts)
@@ -119,6 +129,7 @@ for _, bracket in next, BPAIRS do
             :replace_map_cr(
                 function(_) return '<C-c>2xi<CR><C-c>O' end
             )
+            :with_del(Conds.none())
     )
 end
 

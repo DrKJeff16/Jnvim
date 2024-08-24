@@ -1,7 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
@@ -10,6 +6,7 @@ local is_str = Check.value.is_str
 local empty = Check.value.empty
 
 ---@type LspKindsMod
+---@diagnostic disable-next-line:missing-fields
 local M = {
     icons = {
         Class = ' ',

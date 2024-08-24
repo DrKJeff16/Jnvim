@@ -1,11 +1,11 @@
 local User = require('user_api')
 local Types = User.types.diffview
 local Check = User.check
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
+local wk_avail = User.maps.wk.available
 
 if not exists('diffview') then
     return
@@ -39,7 +39,6 @@ DVW.setup({
         done = '✓',
     },
     view = {
-
         --- For more info, see `:h diffview-config-view.x.layout`
         default = {
             --- Config for changed files, and staged files in diff views
@@ -137,7 +136,10 @@ DVW.setup({
     commit_log_panel = {
         --- See `:h diffview-config-win_config`
         win_config = function()
-            local c = { width = vim.opt.columns:get(), height = vim.opt.lines:get() }
+            local c = {
+                width = vim.opt.columns:get(),
+                height = vim.opt.lines:get(),
+            }
 
             return {
                 ---@type DiffView.WinConfig.Positon
@@ -784,7 +786,7 @@ local Names = {
     ['<leader>GD'] = { group = '+DiffView' },
 }
 
-if WK.available() then
+if wk_avail() then
     map_dict(Names, 'wk.register', false, 'n')
 end
 map_dict(Keys, 'wk.register', false, 'n')

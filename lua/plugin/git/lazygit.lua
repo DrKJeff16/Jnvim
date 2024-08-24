@@ -7,7 +7,7 @@ local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 
-if not (exists('lazygit.utils') and executable({ 'git', 'lazygit' })) then
+if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
     return
 end
 
@@ -18,87 +18,66 @@ local au = vim.api.nvim_create_autocmd
 local LG_Utils = require('lazygit.utils')
 local LG_Win = require('lazygit.window')
 
-local Opts = {
+local g_vars = {
     floating_window_winblend = 0,
     floating_window_scaling_factor = 1.0,
-    floating_window_border_chars = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-    floating_window_use_plenary = 1,
+    floating_window_border_chars = {
+        '╭',
+        '─',
+        '╮',
+        '│',
+        '╯',
+        '─',
+        '╰',
+        '│',
+    },
+    floating_window_use_plenary = exists('plenary') and 1 or 0,
 
     use_neovim_remote = 0,
 
     use_custom_config_file_path = 0,
 }
 
-for k, v in next, Opts do
+for k, v in next, g_vars do
     vim.g['lazygit_' .. k] = v
 end
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapDict
 local Keys = {
-    n = {
-        ['<leader>GlC'] = {
-            function() vim.cmd('LazyGitConfig') end,
-            desc("LazyGit's Config"),
-        },
-        ['<leader>GlF'] = {
-            function() vim.cmd('LazyGitFilter') end,
-            desc('Open Project Commits In Float'),
-        },
-        ['<leader>Glc'] = {
-            function() vim.cmd('LazyGitCurrentFile') end,
-            desc('LazyGit On Current File'),
-        },
-        ['<leader>Glf'] = {
-            function() vim.cmd('LazyGitFilterCurrentFile') end,
-            desc("LazyGit's Config"),
-        },
-        ['<leader>Glg'] = {
-            function() vim.cmd('LazyGit') end,
-            desc('Run LazyGit'),
-        },
+    ['<leader>GlC'] = {
+        function() vim.cmd('LazyGitConfig') end,
+        desc("LazyGit's Config"),
     },
-    v = {
-        ['<leader>GlC'] = {
-            function() vim.cmd('LazyGitConfig') end,
-            desc("LazyGit's Config"),
-        },
-        ['<leader>GlF'] = {
-            function() vim.cmd('LazyGitFilter') end,
-            desc('Open Project Commits In Float'),
-        },
-        ['<leader>Glc'] = {
-            function() vim.cmd('LazyGitCurrentFile') end,
-            desc('LazyGit On Current File'),
-        },
-        ['<leader>Glf'] = {
-            function() vim.cmd('LazyGitFilterCurrentFile') end,
-            desc("LazyGit's Config"),
-        },
-        ['<leader>Glg'] = {
-            function() vim.cmd('LazyGit') end,
-            desc('Run LazyGit'),
-        },
+    ['<leader>GlF'] = {
+        function() vim.cmd('LazyGitFilter') end,
+        desc('Open Project Commits In Float'),
+    },
+    ['<leader>Glc'] = {
+        function() vim.cmd('LazyGitCurrentFile') end,
+        desc('LazyGit On Current File'),
+    },
+    ['<leader>Glf'] = {
+        function() vim.cmd('LazyGitFilterCurrentFile') end,
+        desc("LazyGit's Config"),
+    },
+    ['<leader>Glg'] = {
+        function() vim.cmd('LazyGit') end,
+        desc('Run LazyGit'),
     },
 }
 
----@type table<MapModes, RegKeysNamed>
+---@type RegKeysNamed
 local Names = {
-    n = {
-        ['<leader>G'] = { group = '+Git' },
-        ['<leader>Gl'] = { group = '+LazyGit' },
-    },
-    v = {
-        ['<leader>G'] = { group = '+Git' },
-        ['<leader>Gl'] = { group = '+LazyGit' },
-    },
+    ['<leader>G'] = { group = '+Git' },
+    ['<leader>Gl'] = { group = '+LazyGit' },
 }
 
 if WK.available() then
-    map_dict(Names, 'wk.register', true, nil, 0)
+    map_dict(Names, 'wk.register', false, 'n', 0)
 end
-map_dict(Keys, 'wk.register', true, nil, 0)
+map_dict(Keys, 'wk.register', false, 'n', 0)
 
-au('BufEnter', {
+au({ 'BufEnter', 'WinEnter' }, {
     pattern = '*',
     callback = function() require('lazygit.utils').project_root_dir() end,
 })

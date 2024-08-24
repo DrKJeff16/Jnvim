@@ -19,6 +19,7 @@ local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
+local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
 
 local curr_win = vim.api.nvim_get_current_win
 
@@ -101,13 +102,16 @@ Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
-                if not vim.bo.modifiable then
+                local curr_buf = vim.api.nvim_get_current_buf
+
+                if not vim.bo[curr_buf()].modifiable then
                     return
                 end
 
                 local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
+                -- Wait for `feedkeys` to end, then reset to position
                 vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
             end,
             desc('Indent Whole File', true, 0),
@@ -149,6 +153,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     local csc_group = 'A'
     local i = 1
     local found_csc = ''
+
     for idx, name in next, selected do
         ---@type CscSubMod|ODSubMod|table
         local TColor = Csc[name]
@@ -164,12 +169,11 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
                 local v = 'a'
                 for _, variant in next, TColor.variants do
                     NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                        -- TODO: Make a `capitalize()` function for strings
-                        group = '+' .. name,
+                        group = '+' .. capitalize(name),
                     }
                     CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
                         function() TColor.setup(variant) end,
-                        desc('Setup Colorscheme `' .. name .. '` (' .. variant .. ')'),
+                        desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
                     }
 
                     v = displace_letter(v, 'next', false)
@@ -177,7 +181,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
             else
                 CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
                     TColor.setup,
-                    desc('Setup Colorscheme `' .. name .. '`'),
+                    desc('Set Colorscheme `' .. capitalize(name) .. '`'),
                 }
             end
 
