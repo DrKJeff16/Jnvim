@@ -1,47 +1,51 @@
 require('user_api.types.user.update')
 
-local wk_available = require('user_api.maps.wk').available
-local notify = require('user_api.util.notify').notify
-local desc = require('user_api.maps.kmap').desc
-local map_dict = require('user_api.maps').map_dict
-
 ---@type User.Update
 ---@diagnostic disable-next-line:missing-fields
-local M = {
-    ---@return string?
-    update = function()
-        local curr_win = vim.api.nvim_get_current_win
-        local curr_tab = vim.api.nvim_get_current_tabpage
-        local old_cwd = vim.fn.getcwd(curr_win(), curr_tab())
+local M = {}
 
-        local cmd = {
-            'git',
-            'pull',
-            '--rebase',
-            '--recurse-submodules',
-        }
+---@return string?
+function M.update()
+    local curr_win = vim.api.nvim_get_current_win
+    local curr_tab = vim.api.nvim_get_current_tabpage
+    local old_cwd = vim.fn.getcwd(curr_win(), curr_tab())
 
-        vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
-        local res = vim.fn.system(cmd)
-        if vim.v.shell_error ~= 0 then
-            vim.api.nvim_echo({
-                { 'Failed to update Jnvim:\n', 'ErrorMsg' },
-                { '\nPress any key to exit...' },
-            }, true, {})
-            vim.fn.getchar()
-            os.exit(1)
-        else
-            vim.api.nvim_echo({
-                { res, 'WarningMsg' },
-            }, true, { verbose = true })
-        end
+    local cmd = {
+        'git',
+        'pull',
+        '--rebase',
+        '--recurse-submodules',
+    }
 
-        vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
+    vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
 
-        return res
-    end,
-}
+    local res = vim.fn.system(cmd)
+
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { 'Failed to update Jnvim:\n', 'ErrorMsg' },
+            { '\nPress any key to exit...' },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
+
+    if res:match('Already up to date') then
+        vim.api.nvim_echo({
+            { res, 'WarningMsg' },
+        }, true, { verbose = true })
+    end
+
+    vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
+
+    return res
+end
+
 function M.setup_maps()
+    local wk_available = require('user_api.maps.wk').available
+    local desc = require('user_api.maps.kmap').desc
+    local map_dict = require('user_api.maps').map_dict
+
     if wk_available() then
         map_dict({ ['<leader>U'] = { group = '+User API' } }, 'wk.register', false, 'n')
     end
