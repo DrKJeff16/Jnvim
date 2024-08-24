@@ -5,7 +5,7 @@ local exists = Check.exists.module
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 
-if not exists('clangd_extensions') or not executable('clangd') then
+if not (executable('clangd') and exists('clangd_extensions')) then
     return
 end
 
@@ -26,7 +26,7 @@ Exts.setup({
         -- not that this may cause  higher CPU usage.
         -- This option is only respected when only_current_line and
         -- autoSetHints both are true
-        only_current_line_autocmd = { 'CursorHold', 'CursorMoved', 'CursorMovedI' },
+        only_current_line_autocmd = { 'CursorHold', 'CursorHoldI', 'CursorMoved', 'CursorMovedI' },
         -- whether to show parameter hints with the inlay hints or not
         show_parameter_hints = false,
         -- prefix for parameter hints
@@ -38,13 +38,13 @@ Exts.setup({
         -- padding from the left if max_len_align is true
         max_len_align_padding = 1,
         -- whether to align to the extreme right or not
-        right_align = true,
+        right_align = false,
         -- padding from the right if right_align is true
         right_align_padding = 7,
         -- The color of the hints
         highlight = 'Comment',
         -- The highlight group priority for extmark
-        priority = 100,
+        priority = 60,
     },
     ast = {
         -- These require codicons (https://github.com/microsoft/vscode-codicons)
