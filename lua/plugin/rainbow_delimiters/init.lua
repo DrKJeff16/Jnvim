@@ -29,7 +29,6 @@ local QRY = {
 ---@return rainbow_delimiters.strategy
 local function strat(s)
     s = (is_str(s) and vim.tbl_contains({ 'global', 'local', 'noop' }, s)) and s or 'global'
-
     return require('rainbow-delimiters').strategy[s]
 end
 
@@ -41,10 +40,13 @@ require('rainbow-delimiters.setup').setup({
         markdown = strat('local'),
         vim = strat('local'),
     },
+
     query = QRY,
+
     priority = {
         [''] = 210,
     },
+
     highlight = {
         'RainbowDelimiterRed',
         'RainbowDelimiterYellow',
@@ -54,6 +56,7 @@ require('rainbow-delimiters.setup').setup({
         'RainbowDelimiterViolet',
         'RainbowDelimiterCyan',
     },
+
     blacklist = { 'c', 'cpp' },
 })
 
