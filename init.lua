@@ -82,7 +82,7 @@ Keymaps:set_leader('<Space>')
 
 vim.g.markdown_minlines = 500
 
---- Disable `netrw` regardless of whether `nvim_tree` exists or not
+--- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -215,6 +215,7 @@ require('user_api.distro.archlinux').setup()
 Commands:setup_commands()
 
 User.update.setup_maps()
+User.update.setup_autocmd()
 
 if WK.available() then
     map_dict({

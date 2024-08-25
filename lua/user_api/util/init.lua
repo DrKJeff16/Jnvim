@@ -21,7 +21,8 @@ local function mv_tbl_values(T, steps, direction)
     end
 
     steps = (is_int(steps) and steps > 0) and steps or 1
-    direction = vim.tbl_contains({ 'l', 'r' }, direction) and direction or 'r'
+    direction = (is_str(direction) and vim.tbl_contains({ 'l', 'r' }, direction)) and direction
+        or 'r'
 
     ---@class DirectionFuns
     ---@field r fun(t: table<string|integer, any>): res: table<string|integer, any>
@@ -38,9 +39,7 @@ local function mv_tbl_values(T, steps, direction)
             local n_keys = #keys
 
             ---@type table<string|integer, any>
-            local res = vim.deepcopy(t)
-
-            local idx = 1
+            local res = {}
 
             for i, v in next, keys do
                 if i == 1 then
@@ -62,7 +61,7 @@ local function mv_tbl_values(T, steps, direction)
             local n_keys = #keys
 
             ---@type table<string|integer, any>
-            local res = vim.deepcopy(t)
+            local res = {}
 
             for i, v in next, keys do
                 if i == n_keys then
@@ -76,10 +75,11 @@ local function mv_tbl_values(T, steps, direction)
         end,
     }
 
-    local res = vim.deepcopy(T)
+    ---@type table<string|integer, any>
+    local res = T
 
     while steps > 0 do
-        res = direction_funcs[direction](vim.deepcopy(res))
+        res = direction_funcs[direction](res)
         steps = steps - 1
     end
 
@@ -441,127 +441,23 @@ local function displace_letter(c, direction, cycle)
         return 'a'
     end
 
-    local lower_map_next = {
-        a = 'b',
-        b = 'c',
-        c = 'd',
-        d = 'e',
-        e = 'f',
-        f = 'g',
-        g = 'h',
-        h = 'i',
-        i = 'j',
-        j = 'k',
-        k = 'l',
-        l = 'm',
-        m = 'n',
-        n = 'o',
-        o = 'p',
-        p = 'q',
-        q = 'r',
-        r = 's',
-        s = 't',
-        t = 'u',
-        u = 'v',
-        v = 'w',
-        w = 'x',
-        x = 'y',
-        y = 'z',
-        z = cycle and 'a' or 'A',
-    }
-    local lower_map_prev = {
-        a = cycle and 'z' or 'Z',
-        b = 'a',
-        c = 'b',
-        d = 'c',
-        e = 'd',
-        f = 'e',
-        g = 'f',
-        h = 'g',
-        i = 'h',
-        j = 'i',
-        k = 'j',
-        l = 'k',
-        m = 'l',
-        n = 'm',
-        o = 'n',
-        p = 'o',
-        q = 'p',
-        r = 'q',
-        s = 'r',
-        t = 's',
-        u = 't',
-        v = 'u',
-        w = 'v',
-        x = 'w',
-        y = 'x',
-        z = 'y',
-    }
-    local upper_map_prev = {
-        A = cycle and 'Z' or 'z',
-        B = 'A',
-        C = 'B',
-        D = 'C',
-        E = 'D',
-        F = 'E',
-        G = 'F',
-        H = 'G',
-        I = 'H',
-        J = 'I',
-        K = 'J',
-        L = 'K',
-        M = 'L',
-        N = 'M',
-        O = 'N',
-        P = 'O',
-        Q = 'P',
-        R = 'Q',
-        S = 'R',
-        T = 'S',
-        U = 'T',
-        V = 'U',
-        W = 'V',
-        X = 'W',
-        Y = 'X',
-        Z = 'Y',
-    }
-    local upper_map_next = {
-        A = 'B',
-        B = 'C',
-        C = 'D',
-        D = 'E',
-        E = 'F',
-        F = 'G',
-        G = 'H',
-        H = 'I',
-        I = 'J',
-        J = 'K',
-        K = 'L',
-        L = 'M',
-        M = 'N',
-        N = 'O',
-        O = 'P',
-        P = 'Q',
-        Q = 'R',
-        R = 'S',
-        S = 'T',
-        T = 'U',
-        U = 'V',
-        V = 'W',
-        W = 'X',
-        X = 'Y',
-        Y = 'Z',
-        Z = cycle and 'A' or 'a',
-    }
+    local lower_map_next = vim.deepcopy(require('user_api.util.string').alphabet.lower_map)
+    local upper_map_next = vim.deepcopy(require('user_api.util.string').alphabet.upper_map)
+    local lower_map_prev = vim.deepcopy(require('user_api.util.string').alphabet.lower_map)
+    local upper_map_prev = vim.deepcopy(require('user_api.util.string').alphabet.upper_map)
 
     if direction == 'next' and Value.fields(c, lower_map_next) then
-        return lower_map_next[c]
+        -- return lower_map_next[c]
+        return mv_tbl_values(lower_map_next, 1, 'l')[c]
     elseif direction == 'next' and Value.fields(c, upper_map_next) then
-        return upper_map_next[c]
+        -- return upper_map_next[c]
+        return mv_tbl_values(upper_map_next, 1, 'l')[c]
     elseif direction == 'prev' and Value.fields(c, lower_map_prev) then
-        return lower_map_prev[c]
+        -- return lower_map_prev[c]
+        return mv_tbl_values(lower_map_prev, 1, 'r')[c]
     elseif direction == 'prev' and Value.fields(c, upper_map_prev) then
-        return upper_map_prev[c]
+        -- return upper_map_prev[c]
+        return mv_tbl_values(upper_map_prev, 1, 'r')[c]
     end
 
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
@@ -571,6 +467,7 @@ end
 local M = {
     assoc = assoc,
     xor = xor,
+    mv_tbl_values = mv_tbl_values,
     strip_fields = strip_fields,
     strip_values = strip_values,
     displace_letter = displace_letter,
