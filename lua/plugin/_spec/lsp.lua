@@ -52,7 +52,7 @@ local M = {
         cond = not in_console(),
     },
     {
-        'DrKJeff16/clangd_extensions.nvim',
+        'p00f/clangd_extensions.nvim',
         ft = { 'c', 'cpp' },
         version = false,
         config = source('plugin.lspconfig.clangd'),
