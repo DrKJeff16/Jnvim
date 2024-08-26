@@ -21,6 +21,7 @@ local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
 
+local curr_buf = vim.api.nvim_get_current_buf
 local curr_win = vim.api.nvim_get_current_win
 
 -- _G.is_windows = Check.exists.vim_has('win32')
@@ -102,19 +103,20 @@ Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
-                local curr_buf = vim.api.nvim_get_current_buf
+                local buf = curr_buf()
+                local win = curr_win()
 
-                if not vim.bo[curr_buf()].modifiable then
+                if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
                     return
                 end
 
-                local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
+                local saved_pos = vim.api.nvim_win_get_cursor(win)
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
                 -- Wait for `feedkeys` to end, then reset to position
-                vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
+                vim.schedule(function() vim.api.nvim_win_set_cursor(win, saved_pos) end)
             end,
-            desc('Indent Whole File', true, 0),
+            desc('Indent Whole File'),
         },
     },
 })
