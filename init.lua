@@ -121,9 +121,7 @@ Keymaps:setup({
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes
-    local C = Pkg.colorschemes
-
-    local Csc = C.new()
+    local Csc = Pkg.colorschemes
 
     ---@type KeyMapDict
     local CscKeys = {}
