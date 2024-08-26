@@ -24,7 +24,7 @@ function M.update()
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { 'Failed to update Jnvim:\n', 'ErrorMsg' },
-            { '\nPress any key to exit...' },
+            { '\nPress any key to exit...', 'WarningMsg' },
         }, true, {})
         vim.fn.getchar()
         os.exit(1)
@@ -32,8 +32,8 @@ function M.update()
 
     if res:match('Already up to date') then
         vim.api.nvim_echo({
-            { res, 'WarningMsg' },
-        }, true, { verbose = true })
+            { res },
+        }, false, {})
 
         vim.fn.getchar()
     end
