@@ -56,7 +56,7 @@ local function buf_del(force)
         local ft = ft_get(curr_buf())
 
         if vim.tbl_contains(ft_triggers, ft) then
-            vim.cmd.bprev()
+            vim.cmd.bprevious()
         end
     end
 end
@@ -87,8 +87,19 @@ local M = {
         '-',
         '.',
         '/',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
         '=',
         '?',
+        '@',
         'A',
         'B',
         'C',
@@ -116,6 +127,7 @@ local M = {
         'Y',
         'Z',
         '[',
+        '\\',
         ']',
         '^',
         '_',
@@ -147,6 +159,7 @@ local M = {
         'y',
         'z',
         '{',
+        '|',
         '}',
         '~',
     },
