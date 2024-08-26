@@ -215,7 +215,6 @@ require('user_api.distro.archlinux').setup()
 Commands:setup_commands()
 
 User.update.setup_maps()
-User.update.setup_autocmd()
 
 if WK.available() then
     map_dict({
