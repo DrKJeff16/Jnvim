@@ -4,11 +4,13 @@ local Value = require('user_api.check.value')
 local Exists = require('user_api.check.exists')
 
 local exists = Exists.vim_exists
-local is_nil = Value.is_nil
-local is_tbl = Value.is_tbl
 local executable = Exists.executable
 local vim_has = Exists.vim_has
 local vim_exists = Exists.vim_exists
+local is_nil = Value.is_nil
+local is_str = Value.is_str
+local is_tbl = Value.is_tbl
+local is_bool = Value.is_bool
 local in_console = require('user_api.check').in_console
 
 ---@type User.Opts
@@ -362,7 +364,7 @@ M.DEFAULT_OPTIONS = {
     encoding = 'utf-8',
     errorbells = false,
     fileignorecase = false,
-    fo = {
+    formatoptions = {
         b = true,
         c = false,
         j = true,
@@ -373,7 +375,8 @@ M.DEFAULT_OPTIONS = {
         q = true,
         w = true,
     },
-    hid = true,
+    helplang = { 'en' },
+    hidden = true,
     ls = 2,
     makeprg = 'make',
     matchpairs = {
@@ -384,26 +387,24 @@ M.DEFAULT_OPTIONS = {
     },
     matchtime = 30,
     menuitems = 40,
-    mouse = {
-        a = false,
-    }, -- Get that mouse out of my sight!
+    mouse = { a = false }, -- Get that mouse out of my sight!
     number = true,
     preserveindent = false,
-    rnu = true,
-    ruler = true,
+    relativenumber = false,
+    ru = true,
+    shiftwidth = 4,
     showcmd = true,
     showmatch = true,
     showmode = false,
-    smartindent = true,
     signcolumn = 'yes',
     smartcase = true,
-    splitbelow = true,
-    splitright = true,
+    smartindent = true,
     smarttab = true,
     softtabstop = 4,
-    shiftwidth = 4,
-    termguicolors = vim_exists('+termguicolors') and not in_console(),
+    splitbelow = true,
+    splitright = true,
     tabstop = 4,
+    termguicolors = vim_exists('+termguicolors') and not in_console(),
     updatecount = 100,
     updatetime = 1000,
     visualbell = false,
@@ -430,15 +431,63 @@ if is_windows then
     M.DEFAULT_OPTIONS.shellslash = true
 end
 
+---@type fun(T: User.Opts.Spec): (parsed_opts: User.Opts.Spec, msg: string)
+local function long_opts_convert(T)
+    local empty = require('user_api.check.value').empty
+
+    if not is_tbl(T) or empty(T) then
+        return {}, ''
+    end
+    local insp = inspect or vim.inspect
+
+    ---@type User.Opts.Spec
+    local parsed_opts = {}
+
+    local msg = ''
+
+    ---@type string[]
+    local keys = vim.tbl_keys(M.ALL_OPTIONS)
+    table.sort(keys)
+
+    for opt, val in next, T do
+        local nwl = newline or string.char(10)
+        local new_opt = ''
+
+        -- If neither long nor short (known) option, append to warning message
+        if not (vim.tbl_contains(keys, opt) or Value.tbl_values({ opt }, M.ALL_OPTIONS)) then
+            msg = msg .. '- Option ' .. insp(opt) .. 'not valid' .. nwl
+            goto continue
+        end
+
+        if vim.tbl_contains(keys, opt) then
+            parsed_opts[opt] = val
+        else
+            new_opt = Value.tbl_values({ opt }, M.ALL_OPTIONS, true)
+            if is_str(new_opt) and new_opt ~= '' then
+                parsed_opts[new_opt] = val
+            else
+                msg = msg .. '- Option ' .. insp(opt) .. ' not valid' .. nwl
+                goto continue
+            end
+        end
+
+        ::continue::
+    end
+
+    return parsed_opts, msg
+end
+
 --- Option setter for the aforementioned options dictionary
 --- ---
 --- ## Parameters
 --- * `opts`: A dictionary with keys as `vim.opt` or `vim.o` fields, and values for each option
 --- respectively
 --- ---
----@param opts User.Opts.Spec
-function M.optset(opts)
-    opts = require('user_api.check.value').is_tbl(opts) and opts or {}
+---@param T User.Opts.Spec
+function M.optset(T)
+    T = is_tbl(T) and T or {}
+
+    local opts = long_opts_convert(T)
 
     for k, v in next, opts do
         if type(vim.opt[k]:get()) == type(v) then
@@ -450,35 +499,35 @@ function M.optset(opts)
 end
 
 ---@param self User.Opts
----@param override User.Opts.Spec
-function M:setup(override)
-    local inspect = inspect or vim.inspect
-    local nwl = newline or string.char(10)
+---@param override? User.Opts.Spec
+---@param verbose? boolean
+---@return table? msg
+function M:setup(override, verbose)
     override = is_tbl(override) and override or {}
+    verbose = is_bool(verbose) and verbose or false
+
+    local parsed_opts, msg = long_opts_convert(override)
 
     ---@type table|vim.wo|vim.bo
-    local opts = vim.tbl_extend('keep', override, self.DEFAULT_OPTIONS)
+    local opts = vim.tbl_deep_extend('keep', parsed_opts, self.DEFAULT_OPTIONS)
 
-    ---@type User.Opts.Spec
-    local parsed_opts = {}
-
-    local msg = ''
-
-    for opt, val in next, opts do
-        local keys = vim.tbl_keys(self.ALL_OPTIONS)
-        -- If neither long nor short (known) option, append to warning
-        if not vim.tbl_contains(keys, opt) and not Value.tbl_values({ opt }, self.ALL_OPTIONS) then
-            msg = msg .. 'Option ' .. inspect(opt) .. 'not valid. Ignoring' .. nwl
-        else
-            parsed_opts[opt] = val
-        end
-    end
+    self.optset(opts)
 
     if msg ~= '' then
-        vim.notify(msg)
+        vim.schedule(
+            function()
+                require('user_api.util.notify').notify(msg, 'warn', {
+                    hide_from_history = false,
+                    timeout = 1500,
+                    title = '(user_api.opts:setup())',
+                })
+            end
+        )
     end
 
-    self.optset(parsed_opts)
+    if verbose then
+        return opts
+    end
 end
 
 return M

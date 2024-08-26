@@ -32,14 +32,14 @@ _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Window
 --- Vim `:set ...` global options setter
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
-    background = 'dark',
-    bs = { 'indent', 'eol', 'start' },
-    cmdwinheight = 7,
-    ci = false,
+    bg = 'dark', -- `background`
+    bs = { 'indent', 'eol', 'start' }, -- `backspace`
+    cmdwinheight = 8,
+    ci = false, -- `copyindent`
     confirm = true,
     equalalways = true,
-    et = true,
-    fo = {
+    et = true, -- `expandtab`
+    fo = { -- `formatoptions`
         b = true,
         c = false,
         j = true,
@@ -50,31 +50,29 @@ Opts:setup({ ---@see User.Opts.Spec For more info
         q = true,
         w = true,
     },
-    hlg = { 'en' },
-    hls = true,
+    hlg = { 'en' }, -- `helplang`
+    hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
     matchtime = 30,
     menuitems = 40,
-    mouse = {
-        a = false,
-    },
-    number = true,
-    preserveindent = false,
-    relativenumber = false,
-    ruler = true,
-    scrolloff = 3,
+    mouse = { a = false },
+    nu = true, -- `number`
+    pi = false, -- `preserveindent`
+    rnu = false, -- `relativenumber`
+    ru = true, -- `ruler`
+    so = 3, -- `scrolloff`
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
-    shiftwidth = 4,
+    sw = 4, -- `shiftwidth`
     showmatch = true,
     showmode = false,
-    stal = 2,
+    stal = 2, -- `showtabline`
     signcolumn = 'yes',
-    softtabstop = 4,
+    sts = 4, -- `softtabstop`
     spell = false,
     splitbelow = true,
     splitright = true,
-    tabstop = 4,
+    ts = 4, -- `tabstop`
     title = true,
     wrap = false,
 })
