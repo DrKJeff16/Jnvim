@@ -21,6 +21,7 @@ local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
 
+local curr_buf = vim.api.nvim_get_current_buf
 local curr_win = vim.api.nvim_get_current_win
 
 -- _G.is_windows = Check.exists.vim_has('win32')
@@ -31,14 +32,14 @@ _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Window
 --- Vim `:set ...` global options setter
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
-    background = 'dark',
-    bs = { 'indent', 'eol', 'start' },
-    cmdwinheight = 7,
-    ci = false,
+    bg = 'dark', -- `background`
+    bs = { 'indent', 'eol', 'start' }, -- `backspace`
+    cmdwinheight = 8,
+    ci = false, -- `copyindent`
     confirm = true,
     equalalways = true,
-    et = true,
-    fo = {
+    et = true, -- `expandtab`
+    fo = { -- `formatoptions`
         b = true,
         c = false,
         j = true,
@@ -49,31 +50,29 @@ Opts:setup({ ---@see User.Opts.Spec For more info
         q = true,
         w = true,
     },
-    hlg = { 'en' },
-    hls = true,
+    hlg = { 'en' }, -- `helplang`
+    hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
     matchtime = 30,
     menuitems = 40,
-    mouse = {
-        a = false,
-    },
-    number = true,
-    preserveindent = false,
-    relativenumber = false,
-    ruler = true,
-    scrolloff = 3,
+    mouse = { a = false },
+    nu = true, -- `number`
+    pi = false, -- `preserveindent`
+    rnu = false, -- `relativenumber`
+    ru = true, -- `ruler`
+    so = 3, -- `scrolloff`
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
-    shiftwidth = 4,
+    sw = 4, -- `shiftwidth`
     showmatch = true,
     showmode = false,
-    stal = 2,
+    stal = 2, -- `showtabline`
     signcolumn = 'yes',
-    softtabstop = 4,
+    sts = 4, -- `softtabstop`
     spell = false,
     splitbelow = true,
     splitright = true,
-    tabstop = 4,
+    ts = 4, -- `tabstop`
     title = true,
     wrap = true,
 })
@@ -102,28 +101,27 @@ Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
-                local curr_buf = vim.api.nvim_get_current_buf
+                local buf = curr_buf()
+                local win = curr_win()
 
-                if not vim.bo[curr_buf()].modifiable then
+                if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
                     return
                 end
 
-                local saved_pos = vim.api.nvim_win_get_cursor(curr_win())
+                local saved_pos = vim.api.nvim_win_get_cursor(win)
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
                 -- Wait for `feedkeys` to end, then reset to position
-                vim.schedule(function() vim.api.nvim_win_set_cursor(curr_win(), saved_pos) end)
+                vim.schedule(function() vim.api.nvim_win_set_cursor(win, saved_pos) end)
             end,
-            desc('Indent Whole File', true, 0),
+            desc('Indent Whole File'),
         },
     },
 })
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
     --- A table containing various possible colorschemes
-    local C = Pkg.colorschemes
-
-    local Csc = C.new()
+    local Csc = Pkg.colorschemes
 
     ---@type KeyMapDict
     local CscKeys = {}

@@ -33,7 +33,7 @@ end
 ---@param name string
 ---@return fun()?
 function M.flag_installed(name)
-    if is_nil(name) or name == '' then
+    if not is_str(name) or name == '' then
         error('Unable to set `vim.g` var')
     end
 
@@ -70,7 +70,7 @@ function M.colorscheme_init(fields)
         M.set_tgc()
 
         if is_str(fields) then
-            M.flag_installed(fields)
+            M.flag_installed(fields)()
         elseif is_tbl(fields) and not empty(fields) then
             for field, val in next, fields do
                 vim.g[field] = val

@@ -1,56 +1,55 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
----@diagnostic disable:need-check-nil
----@diagnostic disable:missing-fields
-
 require('user_api.types.user.check')
 
 --- Checking Utilities
 ---@type User.Check
-local M = {
-    --- Value checking utilities
-    ---
-    --- ## Description
-    --- Pretty much reserved for data checking, type checking and conditional operations
-    ---@see User.Check.Value
-    ---@type User.Check.Value
-    value = require('user_api.check.value'),
+---@diagnostic disable-next-line:missing-fields
+local M = {}
 
-    --- Exitstance checks
-    ---
-    --- ## Description
-    --- This contains many environment, module, namespace, etc. checkers.
-    --- Also, simplified Vim functions can be found here
-    ---@see User.Check.Existance
-    ---@type User.Check.Existance
-    exists = require('user_api.check.exists'),
+--- Value checking utilities
+---
+--- ## Description
+--- Pretty much reserved for data checking, type checking and conditional operations
+---@see User.Check.Value
+---@type User.Check.Value
+M.value = require('user_api.check.value')
 
-    --- Check whether Nvim is running in a Linux Console rather than a `pty`
-    ---
-    --- ## Description
-    --- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
-    ---
-    --- ## Return
-    --- A boolean that confirms whether the environment is a Linux Console
-    --- ---
-    ---@return boolean
-    in_console = function()
-        ---@type table<string, any>
-        local env = vim.fn.environ()
+--- Exitstance checks
+---
+--- ## Description
+--- This contains many environment, module, namespace, etc. checkers.
+--- Also, simplified Vim functions can be found here
+---@see User.Check.Existance
+---@type User.Check.Existance
+M.exists = require('user_api.check.exists')
 
-        --- TODO: This is not a good enough check. Must find a better solution
-        return vim.tbl_contains({ 'linux' }, env['TERM'])
-            and not require('user_api.check.value').fields('DISPLAY', env)
-    end,
+--- Check whether Nvim is running in a Linux Console rather than a `pty`
+---
+--- ## Description
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
+---
+--- ## Return
+--- A boolean that confirms whether the environment is a Linux Console
+--- ---
+---@return boolean
+function M.in_console()
+    ---@type table<string, any>
+    local env = vim.fn.environ()
 
-    ---@return boolean
-    is_root = function()
-        ---@type table<string, any>
-        local env = vim.fn.environ()
+    --- TODO: This is not a good enough check. Must find a better solution
+    return vim.tbl_contains({ 'linux' }, env['TERM'])
+        and not require('user_api.check.value').fields('DISPLAY', env)
+end
 
-        return env['USER'] == 'root'
-    end,
-}
+---@return boolean
+function M.is_root()
+    ---@type table<string, any>
+    local env = vim.fn.environ()
+
+    return env['USER'] == 'root'
+end
+
+_G.in_console = M.in_console()
+_G.is_root = M.is_root()
 
 return M
 

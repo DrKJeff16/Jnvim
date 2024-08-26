@@ -56,7 +56,7 @@ local function buf_del(force)
         local ft = ft_get(curr_buf())
 
         if vim.tbl_contains(ft_triggers, ft) then
-            vim.cmd.bprev()
+            vim.cmd.bprevious()
         end
     end
 end
@@ -87,8 +87,19 @@ local M = {
         '-',
         '.',
         '/',
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
         '=',
         '?',
+        '@',
         'A',
         'B',
         'C',
@@ -116,6 +127,7 @@ local M = {
         'Y',
         'Z',
         '[',
+        '\\',
         ']',
         '^',
         '_',
@@ -147,6 +159,7 @@ local M = {
         'y',
         'z',
         '{',
+        '|',
         '}',
         '~',
     },
@@ -174,29 +187,56 @@ local M = {
 
             ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
             ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
-            ['<leader>fN'] = {
+            ['<leader>ffx'] = {
                 function()
-                    local ft = require('user_api.util').ft_get(0)
-                    vim.cmd.wincmd('n')
-                    vim.cmd.wincmd('o')
+                    local optset = vim.api.nvim_set_option_value
 
-                    vim.bo.modifiable = true
-                    vim.api.nvim_set_option_value('ft', ft, { buf = curr_buf() })
+                    local buf = vim.api.nvim_create_buf(true, false)
+                    local win = vim.api.nvim_open_win(buf, true, {
+                        vertical = false,
+                    })
+
+                    vim.api.nvim_set_current_win(win)
+
+                    optset('modifiable', true, { buf = buf })
+                    optset('modified', true, { buf = buf })
+                    optset('fileencoding', 'utf-8', { buf = buf })
+                    optset('fileformat', 'unix', { buf = buf })
+                    optset('buftype', '', { buf = buf })
                 end,
-                desc('New Blank File', true),
+                desc('New Horizontal Blank File', true),
+            },
+            ['<leader>ffv'] = {
+                function()
+                    local optset = vim.api.nvim_set_option_value
+
+                    local buf = vim.api.nvim_create_buf(true, false)
+                    local win = vim.api.nvim_open_win(buf, true, {
+                        vertical = true,
+                    })
+
+                    vim.api.nvim_set_current_win(win)
+
+                    optset('modifiable', true, { buf = buf })
+                    optset('modified', true, { buf = buf })
+                    optset('fileencoding', 'utf-8', { buf = buf })
+                    optset('fileformat', 'unix', { buf = buf })
+                    optset('buftype', '', { buf = buf })
+                end,
+                desc('New Vertical Blank File', true),
             },
             ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
             ['<leader>fir'] = { ':%retab<CR>', desc('Retab File', true) },
             ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
             ['<leader>fs'] = {
                 function()
-                    if vim.bo.modifiable then
+                    if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
                         vim.cmd.write()
                     else
-                        require('user_api.util.notify').notify('Not writeable')
+                        require('user_api.util.notify').notify('Not writeable', 'error')
                     end
                 end,
-                desc('Save File', false),
+                desc('Save File'),
             },
             ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
             ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
@@ -335,9 +375,9 @@ local M = {
                 function() vim.cmd.wincmd('W') end,
                 desc('Previous Window'),
             },
-            ['<leader>wsS'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
+            ['<leader>wsX'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
             ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
-            ['<leader>wss'] = {
+            ['<leader>wsx'] = {
                 function() vim.cmd.wincmd('s') end,
                 desc('Horizontal Split'),
             },
@@ -359,27 +399,27 @@ local M = {
             ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
         },
         v = {
-            ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold', false) },
-            ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold', false) },
+            ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold') },
+            ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold') },
             ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
             ['<leader>fs'] = {
                 function()
-                    if vim.bo.modifiable then
+                    if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
                         vim.cmd.write()
                     else
-                        require('user_api.util.notify').notify('Not writeable.')
+                        require('user_api.util.notify').notify('Not writeable', 'error')
                     end
                 end,
-                desc('Save File', false),
+                desc('Save File'),
             },
 
-            ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection', false) },
+            ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 
             ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
             ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
 
-            ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)', false) },
-            ['<leader>s'] = { ':sort<CR>', desc('Sort Selection', false) },
+            ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
+            ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
         },
         t = {
             ['<Esc>'] = { '<C-\\><C-n>', { buffer = 0 } },
@@ -392,6 +432,7 @@ local M = {
             ['<leader>HM'] = { group = '+Man Pages' }, --- Help
             ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
             ['<leader>f'] = { group = '+File' }, --- File Handling
+            ['<leader>ff'] = { group = '+New File' }, --- New File Creation
             ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
             ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
             ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
