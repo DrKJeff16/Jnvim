@@ -9,10 +9,11 @@ typing-extensions = "*"
 argparse = "*"
 wheel = "*"
 setuptools = "*"
+pynvim = "*"
+pre-commit = "*"
 
 [dev-packages]
 pip = "*"
-pynvim = "*"
 mypy = "*"
 mypy-extensions = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
@@ -21,7 +22,6 @@ pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
 whatthepatch = "*"
-pre-commit = "*"
 
 [requires]
 python_version = "3.12"
