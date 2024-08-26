@@ -1,5 +1,10 @@
 require('user_api.types.user.check')
 
+---@type User.Check.Value
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
+-- NOTE: We define `is_nil` first as it's used by the other checkers.
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
 --- ## Parameters
 ---
@@ -17,7 +22,7 @@ require('user_api.types.user.check')
 ---@param var any
 ---@param multiple? boolean
 ---@return boolean
-local is_nil = function(var, multiple)
+function M.is_nil(var, multiple)
     multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
     if not multiple then
@@ -38,45 +43,35 @@ local is_nil = function(var, multiple)
     return true
 end
 
----@type User.Check.Value
----@diagnostic disable-next-line:missing-fields
-local M = {
-    -- NOTE: We define `is_nil` first as it's used by the other checkers.
-
-    --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil.
-    --- ## Parameters
-    ---
-    --- * `var`: Any data type to be checked if it's nil.
-    ---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
-    ---          Otherwise it will be flagged as non-existant and the function will return `true`.
-    ---
-    --- * `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
-    ---               If set to `true`, every element of the table will be checked.
-    ---               If **any** element doesn't exist or is `nil`, the function automatically returns false.
-    ---
-    --- ## Return
-    --- A boolean value indicating whether the data is `nil` or doesn't exist.
-    --- ---
-    is_nil = is_nil,
-}
-
 ---@param t Types `'thread'|'userdata'` are not parsed
----@return ValueFunc
+---@return ValueFunc?
 local function type_fun(t)
+    local ALLOWED_TYPES = {
+        'boolean',
+        'function',
+        'number',
+        'string',
+        'table',
+    }
+
+    if not vim.tbl_contains(ALLOWED_TYPES, t) then
+        return
+    end
+
     return function(var, multiple)
-        multiple = (not is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
+        multiple = (not M.is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
 
         if not multiple then
-            return not is_nil(var) and type(var) == t
+            return not M.is_nil(var) and type(var) == t
         end
 
         --- Treat `var` as a table from here on
-        if is_nil(var) or type(var) ~= 'table' then
+        if M.is_nil(var) or type(var) ~= 'table' then
             return false
         end
 
         for _, v in next, var do
-            if is_nil(t) or type(v) ~= t then
+            if M.is_nil(t) or type(v) ~= t then
                 return false
             end
         end
@@ -182,11 +177,12 @@ function M.is_int(var, multiple)
     local is_bool = M.is_bool
     local is_num = M.is_num
     local floor = math.floor
+    local ceil = math.ceil
 
     multiple = is_bool(multiple) and multiple or false
 
     if not multiple then
-        return is_num(var) and var >= 0 and var == floor(var)
+        return is_num(var) and var >= 0 and (var == floor(var) or var == ceil(var))
     end
 
     if not is_tbl(var) then
@@ -194,7 +190,7 @@ function M.is_int(var, multiple)
     end
 
     for _, v in next, var do
-        if not (is_num(v) and v >= 0 and v == floor(v)) then
+        if not (is_num(v) and v >= 0 and (v == floor(v) or v == ceil(v))) then
             return false
         end
     end
@@ -244,7 +240,7 @@ end
 ---@param field string|integer|(string|integer)[]
 ---@param T table<string|integer, any>
 ---@return boolean
-local function fields(field, T)
+function M.fields(field, T)
     local is_tbl = M.is_tbl
     local is_str = M.is_str
     local is_num = M.is_num
@@ -263,19 +259,17 @@ local function fields(field, T)
     end
 
     if not is_tbl(field) then
-        return not is_nil(T[field])
+        return not M.is_nil(T[field])
     end
 
     for _, v in next, field do
-        if not fields(v, T) then
+        if not M.fields(v, T) then
             return false
         end
     end
 
     return true
 end
-
-M.fields = fields
 
 ---@param values any[]|table<string, any>
 ---@param T table
