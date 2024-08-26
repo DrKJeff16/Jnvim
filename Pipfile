@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 typing = "*"
 typing-extensions = "*"
+asyncio = "*"
+progress = "*"
 argparse = "*"
 wheel = "*"
 setuptools = "*"
