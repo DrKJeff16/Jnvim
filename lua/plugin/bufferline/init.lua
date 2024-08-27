@@ -7,7 +7,7 @@ if not exists('bufferline') or exists('barbar') then
     return
 end
 
-User.register_plugin('plugin.bufferline')
+User:register_plugin('plugin.bufferline')
 
 local BLine = require('bufferline')
 local Groups = require('bufferline.groups')

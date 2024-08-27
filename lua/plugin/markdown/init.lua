@@ -7,7 +7,7 @@ if not exists('markdown') then
     return
 end
 
-User.register_plugin('plugin.markdown')
+User:register_plugin('plugin.markdown')
 
 local MD = require('markdown')
 

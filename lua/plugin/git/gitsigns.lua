@@ -18,7 +18,7 @@ if not executable('git') or not exists('gitsigns') then
     return
 end
 
-User.register_plugin('plugin.git.gitsigns')
+User:register_plugin('plugin.git.gitsigns')
 
 local GS = require('gitsigns')
 

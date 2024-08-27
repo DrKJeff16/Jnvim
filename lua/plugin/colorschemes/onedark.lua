@@ -24,7 +24,7 @@ local M = {
 }
 
 if exists('onedark') then
-    User.register_plugin('plugin.colorschemes.onedark')
+    User:register_plugin('plugin.colorschemes.onedark')
 
     function M.setup(variant, transparent, override)
         variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'deep'

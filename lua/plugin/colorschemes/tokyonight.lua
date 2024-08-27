@@ -19,7 +19,7 @@ local M = {
 }
 
 if exists('tokyonight') then
-    User.register_plugin('plugin.colorschemes.tokyonight')
+    User:register_plugin('plugin.colorschemes.tokyonight')
 
     ---@param variant? 'night'|'moon'|'day'
     ---@param transparent? boolean

@@ -10,7 +10,7 @@ if not exists('nvim-highlight-colors') then
     return
 end
 
-User.register_plugin('plugin.hicolors')
+User:register_plugin('plugin.hicolors')
 
 local HiColors = require('nvim-highlight-colors')
 

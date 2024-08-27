@@ -12,7 +12,7 @@ if not exists('overseer') then
     return
 end
 
-User.register_plugin('plugin.overseer')
+User:register_plugin('plugin.overseer')
 
 local OS = require('overseer')
 

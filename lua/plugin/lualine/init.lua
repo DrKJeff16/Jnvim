@@ -10,7 +10,7 @@ if not exists('lualine') then
     return
 end
 
-User.register_plugin('plugin.lualine')
+User:register_plugin('plugin.lualine')
 
 local Lualine = require('lualine')
 

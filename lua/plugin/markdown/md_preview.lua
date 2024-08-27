@@ -12,7 +12,7 @@ local map_dict = User.maps.map_dict
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
-User.register_plugin('plugin.markdown.md_preview')
+User:register_plugin('plugin.markdown.md_preview')
 
 local Fields = {
     mkdp_auto_start = 0,

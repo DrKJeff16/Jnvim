@@ -7,7 +7,7 @@ if not exists('luarocks-nvim') then
     return
 end
 
-User.register_plugin('plugin.luarocks')
+User:register_plugin('plugin.luarocks')
 
 local Rocks = require('luarocks-nvim')
 

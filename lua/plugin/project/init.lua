@@ -14,7 +14,7 @@ if not exists('project_nvim') then
     return
 end
 
-User.register_plugin('plugin.project')
+User:register_plugin('plugin.project')
 
 local Project = require('project_nvim')
 local Config = require('project_nvim.config')

@@ -13,7 +13,7 @@ local empty = Check.value.empty
 local map_dict = User.maps.map_dict
 local notify = Util.notify.notify
 
-User.register_plugin('plugin.mini')
+User:register_plugin('plugin.mini')
 
 ---@param mini_mod string
 ---@param opts table|nil

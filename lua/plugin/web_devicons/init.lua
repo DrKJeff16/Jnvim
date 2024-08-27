@@ -7,7 +7,7 @@ if not exists('nvim-web-devicons') then
     return
 end
 
-User.register_plugin('plugin.web_devicons')
+User:register_plugin('plugin.web_devicons')
 
 local WDI = require('nvim-web-devicons')
 

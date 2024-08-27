@@ -9,7 +9,7 @@ if not exists('which-key') then
     return
 end
 
-User.register_plugin('plugin.which_key')
+User:register_plugin('plugin.which_key')
 
 local WK = require('which-key')
 

@@ -10,7 +10,7 @@ if not exists('nvim-autopairs') then
     return
 end
 
-User.register_plugin('plugin.autopairs')
+User:register_plugin('plugin.autopairs')
 
 local Ap = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')

@@ -7,7 +7,7 @@ if not exists('noice') then
     return
 end
 
-User.register_plugin('plugin.noice')
+User:register_plugin('plugin.noice')
 
 local Noice = require('noice')
 

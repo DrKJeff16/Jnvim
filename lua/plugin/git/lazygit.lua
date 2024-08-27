@@ -11,7 +11,7 @@ if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
     return
 end
 
-User.register_plugin('plugin.git.lazygit')
+User:register_plugin('plugin.git.lazygit')
 
 local au = vim.api.nvim_create_autocmd
 
