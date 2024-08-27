@@ -12,15 +12,15 @@ local M = {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
         version = false,
-        dependencies = {
-            'onsails/lspkind.nvim',
-            'hrsh7th/vim-vsnip',
-        },
         init = function()
             vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
-            vim.o.completeopt = 'menu,menuone,noinsert,noselect,preview'
         end,
         config = source('plugin.cmp'),
+    },
+    {
+        'onsails/lspkind.nvim',
+        lazy = true,
+        version = false,
     },
     {
         'hrsh7th/vim-vsnip',
@@ -29,17 +29,17 @@ local M = {
     {
         'hrsh7th/cmp-nvim-lsp',
         version = false,
-        dependencies = { 'nvim-lspconfig' },
+        dependencies = { 'neovim/nvim-lspconfig' },
     },
     {
         'hrsh7th/cmp-nvim-lsp-document-symbol',
         version = false,
-        dependencies = { 'nvim-lspconfig' },
+        dependencies = { 'neovim/nvim-lspconfig' },
     },
     {
         'hrsh7th/cmp-nvim-lsp-signature-help',
         version = false,
-        dependencies = { 'nvim-lspconfig' },
+        dependencies = { 'neovim/nvim-lspconfig' },
     },
     {
         'hrsh7th/cmp-buffer',
@@ -72,7 +72,8 @@ local M = {
     {
         'paopaol/cmp-doxygen',
         ft = 'doxygen',
-        dependencies = { 'nvim-treesitter-textobjects' },
+        version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
         cond = executable('doxygen'),
     },
     {

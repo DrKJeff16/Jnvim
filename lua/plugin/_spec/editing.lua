@@ -29,7 +29,8 @@ local M = {
         event = 'VeryLazy',
         version = false,
         dependencies = {
-            'nvim-ts-context-commentstring',
+            'nvim-treesitter/nvim-treesitter',
+            'JoosepAlviste/nvim-ts-context-commentstring',
         },
         config = source('plugin.Comment'),
     },
@@ -45,8 +46,8 @@ local M = {
         event = 'BufReadPre',
         version = false,
         dependencies = {
-            'nvim-treesitter',
-            'plenary.nvim',
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-lua/plenary.nvim',
         },
         init = CfgUtil.set_tgc(),
         config = source('plugin.todo_comments'),
@@ -54,7 +55,6 @@ local M = {
     },
     {
         'windwp/nvim-autopairs',
-        event = 'VeryLazy',
         main = 'nvim-autopairs',
         version = false,
         config = source('plugin.autopairs'),

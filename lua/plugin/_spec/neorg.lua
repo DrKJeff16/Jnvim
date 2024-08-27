@@ -14,7 +14,6 @@ local luarocks_check = CfgUtil.luarocks_check
 local M = {
     {
         'folke/zen-mode.nvim',
-        lazy = true,
         version = false,
         config = source('plugin.zen_mode'),
         cond = not is_root(),
