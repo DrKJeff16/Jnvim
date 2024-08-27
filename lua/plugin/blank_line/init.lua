@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 local hl_t = User.types.user.highlight
@@ -10,7 +7,7 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
-local hi = User.highlight.hl
+local hi = User.highlight.hl_from_dict
 
 if not exists('ibl') then
     return
@@ -62,11 +59,7 @@ for k, v in next, Hilite do
     end
 end
 
-local function apply_Hilite()
-    for k, v in next, Hilite do
-        hi(k, v)
-    end
-end
+local function apply_Hilite() hi(Hilite) end
 
 ---@param bufnr? integer
 ---@return boolean
@@ -84,12 +77,32 @@ if exists('rainbow-delimiters.setup') then
     vim.g.rainbow_delimiters = { highlight = names }
 end
 
-register(HType.ACTIVE, line_cond)
-register(HType.HIGHLIGHT_SETUP, apply_Hilite)
-register(HType.SCOPE_HIGHLIGHT, Builtin.scope_highlight_from_extmark)
-register(HType.SKIP_LINE, Hooks.builtin.skip_preproc_lines, { bufnr = 0 })
-register(HType.WHITESPACE, Hooks.builtin.hide_first_space_indent_level)
-register(HType.WHITESPACE, Hooks.builtin.hide_first_tab_indent_level)
+---@param htype string
+---@param func fun(...)
+---@param opts? ibl.hooks.options
+local function reg(htype, func, opts)
+    opts = is_tbl(opts) and opts or {}
+
+    if empty(opts) then
+        register(htype, func)
+    else
+        register(htype, func, opts)
+    end
+end
+
+---@type { [1]: string, [2]: fun(...), [3]: table|ibl.hooks.options }[]
+local arg_tbl = {
+    { HType.ACTIVE, line_cond, {} },
+    { HType.HIGHLIGHT_SETUP, apply_Hilite, {} },
+    { HType.SCOPE_HIGHLIGHT, Builtin.scope_highlight_from_extmark, {} },
+    { HType.SKIP_LINE, Hooks.builtin.skip_preproc_lines, { bufnr = 0 } },
+    { HType.WHITESPACE, Hooks.builtin.hide_first_space_indent_level, {} },
+    { HType.WHITESPACE, Hooks.builtin.hide_first_tab_indent_level, {} },
+}
+
+for _, t in next, arg_tbl do
+    reg(t[1], t[2], t[3] or {})
+end
 
 Ibl.setup({
     enabled = true,
