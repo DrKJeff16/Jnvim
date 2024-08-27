@@ -15,6 +15,9 @@ end
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
+---@param msg string
+---@param lvl? ('debug'|'error'|'info'|'off'|'trace'|'warn'|0|1|2|3|4|5)?
+---@param opts? ({ level: number, title: string, once: boolean, id: string? }|notify.Config)?
 function M.notify(msg, lvl, opts)
     if type(msg) ~= 'string' then
         error('(user_api.util.notify.notify): Empty message')
@@ -24,6 +27,7 @@ function M.notify(msg, lvl, opts)
 
     local vim_lvl = vim.log.levels
 
+    -- WARN: DO NOT SORT
     local DEFAULT_LVLS = {
         'trace',
         'debug',
@@ -82,6 +86,14 @@ function M.notify(msg, lvl, opts)
             vim.notify(msg, lvl)
         end
     end
+end
+
+---@param msg string
+---@param lvl? ('debug'|'error'|'info'|'off'|'trace'|'warn'|0|1|2|3|4|5)?
+---@param opts? ({ level: number, title: string, once: boolean, id: string? }|notify.Config)?
+function _G.anotify(msg, lvl, opts)
+    ---@diagnostic disable-next-line:missing-parameter
+    require('plenary.async').run(function() M.notify(msg, lvl, opts) end)
 end
 
 return M
