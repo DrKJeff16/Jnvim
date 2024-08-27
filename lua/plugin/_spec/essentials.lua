@@ -5,11 +5,12 @@ local types = User.types.lazy
 
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
+local luarocks_check = CfgUtil.luarocks_check
+local set_tgc = CfgUtil.set_tgc
 local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 local is_root = Check.is_root
-local luarocks_check = CfgUtil.luarocks_check
 
 ---@type (LazySpec)[]
 local M = {
@@ -22,7 +23,7 @@ local M = {
             vim.opt.timeoutlen = 300
             vim.opt.ttimeout = true
             vim.opt.ttimeoutlen = -1
-            CfgUtil.set_tgc()
+            set_tgc()
         end,
         config = source('plugin.which_key'),
         cond = vim_has('nvim-0.9'),
@@ -46,16 +47,11 @@ local M = {
         lazy = false,
         version = false,
         config = source('plugin.mini'),
-        cond = not in_console(),
     },
     {
         'tiagovla/scope.nvim',
         version = false,
         init = function()
-            vim.opt.ls = 2
-            vim.opt.stal = 2
-            vim.opt.hid = true
-
             --- NOTE: Required for `scope`
             vim.opt.sessionoptions = {
                 'buffers',
@@ -75,8 +71,8 @@ local M = {
         lazy = false,
         main = 'notify',
         version = false,
-        dependencies = { 'plenary.nvim' },
-        init = CfgUtil.set_tgc(),
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        init = set_tgc,
         config = source('plugin.notify'),
         cond = not in_console(),
     },
@@ -85,7 +81,6 @@ local M = {
         event = 'VeryLazy',
         version = false,
         config = source('plugin.hover'),
-        cond = not in_console(),
     },
     {
         'nvim-tree/nvim-web-devicons',
@@ -93,6 +88,10 @@ local M = {
         version = false,
         config = source('plugin.web_devicons'),
         cond = not in_console(),
+    },
+    {
+        'equalsraf/neovim-gui-shim',
+        version = false,
     },
 }
 

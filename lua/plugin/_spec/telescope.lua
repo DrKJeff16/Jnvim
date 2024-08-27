@@ -15,7 +15,6 @@ local M = {
         version = false,
         dependencies = { 'plenary.nvim' },
         config = source('plugin.telescope'),
-        cond = not in_console(),
     },
     -- TODO: ADD 'OliverChao/telescope-picker-list.nvim'
     {
@@ -23,14 +22,12 @@ local M = {
         lazy = true,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        cond = not in_console(),
     },
     {
         'nvim-telescope/telescope-file-browser.nvim',
         lazy = true,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        cond = not in_console(),
     },
     {
         'nvim-telescope/telescope-fzf-native.nvim',
@@ -38,7 +35,7 @@ local M = {
         version = false,
         build = tel_fzf_build(),
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        cond = executable('fzf') and not in_console(),
+        cond = executable('fzf'),
     },
     -- TODO: Split into its file
     {
@@ -72,7 +69,6 @@ local M = {
                 close_tab_shortcut_n = 'D', -- if you're in normal mode
             })
         end,
-        cond = not in_console(),
     },
     {
         'DrKJeff16/telescope-makefile',
@@ -94,18 +90,13 @@ local M = {
         ft = { 'gitcommit' },
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        cond = not in_console(),
     },
     --- Project Manager
     {
         'DrKJeff16/project.nvim',
         main = 'project_nvim',
         version = false,
-        init = function()
-            vim.opt.ls = 2
-            vim.opt.stal = 2
-            vim.o.autochdir = true
-        end,
+        init = function() vim.opt.autochdir = true end,
         config = source('plugin.project'),
     },
 }

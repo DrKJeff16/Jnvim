@@ -20,7 +20,7 @@ local M = {
     },
     {
         'b0o/SchemaStore',
-        event = 'VeryLazy',
+        lazy = true,
         version = false,
         cond = executable('vscode-json-language-server'),
     },

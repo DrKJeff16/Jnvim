@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local set_tgc = CfgUtil.set_tgc
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local vim_exists = Check.exists.vim_exists
@@ -21,6 +22,7 @@ local M = {
             vim.opt.ls = 2
             vim.opt.stal = 2
             vim.opt.showmode = false
+            set_tgc()
         end,
         config = source('plugin.lualine'),
         cond = use_statusline == 'lualine' and not in_console(),
@@ -33,7 +35,7 @@ local M = {
             vim.opt.ls = 2
             vim.opt.stal = 2
             vim.opt.showmode = false
-            vim.opt.termguicolors = not in_console()
+            set_tgc()
         end,
         config = source('plugin.galaxyline'),
         cond = use_statusline == 'galaxyline' and not in_console(),
@@ -48,7 +50,7 @@ local M = {
         },
         init = function()
             vim.opt.stal = 2
-            CfgUtil.set_tgc()
+            set_tgc()
         end,
         config = source('plugin.bufferline'),
         cond = not in_console(),
@@ -59,7 +61,6 @@ local M = {
         main = 'ibl',
         version = false,
         config = source('plugin.blank_line'),
-        cond = not in_console(),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
@@ -77,10 +78,9 @@ local M = {
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
-            CfgUtil.set_tgc()
+            set_tgc()
         end,
         config = source('plugin.nvim_tree'),
-        cond = not in_console(),
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
@@ -96,7 +96,7 @@ local M = {
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
-            CfgUtil.set_tgc()
+            set_tgc()
         end,
         config = source('plugin.neo_tree'),
         cond = not in_console(),
@@ -114,7 +114,7 @@ local M = {
         'brenoprata10/nvim-highlight-colors',
         main = 'nvim-highlight-colors',
         version = false,
-        init = CfgUtil.set_tgc,
+        init = set_tgc,
         config = source('plugin.hicolors'),
         cond = vim_exists('+termguicolors'),
     },

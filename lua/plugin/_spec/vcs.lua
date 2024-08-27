@@ -20,7 +20,7 @@ local M = {
         'lewis6991/gitsigns.nvim',
         version = false,
         config = source('plugin.git.gitsigns'),
-        cond = executable('git') and not in_console(),
+        cond = executable('git'),
     },
     {
         'sindrets/diffview.nvim',

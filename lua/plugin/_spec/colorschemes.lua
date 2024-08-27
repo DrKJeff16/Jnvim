@@ -122,7 +122,6 @@ local M = {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_molokai'),
-        cond = has_tgc(),
     },
     {
         'colepeters/spacemacs-theme.vim',
