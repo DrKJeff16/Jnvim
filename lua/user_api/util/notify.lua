@@ -3,11 +3,10 @@ require('user_api.types.user.util')
 --- Can't use `check.exists.module()` here as said module might
 --- end up requiring this module, so let's avoid an import loop,
 --- shall we?
----@param mod string
----@return boolean ok
+---@param mod string The module `require()` string
+---@return boolean ok Whether the module exists
 local function exists(mod)
     local ok, _ = pcall(require, mod)
-
     return ok
 end
 
@@ -20,10 +19,12 @@ local M = {}
 ---@param opts? ({ level: number, title: string, once: boolean, id: string? }|notify.Config)?
 function M.notify(msg, lvl, opts)
     if type(msg) ~= 'string' then
+        error('(user_api.util.notify.notify): Message is not a string')
+    elseif msg == '' then
         error('(user_api.util.notify.notify): Empty message')
     end
 
-    opts = (type(opts) == 'table') and opts or {}
+    opts = (opts ~= nil and type(opts) == 'table') and opts or {}
 
     local vim_lvl = vim.log.levels
 
@@ -41,7 +42,7 @@ function M.notify(msg, lvl, opts)
     ---@diagnostic disable-next-line:missing-fields
     local DEFAULT_OPTS = {
         animate = true,
-        hide_from_history = false,
+        hide_from_history = true,
         title = 'Message',
         timeout = 700,
     }
@@ -49,23 +50,17 @@ function M.notify(msg, lvl, opts)
     if exists('notify') then
         local notify = require('notify')
 
-        if type(lvl) == 'number' and (lvl >= 0 and lvl <= 5) then
+        if lvl == nil then
+            lvl = DEFAULT_LVLS[vim_lvl.INFO + 1]
+        elseif type(lvl) == 'number' and (lvl >= 0 and lvl <= 5) then
             lvl = DEFAULT_LVLS[math.floor(lvl) + 1]
         elseif type(lvl) == 'number' then
-            lvl = DEFAULT_LVLS[3]
+            lvl = DEFAULT_LVLS[vim_lvl.INFO + 1]
         end
 
-        if opts ~= nil and type(opts) == 'table' and not vim.tbl_isempty(opts) then
-            for key, v in next, DEFAULT_OPTS do
-                opts[key] = (opts[key] ~= nil and type(v) == type(opts[key])) and opts[key] or v
-            end
-        else
-            for key, v in next, DEFAULT_OPTS do
-                opts[key] = v
-            end
-        end
+        opts = vim.tbl_deep_extend('keep', opts, DEFAULT_OPTS)
 
-        notify(msg, lvl, opts)
+        vim.schedule(function() notify(msg, lvl, opts) end)
     else
         if type(lvl) == 'string' then
             for k, v in next, DEFAULT_LVLS do
@@ -81,19 +76,20 @@ function M.notify(msg, lvl, opts)
         end
 
         if opts ~= nil and type(opts) == 'table' and not vim.tbl_isempty(opts) then
-            vim.notify(msg, lvl, opts)
+            vim.schedule(function() vim.notify(msg, lvl, opts) end)
         else
-            vim.notify(msg, lvl)
+            vim.schedule(function() vim.notify(msg, lvl) end)
         end
     end
 end
 
 ---@param msg string
 ---@param lvl? ('debug'|'error'|'info'|'off'|'trace'|'warn'|0|1|2|3|4|5)?
----@param opts? ({ level: number, title: string, once: boolean, id: string? }|notify.Config)?
+---@param opts? ({ level: number?, title: string?, once: boolean?, id: string? }|notify.Config)?
 function _G.anotify(msg, lvl, opts)
+    local func = function() M.notify(msg, lvl or 'info', opts or {}) end
     ---@diagnostic disable-next-line:missing-parameter
-    require('plenary.async').run(function() M.notify(msg, lvl, opts) end)
+    require('plenary.async').run(func)
 end
 
 return M
