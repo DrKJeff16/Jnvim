@@ -1,6 +1,7 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
-_G.inspect = inspect or vim.inspect
 _G.newline = string.char(10)
+
+_G.inspect = inspect or vim.inspect
 
 local User = require('user_api') ---@see User User API
 local Types = User.types ---@see User.types Import docstrings and annotations
@@ -27,15 +28,13 @@ local curr_win = vim.api.nvim_get_current_win
 -- _G.is_windows = Check.exists.vim_has('win32')
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
---- WARNING: USE LONG NAMES. I'll try to fix it later
----
---- Vim `:set ...` global options setter
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
     cmdwinheight = 8,
     ci = false, -- `copyindent`
+    completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' },
     confirm = true,
     equalalways = true,
     et = true, -- `expandtab`
@@ -212,7 +211,7 @@ require('user_api.distro.archlinux').setup()
 
 Commands:setup_commands()
 
-User.update.setup_maps()
+User.update:setup_maps()
 
 if WK.available() then
     map_dict({

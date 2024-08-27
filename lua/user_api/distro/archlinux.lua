@@ -4,6 +4,7 @@
 require('user_api.types')
 
 ---@type User.Distro.Archlinux
+---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 function M.setup()
@@ -31,7 +32,9 @@ function M.setup()
     end
 
     if not empty(rtpaths) then
-        vim.opt.rtp:append(rtpaths)
+        for _, path in next, rtpaths do
+            vim.opt.rtp:append(path)
+        end
     end
 
     vim.cmd('runtime! archlinux.vim')

@@ -1,10 +1,18 @@
 require('user_api.types.user.util')
 
+---@type User.Util
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
+M.notify = require('user_api.util.notify')
+M.au = require('user_api.util.autocmd')
+M.string = require('user_api.util.string')
+
 ---@param T table<string|integer, any>
 ---@param steps? integer
 ---@param direction? 'l'|'r'
 ---@return table<string|integer, any> res
-local function mv_tbl_values(T, steps, direction)
+function M.mv_tbl_values(T, steps, direction)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -89,7 +97,7 @@ end
 ---@param x boolean
 ---@param y boolean
 ---@return boolean
-local function xor(x, y)
+function M.xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
         error('(user_api.util.xor): An argument is not of boolean type')
     end
@@ -100,7 +108,7 @@ end
 ---@param T table<string|integer, any>
 ---@param fields string|integer|(string|integer)[]
 ---@return table<string|integer, any> res
-local function strip_fields(T, fields)
+function M.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -149,7 +157,7 @@ end
 ---@param values any[]
 ---@param max_instances? integer
 ---@return table<string|integer, any> res
-local function strip_values(T, values, max_instances)
+function M.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -172,7 +180,7 @@ local function strip_values(T, values, max_instances)
     local count = 0
 
     for k, v in next, T do
-        if xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
+        if M.xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
             if not vim.tbl_contains(values, v) and is_int(k) then
                 table.insert(res, v)
             elseif not vim.tbl_contains(values, v) then
@@ -193,7 +201,7 @@ end
 ---@param s string
 ---@param bufnr? integer
 ---@return fun()
-local function ft_set(s, bufnr)
+function M.ft_set(s, bufnr)
     local Value = require('user_api.check.value')
 
     local is_int = Value.is_int
@@ -210,13 +218,13 @@ end
 
 ---@param bufnr? integer
 ---@return string
-local function ft_get(bufnr)
+function M.ft_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or 0
 
     return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
 
-local function assoc()
+function M.assoc()
     local Value = require('user_api.check.value')
 
     local is_nil = Value.is_nil
@@ -224,8 +232,8 @@ local function assoc()
     local is_tbl = Value.is_tbl
     local is_str = Value.is_str
     local empty = Value.empty
+    local au_repeated_events = M.au.au_repeated_events
 
-    local au_repeated_events = require('user_api.util.autocmd').au_repeated_events
     local function retab() vim.cmd('%retab') end
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
@@ -235,8 +243,8 @@ local function assoc()
         { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
-                { pattern = '.spacemacs', callback = ft_set('lisp'), group = group },
-                { pattern = '.clangd', callback = ft_set('yaml'), group = group },
+                { pattern = '.spacemacs', callback = M.ft_set('lisp'), group = group },
+                { pattern = '.clangd', callback = M.ft_set('yaml'), group = group },
             },
         },
         {
@@ -249,7 +257,7 @@ local function assoc()
                         local buftype = vim.api.nvim_get_option_value('bt', {
                             buf = vim.api.nvim_get_current_buf(),
                         })
-                        if ft_get() ~= 'help' or buftype ~= 'help' then
+                        if M.ft_get() ~= 'help' or buftype ~= 'help' then
                             return
                         end
 
@@ -417,7 +425,7 @@ local function assoc()
     if ok then
         table.insert(
             AUS[1].opts_tbl,
-            { pattern = '*.org', callback = ft_set('org'), group = group }
+            { pattern = '*.org', callback = M.ft_set('org'), group = group }
         )
     end
 
@@ -430,53 +438,40 @@ end
 ---@param direction? 'next'|'prev'
 ---@param cycle? boolean
 ---@return string
-local function displace_letter(c, direction, cycle)
+function M.displace_letter(c, direction, cycle)
     local Value = require('user_api.check.value')
-    direction = (Value.is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
+    local Alphabet = M.string.alphabet
+
+    local fields = Value.fields
+    local is_str = Value.is_str
+    local is_bool = Value.is_bool
+
+    direction = (is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
             and direction
         or 'next'
-    cycle = Value.is_bool(cycle) and cycle or false
+    cycle = is_bool(cycle) and cycle or false
 
     if c == '' then
         return 'a'
     end
 
-    local lower_map_next = vim.deepcopy(require('user_api.util.string').alphabet.lower_map)
-    local upper_map_next = vim.deepcopy(require('user_api.util.string').alphabet.upper_map)
-    local lower_map_prev = vim.deepcopy(require('user_api.util.string').alphabet.lower_map)
-    local upper_map_prev = vim.deepcopy(require('user_api.util.string').alphabet.upper_map)
+    local lower_map_next = vim.deepcopy(Alphabet.lower_map)
+    local upper_map_next = vim.deepcopy(Alphabet.upper_map)
+    local lower_map_prev = vim.deepcopy(Alphabet.lower_map)
+    local upper_map_prev = vim.deepcopy(Alphabet.upper_map)
 
-    if direction == 'next' and Value.fields(c, lower_map_next) then
-        -- return lower_map_next[c]
-        return mv_tbl_values(lower_map_next, 1, 'l')[c]
-    elseif direction == 'next' and Value.fields(c, upper_map_next) then
-        -- return upper_map_next[c]
-        return mv_tbl_values(upper_map_next, 1, 'l')[c]
-    elseif direction == 'prev' and Value.fields(c, lower_map_prev) then
-        -- return lower_map_prev[c]
-        return mv_tbl_values(lower_map_prev, 1, 'r')[c]
-    elseif direction == 'prev' and Value.fields(c, upper_map_prev) then
-        -- return upper_map_prev[c]
-        return mv_tbl_values(upper_map_prev, 1, 'r')[c]
+    if direction == 'next' and fields(c, lower_map_next) then
+        return M.mv_tbl_values(lower_map_next, 1, 'l')[c]
+    elseif direction == 'next' and fields(c, upper_map_next) then
+        return M.mv_tbl_values(upper_map_next, 1, 'l')[c]
+    elseif direction == 'prev' and fields(c, lower_map_prev) then
+        return M.mv_tbl_values(lower_map_prev, 1, 'r')[c]
+    elseif direction == 'prev' and fields(c, upper_map_prev) then
+        return M.mv_tbl_values(upper_map_prev, 1, 'r')[c]
     end
 
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
 end
-
----@type User.Util
-local M = {
-    assoc = assoc,
-    xor = xor,
-    mv_tbl_values = mv_tbl_values,
-    strip_fields = strip_fields,
-    strip_values = strip_values,
-    displace_letter = displace_letter,
-    ft_get = ft_get,
-    ft_set = ft_set,
-    notify = require('user_api.util.notify'),
-    au = require('user_api.util.autocmd'),
-    string = require('user_api.util.string'),
-}
 
 return M
 

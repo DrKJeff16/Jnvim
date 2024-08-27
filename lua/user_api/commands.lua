@@ -12,7 +12,6 @@ local exec2 = vim.api.nvim_exec2
 local M = {}
 
 function M.redir()
-    local api = vim.api
     local lopt = vim.opt_local
 
     new_cmd('Redir', function(ctx)
@@ -21,11 +20,11 @@ function M.redir()
         vim.cmd.new()
 
         set_lines(0, 0, -1, false, lines)
-        vim.lopt.modified = false
+        vim.opt_local.modified = false
     end, { nargs = '+', complete = 'command' })
 end
 
-function M.setup_commands(self) self.redir() end
+function M:setup_commands() self.redir() end
 
 function M.new()
     local self = setmetatable({}, { __index = M })
