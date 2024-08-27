@@ -35,7 +35,17 @@ function M.update()
             { res },
         }, false, {})
 
+        require('user_api.util.notify').notify(
+            'Need to restart Nvim. Press any key to exit',
+            'warn',
+            {
+                title = 'User API',
+                animate = false,
+                timeout = 35000,
+            }
+        )
         vim.fn.getchar()
+        os.exit(0)
     end
 
     vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
@@ -43,7 +53,7 @@ function M.update()
     return res
 end
 
-function M.setup_maps()
+function M:setup_maps()
     local wk_available = require('user_api.maps.wk').available
     local desc = require('user_api.maps.kmap').desc
     local map_dict = require('user_api.maps').map_dict
@@ -53,7 +63,7 @@ function M.setup_maps()
     end
     map_dict({
         ['<leader>Uu'] = {
-            M.update,
+            self.update,
             desc('Update User Config'),
         },
     }, 'wk.register', false, 'n')

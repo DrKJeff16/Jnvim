@@ -3,8 +3,12 @@ require('user_api.types.user.util')
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
+---@type User.Util.Autocmd
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
 ---@param T AuPair
-local function au_pair(T)
+function M.au_pair(T)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -12,10 +16,10 @@ local function au_pair(T)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.autocmd.au_pair): Not a table')
+        error('(user_api.util.autocmd.au_pair): Not a table')
     end
     if empty(T) then
-        error('(user.util.autocmd.au_pair): Empty table')
+        error('(user_api.util.autocmd.au_pair): Empty table')
     end
 
     if
@@ -27,12 +31,12 @@ local function au_pair(T)
     elseif (is_str(T[1]) or is_tbl(T[1])) and is_tbl(T[2]) and not (empty(T[2]) or empty(T[1])) then
         au(T[1], T[2])
     else
-        error('(user.util.autocmd.au_pair): Table given is not of supported type')
+        error('(user_api.util.autocmd.au_pair): Table given is not of supported type')
     end
 end
 
 ---@param T AuList
-local function au_from_arr(T)
+function M.au_from_arr(T)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -65,13 +69,13 @@ local function au_from_arr(T)
         then
             au(v[1], v[2])
         else
-            error('(user.util.autocmd.au_from_arr): Table given is not of supported type')
+            error('(user_api.util.autocmd.au_from_arr): Table given is not of supported type')
         end
     end
 end
 
 ---@param T AuDict
-local function au_from_dict(T)
+function M.au_from_dict(T)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -80,16 +84,16 @@ local function au_from_dict(T)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.autocmd.au_from_arr): Not a table')
+        error('(user_api.util.autocmd.au_from_arr): Not a table')
     end
     if empty(T) then
-        error('(user.util.autocmd.au_from_arr): Empty table')
+        error('(user_api.util.autocmd.au_from_arr): Empty table')
     end
 
     for k, v in next, T do
         if is_str(k) and is_tbl(v) and not (empty(v) or empty(k)) then
             if not is_fun(v.callback) then
-                error('(user.util.autocmd.au_from_arr): Missing `callback` field')
+                error('(user_api.util.autocmd.au_from_arr): Missing `callback` field')
             end
 
             au(k, v)
@@ -100,7 +104,7 @@ local function au_from_dict(T)
 end
 
 ---@param T AuRepeat
-local function au_repeated(T)
+function M.au_repeated(T)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -130,7 +134,7 @@ local function au_repeated(T)
 end
 
 ---@param T AuRepeatEvents
-local function au_repeated_events(T)
+function M.au_repeated_events(T)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -162,15 +166,6 @@ local function au_repeated_events(T)
         au(T.events, opts)
     end
 end
-
----@type User.Util.Autocmd
-local M = {
-    au_pair = au_pair,
-    au_from_arr = au_from_arr,
-    au_repeated = au_repeated,
-    au_repeated_events = au_repeated_events,
-    au_from_dict = au_from_dict,
-}
 
 return M
 

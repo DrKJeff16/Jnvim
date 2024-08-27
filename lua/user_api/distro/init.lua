@@ -1,12 +1,10 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local Types = require('user_api.types') -- Source all API annotations
 
 ---@type User.Distro
-local M = {
-    archlinux = require('user_api.distro.archlinux'),
-}
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
+M.archlinux = require('user_api.distro.archlinux')
 
 return M
 
