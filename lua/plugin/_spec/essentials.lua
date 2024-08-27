@@ -70,7 +70,7 @@ local M = {
     {
         'rcarriga/nvim-notify',
         lazy = false,
-        main = 'notify',
+        priority = 1000,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = set_tgc,
