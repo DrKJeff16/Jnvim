@@ -30,7 +30,7 @@ function M.update()
         os.exit(1)
     end
 
-    if res:match('Already up to date') then
+    if not res:match('Already up to date') then
         vim.api.nvim_echo({
             { res },
         }, false, {})
