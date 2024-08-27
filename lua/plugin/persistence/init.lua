@@ -12,7 +12,7 @@ if not exists('persistence') then
     return
 end
 
-User.register_plugin('plugin.persistence')
+User:register_plugin('plugin.persistence')
 
 local expand = vim.fn.expand
 local stdpath = vim.fn.stdpath

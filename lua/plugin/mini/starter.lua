@@ -8,7 +8,7 @@ if not exists('mini.starter') then
     return
 end
 
-User.register_plugin('plugin.mini.starter')
+User:register_plugin('plugin.mini.starter')
 
 local MS = require('mini.starter')
 local Sections = MS.sections

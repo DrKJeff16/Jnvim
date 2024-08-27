@@ -7,7 +7,7 @@ if not exists('neorg') then
     return
 end
 
-User.register_plugin('plugin.neorg')
+User:register_plugin('plugin.neorg')
 
 local Neorg = require('neorg')
 

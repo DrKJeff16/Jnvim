@@ -13,7 +13,7 @@ if not exists('toggleterm') then
     return
 end
 
-User.register_plugin('plugin.toggleterm')
+User:register_plugin('plugin.toggleterm')
 
 local floor = math.floor
 

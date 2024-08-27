@@ -13,7 +13,7 @@ if not exists('notify') then
     return
 end
 
-User.register_plugin('plugin.notify')
+User:register_plugin('plugin.notify')
 
 local notify = require('notify')
 

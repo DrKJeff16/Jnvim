@@ -15,7 +15,7 @@ if not exists('scope') then
     return
 end
 
-User.register_plugin('plugin.scope')
+User:register_plugin('plugin.scope')
 
 local Scope = require('scope')
 

@@ -11,7 +11,7 @@ if not exists('diffview') then
     return
 end
 
-User.register_plugin('plugin.git.diffview')
+User:register_plugin('plugin.git.diffview')
 
 local DVW = require('diffview')
 local Actions = require('diffview.actions')

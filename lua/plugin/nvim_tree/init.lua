@@ -19,7 +19,7 @@ if not exists('nvim-tree') then
     return
 end
 
-User.register_plugin('plugin.nvim_tree')
+User:register_plugin('plugin.nvim_tree')
 
 --- Use floating Tree? You decide
 local USE_FLOAT = false

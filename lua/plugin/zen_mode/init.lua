@@ -7,7 +7,7 @@ if not exists('zen-mode') then
     return
 end
 
-User.register_plugin('plugin.zen_mode')
+User:register_plugin('plugin.zen_mode')
 
 local ZM = require('zen-mode')
 

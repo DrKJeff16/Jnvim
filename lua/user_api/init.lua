@@ -4,53 +4,66 @@ local Util = require('user_api.util') ---@see User.Util
 
 ---@type User
 ---@diagnostic disable-next-line:missing-fields
-local M = {
-    types = require('user_api.types'),
-    util = require('user_api.util'),
-    check = require('user_api.check'),
-    maps = require('user_api.maps'),
-    highlight = require('user_api.highlight'),
-    opts = require('user_api.opts'),
-    distro = require('user_api.distro'),
-    update = require('user_api.update'),
-    commands = require('user_api.commands'):new(),
-}
+local M = {}
+
+M.types = require('user_api.types')
+
+M.util = require('user_api.util')
+
+M.check = require('user_api.check')
+
+M.maps = require('user_api.maps')
+
+M.highlight = require('user_api.highlight')
+
+M.opts = require('user_api.opts')
+
+M.distro = require('user_api.distro')
+
+M.update = require('user_api.update')
+
+M.commands = require('user_api.commands'):new()
 
 M.registered_plugins = {}
 
+---@param self? User
 ---@param pathstr string
 ---@param i? integer
-function M.register_plugin(pathstr, i)
-    local is_nil = M.check.value.is_nil
-    local is_str = M.check.value.is_str
-    local empty = M.check.value.empty
-    local notify = M.util.notify.notify
+function M:register_plugin(pathstr, i)
+    local Value = self.check.value
 
-    i = (M.check.value.is_int(i) and i >= 1) and i or 0
+    local is_nil = Value.is_nil
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local empty = Value.empty
+    local notify = self.util.notify.notify
+
+    i = (is_int(i) and i >= 1) and i or 0
     if not is_str(pathstr) or empty(pathstr) then
         error('(user_api.register_plugin): Plugin must be a non-empty string')
     end
 
-    if vim.tbl_contains(M.registered_plugins, pathstr) then
+    if vim.tbl_contains(self.registered_plugins, pathstr) then
         return
     end
 
     ---@type nil|string
     local warning = nil
 
-    if i >= 1 and i <= #M.registered_plugins then
-        table.insert(M.registered_plugins, i, pathstr)
-    elseif i < 0 or i > #M.registered_plugins then
-        warning = '(user_api.register_plugin): Invalid index, appending instead'
-    else
-        table.insert(M.registered_plugins, pathstr)
+    if i >= 1 and i <= #self.registered_plugins then
+        table.insert(self.registered_plugins, i, pathstr)
+    elseif i < 0 or i > #self.registered_plugins then
+        warning = 'Invalid index, appending instead'
+    elseif i == 0 then
+        table.insert(self.registered_plugins, pathstr)
     end
 
     if not is_nil(warning) then
         notify(warning, 'warn', {
             hide_from_history = false,
-            timeout = 350,
-            title = 'User API',
+            animate = false,
+            timeout = 1750,
+            title = '(user_api.register_plugin)',
         })
     end
 end
@@ -76,16 +89,20 @@ end
 ---@param self User
 function M:print_loaded_plugins()
     local notify = self.util.notify.notify
+    local nwl = newline or string.char(10)
 
-    local msg = '{'
+    local msg = ''
 
     for _, P in next, self.registered_plugins do
-        msg = msg .. string.char(10) .. '  ' .. P
+        msg = msg .. '- ' .. P .. nwl
     end
 
-    msg = msg .. string.char(10) .. '}'
-
-    notify(msg)
+    notify(msg, 'info', {
+        hide_from_history = false,
+        animate = false,
+        timeout = 1750,
+        title = 'User API',
+    })
 end
 
 ---@param o? table

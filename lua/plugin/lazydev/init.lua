@@ -11,7 +11,7 @@ if not (exists('lazydev') and executable('lua-language-server') and not exists('
     return
 end
 
-User.register_plugin('plugin.lazydev')
+User:register_plugin('plugin.lazydev')
 
 local LazyDev = require('lazydev')
 

@@ -10,7 +10,7 @@ if not is_int(vim.g.installed_startuptime) or vim.g.installed_startuptime ~= 1 t
     return
 end
 
-User.register_plugin('plugin.startuptime')
+User:register_plugin('plugin.startuptime')
 
 local flags = {
     more_info_key_seq = 'K',

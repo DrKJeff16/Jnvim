@@ -14,7 +14,7 @@ local M = {
 }
 
 if exists('vscode') then
-    User.register_plugin('plugin.colorschemes.vscode')
+    User:register_plugin('plugin.colorschemes.vscode')
 
     ---@param variant? any
     ---@param transparent? boolean

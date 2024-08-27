@@ -20,7 +20,7 @@ local M = {
 }
 
 if exists('kanagawa') then
-    User.register_plugin('plugin.colorschemes.kanagawa')
+    User:register_plugin('plugin.colorschemes.kanagawa')
     ---@param variant? 'dragon'|'wave'|'lotus'
     ---@param transparent? boolean
     ---@param override? table

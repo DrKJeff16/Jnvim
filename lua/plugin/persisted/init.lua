@@ -12,7 +12,7 @@ if not exists('persisted') then
     return
 end
 
-User.register_plugin('plugin.persisted')
+User:register_plugin('plugin.persisted')
 
 local Pstd = require('persisted')
 

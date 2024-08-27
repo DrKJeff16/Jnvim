@@ -21,7 +21,7 @@ if not exists('inc_rename') then
     return
 end
 
-User.register_plugin('plugin.lspconfig.inc_rename')
+User:register_plugin('plugin.lspconfig.inc_rename')
 
 local IR = require('inc_rename')
 

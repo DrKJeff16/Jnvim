@@ -16,7 +16,7 @@ if not exists('barbar') then
     return
 end
 
-User.register_plugin('plugin.barbar')
+User:register_plugin('plugin.barbar')
 
 local Bar = require('barbar')
 

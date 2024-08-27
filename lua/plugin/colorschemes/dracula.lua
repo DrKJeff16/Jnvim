@@ -8,7 +8,7 @@ local M = {
 }
 
 if vim.g.installed_dracula == 1 then
-    User.register_plugin('plugin.colorschemes.dracula')
+    User:register_plugin('plugin.colorschemes.dracula')
     function M.setup(variant, transparent, override) vim.cmd(M.mod_cmd) end
 end
 

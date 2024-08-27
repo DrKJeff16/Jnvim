@@ -10,7 +10,7 @@ if not exists('hover') then
     return
 end
 
-User.register_plugin('plugin.hover')
+User:register_plugin('plugin.hover')
 
 local Hover = require('hover')
 

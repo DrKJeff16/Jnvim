@@ -13,7 +13,7 @@ local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local in_console = Check.in_console
 
-User.register_plugin('config.util')
+User:register_plugin('config.util')
 
 ---@type PluginUtils
 ---@diagnostic disable-next-line:missing-fields

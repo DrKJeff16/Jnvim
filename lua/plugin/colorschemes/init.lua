@@ -5,7 +5,7 @@ local csc_t = User.types.colorschemes
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 
-User.register_plugin('plugin.colorschemes')
+User:register_plugin('plugin.colorschemes')
 
 ---@type CscMod
 ---@diagnostic disable-next-line:missing-fields

@@ -15,7 +15,7 @@ if not exists('todo-comments') then
     return
 end
 
-User.register_plugin('plugin.todo_comments')
+User:register_plugin('plugin.todo_comments')
 
 local TODO = require('todo-comments')
 

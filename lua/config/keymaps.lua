@@ -13,7 +13,7 @@ local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local wk_avail = User.maps.wk.available ---@see User.maps.wk.available
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
 
-User.register_plugin('config.keymaps')
+User:register_plugin('config.keymaps')
 
 local curr_buf = vim.api.nvim_get_current_buf
 

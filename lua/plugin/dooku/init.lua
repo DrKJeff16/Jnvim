@@ -6,7 +6,7 @@ local exists = Check.exists.module
 if not exists('dooku') then
     return
 end
-User.register_plugin('plugin.dooku')
+User:register_plugin('plugin.dooku')
 
 local Dooku = require('dooku')
 

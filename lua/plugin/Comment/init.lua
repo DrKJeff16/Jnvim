@@ -9,7 +9,7 @@ local exists = Check.exists.module
 if not exists('Comment') then
     return
 end
-User.register_plugin('plugin.Comment')
+User:register_plugin('plugin.Comment')
 
 local Comment = require('Comment')
 

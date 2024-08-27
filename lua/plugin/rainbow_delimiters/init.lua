@@ -9,7 +9,7 @@ if not exists('rainbow-delimiters') then
     return
 end
 
-User.register_plugin('plugin.rainbow_delimiters')
+User:register_plugin('plugin.rainbow_delimiters')
 
 local RD = require('rainbow-delimiters')
 

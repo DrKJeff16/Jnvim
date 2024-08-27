@@ -13,7 +13,7 @@ local M = {
 }
 
 if exists('gruvbox') then
-    User.register_plugin('plugin.colorschemes.gruvbox')
+    User:register_plugin('plugin.colorschemes.gruvbox')
     function M.setup(variant, transparent, override)
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}

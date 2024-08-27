@@ -24,7 +24,7 @@ local M = {
 }
 
 if exists('nightfox') then
-    User.register_plugin('plugin.colorschemes.nightfox')
+    User:register_plugin('plugin.colorschemes.nightfox')
 
     ---@param variant? 'carbonfox'|'dayfox'|'nightfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
     ---@param transparent? boolean

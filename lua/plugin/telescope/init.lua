@@ -15,7 +15,7 @@ if not exists('telescope') then
     return
 end
 
-User.register_plugin('plugin.telescope')
+User:register_plugin('plugin.telescope')
 
 local in_tbl = vim.tbl_contains
 local empty = vim.tbl_isempty

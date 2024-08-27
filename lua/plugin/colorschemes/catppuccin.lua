@@ -21,7 +21,7 @@ local M = {
 }
 
 if exists('catppuccin') then
-    User.register_plugin('plugin.colorschemes.catppuccin')
+    User:register_plugin('plugin.colorschemes.catppuccin')
 
     ---@param variant? 'frappe'|'macchiato'|'mocha'|'latte'
     ---@param transparent? boolean

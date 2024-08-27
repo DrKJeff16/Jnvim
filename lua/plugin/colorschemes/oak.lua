@@ -9,7 +9,7 @@ local M = {
 }
 
 if vim.g.installed_oak == 1 then
-    User.register_plugin('plugin.colorschemes.oak')
+    User:register_plugin('plugin.colorschemes.oak')
 
     function M.setup(variant, transparent, override) vim.cmd(M.mod_cmd) end
 end

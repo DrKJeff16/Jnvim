@@ -17,7 +17,7 @@ if not exists('lspconfig') then
     return
 end
 
-User.register_plugin('plugin.lspconfig')
+User:register_plugin('plugin.lspconfig')
 
 local api = vim.api
 local bo = vim.bo

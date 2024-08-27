@@ -9,7 +9,7 @@ if not exists('nvim-treesitter') then
     return
 end
 
-User.register_plugin('plugin.treesitter')
+User:register_plugin('plugin.treesitter')
 
 local fs_stat = vim.uv.fs_stat
 local buf_name = vim.api.nvim_buf_get_name
