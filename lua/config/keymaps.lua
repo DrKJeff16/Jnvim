@@ -44,6 +44,12 @@ local function buf_del(force)
         local prev_ft = ft_get(curr_buf())
         local prev_bt = vim.api.nvim_get_option_value('buftype', { buf = curr_buf() })
 
+        -- # HACK: Special workaround for `terminal` buffers
+        if prev_bt == 'terminal' then
+            vim.cmd('bdel!')
+            return
+        end
+
         vim.cmd(cmd)
 
         if vim.tbl_contains(pre_exceptions.ft, prev_ft) then
