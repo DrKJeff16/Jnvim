@@ -206,9 +206,9 @@ by the funtion `opts.setup()`.
 To call the options:
 
 ```lua
-require('user_api.opts').setup()
+require('user_api.opts'):setup()
 --- Or by using the entry point:
-require('user_api').opts.setup()
+require('user_api').opts:setup()
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
@@ -298,12 +298,16 @@ It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
 This module provides keymapping utilities in a more
 complete, extensible and (hopefully) smarter way for the end user.
 
-There are 3 fields which are tables that have the same function names,
+There exists the `kmap` table that have the same function names,
 but each one follows a specific behaviour:
 
-* ~~`maps.map`: Follows the behaviour of `vim.api.nvim_set_keymap()`.~~
 * `maps.kmap`: Follows the behaviour of `vim.keymap.set()`.
-* ~~`maps.buf_map`: Follows the behaviour of `vim.api.nvim_buf_set_keymap()`.~~
+
+<!--TODO: Fix sections above and below-->>
+
+<h4 id="wk">
+<u><code>maps.kmap.desc</code></u>
+</h4>
 
 Parameters and/or parameter types are tweaked for their respective table.
 Each table has a function for each mode available,
@@ -334,32 +338,6 @@ and other fields corresponding to each parameter.
 maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 ```
 
-</li>
-
-<!--
-<br/>
-
-<li>
-<b><u><code>maps.map.desc</code></u></b> / <b><u><code>maps.buf_map.desc</code></u></b>
-
-<br/>
-
-```lua
---- Returns a `vim.api.keyset.keymap` table
----@param msg: string Defaults do `'Unnamed Key'`
----@param silent? boolean Defaults to `true`
----@param noremap? boolean Defaults to `true`
----@param nowait? boolean Defaults to `true`
----@param expr? boolean Defaults to `false`
----@return vim.api.keyset.keymap
-maps.map.desc(msg, silent, noremap, nowait, expr)
-```
-
-</li>
---->
-
-</ul>
-
 <br/>
 
 <h4 id="wk">
@@ -381,8 +359,8 @@ Use it, for example, to setup a fallback for setting keys, like in the
 following example:
 
 ```lua
-local Kmap = require('user_api').maps.kmap
-local WK = require('user_api').maps.wk
+local Kmap = require('user_api.maps.kmap')
+local WK = require('user_api.maps.wk')
 
 local my_keys = {
     --- Your maps go here...
@@ -465,60 +443,6 @@ require('user_api.maps').map_dict(Keys2, 'wk.register', true, nil)
 
 <br/>
 
-<!-- <code>wk.register()</code> <u>has two arguments</u>:
-
-<br/>
-
-<ol>
-<li>
-A table of the aforementioned format (or a
-<a href="https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings">group names</a>
-dictionary, we'll get to that shortly)
-</li>
-
-<li>
-
-An options table with the structure specified in [the `which_key` repository](https://github.com/folke/which-key.nvim?tab=readme-ov-file#-setup):
-
-```lua
---- NOTE: These fields are set to their default value in `wk.register`.
----       `nil` means it is not set at all inside the function if not defined,
----       not their valid type (unless explicitly defined as type `nil`).
-
----@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
-{
-    ---@type MapModes
-    mode = 'n',
-
-    --- prefix: use "<leader>f" for example for mapping everything related to finding files
-    --- the prefix is prepended to every mapping part of `mappings`
-    ---@type string
-    prefix = nil,
-
-    ---@type integer|nil
-    buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
-
-    ---@type boolean
-    silent = true, -- use `silent` when creating keymaps
-
-    ---@type boolean
-    noremap = true, -- use `noremap` when creating keymaps
-
-    --- NOTE: If processing a group keymap field (`['...'] = { group = '...' }`)
-    ---       the default value is `false`
-    ---@type boolean
-    nowait = true, -- use `nowait` when creating keymaps
-
-    ---@type boolean
-    expr = nil, -- use `expr` when creating keymaps
-}
-```
-
-</li>
-</ol>
-
-<br/> -->
-
 You can also process <u>group names</u> the following way:
 
 ```lua
@@ -561,3 +485,5 @@ It can be found in [`user_api/highlight.lua`](lua/user_api/highlight.lua).
 
 <u>A description will be pending until further notice, i.e. when the module is
 structured in a satisfactory manner.</u>
+
+---
