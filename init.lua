@@ -110,6 +110,9 @@ Keymaps:setup({
             desc('Indent Whole File'),
         },
     },
+    t = {
+        ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
+    },
 })
 
 if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
