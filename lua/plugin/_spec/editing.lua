@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local types = User.types.lazy
 
 local source = CfgUtil.source
+local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
@@ -49,7 +50,7 @@ local M = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-lua/plenary.nvim',
         },
-        init = CfgUtil.set_tgc(),
+        init = set_tgc(),
         config = source('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },
@@ -69,7 +70,11 @@ local M = {
                 'ihn',
                 'is',
                 'ih',
-            }, { noremap = true, silent = true, buffer = 0 }, 'i', '<leader>')
+            }, {
+                noremap = true,
+                silent = true,
+                buffer = 0,
+            }, 'i', '<Space>') -- TODO: Make a `get_leader() function`
         end,
     },
 }

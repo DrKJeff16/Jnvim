@@ -1,14 +1,12 @@
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
 local desc = User.maps.kmap.desc
+local wk_avail = User.maps.wk.available
 local map_dict = User.maps.map_dict
-local notify = Util.notify.notify
 
 if not exists('project_nvim') then
     return
@@ -17,7 +15,6 @@ end
 User:register_plugin('plugin.project')
 
 local Project = require('project_nvim')
-local Config = require('project_nvim.config')
 
 local recent_proj = Project.get_recent_projects
 
@@ -57,7 +54,6 @@ Project.setup({
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
         '.clangd',
-        '=src',
     },
 
     -- Don't calculate root dir on specific directories
@@ -94,15 +90,16 @@ Project.setup({
 local Keys = {
     ['<leader>pr'] = {
         function()
+            local notify = require('user_api.util.notify').notify
             local msg = ''
 
             for _, v in next, recent_proj() do
-                msg = msg .. '\n- ' .. v
+                msg = msg .. '- ' .. v .. newline or string.char(10)
             end
             notify(msg, 'info', {
                 title = 'Recent Projects',
-                animate = true,
-                timeout = 550,
+                animate = false,
+                timeout = 1750,
                 hide_from_history = false,
             })
         end,
@@ -115,7 +112,7 @@ local Names = {
     ['<leader>p'] = { group = '+Project' },
 }
 
-if WK.available() then
+if wk_avail() then
     map_dict(Names, 'wk.register', false, 'n', 0)
 end
 map_dict(Keys, 'wk.register', false, 'n', 0)

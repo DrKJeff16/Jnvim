@@ -31,7 +31,7 @@ CW.setup({
     symbols = { '━', '┃', '┏', '┓', '┗', '┛' },
     -- Smooth moving switch
     smooth = true,
-    exponential_smoothing = true,
+    exponential_smoothing = false,
     anchor = {
         left = { height = 1, x = -1, y = -1 },
         right = { height = 1, x = -1, y = 0 },
