@@ -64,6 +64,13 @@ local M = {
         ft = { 'c', 'cpp' },
         version = false,
         init = flag_installed('a_vim'),
+        config = function()
+            require('user_api.maps').nop({
+                'ihn',
+                'is',
+                'ih',
+            }, { noremap = true, silent = true, buffer = 0 }, 'i', '<leader>')
+        end,
     },
 }
 
