@@ -25,20 +25,7 @@ local M = {
             set_tgc()
         end,
         config = source('plugin.lualine'),
-        cond = use_statusline == 'lualine' and not in_console(),
-    },
-    {
-        'glepnir/galaxyline.nvim',
-        version = false,
-        dependencies = { 'nvim-web-devicons' },
-        init = function()
-            vim.opt.ls = 2
-            vim.opt.stal = 2
-            vim.opt.showmode = false
-            set_tgc()
-        end,
-        config = source('plugin.galaxyline'),
-        cond = use_statusline == 'galaxyline' and not in_console(),
+        cond = not in_console(),
     },
     --- Tabline
     {
