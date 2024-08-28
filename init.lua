@@ -9,7 +9,6 @@ local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
 local Opts = User.opts ---@see User.opts Option setting
 local Commands = User.commands ---@see User.commands User command generation (WIP)
-local WK = User.maps.wk ---@see User.Maps.wk `which-key` backend
 
 local Keymaps = require('config.keymaps')
 
@@ -19,13 +18,13 @@ local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
+local wk_avail = User.maps.wk.available ---@see User.Maps.WK.available
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
 
 local curr_buf = vim.api.nvim_get_current_buf
 local curr_win = vim.api.nvim_get_current_win
 
--- _G.is_windows = Check.exists.vim_has('win32')
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
 ---@see User.Opts.setup
@@ -86,11 +85,6 @@ vim.g.loaded_netrwPlugin = 1
 
 --- Uncomment to use system clipboard
 --- vim.o.clipboard = 'unnamedplus'
-
-if is_nil(use_statusline) or not vim.tbl_contains({ 'lualine', 'galaxyline' }, use_statusline) then
-    ---@type 'lualine'|'galaxyline'
-    _G.use_statusline = 'lualine'
-end
 
 --- List of manually-callable plugin
 _G.Pkg = require('config.lazy')
@@ -191,7 +185,7 @@ if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
         end
     end
 
-    if WK.available() then
+    if wk_avail() then
         map_dict(NamesCsc, 'wk.register', false, 'n')
     end
     map_dict(CscKeys, 'wk.register', false, 'n')
@@ -213,7 +207,7 @@ Commands:setup_commands()
 
 User.update:setup_maps()
 
-if WK.available() then
+if wk_avail() then
     map_dict({
         ['<leader>U'] = { group = '+User API' },
         ['<leader>UP'] = { group = '+Plugins' },
