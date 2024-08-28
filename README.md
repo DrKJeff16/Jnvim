@@ -37,7 +37,7 @@ This configuration has its core entirely dependant on the
 **_API_** which includes **_module checking_**,
 **_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
-For more info make sure to check the [User API](#api) section.
+For more info make sure to check the [User API](#the-user-api) section.
 
 ### Requirements
 
@@ -50,7 +50,7 @@ For these to work, the following executables must be installed and in your `$PAT
 - `git`
 - [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
 - [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
-- [`ripgreg`](https://github.com/BurntSushi/ripgrep)
+- [`ripgrep`](https://github.com/BurntSushi/ripgrep)
 - **(Optional _(for `telescope`)_)**:
     - [`fzf`](https://github.com/junegunn/fzf)
     - [`fd`](https://github.com/sharkdp/fd)
@@ -107,7 +107,8 @@ For these to work, the following executables must be installed and in your `$PAT
 │   ├── util/  <== Misc Utils
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── autocmd.lua  <== Autocommand utilities
-│   │   └── notify.lua  <== Notification utilities
+│   │   ├── notify.lua  <== Notification utilities
+│   │   └── string.lua  <== String operators/pre-defined lists
 │   └── types/  <== Lua Type Annotations and Documentation
 │       ├── init.lua  <== Entry points are defined here
 │       ├── user/  <== User API Documentation
@@ -316,18 +317,14 @@ minus the <code>mode</code> field</u></b>:
 * `maps.<table>.o(...)`: Same as `:omap`
 * `maps.<table>.x(...)`: Same as `:xmap`
 
-Also, each table has a `desc()` method that returns an option table with a description field
+There exists a `kmap.desc()` method that returns an option table with a description field
 and other fields corresponding to each parameter.
-
-<ul>
-<li>
-<b><u><code>maps.kmap.desc</code></u></b>
 
 <br/>
 
 ```lua
 --- Returns a `vim.keymap.set.Opts` table
----@param msg: string Defaults do `'Unnamed Key'`
+---@param msg: string Defaults to `'Unnamed Key'`
 ---@param silent? boolean Defaults to `true`
 ---@param bufnr? integer Not included in output table unless explicitly set
 ---@param noremap? boolean Defaults to `true`
