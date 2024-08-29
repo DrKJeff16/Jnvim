@@ -6,6 +6,7 @@ local types = User.types.lazy
 local source = CfgUtil.source
 local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
+local is_root = Check.is_root
 local executable = Check.exists.executable
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
@@ -76,6 +77,12 @@ local M = {
                 buffer = 0,
             }, 'i', '<Space>') -- TODO: Make a `get_leader() function`
         end,
+    },
+    {
+        'folke/zen-mode.nvim',
+        version = false,
+        config = source('plugin.zen_mode'),
+        cond = not is_root(),
     },
 }
 
