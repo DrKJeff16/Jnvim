@@ -13,13 +13,6 @@ local luarocks_check = CfgUtil.luarocks_check
 ---@type (LazySpec)[]
 local M = {
     {
-        'folke/zen-mode.nvim',
-        version = false,
-        config = source('plugin.zen_mode'),
-        cond = not is_root(),
-        enabled = false,
-    },
-    {
         'nvim-neorg/neorg',
         ft = 'norg',
         version = false,
