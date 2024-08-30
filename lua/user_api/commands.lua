@@ -1,10 +1,8 @@
 require('user_api.types.user.commands')
 local Check = require('user_api.check')
-local Util = require('user_api.util')
 
 local new_cmd = vim.api.nvim_create_user_command
 local set_lines = vim.api.nvim_buf_set_lines
-local exec = vim.api.nvim_exec
 local exec2 = vim.api.nvim_exec2
 
 ---@type User.Commands
@@ -12,15 +10,22 @@ local exec2 = vim.api.nvim_exec2
 local M = {}
 
 function M.redir()
-    local lopt = vim.opt_local
-
     new_cmd('Redir', function(ctx)
-        local lines = vim.split(exec(ctx.args, true), '\n', { plain = true })
+        local lines = vim.split(
+            exec2(ctx.args, {
+                output = true,
+            })['output'],
+            '\n',
+            { plain = true }
+        )
 
-        vim.cmd.new()
+        local buf = vim.api.nvim_create_buf(true, true)
+        local win = vim.api.nvim_open_win(buf, true, {
+            vertical = false,
+        })
 
-        set_lines(0, 0, -1, false, lines)
-        vim.opt_local.modified = false
+        set_lines(buf, 0, -1, false, lines)
+        vim.api.nvim_set_option_value('modified', false, { buf = buf })
     end, { nargs = '+', complete = 'command' })
 end
 
