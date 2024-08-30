@@ -220,6 +220,14 @@ end
 
 ---@param bufnr? integer
 ---@return string
+function M.bt_get(bufnr)
+    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
+
+    return vim.api.nvim_get_option_value('bt', { buf = bufnr })
+end
+
+---@param bufnr? integer
+---@return string
 function M.ft_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 

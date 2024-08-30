@@ -71,6 +71,7 @@ require('user_api.types.user.autocmd')
 ---@field strip_fields fun(T: table<string|integer, any>, values: string|string[]): table
 ---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string, bufnr: integer?): fun()
+---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
 ---@field assoc fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
