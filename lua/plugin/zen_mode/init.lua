@@ -9,6 +9,8 @@ end
 
 User:register_plugin('plugin.zen_mode')
 
+local floor = math.floor
+
 local ZM = require('zen-mode')
 
 ZM.setup({
@@ -18,8 +20,8 @@ ZM.setup({
         -- * an absolute number of cells when > 1
         -- * a percentage of the width / height of the editor when <= 1
         -- * a function that returns the width or the height
-        width = math.floor(vim.opt.columns:get() * 2 / 3), -- width of the Zen window
-        height = math.floor(vim.opt.lines:get() * 5 / 6), -- height of the Zen window
+        width = floor(vim.opt.columns:get() * 2 / 3), -- width of the Zen window
+        height = floor(vim.opt.lines:get() * 5 / 6), -- height of the Zen window
         -- by default, no options are changed for the Zen window
         -- uncomment any of the options below, or add other vim.wo options you want to apply
         options = {
@@ -27,7 +29,7 @@ ZM.setup({
             number = false, -- disable number column
             relativenumber = false, -- disable relative numbers
             cursorline = true, -- disable cursorline
-            cursorcolumn = true, -- disable cursor column
+            cursorcolumn = false, -- disable cursor column
             foldcolumn = '0', -- disable fold column
             list = true, -- disable whitespace characters
         },
