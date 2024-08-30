@@ -15,7 +15,7 @@ local M = {
     {
         'neovim/nvim-lspconfig',
         version = false,
-        config = source('plugin.lspconfig'),
+        config = source('plugin.lsp'),
         enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
     },
     {
@@ -55,14 +55,14 @@ local M = {
         'p00f/clangd_extensions.nvim',
         ft = { 'c', 'cpp' },
         version = false,
-        config = source('plugin.lspconfig.clangd'),
+        config = source('plugin.lsp.clangd'),
         cond = executable('clangd') and not in_console(),
     },
     {
         'smjonas/inc-rename.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.lspconfig.inc_rename'),
+        config = source('plugin.lsp.inc_rename'),
     },
     {
         'williamboman/mason-lspconfig.nvim',
