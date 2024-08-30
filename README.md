@@ -42,7 +42,7 @@ For more info make sure to check the [User API](#the-user-api) section.
 
 ### Requirements
 
-- **(Optional, but recommended)** A [patched font](https://www.nerdfonts.com)
+- **(Optional, but recommended):** A [patched font](https://www.nerdfonts.com)
 
 This config relies on essential plugins that improve the readability and understanding
 of how it works.
@@ -141,6 +141,7 @@ Just make sure to read the
 
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
+- [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
 - [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
 - [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
 - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
@@ -151,6 +152,7 @@ Just make sure to read the
 - [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 - [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
 - [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
+- [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
 
 </details>
 
