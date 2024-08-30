@@ -9,7 +9,7 @@ if not (executable('clangd') and exists('clangd_extensions')) then
     return
 end
 
-User:register_plugin('plugin.lspconfig.clangd')
+User:register_plugin('plugin.lsp.clangd')
 
 local Exts = require('clangd_extensions')
 local Inlay = require('clangd_extensions.inlay_hints')

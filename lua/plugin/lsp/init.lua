@@ -17,7 +17,7 @@ if not exists('lspconfig') then
     return
 end
 
-User:register_plugin('plugin.lspconfig')
+User:register_plugin('plugin.lsp')
 
 local api = vim.api
 local bo = vim.bo
@@ -37,10 +37,10 @@ local function join_paths(...)
     return table.concat({ ... }, path_sep)
 end
 
-require('plugin.lspconfig.mason')
-require('plugin.lspconfig.neoconf')
-require('plugin.lspconfig.trouble')
-require('plugin.lspconfig.kinds').setup()
+require('plugin.lsp.mason')
+require('plugin.lsp.neoconf')
+require('plugin.lsp.trouble')
+require('plugin.lsp.kinds').setup()
 
 --[[ local border = {
     { '🭽', 'FloatBorder' },
