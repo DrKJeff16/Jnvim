@@ -1,5 +1,7 @@
 require('user_api.types.user.util')
 
+local curr_buf = vim.api.nvim_get_current_buf
+
 ---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
@@ -207,7 +209,7 @@ function M.ft_set(s, bufnr)
     local is_int = Value.is_int
     local is_str = Value.is_str
 
-    bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+    bufnr = is_int(bufnr) and bufnr or curr_buf()
 
     return function()
         if is_str(s) then
@@ -218,8 +220,16 @@ end
 
 ---@param bufnr? integer
 ---@return string
+function M.bt_get(bufnr)
+    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
+
+    return vim.api.nvim_get_option_value('bt', { buf = bufnr })
+end
+
+---@param bufnr? integer
+---@return string
 function M.ft_get(bufnr)
-    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or 0
+    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 
     return vim.api.nvim_get_option_value('ft', { buf = bufnr })
 end
@@ -255,7 +265,7 @@ function M.assoc()
                     group = group,
                     callback = function()
                         local buftype = vim.api.nvim_get_option_value('bt', {
-                            buf = vim.api.nvim_get_current_buf(),
+                            buf = curr_buf(),
                         })
                         if M.ft_get() ~= 'help' or buftype ~= 'help' then
                             return
@@ -274,7 +284,7 @@ function M.assoc()
                     group = group,
                     callback = function()
                         local buftype = vim.api.nvim_get_option_value('bt', {
-                            buf = vim.api.nvim_get_current_buf(),
+                            buf = curr_buf(),
                         })
                         if buftype ~= 'help' then
                             return
@@ -287,6 +297,13 @@ function M.assoc()
                     pattern = { 'c', 'cpp' },
                     group = group,
                     callback = function()
+                        if
+                            not require('user_api.check.value').is_nil(vim.g.installed_a_vim)
+                            and vim.g.installed_a_vim == 1
+                        then
+                            return
+                        end
+
                         local wk_avail = require('user_api.maps.wk').available
                         local desc = require('user_api.maps.kmap').desc
                         local map_dict = require('user_api.maps').map_dict
@@ -302,78 +319,78 @@ function M.assoc()
                         }
 
                         for option, val in next, buf_opts do
-                            optset(option, val, { buf = vim.api.nvim_get_current_buf() })
+                            optset(option, val, { buf = curr_buf() })
                         end
 
-                        if vim.g.installed_a_vim == 1 then
-                            ---@type KeyMapDict
-                            local Keys = {
-                                ['<leader><C-h>s'] = {
-                                    ':A<CR>',
-                                    desc('Cycle Header/Source', true, 0),
-                                },
-                                ['<leader><C-h>x'] = {
-                                    ':AS<CR>',
-                                    desc('Horizontal Cycle Header/Source', true, 0),
-                                },
-                                ['<leader><C-h>v'] = {
-                                    ':AV<CR>',
-                                    desc('Vertical Cycle Header/Source', true, 0),
-                                },
-                                ['<leader><C-h>t'] = {
-                                    ':AT<CR>',
-                                    desc('Tab Cycle Header/Source', true, 0),
-                                },
-                                ['<leader><C-h>S'] = {
-                                    ':IH<CR>',
-                                    desc('Cycle Header/Source (Cursor)', true, 0),
-                                },
-                                ['<leader><C-h>X'] = {
-                                    ':IHS<CR>',
-                                    desc('Horizontal Cycle Header/Source (Cursor)', true, 0),
-                                },
-                                ['<leader><C-h>V'] = {
-                                    ':IHV<CR>',
-                                    desc('Vertical Cycle Header/Source (Cursor)', true, 0),
-                                },
-                                ['<leader><C-h>T'] = {
-                                    ':IHT<CR>',
-                                    desc('Tab Cycle Header/Source (Cursor)', true, 0),
-                                },
-                            }
-                            ---@type RegKeysNamed
-                            local Names = {
-                                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
-                            }
-                            if wk_avail() then
-                                map_dict(Names, 'wk.register', false, 'n', 0)
-                            end
-                            map_dict(Keys, 'wk.register', false, 'n', 0)
-
-                            -- Kill plugin-defined mappings
-                            vim.schedule(function()
-                                local nop = require('user_api.maps').nop
-
-                                nop({
-                                    'ih',
-                                    'is',
-                                    'ihn',
-                                }, {
-                                    noremap = true,
-                                    silent = true,
-                                    buffer = 0,
-                                }, 'i', '<leader>')
-                                nop({
-                                    'ih',
-                                    'is',
-                                    'ihn',
-                                }, {
-                                    noremap = true,
-                                    silent = true,
-                                    buffer = 0,
-                                }, 'n', '<leader>')
-                            end)
+                        ---@type KeyMapDict
+                        local Keys = {
+                            ['<leader><C-h>s'] = {
+                                ':A<CR>',
+                                desc('Cycle Header/Source', true, 0),
+                            },
+                            ['<leader><C-h>x'] = {
+                                ':AS<CR>',
+                                desc('Horizontal Cycle Header/Source', true, 0),
+                            },
+                            ['<leader><C-h>v'] = {
+                                ':AV<CR>',
+                                desc('Vertical Cycle Header/Source', true, 0),
+                            },
+                            ['<leader><C-h>t'] = {
+                                ':AT<CR>',
+                                desc('Tab Cycle Header/Source', true, 0),
+                            },
+                            ['<leader><C-h>S'] = {
+                                ':IH<CR>',
+                                desc('Cycle Header/Source (Cursor)', true, 0),
+                            },
+                            ['<leader><C-h>X'] = {
+                                ':IHS<CR>',
+                                desc('Horizontal Cycle Header/Source (Cursor)', true, 0),
+                            },
+                            ['<leader><C-h>V'] = {
+                                ':IHV<CR>',
+                                desc('Vertical Cycle Header/Source (Cursor)', true, 0),
+                            },
+                            ['<leader><C-h>T'] = {
+                                ':IHT<CR>',
+                                desc('Tab Cycle Header/Source (Cursor)', true, 0),
+                            },
+                        }
+                        ---@type RegKeysNamed
+                        local Names = {
+                            ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
+                        }
+                        if wk_avail() then
+                            map_dict(Names, 'wk.register', false, 'n', 0)
                         end
+                        map_dict(Keys, 'wk.register', false, 'n', 0)
+
+                        -- Kill plugin-defined mappings
+                        vim.schedule(function()
+                            local nop = require('user_api.maps').nop
+
+                            nop({
+                                'ih',
+                                'is',
+                                'ihn',
+                            }, {
+                                noremap = true,
+                                silent = true,
+                                buffer = 0,
+                                nowait = true,
+                            }, 'i', '<leader>')
+                            nop({
+                                'ih',
+                                'is',
+                                'ihn',
+                            }, {
+                                noremap = true,
+                                silent = true,
+                                buffer = 0,
+                                nowait = true,
+                            }, 'n', '<leader>')
+                        end)
                     end,
                 },
                 {
@@ -391,7 +408,7 @@ function M.assoc()
                         }
 
                         for option, val in next, opts do
-                            optset(option, val, { buf = vim.api.nvim_get_current_buf() })
+                            optset(option, val, { buf = curr_buf() })
                         end
                     end,
                 },
@@ -408,7 +425,7 @@ function M.assoc()
                                     ':silent !stylua %<CR>',
                                     desc('Format With `stylua`', true, 0),
                                 },
-                            }, 'wk.register', false, 'n', 0)
+                            }, 'wk.register', true, 'n', 0)
                         end
                     end,
                 },
@@ -453,11 +470,12 @@ end
 ---@return string
 function M.displace_letter(c, direction, cycle)
     local Value = require('user_api.check.value')
-    local Alphabet = M.string.alphabet
+    local A = M.string.alphabet
 
     local fields = Value.fields
     local is_str = Value.is_str
     local is_bool = Value.is_bool
+    local mv_tbl_values = M.mv_tbl_values
 
     direction = (is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
             and direction
@@ -468,19 +486,19 @@ function M.displace_letter(c, direction, cycle)
         return 'a'
     end
 
-    local lower_map_next = vim.deepcopy(Alphabet.lower_map)
-    local upper_map_next = vim.deepcopy(Alphabet.upper_map)
-    local lower_map_prev = vim.deepcopy(Alphabet.lower_map)
-    local upper_map_prev = vim.deepcopy(Alphabet.upper_map)
+    local lower_next = vim.deepcopy(A.lower_map)
+    local upper_next = vim.deepcopy(A.upper_map)
+    local lower_prev = vim.deepcopy(A.lower_map)
+    local upper_prev = vim.deepcopy(A.upper_map)
 
-    if direction == 'next' and fields(c, lower_map_next) then
-        return M.mv_tbl_values(lower_map_next, 1, 'l')[c]
-    elseif direction == 'next' and fields(c, upper_map_next) then
-        return M.mv_tbl_values(upper_map_next, 1, 'l')[c]
-    elseif direction == 'prev' and fields(c, lower_map_prev) then
-        return M.mv_tbl_values(lower_map_prev, 1, 'r')[c]
-    elseif direction == 'prev' and fields(c, upper_map_prev) then
-        return M.mv_tbl_values(upper_map_prev, 1, 'r')[c]
+    if direction == 'next' and fields(c, lower_next) then
+        return mv_tbl_values(lower_next, 1, 'l')[c]
+    elseif direction == 'next' and fields(c, upper_next) then
+        return mv_tbl_values(upper_next, 1, 'l')[c]
+    elseif direction == 'prev' and fields(c, lower_prev) then
+        return mv_tbl_values(lower_prev, 1, 'r')[c]
+    elseif direction == 'prev' and fields(c, upper_prev) then
+        return mv_tbl_values(upper_prev, 1, 'r')[c]
     end
 
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
