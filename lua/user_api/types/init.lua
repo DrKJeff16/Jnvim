@@ -49,7 +49,7 @@
 ---@field register_plugin fun(self: User, pathstr: string, i: integer?)
 ---@field reload_plugins fun(self: User): (failed: string[]|nil)
 ---@field setup_keys fun(self: User)
----@field new fun(o: table?): User
+---@field new fun(o: table?): (self: User|table)
 ---@field print_loaded_plugins fun(self: User)
 
 ---@type User.Types
