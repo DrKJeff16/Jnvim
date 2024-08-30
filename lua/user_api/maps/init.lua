@@ -31,9 +31,6 @@ function M.nop(T, opts, mode, prefix)
     end
 
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
-    if not vim.tbl_contains({ 'n', 'v' }, mode) then
-        return
-    end
 
     opts = is_tbl(opts) and opts or {}
 
