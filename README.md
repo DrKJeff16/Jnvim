@@ -291,17 +291,14 @@ It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
 </li>
 </ul>
 
+---
+
 <h3 id="maps">
 <u><code>user_api.maps</code></u>
 </h3>
 
 This module provides keymapping utilities in a more
 complete, extensible and (hopefully) smarter way for the end user.
-
-Parameters and/or parameter types are tweaked for their respective table.
-Each table has a function for each mode available,
-<b><u>treat each function as the field's behaviour function,
-minus the <code>mode</code> field</u></b>:
 
 The `kmap` module has the same function names for each mode:
 
@@ -331,6 +328,22 @@ and other fields corresponding to each parameter.
 ---@param expr? boolean Defaults to `false`
 ---@return vim.keymap.set.Opts
 maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
+```
+
+The function returns this table:
+
+```lua
+-- DO NOT COPY THIS DIRECTLY
+{
+    desc = 'Unnamed Key' or msg, -- First option is the default
+    silent = true or false, -- First option is the default
+    noremap = true or false, -- First option is the default
+    nowait = true or false, -- First option is the default
+    expr = false or true, -- First option is the default
+
+    -- If buffer is passed as an argument:
+    buffer = bufnr or 0,
+}
 ```
 
 <h4 id="wk">
@@ -381,7 +394,10 @@ If you want to convert a keymap table, you must first structure it as follows:
 
 ---@alias KeyMapDict table<string, KeyMapRhsOptsArr> A dict with the key as lhs and the value as the class above
 
----@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')[] Vim Modes
+---@alias MapMode ('n'|'i'|'v'|'t'|'o'|'x') Vim Mode
+---@alias MapModes MapMode[]
+
+---@alias KeyMapModeDict table<MapMode, KeyMapDict>
 
 -- Without modes
 ---@type KeyMapDict
@@ -391,7 +407,7 @@ local Keys1 = {
 }
 
 -- With modes
----@type table<MapModes, KeyMapDict>
+---@type KeyMapModeDict
 local Keys2 = {
     -- Normal Mode Keys
     n = {
@@ -419,19 +435,18 @@ You can then pass this dictionary to [`user_api.maps.map_dict()`](lua/user_api/m
 ```lua
 -- Following the code above...
 
+local map_dict = require('user_api.maps').map_dict
+
 -- NOTE: Third parameter is `false` because the `Keys1` table doesn't tell what mode to use
-require('user_api.maps').map_dict(Keys1, 'wk.register', false, 'n')
+map_dict(Keys1, 'wk.register', false, 'n')
 
 -- NOTE: Third parameter is `true` because the `Keys2` table tells us what modes to use,
 -- so fourth param can be `nil`
-require('user_api.maps').map_dict(Keys2, 'wk.register', true, nil)
+map_dict(Keys2, 'wk.register', true, nil)
 ```
 
 </details>
 </li>
-
-<br/>
-
 </ul>
 
 <br/>
