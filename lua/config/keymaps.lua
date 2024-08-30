@@ -515,7 +515,9 @@ function M:setup(keys, names)
 
     --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, User.maps.modes do
-        nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
+        if vim.tbl_contains({ 'n', 'v' }, mode) then
+            nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
+        end
     end
 end
 
@@ -563,12 +565,12 @@ function M:set_leader(leader, local_leader, force)
     end
 
     --- No-op the target `<leader>` key
-    nop(leader, { noremap = true, silent = true })
+    nop(leader, { noremap = true, silent = true, nowait = false })
 
     --- If target `<leader>` and `<localleader>` keys aren't the same
     --- then noop `local_leader` aswell
     if leader ~= local_leader then
-        nop(local_leader, { noremap = true, silent = true })
+        nop(local_leader, { noremap = true, silent = true, nowait = false })
     end
 
     vim.g.mapleader = vim_vars.leader

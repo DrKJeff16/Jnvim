@@ -351,15 +351,28 @@ function M.assoc()
                             map_dict(Keys, 'wk.register', false, 'n', 0)
 
                             -- Kill plugin-defined mappings
-                            require('user_api.maps').nop({
-                                'ih',
-                                'is',
-                                'ihn',
-                            }, {
-                                noremap = false,
-                                silent = true,
-                                buffer = 0,
-                            }, 'n', '<leader>')
+                            vim.schedule(function()
+                                local nop = require('user_api.maps').nop
+
+                                nop({
+                                    'ih',
+                                    'is',
+                                    'ihn',
+                                }, {
+                                    noremap = true,
+                                    silent = true,
+                                    buffer = 0,
+                                }, 'i', '<leader>')
+                                nop({
+                                    'ih',
+                                    'is',
+                                    'ihn',
+                                }, {
+                                    noremap = true,
+                                    silent = true,
+                                    buffer = 0,
+                                }, 'n', '<leader>')
+                            end)
                         end
                     end,
                 },
