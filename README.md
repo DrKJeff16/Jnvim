@@ -16,7 +16,8 @@
     3. [`user_api.opts`](#opts)
     4. [`user_api.check`](#check)
     5. [`user_api.maps`](#maps)
-        1. [`user_api.maps.wk`](#wk)
+        1. [`kmap.desc`](#kmap-desc)
+        2. [`user_api.maps.wk`](#wk)
     6. [`user_api.highlight`](#highlight)
 
 ---
@@ -56,6 +57,7 @@ For these to work, the following executables must be installed and in your `$PAT
     - [`fd`](https://github.com/sharkdp/fd)
 - **(Optional _(for `Lazy` and/or `Neorg`)_)**:
     - `luarocks`
+    - `pathspec`
 
 ### Structure
 
@@ -63,7 +65,7 @@ For these to work, the following executables must be installed and in your `$PAT
 /lua
 ├── config/  <== Folder containing all Lua plugin configurations
 │   ├── keymaps.lua  <== Setup default, non-plugin keymaps here
-│   ├── lazy.lua  <== Plugin Installation and entry points are called here
+│   ├── lazy.lua  <== Plugin Installation. `plugin._spec` entry points are called here
 │   └── util.lua  <== Utilities used in the file above (env checks, etc.)
 ├── plugin/  <==  Plugins are configured in this directory
 │   ├── _spec/  <== Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
@@ -98,9 +100,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │   ├── highlight.lua  <== Highlight Functions
 │   ├── maps/  <== Mapping Utilities
 │   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── buf_map.lua  <== `vim.api.nvim_buf_set_keymap` utilities
 │   │   ├── kmap.lua  <== `vim.keymap.set` utilities
-│   │   ├── map.lua  <== `vim.api.nvim_set_keymap` utilities
 │   │   └── wk.lua  <== `which_key` utilities (regardless if installed or not)
 │   ├── opts.lua  <== Vim Options
 │   ├── update.lua  <== Update utilities
@@ -121,7 +121,7 @@ For these to work, the following executables must be installed and in your `$PAT
 │       │   ├── opts.lua  <== `opts` module annotations
 │       │   ├── update.lua  <== `update` module annotations (WIP)
 │       │   └── util.lua  <== `util` module annotations
-└───────└── ...  <== Other annotation
+└───────└── ...  <== Other annotations
 ```
 
 ### Plugins
@@ -139,8 +139,6 @@ Just make sure to read the
 <b><u>Some of the included plugins...</u></b>
 </summary>
 
-<br/>
-
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
 - [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
@@ -156,7 +154,7 @@ Just make sure to read the
 
 </details>
 
-<br/>
+---
 
 ## The `user` API
 
@@ -180,7 +178,7 @@ You can include it by using the following code snippet:
 
 ```lua
 require('user_api.types.module_name')
--- Or by using the entry point:
+-- Or by using the entry point (not recommended):
 require('user_api').types.module_name
 ```
 
@@ -188,7 +186,7 @@ For API-specific documentation, you can find them in the submodule [`user_api/ty
 
 ```lua
 require('user_api.types.user.module_name')
--- Or by using the entry point:
+-- Or by using the entry point (not recommended):
 require('user_api').types.user.module_name
 ```
 
@@ -206,9 +204,11 @@ by the funtion `opts.setup()`.
 To call the options:
 
 ```lua
-require('user_api.opts'):setup()
+local Opts1 = require('user_api.opts')
+Opts1:setup()
 --- Or by using the entry point:
-require('user_api').opts:setup()
+local Opts2 = require('user_api').opts
+Opts2:setup()
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
@@ -218,7 +218,10 @@ It overwrites some of the default options as defined in [`opts.lua`](lua/user_ap
 As an example:
 
 ```lua
-require('user_api.opts').setup({
+local User = require('user_api')
+local Opts = User.opts
+
+Opts:setup({
     completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
     nu = false, -- `:set nonumber`
 
@@ -288,9 +291,6 @@ It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
 </li>
 </ul>
 
-<br/>
-<hr/>
-
 <h3 id="maps">
 <u><code>user_api.maps</code></u>
 </h3>
@@ -298,47 +298,40 @@ It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
 This module provides keymapping utilities in a more
 complete, extensible and (hopefully) smarter way for the end user.
 
-There exists the `kmap` table that have the same function names,
-but each one follows a specific behaviour:
-
-* `maps.kmap`: Follows the behaviour of `vim.keymap.set()`.
-
-<!--TODO: Fix sections above and below-->>
-
-<h4 id="wk">
-<u><code>maps.kmap.desc</code></u>
-</h4>
-
 Parameters and/or parameter types are tweaked for their respective table.
 Each table has a function for each mode available,
 <b><u>treat each function as the field's behaviour function,
 minus the <code>mode</code> field</u></b>:
 
-* `maps.<table>.n(...)`: Same as `:nmap`
-* `maps.<table>.i(...)`: Same as `:imap`
-* `maps.<table>.v(...)`: Same as `:vmap`
-* `maps.<table>.t(...)`: Same as `:tmap`
-* `maps.<table>.o(...)`: Same as `:omap`
-* `maps.<table>.x(...)`: Same as `:xmap`
+The `kmap` module has the same function names for each mode:
+
+* `maps.kmap.n(...)`: Same as `:nmap`
+* `maps.kmap.i(...)`: Same as `:imap`
+* `maps.kmap.v(...)`: Same as `:vmap`
+* `maps.kmap.t(...)`: Same as `:tmap`
+* `maps.kmap.o(...)`: Same as `:omap`
+* `maps.kmap.x(...)`: Same as `:xmap`
+
+<!--TODO: Fix sections above and below-->>
+
+<h4 id="kmap-desc">
+<u><code>kmap.desc</code></u>
+</h4>
 
 There exists a `kmap.desc()` method that returns an option table with a description field
 and other fields corresponding to each parameter.
-
-<br/>
 
 ```lua
 --- Returns a `vim.keymap.set.Opts` table
 ---@param msg: string Defaults to `'Unnamed Key'`
 ---@param silent? boolean Defaults to `true`
----@param bufnr? integer Not included in output table unless explicitly set
+---@param bufnr? integer|nil Not included in output table unless explicitly set
 ---@param noremap? boolean Defaults to `true`
 ---@param nowait? boolean Defaults to `true`
 ---@param expr? boolean Defaults to `false`
 ---@return vim.keymap.set.Opts
 maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 ```
-
-<br/>
 
 <h4 id="wk">
 <u><code>user_api.maps.wk</code></u>
@@ -424,7 +417,7 @@ You can then pass this dictionary to [`user_api.maps.map_dict()`](lua/user_api/m
 </summary>
 
 ```lua
---- Following the code above the examples...
+-- Following the code above...
 
 -- NOTE: Third parameter is `false` because the `Keys1` table doesn't tell what mode to use
 require('user_api.maps').map_dict(Keys1, 'wk.register', false, 'n')
@@ -443,7 +436,7 @@ require('user_api.maps').map_dict(Keys2, 'wk.register', true, nil)
 
 <br/>
 
-You can also process <u>group names</u> the following way:
+You can also process **keymap groups** the following way:
 
 ```lua
 ---@class RegPfx
@@ -452,8 +445,6 @@ You can also process <u>group names</u> the following way:
 ---@field mode? MapModes @see user_api.types.user.maps
 
 ---@alias RegKeysNamed table<string, RegKeysNamed>
-
-local wk_avail = require('user_api.maps.wk').available
 
 ---@type RegKeysNamed
 local Names = {
@@ -464,15 +455,17 @@ local Names = {
 }
 
 -- If `which_key` is available
-if wk_avail() then
+if require('user_api.maps.wk').available() then
     require('user_api.maps').map_dict(Names, 'wk.register', false, 'n')
 end
 ```
 
-<br/>
+<div align="center">
 
-<u><b>This API component is in early design so it will be simpler and more
-complete in the future.</b></u>
+**_This API component is in early design so it will be simpler and more
+complete in the future._**
+
+</div>
 
 ---
 
