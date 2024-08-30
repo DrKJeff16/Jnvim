@@ -61,6 +61,7 @@ require('user_api.types.user.highlight')
 ---@field pylsp? LspServerOpts|nil
 ---@field taplo? LspServerOpts|nil
 ---@field texlab? LspServerOpts|nil
+---@field vimls? LspServerOpts|nil
 ---@field yamlls? LspServerOpts|nil
 ---@field new fun(): LspServers
 

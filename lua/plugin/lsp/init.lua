@@ -137,6 +137,7 @@ srv.pylsp = executable('pylsp') and {} or nil
 srv.rust_analyzer = executable('rust-analyzer') and {} or nil
 srv.taplo = executable('taplo') and {} or nil
 srv.texlab = executable('texlab') and {} or nil
+srv.vimls = executable('vim-language-server') and {} or nil
 srv.yamlls = executable('yaml-language-server') and {} or nil
 
 function srv.new()
@@ -155,6 +156,7 @@ function srv.new()
     self.rust_analyzer = srv.rust_analyzer
     self.taplo = srv.taplo
     self.texlab = srv.texlab
+    self.vimls = srv.vimls
     self.yamlls = srv.yamlls
 
     return self
