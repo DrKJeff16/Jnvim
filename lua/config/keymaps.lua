@@ -428,7 +428,7 @@ local M = {
             ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
         },
         t = {
-            ['<Esc>'] = { '<C-\\><C-n>', { buffer = 0 } },
+            ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
         },
     },
     --- `which-key` map group prefixes
@@ -465,12 +465,13 @@ local M = {
 ---@param names? ModeRegKeysNamed
 function M:setup(keys, names)
     local MODES = require('user_api.maps').modes
+
     local notify = require('user_api.util.notify').notify
 
     if not leader_set then
-        notify([[Leader hasn't been set through `config.keymaps.set_leader()`.]], 'warn', {
+        notify("Leader hasn't been set through `set_leader()`", 'warn', {
             hide_from_history = false,
-            timeout = 850,
+            timeout = 1250,
             title = '[WARNING] (config.keymaps.setup)',
         })
     end
@@ -488,7 +489,7 @@ function M:setup(keys, names)
         for k, v in next, T do
             if not vim.tbl_contains(MODES, k) then
                 vim.notify(
-                    "Your input tables aren't using Vim modes as dictionary keys, ignoring",
+                    "Input tables aren't using Vim modes as dictionary keys, ignoring",
                     'warn',
                     {
                         title = '(config.keymaps)',
@@ -565,12 +566,14 @@ function M:set_leader(leader, local_leader, force)
     end
 
     --- No-op the target `<leader>` key
-    nop(leader, { noremap = true, silent = true, nowait = false })
+    nop(leader, { noremap = true, silent = true, nowait = false }, 'n')
+    nop(leader, { noremap = true, silent = true, nowait = false }, 'v')
 
     --- If target `<leader>` and `<localleader>` keys aren't the same
     --- then noop `local_leader` aswell
     if leader ~= local_leader then
-        nop(local_leader, { noremap = true, silent = true, nowait = false })
+        nop(local_leader, { noremap = true, silent = true, nowait = false }, 'n')
+        nop(local_leader, { noremap = true, silent = true, nowait = false }, 'v')
     end
 
     vim.g.mapleader = vim_vars.leader

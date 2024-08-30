@@ -7,7 +7,7 @@ require('user_api.types')
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
-function M.setup()
+function M:setup()
     local Check = require('user_api.check')
     local Util = require('user_api.util')
 
@@ -26,7 +26,7 @@ function M.setup()
     }
 
     for _, path in next, vim.deepcopy(rtpaths) do
-        if not (is_dir(path) or tbl_values({ path }, vim.opt.rtp:get())) then
+        if not (is_dir(path) or vim.tbl_contains(vim.opt.rtp:get(), path)) then
             rtpaths = strip_values(rtpaths, { path })
         end
     end

@@ -68,6 +68,53 @@ function M:register_plugin(pathstr, i)
     end
 end
 
+function M:setup_keys()
+    local wk_avail = self.maps.wk.available
+    local desc = self.maps.kmap.desc
+    local map_dict = self.maps.map_dict
+    local is_nil = self.check.value.is_nil
+
+    if wk_avail() then
+        map_dict({
+            ['<leader>U'] = { group = '+User API' },
+            ['<leader>UP'] = { group = '+Plugins' },
+        }, 'wk.register', false, 'n')
+    end
+    map_dict({
+        ['<leader>UPr'] = {
+            function()
+                local notify = self.util.notify.notify
+                notify('Reloading...', 'info', {
+                    hide_from_history = true,
+                    title = 'User API',
+                    timeout = 400,
+                })
+                local res = self:reload_plugins()
+
+                if not is_nil(res) then
+                    notify((inspect or vim.inspect)(res), 'error', {
+                        hide_from_history = false,
+                        timeout = 1000,
+                        title = 'User API [ERROR]',
+                        animate = true,
+                    })
+                else
+                    notify('Success!', 'info', {
+                        hide_from_history = true,
+                        timeout = 200,
+                        title = 'User API',
+                    })
+                end
+            end,
+            desc('Reload All Plugins'),
+        },
+        ['<leader>UPl'] = {
+            function() self:print_loaded_plugins() end,
+            desc('Print Loaded Plugins'),
+        },
+    }, 'wk.register', false, 'n')
+end
+
 ---@param self User
 ---@return string[]|nil failed
 function M:reload_plugins()
