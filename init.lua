@@ -9,6 +9,8 @@ local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
 local Opts = User.opts ---@see User.opts Option setting
 local Commands = User.commands ---@see User.commands User command generation (WIP)
+local Distro = User.distro ---@see User.distro Platform-specific optimizations (WIP)
+local Update = User.update ---@see User.update `Jnvim` update tools (WIP)
 
 local Keymaps = require('config.keymaps')
 
@@ -110,92 +112,87 @@ Keymaps:setup({
             desc('Indent Whole File'),
         },
     },
-    t = {
-        ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
-    },
 })
 
-if is_tbl(Pkg.colorschemes) and not empty(Pkg.colorschemes) then
-    --- A table containing various possible colorschemes
-    local Csc = Pkg.colorschemes
+--- A table containing various possible colorschemes
+local Csc = Pkg.colorschemes
 
-    ---@type KeyMapDict
-    local CscKeys = {}
+---@type KeyMapDict
+local CscKeys = {}
 
-    --- Reorder to your liking
-    local selected = {
-        'tokyonight',
-        'kanagawa',
-        'nightfox',
-        'catppuccin',
-        'vscode',
-        'onedark',
-        'gruvbox',
-        'spacemacs',
-        'molokai',
-        'oak',
-        'spaceduck',
-        'dracula',
-        'space_vim_dark',
-    }
+--- Reorder to your liking
+local selected = {
+    'tokyonight',
+    'kanagawa',
+    'nightfox',
+    'catppuccin',
+    'vscode',
+    'onedark',
+    'gruvbox',
+    'spacemacs',
+    'molokai',
+    'oak',
+    'spaceduck',
+    'dracula',
+    'space_vim_dark',
+}
 
-    ---@type RegKeysNamed
-    local NamesCsc = {
-        ['<leader>vc'] = { group = '+Colorschemes' },
-    }
+---@type RegKeysNamed
+local NamesCsc = {
+    ['<leader>vc'] = { group = '+Colorschemes' },
+}
 
-    local csc_group = 'A'
-    local i = 1
-    local found_csc = ''
+local csc_group = 'A'
+local i = 1
+local found_csc = ''
 
-    for idx, name in next, selected do
-        ---@type CscSubMod|ODSubMod|table
-        local TColor = Csc[name]
+for idx, name in next, selected do
+    ---@type CscSubMod|ODSubMod|table
+    local TColor = Csc[name]
 
-        if not is_nil(TColor.setup) then
-            found_csc = found_csc ~= '' and found_csc or name
+    if not is_nil(TColor.setup) then
+        found_csc = found_csc ~= '' and found_csc or name
 
-            NamesCsc['<leader>vc' .. csc_group] = {
-                group = '+Group ' .. csc_group,
-            }
+        NamesCsc['<leader>vc' .. csc_group] = {
+            group = '+Group ' .. csc_group,
+        }
 
-            if is_tbl(TColor.variants) and not empty(TColor.variants) then
-                local v = 'a'
-                for _, variant in next, TColor.variants do
-                    NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                        group = '+' .. capitalize(name),
-                    }
-                    CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                        function() TColor.setup(variant) end,
-                        desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
-                    }
-
-                    v = displace_letter(v, 'next', false)
-                end
-            else
-                CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                    TColor.setup,
-                    desc('Set Colorscheme `' .. capitalize(name) .. '`'),
+        if is_tbl(TColor.variants) and not empty(TColor.variants) then
+            local v = 'a'
+            for _, variant in next, TColor.variants do
+                NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
+                    group = '+' .. capitalize(name),
                 }
-            end
+                CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
+                    function() TColor.setup(variant) end,
+                    desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
+                }
 
-            if i == 9 then
-                i = 1
-                csc_group = displace_letter(csc_group, 'next', false)
-            elseif i < 9 then
-                i = i + 1
+                v = displace_letter(v, 'next', false)
             end
+        else
+            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+                TColor.setup,
+                desc('Set Colorscheme `' .. capitalize(name) .. '`'),
+            }
+        end
+
+        if i == 9 then
+            i = 1
+            csc_group = displace_letter(csc_group, 'next', false)
+        elseif i < 9 then
+            i = i + 1
         end
     end
+end
 
-    if wk_avail() then
-        map_dict(NamesCsc, 'wk.register', false, 'n')
-    end
-    map_dict(CscKeys, 'wk.register', false, 'n')
+if wk_avail() then
+    map_dict(NamesCsc, 'wk.register', false, 'n')
+end
+map_dict(CscKeys, 'wk.register', false, 'n')
 
-    if not empty(found_csc) then
-        Csc[found_csc].setup()
-    end
+if not empty(found_csc) then
+    Csc[found_csc].setup()
 end
 
 --- Call the user file associations and other autocmds
@@ -203,52 +200,13 @@ Util.assoc()
 
 vim.g.markdown_minlines = 500
 
---- Call runtimepath optimizations for arch linux
-require('user_api.distro.archlinux').setup()
+--- Call runtimepath optimizations for Arch Linux (WIP)
+Distro.archlinux:setup()
 
 Commands:setup_commands()
 
-User.update:setup_maps()
-
-if wk_avail() then
-    map_dict({
-        ['<leader>U'] = { group = '+User API' },
-        ['<leader>UP'] = { group = '+Plugins' },
-    }, 'wk.register', false, 'n')
-end
-map_dict({
-    ['<leader>UPr'] = {
-        function()
-            local notify = require('user_api.util.notify').notify
-            notify('Reloading...', 'info', {
-                hide_from_history = true,
-                title = 'User API',
-                timeout = 400,
-            })
-            local res = User:reload_plugins()
-
-            if not is_nil(res) then
-                notify((inspect or vim.inspect)(res), 'error', {
-                    hide_from_history = false,
-                    timeout = 1000,
-                    title = 'User API [ERROR]',
-                    animate = true,
-                })
-            else
-                notify('Success!', 'info', {
-                    hide_from_history = true,
-                    timeout = 200,
-                    title = 'User API',
-                })
-            end
-        end,
-        desc('Reload All Plugins'),
-    },
-    ['<leader>UPl'] = {
-        function() User:print_loaded_plugins() end,
-        desc('Print Loaded Plugins'),
-    },
-}, 'wk.register', false, 'n')
+User:setup_keys()
+Update:setup_maps()
 
 vim.cmd([[
 filetype plugin indent on

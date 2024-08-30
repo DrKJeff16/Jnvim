@@ -22,12 +22,13 @@
 ---@field which_key nil
 
 ---@class User.Distro.Spec
----@field setup fun()
+---@field setup fun(self: User.Distro.Spec)
 
 ---@class User.Distro.Archlinux: User.Distro.Spec
+---@field setup fun(self: User.Distro.Archlinux)
 
 ---@class User.Distro
----@field archlinux? User.Distro.Archlinux
+---@field archlinux User.Distro.Archlinux
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
@@ -45,8 +46,9 @@
 ---@field update User.Update
 ---@field commands User.Commands
 ---@field registered_plugins string[]
----@field register_plugin fun(self: User?, pathstr: string, i: integer?)
+---@field register_plugin fun(self: User, pathstr: string, i: integer?)
 ---@field reload_plugins fun(self: User): (failed: string[]|nil)
+---@field setup_keys fun(self: User)
 ---@field new fun(o: table?): User
 ---@field print_loaded_plugins fun(self: User)
 
