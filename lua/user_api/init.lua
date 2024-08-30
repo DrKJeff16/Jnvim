@@ -116,13 +116,15 @@ function M:setup_keys()
 end
 
 ---@param self User
----@return string[]|nil failed
+---@return string[]|nil
 function M:reload_plugins()
     ---@type table|string[]
     local failed = {}
     for _, plugin in next, self.registered_plugins do
         if not self.check.exists.module(plugin) then
             table.insert(failed, plugin)
+        else
+            require(plugin)
         end
     end
 
