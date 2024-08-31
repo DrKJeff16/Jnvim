@@ -425,7 +425,7 @@ function M.assoc()
                                     ':silent !stylua %<CR>',
                                     desc('Format With `stylua`', true, 0),
                                 },
-                            }, 'wk.register', true, 'n', 0)
+                            }, 'wk.register', false, 'n', 0)
                         end
                     end,
                 },
