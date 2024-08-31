@@ -26,18 +26,18 @@ local M = {
 if exists('nightfox') then
     User:register_plugin('plugin.colorschemes.nightfox')
 
-    ---@param variant? 'carbonfox'|'dayfox'|'nightfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
+    ---@param variant? 'nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
     ---@param transparent? boolean
     ---@param override? table
     function M.setup(variant, transparent, override)
         variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant
-            or 'carbonfox'
+            or 'nightfox'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
         local compile_path = vim.fn.stdpath('cache') .. '/nightfox'
 
-        require('nightfox').setup(vim.tbl_extend('keep', override, {
+        require('nightfox').setup(vim.tbl_deep_extend('keep', override, {
             options = {
                 -- Compiled file's destination location
                 compile_path = compile_path,

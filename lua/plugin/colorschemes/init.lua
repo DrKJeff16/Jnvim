@@ -54,17 +54,8 @@ local M = {
     end)() or nil,
 }
 
-function M.new()
-    local self = setmetatable({}, { __index = M })
-
-    for k, v in next, self do
-        if k ~= 'new' and not is_nil(v) then
-            self[k] = v
-        end
-    end
-
-    return self
-end
+---@return CscMod|table
+function M.new() return setmetatable({}, { __index = M }) end
 
 return M
 

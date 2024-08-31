@@ -14,13 +14,12 @@ local M = {
 
 if exists('gruvbox') then
     User:register_plugin('plugin.colorschemes.gruvbox')
+
     function M.setup(variant, transparent, override)
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
-        local GVBX = require('gruvbox')
-
-        GVBX.setup(vim.tbl_extend('keep', override, {
+        require('gruvbox').setup(vim.tbl_deep_extend('keep', override, {
             transparent_mode = transparent,
             dim_inactive = true,
             terminal_colors = true,
