@@ -1,6 +1,7 @@
 require('user_api.types.user.util')
 
 local curr_buf = vim.api.nvim_get_current_buf
+local optset = vim.api.nvim_set_option_value
 
 ---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
@@ -213,7 +214,7 @@ function M.ft_set(s, bufnr)
 
     return function()
         if is_str(s) then
-            vim.api.nvim_set_option_value('ft', s, { buf = bufnr })
+            optset('ft', s, { buf = bufnr })
         end
     end
 end
@@ -255,6 +256,7 @@ function M.assoc()
             opts_tbl = {
                 { pattern = '.spacemacs', callback = M.ft_set('lisp'), group = group },
                 { pattern = '.clangd', callback = M.ft_set('yaml'), group = group },
+                { pattern = '*.norg', callback = M.ft_set('norg'), group = group },
             },
         },
         {
@@ -264,10 +266,12 @@ function M.assoc()
                     pattern = '*.txt',
                     group = group,
                     callback = function()
-                        local buftype = vim.api.nvim_get_option_value('bt', {
-                            buf = curr_buf(),
-                        })
-                        if M.ft_get() ~= 'help' or buftype ~= 'help' then
+                        if
+                            not vim.tbl_contains({
+                                M.ft_get(curr_buf()),
+                                M.bt_get(curr_buf()),
+                            }, 'help')
+                        then
                             return
                         end
 
@@ -283,10 +287,7 @@ function M.assoc()
                     pattern = 'help',
                     group = group,
                     callback = function()
-                        local buftype = vim.api.nvim_get_option_value('bt', {
-                            buf = curr_buf(),
-                        })
-                        if buftype ~= 'help' then
+                        if M.bt_get(curr_buf()) ~= 'help' then
                             return
                         end
 
@@ -297,17 +298,13 @@ function M.assoc()
                     pattern = { 'c', 'cpp' },
                     group = group,
                     callback = function()
-                        if
-                            not require('user_api.check.value').is_nil(vim.g.installed_a_vim)
-                            and vim.g.installed_a_vim == 1
-                        then
+                        if not is_nil(vim.g.installed_a_vim) and vim.g.installed_a_vim == 1 then
                             return
                         end
 
                         local wk_avail = require('user_api.maps.wk').available
                         local desc = require('user_api.maps.kmap').desc
                         local map_dict = require('user_api.maps').map_dict
-                        local optset = vim.api.nvim_set_option_value
 
                         local buf_opts = {
                             ts = 2,
@@ -397,7 +394,6 @@ function M.assoc()
                     pattern = 'markdown',
                     group = group,
                     callback = function()
-                        local optset = vim.api.nvim_set_option_value
                         local opts = {
                             ts = 2,
                             sts = 2,
