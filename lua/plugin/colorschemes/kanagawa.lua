@@ -21,6 +21,7 @@ local M = {
 
 if exists('kanagawa') then
     User:register_plugin('plugin.colorschemes.kanagawa')
+
     ---@param variant? 'dragon'|'wave'|'lotus'
     ---@param transparent? boolean
     ---@param override? table
@@ -33,7 +34,7 @@ if exists('kanagawa') then
         local kanagawa_compile = true
         local KGW = require('kanagawa')
 
-        KGW.setup(vim.tbl_extend('keep', override, {
+        KGW.setup(vim.tbl_deep_extend('keep', override, {
             compile = kanagawa_compile, -- enable compiling the colorscheme
             undercurl = true, -- enable undercurls
             commentStyle = { italic = true },

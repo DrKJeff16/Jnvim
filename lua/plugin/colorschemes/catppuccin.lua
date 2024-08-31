@@ -32,9 +32,7 @@ if exists('catppuccin') then
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
-        local Cppc = require('catppuccin')
-
-        Cppc.setup(vim.tbl_extend('keep', override, {
+        require('catppuccin').setup(vim.tbl_deep_extend('keep', override, {
             flavour = variant, -- latte, frappe, macchiato, mocha
             -- flavour = "auto" -- will respect terminal's background
             background = { -- :h background

@@ -7,6 +7,7 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
+---@type CscSubMod
 local M = {
     ---@type TN.Variants
     variants = {
@@ -29,9 +30,7 @@ if exists('tokyonight') then
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
-        local TN = require('tokyonight')
-
-        TN.setup(vim.tbl_extend('keep', override, {
+        require('tokyonight').setup(vim.tbl_deep_extend('keep', override, {
             cache = false,
 
             ---@param colors ColorScheme|table
@@ -75,17 +74,18 @@ if exists('tokyonight') then
             terminal_colors = true,
             transparent = transparent,
             sidebars = {
-                'qf',
+                'NvimTree',
+                'TelescopePrompt',
+                'diffview',
                 'help',
                 'lazy',
+                'noice',
+                'packer',
+                'qf',
                 'terminal',
                 'toggleterm',
-                'packer',
-                'TelescopePrompt',
-                'vista_kind',
-                'NvimTree',
                 'trouble',
-                'diffview',
+                'vista_kind',
             },
 
             style = variant,
@@ -103,7 +103,7 @@ if exists('tokyonight') then
             },
 
             plugins = {
-                all = require('user_api.check.value').is_nil(package.loaded.lazy),
+                all = not require('user_api.check.value').is_nil(package.loaded.lazy),
                 auto = true,
             },
         }))

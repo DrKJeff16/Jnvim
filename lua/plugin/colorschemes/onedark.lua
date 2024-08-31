@@ -33,7 +33,7 @@ if exists('onedark') then
 
         local OD = require('onedark')
 
-        OD.setup(vim.tbl_extend('keep', override, {
+        OD.setup(vim.tbl_deep_extend('keep', override, {
             style = variant,
             transparent = transparent,
             term_colors = true,
@@ -59,7 +59,7 @@ if exists('onedark') then
                 -- miscs = '', -- Uncomment to turn off hard-coded styles
             },
 
-            lualine = { transparent = false },
+            lualine = { transparent = transparent },
 
             diagnostics = {
                 darker = true,
