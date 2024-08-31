@@ -2,6 +2,10 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
+local executable = Check.exists.executable
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
+local wk_avail = User.maps.wk.available
 
 if not exists('zen-mode') then
     return
@@ -9,7 +13,7 @@ end
 
 User:register_plugin('plugin.zen_mode')
 
-local floor = math.floor
+local ceil = math.ceil
 
 local ZM = require('zen-mode')
 
@@ -20,8 +24,8 @@ ZM.setup({
         -- * an absolute number of cells when > 1
         -- * a percentage of the width / height of the editor when <= 1
         -- * a function that returns the width or the height
-        width = floor(vim.opt.columns:get() * 2 / 3), -- width of the Zen window
-        height = floor(vim.opt.lines:get() * 5 / 6), -- height of the Zen window
+        width = 0.87, -- width of the Zen window
+        height = 0.95, -- height of the Zen window
         -- by default, no options are changed for the Zen window
         -- uncomment any of the options below, or add other vim.wo options you want to apply
         options = {
@@ -39,7 +43,7 @@ ZM.setup({
         -- comment the lines to not apply the options
         options = {
             enabled = true,
-            ruler = true, -- disables the ruler text in the cmd line area
+            ruler = false, -- disables the ruler text in the cmd line area
             showcmd = false, -- disables the command in the last line of the screen
             -- you may turn on/off statusline in zen mode by setting 'laststatus'
             -- statusline will be shown only if 'laststatus' == 3
@@ -48,20 +52,20 @@ ZM.setup({
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
         gitsigns = { enabled = false }, -- disables git signs
         tmux = { enabled = false }, -- disables the tmux statusline
-        todo = { enabled = true }, -- disables the tmux statusline
+        todo = { enabled = true }, -- disables todo comments
         -- this will change the font size on kitty when in zen mode
         -- to make this work, you need to set the following kitty options:
         -- - allow_remote_control socket-only
         -- - listen_on unix:/tmp/kitty
         kitty = {
-            enabled = false,
+            enabled = executable('kitty'),
             font = '+4', -- font size increment
         },
         -- this will change the font size on alacritty when in zen mode
         -- requires  Alacritty Version 0.10.0 or higher
         -- uses `alacritty msg` subcommand to change font size
         alacritty = {
-            enabled = false,
+            enabled = executable('alacritty'),
             font = '19', -- font size
         },
         -- this will change the font size on wezterm when in zen mode
@@ -77,5 +81,19 @@ ZM.setup({
     -- callback where you can add custom code when the Zen window closes
     on_close = function() end,
 })
+
+---@type KeyMapDict
+local Keys = {
+    ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
+}
+---@type RegKeysNamed
+local Names = {
+    ['<leader>Z'] = { group = '+Zen Mode' },
+}
+
+if wk_avail() then
+    map_dict(Names, 'wk.register', false, 'n')
+end
+map_dict(Keys, 'wk.register', false, 'n')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
