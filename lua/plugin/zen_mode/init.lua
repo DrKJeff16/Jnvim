@@ -19,23 +19,25 @@ local ZM = require('zen-mode')
 
 ZM.setup({
     window = {
-        backdrop = 0.9, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+        backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
         -- height and width can be:
         -- * an absolute number of cells when > 1
         -- * a percentage of the width / height of the editor when <= 1
         -- * a function that returns the width or the height
-        width = 0.87, -- width of the Zen window
+        width = 0.9, -- width of the Zen window
         height = 0.95, -- height of the Zen window
         -- by default, no options are changed for the Zen window
         -- uncomment any of the options below, or add other vim.wo options you want to apply
         options = {
             signcolumn = 'no', -- disable signcolumn
-            number = false, -- disable number column
+            number = true, -- disable number column
+            numberwidth = 2,
             relativenumber = false, -- disable relative numbers
             cursorline = true, -- disable cursorline
             cursorcolumn = false, -- disable cursor column
             foldcolumn = '0', -- disable fold column
-            list = true, -- disable whitespace characters
+            foldmethod = 'manual',
+            list = false, -- disable whitespace characters
         },
     },
     plugins = {
@@ -48,18 +50,19 @@ ZM.setup({
             -- you may turn on/off statusline in zen mode by setting 'laststatus'
             -- statusline will be shown only if 'laststatus' == 3
             laststatus = 0, -- turn off the statusline in zen mode
+            showtabline = 0, -- turn off the statusline in zen mode
         },
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
         gitsigns = { enabled = false }, -- disables git signs
         tmux = { enabled = false }, -- disables the tmux statusline
-        todo = { enabled = true }, -- disables todo comments
+        todo = { enabled = false }, -- disables todo comments
         -- this will change the font size on kitty when in zen mode
         -- to make this work, you need to set the following kitty options:
         -- - allow_remote_control socket-only
         -- - listen_on unix:/tmp/kitty
         kitty = {
             enabled = executable('kitty'),
-            font = '+4', -- font size increment
+            font = '+2', -- font size increment
         },
         -- this will change the font size on alacritty when in zen mode
         -- requires  Alacritty Version 0.10.0 or higher
@@ -84,6 +87,8 @@ ZM.setup({
 
 ---@type KeyMapDict
 local Keys = {
+    ['<leader>Zo'] = { ZM.open, desc('Open Zen Mode') },
+    ['<leader>Zd'] = { ZM.close, desc('Close Zen Mode') },
     ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
 }
 ---@type RegKeysNamed
