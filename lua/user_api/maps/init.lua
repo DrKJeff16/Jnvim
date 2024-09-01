@@ -5,7 +5,6 @@ local Util = require('user_api.util')
 
 local is_nil = Value.is_nil
 local is_tbl = Value.is_tbl
-local is_fun = Value.is_fun
 local is_str = Value.is_str
 local is_int = Value.is_int
 local is_bool = Value.is_bool
@@ -27,7 +26,7 @@ M.modes = MODES
 
 function M.nop(T, opts, mode, prefix)
     if not (is_str(T) or is_tbl(T)) then
-        error('(user.maps.nop): Argument is neither a string nor a table')
+        error('(user_api.maps.nop): Argument is neither a string nor a table')
     end
 
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
@@ -58,10 +57,10 @@ end
 
 function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     if not (is_tbl(T) and not empty(T)) then
-        error("(user.maps.map_dict): Keys either aren't table or table is empty")
+        error("(user_api.maps.map_dict): Keys either aren't table or table is empty")
     end
-    if not is_str(map_func) or empty(map_func) then
-        error('(user.maps.map_dict): `map_func` is not a string')
+    if not is_str(map_func) then
+        error('(user_api.maps.map_dict): `map_func` is not a string')
     end
 
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'

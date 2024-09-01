@@ -35,6 +35,10 @@ require('user_api.types.which_key')
 ---@field rhs string|fun()
 ---@field opts? User.Maps.Keymap.Opts
 
+---@class KeyMapOpts: vim.keymap.set.Opts
+---@field new fun(T: (User.Maps.Keymap.Opts|table)?): KeyMapOpts
+---@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table)
+
 ---@alias KeyMapFunction fun(lhs: string, rhs: User.Maps.Keymap.Rhs, opts: User.Maps.Keymap.Opts?)
 
 ---@alias KeyMapModeDict table<MapModes, KeyMapDict>

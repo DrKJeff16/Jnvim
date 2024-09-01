@@ -9,23 +9,9 @@ local is_int = Check.value.is_int
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
----@class KeyMapOpts: vim.keymap.set.Opts
----@field new fun(T: (User.Maps.Keymap.Opts|table)?): KeyMapOpts
----@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table)
-
 ---@type KeyMapOpts
 ---@diagnostic disable-next-line:missing-fields
 local MapOpts = {}
-
----@param T? User.Maps.Keymap.Opts|table
----@return KeyMapOpts
-function MapOpts.new(T)
-    T = is_tbl(T) and T or {}
-
-    local self = setmetatable(T, { __index = MapOpts })
-
-    return self
-end
 
 ---@param T table<string, any>
 function MapOpts:add(T)
@@ -34,6 +20,14 @@ function MapOpts:add(T)
             self[T] = v
         end
     end
+end
+
+---@param T? User.Maps.Keymap.Opts|table
+---@return KeyMapOpts|table
+function MapOpts.new(T)
+    T = is_tbl(T) and T or {}
+
+    return setmetatable(T, { __index = MapOpts })
 end
 
 ---@type Modes
@@ -57,24 +51,30 @@ end
 
 ---@type User.Maps.Keymap
 ---@diagnostic disable-next-line:missing-fields
-local M = {
-    desc = function(msg, silent, bufnr, noremap, nowait, expr)
-        ---@type KeyMapOpts
-        local res = MapOpts.new({
-            desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
-            silent = is_bool(silent) and silent or true,
-            noremap = is_bool(noremap) and noremap or true,
-            nowait = is_bool(nowait) and nowait or true,
-            expr = is_bool(expr) and expr or false,
-        })
+local M = {}
 
-        if bufnr and is_int(bufnr) then
-            res.buffer = bufnr
-        end
+---@param msg? string|'Unnamed Key'
+---@param silent? boolean
+---@param bufnr? integer|nil
+---@param noremap? boolean
+---@param nowait? boolean
+---@param expr? boolean
+function M.desc(msg, silent, bufnr, noremap, nowait, expr)
+    ---@type KeyMapOpts
+    local res = MapOpts.new({
+        desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
+        silent = is_bool(silent) and silent or true,
+        noremap = is_bool(noremap) and noremap or true,
+        nowait = is_bool(nowait) and nowait or true,
+        expr = is_bool(expr) and expr or false,
+    })
 
-        return res
-    end,
-}
+    if is_int(bufnr) then
+        res.buffer = bufnr
+    end
+
+    return res
+end
 
 for _, mode in next, { 'n', 'i', 'v', 't', 'o', 'x' } do
     M[mode] = variant(mode)
