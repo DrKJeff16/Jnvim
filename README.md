@@ -101,7 +101,10 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── init.lua  <== Entry points are defined here
 │   │   ├── kmap.lua  <== `vim.keymap.set` utilities
 │   │   └── wk.lua  <== `which_key` utilities (regardless if installed or not)
-│   ├── opts.lua  <== Vim Options
+│   ├── opts/  <== Vim Option Utilities
+│   │   ├── init.lua  <== Entry points are defined here
+│   │   ├── all_opts.lua  <== Internal checking utility [DO NOT TOUCH]
+│   │   └── config.lua  <== Default options set here
 │   ├── update.lua  <== Update utilities
 │   ├── util/  <== Misc Utils
 │   │   ├── init.lua  <== Entry points are defined here
