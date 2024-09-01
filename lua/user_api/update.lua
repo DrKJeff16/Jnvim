@@ -8,6 +8,8 @@ local M = {}
 function M.update()
     local curr_win = vim.api.nvim_get_current_win
     local curr_tab = vim.api.nvim_get_current_tabpage
+    local notify = require('user_api.util.notify').notify
+
     local old_cwd = vim.fn.getcwd(curr_win(), curr_tab())
 
     local cmd = {
@@ -22,30 +24,34 @@ function M.update()
     local res = vim.fn.system(cmd)
 
     if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { 'Failed to update Jnvim:\n', 'ErrorMsg' },
-            { '\nPress any key to exit...', 'WarningMsg' },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
+        notify('Failed to update Jnvim, try to do it manually...', 'error', {
+            animate = false,
+            hide_from_history = false,
+            timeout = 7500,
+            title = 'User API',
+        })
     end
 
-    if not res:match('Already up to date') then
-        vim.api.nvim_echo({
-            { res },
-        }, false, {})
-
-        require('user_api.util.notify').notify(
-            'Need to restart Nvim. Press any key to exit',
-            'warn',
-            {
-                title = 'User API',
-                animate = false,
-                timeout = 35000,
-            }
-        )
-        vim.fn.getchar()
-        os.exit(0)
+    if res:match('Already up to date') then
+        notify('Jnvim is up to date!', 'info', {
+            animate = true,
+            hide_from_history = true,
+            timeout = 5000,
+            title = 'User API',
+        })
+    elseif not res:match('error') then
+        notify(res, 'debug', {
+            animate = true,
+            hide_from_history = false,
+            timeout = 5000,
+            title = 'User API',
+        })
+        notify('You need to restart Nvim!', 'warn', {
+            animate = true,
+            hide_from_history = true,
+            timeout = 5000,
+            title = 'User API',
+        })
     end
 
     vim.schedule(function() vim.api.nvim_set_current_dir(old_cwd) end)
@@ -54,19 +60,25 @@ function M.update()
 end
 
 function M:setup_maps()
-    local wk_available = require('user_api.maps.wk').available
+    local wk_avail = require('user_api.maps.wk').available
     local desc = require('user_api.maps.kmap').desc
     local map_dict = require('user_api.maps').map_dict
 
-    if wk_available() then
-        map_dict({ ['<leader>U'] = { group = '+User API' } }, 'wk.register', false, 'n')
+    if wk_avail() then
+        map_dict({
+            n = {
+                ['<leader>U'] = { group = '+User API' },
+            },
+        }, 'wk.register', true)
     end
     map_dict({
-        ['<leader>Uu'] = {
-            self.update,
-            desc('Update User Config'),
+        n = {
+            ['<leader>Uu'] = {
+                self.update,
+                desc('Update User Config'),
+            },
         },
-    }, 'wk.register', false, 'n')
+    }, 'wk.register', true)
 end
 
 return M

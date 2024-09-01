@@ -76,5 +76,6 @@ require('user_api.types.user.autocmd')
 ---@field assoc fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 ---@field mv_tbl_values? fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?): (res: table<string|integer, any>)
+---@field inspect fun(data: any): string
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
