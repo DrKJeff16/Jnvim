@@ -19,6 +19,9 @@ M.ALL_OPTIONS = require('user_api.opts.all_opts')
 ---@type User.Opts.Spec
 M.DEFAULT_OPTIONS = require('user_api.opts.config')
 
+---@type User.Opts.Spec
+M.options = {}
+
 ---@param T User.Opts.Spec
 ---@return User.Opts.Spec parsed_opts, string msg
 local function long_opts_convert(T)
@@ -75,6 +78,7 @@ function M.optset(T)
             msg = msg .. 'Option `' .. k .. '` is not a valid field for `vim.opt`'
         elseif type(vim.opt[k]:get()) == type(v) then
             vim.opt[k] = v
+            M.options[k] = v
         else
             msg = msg .. 'Option `' .. k .. '` could not be parsed'
         end
@@ -97,8 +101,10 @@ end
 ---@param self User.Opts
 ---@param override? User.Opts.Spec A table with custom options
 ---@param verbose? boolean Flag to make the function return a string with invalid values, if any
----@return table? msg
 function M:setup(override, verbose)
+    local notify = require('user_api.util.notify').notify
+    local insp = inspect or vim.inspect
+
     override = is_tbl(override) and override or {}
     verbose = is_bool(verbose) and verbose or false
 
@@ -112,7 +118,7 @@ function M:setup(override, verbose)
     if msg ~= '' then
         vim.schedule(
             function()
-                require('user_api.util.notify').notify(msg, 'warn', {
+                notify(msg, 'warn', {
                     animate = false,
                     hide_from_history = false,
                     timeout = 1750,
@@ -123,8 +129,50 @@ function M:setup(override, verbose)
     end
 
     if verbose then
-        return opts
+        vim.schedule(
+            function()
+                notify(insp(opts), 'warn', {
+                    animate = false,
+                    hide_from_history = false,
+                    timeout = 1750,
+                    title = '(user_api.opts:setup)',
+                })
+            end
+        )
     end
+end
+
+function M.print_set_opts()
+    local notify = require('user_api.util.notify').notify
+
+    local msg = (inspect or vim.inspect)(M.options)
+
+    notify(msg, 'info', {
+        animate = true,
+        hide_from_history = true,
+        timeout = 3500,
+        title = '(user_api.opts.print_set_opts)',
+    })
+end
+
+---@param self User.Opts
+function M:setup_maps()
+    local desc = require('user_api.maps.kmap').desc
+    local wk_avail = require('user_api.maps.wk').available
+    local map_dict = require('user_api.maps').map_dict
+
+    if wk_avail() then
+        map_dict({
+            n = {
+                ['<leader>UO'] = { group = '+Options' },
+            },
+        }, 'wk.register', true)
+    end
+    map_dict({
+        n = {
+            ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
+        },
+    }, 'wk.register', true)
 end
 
 return M

@@ -113,6 +113,11 @@ function M:setup_keys()
             desc('Print Loaded Plugins'),
         },
     }, 'wk.register', false, 'n')
+
+    local U = self.update
+    local O = self.opts
+    U:setup_maps()
+    O:setup_maps()
 end
 
 ---@param self User

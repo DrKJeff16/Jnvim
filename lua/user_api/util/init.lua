@@ -487,6 +487,35 @@ function M.displace_letter(c, direction, cycle)
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
 end
 
+---@param data any
+---@return string
+function M.inspect(data)
+    local Value = require('user_api.check.value')
+
+    local is_nil = Value.is_nil
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local empty = Value.empty
+
+    if is_nil(data) then
+        return 'NULL'
+    end
+
+    if is_str(data) then
+        return data
+    end
+
+    if not is_tbl(data) then
+        return (inspect or vim.inspect)(data)
+    end
+
+    if empty(data) then
+        return '{}'
+    end
+
+    return (inspect or vim.inspect)(data)
+end
+
 return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

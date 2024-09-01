@@ -206,7 +206,6 @@ Distro.archlinux:setup()
 Commands:setup_commands()
 
 User:setup_keys()
-Update:setup_maps()
 
 vim.cmd([[
 filetype plugin indent on
