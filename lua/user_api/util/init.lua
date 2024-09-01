@@ -364,30 +364,17 @@ function M.assoc()
                         map_dict(Keys, 'wk.register', false, 'n', 0)
 
                         -- Kill plugin-defined mappings
-                        vim.schedule(function()
-                            local nop = require('user_api.maps').nop
+                        local nop = vim.api.nvim_buf_del_keymap
 
-                            nop({
-                                'ih',
-                                'is',
-                                'ihn',
-                            }, {
-                                noremap = true,
-                                silent = true,
-                                buffer = 0,
-                                nowait = true,
-                            }, 'i', '<leader>')
-                            nop({
-                                'ih',
-                                'is',
-                                'ihn',
-                            }, {
-                                noremap = true,
-                                silent = true,
-                                buffer = 0,
-                                nowait = true,
-                            }, 'n', '<leader>')
-                        end)
+                        local i_del = {
+                            'ih',
+                            'is',
+                            'ihn',
+                        }
+
+                        for _, lhs in next, i_del do
+                            nop(0, 'i', lhs)
+                        end
                     end,
                 },
                 {
