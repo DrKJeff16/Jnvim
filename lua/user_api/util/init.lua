@@ -298,14 +298,6 @@ function M.assoc()
                     pattern = { 'c', 'cpp' },
                     group = group,
                     callback = function()
-                        if not is_nil(vim.g.installed_a_vim) and vim.g.installed_a_vim == 1 then
-                            return
-                        end
-
-                        local wk_avail = require('user_api.maps.wk').available
-                        local desc = require('user_api.maps.kmap').desc
-                        local map_dict = require('user_api.maps').map_dict
-
                         local buf_opts = {
                             ts = 2,
                             sts = 2,
@@ -317,63 +309,6 @@ function M.assoc()
 
                         for option, val in next, buf_opts do
                             optset(option, val, { buf = curr_buf() })
-                        end
-
-                        ---@type KeyMapDict
-                        local Keys = {
-                            ['<leader><C-h>s'] = {
-                                ':A<CR>',
-                                desc('Cycle Header/Source', true, 0),
-                            },
-                            ['<leader><C-h>x'] = {
-                                ':AS<CR>',
-                                desc('Horizontal Cycle Header/Source', true, 0),
-                            },
-                            ['<leader><C-h>v'] = {
-                                ':AV<CR>',
-                                desc('Vertical Cycle Header/Source', true, 0),
-                            },
-                            ['<leader><C-h>t'] = {
-                                ':AT<CR>',
-                                desc('Tab Cycle Header/Source', true, 0),
-                            },
-                            ['<leader><C-h>S'] = {
-                                ':IH<CR>',
-                                desc('Cycle Header/Source (Cursor)', true, 0),
-                            },
-                            ['<leader><C-h>X'] = {
-                                ':IHS<CR>',
-                                desc('Horizontal Cycle Header/Source (Cursor)', true, 0),
-                            },
-                            ['<leader><C-h>V'] = {
-                                ':IHV<CR>',
-                                desc('Vertical Cycle Header/Source (Cursor)', true, 0),
-                            },
-                            ['<leader><C-h>T'] = {
-                                ':IHT<CR>',
-                                desc('Tab Cycle Header/Source (Cursor)', true, 0),
-                            },
-                        }
-                        ---@type RegKeysNamed
-                        local Names = {
-                            ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
-                        }
-                        if wk_avail() then
-                            map_dict(Names, 'wk.register', false, 'n', 0)
-                        end
-                        map_dict(Keys, 'wk.register', false, 'n', 0)
-
-                        -- Kill plugin-defined mappings
-                        local nop = vim.api.nvim_buf_del_keymap
-
-                        local i_del = {
-                            'ih',
-                            'is',
-                            'ihn',
-                        }
-
-                        for _, lhs in next, i_del do
-                            nop(0, 'i', lhs)
                         end
                     end,
                 },

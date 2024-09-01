@@ -67,15 +67,78 @@ local M = {
         version = false,
         init = flag_installed('a_vim'),
         config = function()
-            require('user_api.maps').nop({
-                'ihn',
-                'is',
-                'ih',
-            }, {
-                noremap = true,
-                silent = true,
-                buffer = 0,
-            }, 'i', '<Space>') -- TODO: Make a `get_leader() function`
+            local wk_avail = require('user_api.maps.wk').available
+            local desc = require('user_api.maps.kmap').desc
+            local map_dict = require('user_api.maps').map_dict
+            local curr_buf = vim.api.nvim_get_current_buf
+
+            ---@type KeyMapDict
+            local Keys = {
+                ['<leader><C-h>s'] = {
+                    ':A<CR>',
+                    desc('Cycle Header/Source', true, curr_buf()),
+                },
+                ['<leader><C-h>x'] = {
+                    ':AS<CR>',
+                    desc('Horizontal Cycle Header/Source', true, curr_buf()),
+                },
+                ['<leader><C-h>v'] = {
+                    ':AV<CR>',
+                    desc('Vertical Cycle Header/Source', true, curr_buf()),
+                },
+                ['<leader><C-h>t'] = {
+                    ':AT<CR>',
+                    desc('Tab Cycle Header/Source', true, curr_buf()),
+                },
+                ['<leader><C-h>S'] = {
+                    ':IH<CR>',
+                    desc('Cycle Header/Source (Cursor)', true, curr_buf()),
+                },
+                ['<leader><C-h>X'] = {
+                    ':IHS<CR>',
+                    desc('Horizontal Cycle Header/Source (Cursor)', true, curr_buf()),
+                },
+                ['<leader><C-h>V'] = {
+                    ':IHV<CR>',
+                    desc('Vertical Cycle Header/Source (Cursor)', true, curr_buf()),
+                },
+                ['<leader><C-h>T'] = {
+                    ':IHT<CR>',
+                    desc('Tab Cycle Header/Source (Cursor)', true, curr_buf()),
+                },
+            }
+            ---@type RegKeysNamed
+            local Names = {
+                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
+            }
+            if wk_avail() then
+                map_dict(Names, 'wk.register', false, 'n', curr_buf())
+            end
+            map_dict(Keys, 'wk.register', false, 'n', curr_buf())
+
+            vim.schedule(function()
+                -- Kill plugin-defined mappings
+
+                local opts = desc('', true, curr_buf())
+                opts.hidden = true
+
+                local i_del = {
+                    i = {
+                        ['<leader>ih'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>is'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>ihn'] = { '<Nop>', opts, hidden = true },
+                    },
+                    n = {
+                        ['<leader>ih'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>is'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>ihn'] = { '<Nop>', opts, hidden = true },
+                    },
+                }
+
+                for _, lhs in next, i_del do
+                    map_dict(i_del, 'wk.register', true, nil, curr_buf())
+                end
+            end)
         end,
     },
     {
