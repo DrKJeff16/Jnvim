@@ -25,9 +25,8 @@
 ## About
 
 This is a [Nvim](https://github.com/neovim/neovim) configuration,
-configured in a **modular**, **_obsessively documented_**, **portable**
-and **platform-independant** way.
-<u>Typed documentation is included.</u>
+configured in a **modular, _obsessively documented_, portable
+and platform-independent** way. Typed documentation is included.
 
 This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim)
 as the default plugin manager.
