@@ -18,17 +18,26 @@ local M = {}
 ---@param return_mod? boolean
 ---@return boolean|unknown|nil
 function M.module(mod, return_mod)
+    if not is_str(mod) then
+        error('`(user_api.check.exists.module)`: Input is not a string')
+    end
+    if mod == '' then
+        error("`(user_api.check.exists.module)`: Input can't be an empty string")
+    end
+
     return_mod = is_bool(return_mod) and return_mod or false
 
     local res
-    local m
-    res, m = pcall(require, mod)
 
     if return_mod then
-        return not is_nil(m) and m or nil
-    else
-        return res
+        local m
+
+        res, m = pcall(require, mod)
+        return (res and not is_nil(m)) and m or nil
     end
+
+    res = pcall(require, mod)
+    return res
 end
 
 ---@param mod string|string[]
@@ -38,7 +47,7 @@ function M.modules(mod, need_all)
     local exists = M.module
 
     if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
-        error('`(user.check.exists.modules)`: Input is neither a string nor a table.')
+        error('`(user_api.check.exists.modules)`: Input is neither a string nor a table.')
     end
 
     need_all = is_bool(need_all) and need_all or false
@@ -124,7 +133,11 @@ function M.env_vars(vars, fallback)
     local environment = vim.fn.environ()
 
     if not (is_str(vars) or is_tbl(vars)) then
-        error('(user.check.exists.env_vars): Argument type is neither string nor table')
+        vim.notify(
+            '(user_api.check.exists.env_vars): Argument type is neither string nor table',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     fallback = is_fun(fallback) and fallback or nil
@@ -155,7 +168,11 @@ end
 ---@return boolean
 function M.executable(exe, fallback)
     if not (is_str(exe) or is_tbl(exe)) then
-        error('(user.check.exists.executable): Argument type is neither string nor table')
+        vim.notify(
+            '(user_api.check.exists.executable): Argument type is neither string nor table',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     fallback = is_fun(fallback) and fallback or nil
