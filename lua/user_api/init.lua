@@ -22,7 +22,7 @@ M.distro = require('user_api.distro')
 
 M.update = require('user_api.update')
 
-M.commands = require('user_api.commands'):new()
+M.commands = require('user_api.commands')
 
 M.registered_plugins = {}
 

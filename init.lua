@@ -203,7 +203,7 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for Arch Linux (WIP)
 Distro.archlinux:setup()
 
-Commands:setup_commands()
+Commands.setup_commands()
 
 User:setup_keys()
 
