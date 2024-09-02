@@ -16,7 +16,7 @@
     3. [`user_api.opts`](#user_apiutil)
     4. [`user_api.check`](#user_apicheck)
     5. [`user_api.maps`](#user_apimaps)
-        1. [`user_api.kmap.desc`](#user_apikmapdesc)
+        1. [`user_api.maps.kmap.desc`](#user_apimapskmapdesc)
         2. [`user_api.maps.wk`](#user_apimapswk)
     6. [`user_api.highlight`](#user_apihighlight)
 
@@ -277,7 +277,7 @@ The `maps.kmap` module has the same function names for each mode:
 
 <!--TODO: Fix sections above and below-->
 
-#### `user_api.kmap.desc`
+#### `user_api.maps.kmap.desc`
 
 There exists a `kmap.desc()` method that returns an option table with a description field
 and other fields corresponding to each parameter.
@@ -291,7 +291,7 @@ and other fields corresponding to each parameter.
 ---@param nowait? boolean Defaults to `true`
 ---@param expr? boolean Defaults to `false`
 ---@return vim.keymap.set.Opts
-maps.kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
+require('user_api.maps.kmap').desc(msg, silent, bufnr, noremap, nowait, expr)
 ```
 
 The function returns this table:
