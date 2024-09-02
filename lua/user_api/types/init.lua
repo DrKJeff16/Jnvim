@@ -27,8 +27,12 @@
 ---@class User.Distro.Archlinux: User.Distro.Spec
 ---@field setup fun(self: User.Distro.Archlinux)
 
+---@class User.Distro.Termux: User.Distro.Spec
+---@field setup fun(self: User.Distro.Termux)
+
 ---@class User.Distro
 ---@field archlinux User.Distro.Archlinux
+---@field termux User.Distro.Termux
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
