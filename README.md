@@ -11,14 +11,14 @@
     2. [Structure](#structure)
     3. [Plugins](#plugins)
 2. [User API](#the-user-api)
-    1. [`user_api.types`](#user_api-types)
-    2. [`user_api.util`](#user_api-util)
-    3. [`user_api.opts`](#user_api-util)
-    4. [`user_api.check`](#user_api-check)
-    5. [`user_api.maps`](#user_api-maps)
-        1. [`kmap.desc`](#kmap-desc)
-        2. [`user_api.maps.wk`](#user_api-maps-wk)
-    6. [`user_api.highlight`](#user_api-highlight)
+    1. [`user_api.types`](#user_apitypes)
+    2. [`user_api.util`](#user_apiutil)
+    3. [`user_api.opts`](#user_apiutil)
+    4. [`user_api.check`](#user_apicheck)
+    5. [`user_api.maps`](#user_apimaps)
+        1. [`user_api.kmap.desc`](#user_apikmapdesc)
+        2. [`user_api.maps.wk`](#user_apimapswk)
+    6. [`user_api.highlight`](#user_apihighlight)
 
 ---
 
