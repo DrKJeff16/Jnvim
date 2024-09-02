@@ -3,7 +3,7 @@
 
 require('user_api.types')
 
----@type User.Distro.Archlinux
+---@type User.Distro.Spec
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
@@ -11,17 +11,28 @@ function M:setup()
     local Check = require('user_api.check')
     local Util = require('user_api.util')
 
+    if not Check.exists.env_vars('PREFIX') then
+        return
+    end
+
     local is_dir = Check.exists.vim_isdir
     local empty = Check.value.empty
     local strip_values = Util.strip_values
 
+    ---@type string
+    local PREFIX = vim.fn.environ()['PREFIX']
+
+    if not is_dir(PREFIX) then
+        return
+    end
+
     local rtpaths = {
-        '/usr/local/share/nvim/runtime',
-        '/usr/share/nvim/runtime',
-        '/usr/local/share/vim/vimfiles',
-        '/usr/local/share/vim/vimfiles/after',
-        '/usr/share/vim/vimfiles',
-        '/usr/share/vim/vimfiles/after',
+        PREFIX .. '/local/share/nvim/runtime',
+        PREFIX .. '/share/nvim/runtime',
+        PREFIX .. '/local/share/vim/vimfiles',
+        PREFIX .. '/local/share/vim/vimfiles/after',
+        PREFIX .. '/share/vim/vimfiles',
+        PREFIX .. '/share/vim/vimfiles/after',
     }
 
     for _, path in next, vim.deepcopy(rtpaths) do
@@ -39,8 +50,6 @@ function M:setup()
             vim.opt.rtp:prepend(path)
         end
     end
-
-    vim.cmd('runtime! archlinux.vim')
 end
 
 return M
