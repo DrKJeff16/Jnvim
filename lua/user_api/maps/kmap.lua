@@ -1,44 +1,37 @@
 require('user_api.types.user.maps')
 
-local Check = require('user_api.check')
-local Util = require('user_api.util')
-
-local is_tbl = Check.value.is_tbl
-local is_str = Check.value.is_str
-local is_int = Check.value.is_int
-local is_bool = Check.value.is_bool
-local empty = Check.value.empty
-
 ---@type KeyMapOpts
 ---@diagnostic disable-next-line:missing-fields
-local MapOpts = {}
+local O = {}
+
+---@param T? User.Maps.Keymap.Opts|table
+---@return KeyMapOpts|table
+function O.new(T)
+    T = require('user_api.check.value').is_tbl(T) and T or {}
+
+    return setmetatable(T, { __index = O })
+end
 
 ---@param T table<string, any>
-function MapOpts:add(T)
+function O:add(T)
     for k, v in next, T do
-        if is_str(k) then
+        if require('user_api.check.value').is_str(k) then
             self[T] = v
         end
     end
 end
 
----@param T? User.Maps.Keymap.Opts|table
----@return KeyMapOpts|table
-function MapOpts.new(T)
-    T = is_tbl(T) and T or {}
-
-    return setmetatable(T, { __index = MapOpts })
-end
-
----@type Modes
-local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
-
 ---@param mode string
 ---@return KeyMapFunction
 local function variant(mode)
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_bool = Value.is_bool
+
     ---@type KeyMapFunction
     return function(lhs, rhs, opts)
-        local DEFAULTS = { 'noremap', 'nowait', 'silent' }
+        local DEFAULTS = { 'noremap', 'silent' }
         opts = is_tbl(opts) and opts or {}
 
         for _, v in next, DEFAULTS do
@@ -60,8 +53,15 @@ local M = {}
 ---@param nowait? boolean
 ---@param expr? boolean
 function M.desc(msg, silent, bufnr, noremap, nowait, expr)
+    local Value = require('user_api.check.value')
+
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local is_bool = Value.is_bool
+    local empty = Value.empty
+
     ---@type KeyMapOpts
-    local res = MapOpts.new({
+    local res = O.new({
         desc = (is_str(msg) and not empty(msg)) and msg or 'Unnamed Key',
         silent = is_bool(silent) and silent or true,
         noremap = is_bool(noremap) and noremap or true,
@@ -76,9 +76,17 @@ function M.desc(msg, silent, bufnr, noremap, nowait, expr)
     return res
 end
 
-for _, mode in next, { 'n', 'i', 'v', 't', 'o', 'x' } do
-    M[mode] = variant(mode)
-end
+M.n = variant('n')
+
+M.i = variant('i')
+
+M.v = variant('v')
+
+M.t = variant('t')
+
+M.o = variant('o')
+
+M.x = variant('x')
 
 return M
 

@@ -10,6 +10,7 @@ local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 local map_dict = User.maps.map_dict
+local desc = User.maps.kmap.desc
 local wk_avail = User.maps.wk.available
 local notify = Util.notify.notify
 
@@ -25,6 +26,7 @@ local function src(mini_mod, opts)
             timeout = 500,
             title = '(plugin.mini:src)',
         })
+        return
     end
 
     -- If table key doesn't start with `mini.`
@@ -35,9 +37,10 @@ local function src(mini_mod, opts)
         notify('Unable to import `' .. og_mini_mod .. '`', 'error', {
             animate = true,
             hide_from_history = false,
-            timeout = 500,
+            timeout = 1200,
             title = '(plugin.mini:src)',
         })
+        return
     end
 
     local M = require(mini_mod)
@@ -76,6 +79,7 @@ Mods.align = {
 
     -- Modifiers changing alignment steps and/or options
     modifiers = {
+        -- TODO: Implement this if necessary
         --[[ -- Main option modifiers
         ['s'] = --<function: enter split pattern>,
         ['j'] = --<function: choose justify side>,
@@ -99,9 +103,11 @@ Mods.align = {
             local trim_high = require('mini.align').gen_step.trim('both', 'high')
             table.insert(steps.pre_justify, trim_high)
         end,
+
         T = function(steps, _)
             table.insert(steps.pre_justify, require('mini.align').gen_step.trim('both', 'remove'))
         end,
+
         j = function(_, opts)
             local next_option = ({
                 left = 'center',
@@ -152,7 +158,7 @@ Mods.basics = {
 
     autocommands = {
         basic = true,
-        relnum_in_visual_mode = false,
+        relnum_in_visual_mode = true,
     },
 
     silent = true,
@@ -250,37 +256,79 @@ Mods.move = {
 
 Mods.trailspace = { only_in_normal_buffers = true }
 
--- WARN: This section creates errors
-Mods.hipatterns = {
-    highlighters = {
-        -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
-        fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-        hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
-        todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
-        note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+-- WARN: This section creates visual hell if combined with other highlight plugins
+-- (e.g. todo-comments)
+if not exists('todo-comments') then
+    Mods.hipatterns = {
+        highlighters = {
+            -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+            fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+            hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+            todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+            note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
 
-        -- Highlight hex color strings (`#rrggbb`) using that color
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-    },
+            -- Highlight hex color strings (`#rrggbb`) using that color
+            hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+        },
 
-    delay = {
-        text_change = 1500,
-        scroll = 350,
-    },
-}
+        delay = {
+            text_change = 1500,
+            scroll = 350,
+        },
+    }
+end
 
 for mod, opts in next, Mods do
     src(mod, opts)
+    if not wk_avail() then
+        goto continue
+    end
 
-    if mod == 'move' and wk_avail() then
+    if mod == 'move' then
         map_dict({
             n = {
                 ['<leader>M'] = { group = '+Mini Move' },
             },
             v = {
-                ['<leader>M'] = { group = '+Mini Move' },
+                ['<leader>MM'] = { group = '+Mini Move' },
             },
         }, 'wk.register', true)
+    elseif mod == 'map' then
+        map_dict({
+            ['<leader>m'] = { group = '+Mini Map' },
+            ['<leader>mt'] = { group = '+Toggles' },
+        }, 'wk.register', false, 'n')
+    end
+
+    ::continue::
+
+    if mod == 'map' then
+        map_dict({
+            ['<leader>mtt'] = {
+                require('mini.map').toggle,
+                desc('Toggle Mini Map'),
+            },
+            ['<leader>mts'] = {
+                require('mini.map').toggle_side,
+                desc('Toggle Side'),
+            },
+            ['<leader>mtf'] = {
+                require('mini.map').toggle_focus,
+                desc('Toggle Focus'),
+            },
+            ['<leader>mo'] = {
+                require('mini.map').open,
+                desc('Open Mini Map'),
+            },
+            ['<leader>md'] = {
+                require('mini.map').close,
+                desc('Close Mini Map'),
+            },
+            ['<leader>mr'] = {
+                require('mini.map').refresh,
+                desc('Refresh Mini Map'),
+            },
+        }, 'wk.register', false, 'n')
     end
 end
 
