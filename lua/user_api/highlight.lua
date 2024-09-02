@@ -25,7 +25,7 @@ function M.hl(name, opts, bufnr)
     vim.api.nvim_set_hl(bufnr, name, opts)
 end
 
----@see HlPair
+---@param A HlPair[]
 function M.hl_from_arr(A)
     local Value = require('user_api.check.value')
 
@@ -69,6 +69,7 @@ end
 --- ```
 --- ---
 --- See more at `:h nvim_set_hl`
+---@param D HlDict
 function M.hl_from_dict(D)
     local Value = require('user_api.check.value')
 
