@@ -16,7 +16,8 @@ function M.hl(name, opts, bufnr)
     local empty = Value.empty
 
     if not (is_str(name) and is_tbl(opts)) or empty(name) then
-        error('(user_api.highlight.hl): A highlight value is not permitted!')
+        vim.notify('(user_api.highlight.hl): Bad arguments', vim.log.levels.ERROR)
+        return
     end
 
     bufnr = is_int(bufnr) and bufnr or 0
@@ -24,7 +25,7 @@ function M.hl(name, opts, bufnr)
     vim.api.nvim_set_hl(bufnr, name, opts)
 end
 
----@see HlPair
+---@param A HlPair[]
 function M.hl_from_arr(A)
     local Value = require('user_api.check.value')
 
@@ -34,15 +35,22 @@ function M.hl_from_arr(A)
     local empty = Value.empty
 
     if not is_tbl(A) or empty(A) then
-        error('(user_api.highlight.hl_from_arr): Unable to parse argument.')
+        vim.notify('(user_api.highlight.hl_from_arr): Bad argument', vim.log.levels.ERROR)
+        return
     end
 
     for _, t in next, A do
         if not (is_str(t.name) and is_tbl(t.opts)) or empty(t.name) then
-            error('(user_api.highlight.hl_from_arr): A highlight value is not permitted!')
+            vim.notify(
+                '(user_api.highlight.hl_from_arr): A highlight value is not permitted, skipping',
+                vim.log.levels.ERROR
+            )
+            goto continue
         end
 
         M.hl(t.name, t.opts)
+
+        ::continue::
     end
 end
 
@@ -61,6 +69,7 @@ end
 --- ```
 --- ---
 --- See more at `:h nvim_set_hl`
+---@param D HlDict
 function M.hl_from_dict(D)
     local Value = require('user_api.check.value')
 
@@ -70,15 +79,26 @@ function M.hl_from_dict(D)
     local empty = Value.empty
 
     if not is_tbl(D) or empty(D) then
-        error('(user_api.highlight.hl_from_dict): Unable to parse argument.')
+        vim.notify(
+            '(user_api.highlight.hl_from_dict): Unable to parse argument',
+            vim.log.levels.ERROR
+        )
+        return
     end
 
     for k, v in next, D do
-        if (is_str(k) and is_tbl(v)) and not empty(k) then
-            M.hl(k, v)
-        else
-            error('(user_api.highlight.hl_from_dict): A highlight value is not permitted!')
+        if not (is_str(k) and is_tbl(v)) or empty(k) then
+            vim.notify(
+                '(user_api.highlight.hl_from_dict): A highlight value is not permitted, skipping',
+                vim.log.levels.ERROR
+            )
+
+            goto continue
         end
+
+        M.hl(k, v)
+
+        ::continue::
     end
 end
 
