@@ -38,6 +38,10 @@ function M.is_nil(var, multiple)
 
     for _, v in next, var do
         if v ~= nil then
+            vim.notify(
+                '(user_api.check.value.is_nil): Input is not a table (`multiple` is true)',
+                vim.log.levels.WARN
+            )
             return false
         end
     end
@@ -49,15 +53,29 @@ end
 ---@return ValueFunc?
 local function type_fun(t)
     local ALLOWED_TYPES = {
-        'boolean',
-        'function',
-        'number',
-        'string',
-        'table',
+        is_bool = 'boolean',
+        is_fun = 'function',
+        is_num = 'number',
+        is_str = 'string',
+        is_tbl = 'table',
     }
 
-    if not vim.tbl_contains(ALLOWED_TYPES, t) then
-        return
+    local ret = true
+    local name = ''
+
+    for k, _type in next, ALLOWED_TYPES do
+        if _type == t then
+            ret = false
+            name = k
+            break
+        end
+    end
+
+    if ret then
+        error(
+            '(user_api.check.value:type_fun): Invalid function type `' .. t .. '`',
+            vim.log.levels.ERROR
+        )
     end
 
     return function(var, multiple)
@@ -74,6 +92,12 @@ local function type_fun(t)
 
         for _, v in next, var do
             if M.is_nil(t) or type(v) ~= t then
+                vim.notify(
+                    '(user_api.check.value.'
+                        .. name
+                        .. '): Input is not a table (`multiple` is true)',
+                    vim.log.levels.WARN
+                )
                 return false
             end
         end
@@ -192,6 +216,7 @@ function M.is_int(var, multiple)
     local is_tbl = M.is_tbl
     local is_bool = M.is_bool
     local is_num = M.is_num
+
     local floor = math.floor
     local ceil = math.ceil
 
@@ -202,6 +227,10 @@ function M.is_int(var, multiple)
     end
 
     if not is_tbl(var) then
+        vim.notify(
+            '(user_api.check.value.is_int): Input is not a table (`multiple` is true)',
+            vim.log.levels.WARN
+        )
         return false
     end
 
@@ -230,7 +259,6 @@ function M.empty(v)
     local is_str = M.is_str
     local is_tbl = M.is_tbl
     local is_num = M.is_num
-    local notify = require('user_api.util.notify').notify
 
     if is_str(v) then
         return v == ''
@@ -244,12 +272,10 @@ function M.empty(v)
         return vim.tbl_isempty(v)
     end
 
-    notify("Value isn't a table, string nor a number", 'warn', {
-        title = '(user_api.value.empty)',
-        hide_from_history = true,
-        timeout = 200,
-    })
-
+    vim.notify(
+        '(user_api.check.value.empty): Value is neither a table, string nor a number',
+        vim.log.levels.WARN
+    )
     return true
 end
 
@@ -263,15 +289,21 @@ function M.fields(field, T)
     local empty = M.empty
 
     if not is_tbl(T) then
-        error(
-            '(user_api.check.value.fields): Cannot look up a field in the following type: `'
-                .. type(T)
-                .. '`'
+        local t_t = type(T)
+
+        vim.notify(
+            '(user_api.check.value.fields): Cannot look up a field on type: `' .. t_t .. '`',
+            vim.log.levels.ERROR
         )
+        return false
     end
 
     if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
-        error('(user_api.check.value.fields): Field type `' .. type(T) .. '` not parseable')
+        vim.notify(
+            '(user_api.check.value.fields): Field type `' .. type(T) .. '` is not parseable',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     if not is_tbl(field) then
@@ -299,15 +331,19 @@ function M.tbl_values(values, T, return_keys)
     local empty = M.empty
 
     if not is_tbl(values) or empty(values) then
-        error(
-            '(user_api.check.value.tbl_values): Value argument is either not a table or an empty one'
+        vim.notify(
+            '(user_api.check.value.tbl_values): Value argument is either not a table or an empty one',
+            vim.log.levels.ERROR
         )
+        return false
     end
 
     if not is_tbl(T) or empty(T) then
-        error(
-            '(user_api.check.value.tbl_values): Table to check is either not a table or an empty one'
+        vim.notify(
+            '(user_api.check.value.tbl_values): Table to check is either not a table or an empty one',
+            vim.log.levels.ERROR
         )
+        return false
     end
 
     return_keys = is_bool(return_keys) and return_keys or false
@@ -362,22 +398,34 @@ function M.single_type_tbl(type_str, T)
     }
 
     if not is_str(type_str) then
-        error('(user_api.check.value.single_type_tbl): You need to define a type as a string')
+        vim.notify(
+            '(user_api.check.value.single_type_tbl): You need to define a type as a string',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     if not vim.tbl_contains(ALLOWED_TYPES, type_str) then
-        error('(user_api.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type')
+        vim.notify(
+            '(user_api.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     if not is_tbl(T) or empty(T) then
-        error('(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE')
+        vim.notify(
+            '(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE',
+            vim.log.levels.ERROR
+        )
+        return false
     end
 
     for _, v in next, T do
-        if type_str ~= 'nil' and type(v) ~= type_str then
+        if type_str == 'nil' and not M.is_nil(v) then
             return false
         end
-        if type_str == 'nil' and v ~= nil then
+        if type(v) ~= type_str then
             return false
         end
     end
