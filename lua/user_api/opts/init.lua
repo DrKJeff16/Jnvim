@@ -163,16 +163,12 @@ function M:setup_maps()
 
     if wk_avail() then
         map_dict({
-            n = {
-                ['<leader>UO'] = { group = '+Options' },
-            },
-        }, 'wk.register', true)
+            ['<leader>UO'] = { group = '+Options' },
+        }, 'wk.register', false, 'n')
     end
     map_dict({
-        n = {
-            ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
-        },
-    }, 'wk.register', true)
+        ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
+    }, 'wk.register', false, 'n')
 end
 
 return M

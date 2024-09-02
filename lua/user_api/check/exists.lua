@@ -47,7 +47,7 @@ function M.modules(mod, need_all)
     local exists = M.module
 
     if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
-        error('`(user_api.check.exists.modules)`: Input is neither a string nor a table.')
+        error('`(user_api.check.exists.modules)`: Input is neither a string nor a table')
     end
 
     need_all = is_bool(need_all) and need_all or false
@@ -56,7 +56,7 @@ function M.modules(mod, need_all)
     local res = false
 
     if is_str(mod) then
-        res = exists(mod)
+        res = not need_all and exists(mod) or { [mod] = exists(mod) }
     else
         res = {}
 
