@@ -11,14 +11,19 @@
             "bashIde.shfmt.binaryNextLine": true,
             "bashIde.shfmt.caseIndent": true,
             "bashIde.shfmt.path": "shfmt",
-            "bashIde.shfmt.spaceRedirects": true
+            "bashIde.shfmt.spaceRedirects": true,
+            "bashIde.shfmt.funcNextLine": false,
+            "bashIde.shfmt.ignoreEditorconfig": false,
+            "bashIde.shfmt.keepPadding": true,
+            "bashIde.shfmt.languageDialect": "auto",
+            "bashIde.shfmt.simplifyCode": false
         },
         "clangd": {
             "clangd.checkUpdates": false,
             "clangd.detectExtensionConflicts": true,
             "clangd.enableCodeCompletion": true,
-            "clangd.inactiveRegions.opacity": 0.95,
-            "clangd.inactiveRegions.useBackgroundHighlight": true,
+            "clangd.inactiveRegions.opacity": 0.90,
+            "clangd.inactiveRegions.useBackgroundHighlight": false,
             "clangd.onConfigChanged": "restart",
             "clangd.path": "/usr/bin/clangd",
             "clangd.restartAfterCrash": true,
@@ -102,10 +107,7 @@
             "Lua.completion.showWord": "Enable",
             "Lua.completion.workspaceWord": true,
             "Lua.diagnostics.disable": [
-                "unused-local",
-                "unused-function",
-                "inject-field",
-                "need-check-nil"
+                "inject-field"
             ],
             "Lua.diagnostics.enable": true,
             "Lua.diagnostics.globals": [
@@ -179,7 +181,45 @@
                 "D401"
             ],
             "pylsp.plugins.pyflakes.enabled": false,
-            "pylsp.plugins.pylint.enabled": false
+            "pylsp.plugins.pylint.enabled": false,
+            "pylsp.plugins.jedi.auto_import_modules": [
+                "sys"
+            ],
+            "pylsp.plugins.jedi_completion.cache_for": [
+                "argparse",
+                "matplotlib",
+                "numpy",
+                "os",
+                "pandas",
+                "sys",
+                "tensorflow",
+                "typing"
+            ],
+            "pylsp.plugins.jedi_completion.eager": true,
+            "pylsp.plugins.jedi_completion.enabled": true,
+            "pylsp.plugins.jedi_completion.fuzzy": true,
+            "pylsp.plugins.jedi_definition.enabled": true,
+            "pylsp.plugins.jedi_completion.resolve_at_most": 30,
+            "pylsp.plugins.jedi_definition.follow_builtin_definitions": true,
+            "pylsp.plugins.jedi_hover.enabled": true,
+            "pylsp.plugins.jedi_definition.follow_builtin_imports": true,
+            "pylsp.plugins.jedi_definition.follow_imports": true,
+            "pylsp.plugins.jedi_references.enabled": true,
+            "pylsp.plugins.jedi_signature_help.enabled": true,
+            "pylsp.plugins.jedi_symbols.all_scopes": false,
+            "pylsp.plugins.jedi_symbols.enabled": true,
+            "pylsp.plugins.jedi_symbols.include_import_symbols": true,
+            "pylsp.plugins.mccabe.enabled": true,
+            "pylsp.plugins.rope_autoimport.completions.enabled": true,
+            "pylsp.plugins.rope_autoimport.memory": true,
+            "pylsp.plugins.rope_completion.eager": true,
+            "pylsp.plugins.rope_completion.enabled": true,
+            "pylsp.rope.ropeFolder": null,
+            "pylsp.plugins.rope_autoimport.enabled": true,
+            "pylsp.plugins.rope_autoimport.code_actions.enabled": true,
+            "pylsp.plugins.mccabe.threshold": 15,
+            "pylsp.plugins.preload.enabled": false,
+            "pylsp.plugins.yapf.enabled": false
         },
         "yamlls": {
             "redhat.telemetry.enabled": false,
