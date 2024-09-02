@@ -32,10 +32,14 @@ local function source_curr_buf()
     return tbl_keys({ [win_buf(win)] = true })
 end
 
+---@type Sources
+---@diagnostic disable-next-line:missing-fields
+local M = {}
+
 ---@param group_index? integer
 ---@param all_bufs? boolean
 ---@return SourceBuf
-local function buffer(group_index, all_bufs)
+function M.buffer(group_index, all_bufs)
     all_bufs = is_bool(all_bufs) and all_bufs or true
 
     ---@type SourceBuf
@@ -57,7 +61,7 @@ end
 
 ---@param group_index? integer
 ---@return SourceAsyncPath
-local function async_path(group_index)
+function M.async_path(group_index)
     ---@type SourceAsyncPath
     local res = {
         name = 'async_path',
@@ -76,13 +80,13 @@ local function async_path(group_index)
 end
 
 ---@type table<string, (cmp.SourceConfig|SourceBuf|SourceAsyncPath)[]>
-local Sources = {
+M.Sources = {
     c = {
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 2 },
         { name = 'vsnip', group_index = 3 },
-        async_path(5),
-        buffer(4),
+        M.async_path(5),
+        M.buffer(4),
     },
 
     lua = {
@@ -90,23 +94,23 @@ local Sources = {
         { name = 'nvim_lsp_signature_help', group_index = 2 },
         { name = 'nvim_lua', group_index = 3 },
         { name = 'vsnip', group_index = 4 },
-        buffer(5),
+        M.buffer(5),
     },
 }
 
 if exists('cmp_doxygen') then
-    table.insert(Sources.c, { name = 'doxygen' })
+    table.insert(M.Sources.c, { name = 'doxygen' })
 end
 
 if exists('lazydev') then
-    table.insert(Sources.lua, {
+    table.insert(M.Sources.lua, {
         name = 'lazydev',
         group_index = 0,
     })
 end
 
 ---@type SetupSources
-local ft = {
+M.ft = {
     {
         {
             'bash',
@@ -125,9 +129,9 @@ local ft = {
             sources = gen_sources({
                 { name = 'nvim_lsp', group_index = 1 },
                 { name = 'nvim_lsp_signature_help', group_index = 2 },
-                async_path(3),
+                M.async_path(3),
                 { name = 'vsnip', group_index = 4 },
-                buffer(5),
+                M.buffer(5),
             }),
         },
     },
@@ -135,55 +139,55 @@ local ft = {
         { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
         {
             sources = gen_sources({
-                buffer(1),
-                async_path(2),
+                M.buffer(1),
+                M.async_path(2),
             }),
         },
     },
     {
         { 'c', 'cpp' },
         {
-            sources = gen_sources(Sources.c),
+            sources = gen_sources(M.Sources.c),
         },
     },
     ['lua'] = {
-        sources = gen_sources(Sources.lua),
+        sources = gen_sources(M.Sources.lua),
     },
     ['lisp'] = {
         sources = gen_sources({
             { name = 'vlime', group_index = 1 },
-            buffer(2),
+            M.buffer(2),
         }),
     },
     ['gitcommit'] = {
         sources = gen_sources({
             { name = 'conventionalcommits', group_index = 1 },
             { name = 'git', group_index = 2 },
-            async_path(3),
-            buffer(4),
+            M.async_path(3),
+            M.buffer(4),
         }),
     },
 }
 
 if exists('neorg') then
-    ft['norg'] = {
+    M.ft['norg'] = {
         sources = gen_sources({
             { name = 'neorg', group_index = 1 },
-            buffer(2),
-            async_path(3),
+            M.buffer(2),
+            M.async_path(3),
         }),
     }
 end
 
 ---@type SetupSources
-local cmdline = {
+M.cmdline = {
     {
         { '/', '?' },
         {
             mapping = cmp.mapping.preset.cmdline(),
             sources = gen_sources({
                 { name = 'nvim_lsp_document_symbol', group_index = 1 },
-                buffer(2),
+                M.buffer(2),
             }),
         },
     },
@@ -195,7 +199,7 @@ local cmdline = {
                 group_index = 1,
                 option = { treat_trailing_slash = false },
             },
-            async_path(2),
+            M.async_path(2),
         }),
 
         ---@diagnostic disable-next-line:missing-fields
@@ -203,77 +207,61 @@ local cmdline = {
     },
 }
 
----@type Sources
----@diagnostic disable-next-line:missing-fields
-local M = {
-    setup = function(T)
-        local notify = require('user_api.util.notify').notify
+function M.setup(T)
+    local notify = require('user_api.util.notify').notify
 
-        if is_tbl(T) and not empty(T) then
-            for k, v in next, T do
-                if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-                    table.insert(ft, v)
-                elseif is_str(k) and is_tbl(v) then
-                    ft[k] = v
-                else
-                    notify(
-                        "(plugin.cmp.sources.setup): Couldn't parse the input table value",
-                        'error',
-                        {
-                            title = 'plugin.cmp.sources',
-                            timeout = 500,
-                        }
-                    )
-                end
-            end
-        end
-
-        for k, v in next, ft do
+    if is_tbl(T) and not empty(T) then
+        for k, v in next, T do
             if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-                local names = v[1]
-                local opts = v[2]
-
-                cmp.setup.filetype(names, opts)
+                table.insert(M.ft, v)
             elseif is_str(k) and is_tbl(v) then
-                cmp.setup.filetype(k, v)
+                M.ft[k] = v
             else
-                notify(
-                    "(plugin.cmp.sources.setup): Couldn't parse the input table value",
-                    'error',
-                    {
-                        title = 'plugin.cmp.sources',
-                        timeout = 500,
-                    }
-                )
+                notify("Couldn't parse the input table value", 'error', {
+                    hide_from_history = false,
+                    timeout = 800,
+                    title = '(plugin.cmp.sources.setup)',
+                })
             end
         end
+    end
 
-        require('cmp_git').setup()
+    for k, v in next, M.ft do
+        if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+            local names = v[1]
+            local opts = v[2]
 
-        for k, v in next, cmdline do
-            if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-                local names = v[1]
-                local opts = v[2]
-
-                cmp.setup.cmdline(names, opts)
-            elseif is_str(k) and is_tbl(v) then
-                cmp.setup.cmdline(k, v)
-            else
-                notify(
-                    "(plugin.cmp.sources.setup): Couldn't parse the input table value",
-                    'error',
-                    {
-                        title = 'plugin.cmp.sources',
-                        timeout = 500,
-                    }
-                )
-            end
+            cmp.setup.filetype(names, opts)
+        elseif is_str(k) and is_tbl(v) then
+            cmp.setup.filetype(k, v)
+        else
+            notify("Couldn't parse the input table value", 'error', {
+                hide_from_history = false,
+                timeout = 800,
+                title = '(plugin.cmp.sources.setup)',
+            })
         end
-    end,
+    end
 
-    buffer = buffer,
-    async_path = async_path,
-}
+    require('cmp_git').setup()
+
+    for k, v in next, M.cmdline do
+        if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+            local names = v[1]
+            local opts = v[2]
+
+            cmp.setup.cmdline(names, opts)
+        elseif is_str(k) and is_tbl(v) then
+            cmp.setup.cmdline(k, v)
+        else
+            notify("Couldn't parse the input table value", 'error', {
+                hide_from_history = false,
+                timeout = 800,
+                title = '(plugin.cmp.sources.setup)',
+            })
+        end
+    end
+end
 
 function M.new() return setmetatable({}, { __index = M }) end
 
