@@ -1,6 +1,5 @@
 local User = require('user_api')
 local Check = User.check
-local types = User.types.cmp
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -16,12 +15,9 @@ User:register_plugin('plugin.cmp')
 local tbl_contains = vim.tbl_contains
 local get_mode = vim.api.nvim_get_mode
 
-local Types = require('cmp.types')
-local CmpTypes = require('cmp.types.cmp')
-
 local Sks = require('plugin.cmp.kinds')
 local CmpUtil = require('plugin.cmp.util')
-local Sources = require('plugin.cmp.sources').new()
+local Sources = require('plugin.cmp.sources')
 
 local cmp = require('cmp')
 local Compare = require('cmp.config.compare')
@@ -52,7 +48,7 @@ local Mappings = {
 
 ---@type cmp.ConfigSchema
 local Opts = {
-    ---@type fun(): boolean
+    ---@return boolean
     enabled = function()
         local disable_ft = {
             'NvimTree',
@@ -89,8 +85,7 @@ local Opts = {
             'yaml',
         }
 
-        ---@type string
-        local ft = require('user_api.util').ft_get(vim.api.nvim_get_current_buf())
+        local ft = require('user_api.util').ft_get()
 
         if tbl_contains(disable_ft, ft) then
             return false
@@ -111,7 +106,7 @@ local Opts = {
     end,
 
     snippet = {
-        ---@type fun(args: cmp.SnippetExpansionParams)
+        ---@param args cmp.SnippetExpansionParams
         expand = function(args) vim.fn['vsnip#anonymous'](args.body) end,
     },
 
@@ -124,10 +119,10 @@ local Opts = {
             Compare.offset,
             Compare.scopes,
             Compare.locality,
+            Compare.recently_used,
             Compare.kind,
             Compare.order,
             Compare.exact,
-            Compare.recently_used,
             Compare.length,
             Compare.sort_text,
         },

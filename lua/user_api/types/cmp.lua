@@ -100,11 +100,9 @@
 ---@alias SetupSources table<string, cmp.ConfigSchema>|MultiSources[]
 
 ---@class Sources
----@field new fun(): Sources
----@field __index? Sources
 ---@field setup fun(T: SetupSources?)
 ---@field buffer fun(group_index: integer?, all_bufs: boolean?): SourceBuf
----@field async_path? fun(group_index: integer?): SourceAsyncPath
+---@field async_path fun(group_index: integer?): SourceAsyncPath
 ---@field Sources table<string, (cmp.SourceConfig|SourceBuf|SourceAsyncPath)[]>
 ---@field ft SetupSources
 ---@field cmdline SetupSources
