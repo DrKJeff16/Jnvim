@@ -83,17 +83,17 @@ end
 M.Sources = {
     c = {
         { name = 'nvim_lsp', group_index = 1 },
-        { name = 'nvim_lsp_signature_help', group_index = 2 },
-        { name = 'vsnip', group_index = 3 },
-        M.async_path(5),
+        { name = 'vsnip', group_index = 2 },
+        { name = 'nvim_lsp_signature_help', group_index = 3 },
         M.buffer(4),
+        M.async_path(5),
     },
 
     lua = {
         { name = 'nvim_lsp', group_index = 1 },
-        { name = 'nvim_lsp_signature_help', group_index = 2 },
-        { name = 'nvim_lua', group_index = 3 },
-        { name = 'vsnip', group_index = 4 },
+        { name = 'nvim_lua', group_index = 2 },
+        { name = 'vsnip', group_index = 3 },
+        { name = 'nvim_lsp_signature_help', group_index = 4 },
         M.buffer(5),
     },
 }
@@ -128,9 +128,9 @@ M.ft = {
         {
             sources = gen_sources({
                 { name = 'nvim_lsp', group_index = 1 },
-                { name = 'nvim_lsp_signature_help', group_index = 2 },
-                M.async_path(3),
-                { name = 'vsnip', group_index = 4 },
+                { name = 'vsnip', group_index = 3 },
+                M.async_path(2),
+                { name = 'nvim_lsp_signature_help', group_index = 4 },
                 M.buffer(5),
             }),
         },
@@ -163,8 +163,8 @@ M.ft = {
         sources = gen_sources({
             { name = 'conventionalcommits', group_index = 1 },
             { name = 'git', group_index = 2 },
-            M.async_path(3),
-            M.buffer(4),
+            M.buffer(3),
+            M.async_path(4),
         }),
     },
 }
@@ -197,7 +197,9 @@ M.cmdline = {
             {
                 name = 'cmdline',
                 group_index = 1,
-                option = { treat_trailing_slash = false },
+                option = {
+                    treat_trailing_slash = false,
+                },
             },
             M.async_path(2),
         }),
@@ -246,7 +248,7 @@ function M.setup(T)
     require('cmp_git').setup()
 
     for k, v in next, M.cmdline do
-        if is_num(k) and is_tbl({ v[1], v[2] }, true) then
+        if is_num(k) then
             local names = v[1]
             local opts = v[2]
 
