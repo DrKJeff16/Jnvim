@@ -103,7 +103,10 @@
 ---@field new fun(): Sources
 ---@field __index? Sources
 ---@field setup fun(T: SetupSources?)
----@field buffer fun(priority: integer?): SourceBuf
----@field async_path? fun(priority: integer?): SourceAsyncPath
+---@field buffer fun(group_index: integer?, all_bufs: boolean?): SourceBuf
+---@field async_path? fun(group_index: integer?): SourceAsyncPath
+---@field Sources table<string, (cmp.SourceConfig|SourceBuf|SourceAsyncPath)[]>
+---@field ft SetupSources
+---@field cmdline SetupSources
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
