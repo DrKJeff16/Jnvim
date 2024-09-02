@@ -1,5 +1,4 @@
 require('user_api.types.user.commands')
-local Check = require('user_api.check')
 
 local new_cmd = vim.api.nvim_create_user_command
 local set_lines = vim.api.nvim_buf_set_lines
@@ -29,13 +28,7 @@ function M.redir()
     end, { nargs = '+', complete = 'command' })
 end
 
-function M:setup_commands() self.redir() end
-
-function M.new()
-    local self = setmetatable({}, { __index = M })
-
-    return self
-end
+function M.setup_commands() M.redir() end
 
 return M
 
