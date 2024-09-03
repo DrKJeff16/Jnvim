@@ -5,7 +5,6 @@
 require('user_api.types.user.maps')
 
 local Check = require('user_api.check')
-local Util = require('user_api.util')
 
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
@@ -17,9 +16,10 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 --- `which_key` API entrypoints
 ---@type User.Maps.WK
-M = {
-    available = function() return require('user_api.check.exists').module('which-key') end,
-}
+---@diagnostic disable-next-line:missing-fields
+M = {}
+
+function M.available() return require('user_api.check.exists').module('which-key') end
 
 function M.convert(lhs, rhs, opts)
     if not M.available() then
@@ -65,7 +65,7 @@ end
 
 function M.register(T, opts)
     if not M.available() then
-        Util.notify.notify('(user.maps.wk.register): `which_key` unavailable')
+        require('user_api.util.notify').notify('(user.maps.wk.register): `which_key` unavailable')
         return false
     end
 

@@ -2,6 +2,7 @@ require('user_api.types.user.util')
 
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
+local in_tbl = vim.tbl_contains
 
 ---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
@@ -24,7 +25,7 @@ function M.mv_tbl_values(T, steps, direction)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error("(user_api.util.mv_tbl_values): Input isn't a table")
+        error("(user_api.util.mv_tbl_values): Input isn't a table", vim.log.levels.ERROR)
     end
 
     if empty(T) then
@@ -32,8 +33,7 @@ function M.mv_tbl_values(T, steps, direction)
     end
 
     steps = (is_int(steps) and steps > 0) and steps or 1
-    direction = (is_str(direction) and vim.tbl_contains({ 'l', 'r' }, direction)) and direction
-        or 'r'
+    direction = (is_str(direction) and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
 
     ---@class DirectionFuns
     ---@field r fun(t: table<string|integer, any>): res: table<string|integer, any>
@@ -102,7 +102,12 @@ end
 ---@return boolean
 function M.xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
-        error('(user_api.util.xor): An argument is not of boolean type')
+        M.notify.notify('An argument is not of boolean type', 'error', {
+            hide_from_history = false,
+            timeout = 800,
+            title = '(user_api.util.xor)',
+        })
+        return false
     end
 
     return (x and not y) or (not x and y)
@@ -116,7 +121,6 @@ function M.strip_fields(T, fields)
 
     local is_tbl = Value.is_tbl
     local is_str = Value.is_str
-    local is_int = Value.is_int
     local empty = Value.empty
     local field = Value.fields
 
@@ -147,7 +151,7 @@ function M.strip_fields(T, fields)
         end
     else
         for k, v in next, T do
-            if not vim.tbl_contains(fields, k) then
+            if not in_tbl(fields, k) then
                 res[k] = v
             end
         end
@@ -164,8 +168,6 @@ function M.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
-    local is_nil = Value.is_nil
-    local is_str = Value.is_str
     local is_int = Value.is_int
     local empty = Value.empty
 
@@ -184,9 +186,9 @@ function M.strip_values(T, values, max_instances)
 
     for k, v in next, T do
         if M.xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
-            if not vim.tbl_contains(values, v) and is_int(k) then
+            if not in_tbl(values, v) and is_int(k) then
                 table.insert(res, v)
-            elseif not vim.tbl_contains(values, v) then
+            elseif not in_tbl(values, v) then
                 res[k] = v
             else
                 count = count + 1
@@ -236,13 +238,6 @@ function M.ft_get(bufnr)
 end
 
 function M.assoc()
-    local Value = require('user_api.check.value')
-
-    local is_nil = Value.is_nil
-    local is_fun = Value.is_fun
-    local is_tbl = Value.is_tbl
-    local is_str = Value.is_str
-    local empty = Value.empty
     local au_repeated_events = M.au.au_repeated_events
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
@@ -265,7 +260,7 @@ function M.assoc()
                     group = group,
                     callback = function()
                         if
-                            not vim.tbl_contains({
+                            not in_tbl({
                                 M.ft_get(curr_buf()),
                                 M.bt_get(curr_buf()),
                             }, 'help')
@@ -362,11 +357,6 @@ function M.assoc()
                     callback = function()
                         local buf = curr_buf()
 
-                        -- Make sure the buffer is modifiable
-                        if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
-                            return
-                        end
-
                         if require('user_api.check.exists').executable('isort') then
                             local map_dict = require('user_api.maps').map_dict
                             local desc = require('user_api.maps.kmap').desc
@@ -412,8 +402,7 @@ function M.displace_letter(c, direction, cycle)
     local is_bool = Value.is_bool
     local mv_tbl_values = M.mv_tbl_values
 
-    direction = (is_str(direction) and vim.tbl_contains({ 'next', 'prev' }, direction))
-            and direction
+    direction = (is_str(direction) and in_tbl({ 'next', 'prev' }, direction)) and direction
         or 'next'
     cycle = is_bool(cycle) and cycle or false
 
