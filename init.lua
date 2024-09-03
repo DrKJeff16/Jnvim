@@ -122,8 +122,8 @@ local CscKeys = {}
 
 --- Reorder to your liking
 local selected = {
-    'nightfox',
     'tokyonight',
+    'nightfox',
     'kanagawa',
     'catppuccin',
     'vscode',
