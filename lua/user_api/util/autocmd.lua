@@ -1,6 +1,5 @@
 require('user_api.types.user.util')
 
-local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
 ---@type User.Util.Autocmd
@@ -11,27 +10,28 @@ local M = {}
 function M.au_pair(T)
     local Value = require('user_api.check.value')
 
-    local is_str = Value.is_str
+    local is_nil = Value.is_nil
     local is_tbl = Value.is_tbl
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user_api.util.autocmd.au_pair): Not a table')
+        vim.notify('(user_api.util.au.au_pair): Not a table', vim.log.levels.ERROR)
+        return
     end
     if empty(T) then
-        error('(user_api.util.autocmd.au_pair): Empty table')
+        vim.notify('(user_api.util.au.au_pair): Empty table', vim.log.levels.WARN)
+        return
     end
 
-    if
-        (is_str(T.event) or is_tbl(T.event))
-        and is_tbl(T.opts)
-        and not (empty(T.opts) or empty(T.event))
-    then
+    if not (is_nil(T.event) or is_nil(T.opts)) then
         au(T.event, T.opts)
-    elseif (is_str(T[1]) or is_tbl(T[1])) and is_tbl(T[2]) and not (empty(T[2]) or empty(T[1])) then
+    elseif not (is_nil(T[1]) or is_nil(T[2])) then
         au(T[1], T[2])
     else
-        error('(user_api.util.autocmd.au_pair): Table given is not of supported type')
+        vim.notify(
+            '(user_api.util.au.au_pair): Table given is not of supported type',
+            vim.log.levels.ERROR
+        )
     end
 end
 
@@ -39,37 +39,29 @@ end
 function M.au_from_arr(T)
     local Value = require('user_api.check.value')
 
-    local is_str = Value.is_str
-    local is_fun = Value.is_fun
+    local is_nil = Value.is_nil
     local is_tbl = Value.is_tbl
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.autocmd.au_from_arr): Not a table')
+        vim.notify('(user_api.util.au.au_from_arr): Not a table', vim.log.levels.ERROR)
+        return
     end
     if empty(T) then
-        error('(user.util.autocmd.au_from_arr): Empty table')
+        vim.notify('(user_api.util.au.au_from_arr): Empty table', vim.log.levels.WARN)
+        return
     end
 
     for _, v in next, T do
-        if
-            (is_str(v.event) or is_tbl(v.event))
-            and is_tbl(v.opts)
-            and not (empty(v.opts) or empty(v.event))
-        then
-            if not is_fun(v.opts.callback) then
-                error('(user.util.autocmd.au_from_arr): Missing `callback` field')
-            end
-
+        if not (is_nil(v.event) or is_nil(v.opts)) then
             au(v.event, v.opts)
-        elseif
-            (is_str(v[1]) or is_tbl(v[1]))
-            and is_tbl(v[2])
-            and not (empty(v[2]) or empty(v[1]))
-        then
+        elseif not (is_nil(v[1]) or is_nil(v[2])) then
             au(v[1], v[2])
         else
-            error('(user_api.util.autocmd.au_from_arr): Table given is not of supported type')
+            vim.notify(
+                '(user_api.util.au.au_from_arr): Table given is not of supported type',
+                vim.log.levels.ERROR
+            )
         end
     end
 end
@@ -78,28 +70,31 @@ end
 function M.au_from_dict(T)
     local Value = require('user_api.check.value')
 
-    local is_str = Value.is_str
-    local is_fun = Value.is_fun
+    local is_nil = Value.is_nil
     local is_tbl = Value.is_tbl
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user_api.util.autocmd.au_from_arr): Not a table')
+        vim.notify('(user_api.util.au.au_from_arr): Not a table', vim.log.levels.ERROR)
+        return
     end
     if empty(T) then
-        error('(user_api.util.autocmd.au_from_arr): Empty table')
+        vim.notify('(user_api.util.au.au_from_arr): Empty table', vim.log.levels.WARN)
+        return
     end
 
     for k, v in next, T do
-        if is_str(k) and is_tbl(v) and not (empty(v) or empty(k)) then
-            if not is_fun(v.callback) then
-                error('(user_api.util.autocmd.au_from_arr): Missing `callback` field')
-            end
-
-            au(k, v)
-        else
-            error('(user.util.autocmd.au_from_arr): Table given is not of supported type')
+        if is_nil(k) or is_nil(v) then
+            vim.notify(
+                '(user_api.util.au.au_from_arr): Bad autocmd and/or options table',
+                vim.log.levels.ERROR
+            )
+            goto continue
         end
+
+        au(k, v)
+
+        ::continue::
     end
 end
 
@@ -107,29 +102,30 @@ end
 function M.au_repeated(T)
     local Value = require('user_api.check.value')
 
-    local is_str = Value.is_str
-    local is_fun = Value.is_fun
+    local is_nil = Value.is_nil
     local is_tbl = Value.is_tbl
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error('(user.util.autocmd.au_repeated): Not a table')
+        vim.notify('(user_api.util.au.au_repeated): Not a table', vim.log.levels.ERROR)
+        return
     end
     if empty(T) then
-        error('(user.util.autocmd.au_repeated): Empty table')
+        vim.notify('(user_api.util.au.au_repeated): Empty table', vim.log.levels.WARN)
+        return
     end
 
     for event, t in next, T do
-        if not is_str(event) or empty(event) then
-            error('(user.util.autocmd.au_repeated): Invalid autocmd name')
+        if is_nil(t) or empty(t) then
+            vim.notify('(user_api.util.au.au_repeated): Invalid autocmd')
+            goto continue
         end
-        for _, opts in next, t do
-            if not is_fun(opts.callback) then
-                error('(user.util.autocmd.au_repeated): Missing `callback` field')
-            end
 
+        for _, opts in next, t do
             au(event, opts)
         end
+
+        ::continue::
     end
 end
 
@@ -137,33 +133,37 @@ end
 function M.au_repeated_events(T)
     local Value = require('user_api.check.value')
 
-    local is_str = Value.is_str
-    local is_fun = Value.is_fun
     local is_tbl = Value.is_tbl
     local empty = Value.empty
 
     if not is_tbl({ T, T.events, T.opts_tbl }, true) then
-        error('(user.util.autocmd.au_repeated_events): Not a table')
+        vim.notify('(user_api.util.au.au_repeated_events): Not a valid table', vim.log.levels.ERROR)
+        return
     end
     if empty(T) or empty(T.events) or empty(T.opts_tbl) then
-        error('(user.util.autocmd.au_repeated_events): Empty table')
-    end
-    if empty(T.events) or not Value.single_type_tbl('string', T.events) then
-        error('(user.util.autocmd.au_repeated_events): Invalid autocommand name(s)')
+        vim.notify('(user_api.util.au.au_repeated_events): Empty table(s)', vim.log.levels.WARN)
+        return
     end
 
     for _, opts in next, T.opts_tbl do
         if not is_tbl(opts) then
-            error('(user.util.autocmd.au_repeated_events): Options are not a table')
+            vim.notify(
+                '(user_api.util.au.au_repeated_events): Options are not a table',
+                vim.log.levels.ERROR
+            )
+            goto continue
         end
         if empty(opts) then
-            error('(user.util.autocmd.au_repeated_events): Options are an empty table')
-        end
-        if not is_fun(opts.callback) then
-            error('(user.util.autocmd.au_repeated_events): Missing `callback` field')
+            vim.notify(
+                '(user_api.util.au.au_repeated_events): Empty options table',
+                vim.log.levels.WARN
+            )
+            goto continue
         end
 
         au(T.events, opts)
+
+        ::continue::
     end
 end
 

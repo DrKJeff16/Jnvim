@@ -215,7 +215,9 @@ function M.ft_set(s, bufnr)
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
     return function()
-        if is_str(s) then
+        if not is_str(s) then
+            optset('ft', '', { buf = bufnr })
+        else
             optset('ft', s, { buf = bufnr })
         end
     end
