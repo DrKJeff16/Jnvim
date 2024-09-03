@@ -245,8 +245,6 @@ function M.assoc()
     local empty = Value.empty
     local au_repeated_events = M.au.au_repeated_events
 
-    local function retab() vim.cmd('%retab') end
-
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
     ---@type AuRepeatEvents[]
@@ -305,6 +303,8 @@ function M.assoc()
                             ai = true,
                             si = true,
                             et = true,
+                            ci = false,
+                            pi = false,
                         }
 
                         for option, val in next, buf_opts do
@@ -323,6 +323,8 @@ function M.assoc()
                             et = true,
                             ai = true,
                             si = true,
+                            ci = false,
+                            pi = false,
                         }
 
                         for option, val in next, opts do
@@ -334,6 +336,13 @@ function M.assoc()
                     pattern = 'lua',
                     group = group,
                     callback = function()
+                        local buf = curr_buf()
+
+                        -- Make sure the buffer is modifiable
+                        if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
+                            return
+                        end
+
                         if require('user_api.check.exists').executable('stylua') then
                             local map_dict = require('user_api.maps').map_dict
                             local desc = require('user_api.maps.kmap').desc
@@ -341,9 +350,9 @@ function M.assoc()
                             map_dict({
                                 ['<leader><C-l>'] = {
                                     ':silent !stylua %<CR>',
-                                    desc('Format With `stylua`', true, 0),
+                                    desc('Format With `stylua`', true, buf),
                                 },
-                            }, 'wk.register', false, 'n', 0)
+                            }, 'wk.register', false, 'n', buf)
                         end
                     end,
                 },
@@ -351,6 +360,13 @@ function M.assoc()
                     pattern = 'python',
                     group = group,
                     callback = function()
+                        local buf = curr_buf()
+
+                        -- Make sure the buffer is modifiable
+                        if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
+                            return
+                        end
+
                         if require('user_api.check.exists').executable('isort') then
                             local map_dict = require('user_api.maps').map_dict
                             local desc = require('user_api.maps.kmap').desc
@@ -358,9 +374,9 @@ function M.assoc()
                             map_dict({
                                 ['<leader><C-l>'] = {
                                     ':silent !isort %<CR>',
-                                    desc('Format With `isort`', true, 0),
+                                    desc('Format With `isort`', true, buf),
                                 },
-                            }, 'wk.register', false, 'n', 0)
+                            }, 'wk.register', false, 'n', buf)
                         end
                     end,
                 },
@@ -371,10 +387,11 @@ function M.assoc()
     local ok, _ = pcall(require, 'orgmode')
 
     if ok then
-        table.insert(
-            AUS[1].opts_tbl,
-            { pattern = '*.org', callback = M.ft_set('org'), group = group }
-        )
+        table.insert(AUS[1].opts_tbl, {
+            group = group,
+            pattern = '*.org',
+            callback = M.ft_set('org'),
+        })
     end
 
     for _, T in next, AUS do
@@ -404,19 +421,17 @@ function M.displace_letter(c, direction, cycle)
         return 'a'
     end
 
-    local lower_next = vim.deepcopy(A.lower_map)
-    local upper_next = vim.deepcopy(A.upper_map)
-    local lower_prev = vim.deepcopy(A.lower_map)
-    local upper_prev = vim.deepcopy(A.upper_map)
+    local lower = vim.deepcopy(A.lower_map)
+    local upper = vim.deepcopy(A.upper_map)
 
-    if direction == 'next' and fields(c, lower_next) then
-        return mv_tbl_values(lower_next, 1, 'l')[c]
-    elseif direction == 'next' and fields(c, upper_next) then
-        return mv_tbl_values(upper_next, 1, 'l')[c]
-    elseif direction == 'prev' and fields(c, lower_prev) then
-        return mv_tbl_values(lower_prev, 1, 'r')[c]
-    elseif direction == 'prev' and fields(c, upper_prev) then
-        return mv_tbl_values(upper_prev, 1, 'r')[c]
+    if direction == 'prev' and fields(c, lower) then
+        return mv_tbl_values(lower, 1, 'r')[c]
+    elseif direction == 'next' and fields(c, lower) then
+        return mv_tbl_values(lower, 1, 'l')[c]
+    elseif direction == 'prev' and fields(c, upper) then
+        return mv_tbl_values(upper, 1, 'r')[c]
+    elseif direction == 'next' and fields(c, upper) then
+        return mv_tbl_values(upper, 1, 'l')[c]
     end
 
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
@@ -433,7 +448,7 @@ function M.inspect(data)
     local empty = Value.empty
 
     if is_nil(data) then
-        return 'NULL'
+        return 'nil'
     end
 
     if is_str(data) then
