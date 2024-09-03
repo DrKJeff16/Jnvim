@@ -61,7 +61,6 @@ local ensure = {
     'udev',
     'vim',
     'vimdoc',
-    'xml',
     'yaml',
 }
 
@@ -82,6 +81,8 @@ local Opts = {
             local ok, stats = pcall(fs_stat, buf_name(buf))
 
             local disable_ft = {
+                'c',
+                'cpp',
                 'text',
             }
 
