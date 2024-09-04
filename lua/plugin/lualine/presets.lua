@@ -1,6 +1,3 @@
----@diagnostic disable:unused-function
----@diagnostic disable:unused-local
-
 local user = require('user_api')
 local Check = user.check
 local types = user.types.lualine
@@ -12,158 +9,153 @@ local floor = math.floor
 local M = {}
 
 ---@diagnostic disable-next-line:missing-fields
-M.components = {
-    buffers = {
-        'buffers',
+M.components = {}
+M.components.buffers = {
+    'buffers',
 
-        filetype_names = {
-            TelescopePrompt = 'Telescope',
-            dashboard = 'Dashboard',
-            packer = 'Packer',
-            lazy = 'Lazy',
-            fzf = 'FZF',
-            alpha = 'Alpha',
-            NvimTree = 'Nvim Tree',
-        },
-
-        symbols = {
-            modified = ' ●', -- Text to show when the buffer is modified
-            alternate_file = '#', -- Text to show to identify the alternate file
-            directory = '', -- Text to show when the buffer is a directory
-        },
-
-        buffers_color = {
-            active = 'lualine_a_normal',
-            inactive = 'lualine_a_inactive',
-        },
-
-        max_length = floor(vim.opt.columns:get() * 2 / 3),
+    filetype_names = {
+        TelescopePrompt = 'Telescope',
+        dashboard = 'Dashboard',
+        packer = 'Packer',
+        lazy = 'Lazy',
+        fzf = 'FZF',
+        alpha = 'Alpha',
+        NvimTree = 'Nvim Tree',
     },
 
-    diff = {
-        'diff',
-        colored = true,
-        diff_color = {
-            added = 'LuaLineDiffAdd',
-            modified = 'LuaLineDiffChange',
-            removed = 'LuaLineDiffDelete',
-        },
-
-        symbols = {
-            added = '+',
-            modified = '~',
-            removed = '-',
-        },
+    symbols = {
+        modified = ' ●', -- Text to show when the buffer is modified
+        alternate_file = '#', -- Text to identify the alternate file
+        directory = '', -- Text to show when the buffer is a directory
     },
 
-    encoding = { 'encoding' },
-    hostname = { 'hostname' },
-    location = { 'location' },
-    selectioncount = { 'selectioncount' },
-
-    filename = {
-        'filename',
-
-        file_status = true,
-        newfile_status = false,
-        path = 4,
+    buffers_color = {
+        active = 'lualine_a_normal',
+        inactive = 'lualine_a_inactive',
     },
 
-    filetype = {
-        'filetype',
-        colored = true,
-        icon_only = false,
-        icon = { align = 'right' },
+    max_length = floor(vim.opt.columns:get() / 4),
+}
+
+M.components.diff = {
+    'diff',
+    colored = true,
+    diff_color = {
+        added = 'LuaLineDiffAdd',
+        modified = 'LuaLineDiffChange',
+        removed = 'LuaLineDiffDelete',
     },
 
-    branch = { 'branch' },
-
-    fileformat = {
-        'fileformat',
-
-        symbols = {
-            unix = '', -- e712
-            dos = '', -- e70f
-            mac = '', -- e711
-        },
+    symbols = {
+        added = '+',
+        modified = '~',
+        removed = '-',
     },
+}
 
-    searchcount = {
-        maxcount = 999,
-        timeout = 500,
+M.components.branch = { 'branch' }
+M.components.encoding = { 'encoding' }
+M.components.hostname = { 'hostname' }
+M.components.location = { 'location' }
+M.components.selectioncount = { 'selectioncount' }
+M.components.filesize = { 'filesize' }
+
+M.components.filename = {
+    'filename',
+
+    file_status = true,
+    newfile_status = false,
+    path = 4,
+}
+
+M.components.filetype = {
+    'filetype',
+    colored = true,
+    icon_only = false,
+    icon = { align = 'right' },
+}
+
+M.components.fileformat = {
+    'fileformat',
+
+    symbols = {
+        unix = '', -- e712
+        dos = '', -- e70f
+        mac = '', -- e711
     },
+}
 
-    filesize = {
-        'filesize',
-    },
+M.components.searchcount = {
+    'searchcount',
+    maxcount = 999,
+    timeout = 500,
+}
 
-    tabs = {
-        'tabs',
+M.components.tabs = {
+    'tabs',
 
-        tab_max_length = floor(vim.opt.columns:get() / 3),
+    tab_max_length = floor(vim.opt.columns:get() / 3),
 
-        mode = 2,
-        path = 1,
-    },
-
+    mode = 2,
+    path = 1,
     tabs_color = {
         active = 'lualine_b_normal',
         inactive = 'lualine_b_inactive',
     },
+}
 
-    windows = {
-        'windows',
+M.components.windows = {
+    'windows',
 
-        max_length = floor(vim.opt.columns:get() * 2 / 3),
+    max_length = floor(vim.opt.columns:get() / 5),
 
-        disabled_buftypes = {
-            'quickfix',
-            'prompt',
-        },
-
-        windows_color = {
-            active = 'lualine_z_normal',
-            inactive = 'lualine_z_inactive',
-        },
+    disabled_buftypes = {
+        'quickfix',
+        'prompt',
     },
 
-    diagnostics = {
-        'diagnostics',
+    windows_color = {
+        active = 'lualine_z_normal',
+        inactive = 'lualine_z_inactive',
+    },
+}
 
-        sources = {
-            'nvim_workspace_diagnostic',
-        },
+M.components.diagnostics = {
+    'diagnostics',
 
-        sections = { 'error', 'warn' },
-
-        diagnostics_color = {
-            error = 'DiagnosticError',
-            warn = 'DiagnosticWarn',
-            info = 'DiagnosticInfo',
-            hint = 'DiagnosticHint',
-        },
-
-        symbols = {
-            error = '󰅚 ',
-            hint = '󰌶 ',
-            info = ' ',
-            warn = '󰀪 ',
-        },
-
-        colored = true,
-        update_in_insert = false,
-        always_visible = true,
+    sources = {
+        'nvim_workspace_diagnostic',
     },
 
-    datetime = {
-        'datetime',
-        style = 'uk',
+    sections = { 'error', 'warn', 'info', 'hint' },
+
+    diagnostics_color = {
+        error = 'DiagnosticError',
+        warn = 'DiagnosticWarn',
+        info = 'DiagnosticInfo',
+        hint = 'DiagnosticHint',
     },
 
-    mode = {
-        'mode',
-        fmt = function(str) return str:sub(1, 1) end,
+    symbols = {
+        error = '󰅚 ',
+        hint = '󰌶 ',
+        info = ' ',
+        warn = '󰀪 ',
     },
+
+    colored = true,
+    update_in_insert = false,
+    always_visible = true,
+}
+
+M.components.datetime = {
+    'datetime',
+    style = 'uk',
+}
+
+M.components.mode = {
+    'mode',
+    fmt = function(str) return str:sub(1, 1) end,
 }
 
 M.default = {
@@ -171,10 +163,12 @@ M.default = {
         M.components.mode,
     },
     lualine_b = {
+        M.components.branch,
         M.components.filename,
     },
     lualine_c = {
         M.components.diagnostics,
+        M.components.diff,
     },
     lualine_x = {
         M.components.encoding,

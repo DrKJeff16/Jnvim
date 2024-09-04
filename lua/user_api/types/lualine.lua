@@ -75,16 +75,16 @@
 ---@field style? 'default'|'us'|'uk'|'iso'|string
 
 ---@class DiagnosticsInteger
----@field error? integer
----@field warn? integer
----@field info? integer
----@field hint? integer
+---@field error? string|integer
+---@field warn? string|integer
+---@field info? string|integer
+---@field hint? string|integer
 
 ---@class DiagnosticsColor: DiagnosticsInteger
----@field error? integer
----@field warn? integer
----@field info? integer
----@field hint? integer
+---@field error? string|integer
+---@field warn? string|integer
+---@field info? string|integer
+---@field hint? string|integer
 
 ---@class LuaLine.Components.Diagnostics
 ---@field [1] 'diagnostics'
