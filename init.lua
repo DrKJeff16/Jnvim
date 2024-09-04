@@ -1,22 +1,22 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 
-_G.inspect = inspect or vim.inspect
+_G.inspect = vim.inspect
 
 local User = require('user_api') ---@see User User API
-local Types = User.types ---@see User.types Import docstrings and annotations
+
+require('user_api.types')
+
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
 local Opts = User.opts ---@see User.opts Option setting
 local Commands = User.commands ---@see User.commands User command generation (WIP)
 local Distro = User.distro ---@see User.distro Platform-specific optimizations (WIP)
-local Update = User.update ---@see User.update `Jnvim` update tools (WIP)
 
 local Keymaps = require('config.keymaps')
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
-local is_str = Check.value.is_str ---@see User.Check.Value.is_str
 local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
