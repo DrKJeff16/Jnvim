@@ -1,6 +1,4 @@
-local Types = require('user_api.types') ---@see User.Types
-local Check = require('user_api.check') ---@see User.Check
-local Util = require('user_api.util') ---@see User.Util
+require('user_api.types')
 
 ---@type User
 ---@diagnostic disable-next-line:missing-fields
@@ -26,7 +24,7 @@ M.commands = require('user_api.commands')
 
 M.registered_plugins = {}
 
----@param self? User
+---@param self User
 ---@param pathstr string
 ---@param i? integer
 function M:register_plugin(pathstr, i)
@@ -73,6 +71,9 @@ function M:setup_keys()
     local desc = self.maps.kmap.desc
     local map_dict = self.maps.map_dict
     local is_nil = self.check.value.is_nil
+    local notify = self.util.notify.notify
+
+    local insp = inspect or vim.inspect
 
     if wk_avail() then
         map_dict({
@@ -83,7 +84,6 @@ function M:setup_keys()
     map_dict({
         ['<leader>UPr'] = {
             function()
-                local notify = self.util.notify.notify
                 notify('Reloading...', 'info', {
                     hide_from_history = true,
                     title = 'User API',
@@ -92,19 +92,20 @@ function M:setup_keys()
                 local res = self:reload_plugins()
 
                 if not is_nil(res) then
-                    notify((inspect or vim.inspect)(res), 'error', {
+                    notify(insp(res), 'error', {
                         hide_from_history = false,
                         timeout = 1000,
                         title = 'User API [ERROR]',
                         animate = true,
                     })
-                else
-                    notify('Success!', 'info', {
-                        hide_from_history = true,
-                        timeout = 200,
-                        title = 'User API',
-                    })
+                    return
                 end
+
+                notify('Success!', 'info', {
+                    hide_from_history = true,
+                    timeout = 200,
+                    title = 'User API',
+                })
             end,
             desc('Reload All Plugins'),
         },
@@ -114,58 +115,57 @@ function M:setup_keys()
         },
     }, 'wk.register', false, 'n')
 
-    local U = self.update
-    local O = self.opts
-    U:setup_maps()
-    O:setup_maps()
+    self.update:setup_maps()
+    self.opts:setup_maps()
 end
 
 ---@param self User
 ---@return string[]|nil
 function M:reload_plugins()
-    ---@type table|string[]
+    local empty = self.check.value.empty
+    local exists = self.check.exists.module
+
+    ---@type string[]
     local failed = {}
     for _, plugin in next, self.registered_plugins do
-        if not self.check.exists.module(plugin) then
+        if not exists(plugin) then
             table.insert(failed, plugin)
-        else
-            require(plugin)
+            goto continue
         end
+
+        require(plugin)
+
+        ::continue::
     end
 
-    if not vim.tbl_isempty(failed) then
-        return failed
-    end
-
-    return nil
+    return empty(failed) and nil or failed
 end
 
 ---@param self User
 function M:print_loaded_plugins()
     local notify = self.util.notify.notify
+    local empty = self.check.value.empty
     local nwl = newline or string.char(10)
 
     local msg = ''
 
     for _, P in next, self.registered_plugins do
-        msg = msg .. '- ' .. P .. nwl
+        msg = msg .. nwl .. '- ' .. P
     end
 
-    notify(msg, 'info', {
+    notify(msg, empty(msg) and 'error' or 'info', {
+        animate = true,
         hide_from_history = false,
-        animate = false,
         timeout = 1750,
         title = 'User API',
     })
 end
 
 ---@param o? table
----@return User|table self
+---@return User|table
 function M.new(o)
     o = M.check.value.is_tbl(o) and o or {}
-    local self = setmetatable(o, { __index = M })
-
-    return self
+    return setmetatable(o, { __index = M })
 end
 
 return M
