@@ -57,7 +57,7 @@ die() {
 
 EC=0
 while [[ $# -gt 0 ]]; do
-    if ! [[ "$1" =~ ^s/.+/.*/g?$ ]] ; then
+    if ! [[ "$1" =~ ^s/.+/.*/g?.*$ ]] ; then
         error "Pattern \`$1\` not valid. Skipping..."
         EC=1
         shift
