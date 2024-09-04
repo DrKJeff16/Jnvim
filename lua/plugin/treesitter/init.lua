@@ -21,14 +21,10 @@ require('nvim-treesitter.install').prefer_git = true
 local ensure = {
     'bash',
     'c',
-    'cmake',
     'comment',
-    'commonlisp',
     'cpp',
     'css',
-    'csv',
     'diff',
-    'doxygen',
     'git_config',
     'git_rebase',
     'gitattributes',
@@ -45,7 +41,6 @@ local ensure = {
     'luap',
     'markdown',
     'markdown_inline',
-    'passwd',
     'python',
     'query',
     'readline',
@@ -53,7 +48,6 @@ local ensure = {
     'rst',
     'scss',
     'ssh_config',
-    'tmux',
     'toml',
     'udev',
     'vim',
@@ -80,8 +74,7 @@ local Opts = {
             local ok, stats = pcall(fs_stat, buf_name(buf))
 
             local disable_ft = {
-                'c',
-                'cpp',
+                'text',
             }
 
             local res = false
