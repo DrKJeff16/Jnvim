@@ -40,14 +40,11 @@ local ensure = {
     'json',
     'json5',
     'jsonc',
-    'kconfig',
     'lua',
     'luadoc',
     'luap',
     'markdown',
     'markdown_inline',
-    'meson',
-    'ninja',
     'passwd',
     'python',
     'query',
@@ -75,7 +72,9 @@ local Opts = {
     highlight = {
         enable = true,
 
-        ---@type fun(lang: string, buf: integer): boolean
+        ---@param lang? string
+        ---@param buf? integer
+        ---@return boolean
         disable = function(lang, buf)
             local max_fs = 1024 * 1024
             local ok, stats = pcall(fs_stat, buf_name(buf))
@@ -83,17 +82,13 @@ local Opts = {
             local disable_ft = {
                 'c',
                 'cpp',
-                'text',
             }
 
             local res = false
 
-            res = vim.tbl_contains(
-                disable_ft,
-                vim.api.nvim_get_option_value('ft', { scope = 'local' })
-            )
+            res = vim.tbl_contains(disable_ft, Util.ft_get(buf or 0))
 
-            return res or ok and not is_nil(stats) and stats.size > max_fs
+            return res or ok and not is_nil(stats) and stats.size > max_fs ---@diagnostic disable-line
         end,
         additional_vim_regex_highlighting = false,
     },

@@ -47,7 +47,7 @@ function M:setup()
 
     if not empty(rtpaths) then
         for _, path in next, rtpaths do
-            vim.opt.rtp:prepend(path)
+            vim.opt.rtp:append(path)
         end
     end
 end
