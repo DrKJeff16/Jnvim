@@ -146,7 +146,7 @@ local csc_group = 'A'
 local i = 1
 local found_csc = ''
 
-for idx, name in next, selected do
+for _, name in next, selected do
     ---@type CscSubMod|ODSubMod|table
     local TColor = Csc[name]
 
@@ -203,7 +203,7 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for Arch Linux (WIP)
 Distro.termux:setup()
 
-Commands.setup_commands()
+Commands:setup_commands()
 
 User:setup_keys()
 

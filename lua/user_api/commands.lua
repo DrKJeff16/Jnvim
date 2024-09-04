@@ -8,13 +8,17 @@ local exec2 = vim.api.nvim_exec2
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
-function M.redir()
-    new_cmd('Redir', function(ctx)
+---@type User.Commands.Spec
+---@diagnostic disable-next-line:missing-fields
+M.commands = {}
+
+M.commands['Redir'] = {
+    [1] = function(ctx)
         local lines = vim.split(
             exec2(ctx.args, {
                 output = true,
             })['output'],
-            '\n',
+            newline or string.char(10), -- `'\n'`
             { plain = true }
         )
 
@@ -25,10 +29,15 @@ function M.redir()
 
         set_lines(buf, 0, -1, false, lines)
         vim.api.nvim_set_option_value('modified', false, { buf = buf })
-    end, { nargs = '+', complete = 'command' })
-end
+    end,
+    [2] = { nargs = '+', complete = 'command' },
+}
 
-function M.setup_commands() M.redir() end
+function M:setup_commands()
+    for cmd, T in next, self.commands do
+        new_cmd(cmd, T[1], T[2] or {})
+    end
+end
 
 return M
 
