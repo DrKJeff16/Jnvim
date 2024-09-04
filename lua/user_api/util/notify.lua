@@ -28,14 +28,13 @@ function M.notify(msg, lvl, opts)
 
     local vim_lvl = vim.log.levels
 
-    -- WARN: DO NOT SORT
     local DEFAULT_LVLS = {
-        'trace',
-        'debug',
-        'info',
-        'warn',
-        'error',
-        'off',
+        [1] = 'trace',
+        [2] = 'debug',
+        [3] = 'info',
+        [4] = 'warn',
+        [5] = 'error',
+        [6] = 'off',
     }
 
     ---@type notify.Options
@@ -50,12 +49,10 @@ function M.notify(msg, lvl, opts)
     if exists('notify') then
         local notify = require('notify')
 
-        if lvl == nil then
+        if lvl == nil or (type(lvl) == 'number' and not (lvl >= 0 and lvl <= 5)) then
             lvl = DEFAULT_LVLS[vim_lvl.INFO + 1]
         elseif type(lvl) == 'number' and (lvl >= 0 and lvl <= 5) then
             lvl = DEFAULT_LVLS[math.floor(lvl) + 1]
-        elseif type(lvl) == 'number' then
-            lvl = DEFAULT_LVLS[vim_lvl.INFO + 1]
         end
 
         opts = vim.tbl_deep_extend('keep', opts, DEFAULT_OPTS)
@@ -88,6 +85,15 @@ end
 ---@param opts? ({ level: number?, title: string?, once: boolean?, id: string? }|notify.Config)?
 function _G.anotify(msg, lvl, opts)
     local func = function() M.notify(msg, lvl or 'info', opts or {}) end
+    ---@diagnostic disable-next-line:missing-parameter
+    require('plenary.async').run(func)
+end
+
+---@param msg string
+---@param lvl? ('debug'|'error'|'info'|'off'|'trace'|'warn'|0|1|2|3|4|5)?
+---@param opts? ({ level: number?, title: string?, once: boolean?, id: string? }|notify.Config)?
+function _G.insp_anotify(msg, lvl, opts)
+    local func = function() M.notify((inspect or vim.inspect)(msg), lvl or 'info', opts or {}) end
     ---@diagnostic disable-next-line:missing-parameter
     require('plenary.async').run(func)
 end
