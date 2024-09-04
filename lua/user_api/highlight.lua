@@ -31,7 +31,6 @@ function M.hl_from_arr(A)
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
-    local is_int = Value.is_int
     local empty = Value.empty
 
     if not is_tbl(A) or empty(A) then
@@ -75,7 +74,6 @@ function M.hl_from_dict(D)
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
-    local is_int = Value.is_int
     local empty = Value.empty
 
     if not is_tbl(D) or empty(D) then

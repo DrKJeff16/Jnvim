@@ -117,7 +117,7 @@
 --- ## Return
 --- A boolean value indicating whether the data is an integer or not
 --- ---
----@field is_int fun(var: number|number[], multiple: boolean?): boolean
+---@field is_int fun(var: any, multiple: boolean?): boolean
 --- Returns whether a given string/number/table is "empty", including these scenarios:
 --- * Is an empty string (`x == ''`)
 --- * Is an integer equal to zero (`x == 0`)
