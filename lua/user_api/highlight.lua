@@ -1,5 +1,7 @@
 require('user_api.types.user.highlight')
 
+local ERROR = vim.log.levels.ERROR
+
 ---@type User.Hl
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
@@ -16,7 +18,7 @@ function M.hl(name, opts, bufnr)
     local empty = Value.empty
 
     if not (is_str(name) and is_tbl(opts)) or empty(name) then
-        vim.notify('(user_api.highlight.hl): Bad arguments', vim.log.levels.ERROR)
+        vim.notify('(user_api.highlight.hl): Bad arguments', ERROR)
         return
     end
 
@@ -34,7 +36,7 @@ function M.hl_from_arr(A)
     local empty = Value.empty
 
     if not is_tbl(A) or empty(A) then
-        vim.notify('(user_api.highlight.hl_from_arr): Bad argument', vim.log.levels.ERROR)
+        vim.notify('(user_api.highlight.hl_from_arr): Bad argument', ERROR)
         return
     end
 
@@ -42,7 +44,7 @@ function M.hl_from_arr(A)
         if not (is_str(t.name) and is_tbl(t.opts)) or empty(t.name) then
             vim.notify(
                 '(user_api.highlight.hl_from_arr): A highlight value is not permitted, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
             goto continue
         end
@@ -77,10 +79,7 @@ function M.hl_from_dict(D)
     local empty = Value.empty
 
     if not is_tbl(D) or empty(D) then
-        vim.notify(
-            '(user_api.highlight.hl_from_dict): Unable to parse argument',
-            vim.log.levels.ERROR
-        )
+        vim.notify('(user_api.highlight.hl_from_dict): Unable to parse argument', ERROR)
         return
     end
 
@@ -88,7 +87,7 @@ function M.hl_from_dict(D)
         if not (is_str(k) and is_tbl(v)) or empty(k) then
             vim.notify(
                 '(user_api.highlight.hl_from_dict): A highlight value is not permitted, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
 
             goto continue
