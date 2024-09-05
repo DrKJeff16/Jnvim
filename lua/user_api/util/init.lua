@@ -4,6 +4,8 @@ local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
 local in_tbl = vim.tbl_contains
 
+local ERROR = vim.log.levels.ERROR
+
 ---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
@@ -25,7 +27,7 @@ function M.mv_tbl_values(T, steps, direction)
     local empty = Value.empty
 
     if not is_tbl(T) then
-        error("(user_api.util.mv_tbl_values): Input isn't a table", vim.log.levels.ERROR)
+        error("(user_api.util.mv_tbl_values): Input isn't a table", ERROR)
     end
 
     if empty(T) then
@@ -104,7 +106,7 @@ function M.xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
         M.notify.notify('An argument is not of boolean type', 'error', {
             hide_from_history = false,
-            timeout = 800,
+            timeout = 850,
             title = '(user_api.util.xor)',
         })
         return false
@@ -402,7 +404,7 @@ function M.displace_letter(c, direction, cycle)
     local fields = Value.fields
     local is_str = Value.is_str
     local is_bool = Value.is_bool
-    local mv_tbl_values = M.mv_tbl_values
+    local mv = M.mv_tbl_values
 
     direction = (is_str(direction) and in_tbl({ 'next', 'prev' }, direction)) and direction
         or 'next'
@@ -416,45 +418,16 @@ function M.displace_letter(c, direction, cycle)
     local upper = vim.deepcopy(A.upper_map)
 
     if direction == 'prev' and fields(c, lower) then
-        return mv_tbl_values(lower, 1, 'r')[c]
+        return mv(lower, 1, 'r')[c]
     elseif direction == 'next' and fields(c, lower) then
-        return mv_tbl_values(lower, 1, 'l')[c]
+        return mv(lower, 1, 'l')[c]
     elseif direction == 'prev' and fields(c, upper) then
-        return mv_tbl_values(upper, 1, 'r')[c]
+        return mv(upper, 1, 'r')[c]
     elseif direction == 'next' and fields(c, upper) then
-        return mv_tbl_values(upper, 1, 'l')[c]
+        return mv(upper, 1, 'l')[c]
     end
 
-    error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`')
-end
-
----@param data any
----@return string
-function M.inspect(data)
-    local Value = require('user_api.check.value')
-
-    local is_nil = Value.is_nil
-    local is_tbl = Value.is_tbl
-    local is_str = Value.is_str
-    local empty = Value.empty
-
-    if is_nil(data) then
-        return 'nil'
-    end
-
-    if is_str(data) then
-        return data
-    end
-
-    if not is_tbl(data) then
-        return (inspect or vim.inspect)(data)
-    end
-
-    if empty(data) then
-        return '{}'
-    end
-
-    return (inspect or vim.inspect)(data)
+    error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`', ERROR)
 end
 
 return M
