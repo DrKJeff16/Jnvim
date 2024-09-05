@@ -4,7 +4,7 @@ require('user_api.types.user.check')
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
--- NOTE: We define `is_nil` first as it's used by the other checkers.
+-- NOTE: We define `is_nil` first as it's used by the other checkers
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
 --- ---
 --- ## Parameters
@@ -106,7 +106,7 @@ local function type_fun(t)
     end
 end
 
---- Checks whether a value is a string.
+--- Checks whether a value is a string
 --- ---
 --- ## Parameters
 ---
@@ -124,7 +124,7 @@ end
 --- ---
 M.is_str = type_fun('string')
 
---- Checks whether a value is a boolean.
+--- Checks whether a value is a boolean
 --- ---
 --- ## Parameters
 ---
@@ -140,9 +140,9 @@ M.is_str = type_fun('string')
 ---
 --- A boolean value indicating whether the data is a boolean or not.
 --- ---
-
 M.is_bool = type_fun('boolean')
---- Checks whether a value is a function.
+
+--- Checks whether a value is a function
 --- ---
 --- ## Parameters
 ---
@@ -160,7 +160,7 @@ M.is_bool = type_fun('boolean')
 --- ---
 M.is_fun = type_fun('function')
 
---- Checks whether a value is a number.
+--- Checks whether a value is a number
 --- ---
 --- ## Parameters
 ---
@@ -178,7 +178,7 @@ M.is_fun = type_fun('function')
 --- ---
 M.is_num = type_fun('number')
 
---- Checks whether a value is a table.
+--- Checks whether a value is a table
 --- ---
 --- ## Parameters
 ---
@@ -243,22 +243,39 @@ function M.is_int(var, multiple)
     return true
 end
 
---- Returns whether a given string/number/table is "empty", including these scenarios:
---- * Is an empty string (`x == ''`)
---- * Is an integer equal to zero (`x == 0`)
---- * Is an empty table
+--- Returns whether one or more given string/number/table are **empty**
+--- ---
+--- - Scenarios included if `multiple` is `false`:
+---     - Is an empty string (`x == ''`)
+---     - Is an integer equal to zero (`x == 0`)
+---     - Is an empty table (`{}`)
 ---
+--- If `multiple` is `true` apply the above to a table of allowed values
+--- NOTE: **THE FUNCTION IS NOT RECURSIVE**
+--- ---
 --- ## Parameters
---- * `v`: Must be either a string, number or a table.
----        Otherwise you'll get complaints and the function will return `true`
 ---
+--- - `v`: Must be either a string, number or a table.
+--- Otherwise you'll get complaints and the function will return `true`
+---
+--- - `multiple`: Tell the integer you're checking for multiple values. (Default: `false`).
+--- If set to `true`, every element of the table will be checked.
+--- If **any** element is not _empty_, the function automatically returns `false`.
+--- ---
 --- ## Returns
+---
 --- A boolean indicatin whether input data is empty or not.
 --- ---
-function M.empty(v)
+---@param v string|table|number|(string|table|number)[]
+---@param multiple? boolean
+---@return boolean
+function M.empty(v, multiple)
     local is_str = M.is_str
     local is_tbl = M.is_tbl
     local is_num = M.is_num
+    local is_bool = M.is_bool
+
+    multiple = is_bool(multiple) and multiple or false
 
     if is_str(v) then
         return v == ''
@@ -268,8 +285,26 @@ function M.empty(v)
         return v == 0
     end
 
-    if is_tbl(v) then
+    if is_tbl(v) and not multiple then
         return vim.tbl_isempty(v)
+    end
+
+    if is_tbl(v) and multiple then
+        if vim.tbl_isempty(v) then
+            vim.notify(
+                '(user_api.check.value.empty): No values to check despite `multiple` being `true`',
+                vim.log.levels.WARN
+            )
+            return true
+        end
+
+        for _, val in next, v do
+            if M.empty(val) then
+                return true
+            end
+        end
+
+        return false
     end
 
     vim.notify(
