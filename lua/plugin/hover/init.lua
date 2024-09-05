@@ -46,7 +46,7 @@ Hover.setup({
         border = 'rounded',
     },
     preview_window = true,
-    title = false,
+    title = true,
     mouse_providers = { 'LSP' },
     mouse_delay = 500,
 })
@@ -61,25 +61,25 @@ local HOpts = {
 
 ---@type KeyMapDict
 local Keys = {
-    ['K'] = { Hover.hover, desc('Hover', true, HOpts.bufnr()) },
-    ['gK'] = { Hover.hover_select, desc('Hover Select', true, HOpts.bufnr()) },
+    ['K'] = { Hover.hover, desc('Hover') },
+    ['gK'] = { Hover.hover_select, desc('Hover Select') },
     ['<C-p>'] = {
         function() Hover.hover_switch('previous', HOpts) end,
-        desc('Previous Hover', true, HOpts.bufnr()),
+        desc('Previous Hover'),
     },
     ['<C-n>'] = {
         function() Hover.hover_switch('next', HOpts) end,
-        desc('Next Hover', true, HOpts.bufnr()),
+        desc('Next Hover'),
     },
 }
 
 -- Mouse support (if mouse enabled)
 if vim.opt.mouse:get()['a'] then
-    Keys['<MouseMove>'] = { Hover.hover_mouse, desc('Mouse Hover', true, HOpts.bufnr()) }
+    Keys['<MouseMove>'] = { Hover.hover_mouse, desc('Mouse Hover') }
     vim.opt.mousemoveevent = true
 end
 
-map_dict(Keys, 'wk.register', false, 'n', HOpts.bufnr())
+map_dict(Keys, 'wk.register', false, 'n')
 
 --[[ -- Simple
 require('hover').register {
