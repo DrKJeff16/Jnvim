@@ -1,22 +1,27 @@
 require('user_api.types.user.check')
 
 --- Checking Utilities
+--- ---
 ---@type User.Check
 ---@diagnostic disable-next-line:missing-fields
 local M = {}
 
 --- Value checking utilities
----
+--- ---
 --- ## Description
+---
 --- Pretty much reserved for data checking, type checking and conditional operations
+--- ---
 ---@type User.Check.Value
 M.value = require('user_api.check.value')
 
 --- Exitstance checks
----
+--- ---
 --- ## Description
---- This contains many environment, module, namespace, etc. checkers.
+---
+--- This contains many checkers for environment, modules, namespaces, etc.
 --- Also, simplified Vim functions can be found here
+--- ---
 ---@type User.Check.Existance
 M.exists = require('user_api.check.exists')
 

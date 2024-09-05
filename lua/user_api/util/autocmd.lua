@@ -212,7 +212,7 @@ function M.au_repeated_events(T)
         vim.notify('(user_api.util.au.au_repeated_events): Not a valid table', vim.log.levels.ERROR)
         return
     end
-    if empty(T) or empty(T.events) or empty(T.opts_tbl) then
+    if empty({ T, T.events, T.opts_tbl }, true) then
         vim.notify('(user_api.util.au.au_repeated_events): Empty table(s)', vim.log.levels.WARN)
         return
     end

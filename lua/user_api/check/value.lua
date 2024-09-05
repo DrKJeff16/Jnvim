@@ -266,7 +266,7 @@ end
 ---
 --- A boolean indicatin whether input data is empty or not.
 --- ---
----@param v string|table|number|(string|table|number)[]
+---@param v string|table|number|integer|(string|table|number|integer)[]
 ---@param multiple? boolean
 ---@return boolean
 function M.empty(v, multiple)
@@ -299,7 +299,8 @@ function M.empty(v, multiple)
         end
 
         for _, val in next, v do
-            if M.empty(val) then
+            -- NOTE: NO RECURSIVE CHECKING
+            if M.empty(val, false) then
                 return true
             end
         end

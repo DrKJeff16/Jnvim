@@ -6,9 +6,10 @@ local is_nil = Value.is_nil
 local is_bool = Value.is_bool
 local is_str = Value.is_str
 local is_tbl = Value.is_tbl
-local is_num = Value.is_num
 local is_fun = Value.is_fun
 local empty = Value.empty
+
+local ERROR = vim.log.levels.ERROR
 
 ---@type User.Check.Existance
 ---@diagnostic disable-next-line:missing-fields
@@ -52,26 +53,24 @@ function M.modules(mod, need_all)
 
     need_all = is_bool(need_all) and need_all or false
 
-    ---@type boolean|table<string, boolean>
-    local res = false
-
     if is_str(mod) then
-        res = not need_all and exists(mod) or { [mod] = exists(mod) }
-    else
-        res = {}
+        return not need_all and exists(mod) or { [mod] = exists(mod) }
+    end
 
-        for _, v in next, mod do
-            local r = exists(v)
+    ---@type boolean|table<string, boolean>
+    local res = {}
 
-            if need_all then
-                res[v] = r
-            else
-                res = r
+    for _, v in next, mod do
+        local r = exists(v)
 
-                -- Break when a module is not found
-                if not r then
-                    break
-                end
+        if need_all then
+            res[v] = r
+        else
+            res = r
+
+            -- Break when a module is not found
+            if not res then
+                break
             end
         end
     end
@@ -87,8 +86,6 @@ function M.vim_has(expr)
     end
 
     if is_tbl(expr) and not empty(expr) then
-        local res = false
-
         for _, v in next, expr do
             if not M.vim_has(v) then
                 return false
@@ -135,7 +132,7 @@ function M.env_vars(vars, fallback)
     if not (is_str(vars) or is_tbl(vars)) then
         vim.notify(
             '(user_api.check.exists.env_vars): Argument type is neither string nor table',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -170,7 +167,7 @@ function M.executable(exe, fallback)
     if not (is_str(exe) or is_tbl(exe)) then
         vim.notify(
             '(user_api.check.exists.executable): Argument type is neither string nor table',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
