@@ -202,7 +202,7 @@ if WK.available() then
     map_dict(Keys, 'wk.register', false, 'n')
 end
 
-local group = augroup('UserLspConfig', { clear = true })
+local group = augroup('UserLspConfig', { clear = false })
 
 au('LspAttach', {
     group = group,
@@ -243,7 +243,7 @@ au('LspAttach', {
                 })
         end
 
-        ---@type table<MapModes, KeyMapDict>
+        ---@type KeyMapModeDict
         local K = {
             n = {
                 ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration') },

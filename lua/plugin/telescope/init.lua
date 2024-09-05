@@ -1,7 +1,6 @@
 local User = require('user_api')
 local Check = User.check
 local types = User.types.telescope
-local WK = User.maps.wk
 
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
@@ -10,6 +9,7 @@ local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
+local wk_avail = User.maps.wk.available
 
 if not exists('telescope') then
     return
@@ -17,8 +17,6 @@ end
 
 User:register_plugin('plugin.telescope')
 
-local in_tbl = vim.tbl_contains
-local empty = vim.tbl_isempty
 local au = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
@@ -107,7 +105,6 @@ local Opts = {
         pickers = { theme = 'dropdown' },
         picker_list = { theme = 'dropdown' },
         planets = { theme = 'dropdown' },
-        reloader = { theme = 'dropdown' },
         vim_options = { theme = 'ivy' },
     },
 }
@@ -197,7 +194,6 @@ local Keys = {
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
     ['<leader>GS'] = { Builtin.git_stash, desc('Telescope Git Stash') },
     ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },
-    ['<leader>Rr'] = { Builtin.reloader, desc('Telescope Reloader') },
     ['<leader>bB'] = { Builtin.buffers, desc('Telescope Buffers') },
     ['<leader>fD'] = { Builtin.diagnostics, desc('Telescope Diagnostics') },
     ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
@@ -225,7 +221,6 @@ local Keys = {
 
 ---@type RegKeysNamed
 local Names = {
-    ['<leader>R'] = { group = '+Reload' },
     ['<leader>fT'] = { group = '+Telescope' },
     ['<leader>fTb'] = { group = '+Builtins' },
     ['<leader>fTe'] = { group = '+Extensions' },
@@ -370,16 +365,19 @@ for mod, ext in next, known_exts do
     ::continue::
 end
 
-if WK.available() then
+if wk_avail() then
     map_dict(Names, 'wk.register', false, 'n')
 end
 map_dict(Keys, 'wk.register', false, 'n')
+
+local group = augroup('UserTelescope', { clear = false })
 
 ---@type AuRepeat
 local au_tbl = {
     ['User'] = {
         {
             pattern = 'TelescopePreviewerLoaded',
+            group = group,
 
             ---@param args TelAuArgs
             callback = function(args)
