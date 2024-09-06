@@ -120,29 +120,29 @@ M.alphabet.lower_map = {
 }
 
 ---@diagnostic disable-next-line:missing-fields
-M.vowels = {}
-M.vowels.upper_list = {
+M.alphabet.vowcals = {}
+M.alphabet.vowcals.upper_list = {
     'A',
     'E',
     'I',
     'O',
     'U',
 }
-M.vowels.lower_list = {
+M.alphabet.vowcals.lower_list = {
     'a',
     'e',
     'i',
     'o',
     'u',
 }
-M.vowels.upper_map = {
+M.alphabet.vowcals.upper_map = {
     A = 'A',
     E = 'E',
     I = 'I',
     O = 'O',
     U = 'U',
 }
-M.vowels.lower_map = {
+M.alphabet.vowcals.lower_map = {
     a = 'a',
     e = 'e',
     i = 'i',
