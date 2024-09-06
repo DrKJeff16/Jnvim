@@ -430,6 +430,69 @@ function M.displace_letter(c, direction, cycle)
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`', ERROR)
 end
 
+---@param data string|table
+---@return string|table res
+function M.discard_dups(data)
+    local Value = require('user_api.check.value')
+
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local empty = Value.empty
+
+    ---@type string|table
+    local res
+
+    if not (is_str(data) or is_tbl(data)) then
+        M.notify.notify('Input is neither a string nor a table', 'error', {
+            hide_from_history = false,
+            timeout = 750,
+            title = '(user_api.util.discard_dups)',
+        })
+
+        res = data
+
+        return res
+    end
+
+    if empty(data) then
+        M.notify.notify('Input is empty', 'error', {
+            hide_from_history = false,
+            timeout = 750,
+            title = '(user_api.util.discard_dups)',
+        })
+
+        res = data
+
+        return res
+    end
+
+    if is_str(data) then
+        res = data:sub(1, 1)
+
+        local i = 2
+
+        while i < data:len() do
+            local c = data:sub(i, i)
+            if not res:match(c) then
+                res = res .. c
+            end
+            i = i + 1
+        end
+
+        return res
+    end
+
+    res = {}
+
+    for k, v in next, data do
+        if not vim.tbl_contains(res, v) then
+            res[k] = v
+        end
+    end
+
+    return res
+end
+
 return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
