@@ -1,15 +1,12 @@
 local User = require('user_api')
 local Check = User.check
 local types = User.types.lspconfig
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local empty = Check.value.empty
-local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
-local is_nil = Check.value.is_nil
 local desc = User.maps.kmap.desc
+local wk_avail = User.maps.wk.available
 local map_dict = User.maps.map_dict
 local hi = User.highlight.hl
 
@@ -41,17 +38,6 @@ require('plugin.lsp.mason')
 require('plugin.lsp.neoconf')
 require('plugin.lsp.trouble')
 require('plugin.lsp.kinds').setup()
-
---[[ local border = {
-    { '🭽', 'FloatBorder' },
-    { '▔', 'FloatBorder' },
-    { '🭾', 'FloatBorder' },
-    { '▕', 'FloatBorder' },
-    { '🭿', 'FloatBorder' },
-    { '▁', 'FloatBorder' },
-    { '🭼', 'FloatBorder' },
-    { '▏', 'FloatBorder' },
-} ]]
 
 -- LSP settings (for overriding per client)
 local handlers = {
@@ -128,6 +114,8 @@ srv.lua_ls = executable('lua-language-server') and {} or nil
 srv.bashls = executable({ 'bash-language-server', 'shellcheck' }) and {} or nil
 srv.clangd = executable('clangd') and {} or nil
 srv.cmake = executable('cmake-languqge-server') and {} or nil
+srv.css_variables = executable('css-variables-language-server') and {} or nil
+srv.cssls = executable('vscode-css-language-server') and {} or nil
 srv.html = executable('vscode-html-language-server') and {} or nil
 srv.jdtls = executable('jdtls') and {} or nil
 srv.jsonls = executable('vscode-json-language-server') and {} or nil
@@ -147,6 +135,8 @@ function srv.new()
     self.bashls = srv.bashls
     self.clangd = srv.clangd
     self.cmake = srv.cmake
+    self.css_variables = srv.css_variables
+    self.cssls = srv.cssls
     self.html = srv.html
     self.jdtls = srv.jdtls
     self.jsonls = srv.jsonls
@@ -194,8 +184,8 @@ local Names = {
     ['<leader>l'] = { group = '+LSP' },
 }
 
-if WK.available() then
-    if WK.available() then
+if wk_avail() then
+    if wk_avail() then
         map_dict(Names, 'wk.register', false, 'n')
     end
 
@@ -301,7 +291,7 @@ au('LspAttach', {
             v = { ['<leader>lc'] = { group = '+Code Actions' } },
         }
 
-        if WK.available() then
+        if wk_avail() then
             map_dict(Names2, 'wk.register', true, nil, buf)
         end
         map_dict(K, 'wk.register', true, nil, buf)

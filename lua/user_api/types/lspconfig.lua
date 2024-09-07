@@ -54,6 +54,8 @@ require('user_api.types.user.highlight')
 ---@field bashls? LspServerOpts|nil
 ---@field clangd? LspServerOpts|nil
 ---@field cmake? LspServerOpts|nil
+---@field css_variables? LspServerOpts|nil
+---@field cssls? LspServerOpts|nil
 ---@field html? LspServerOpts|nil
 ---@field jdtls? LspServerOpts|nil
 ---@field jsonls? LspServerOpts|nil
