@@ -2,6 +2,7 @@ require('user_api.types.user.util')
 
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
+local optget = vim.api.nvim_get_option_value
 local in_tbl = vim.tbl_contains
 
 local ERROR = vim.log.levels.ERROR
@@ -127,7 +128,7 @@ function M.strip_fields(T, fields)
     local field = Value.fields
 
     if not is_tbl(T) then
-        error('(user_api.util.strip_fields): Argument is not a table')
+        error('(user_api.util.strip_fields): Argument is not a table', ERROR)
     end
 
     if empty(T) then
@@ -173,11 +174,11 @@ function M.strip_values(T, values, max_instances)
     local is_int = Value.is_int
     local empty = Value.empty
 
-    if not is_tbl(T) then
-        error('(user_api.util.strip_values): Not a table')
+    if not is_tbl({ T, values }, true) then
+        error('(user_api.util.strip_values): Not a table', ERROR)
     end
-    if not is_tbl(values) or empty(values) then
-        error('(user_api.util.strip_values): No values given')
+    if empty(values) then
+        error('(user_api.util.strip_values): No values given', ERROR)
     end
 
     max_instances = is_int(max_instances) and max_instances or 0
@@ -187,7 +188,8 @@ function M.strip_values(T, values, max_instances)
     local count = 0
 
     for k, v in next, T do
-        if M.xor(max_instances == 0, max_instances ~= 0 and max_instances > count) then
+        -- Both arguments can't be true simultaneously
+        if M.xor((max_instances == 0), (max_instances ~= 0 and max_instances > count)) then
             if not in_tbl(values, v) and is_int(k) then
                 table.insert(res, v)
             elseif not in_tbl(values, v) then
@@ -205,7 +207,7 @@ function M.strip_values(T, values, max_instances)
     return res
 end
 
----@param s string
+---@param s? string
 ---@param bufnr? integer
 ---@return fun()
 function M.ft_set(s, bufnr)
@@ -214,15 +216,10 @@ function M.ft_set(s, bufnr)
     local is_int = Value.is_int
     local is_str = Value.is_str
 
+    s = is_str(s) and s or ''
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    return function()
-        if not is_str(s) then
-            optset('ft', '', { buf = bufnr })
-        else
-            optset('ft', s, { buf = bufnr })
-        end
-    end
+    return function() optset('ft', s, { buf = bufnr }) end
 end
 
 ---@param bufnr? integer
@@ -230,7 +227,7 @@ end
 function M.bt_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 
-    return vim.api.nvim_get_option_value('bt', { buf = bufnr })
+    return optget('bt', { buf = bufnr })
 end
 
 ---@param bufnr? integer
@@ -238,7 +235,7 @@ end
 function M.ft_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 
-    return vim.api.nvim_get_option_value('ft', { buf = bufnr })
+    return optget('ft', { buf = bufnr })
 end
 
 function M.assoc()
@@ -338,7 +335,7 @@ function M.assoc()
                         local buf = curr_buf()
 
                         -- Make sure the buffer is modifiable
-                        if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
+                        if not optget('modifiable', { buf = buf }) then
                             return
                         end
 
@@ -360,6 +357,11 @@ function M.assoc()
                     group = group,
                     callback = function()
                         local buf = curr_buf()
+
+                        -- Make sure the buffer is modifiable
+                        if not optget('modifiable', { buf = buf }) then
+                            return
+                        end
 
                         if require('user_api.check.exists').executable('isort') then
                             local map_dict = require('user_api.maps').map_dict
@@ -438,12 +440,13 @@ function M.discard_dups(data)
     local is_tbl = Value.is_tbl
     local is_str = Value.is_str
     local empty = Value.empty
+    local notify = M.notify.notify
 
     ---@type string|table
     local res
 
     if not (is_str(data) or is_tbl(data)) then
-        M.notify.notify('Input is neither a string nor a table', 'error', {
+        notify('Input is neither a string nor a table', 'error', {
             hide_from_history = false,
             timeout = 750,
             title = '(user_api.util.discard_dups)',
@@ -455,7 +458,7 @@ function M.discard_dups(data)
     end
 
     if empty(data) then
-        M.notify.notify('Input is empty', 'error', {
+        notify('Input is empty', 'error', {
             hide_from_history = false,
             timeout = 750,
             title = '(user_api.util.discard_dups)',
