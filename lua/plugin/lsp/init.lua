@@ -114,7 +114,6 @@ srv.lua_ls = executable('lua-language-server') and {} or nil
 srv.bashls = executable({ 'bash-language-server', 'shellcheck' }) and {} or nil
 srv.clangd = executable('clangd') and {} or nil
 srv.cmake = executable('cmake-languqge-server') and {} or nil
-srv.css_variables = executable('css-variables-language-server') and {} or nil
 srv.cssls = executable('vscode-css-language-server') and {} or nil
 srv.html = executable('vscode-html-language-server') and {} or nil
 srv.jdtls = executable('jdtls') and {} or nil
@@ -135,7 +134,6 @@ function srv.new()
     self.bashls = srv.bashls
     self.clangd = srv.clangd
     self.cmake = srv.cmake
-    self.css_variables = srv.css_variables
     self.cssls = srv.cssls
     self.html = srv.html
     self.jdtls = srv.jdtls
