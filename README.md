@@ -268,12 +268,12 @@ complete, extensible and (hopefully) smarter way for the end user.
 
 The `maps.kmap` module has the same function names for each mode:
 
-* `maps.kmap.n(...)`: Same as `:nmap`
-* `maps.kmap.i(...)`: Same as `:imap`
-* `maps.kmap.v(...)`: Same as `:vmap`
-* `maps.kmap.t(...)`: Same as `:tmap`
-* `maps.kmap.o(...)`: Same as `:omap`
-* `maps.kmap.x(...)`: Same as `:xmap`
+- `maps.kmap.n(...)`: Same as `:nmap`
+- `maps.kmap.i(...)`: Same as `:imap`
+- `maps.kmap.v(...)`: Same as `:vmap`
+- `maps.kmap.t(...)`: Same as `:tmap`
+- `maps.kmap.o(...)`: Same as `:omap`
+- `maps.kmap.x(...)`: Same as `:xmap`
 
 <!--TODO: Fix sections above and below-->
 
