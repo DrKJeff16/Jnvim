@@ -80,17 +80,17 @@ Lazy.setup({
         versions = true,
         sources = (function()
             ---@type LazySources
-            local S = { 'lazy' }
+            local S = { 'lazy', 'packspec' }
 
             if not is_root() then
                 --- If `luarocks` is available and configured
                 if require('config.util').luarocks_check() then
                     table.insert(S, 'rockspec')
                 end
-                --- If `pathspec-find` is available
-                if executable('pathspec-find') then
-                    table.insert(S, 'pathspec')
-                end
+                -- --- If `pathspec-find` is available
+                -- if executable('pathspec-find') then
+                --     table.insert(S, 'pathspec')
+                -- end
             end
 
             return S
