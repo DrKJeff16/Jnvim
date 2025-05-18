@@ -97,6 +97,34 @@ local M = {
         'HiPhish/nvim-cmp-vlime',
         ft = 'lisp',
         version = false,
+        dependencies = { 'vlime', 'nvim-cmp' },
+    },
+
+    -- TODO: Future replacement/alternative for `nvim-cmp`.
+    {
+        'saghen/blink.cmp',
+        event = { 'InsertEnter', 'CmdlineEnter' },
+        version = false,
+        dependencies = { 'folke/lazydev.nvim' },
+        opts = {
+            sources = {
+                default = {
+                    'lazydev',
+                    'lsp',
+                    'path',
+                    'snippets',
+                    'buffer',
+                },
+                providers = {
+                    lazydev = {
+                        name = 'LazyDev',
+                        module = 'lazydev.integrations.blink',
+                        score_offset = 100,
+                    },
+                },
+            },
+        },
+        enabled = false,
     },
 }
 
