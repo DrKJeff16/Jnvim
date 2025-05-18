@@ -4,6 +4,7 @@ local types = User.types.lspconfig
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
+local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 local wk_avail = User.maps.wk.available
@@ -199,37 +200,43 @@ au('LspAttach', {
         local buf = args.buf
         local client = Lsp.get_client_by_id(args.data.client_id)
 
-        if client.supports_method('textDocument/completion') then
-            bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-            Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+        if is_nil(client) then
+            return
         end
+
+        ---@diagnostic disable:need-check-nil
+
+        -- if client.supports_method('textDocument/completion') then
+        bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+        Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+        -- end
 
         --[[ if client.supports_method('textDocument/formatting') then
-            au('BufWritePre', {
-                buffer = args.buf,
-                callback = function()
-                    Lsp.buf.format({ bufnr = args.buf, id = client.id })
-                end,
-            })
-        end ]]
+        au('BufWritePre', {
+            buffer = args.buf,
+            callback = function()
+                Lsp.buf.format({ bufnr = args.buf, id = client.id })
+            end,
+        })
+    end ]]
 
-        if client.supports_method('textDocument/definition') then
-            bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
-        end
+        -- if client.supports_method('textDocument/definition') then
+        bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+        -- end
 
-        if client.supports_method('textDocument/references') then
-            local on_references = Lsp.handlers['textDocument/references']
-            Lsp.handlers['textDocument/references'] = Lsp.with(on_references, {
-                loclist = true,
+        -- if client.supports_method('textDocument/references') then
+        local on_references = Lsp.handlers['textDocument/references']
+        Lsp.handlers['textDocument/references'] = Lsp.with(on_references, {
+            loclist = true,
+        })
+        -- end
+        -- if client.supports_method('textDocument/publishDiagnostics') then
+        Lsp.handlers['textDocument/publishDiagnostics'] =
+            Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+                signs = true,
+                virtual_text = true,
             })
-        end
-        if client.supports_method('textDocument/publishDiagnostics') then
-            Lsp.handlers['textDocument/publishDiagnostics'] =
-                Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
-                    signs = true,
-                    virtual_text = true,
-                })
-        end
+        -- end
 
         ---@type KeyMapModeDict
         local K = {
@@ -299,6 +306,8 @@ au('LspAttach', {
         end
     end,
 })
+
+---@diagnostic enable:need-check-nil
 au('LspDetach', {
     group = group,
 
