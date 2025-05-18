@@ -1,53 +1,50 @@
 -i https://pypi.org/simple
-astroid==3.3.5; python_full_version >= '3.9.0'
-autopep8==2.0.4
-dill==0.3.9; python_version >= '3.11'
+astroid==3.3.6; python_full_version >= '3.9.0'
+autopep8==2.0.4; python_version >= '3.6'
+dill==0.3.9; python_version >= '3.8'
 docstring-to-markdown==0.15; python_version >= '3.6'
-flake8==7.1.1
-importlib-metadata==8.5.0; python_version >= '3.8'
+flake8==7.1.1; python_full_version >= '3.8.1'
 isort==5.13.2; python_full_version >= '3.8.0'
-jedi==0.19.1; python_version >= '3.6'
-mccabe==0.7.0
-mypy==1.12.0; python_version >= '3.8'
+jedi==0.19.2; python_version >= '3.6'
+mccabe==0.7.0; python_version >= '3.6'
+mypy==1.14.0; python_version >= '3.8'
 mypy-extensions==1.0.0; python_version >= '3.5'
-packaging==24.1; python_version >= '3.8'
+packaging==24.2; python_version >= '3.8'
 parso==0.8.4; python_version >= '3.6'
-pip==24.2; python_version >= '3.8'
-platformdirs==4.3.6; python_version >= '3.8'
+pip==24.3.1; python_version >= '3.8'
+platformdirs==4.3.8; python_version >= '3.9'
 pluggy==1.5.0; python_version >= '3.8'
-pycodestyle==2.12.1
-pydocstyle==6.3.0
-pyflakes==3.2.0
-pylint==3.3.1
+pycodestyle==2.12.1; python_version >= '3.8'
+pydocstyle==6.3.0; python_version >= '3.6'
+pyflakes==3.2.0; python_version >= '3.8'
+pylint==3.3.2; python_full_version >= '3.9.0'
 pylsp-mypy==0.6.9; python_version >= '3.8'
-pylsp-rope==0.1.16; python_version >= '3.6'
+pylsp-rope==0.1.17; python_version >= '3.6'
 python-lsp-isort==0.2.0; python_version >= '3.7'
 python-lsp-jsonrpc==1.1.2; python_version >= '3.8'
 python-lsp-server[all]==1.12.0; python_version >= '3.8'
 pytoolconfig[global]==1.3.1; python_version >= '3.8'
-rope==1.13.0
+rope==1.13.0; python_version >= '3.8'
 snowballstemmer==2.2.0
-tomli==2.0.2; python_version >= '3.8'
 tomlkit==0.13.2; python_version >= '3.8'
-typing-extensions==4.12.2; python_version >= '3.8'
+typing-extensions==4.13.2; python_version >= '3.8'
 ujson==5.10.0; python_version >= '3.8'
-whatthepatch==1.0.6; python_version >= '3.8'
-yapf==0.40.2
-zipp==3.20.2; python_version >= '3.8'
+whatthepatch==1.0.7; python_version >= '3.9'
+yapf==0.43.0; python_version >= '3.7'
 argparse==1.4.0
 asyncio==3.4.3
 cfgv==3.4.0; python_version >= '3.8'
 distlib==0.3.9
-filelock==3.16.1; python_version >= '3.8'
-greenlet==3.1.1; python_version >= '3.7'
-identify==2.6.1; python_version >= '3.8'
+filelock==3.18.0; python_version >= '3.9'
+greenlet==3.2.2; python_version >= '3.9'
+identify==2.6.10; python_version >= '3.9'
 msgpack==1.1.0; python_version >= '3.8'
 nodeenv==1.9.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6'
-pre-commit==4.0.1; python_version >= '3.9'
+pre-commit==4.2.0; python_version >= '3.9'
 progress==1.6
-pynvim==0.5.0; python_version >= '3.7'
+pynvim==0.5.2; python_version >= '3.7'
 pyyaml==6.0.2; python_version >= '3.8'
-setuptools==75.1.0; python_version >= '3.8'
+setuptools==80.7.1; python_version >= '3.9'
 typing==3.7.4.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-virtualenv==20.26.6; python_version >= '3.7'
-wheel==0.44.0; python_version >= '3.8'
+virtualenv==20.31.2; python_version >= '3.8'
+wheel==0.45.1; python_version >= '3.8'
