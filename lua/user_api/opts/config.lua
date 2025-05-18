@@ -29,7 +29,7 @@ local M = {
         q = true,
         w = true,
     },
-    foldmethod = 'expr',
+    foldmethod = 'manual',
     helplang = { 'en' },
     hidden = true,
     ls = 2,
