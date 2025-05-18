@@ -7,6 +7,7 @@ local vim_exists = Exists.vim_exists
 local in_console = require('user_api.check').in_console
 
 ---@type User.Opts.Spec
+---@diagnostic disable-next-line:missing-fields
 local M = {
     ai = true,
     ar = true,
