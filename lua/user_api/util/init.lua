@@ -15,6 +15,17 @@ M.notify = require('user_api.util.notify')
 M.au = require('user_api.util.autocmd')
 M.string = require('user_api.util.string')
 
+---@return boolean
+function M.has_words_before()
+    local buf_lines = vim.api.nvim_buf_get_lines
+    local win_cursor = vim.api.nvim_win_get_cursor
+    local curr_win = vim.api.nvim_get_current_win
+
+    unpack = unpack or table.unpack
+    local line, col = unpack(win_cursor(curr_win()))
+    return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+end
+
 ---@param T table<string|integer, any>
 ---@param steps? integer
 ---@param direction? 'l'|'r'

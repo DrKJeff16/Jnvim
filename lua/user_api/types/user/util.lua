@@ -64,6 +64,7 @@ require('user_api.types.user.autocmd')
 ---@field au_repeated_events fun(T: AuRepeatEvents)
 
 ---@class User.Util
+---@field has_words_before fun(): boolean
 ---@field notify User.Util.Notify
 ---@field au User.Util.Autocmd
 ---@field string User.Util.String
