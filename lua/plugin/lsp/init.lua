@@ -81,6 +81,8 @@ local function populate(T)
             if k == 'jsonls' then
                 res[k].capabilities.textDocument.completion.completionItem.snippetSupport = true
             end
+        elseif exists('blink.cmp') then
+            res[k].capabilities = require('blink.cmp').get_lsp_capabilities(res[k].capabilities)
         end
 
         if exists('schemastore') then
