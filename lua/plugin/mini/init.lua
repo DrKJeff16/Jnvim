@@ -70,7 +70,8 @@ end
 ---@type MiniModules
 local Mods = {}
 
-Mods.align = {
+Mods.align = nil
+--[[ Mods.align = {
     -- Module mappings. Use `''` (empty string) to disable one
     mappings = {
         start = 'ga',
@@ -80,24 +81,24 @@ Mods.align = {
     -- Modifiers changing alignment steps and/or options
     modifiers = {
         -- TODO: Implement this if necessary
-        --[[ -- Main option modifiers
-        ['s'] = --<function: enter split pattern>,
-        ['j'] = --<function: choose justify side>,
-        ['m'] = --<function: enter merge delimiter>,
-
-        -- Modifiers adding pre-steps
-        ['f'] = --<function: filter parts by entering Lua expression>,
-        ['i'] = --<function: ignore some split matches>,
-        ['p'] = --<function: pair parts>,
-        ['t'] = --<function: trim parts>,
-
-        -- Delete some last pre-step
-        ['<BS>'] = --<function: delete some last pre-step>,
-
-        -- Special configurations for common splits
-        ['='] = --<function: enhanced setup for '='>,
-        [','] = --<function: enhanced setup for ','>,
-        [' '] = --<function: enhanced setup for ' '>, ]]
+        -- Main option modifiers
+        -- ['s'] = --<function: enter split pattern>,
+        -- ['j'] = --<function: choose justify side>,
+        -- ['m'] = --<function: enter merge delimiter>,
+        --
+        -- -- Modifiers adding pre-steps
+        -- ['f'] = --<function: filter parts by entering Lua expression>,
+        -- ['i'] = --<function: ignore some split matches>,
+        -- ['p'] = --<function: pair parts>,
+        -- ['t'] = --<function: trim parts>,
+        --
+        -- -- Delete some last pre-step
+        -- ['<BS>'] = --<function: delete some last pre-step>,
+        --
+        -- -- Special configurations for common splits
+        -- ['='] = --<function: enhanced setup for '='>,
+        -- [','] = --<function: enhanced setup for ','>,
+        -- [' '] = --<function: enhanced setup for ' '>,
 
         t = function(steps, _)
             local trim_high = require('mini.align').gen_step.trim('both', 'high')
@@ -133,14 +134,10 @@ Mods.align = {
         pre_justify = {
             require('mini.align').gen_step.filter('n == 1'),
         },
-        justify = nil,
-        pre_merge = {},
-        merge = nil,
-    },
 
     -- Whether to disable showing non-error feedback
     silent = true,
-}
+} ]]
 
 Mods.basics = {
     options = {
@@ -242,6 +239,134 @@ Mods.move = {
     },
 }
 
+Mods.basics = {
+    options = {
+        basic = true,
+        extra_ui = true,
+        win_borders = 'rounded',
+    },
+
+    mappings = {
+        basic = false,
+        option_toggle_prefix = '',
+        windows = true,
+        move_with_alt = false,
+    },
+
+    autocommands = {
+        basic = true,
+        relnum_in_visual_mode = true,
+    },
+
+    silent = true,
+}
+
+Mods.bufremove = {
+    set_vim_settings = true,
+    silent = true,
+}
+
+-- Mods.cursorword = { delay = 1000 }
+Mods.cursorword = nil
+
+Mods.doc = nil
+
+Mods.extra = {}
+
+Mods.icons = {
+    style = 'glyph',
+    -- Customize per category. See `:h MiniIcons.config` for details.
+    default = {
+        -- Override default glyph for "file" category (reuse highlight group)
+        file = { glyph = '󰈤' },
+    },
+    directory = {},
+    extension = {},
+    file = {},
+    filetype = {},
+    lsp = {},
+    os = {},
+
+    -- Control which extensions will be considered during "file" resolutions
+    ---@param ext string?
+    ---@param file string?
+    ---@return boolean
+    ---@diagnostic disable-next-line:unused-local
+    use_file_extension = function(ext, file)
+        if is_str(ext) then
+            ---@diagnostic disable-next-line:need-check-nil
+            return ext:sub(-3) ~= 'scm'
+        end
+
+        return false
+    end,
+}
+
+Mods.map = {
+    -- Highlight integrations (none by default)
+    integrations = {
+        require('mini.map').gen_integration.diagnostic(),
+        require('mini.map').gen_integration.diff(),
+        require('mini.map').gen_integration.builtin_search(),
+    },
+
+    -- Symbols used to display data
+    symbols = {
+        -- Encode symbols. See `:h MiniMap.config` for specification and
+        -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
+        -- Default: solid blocks with 3x2 resolution.
+        encode = nil,
+
+        -- Scrollbar parts for view and line. Use empty string to disable any.
+        scroll_line = '█',
+        scroll_view = '┃',
+    },
+
+    -- Window options
+    window = {
+        -- Whether window is focusable in normal way (with `wincmd` or mouse)
+        focusable = true,
+
+        -- Side to stick ('left' or 'right')
+        side = 'right',
+
+        -- Whether to show count of multiple integration highlights
+        show_integration_count = false,
+
+        -- Total width
+        width = 10,
+
+        -- Value of 'winblend' option
+        winblend = 35,
+
+        -- Z-index
+        zindex = 10,
+    },
+}
+
+Mods.move = {
+    -- Module mappings. Use `''` (empty string) to disable one
+    mappings = {
+        -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl
+        left = '<leader>Ml',
+        right = '<leader>Mr',
+        down = '<leader>Md',
+        up = '<leader>Mu',
+
+        -- Move current line in Normal mode
+        line_left = '<leader>Ml',
+        line_right = '<leader>Mr',
+        line_down = '<leader>Md',
+        line_up = '<leader>Mu',
+    },
+
+    -- Options which control moving behavior
+    options = {
+        -- Automatically reindent selection during linewise vertical move
+        reindent_linewise = true,
+    },
+}
+
 --[[ Mods.starter = exists('plugin.mini.starter') and require('plugin.mini.starter').telescope or {
     autoopen = true,
     -- Whether to evaluate action of single active item
@@ -262,10 +387,22 @@ if not exists('todo-comments') then
     Mods.hipatterns = {
         highlighters = {
             -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
-            fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-            hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
-            todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
-            note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+            fixme = {
+                pattern = '%f[%w]()FIXME()%f[%W]',
+                group = 'MiniHipatternsFixme',
+            },
+            hack = {
+                pattern = '%f[%w]()HACK()%f[%W]',
+                group = 'MiniHipatternsHack',
+            },
+            todo = {
+                pattern = '%f[%w]()TODO()%f[%W]',
+                group = 'MiniHipatternsTodo',
+            },
+            note = {
+                pattern = '%f[%w]()NOTE()%f[%W]',
+                group = 'MiniHipatternsNote',
+            },
 
             -- Highlight hex color strings (`#rrggbb`) using that color
             hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
