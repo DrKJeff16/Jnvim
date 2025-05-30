@@ -30,6 +30,7 @@ local curr_win = vim.api.nvim_get_current_win
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
 ---@see User.Opts.setup
+---@diagnostic disable-next-line:missing-fields
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
@@ -97,12 +98,12 @@ Keymaps:setup({
         ['<leader>fii'] = {
             function()
                 local buf = curr_buf()
-                local win = curr_win()
 
                 if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
                     return
                 end
 
+                local win = curr_win()
                 local saved_pos = vim.api.nvim_win_get_cursor(win)
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
@@ -146,6 +147,11 @@ local csc_group = 'A'
 local i = 1
 local found_csc = ''
 
+-- TODO: Try to put the following loop inside a function
+-- NOTE: This was also a pain in the ass
+--
+-- Generate keybinds for each colorscheme that is found
+-- Try checking them by typing `<leader>vc` IN NORMAL MODE
 for _, name in next, selected do
     ---@type CscSubMod|ODSubMod|table
     local TColor = Csc[name]
@@ -195,7 +201,7 @@ if not empty(found_csc) then
     Csc[found_csc].setup()
 end
 
---- Call the user file associations and other autocmds
+--- Call the User API file associations and other autocmds
 Util.assoc()
 
 vim.g.markdown_minlines = 500
@@ -203,8 +209,10 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for Arch Linux (WIP)
 Distro.archlinux:setup()
 
+-- Define any custom commands
 Commands:setup_commands()
 
+-- Mappings related specifically to `user_api`
 User:setup_keys()
 
 vim.cmd([[
