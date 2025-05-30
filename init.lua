@@ -123,9 +123,9 @@ local CscKeys = {}
 
 --- Reorder to your liking
 local selected = {
+    'kanagawa',
     'tokyonight',
     'nightfox',
-    'kanagawa',
     'catppuccin',
     'vscode',
     'onedark',
@@ -156,40 +156,45 @@ for _, name in next, selected do
     ---@type CscSubMod|ODSubMod|table
     local TColor = Csc[name]
 
-    if not is_nil(TColor.setup) then
-        found_csc = found_csc ~= '' and found_csc or name
-
-        NamesCsc['<leader>vc' .. csc_group] = {
-            group = '+Group ' .. csc_group,
-        }
-
-        if is_tbl(TColor.variants) and not empty(TColor.variants) then
-            local v = 'a'
-            for _, variant in next, TColor.variants do
-                NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                    group = '+' .. capitalize(name),
-                }
-                CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                    function() TColor.setup(variant) end,
-                    desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
-                }
-
-                v = displace_letter(v, 'next', false)
-            end
-        else
-            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                TColor.setup,
-                desc('Set Colorscheme `' .. capitalize(name) .. '`'),
-            }
-        end
-
-        if i == 9 then
-            i = 1
-            csc_group = displace_letter(csc_group, 'next', false)
-        elseif i < 9 then
-            i = i + 1
-        end
+    if is_nil(TColor.setup) then
+        goto continue
     end
+    found_csc = found_csc ~= '' and found_csc or name
+
+    NamesCsc['<leader>vc' .. csc_group] = {
+        group = '+Group ' .. csc_group,
+    }
+
+    if is_tbl(TColor.variants) and not empty(TColor.variants) then
+        local v = 'a'
+        for _, variant in next, TColor.variants do
+            NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
+                group = '+' .. capitalize(name),
+            }
+            CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
+                function() TColor.setup(variant) end,
+                desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
+            }
+
+            v = displace_letter(v, 'next', false)
+        end
+    else
+        CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+            TColor.setup,
+            desc('Set Colorscheme `' .. capitalize(name) .. '`'),
+        }
+    end
+
+    -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
+    if i == 9 then
+        -- If last  keymap set ended on 9, reset back to 1, and go to next letter alphabetically
+        i = 1
+        csc_group = displace_letter(csc_group, 'next', false)
+    elseif i < 9 then
+        i = i + 1
+    end
+
+    ::continue::
 end
 
 if wk_avail() then
