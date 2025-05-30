@@ -2,32 +2,24 @@ require('user_api.types')
 
 ---@type User
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local User = {}
 
-M.types = require('user_api.types')
+User.types = require('user_api.types')
+User.util = require('user_api.util')
+User.check = require('user_api.check')
+User.maps = require('user_api.maps')
+User.highlight = require('user_api.highlight')
+User.opts = require('user_api.opts')
+User.distro = require('user_api.distro')
+User.update = require('user_api.update')
+User.commands = require('user_api.commands')
 
-M.util = require('user_api.util')
-
-M.check = require('user_api.check')
-
-M.maps = require('user_api.maps')
-
-M.highlight = require('user_api.highlight')
-
-M.opts = require('user_api.opts')
-
-M.distro = require('user_api.distro')
-
-M.update = require('user_api.update')
-
-M.commands = require('user_api.commands')
-
-M.registered_plugins = {}
+User.registered_plugins = {}
 
 ---@param self User
 ---@param pathstr string
 ---@param i? integer
-function M:register_plugin(pathstr, i)
+function User:register_plugin(pathstr, i)
     local Value = self.check.value
 
     local is_nil = Value.is_nil
@@ -66,7 +58,8 @@ function M:register_plugin(pathstr, i)
     end
 end
 
-function M:setup_keys()
+---@param self User
+function User:setup_keys()
     local wk_avail = self.maps.wk.available
     local desc = self.maps.kmap.desc
     local map_dict = self.maps.map_dict
@@ -121,7 +114,7 @@ end
 
 ---@param self User
 ---@return string[]|nil
-function M:reload_plugins()
+function User:reload_plugins()
     local empty = self.check.value.empty
     local exists = self.check.exists.module
 
@@ -142,7 +135,7 @@ function M:reload_plugins()
 end
 
 ---@param self User
-function M:print_loaded_plugins()
+function User:print_loaded_plugins()
     local notify = self.util.notify.notify
     local empty = self.check.value.empty
     local nwl = newline or string.char(10)
@@ -163,11 +156,11 @@ end
 
 ---@param o? table
 ---@return User|table
-function M.new(o)
-    o = M.check.value.is_tbl(o) and o or {}
-    return setmetatable(o, { __index = M })
+function User.new(o)
+    o = User.check.value.is_tbl(o) and o or {}
+    return setmetatable(o, { __index = User })
 end
 
-return M
+return User
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
