@@ -232,7 +232,7 @@ local M = {
     },
 
     fuzzy = {
-        implementation = 'prefer_rust',
+        implementation = 'lua',
         sorts = {
             'exact',
             'score',
