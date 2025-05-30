@@ -30,6 +30,7 @@ local curr_win = vim.api.nvim_get_current_win
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
 ---@see User.Opts.setup
+---@diagnostic disable-next-line:missing-fields
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
@@ -97,12 +98,12 @@ Keymaps:setup({
         ['<leader>fii'] = {
             function()
                 local buf = curr_buf()
-                local win = curr_win()
 
                 if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
                     return
                 end
 
+                local win = curr_win()
                 local saved_pos = vim.api.nvim_win_get_cursor(win)
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
@@ -122,9 +123,9 @@ local CscKeys = {}
 
 --- Reorder to your liking
 local selected = {
+    'kanagawa',
     'tokyonight',
     'nightfox',
-    'kanagawa',
     'catppuccin',
     'vscode',
     'onedark',
@@ -146,44 +147,54 @@ local csc_group = 'A'
 local i = 1
 local found_csc = ''
 
+-- TODO: Try to put the following loop inside a function
+-- NOTE: This was also a pain in the ass
+--
+-- Generate keybinds for each colorscheme that is found
+-- Try checking them by typing `<leader>vc` IN NORMAL MODE
 for _, name in next, selected do
     ---@type CscSubMod|ODSubMod|table
     local TColor = Csc[name]
 
-    if not is_nil(TColor.setup) then
-        found_csc = found_csc ~= '' and found_csc or name
-
-        NamesCsc['<leader>vc' .. csc_group] = {
-            group = '+Group ' .. csc_group,
-        }
-
-        if is_tbl(TColor.variants) and not empty(TColor.variants) then
-            local v = 'a'
-            for _, variant in next, TColor.variants do
-                NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
-                    group = '+' .. capitalize(name),
-                }
-                CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                    function() TColor.setup(variant) end,
-                    desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
-                }
-
-                v = displace_letter(v, 'next', false)
-            end
-        else
-            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                TColor.setup,
-                desc('Set Colorscheme `' .. capitalize(name) .. '`'),
-            }
-        end
-
-        if i == 9 then
-            i = 1
-            csc_group = displace_letter(csc_group, 'next', false)
-        elseif i < 9 then
-            i = i + 1
-        end
+    if is_nil(TColor.setup) then
+        goto continue
     end
+    found_csc = found_csc ~= '' and found_csc or name
+
+    NamesCsc['<leader>vc' .. csc_group] = {
+        group = '+Group ' .. csc_group,
+    }
+
+    if is_tbl(TColor.variants) and not empty(TColor.variants) then
+        local v = 'a'
+        for _, variant in next, TColor.variants do
+            NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
+                group = '+' .. capitalize(name),
+            }
+            CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
+                function() TColor.setup(variant) end,
+                desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
+            }
+
+            v = displace_letter(v, 'next', false)
+        end
+    else
+        CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+            TColor.setup,
+            desc('Set Colorscheme `' .. capitalize(name) .. '`'),
+        }
+    end
+
+    -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
+    if i == 9 then
+        -- If last  keymap set ended on 9, reset back to 1, and go to next letter alphabetically
+        i = 1
+        csc_group = displace_letter(csc_group, 'next', false)
+    elseif i < 9 then
+        i = i + 1
+    end
+
+    ::continue::
 end
 
 if wk_avail() then
@@ -195,7 +206,7 @@ if not empty(found_csc) then
     Csc[found_csc].setup()
 end
 
---- Call the user file associations and other autocmds
+--- Call the User API file associations and other autocmds
 Util.assoc()
 
 vim.g.markdown_minlines = 500
@@ -203,8 +214,10 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for Arch Linux (WIP)
 Distro.termux:setup()
 
+-- Define any custom commands
 Commands:setup_commands()
 
+-- Mappings related specifically to `user_api`
 User:setup_keys()
 
 vim.cmd([[

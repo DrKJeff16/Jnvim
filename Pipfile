@@ -6,8 +6,6 @@ name = "pypi"
 [packages]
 typing = "*"
 typing-extensions = "*"
-asyncio = "*"
-progress = "*"
 argparse = "*"
 wheel = "*"
 setuptools = "*"
@@ -15,7 +13,7 @@ pynvim = "*"
 pre-commit = "*"
 
 [dev-packages]
-pip = "*"
+pynvim = "*"
 mypy = "*"
 mypy-extensions = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
@@ -23,7 +21,6 @@ pylsp-mypy = "*"
 pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
-whatthepatch = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
