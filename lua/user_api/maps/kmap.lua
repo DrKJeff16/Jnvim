@@ -44,7 +44,7 @@ end
 
 ---@type User.Maps.Keymap
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Kmap = {}
 
 ---@param msg? string|'Unnamed Key'
 ---@param silent? boolean
@@ -52,7 +52,7 @@ local M = {}
 ---@param noremap? boolean
 ---@param nowait? boolean
 ---@param expr? boolean
-function M.desc(msg, silent, bufnr, noremap, nowait, expr)
+function Kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
@@ -76,18 +76,13 @@ function M.desc(msg, silent, bufnr, noremap, nowait, expr)
     return res
 end
 
-M.n = variant('n')
+Kmap.n = variant('n')
+Kmap.i = variant('i')
+Kmap.v = variant('v')
+Kmap.t = variant('t')
+Kmap.o = variant('o')
+Kmap.x = variant('x')
 
-M.i = variant('i')
-
-M.v = variant('v')
-
-M.t = variant('t')
-
-M.o = variant('o')
-
-M.x = variant('x')
-
-return M
+return Kmap
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

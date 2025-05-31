@@ -16,15 +16,13 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 ---@type User.Maps
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Maps = {}
 
-M.kmap = require('user_api.maps.kmap')
+Maps.kmap = require('user_api.maps.kmap')
+Maps.wk = require('user_api.maps.wk')
+Maps.modes = MODES
 
-M.wk = require('user_api.maps.wk')
-
-M.modes = MODES
-
-function M.nop(T, opts, mode, prefix)
+function Maps.nop(T, opts, mode, prefix)
     if not (is_str(T) or is_tbl(T)) then
         error('(user_api.maps.nop): Argument is neither a string nor a table')
     end
@@ -43,7 +41,7 @@ function M.nop(T, opts, mode, prefix)
     prefix = is_str(prefix) and prefix or ''
 
     ---@type KeyMapFunction
-    local func = M.kmap[mode]
+    local func = Maps.kmap[mode]
 
     if is_str(T) then
         func(prefix .. T, '<Nop>', opts)
@@ -55,7 +53,7 @@ function M.nop(T, opts, mode, prefix)
     end
 end
 
-function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
+function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     if not (is_tbl(T) and not empty(T)) then
         vim.notify("Keys either aren't table or table is empty", 'error', {
             timeout = 700,
@@ -79,7 +77,7 @@ function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     local map_choices = { 'kmap', 'wk.register' }
 
     map_func = (is_str(map_func) and vim.tbl_contains(map_choices)) and map_func or 'wk.register'
-    map_func = M.wk.available() and map_func or 'kmap'
+    map_func = Maps.wk.available() and map_func or 'kmap'
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
     dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
@@ -95,7 +93,7 @@ function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
 
             if map_func == 'kmap' then
                 ---@type KeyMapFunction
-                func = M.kmap[mode_choice]
+                func = Maps.kmap[mode_choice]
 
                 for lhs, v in next, t do
                     v[2] = is_tbl(v[2]) and v[2] or {}
@@ -156,7 +154,7 @@ function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
         end
     elseif map_func == 'kmap' then
         ---@type KeyMapFunction
-        func = M.kmap[mode]
+        func = Maps.kmap[mode]
 
         for lhs, v in next, T do
             v[2] = is_tbl(v[2]) and v[2] or {}
@@ -213,6 +211,6 @@ function M.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     end
 end
 
-return M
+return Maps
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

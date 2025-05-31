@@ -9,14 +9,14 @@ local ERROR = vim.log.levels.ERROR
 
 ---@type User.Util
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Util = {}
 
-M.notify = require('user_api.util.notify')
-M.au = require('user_api.util.autocmd')
-M.string = require('user_api.util.string')
+Util.notify = require('user_api.util.notify')
+Util.au = require('user_api.util.autocmd')
+Util.string = require('user_api.util.string')
 
 ---@return boolean
-function M.has_words_before()
+function Util.has_words_before()
     local buf_lines = vim.api.nvim_buf_get_lines
     local win_cursor = vim.api.nvim_win_get_cursor
     local curr_win = vim.api.nvim_get_current_win
@@ -30,7 +30,7 @@ end
 ---@param steps? integer
 ---@param direction? 'l'|'r'
 ---@return table<string|integer, any> res
-function M.mv_tbl_values(T, steps, direction)
+function Util.mv_tbl_values(T, steps, direction)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -114,9 +114,9 @@ end
 ---@param x boolean
 ---@param y boolean
 ---@return boolean
-function M.xor(x, y)
+function Util.xor(x, y)
     if not require('user_api.check.value').is_bool({ x, y }, true) then
-        M.notify.notify('An argument is not of boolean type', 'error', {
+        Util.notify.notify('An argument is not of boolean type', 'error', {
             hide_from_history = false,
             timeout = 850,
             title = '(user_api.util.xor)',
@@ -130,7 +130,7 @@ end
 ---@param T table<string|integer, any>
 ---@param fields string|integer|(string|integer)[]
 ---@return table<string|integer, any> res
-function M.strip_fields(T, fields)
+function Util.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -178,7 +178,7 @@ end
 ---@param values any[]
 ---@param max_instances? integer
 ---@return table<string|integer, any> res
-function M.strip_values(T, values, max_instances)
+function Util.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
@@ -200,7 +200,7 @@ function M.strip_values(T, values, max_instances)
 
     for k, v in next, T do
         -- Both arguments can't be true simultaneously
-        if M.xor((max_instances == 0), (max_instances ~= 0 and max_instances > count)) then
+        if Util.xor((max_instances == 0), (max_instances ~= 0 and max_instances > count)) then
             if not in_tbl(values, v) and is_int(k) then
                 table.insert(res, v)
             elseif not in_tbl(values, v) then
@@ -221,7 +221,7 @@ end
 ---@param s? string
 ---@param bufnr? integer
 ---@return fun()
-function M.ft_set(s, bufnr)
+function Util.ft_set(s, bufnr)
     local Value = require('user_api.check.value')
 
     local is_int = Value.is_int
@@ -235,7 +235,7 @@ end
 
 ---@param bufnr? integer
 ---@return string
-function M.bt_get(bufnr)
+function Util.bt_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 
     return optget('bt', { buf = bufnr })
@@ -243,14 +243,14 @@ end
 
 ---@param bufnr? integer
 ---@return string
-function M.ft_get(bufnr)
+function Util.ft_get(bufnr)
     bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
 
     return optget('ft', { buf = bufnr })
 end
 
-function M.assoc()
-    local au_repeated_events = M.au.au_repeated_events
+function Util.assoc()
+    local au_repeated_events = Util.au.au_repeated_events
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
@@ -259,9 +259,9 @@ function M.assoc()
         { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
-                { pattern = '.spacemacs', callback = M.ft_set('lisp'), group = group },
-                { pattern = '.clangd', callback = M.ft_set('yaml'), group = group },
-                { pattern = '*.norg', callback = M.ft_set('norg'), group = group },
+                { pattern = '.spacemacs', callback = Util.ft_set('lisp'), group = group },
+                { pattern = '.clangd', callback = Util.ft_set('yaml'), group = group },
+                { pattern = '*.norg', callback = Util.ft_set('norg'), group = group },
             },
         },
         {
@@ -273,8 +273,8 @@ function M.assoc()
                     callback = function()
                         if
                             not in_tbl({
-                                M.ft_get(curr_buf()),
-                                M.bt_get(curr_buf()),
+                                Util.ft_get(curr_buf()),
+                                Util.bt_get(curr_buf()),
                             }, 'help')
                         then
                             return
@@ -292,7 +292,7 @@ function M.assoc()
                     pattern = 'help',
                     group = group,
                     callback = function()
-                        if M.bt_get(curr_buf()) ~= 'help' then
+                        if Util.bt_get(curr_buf()) ~= 'help' then
                             return
                         end
 
@@ -397,7 +397,7 @@ function M.assoc()
         table.insert(AUS[1].opts_tbl, {
             group = group,
             pattern = '*.org',
-            callback = M.ft_set('org'),
+            callback = Util.ft_set('org'),
         })
     end
 
@@ -410,14 +410,14 @@ end
 ---@param direction? 'next'|'prev'
 ---@param cycle? boolean
 ---@return string
-function M.displace_letter(c, direction, cycle)
+function Util.displace_letter(c, direction, cycle)
     local Value = require('user_api.check.value')
-    local A = M.string.alphabet
+    local A = Util.string.alphabet
 
     local fields = Value.fields
     local is_str = Value.is_str
     local is_bool = Value.is_bool
-    local mv = M.mv_tbl_values
+    local mv = Util.mv_tbl_values
 
     direction = (is_str(direction) and in_tbl({ 'next', 'prev' }, direction)) and direction
         or 'next'
@@ -445,13 +445,13 @@ end
 
 ---@param data string|table
 ---@return string|table res
-function M.discard_dups(data)
+function Util.discard_dups(data)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
     local is_str = Value.is_str
     local empty = Value.empty
-    local notify = M.notify.notify
+    local notify = Util.notify.notify
 
     ---@type string|table
     local res
@@ -507,6 +507,6 @@ function M.discard_dups(data)
     return res
 end
 
-return M
+return Util
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

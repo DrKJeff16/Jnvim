@@ -12,15 +12,15 @@ local in_console = require('user_api.check').in_console
 
 ---@type User.Opts
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Opts = {}
 
-M.ALL_OPTIONS = require('user_api.opts.all_opts')
-
----@type User.Opts.Spec
-M.DEFAULT_OPTIONS = require('user_api.opts.config')
+Opts.ALL_OPTIONS = require('user_api.opts.all_opts')
 
 ---@type User.Opts.Spec
-M.options = {}
+Opts.DEFAULT_OPTIONS = require('user_api.opts.config')
+
+---@type User.Opts.Spec
+Opts.options = {}
 
 ---@param T User.Opts.Spec
 ---@return User.Opts.Spec parsed_opts, string msg
@@ -38,19 +38,19 @@ local function long_opts_convert(T)
     local insp = inspect or vim.inspect
 
     ---@type string[]
-    local keys = vim.tbl_keys(M.ALL_OPTIONS)
+    local keys = vim.tbl_keys(Opts.ALL_OPTIONS)
     table.sort(keys)
 
     for opt, val in next, T do
         local new_opt = ''
 
         -- If neither long nor short (known) option, append to warning message
-        if not (vim.tbl_contains(keys, opt) or Value.tbl_values({ opt }, M.ALL_OPTIONS)) then
+        if not (vim.tbl_contains(keys, opt) or Value.tbl_values({ opt }, Opts.ALL_OPTIONS)) then
             msg = msg .. '- Option ' .. insp(opt) .. 'not valid' .. nwl
         elseif vim.tbl_contains(keys, opt) then
             parsed_opts[opt] = val
         else
-            new_opt = Value.tbl_values({ opt }, M.ALL_OPTIONS, true)
+            new_opt = Value.tbl_values({ opt }, Opts.ALL_OPTIONS, true)
             if is_str(new_opt) and new_opt ~= '' then
                 parsed_opts[new_opt] = val
             else
@@ -65,7 +65,7 @@ end
 --- Option setter for the aforementioned options dictionary
 --- @param T User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
 --- for each option respectively
-function M.optset(T)
+function Opts.optset(T)
     local notify = require('user_api.util.notify').notify
 
     T = is_tbl(T) and T or {}
@@ -78,7 +78,7 @@ function M.optset(T)
             msg = msg .. 'Option `' .. k .. '` is not a valid field for `vim.opt`'
         elseif type(vim.opt[k]:get()) == type(v) then
             vim.opt[k] = v
-            M.options[k] = v
+            Opts.options[k] = v
         else
             msg = msg .. 'Option `' .. k .. '` could not be parsed'
         end
@@ -101,7 +101,7 @@ end
 ---@param self User.Opts
 ---@param override? User.Opts.Spec A table with custom options
 ---@param verbose? boolean Flag to make the function return a string with invalid values, if any
-function M:setup(override, verbose)
+function Opts:setup(override, verbose)
     local notify = require('user_api.util.notify').notify
     local insp = inspect or vim.inspect
 
@@ -142,10 +142,10 @@ function M:setup(override, verbose)
     end
 end
 
-function M.print_set_opts()
+function Opts.print_set_opts()
     local notify = require('user_api.util.notify').notify
 
-    local msg = (inspect or vim.inspect)(M.options)
+    local msg = (inspect or vim.inspect)(Opts.options)
 
     notify(msg, 'info', {
         animate = true,
@@ -156,7 +156,7 @@ function M.print_set_opts()
 end
 
 ---@param self User.Opts
-function M:setup_maps()
+function Opts:setup_maps()
     local desc = require('user_api.maps.kmap').desc
     local wk_avail = require('user_api.maps.wk').available
     local map_dict = require('user_api.maps').map_dict
@@ -171,6 +171,6 @@ function M:setup_maps()
     }, 'wk.register', false, 'n')
 end
 
-return M
+return Opts
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -4,25 +4,25 @@
 
 require('user_api.types.user.maps')
 
-local Check = require('user_api.check')
+local Value = require('user_api.check.value')
 
-local is_tbl = Check.value.is_tbl
-local is_fun = Check.value.is_fun
-local is_str = Check.value.is_str
-local is_bool = Check.value.is_bool
-local empty = Check.value.empty
+local is_tbl = Value.is_tbl
+local is_fun = Value.is_fun
+local is_str = Value.is_str
+local is_bool = Value.is_bool
+local empty = Value.empty
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 --- `which_key` API entrypoints
 ---@type User.Maps.WK
 ---@diagnostic disable-next-line:missing-fields
-M = {}
+local WK = {}
 
-function M.available() return require('user_api.check.exists').module('which-key') end
+function WK.available() return require('user_api.check.exists').module('which-key') end
 
-function M.convert(lhs, rhs, opts)
-    if not M.available() then
+function WK.convert(lhs, rhs, opts)
+    if not WK.available() then
         error('(user.maps.wk.convert): `which_key` not available')
     end
 
@@ -50,26 +50,26 @@ function M.convert(lhs, rhs, opts)
     return res
 end
 
-function M.convert_dict(T)
+function WK.convert_dict(T)
     ---@type RegKeys
     local res = {}
 
     for lhs, v in next, T do
         v[2] = is_tbl(v[2]) and v[2] or {}
 
-        table.insert(res, M.convert(lhs, v[1], v[2]))
+        table.insert(res, WK.convert(lhs, v[1], v[2]))
     end
 
     return res
 end
 
-function M.register(T, opts)
-    if not M.available() then
+function WK.register(T, opts)
+    if not WK.available() then
         require('user_api.util.notify').notify('(user.maps.wk.register): `which_key` unavailable')
         return false
     end
 
-    local WK = require('which-key')
+    local WKEY = require('which-key')
 
     opts = is_tbl(opts) and opts or {}
 
@@ -82,9 +82,9 @@ function M.register(T, opts)
         table.insert(filtered, val)
     end
 
-    WK.add(filtered)
+    WKEY.add(filtered)
 end
 
-return M
+return WK
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
