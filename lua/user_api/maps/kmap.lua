@@ -12,7 +12,8 @@ function O.new(T)
     return setmetatable(T, { __index = O })
 end
 
----@param T table<string, any>
+---@param self KeyMapOpts
+---@param T table|KeyMapOpts
 function O:add(T)
     for k, v in next, T do
         if require('user_api.check.value').is_str(k) then
@@ -21,7 +22,7 @@ function O:add(T)
     end
 end
 
----@param mode string
+---@param mode MapModes
 ---@return KeyMapFunction
 local function variant(mode)
     local Value = require('user_api.check.value')
@@ -52,6 +53,7 @@ local Kmap = {}
 ---@param noremap? boolean
 ---@param nowait? boolean
 ---@param expr? boolean
+---@return User.Maps.Keymap.Opts|table
 function Kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
     local Value = require('user_api.check.value')
 
