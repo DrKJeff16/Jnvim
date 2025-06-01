@@ -144,10 +144,10 @@ function Opts:setup(override, verbose)
     end
 end
 
-function Opts.print_set_opts()
+function Opts:print_set_opts()
     local notify = require('user_api.util.notify').notify
 
-    local msg = (inspect or vim.inspect)(Opts.options)
+    local msg = (inspect or vim.inspect)(self.options)
 
     notify(msg, 'info', {
         animate = true,
@@ -167,10 +167,16 @@ function Opts:setup_maps()
         map_dict({
             ['<leader>UO'] = { group = '+Options' },
         }, 'wk.register', false, 'n')
+        map_dict({
+            ['<leader>UO'] = { group = '+Options' },
+        }, 'wk.register', false, 'v')
     end
     map_dict({
         ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
     }, 'wk.register', false, 'n')
+    map_dict({
+        ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
+    }, 'wk.register', false, 'v')
 end
 
 return Opts
