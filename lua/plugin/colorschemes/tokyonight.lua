@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_m = User.types.colorschemes
@@ -8,7 +10,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
-local M = {
+local TokyoNight = {
     ---@type TN.Variants
     variants = {
         'night',
@@ -22,11 +24,13 @@ local M = {
 if exists('tokyonight') then
     User:register_plugin('plugin.colorschemes.tokyonight')
 
+    ---@param self CscSubMod
     ---@param variant? 'night'|'moon'|'day'
     ---@param transparent? boolean
     ---@param override? tokyonight.Config|table
-    function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'moon'
+    function TokyoNight:setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
+            or 'moon'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -108,12 +112,15 @@ if exists('tokyonight') then
             },
         }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function TokyoNight.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = TokyoNight })
+end
 
-return M
+return TokyoNight
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

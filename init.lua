@@ -134,10 +134,10 @@ local CscKeys = {}
 
 --- Reorder to your liking
 local selected = {
-    'kanagawa',
-    'tokyonight',
     'nightfox',
     'catppuccin',
+    'kanagawa',
+    'tokyonight',
     'vscode',
     'onedark',
     'gruvbox',
@@ -215,7 +215,10 @@ end
 map_dict(CscKeys, 'wk.register', false, 'n')
 
 if not empty(found_csc) then
-    Csc[found_csc].setup()
+    ---@type CscSubMod
+    local Color = Csc[found_csc]
+
+    Color:setup()
 end
 
 --- Call the User API file associations and other autocmds

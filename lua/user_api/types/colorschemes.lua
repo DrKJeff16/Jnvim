@@ -34,16 +34,16 @@
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
 ---@class CscSubMod
----@field setup fun(variant: string?, transparent: boolean?, override: table?)|nil
+---@field setup fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)|nil
 ---@field variants? string[]
 ---@field mod_cmd string
----@field new? fun(): CscSubMod|table
+---@field new fun(O: table?): CscSubMod|table
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
 ---@class ODSubMod: CscSubMod
----@field setup fun(variant: OD.Variant, transparent: boolean?, override: OD?)|nil
----@field new? fun(): ODSubMod|table
+---@field setup fun(self: ODSubMod, variant: OD.Variant, transparent: boolean?, override: OD?)|nil
+---@field new fun(O): ODSubMod|table
 
 ---@see CscSubMod
 --- A table for each **explicitly** configured colorscheme
@@ -66,6 +66,6 @@
 ---@field spacemacs CscSubMod
 ---@field tokyonight CscSubMod
 ---@field vscode CscSubMod
----@field new fun(): CscMod|table
+---@field new fun(O: table?): CscMod|table
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

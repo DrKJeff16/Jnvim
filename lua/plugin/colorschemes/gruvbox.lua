@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -7,7 +9,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
-local M = {
+local Gruvbox = {
     mod_cmd = 'colorscheme gruvbox',
     setup = nil,
 }
@@ -15,7 +17,7 @@ local M = {
 if exists('gruvbox') then
     User:register_plugin('plugin.colorschemes.gruvbox')
 
-    function M.setup(variant, transparent, override)
+    function Gruvbox:setup(variant, transparent, override)
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -46,12 +48,15 @@ if exists('gruvbox') then
             palette_overrides = {},
         }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function Gruvbox.new()
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Gruvbox })
+end
 
-return M
+return Gruvbox
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

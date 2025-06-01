@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -8,7 +10,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
-local M = {
+local Kanagawa = {
     ---@type ('dragon'|'wave'|'lotus')[]
     variants = {
         'dragon',
@@ -22,11 +24,12 @@ local M = {
 if exists('kanagawa') then
     User:register_plugin('plugin.colorschemes.kanagawa')
 
+    ---@param self CscSubMod
     ---@param variant? 'dragon'|'wave'|'lotus'
     ---@param transparent? boolean
     ---@param override? table
-    function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant
+    function Kanagawa:setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant
             or 'wave'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
@@ -87,12 +90,15 @@ if exists('kanagawa') then
             },
         }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function Kanagawa.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Kanagawa })
+end
 
-return M
+return Kanagawa
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

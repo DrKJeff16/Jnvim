@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -8,7 +10,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
-local M = {
+local Catppuccin = {
     ---@type ('frappe'|'latte'|'macchiato'|'mocha')[]
     variants = {
         'frappe',
@@ -17,17 +19,17 @@ local M = {
         'mocha',
     },
     mod_cmd = 'colorscheme catppuccin',
-    setup = nil,
 }
 
 if exists('catppuccin') then
     User:register_plugin('plugin.colorschemes.catppuccin')
 
+    ---@param self CscSubMod
     ---@param variant? 'frappe'|'macchiato'|'mocha'|'latte'
     ---@param transparent? boolean
     ---@param override? table
-    function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and not vim.tbl_contains(M.variants, variant)) and variant
+    function Catppuccin:setup(variant, transparent, override)
+        variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant
             or 'macchiato'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
@@ -131,12 +133,15 @@ if exists('catppuccin') then
             },
         }))
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function Catppuccin.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Catppuccin })
+end
 
-return M
+return Catppuccin
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

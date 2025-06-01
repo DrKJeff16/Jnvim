@@ -1,8 +1,12 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local csc_t = User.types.colorschemes
 
+local is_tbl = User.check.value.is_tbl
+
 ---@type CscSubMod
-local M = {
+local Spacemacs = {
     mod_cmd = 'colorscheme spacemacs-theme',
     setup = nil,
 }
@@ -10,11 +14,14 @@ local M = {
 if vim.g.installed_spacemacs == 1 then
     User:register_plugin('plugin.colorschemes.spacemacs')
 
-    function M.setup(variant, transparent, override) vim.cmd(M.mod_cmd) end
+    function Spacemacs:setup(variant, transparent, override) vim.cmd(self.mod_cmd) end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function Spacemacs.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Spacemacs })
+end
 
-return M
+return Spacemacs
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

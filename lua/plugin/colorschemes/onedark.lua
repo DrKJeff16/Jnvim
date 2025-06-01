@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -9,7 +11,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type ODSubMod
 ---@diagnostic disable-next-line:missing-fields
-local M = {
+local OneDark = {
     variants = {
         'cool',
         'dark',
@@ -26,8 +28,9 @@ local M = {
 if exists('onedark') then
     User:register_plugin('plugin.colorschemes.onedark')
 
-    function M.setup(variant, transparent, override)
-        variant = (is_str(variant) and vim.tbl_contains(M.variants, variant)) and variant or 'deep'
+    function OneDark:setup(variant, transparent, override)
+        variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
+            or 'deep'
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -72,8 +75,11 @@ if exists('onedark') then
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function OneDark.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = OneDark })
+end
 
-return M
+return OneDark
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

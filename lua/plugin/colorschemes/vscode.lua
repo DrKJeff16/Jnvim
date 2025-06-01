@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 local csc_t = User.types.colorschemes
@@ -8,7 +10,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
-local M = {
+local VSCode = {
     mod_cmd = 'colorscheme vscode', -- Leave a whitespace for variant selection
     setup = nil,
 }
@@ -16,10 +18,11 @@ local M = {
 if exists('vscode') then
     User:register_plugin('plugin.colorschemes.vscode')
 
+    ---@param self CscSubMod
     ---@param variant? any
     ---@param transparent? boolean
     ---@param override? table
-    function M.setup(variant, transparent, override)
+    function VSCode:setup(variant, transparent, override)
         transparent = is_bool(transparent) and transparent or false
         override = is_tbl(override) and override or {}
 
@@ -41,12 +44,15 @@ if exists('vscode') then
 
         require('vscode').load()
 
-        vim.cmd(M.mod_cmd)
+        vim.cmd(self.mod_cmd)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function VSCode.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = VSCode })
+end
 
-return M
+return VSCode
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
