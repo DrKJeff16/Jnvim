@@ -10,6 +10,6 @@
 
 ---@class User.Commands
 ---@field commands User.Commands.Spec
----@field setup_commands fun(self: User.Commands)
+---@field setup fun(self: User.Commands)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

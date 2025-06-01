@@ -215,7 +215,7 @@ vim.g.markdown_minlines = 500
 Distro.termux:setup()
 
 -- Define any custom commands
-Commands:setup_commands()
+Commands:setup()
 
 -- Mappings related specifically to `user_api`
 User:setup_keys()
