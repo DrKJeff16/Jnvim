@@ -179,6 +179,20 @@ function Opts:setup_maps()
     }, 'wk.register', false, 'v')
 end
 
+-- ---@param self User.Opts
+-- ---@param O string[]
+-- function Opts:toggle(O)
+--     if is_nil(O) or empty(O) then
+--         return
+--     end
+--
+--     for _, opt in next, self.options do
+--         if  Value.fields(opt, self.options) then
+--
+--         end
+--     end
+-- end
+
 return Opts
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
