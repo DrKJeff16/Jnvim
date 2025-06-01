@@ -112,6 +112,17 @@ Keymaps:setup({
             end,
             desc('Indent Whole File'),
         },
+        ['<leader>vM'] = {
+            function() vim.cmd('messages') end,
+            desc('Run `:messages`'),
+        },
+        ['<leader>vN'] = {
+            function()
+                ---@diagnostic disable-next-line
+                pcall(vim.cmd, 'Notifications')
+            end,
+            desc('Run `:Notifications`'),
+        },
     },
 })
 
@@ -147,6 +158,7 @@ local csc_group = 'A'
 local i = 1
 local found_csc = ''
 
+-- TODO: Use `Keymaps:setup()` instead of `map_dict()`
 -- TODO: Try to put the following loop inside a function
 -- NOTE: This was also a pain in the ass
 --
