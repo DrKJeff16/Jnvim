@@ -126,7 +126,7 @@ Keymaps:setup({
     },
 })
 
---- A table containing various possible colorschemes
+-- A table containing various possible colorschemes
 local Csc = Pkg.colorschemes
 
 ---@type KeyMapDict
@@ -221,9 +221,10 @@ if not empty(found_csc) then
     Color:setup()
 end
 
---- Call the User API file associations and other autocmds
+-- Call the User API file associations and other autocmds
 Util:assoc()
 
+-- NOTE: See `:h g:markdown_minlines`
 vim.g.markdown_minlines = 500
 
 --- Call runtimepath optimizations for Arch Linux (WIP)
