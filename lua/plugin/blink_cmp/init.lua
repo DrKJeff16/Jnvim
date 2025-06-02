@@ -4,6 +4,8 @@ local Util = User.util
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local tbl_values = Check.value.tbl_values
+local executable = Check.exists.executable
 local has_words_before = Util.has_words_before
 
 User:register_plugin('plugin.blink_cmp')
@@ -12,7 +14,7 @@ local Blink = require('blink.cmp')
 local Devicons = require('nvim-web-devicons')
 local lspkind = require('lspkind')
 
-local default_srcs = {
+local DEFAULT_SRCS = {
     'lsp',
     'path',
     'snippets',
@@ -22,9 +24,7 @@ local default_srcs = {
 ---@param T string[]?
 ---@return string[]
 local function get_sources(T)
-    local tbl_values = Check.value.tbl_values
-
-    T = is_tbl(T) and T or default_srcs
+    T = is_tbl(T) and T or DEFAULT_SRCS
 
     local ft = Util.ft_get()
 
@@ -34,12 +34,18 @@ local function get_sources(T)
     if
         tbl_values({ ft }, {
             'git',
-            'gitattributes',
             'gitcommit',
+            'gitattributes',
             'gitrebase',
         }) and not tbl_values({ 'git' }, T)
     then
         table.insert(T, 1, 'git')
+
+        if
+            tbl_values({ ft }, { 'gitcommit' }) and not tbl_values({ 'conventional_commits' }, T)
+        then
+            table.insert(T, 1, 'conventional_commits')
+        end
     end
 
     return T
@@ -58,13 +64,22 @@ providers.git = {
     name = 'Git',
 }
 
+providers.conventional_commits = {
+    name = 'Conventional Commits',
+    module = 'blink-cmp-conventional-commits',
+    enabled = function() return vim.bo.filetype == 'gitcommit' end,
+    ---@module 'blink-cmp-conventional-commits'
+    ---@type blink-cmp-conventional-commits.Options
+    opts = {}, -- none so far
+}
+
 if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()
 end
 
 if exists('lazydev') then
-    if not Check.value.tbl_values({ 'lazydev' }, default_srcs) then
-        table.insert(default_srcs, 1, 'lazydev')
+    if not Check.value.tbl_values({ 'lazydev' }, DEFAULT_SRCS) then
+        table.insert(DEFAULT_SRCS, 1, 'lazydev')
     end
 
     providers.lazydev = {
@@ -100,7 +115,7 @@ local M = {
                     return has_words_before() and cmp.show({ providers = get_sources() }) or nil
                 end
             end,
-            function(cmp) return cmp.select_next({ auto_insert = true }) end,
+            function(cmp) return cmp.select_next({ auto_insert = false }) end,
             'snippet_forward',
             'fallback',
         },
@@ -110,7 +125,7 @@ local M = {
                     return has_words_before() and cmp.show({ providers = get_sources() }) or nil
                 end
             end,
-            function(cmp) return cmp.select_prev({ auto_insert = true }) end,
+            function(cmp) return cmp.select_prev({ auto_insert = false }) end,
             'snippet_backward',
             'fallback',
         },
@@ -121,11 +136,19 @@ local M = {
         ['<C-n>'] = { 'fallback' },
 
         ['<C-b>'] = {
-            function(cmp) return cmp.scroll_documentation_up(4) end,
+            function(cmp)
+                if cmp.is_active() then
+                    return cmp.scroll_documentation_up(4)
+                end
+            end,
             'fallback',
         },
         ['<C-f>'] = {
-            function(cmp) return cmp.scroll_documentation_down(4) end,
+            function(cmp)
+                if cmp.is_active() then
+                    return cmp.scroll_documentation_down(4)
+                end
+            end,
             'fallback',
         },
 
@@ -227,12 +250,12 @@ local M = {
     cmdline = { enabled = true },
 
     sources = {
-        default = default_srcs,
+        default = DEFAULT_SRCS,
         providers = providers,
     },
 
     fuzzy = {
-        implementation = 'lua',
+        implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
         sorts = {
             'exact',
             'score',
@@ -250,7 +273,7 @@ local M = {
         enabled = true,
 
         window = {
-            show_documentation = false,
+            show_documentation = true,
         },
     },
 }

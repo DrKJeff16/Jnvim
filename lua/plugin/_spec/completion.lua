@@ -120,6 +120,7 @@ local M = {
             'rafamadriz/friendly-snippets',
             'onsails/lspkind.nvim',
             'Kaiser-Yang/blink-cmp-git',
+            'disrupted/blink-cmp-conventional-commits',
         },
         build = executable('cargo') and 'cargo build --release' or false,
         config = source('plugin.blink_cmp'),
