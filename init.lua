@@ -100,12 +100,15 @@ Keymaps:setup({
                     return
                 end
 
+                local cursor_set = vim.api.nvim_win_set_cursor
+                local cursor_get = vim.api.nvim_win_get_cursor
+
                 local win = curr_win()
-                local saved_pos = vim.api.nvim_win_get_cursor(win)
+                local saved_pos = cursor_get(win)
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
                 -- Wait for `feedkeys` to end, then reset to position
-                vim.schedule(function() vim.api.nvim_win_set_cursor(win, saved_pos) end)
+                vim.schedule(function() cursor_set(win, saved_pos) end)
             end,
             desc('Indent Whole File'),
         },
