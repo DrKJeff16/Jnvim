@@ -181,7 +181,7 @@ for _, name in next, selected do
                 group = '+' .. capitalize(name),
             }
             CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                function() TColor.setup(variant) end,
+                function() TColor:setup(variant) end,
                 desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
             }
 
@@ -189,7 +189,7 @@ for _, name in next, selected do
         end
     else
         CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-            TColor.setup,
+            function() TColor:setup() end,
             desc('Set Colorscheme `' .. capitalize(name) .. '`'),
         }
     end
