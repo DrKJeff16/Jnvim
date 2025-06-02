@@ -31,7 +31,7 @@ _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Window
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
-    cmdwinheight = 8,
+    cmdwinheight = 10,
     ci = false, -- `copyindent`
     completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' },
     confirm = true,
