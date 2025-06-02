@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 require('user_api.types.user.util')
 
 local curr_buf = vim.api.nvim_get_current_buf
@@ -8,7 +10,6 @@ local in_tbl = vim.tbl_contains
 local ERROR = vim.log.levels.ERROR
 
 ---@type User.Util
----@diagnostic disable-next-line:missing-fields
 local Util = {}
 
 Util.notify = require('user_api.util.notify')
@@ -24,6 +25,32 @@ function Util.has_words_before()
     unpack = unpack or table.unpack
     local line, col = unpack(win_cursor(curr_win()))
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+end
+
+---@param s string
+---@param bufnr? integer
+---@return string
+function Util.opt_get(s, bufnr)
+    local Value = require('user_api.check.value')
+
+    local is_int = Value.is_int
+
+    bufnr = is_int(bufnr) and bufnr or curr_buf()
+
+    return optget(s, { buf = bufnr })
+end
+
+---@param s string
+---@param val any
+---@param bufnr? integer
+function Util.opt_set(s, val, bufnr)
+    local Value = require('user_api.check.value')
+
+    local is_int = Value.is_int
+
+    bufnr = is_int(bufnr) and bufnr or curr_buf()
+
+    return optset(s, val, { buf = bufnr })
 end
 
 ---@param T table<string|integer, any>
@@ -48,10 +75,6 @@ function Util.mv_tbl_values(T, steps, direction)
 
     steps = (is_int(steps) and steps > 0) and steps or 1
     direction = (is_str(direction) and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
-
-    ---@class DirectionFuns
-    ---@field r fun(t: table<string|integer, any>): res: table<string|integer, any>
-    ---@field l fun(t: table<string|integer, any>): res: table<string|integer, any>
 
     ---@type DirectionFuns
     local direction_funcs = {
@@ -249,8 +272,8 @@ function Util.ft_get(bufnr)
     return optget('ft', { buf = bufnr })
 end
 
-function Util.assoc()
-    local au_repeated_events = Util.au.au_repeated_events
+function Util:assoc()
+    local au_repeated_events = self.au.au_repeated_events
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
 
@@ -259,9 +282,9 @@ function Util.assoc()
         { -- NOTE: Keep this as first element for `orgmode` addition
             events = { 'BufNewFile', 'BufReadPre' },
             opts_tbl = {
-                { pattern = '.spacemacs', callback = Util.ft_set('lisp'), group = group },
-                { pattern = '.clangd', callback = Util.ft_set('yaml'), group = group },
-                { pattern = '*.norg', callback = Util.ft_set('norg'), group = group },
+                { pattern = '.spacemacs', callback = self.ft_set('lisp'), group = group },
+                { pattern = '.clangd', callback = self.ft_set('yaml'), group = group },
+                { pattern = '*.norg', callback = self.ft_set('norg'), group = group },
             },
         },
         {
@@ -273,8 +296,8 @@ function Util.assoc()
                     callback = function()
                         if
                             not in_tbl({
-                                Util.ft_get(curr_buf()),
-                                Util.bt_get(curr_buf()),
+                                self.ft_get(curr_buf()),
+                                self.bt_get(curr_buf()),
                             }, 'help')
                         then
                             return
@@ -292,7 +315,7 @@ function Util.assoc()
                     pattern = 'help',
                     group = group,
                     callback = function()
-                        if Util.bt_get(curr_buf()) ~= 'help' then
+                        if self.bt_get(curr_buf()) ~= 'help' then
                             return
                         end
 
@@ -397,7 +420,7 @@ function Util.assoc()
         table.insert(AUS[1].opts_tbl, {
             group = group,
             pattern = '*.org',
-            callback = Util.ft_set('org'),
+            callback = self.ft_set('org'),
         })
     end
 

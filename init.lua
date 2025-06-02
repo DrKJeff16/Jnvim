@@ -219,7 +219,7 @@ if not empty(found_csc) then
 end
 
 --- Call the User API file associations and other autocmds
-Util.assoc()
+Util:assoc()
 
 vim.g.markdown_minlines = 500
 

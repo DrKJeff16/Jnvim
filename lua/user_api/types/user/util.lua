@@ -63,18 +63,26 @@ require('user_api.types.user.autocmd')
 ---@field au_from_dict fun(T: AuDict)
 ---@field au_repeated_events fun(T: AuRepeatEvents)
 
+---@alias DirectionFun fun(t: table<string|integer, any>): res: table<string|integer, any>
+
+---@class DirectionFuns
+---@field r DirectionFun
+---@field l DirectionFun
+
 ---@class User.Util
----@field has_words_before fun(): boolean
 ---@field notify User.Util.Notify
 ---@field au User.Util.Autocmd
 ---@field string User.Util.String
+---@field has_words_before fun(): boolean
 ---@field xor fun(x: boolean, y: boolean): boolean
 ---@field strip_fields fun(T: table<string|integer, any>, values: string|string[]): table
 ---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
----@field assoc fun()
+---@field opt_get fun(s: string, bufnr: integer?): string
+---@field opt_set fun(s: string, val: any, bufnr: integer?)
+---@field assoc fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 ---@field mv_tbl_values? fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
 ---@field discard_dups fun(data: string|table): (res: string|table)

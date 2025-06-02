@@ -1,5 +1,7 @@
 ---@meta
 
+---@diagnostic disable:missing-fields
+
 ---@class User.Types
 ---@field user UserSubTypes
 ---@field autopairs nil
