@@ -55,36 +55,35 @@
 ---@field register_plugin fun(self: User, pathstr: string, i: integer?)
 ---@field reload_plugins fun(self: User): (failed: string[]|nil)
 ---@field setup_keys fun(self: User)
----@field new fun(o: table?): User|table
+---@field new fun(O: table?): User|table
 ---@field print_loaded_plugins fun(self: User)
 
 ---@type User.Types
-local M = {
-    --- API-related annotations
-    user = require('user_api.types.user'),
+local Types = {}
 
-    --- Plugin config-related annotations below
+-- API-related annotations
+Types.user = require('user_api.types.user')
 
-    autopairs = require('user_api.types.autopairs'),
-    colorizer = require('user_api.types.colorizer'),
-    colorschemes = require('user_api.types.colorschemes'),
-    cmp = require('user_api.types.cmp'),
-    comment = require('user_api.types.comment'),
-    diffview = require('user_api.types.diffview'),
-    gitsigns = require('user_api.types.gitsigns'),
-    lazy = require('user_api.types.lazy'),
-    lspconfig = require('user_api.types.lspconfig'),
-    lualine = require('user_api.types.lualine'),
-    mini = require('user_api.types.mini'),
-    notify = require('user_api.types.notify'),
-    nvim_tree = require('user_api.types.nvim_tree'),
-    telescope = require('user_api.types.telescope'),
-    todo_comments = require('user_api.types.todo_comments'),
-    toggleterm = require('user_api.types.toggleterm'),
-    treesitter = require('user_api.types.treesitter'),
-    which_key = require('user_api.types.which_key'),
-}
+-- Plugin config-related annotations below
+Types.autopairs = require('user_api.types.autopairs')
+Types.colorizer = require('user_api.types.colorizer')
+Types.colorschemes = require('user_api.types.colorschemes')
+Types.cmp = require('user_api.types.cmp')
+Types.comment = require('user_api.types.comment')
+Types.diffview = require('user_api.types.diffview')
+Types.gitsigns = require('user_api.types.gitsigns')
+Types.lazy = require('user_api.types.lazy')
+Types.lspconfig = require('user_api.types.lspconfig')
+Types.lualine = require('user_api.types.lualine')
+Types.mini = require('user_api.types.mini')
+Types.notify = require('user_api.types.notify')
+Types.nvim_tree = require('user_api.types.nvim_tree')
+Types.telescope = require('user_api.types.telescope')
+Types.todo_comments = require('user_api.types.todo_comments')
+Types.toggleterm = require('user_api.types.toggleterm')
+Types.treesitter = require('user_api.types.treesitter')
+Types.which_key = require('user_api.types.which_key')
 
-return M
+return Types
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
