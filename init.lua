@@ -64,12 +64,12 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     sw = 4, -- `shiftwidth`
     showmatch = true,
     showmode = false,
-    stal = 2, -- `showtabline`
-    signcolumn = 'yes',
-    sts = 4, -- `softtabstop`
     spell = false,
     splitbelow = true,
     splitright = true,
+    stal = 2, -- `showtabline`
+    signcolumn = 'yes',
+    sts = 4, -- `softtabstop`
     ts = 4, -- `tabstop`
     title = true,
     wrap = true,

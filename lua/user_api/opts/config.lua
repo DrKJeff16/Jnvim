@@ -1,4 +1,6 @@
-require('user_api.types.user.opts')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.opts'
 
 local Exists = require('user_api.check.exists')
 
@@ -7,17 +9,17 @@ local vim_exists = Exists.vim_exists
 local in_console = require('user_api.check').in_console
 
 ---@type User.Opts.Spec
----@diagnostic disable-next-line:missing-fields
-local M = {
-    ai = true,
-    ar = true,
+local Defaults = {
+    ai = true, -- `autoindent`
+    ar = true, -- `autoread`
     backspace = { 'indent', 'eol', 'start' },
     backup = false,
     belloff = { 'all' },
-    copyindent = false,
+    ci = false, -- `copyindent`
     encoding = 'utf-8',
     errorbells = false,
-    fileignorecase = false,
+    et = true, -- `expandtab`
+    fileignorecase = is_windows,
     fo = {
         b = true,
         c = false,
@@ -28,11 +30,13 @@ local M = {
         p = true,
         q = true,
         w = true,
-    },
+    }, -- `formatoptions`
     foldmethod = 'manual',
-    helplang = { 'en' },
-    hidden = true,
-    ls = 2,
+    hlg = { 'en' }, -- `helplang`
+    hlsearch = true,
+    hid = true, -- `hidden`
+    incsearch = true,
+    ls = 2, -- `laststatus`
     makeprg = 'make',
     matchpairs = {
         '(:)',
@@ -42,13 +46,13 @@ local M = {
     },
     matchtime = 30,
     menuitems = 40,
-    mouse = { a = false }, -- Get that mouse out of my sight!
-    number = true,
-    nuw = 4,
-    preserveindent = false,
-    relativenumber = true,
-    ru = true,
-    shiftwidth = 4,
+    mouse = { a = false }, -- NOTE: Get that mouse out of my sight!
+    nu = true, -- `number`
+    nuw = 4, -- `numberwidth`
+    pi = false, -- `preserveindent`
+    rnu = true, -- `relativenumber`
+    ru = true, -- `ruler`
+    sw = 4, -- `shiftwidth`
     showcmd = true,
     showmatch = true,
     showmode = false,
@@ -57,10 +61,11 @@ local M = {
     smartindent = true,
     smarttab = true,
     softtabstop = 4,
+    spell = false,
     splitbelow = true,
     splitright = true,
-    tabstop = 4,
-    termguicolors = vim_exists('+termguicolors') and not in_console(),
+    ts = 4, -- `tabstop`
+    tgc = vim_exists('+termguicolors') and not in_console(), -- `termguicolors`
     updatecount = 100,
     updatetime = 1000,
     visualbell = false,
@@ -69,22 +74,23 @@ local M = {
 
 if is_windows then
     if executable('mingw32-make') then
-        M.makeprg = 'mingw32-make'
+        Defaults.makeprg = 'mingw32-make'
     end
 
-    M.shell = executable('pwsh') and 'pwsh' or 'cmd'
     if executable('bash') then
-        M.shell = 'bash'
-        M.shellcmdflag = '-c'
+        Defaults.shell = 'bash'
+        Defaults.shellcmdflag = '-c'
     elseif executable('sh') then
-        M.shell = 'sh'
-        M.shellcmdflag = '-c'
+        Defaults.shell = 'sh'
+        Defaults.shellcmdflag = '-c'
+    elseif executable('pwsh') then
+        Defaults.shell = 'pwsh'
     else
-        M.shell = 'cmd'
+        Defaults.shell = 'cmd'
     end
 
-    M.fileignorecase = true
-    M.shellslash = true
+    Defaults.fileignorecase = true
+    Defaults.shellslash = true
 end
 
-return M
+return Defaults
