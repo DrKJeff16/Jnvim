@@ -1,19 +1,17 @@
+---@diagnostic disable:missing-fields
+
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
-
 _G.inspect = vim.inspect
 
 local User = require('user_api') ---@see User User API
-
-require('user_api.types')
+local Keymaps = require('config.keymaps')
 
 local Check = User.check ---@see User.check Checking utilities
 local Util = User.util ---@see User.util General utilities
 local Opts = User.opts ---@see User.opts Option setting
 local Commands = User.commands ---@see User.commands User command generation (WIP)
 local Distro = User.distro ---@see User.distro Platform-specific optimizations (WIP)
-
-local Keymaps = require('config.keymaps')
 
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
@@ -30,7 +28,6 @@ local curr_win = vim.api.nvim_get_current_win
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
 ---@see User.Opts.setup
----@diagnostic disable-next-line:missing-fields
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
