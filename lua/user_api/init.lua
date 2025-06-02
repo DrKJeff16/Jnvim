@@ -1,7 +1,8 @@
+---@diagnostic disable:missing-fields
+
 require('user_api.types')
 
 ---@type User
----@diagnostic disable-next-line:missing-fields
 local User = {}
 
 User.types = require('user_api.types')
@@ -27,13 +28,14 @@ function User:register_plugin(pathstr, i)
     local is_int = Value.is_int
     local empty = Value.empty
     local notify = self.util.notify.notify
+    local tbl_contains = vim.tbl_contains
 
     i = (is_int(i) and i >= 1) and i or 0
     if not is_str(pathstr) or empty(pathstr) then
         error('(user_api.register_plugin): Plugin must be a non-empty string')
     end
 
-    if vim.tbl_contains(self.registered_plugins, pathstr) then
+    if tbl_contains(self.registered_plugins, pathstr) then
         return
     end
 
@@ -59,22 +61,41 @@ function User:register_plugin(pathstr, i)
 end
 
 ---@param self User
+---@return string[]|nil
+function User:reload_plugins()
+    local empty = self.check.value.empty
+    local exists = self.check.exists.module
+
+    ---@type string[]
+    local failed = {}
+    for _, plugin in next, self.registered_plugins do
+        if not exists(plugin) then
+            table.insert(failed, plugin)
+            goto continue
+        end
+
+        require(plugin)
+
+        ::continue::
+    end
+
+    return empty(failed) and nil or failed
+end
+
+---@param self User
 function User:setup_keys()
     local wk_avail = self.maps.wk.available
     local desc = self.maps.kmap.desc
     local map_dict = self.maps.map_dict
     local is_nil = self.check.value.is_nil
     local notify = self.util.notify.notify
-
     local insp = inspect or vim.inspect
 
-    if wk_avail() then
-        map_dict({
-            ['<leader>U'] = { group = '+User API' },
-            ['<leader>UP'] = { group = '+Plugins' },
-        }, 'wk.register', false, 'n')
-    end
-    map_dict({
+    local groups = {
+        ['<leader>U'] = { group = '+User API' },
+        ['<leader>UP'] = { group = '+Plugins' },
+    }
+    local maps = {
         ['<leader>UPr'] = {
             function()
                 notify('Reloading...', 'info', {
@@ -106,32 +127,15 @@ function User:setup_keys()
             function() self:print_loaded_plugins() end,
             desc('Print Loaded Plugins'),
         },
-    }, 'wk.register', false, 'n')
+    }
+
+    if wk_avail() then
+        map_dict(groups, 'wk.register', false, 'n')
+    end
+    map_dict(maps, 'wk.register', false, 'n')
 
     self.update:setup_maps()
     self.opts:setup_maps()
-end
-
----@param self User
----@return string[]|nil
-function User:reload_plugins()
-    local empty = self.check.value.empty
-    local exists = self.check.exists.module
-
-    ---@type string[]
-    local failed = {}
-    for _, plugin in next, self.registered_plugins do
-        if not exists(plugin) then
-            table.insert(failed, plugin)
-            goto continue
-        end
-
-        require(plugin)
-
-        ::continue::
-    end
-
-    return empty(failed) and nil or failed
 end
 
 ---@param self User
@@ -154,11 +158,13 @@ function User:print_loaded_plugins()
     })
 end
 
----@param o? table
+---@param O? table
 ---@return User|table
-function User.new(o)
-    o = User.check.value.is_tbl(o) and o or {}
-    return setmetatable(o, { __index = User })
+function User.new(O)
+    local is_tbl = User.check.value.is_tbl
+
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = User })
 end
 
 return User
