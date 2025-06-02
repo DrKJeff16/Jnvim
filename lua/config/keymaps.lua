@@ -1,18 +1,22 @@
-local User = require('user_api') --- User API
-local Check = User.check ---@see User.check Checking utilities
+---@diagnostic disable:missing-fields
 
-local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
-local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
-local is_str = Check.value.is_str ---@see User.Check.Value.is_str
-local is_fun = Check.value.is_fun ---@see User.Check.Value.is_fun
-local is_bool = Check.value.is_bool ---@see User.Check.Value.is_bool
-local empty = Check.value.empty ---@see User.Check.Value.empty
-local ft_get = User.util.ft_get ---@see User.Util.ft_get
-local bt_get = User.util.bt_get ---@see User.Util.bt_get
-local nop = User.maps.nop ---@see User.Maps.nop
-local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
-local wk_avail = User.maps.wk.available ---@see User.maps.wk.available
-local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
+local User = require('user_api') ---@see User User API
+local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
+local Util = require('user_api.util') ---@see User.Util Utilities
+local Maps = require('user_api.maps') ---@see User.Maps Mapping utilities
+local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping utilities
+local WK = require('user_api.maps.wk') ---@see User.Maps.WK Mapping utilities
+
+local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
+local is_str = Value.is_str ---@see User.Check.Value.is_str
+local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
+local empty = Value.empty ---@see User.Check.Value.empty
+local ft_get = Util.ft_get ---@see User.Util.ft_get
+local bt_get = Util.bt_get ---@see User.Util.bt_get
+local nop = Maps.nop ---@see User.Maps.nop
+local map_dict = Maps.map_dict ---@see User.Maps.map_dict
+local desc = Kmap.desc ---@see User.Maps.Keymap.desc
+local wk_avail = WK.available ---@see User.maps.wk.available
 
 User:register_plugin('config.keymaps')
 
@@ -42,6 +46,8 @@ local function buf_del(force)
     }
 
     return function()
+        local tbl_contains = vim.tbl_contains
+
         local prev_ft = ft_get(curr_buf())
         local prev_bt = bt_get(curr_buf())
 
@@ -52,15 +58,12 @@ local function buf_del(force)
             vim.cmd(cmd)
         end
 
-        if vim.tbl_contains(pre_exc.ft, prev_ft) then
-            return
-        end
-        if vim.tbl_contains(pre_exc.bt, prev_bt) then
+        if tbl_contains(pre_exc.ft, prev_ft) or tbl_contains(pre_exc.bt, prev_bt) then
             return
         end
 
-        if vim.tbl_contains(ft_triggers, ft_get(curr_buf())) then
-            vim.cmd.bprevious()
+        if tbl_contains(ft_triggers, ft_get(curr_buf())) then
+            vim.cmd('bprevious')
         end
     end
 end
@@ -73,10 +76,9 @@ end
 ---@field setup fun(self: Config.Keymaps, keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeysNamed?)
 
 ---@type Config.Keymaps
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Keymaps = {}
 
-M.NOP = {
+Keymaps.NOP = {
     "'",
     '!',
     '"',
@@ -170,7 +172,7 @@ M.NOP = {
 }
 
 --- Global keymaps, plugin-agnostic
-M.Keys = {
+Keymaps.Keys = {
     n = {
         ['<Esc><Esc>'] = {
             function() vim.schedule(vim.cmd.nohls) end,
@@ -190,9 +192,9 @@ M.Keys = {
         ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer') },
         ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer') },
 
-        ['<leader>fFc'] = { ':%foldclose<CR>', desc('Close All Folds') },
-        ['<leader>fFo'] = { ':%foldopen<CR>', desc('Open All Folds') },
-        ['<leader>ffx'] = {
+        ['<leader>Fc'] = { ':%foldclose<CR>', desc('Close All Folds') },
+        ['<leader>Fo'] = { ':%foldopen<CR>', desc('Open All Folds') },
+        ['<leader>fFx'] = {
             function()
                 local optset = vim.api.nvim_set_option_value
 
@@ -211,7 +213,7 @@ M.Keys = {
             end,
             desc('New Horizontal Blank File'),
         },
-        ['<leader>ffv'] = {
+        ['<leader>fFv'] = {
             function()
                 local optset = vim.api.nvim_set_option_value
 
@@ -232,7 +234,7 @@ M.Keys = {
         },
         ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
         ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-        ['<leader>fr'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
+        ['<leader>/'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
         ['<leader>fs'] = {
             function()
                 if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
@@ -432,14 +434,14 @@ M.Keys = {
 }
 
 --- `which-key` map group prefixes
-M.Names = {
+Keymaps.Names = {
     n = {
         ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>HM'] = { group = '+Man Pages' }, --- Help
         ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
         ['<leader>f'] = { group = '+File' }, --- File Handling
-        ['<leader>ff'] = { group = '+New File' }, --- New File Creation
-        ['<leader>fF'] = { group = '+Folding' }, --- Folding Control
+        ['<leader>fF'] = { group = '+New File' }, --- New File Creation
+        ['<leader>F'] = { group = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
         ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
         ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
@@ -462,7 +464,7 @@ M.Names = {
 ---@param self Config.Keymaps
 ---@param keys? KeyMapModeDict|ModeRegKeys
 ---@param names? ModeRegKeysNamed
-function M:setup(keys, names)
+function Keymaps:setup(keys, names)
     local MODES = require('user_api.maps').modes
 
     local notify = require('user_api.util.notify').notify
@@ -532,7 +534,7 @@ end
 ---@param leader? string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
-function M:set_leader(leader, local_leader, force)
+function Keymaps:set_leader(leader, local_leader, force)
     leader = (is_str(leader) and not empty(leader)) and leader or '<Space>'
     local_leader = (is_str(local_leader) and not empty(local_leader)) and local_leader or leader
     force = is_bool(force) and force or false
@@ -565,14 +567,14 @@ function M:set_leader(leader, local_leader, force)
     end
 
     --- No-op the target `<leader>` key
-    nop(leader, { noremap = false, silent = true }, 'n')
-    nop(leader, { noremap = false, silent = true }, 'v')
+    nop(leader, { noremap = true, silent = true }, 'n')
+    nop(leader, { noremap = true, silent = true }, 'v')
 
     --- If target `<leader>` and `<localleader>` keys aren't the same
     --- then noop `local_leader` aswell
     if leader ~= local_leader then
-        nop(local_leader, { noremap = false, silent = true }, 'n')
-        nop(local_leader, { noremap = false, silent = true }, 'v')
+        nop(local_leader, { noremap = true, silent = true }, 'n')
+        nop(local_leader, { noremap = true, silent = true }, 'v')
     end
 
     vim.g.mapleader = vim_vars.leader
@@ -581,4 +583,4 @@ function M:set_leader(leader, local_leader, force)
     _G.leader_set = true
 end
 
-return M
+return Keymaps
