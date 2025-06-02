@@ -3,10 +3,10 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local tbl_values = Check.value.tbl_values
 local executable = Check.exists.executable
 local has_words_before = Util.has_words_before
+
+local BUtil = require('plugin.blink_cmp.util')
 
 User:register_plugin('plugin.blink_cmp')
 
@@ -14,90 +14,21 @@ local Blink = require('blink.cmp')
 local Devicons = require('nvim-web-devicons')
 local lspkind = require('lspkind')
 
-local DEFAULT_SRCS = {
-    'lsp',
-    'path',
-    'snippets',
-    'buffer',
-}
-
----@param T string[]?
----@return string[]
-local function get_sources(T)
-    T = is_tbl(T) and T or DEFAULT_SRCS
-
-    local ft = Util.ft_get()
-
-    if ft == 'lua' then
-        table.insert(T, 1, 'lazydev')
-    end
-    if
-        tbl_values({ ft }, {
-            'git',
-            'gitcommit',
-            'gitattributes',
-            'gitrebase',
-        }) and not tbl_values({ 'git' }, T)
-    then
-        table.insert(T, 1, 'git')
-
-        if
-            tbl_values({ ft }, { 'gitcommit' }) and not tbl_values({ 'conventional_commits' }, T)
-        then
-            table.insert(T, 1, 'conventional_commits')
-        end
-    end
-
-    return T
-end
-
----@type table<string, blink.cmp.SourceProviderConfigPartial>
-local providers = {}
-
-providers.snippets = {
-    -- preset = 'default',
-    should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
-}
-
-providers.git = {
-    module = 'blink-cmp-git',
-    name = 'Git',
-}
-
-providers.conventional_commits = {
-    name = 'Conventional Commits',
-    module = 'blink-cmp-conventional-commits',
-    enabled = function() return vim.bo.filetype == 'gitcommit' end,
-    ---@module 'blink-cmp-conventional-commits'
-    ---@type blink-cmp-conventional-commits.Options
-    opts = {}, -- none so far
-}
-
 if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()
 end
 
-if exists('lazydev') then
-    if not Check.value.tbl_values({ 'lazydev' }, DEFAULT_SRCS) then
-        table.insert(DEFAULT_SRCS, 1, 'lazydev')
-    end
-
-    providers.lazydev = {
-        name = 'LazyDev',
-        module = 'lazydev.integrations.blink',
-        score_offset = 100,
-    }
-end
+local providers = BUtil.Providers
 
 ---@type blink.cmp.Config
-local M = {
+local Cfg = {
     keymap = {
         preset = 'super-tab',
 
         ['<C-Space>'] = {
             function(cmp)
                 if not cmp.is_menu_visible() then
-                    return cmp.show({ providers = get_sources() })
+                    return cmp.show({ providers = BUtil:get_sources() })
                 end
             end,
             'show_documentation',
@@ -112,20 +43,22 @@ local M = {
         ['<Tab>'] = {
             function(cmp)
                 if not cmp.is_menu_visible() then
-                    return has_words_before() and cmp.show({ providers = get_sources() }) or nil
+                    return has_words_before() and cmp.show({ providers = BUtil:get_sources() })
+                        or nil
                 end
             end,
-            function(cmp) return cmp.select_next({ auto_insert = false }) end,
+            function(cmp) return cmp.select_next({ auto_insert = true }) end,
             'snippet_forward',
             'fallback',
         },
         ['<S-Tab>'] = {
             function(cmp)
                 if not cmp.is_menu_visible() then
-                    return has_words_before() and cmp.show({ providers = get_sources() }) or nil
+                    return has_words_before() and cmp.show({ providers = BUtil:get_sources() })
+                        or nil
                 end
             end,
-            function(cmp) return cmp.select_prev({ auto_insert = false }) end,
+            function(cmp) return cmp.select_prev({ auto_insert = true }) end,
             'snippet_backward',
             'fallback',
         },
@@ -170,13 +103,14 @@ local M = {
 
         documentation = {
             auto_show = true,
-            window = { border = 'double' },
+            auto_show_delay_ms = 1000,
+            window = { border = 'rounded' },
         },
 
         keyword = { range = 'prefix' },
 
         accept = {
-            auto_brackets = { enabled = true },
+            auto_brackets = { enabled = false },
             create_undo_point = true,
         },
 
@@ -250,7 +184,7 @@ local M = {
     cmdline = { enabled = true },
 
     sources = {
-        default = DEFAULT_SRCS,
+        default = BUtil:get_sources(),
         providers = providers,
     },
 
@@ -258,9 +192,9 @@ local M = {
         implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
         sorts = {
             'exact',
-            'score',
             'kind',
             'label',
+            'score',
             'sort_text',
         },
     },
@@ -274,10 +208,14 @@ local M = {
 
         window = {
             show_documentation = true,
+            border = 'double',
+            scrollbar = true,
+            treesitter_highlighting = exists('nvim-treesitter'),
+            direction_priority = { 'n', 's' },
         },
     },
 }
 
-Blink.setup(M)
+Blink.setup(Cfg)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
