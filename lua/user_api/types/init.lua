@@ -39,7 +39,7 @@
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table
----@alias Maps table<'n'|'i'|'v'|'t'|'o'|'x', table<string, KeyMapRhsOptsArr>>
+---@alias Maps table<MapModes, table<string, KeyMapRhsOptsArr>>
 
 ---@class User
 ---@field check User.Check
