@@ -1,7 +1,5 @@
 <div align="center">
-
-# Jnvim
-
+<h1 id="jnvim">Jnvim</h1>
 </div>
 
 ## Table Of Contents
@@ -48,9 +46,10 @@ of how it works.
 For these to work, the following executables must be installed and in your `$PATH`:
 
 - `git`
-- [`lua-language-server`](https://github.com/LuaLS/lua-language-server)
-- [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
+- `rust` (for [`blink.cmp`](https://github.com/saghen/blink.cmp))
 - [`ripgrep`](https://github.com/BurntSushi/ripgrep)
+- [`lua-language-server`](https://github.com/LuaLS/lua-language-server) (for [`lazydev.nvim`](https://github.com/folke/lazydev.nvim))
+- [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
 - **(Optional _(for `telescope`)_)**:
     - [`fzf`](https://github.com/junegunn/fzf)
     - [`fd`](https://github.com/sharkdp/fd)
