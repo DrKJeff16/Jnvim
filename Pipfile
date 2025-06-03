@@ -7,9 +7,7 @@ name = "pypi"
 typing = "*"
 typing-extensions = "*"
 argparse = "*"
-wheel = "*"
 setuptools = "*"
-pynvim = "*"
 pre-commit = "*"
 
 [dev-packages]
