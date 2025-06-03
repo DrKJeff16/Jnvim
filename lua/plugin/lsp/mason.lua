@@ -1,17 +1,17 @@
 local User = require('user_api')
 local Check = User.check
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('mason') then
     return
 end
 
+User:register_plugin('plugin.lsp.mason')
+
 local Mason = require('mason')
-local Util = require('mason.api.command')
+local MUtil = require('mason.api.command')
 
 Mason.setup({
     install_root_dir = vim.fn.stdpath('state') .. '/mason',
@@ -107,6 +107,20 @@ Mason.setup({
     },
 })
 
+---@type KeyMapDict|RegKeysNamed
+local Keys = {
+    ['<leader>lM'] = { group = '+Mason' },
+
+    ['<leader>lMo'] = { MUtil.Mason, desc('Open Mason UI') },
+    ['<leader>lML'] = { MUtil.MasonLog, desc('Mason Log') },
+    ['<leader>lMu'] = { MUtil.MasonUpdate, desc('Update Mason') },
+}
+
+vim.schedule(function()
+    local Keymaps = require('config.keymaps')
+    Keymaps:setup({ n = Keys })
+end)
+
 if not exists('mason-lspconfig') then
     return
 end
@@ -131,21 +145,8 @@ MLSP.setup({
         -- 'vimls',
         -- 'yamlls',
     },
+
     automatic_installation = false,
+
+    automatic_enable = false,
 })
-
----@type KeyMapDict
-local Keys = {
-    ['<leader>lMo'] = { Util.Mason, desc('Open Mason UI') },
-    ['<leader>lML'] = { Util.MasonLog, desc('Mason Log') },
-    ['<leader>lMu'] = { Util.MasonUpdate, desc('Update Mason') },
-}
----@type RegKeysNamed
-local Names = {
-    ['<leader>lM'] = { group = '+Mason' },
-}
-
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-map_dict(Keys, 'wk.register', false, 'n')

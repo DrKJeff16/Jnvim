@@ -1,12 +1,12 @@
 ---@meta
 
-require('user_api.types.user.autocmd')
-require('user_api.types.user.highlight')
+---@module 'user_api.types.user.autocmd'
+---@module 'user_api.types.user.highlight'
 
 ---@class EvBuf
 ---@field buf integer
 
----@class LspKindsIconsMod
+---@class Lsp.SubMods.Kinds.Icons
 ---@field Class? string
 ---@field Color? string
 ---@field Constant? string
@@ -29,49 +29,40 @@ require('user_api.types.user.highlight')
 ---@field Value? string
 ---@field Variable? string
 
----@class LspKindsMod
----@field icons LspKindsIconsMod
----@field setup fun()
+---@class Lsp.SubMods.Kinds
+---@field icons Lsp.SubMods.Kinds.Icons
+---@field setup fun(self: Lsp.SubMods.Kinds)
 
----@class LspServerOpts
----@field capabilities? table
----@field cmd? string|string[]
----@field cmd_env? table<string, any>|nil
----@field filetypes? string|string[]
----@field handlers? table<string, fun(...): any>
----@field init_options? table<string, any>
----@field name? string
----@field log_level? number|nil
----@field on_attach? fun(client: vim.lsp.Client): any
----@field on_new_config? any
----@field onset_encoding? any
----@field root_dir? any
----@field settings? table
----@field single_file_support? boolean
+---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
 
----@class LspServers
----@field lua_ls? LspServerOpts|nil
----@field bashls? LspServerOpts|nil
----@field clangd? LspServerOpts|nil
----@field cmake? LspServerOpts|nil
----@field css_variables? LspServerOpts|nil
----@field cssls? LspServerOpts|nil
----@field html? LspServerOpts|nil
----@field jdtls? LspServerOpts|nil
----@field jsonls? LspServerOpts|nil
----@field marksman? LspServerOpts|nil
----@field pylsp? LspServerOpts|nil
----@field taplo? LspServerOpts|nil
----@field texlab? LspServerOpts|nil
----@field vimls? LspServerOpts|nil
----@field yamlls? LspServerOpts|nil
----@field new fun(): LspServers
+---@class Lsp.Server.Clients
+---@field lua_ls? Lsp.Server.Clients.Spec|nil
+---@field bashls? Lsp.Server.Clients.Spec|nil
+---@field clangd? Lsp.Server.Clients.Spec|nil
+---@field cmake? Lsp.Server.Clients.Spec|nil
+---@field css_variables? Lsp.Server.Clients.Spec|nil
+---@field cssls? Lsp.Server.Clients.Spec|nil
+---@field html? Lsp.Server.Clients.Spec|nil
+---@field jdtls? Lsp.Server.Clients.Spec|nil
+---@field jsonls? Lsp.Server.Clients.Spec|nil
+---@field julials? Lsp.Server.Clients.Spec|nil
+---@field marksman? Lsp.Server.Clients.Spec|nil
+---@field pylsp? Lsp.Server.Clients.Spec|nil
+---@field taplo? Lsp.Server.Clients.Spec|nil
+---@field texlab? Lsp.Server.Clients.Spec|nil
+---@field vimls? Lsp.Server.Clients.Spec|nil
+---@field yamlls? Lsp.Server.Clients.Spec|nil
 
----@class LspSubs
+---@class Lsp.Server
+---@field clients Lsp.Server.Clients
+---@field populate fun(self: Lsp.Server)
+---@field new fun(O: table?): Lsp.Server|table
+
+---@class Lsp.SubMods
 ---@field neoconf fun()|nil
 ---@field neodev fun()|nil
 ---@field trouble? fun()|nil
 ---@field clangd? fun()|nil
----@field kinds LspKindsMod
+---@field kinds Lsp.SubMods.Kinds
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
