@@ -17,8 +17,6 @@ local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
 local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
-local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
-local wk_avail = User.maps.wk.available ---@see User.Maps.WK.available
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
 
@@ -156,7 +154,9 @@ local NamesCsc = {
 
 local csc_group = 'A'
 local i = 1
-local found_csc = ''
+
+---@type string[]
+local valid = {}
 
 -- TODO: Use `Keymaps:setup()` instead of `map_dict()`
 -- TODO: Try to put the following loop inside a function
@@ -171,7 +171,8 @@ for _, name in next, selected do
     if is_nil(TColor.setup) then
         goto continue
     end
-    found_csc = found_csc ~= '' and found_csc or name
+
+    table.insert(valid, name)
 
     NamesCsc['<leader>vc' .. csc_group] = {
         group = '+Group ' .. csc_group,
@@ -209,17 +210,34 @@ for _, name in next, selected do
     ::continue::
 end
 
-if wk_avail() then
-    map_dict(NamesCsc, 'wk.register', false, 'n')
-end
-map_dict(CscKeys, 'wk.register', false, 'n')
+vim.schedule(function()
+    if empty(valid) then
+        vim.notify('No valid colorschemes!', 'error', {
+            animate = false,
+            hide_from_history = false,
+            timeout = 2250,
+            title = '(init.lua)',
+        })
+    end
 
-if not empty(found_csc) then
-    ---@type CscSubMod
-    local Color = Csc[found_csc]
+    for _, mod in next, valid do
+        ---@type CscSubMod
+        local Color = Csc[mod]
 
-    Color:setup()
-end
+        if is_nil(Color.setup) then
+            goto continue
+        else
+            Color:setup()
+
+            local color_maps = vim.tbl_deep_extend('keep', NamesCsc, CscKeys)
+
+            Keymaps:setup({ n = color_maps })
+            break
+        end
+
+        ::continue::
+    end
+end)
 
 -- Call the User API file associations and other autocmds
 Util:assoc()
