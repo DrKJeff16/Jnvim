@@ -128,8 +128,10 @@ Keymaps:setup({
 -- A table containing various possible colorschemes
 local Csc = Pkg.colorschemes
 
----@type KeyMapDict
-local CscKeys = {}
+---@type KeyMapDict|RegKeys|RegKeysNamed
+local CscKeys = {
+    ['<leader>vc'] = { group = '+Colorschemes' },
+}
 
 --- Reorder to your liking
 local selected = {
@@ -146,11 +148,6 @@ local selected = {
     'spaceduck',
     'dracula',
     'space_vim_dark',
-}
-
----@type RegKeysNamed
-local NamesCsc = {
-    ['<leader>vc'] = { group = '+Colorschemes' },
 }
 
 local csc_group = 'A'
@@ -175,14 +172,14 @@ for _, name in next, selected do
 
     table.insert(valid, name)
 
-    NamesCsc['<leader>vc' .. csc_group] = {
+    CscKeys['<leader>vc' .. csc_group] = {
         group = '+Group ' .. csc_group,
     }
 
     if is_tbl(TColor.variants) and not empty(TColor.variants) then
         local v = 'a'
         for _, variant in next, TColor.variants do
-            NamesCsc['<leader>vc' .. csc_group .. tostring(i)] = {
+            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
                 group = '+' .. capitalize(name),
             }
             CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
@@ -213,12 +210,14 @@ end
 
 vim.schedule(function()
     if empty(valid) then
-        vim.notify('No valid colorschemes!', 'error', {
+        notify('No valid colorschemes!', 'error', {
             animate = false,
             hide_from_history = false,
             timeout = 2250,
             title = '(init.lua)',
         })
+
+        return
     end
 
     for _, mod in next, valid do
@@ -230,9 +229,7 @@ vim.schedule(function()
         else
             Color:setup()
 
-            local color_maps = vim.tbl_deep_extend('keep', NamesCsc, CscKeys)
-
-            Keymaps:setup({ n = color_maps })
+            Keymaps:setup({ n = CscKeys })
             break
         end
 

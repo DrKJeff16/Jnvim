@@ -16,7 +16,6 @@ local bt_get = Util.bt_get ---@see User.Util.bt_get
 local nop = Maps.nop ---@see User.Maps.nop
 local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local desc = Kmap.desc ---@see User.Maps.Keymap.desc
-local wk_avail = WK.available ---@see User.maps.wk.available
 
 User:register_plugin('config.keymaps')
 
@@ -70,10 +69,9 @@ end
 
 ---@class Config.Keymaps
 ---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
----@field Keys KeyMapModeDict
----@field Names ModeRegKeysNamed
+---@field Keys KeyMapModeDict|ModeRegKeysNamed|ModeRegKeys
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field setup fun(self: Config.Keymaps, keys: (ModeRegKeys|KeyMapModeDict)?, names: ModeRegKeysNamed?)
+---@field setup fun(self: Config.Keymaps, keys: (ModeRegKeys|KeyMapModeDict|ModeRegKeysNamed))
 
 ---@type Config.Keymaps
 local Keymaps = {}
@@ -174,6 +172,21 @@ Keymaps.NOP = {
 --- Global keymaps, plugin-agnostic
 Keymaps.Keys = {
     n = {
+        ['<leader>H'] = { group = '+Help' }, --- Help
+        ['<leader>HM'] = { group = '+Man Pages' }, --- Help
+        ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
+        ['<leader>f'] = { group = '+File' }, --- File Handling
+        ['<leader>fF'] = { group = '+New File' }, --- New File Creation
+        ['<leader>F'] = { group = '+Folding' }, --- Folding Control
+        ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
+        ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
+        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
+        ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
+        ['<leader>v'] = { group = '+Vim' }, --- Vim
+        ['<leader>ve'] = { group = '+Edit Nvim Config File' }, --- `init.lua` Editing
+        ['<leader>w'] = { group = '+Window' }, --- Window Handling
+        ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
+
         ['<Esc><Esc>'] = {
             function() vim.schedule(vim.cmd.nohls) end,
             desc('Remove Highlighted Search'),
@@ -406,6 +419,13 @@ Keymaps.Keys = {
         ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
     },
     v = {
+        ['<leader>f'] = { group = '+File' }, --- File Handling
+        ['<leader>fF'] = { group = '+Folding' }, --- Folding
+        ['<leader>h'] = { group = '+Help' }, --- Help
+        ['<leader>i'] = { group = '+Indent' }, --- Indent Control
+        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
+        ['<leader>v'] = { group = '+Vim' }, --- Vim
+
         ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold') },
         ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold') },
         ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
@@ -433,38 +453,9 @@ Keymaps.Keys = {
     },
 }
 
---- `which-key` map group prefixes
-Keymaps.Names = {
-    n = {
-        ['<leader>H'] = { group = '+Help' }, --- Help
-        ['<leader>HM'] = { group = '+Man Pages' }, --- Help
-        ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
-        ['<leader>f'] = { group = '+File' }, --- File Handling
-        ['<leader>fF'] = { group = '+New File' }, --- New File Creation
-        ['<leader>F'] = { group = '+Folding' }, --- Folding Control
-        ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
-        ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
-        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
-        ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
-        ['<leader>v'] = { group = '+Vim' }, --- Vim
-        ['<leader>ve'] = { group = '+Edit Nvim Config File' }, --- `init.lua` Editing
-        ['<leader>w'] = { group = '+Window' }, --- Window Handling
-        ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
-    },
-    v = {
-        ['<leader>f'] = { group = '+File' }, --- File Handling
-        ['<leader>fF'] = { group = '+Folding' }, --- Folding
-        ['<leader>h'] = { group = '+Help' }, --- Help
-        ['<leader>i'] = { group = '+Indent' }, --- Indent Control
-        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
-        ['<leader>v'] = { group = '+Vim' }, --- Vim
-    },
-}
-
 ---@param self Config.Keymaps
----@param keys? KeyMapModeDict|ModeRegKeys
----@param names? ModeRegKeysNamed
-function Keymaps:setup(keys, names)
+---@param keys? KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
+function Keymaps:setup(keys)
     local MODES = require('user_api.maps').modes
 
     local notify = require('user_api.util.notify').notify
@@ -478,16 +469,15 @@ function Keymaps:setup(keys, names)
     end
 
     keys = is_tbl(keys) and keys or {}
-    names = is_tbl(names) and names or {}
 
-    local checker_tbl = { keys, names }
+    local checker_tbl = { keys }
 
-    for i, T in next, checker_tbl do
+    for _, T in next, checker_tbl do
         if empty(T) then
             goto continue
         end
 
-        for k, v in next, T do
+        for k, _ in next, T do
             if not vim.tbl_contains(MODES, k) then
                 vim.notify(
                     "Input tables aren't using Vim modes as dictionary keys, ignoring",
@@ -508,10 +498,6 @@ function Keymaps:setup(keys, names)
         ::continue::
     end
 
-    --- Set keymap groups
-    if wk_avail() then
-        map_dict(vim.tbl_deep_extend('keep', names, self.Names), 'wk.register', true)
-    end
     --- Set keymaps
     map_dict(vim.tbl_deep_extend('keep', keys, self.Keys), 'wk.register', true)
 
@@ -531,7 +517,7 @@ end
 ---
 --- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
 ---@param self Config.Keymaps
----@param leader? string _`<leader>`_ key string (defaults to `<Space>`)
+---@param leader string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
 function Keymaps:set_leader(leader, local_leader, force)
