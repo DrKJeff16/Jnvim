@@ -19,6 +19,7 @@ local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
 local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
+local notify = (Util.notify or vim).notify
 
 local curr_buf = vim.api.nvim_get_current_buf
 local curr_win = vim.api.nvim_get_current_win
