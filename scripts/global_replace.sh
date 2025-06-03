@@ -18,18 +18,18 @@ error() {
 _cmd() {
     [[ $# -eq 0 ]] && return 127
 
-    local STATUS=0
+    local EC=0
 
     while [[ $# -gt 0 ]]; do
         if ! command -v "$1" &> /dev/null; then
-            STATUS=1
+            EC=1
             break
         fi
 
         shift
     done
 
-    return "$STATUS"
+    return "$EC"
 }
 
 # Terminate the script, optionally set the exit code and abort message
@@ -54,6 +54,8 @@ die() {
 }
 
 [[ $# -eq 0 ]] && die 127 "No arguments were given. Aborting"
+
+! _cmd 'find' && die 127 "\`find\` is not in PATH."
 
 EC=0
 while [[ $# -gt 0 ]]; do
