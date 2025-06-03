@@ -4,12 +4,6 @@
 
 local User = require('user_api')
 local Check = User.check
-local kmap = User.maps.kmap
-
-local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
-local desc = kmap.desc
 
 local function symbol_info()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -47,6 +41,7 @@ local function switch_source_header(bufnr)
             )
         )
     end
+
     local params = vim.lsp.util.make_text_document_params(bufnr)
     client.request(method_name, params, function(err, result)
         if err then
@@ -64,6 +59,7 @@ User:register_plugin('plugin.lsp.server_config')
 
 ---@type Lsp.Server.Clients
 local Clients = {}
+
 Clients.bashls = {
     cmd = { 'bash-language-server', 'start' },
     filetypes = { 'bash', 'sh' },
@@ -74,6 +70,7 @@ Clients.bashls = {
         },
     },
 }
+
 Clients.lua_ls = {
     on_init = function(client)
         if client.workspace_folders then
@@ -108,8 +105,8 @@ Clients.lua_ls = {
                     vim.env.VIMRUNTIME,
                     -- Depending on the usage, you might want to add additional paths
                     -- here.
-                    -- '${3rd}/luv/library'
-                    -- '${3rd}/busted/library'
+                    '${3rd}/luv/library',
+                    '${3rd}/busted/library',
                 },
                 -- Or pull in all of 'runtimepath'.
                 -- NOTE: this is a lot slower and will cause issues when working on
@@ -121,12 +118,13 @@ Clients.lua_ls = {
             },
         })
     end,
-    settings = {
-        Lua = {},
-    },
+
+    settings = { Lua = {} },
 }
+
 Clients.clangd = {
     cmd = { 'clangd' },
+
     filetypes = {
         'c',
         'cpp',
@@ -135,6 +133,7 @@ Clients.clangd = {
         'cuda',
         'proto',
     },
+
     root_markers = {
         '.clangd',
         '.clang-tidy',
@@ -144,14 +143,17 @@ Clients.clangd = {
         'configure.ac', -- AutoTools
         '.git',
     },
+
     capabilities = {
         offsetEncoding = { 'utf-8', 'utf-16' },
+
         textDocument = {
             completion = {
                 editsNearCursor = true,
             },
         },
     },
+
     on_attach = function()
         vim.api.nvim_buf_create_user_command(
             0,
@@ -167,6 +169,30 @@ Clients.clangd = {
             { desc = 'Show symbol info' }
         )
     end,
+}
+
+Clients.pylsp = {
+    cmd = { 'pylsp' },
+    filetypes = { 'python' },
+    root_markers = {
+        'pyproject.toml',
+        'setup.py',
+        'setup.cfg',
+        'requirements.txt',
+        'Pipfile',
+        '.git',
+    },
+
+    settings = {
+        pylsp = {
+            plugins = {
+                pycodestyle = {
+                    ignore = { 'W391' },
+                    maxLineLength = 100,
+                },
+            },
+        },
+    },
 }
 
 return Clients

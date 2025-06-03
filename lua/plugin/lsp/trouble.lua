@@ -1,20 +1,18 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.lspconfig'
 
 local User = require('user_api')
 local Check = User.check
-local types = User.types.lspconfig
-local kmap = User.maps.kmap
-local WK = User.maps.wk
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
-local desc = kmap.desc
+local desc = User.maps.kmap.desc
 
 if not exists('trouble') then
     return
 end
+
+User:register_plugin('plugin.lsp.trouble')
 
 local Trouble = require('trouble')
 
@@ -193,9 +191,11 @@ local Opts = {
 
 Trouble.setup(Opts)
 
----@type table<MapModes, KeyMapDict>
+---@type KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
 local Keys = {
     n = {
+        ['<leader>lx'] = { group = '+Trouble' },
+
         ['<leader>lxx'] = {
             function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
             desc('Toggle Trouble Diagnostics'),
@@ -218,6 +218,8 @@ local Keys = {
         },
     },
     v = {
+        ['<leader>lx'] = { group = '+Trouble' },
+
         ['<leader>lxx'] = {
             function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
             desc('Toggle Trouble Diagnostics'),
@@ -240,26 +242,11 @@ local Keys = {
         },
     },
 }
----@type table<MapModes, RegKeysNamed>
-local Names = {
-    n = { ['<leader>lx'] = { group = '+Trouble' } },
-    v = { ['<leader>lx'] = { group = '+Trouble' } },
-}
 
-for mode, t in next, Keys do
-    if WK.available() then
-        if is_tbl(Names[mode]) and not empty(Names[mode]) then
-            WK.register(Names[mode], { mode = mode })
-        end
+vim.schedule(function()
+    local Keymaps = require('config.keymaps')
 
-        WK.register(WK.convert_dict(t), { mode = mode })
-    else
-        for lhs, v in next, t do
-            v[2] = is_tbl(v[2]) and v[2] or {}
-
-            kmap[mode](t, v[1], v[2])
-        end
-    end
-end
+    Keymaps:setup(Keys)
+end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

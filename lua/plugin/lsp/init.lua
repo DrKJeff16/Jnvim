@@ -39,51 +39,11 @@ local lsp_buf = Lsp.buf
 local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
 
-local on_windows = (vim.loop or vim.uv).os_uname().version:match('Windows')
-
----@type fun(...): string
-local function join_paths(...)
-    local path_sep = on_windows and '\\' or '/'
-    return table.concat({ ... }, path_sep)
-end
-
--- LSP settings (for overriding per client)
--- local handlers = {
---     ['textDocument/hover'] = Lsp.with(lsp_handlers.hover, {
---         border = 'rounded',
---         title = 'LSP',
---     }),
---     ['textDocument/signatureHelp'] = Lsp.with(lsp_handlers.signature_help, {
---         border = 'rounded',
---     }),
---     ['textDocument/publishDiagnostics'] = Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
---         signs = true,
---         virtual_text = true,
---         underline = true,
---     }),
---     ['textDocument/references'] = Lsp.with(Lsp.handlers['textDocument/references'], {
---         loclist = true,
---     }),
--- }
-
 ---@type Lsp.Server
 local Server = {}
 
 ---@type Lsp.Server.Clients
 Server.clients = require('plugin.lsp.server_config')
--- Server.clients.cmake = executable('cmake-languqge-server') and {} or nil
--- Server.clients.cssls = executable('vscode-css-language-server') and {} or nil
--- Server.clients.html = executable('vscode-html-language-server') and {} or nil
--- Server.clients.jdtls = executable('jdtls') and {} or nil
--- Server.clients.jsonls = executable('vscode-json-language-server') and {} or nil
--- Server.clients.julials = executable('julia') and {} or nil
--- Server.clients.marksman = executable('marksman') and {} or nil
--- Server.clients.pylsp = executable('pylsp') and {} or nil
--- Server.clients.rust_analyzer = executable('rust-analyzer') and {} or nil
--- Server.clients.taplo = executable('taplo') and {} or nil
--- Server.clients.texlab = executable('texlab') and {} or nil
--- Server.clients.vimls = executable('vim-language-server') and {} or nil
--- Server.clients.yamlls = executable('yaml-language-server') and {} or nil
 
 ---@param self Lsp.Server
 function Server:populate()
@@ -92,11 +52,6 @@ function Server:populate()
             goto continue
         end
 
-        -- self.clients[k].handlers = handlers
-
-        if exists('cmp_nvim_lsp') then
-            self.clients[k].capabilities = require('cmp_nvim_lsp').default_capabilities()
-        end
         if exists('blink.cmp') then
             local capabilities = vim.lsp.protocol.make_client_capabilities()
 
@@ -144,8 +99,6 @@ function Server.new(O)
 end
 
 Server:populate()
-
-local lspconfig = require('lspconfig')
 
 for client, v in next, Server.clients do
     -- lspconfig[client].setup(v)
@@ -290,15 +243,6 @@ au('LspProgress', {
     group = group,
     pattern = '*',
     callback = function() vim.cmd('redrawstatus') end,
-})
-
-Diag.config({
-    virtual_text = true,
-    float = true,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = false,
 })
 
 ---@type AuRepeat

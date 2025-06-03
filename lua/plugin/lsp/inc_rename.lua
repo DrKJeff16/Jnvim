@@ -35,19 +35,20 @@ IR.setup({
     post_hook = nil,
 })
 
----@type KeyMapDict
+---@type KeyMapDict|RegKeys|RegKeysNamed
 local Keys = {
+    ['<leader>r'] = { group = '+IncRename' },
+
     ['<leader>rn'] = {
         ':IncRename ',
         desc('Rename (IncRename)', false, nil, true, true, true),
     },
 }
----@type RegKeysNamed
-local Names = { ['<leader>r'] = { group = '+IncRename' } }
 
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-map_dict(Keys, 'wk.register', false, 'n')
+vim.schedule(function()
+    local Keymaps = require('config.keymaps')
+
+    Keymaps:setup({ n = Keys })
+end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
