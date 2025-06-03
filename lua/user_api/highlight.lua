@@ -1,24 +1,28 @@
-require('user_api.types.user.highlight')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.highlight'
 
 local ERROR = vim.log.levels.ERROR
 
 ---@type User.Hl
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Hl = {}
 
 ---@param name string
 ---@param opts vim.api.keyset.highlight
 ---@param bufnr? integer
-function M.hl(name, opts, bufnr)
+function Hl.hl(name, opts, bufnr)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
     local is_int = Value.is_int
     local empty = Value.empty
+    local notify = require('user_api.util.notify').notify
 
     if not (is_str(name) and is_tbl(opts)) or empty(name) then
-        vim.notify('(user_api.highlight.hl): Bad arguments', ERROR)
+        notify('Bad arguments', ERROR, {
+            title = '(user_api.highlight.hl)',
+        })
         return
     end
 
@@ -28,28 +32,30 @@ function M.hl(name, opts, bufnr)
 end
 
 ---@param A HlPair[]
-function M.hl_from_arr(A)
+function Hl.hl_from_arr(A)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
     local empty = Value.empty
+    local notify = require('user_api.util.notify').notify
 
     if not is_tbl(A) or empty(A) then
-        vim.notify('(user_api.highlight.hl_from_arr): Bad argument', ERROR)
+        notify('Bad argument', ERROR, {
+            title = '(user_api.highlight.hl_from_arr)',
+        })
         return
     end
 
     for _, t in next, A do
         if not (is_str(t.name) and is_tbl(t.opts)) or empty(t.name) then
-            vim.notify(
-                '(user_api.highlight.hl_from_arr): A highlight value is not permitted, skipping',
-                ERROR
-            )
+            notify('A highlight value is not permitted, skipping', ERROR, {
+                title = '(user_api.highlight.hl_from_arr)',
+            })
             goto continue
         end
 
-        M.hl(t.name, t.opts)
+        Hl.hl(t.name, t.opts)
 
         ::continue::
     end
@@ -71,34 +77,36 @@ end
 --- ---
 --- See more at `:h nvim_set_hl`
 ---@param D HlDict
-function M.hl_from_dict(D)
+function Hl.hl_from_dict(D)
     local Value = require('user_api.check.value')
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
     local empty = Value.empty
+    local notify = require('user_api.util.notify').notify
 
     if not is_tbl(D) or empty(D) then
-        vim.notify('(user_api.highlight.hl_from_dict): Unable to parse argument', ERROR)
+        notify('Unable to parse argument', ERROR, {
+            title = '(user_api.highlight.hl_from_dict)',
+        })
         return
     end
 
     for k, v in next, D do
         if not (is_str(k) and is_tbl(v)) or empty(k) then
-            vim.notify(
-                '(user_api.highlight.hl_from_dict): A highlight value is not permitted, skipping',
-                ERROR
-            )
+            notify('A highlight value is not permitted, skipping', ERROR, {
+                title = '(user_api.highlight.hl_from_dict)',
+            })
 
             goto continue
         end
 
-        M.hl(k, v)
+        Hl.hl(k, v)
 
         ::continue::
     end
 end
 
-return M
+return Hl
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
