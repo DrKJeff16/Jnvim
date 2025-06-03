@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
-require('user_api.types.user.util')
+---@module 'user_api.types.user.util'
 
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
@@ -27,17 +27,35 @@ function Util.has_words_before()
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
----@param s string
+---@param self User.Util
+---@param s string|string[]
 ---@param bufnr? integer
----@return string
-function Util.opt_get(s, bufnr)
+---@return table<string, any>|table
+function Util:opt_get(s, bufnr)
     local Value = require('user_api.check.value')
 
     local is_int = Value.is_int
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local empty = Value.empty
+    local single_type_tbl = Value.single_type_tbl
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    return optget(s, { buf = bufnr })
+    ---@type table<string, any>|table
+    local res = {}
+
+    if is_str(s) and not empty(s) then
+        res[s] = optget(s, { buf = bufnr })
+    end
+
+    if is_tbl(s) and not empty(s) and single_type_tbl('string', s) then
+        for _, opt in next, s do
+            res[opt] = self:opt_get(opt, bufnr)
+        end
+    end
+
+    return res
 end
 
 ---@param s string
@@ -50,7 +68,7 @@ function Util.opt_set(s, val, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    return optset(s, val, { buf = bufnr })
+    optset(s, val, { buf = bufnr })
 end
 
 ---@param T table<string|integer, any>
@@ -64,9 +82,12 @@ function Util.mv_tbl_values(T, steps, direction)
     local is_str = Value.is_str
     local is_int = Value.is_int
     local empty = Value.empty
+    local notify = Util.notify.notify
 
     if not is_tbl(T) then
-        error("(user_api.util.mv_tbl_values): Input isn't a table", ERROR)
+        notify("Input isn't a table", ERROR, {
+            title = '(user_api.util.mv_tbl_values)',
+        })
     end
 
     if empty(T) then
@@ -78,8 +99,8 @@ function Util.mv_tbl_values(T, steps, direction)
 
     ---@type DirectionFuns
     local direction_funcs = {
-        ---@param t table<string|integer, any>
-        ---@return table<string|integer, any> res
+
+        ---@type DirectionFun
         r = function(t)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
@@ -100,8 +121,7 @@ function Util.mv_tbl_values(T, steps, direction)
             return res
         end,
 
-        ---@param t table<string|integer, any>
-        ---@return table<string|integer, any> res
+        ---@type DirectionFun
         l = function(t)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
@@ -138,8 +158,13 @@ end
 ---@param y boolean
 ---@return boolean
 function Util.xor(x, y)
-    if not require('user_api.check.value').is_bool({ x, y }, true) then
-        Util.notify.notify('An argument is not of boolean type', 'error', {
+    local Value = require('user_api.check.value')
+
+    local notify = Util.notify.notify
+    local is_bool = Value.is_bool
+
+    if not is_bool({ x, y }, true) then
+        notify('An argument is not of boolean type', 'error', {
             hide_from_history = false,
             timeout = 850,
             title = '(user_api.util.xor)',
@@ -207,12 +232,17 @@ function Util.strip_values(T, values, max_instances)
     local is_tbl = Value.is_tbl
     local is_int = Value.is_int
     local empty = Value.empty
+    local notify = Util.notify.notify
 
     if not is_tbl({ T, values }, true) then
-        error('(user_api.util.strip_values): Not a table', ERROR)
+        notify('Not a table', ERROR, {
+            title = '(user_api.util.strip_values)',
+        })
     end
     if empty(values) then
-        error('(user_api.util.strip_values): No values given', ERROR)
+        notify('No values given', ERROR, {
+            title = '(user_api.util.strip_values)',
+        })
     end
 
     max_instances = is_int(max_instances) and max_instances or 0
@@ -253,13 +283,17 @@ function Util.ft_set(s, bufnr)
     s = is_str(s) and s or ''
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    return function() optset('ft', s, { buf = bufnr }) end
+    return function() Util.opt_set('ft', s, bufnr) end
 end
 
 ---@param bufnr? integer
 ---@return string
 function Util.bt_get(bufnr)
-    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
+    local Value = require('user_api.check.value')
+
+    local is_int = Value.is_int
+
+    bufnr = is_int(bufnr) and bufnr or curr_buf()
 
     return optget('bt', { buf = bufnr })
 end
@@ -267,7 +301,11 @@ end
 ---@param bufnr? integer
 ---@return string
 function Util.ft_get(bufnr)
-    bufnr = require('user_api.check.value').is_int(bufnr) and bufnr or curr_buf()
+    local Value = require('user_api.check.value')
+
+    local is_int = Value.is_int
+
+    bufnr = is_int(bufnr) and bufnr or curr_buf()
 
     return optget('ft', { buf = bufnr })
 end
@@ -309,7 +347,7 @@ function Util:assoc()
             },
         },
         {
-            events = { 'FileType' },
+            events = { 'FileType', 'BufEnter' },
             opts_tbl = {
                 {
                     pattern = 'help',
@@ -335,10 +373,11 @@ function Util:assoc()
                             et = true,
                             ci = false,
                             pi = false,
+                            rnu = false,
                         }
 
                         for option, val in next, buf_opts do
-                            optset(option, val, { buf = curr_buf() })
+                            Util.opt_set(option, val, curr_buf())
                         end
                     end,
                 },
@@ -355,10 +394,11 @@ function Util:assoc()
                             si = true,
                             ci = false,
                             pi = false,
+                            rnu = false,
                         }
 
                         for option, val in next, opts do
-                            optset(option, val, { buf = curr_buf() })
+                            Util.opt_set(option, val, curr_buf())
                         end
                     end,
                 },

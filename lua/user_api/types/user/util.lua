@@ -1,6 +1,6 @@
 ---@meta
 
-require('user_api.types.user.autocmd')
+---@module 'user_api.types.user.autocmd'
 
 ---@alias VimNotifyLvl
 ---|0
@@ -80,7 +80,7 @@ require('user_api.types.user.autocmd')
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
----@field opt_get fun(s: string, bufnr: integer?): string
+---@field opt_get fun(self: User.Util, s: string|string[], bufnr: integer?): table<string, any>|table
 ---@field opt_set fun(s: string, val: any, bufnr: integer?)
 ---@field assoc fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
