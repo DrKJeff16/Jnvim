@@ -19,6 +19,7 @@ pylsp-mypy = "*"
 pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
+argcomplete = "*"
 
 [requires]
 python_version = "3.12"
