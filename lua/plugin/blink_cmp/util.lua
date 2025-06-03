@@ -6,8 +6,10 @@ local Util = User.util
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local empty = Check.value.empty
 local tbl_values = Check.value.tbl_values
 local ft_get = Util.ft_get
+local au = Util.au.au_from_dict
 
 User:register_plugin('plugin.blink_cmp.util')
 
@@ -17,46 +19,59 @@ User:register_plugin('plugin.blink_cmp.util')
 local BUtil = {}
 
 ---@type BlinkCmp.Util.Sources
-BUtil.DEFAULT_SRCS = {
+BUtil.sources = {
     'lsp',
     'path',
     'buffer',
-    'snippets',
+    -- 'snippets',
 }
 
----@param self BlinkCmp.Util
----@param T? BlinkCmp.Util.Sources
----@return BlinkCmp.Util.Sources
-function BUtil:get_sources(T)
-    local res = is_tbl(T) and T or self.DEFAULT_SRCS
+BUtil.curr_ft = ''
 
+---@param self BlinkCmp.Util
+function BUtil:reset_sources()
+    self.sources = {
+        'lsp',
+        'path',
+        'buffer',
+        -- 'snippets',
+    }
+end
+
+---@param self BlinkCmp.Util
+---@return BlinkCmp.Util.Sources
+function BUtil:get_sources()
     local ft = ft_get()
 
-    if ft == 'lua' then
-        if exists('lazydev') then
-            if not Check.value.tbl_values({ 'lazydev' }, res) then
-                table.insert(res, 1, 'lazydev')
-            end
-        end
-    end
-    if
-        tbl_values({ ft }, {
-            'git',
-            'gitcommit',
-            'gitattributes',
-            'gitrebase',
-        }) and not tbl_values({ 'git' }, res)
-    then
-        table.insert(res, 1, 'git')
-
-        if
-            tbl_values({ ft }, { 'gitcommit' }) and not tbl_values({ 'conventional_commits' }, res)
-        then
-            table.insert(res, 1, 'conventional_commits')
-        end
+    if self.curr_ft ~= ft then
+        self:reset_sources()
+        self.curr_ft = ft
     end
 
-    return res
+    if self.curr_ft == 'lua' and exists('lazydev') then
+        if not tbl_values({ 'lazydev' }, self.sources) then
+            table.insert(self.sources, 1, 'lazydev')
+        end
+
+        return self.sources
+    end
+
+    local git_fts = {
+        'git',
+        'gitcommit',
+        'gitattributes',
+        'gitrebase',
+    }
+
+    if tbl_values({ self.curr_ft }, git_fts) and not tbl_values({ 'git' }, self.sources) then
+        table.insert(self.sources, 1, 'git')
+    end
+
+    if self.curr_ft == 'gitcommit' and not tbl_values({ 'conventional_commits' }, self.sources) then
+        table.insert(self.sources, 1, 'conventional_commits')
+    end
+
+    return self.sources
 end
 
 ---@type BlinkCmp.Util.Providers
@@ -66,30 +81,48 @@ BUtil.Providers.snippets = {
     should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
 }
 
-BUtil.Providers.git = {
-    module = 'blink-cmp-git',
-    name = 'Git',
-    enabled = function()
-        local ft = ft_get()
-        return tbl_values({ ft }, { 'git', 'gitcommit', 'gitattributes', 'gitrebase' })
-    end,
-}
+if exists('blink-cmp-git') then
+    BUtil.Providers.git = {
+        module = 'blink-cmp-git',
+        name = 'Git',
+        enabled = function()
+            local ft = ft_get()
+            return tbl_values({ ft }, { 'git', 'gitcommit', 'gitattributes', 'gitrebase' })
+        end,
+    }
+end
 
-BUtil.Providers.conventional_commits = {
-    name = 'Conventional Commits',
-    module = 'blink-cmp-conventional-commits',
-    enabled = function() return vim.bo.filetype == 'gitcommit' end,
-    ---@module 'blink-cmp-conventional-commits'
-    ---@type blink-cmp-conventional-commits.Options
-    opts = {}, -- none so far
-}
+if exists('blink-cmp-conventional-commits') then
+    BUtil.Providers.conventional_commits = {
+        name = 'Conventional Commits',
+        module = 'blink-cmp-conventional-commits',
+        enabled = function() return vim.bo.filetype == 'gitcommit' end,
 
-BUtil.Providers.lazydev = {
-    name = 'LazyDev',
-    module = 'lazydev.integrations.blink',
-    score_offset = 100,
-    enabled = function() return vim.bo.filetype == 'lua' end,
-}
+        ---@module 'blink-cmp-conventional-commits'
+        ---@type blink-cmp-conventional-commits.Options
+        opts = {}, -- none so far
+    }
+end
+
+if exists('lazydev') then
+    BUtil.Providers.lazydev = {
+        name = 'LazyDev',
+        module = 'lazydev.integrations.blink',
+        score_offset = 100,
+        enabled = function() return vim.bo.filetype == 'lua' end,
+    }
+end
+
+local au_group = vim.api.nvim_create_augroup('BlinkAU', { clear = true })
+au({
+    ['BufEnter'] = {
+        group = au_group,
+        callback = function()
+            BUtil:reset_sources()
+            BUtil.curr_ft = ft_get()
+        end,
+    },
+})
 
 return BUtil
 

@@ -18,8 +18,6 @@ if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()
 end
 
-local providers = BUtil.Providers
-
 ---@type blink.cmp.Config
 local Cfg = {
     keymap = {
@@ -42,9 +40,8 @@ local Cfg = {
 
         ['<Tab>'] = {
             function(cmp)
-                if not cmp.is_menu_visible() then
-                    return has_words_before() and cmp.show({ providers = BUtil:get_sources() })
-                        or nil
+                if not cmp.is_menu_visible() and has_words_before() then
+                    return cmp.show({ providers = BUtil:get_sources() })
                 end
             end,
             function(cmp) return cmp.select_next({ auto_insert = true }) end,
@@ -53,9 +50,8 @@ local Cfg = {
         },
         ['<S-Tab>'] = {
             function(cmp)
-                if not cmp.is_menu_visible() then
-                    return has_words_before() and cmp.show({ providers = BUtil:get_sources() })
-                        or nil
+                if not cmp.is_menu_visible() and has_words_before() then
+                    return cmp.show({ providers = BUtil:get_sources() })
                 end
             end,
             function(cmp) return cmp.select_prev({ auto_insert = true }) end,
@@ -185,7 +181,7 @@ local Cfg = {
 
     sources = {
         default = BUtil:get_sources(),
-        providers = providers,
+        providers = BUtil.Providers,
     },
 
     fuzzy = {
