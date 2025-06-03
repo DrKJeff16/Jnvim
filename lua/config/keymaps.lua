@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
-local User = require('user_api') ---@see User User API
+local User = require('user_api') ---@see UserAPI User API
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Util = require('user_api.util') ---@see User.Util Utilities
 local Maps = require('user_api.maps') ---@see User.Maps Mapping utilities

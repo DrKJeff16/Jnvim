@@ -41,7 +41,7 @@
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table
 ---@alias Maps table<MapModes, table<string, KeyMapRhsOptsArr>>
 
----@class User
+---@class UserAPI
 ---@field check User.Check
 ---@field maps User.Maps
 ---@field distro User.Distro
@@ -52,11 +52,11 @@
 ---@field update User.Update
 ---@field commands User.Commands
 ---@field registered_plugins string[]
----@field register_plugin fun(self: User, pathstr: string, i: integer?)
----@field reload_plugins fun(self: User): (failed: string[]|nil)
----@field setup_keys fun(self: User)
----@field new fun(O: table?): User|table
----@field print_loaded_plugins fun(self: User)
+---@field register_plugin fun(self: UserAPI, pathstr: string, i: integer?)
+---@field reload_plugins fun(self: UserAPI): (failed: string[]|nil)
+---@field setup_keys fun(self: UserAPI)
+---@field new fun(O: table?): UserAPI|table
+---@field print_loaded_plugins fun(self: UserAPI)
 
 ---@type User.Types
 local Types = {}

@@ -1,8 +1,8 @@
 ---@diagnostic disable:missing-fields
 
-require('user_api.types')
+---@module 'user_api.types'
 
----@type User
+---@type UserAPI
 local User = {}
 
 User.types = require('user_api.types')
@@ -17,7 +17,7 @@ User.commands = require('user_api.commands')
 
 User.registered_plugins = {}
 
----@param self User
+---@param self UserAPI
 ---@param pathstr string
 ---@param i? integer
 function User:register_plugin(pathstr, i)
@@ -39,7 +39,7 @@ function User:register_plugin(pathstr, i)
         return
     end
 
-    ---@type nil|string
+    ---@type string|nil
     local warning = nil
 
     if i >= 1 and i <= #self.registered_plugins then
@@ -50,17 +50,19 @@ function User:register_plugin(pathstr, i)
         table.insert(self.registered_plugins, pathstr)
     end
 
-    if not is_nil(warning) then
-        notify(warning, 'warn', {
-            hide_from_history = false,
-            animate = false,
-            timeout = 1750,
-            title = '(user_api.register_plugin)',
-        })
+    if is_nil(warning) then
+        return
     end
+
+    notify(warning, 'warn', {
+        hide_from_history = false,
+        animate = false,
+        timeout = 1750,
+        title = '(user_api.register_plugin)',
+    })
 end
 
----@param self User
+---@param self UserAPI
 ---@return string[]|nil
 function User:reload_plugins()
     local empty = self.check.value.empty
@@ -82,7 +84,7 @@ function User:reload_plugins()
     return empty(failed) and nil or failed
 end
 
----@param self User
+---@param self UserAPI
 function User:setup_keys()
     local wk_avail = self.maps.wk.available
     local desc = self.maps.kmap.desc
@@ -137,7 +139,7 @@ function User:setup_keys()
     self.update:setup_maps()
 end
 
----@param self User
+---@param self UserAPI
 function User:print_loaded_plugins()
     local notify = self.util.notify.notify
     local empty = self.check.value.empty
@@ -158,7 +160,7 @@ function User:print_loaded_plugins()
 end
 
 ---@param O? table
----@return User|table
+---@return UserAPI|table
 function User.new(O)
     local is_tbl = User.check.value.is_tbl
 

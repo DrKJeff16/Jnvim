@@ -4,7 +4,7 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
-local User = require('user_api') ---@see User User API
+local User = require('user_api') ---@see UserAPI User API
 local Keymaps = require('config.keymaps')
 
 local Check = User.check ---@see User.check Checking utilities
