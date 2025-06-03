@@ -135,7 +135,6 @@ function User:setup_keys()
     map_dict(maps, 'wk.register', false, 'n')
 
     self.update:setup_maps()
-    self.opts:setup_maps()
 end
 
 ---@param self User

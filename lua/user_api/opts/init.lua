@@ -1,19 +1,18 @@
 ---@diagnostic disable:missing-fields
 
-require('user_api.types.user.opts')
+---@module 'user_api.types.user.opts'
 
 local Value = require('user_api.check.value')
-local Exists = require('user_api.check.exists')
 
 local is_nil = Value.is_nil
 local is_str = Value.is_str
 local is_tbl = Value.is_tbl
 local is_bool = Value.is_bool
 local empty = Value.empty
-local in_console = require('user_api.check').in_console
+
+local deep_extend = vim.tbl_deep_extend
 
 ---@type User.Opts
----@diagnostic disable-next-line:missing-fields
 local Opts = {}
 
 Opts.ALL_OPTIONS = require('user_api.opts.all_opts')
@@ -65,14 +64,15 @@ local function long_opts_convert(T)
 end
 
 --- Option setter for the aforementioned options dictionary
---- @param T User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
+--- @param self User.Opts
+--- @param O User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
 --- for each option respectively
-function Opts.optset(T)
+function Opts:optset(O)
     local notify = require('user_api.util.notify').notify
 
-    T = is_tbl(T) and T or {}
+    O = is_tbl(O) and O or {}
 
-    local opts = long_opts_convert(T)
+    local opts = long_opts_convert(O)
     local msg = ''
 
     for k, v in next, opts do
@@ -80,7 +80,7 @@ function Opts.optset(T)
             msg = msg .. 'Option `' .. k .. '` is not a valid field for `vim.opt`'
         elseif type(vim.opt[k]:get()) == type(v) then
             vim.opt[k] = v
-            Opts.options[k] = v
+            self.options[k] = v
         else
             msg = msg .. 'Option `' .. k .. '` could not be parsed'
         end
@@ -93,7 +93,7 @@ function Opts.optset(T)
                     animate = false,
                     hide_from_history = false,
                     timeout = 1750,
-                    title = 'user_api.opts.optset',
+                    title = '(user_api.opts:optset)',
                 })
             end
         )
@@ -112,10 +112,14 @@ function Opts:setup(override, verbose)
 
     local parsed_opts, msg = long_opts_convert(override)
 
-    ---@type table|vim.wo|vim.bo
-    local opts = vim.tbl_deep_extend('keep', parsed_opts, self.DEFAULT_OPTIONS)
+    if empty(self.options) then
+        self.options, _ = long_opts_convert(self.DEFAULT_OPTIONS)
+    end
 
-    self.optset(opts)
+    ---@type table|vim.bo|vim.wo
+    local opts = deep_extend('keep', parsed_opts, self.options)
+
+    self:optset(opts)
 
     if msg ~= '' then
         vim.schedule(
@@ -152,31 +156,9 @@ function Opts:print_set_opts()
     notify(msg, 'info', {
         animate = true,
         hide_from_history = true,
-        timeout = 3500,
+        timeout = 3000,
         title = '(user_api.opts.print_set_opts)',
     })
-end
-
----@param self User.Opts
-function Opts:setup_maps()
-    local desc = require('user_api.maps.kmap').desc
-    local wk_avail = require('user_api.maps.wk').available
-    local map_dict = require('user_api.maps').map_dict
-
-    if wk_avail() then
-        map_dict({
-            ['<leader>UO'] = { group = '+Options' },
-        }, 'wk.register', false, 'n')
-        map_dict({
-            ['<leader>UO'] = { group = '+Options' },
-        }, 'wk.register', false, 'v')
-    end
-    map_dict({
-        ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
-    }, 'wk.register', false, 'n')
-    map_dict({
-        ['<leader>UOl'] = { self.print_set_opts, desc('Print Set Vim Options') },
-    }, 'wk.register', false, 'v')
 end
 
 -- ---@param self User.Opts
@@ -192,6 +174,22 @@ end
 --         end
 --     end
 -- end
+
+vim.schedule(function()
+    local Keymaps = require('config.keymaps')
+
+    local desc = require('user_api.maps.kmap').desc
+
+    Keymaps:setup({
+        n = {
+            ['<leader>UO'] = { group = '+Options' },
+            ['<leader>UOl'] = {
+                function() Opts:print_set_opts() end,
+                desc('Print options set by `user.opts`'),
+            },
+        },
+    })
+end)
 
 return Opts
 
