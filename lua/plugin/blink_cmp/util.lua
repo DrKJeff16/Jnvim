@@ -5,8 +5,6 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local tbl_values = Check.value.tbl_values
 local ft_get = Util.ft_get
 local au = Util.au.au_from_dict
@@ -23,7 +21,7 @@ BUtil.sources = {
     'lsp',
     'path',
     'buffer',
-    -- 'snippets',
+    'snippets',
 }
 
 BUtil.curr_ft = ''
@@ -34,7 +32,7 @@ function BUtil:reset_sources()
         'lsp',
         'path',
         'buffer',
-        -- 'snippets',
+        'snippets',
     }
 end
 
@@ -77,8 +75,60 @@ end
 ---@type BlinkCmp.Util.Providers
 BUtil.Providers = {}
 
+BUtil.Providers.buffer = {
+    -- keep case of first char
+    transform_items = function(a, items)
+        local keyword = a.get_keyword()
+        local correct = ''
+
+        ---@type fun(s: string|number): string
+        local case
+
+        if keyword:match('^%l') then
+            correct = '^%u%l+$'
+            case = string.lower
+        elseif keyword:match('^%u') then
+            correct = '^%l+$'
+            case = string.upper
+        else
+            return items
+        end
+
+        -- avoid duplicates from the corrections
+        local seen = {}
+        local out = {}
+
+        for _, item in next, items do
+            local raw = item.insertText
+
+            if raw:match(correct) then
+                local text = case(raw:sub(1, 1)) .. raw:sub(2)
+                item.insertText = text
+                item.label = text
+            end
+            if not seen[item.insertText] then
+                seen[item.insertText] = true
+                table.insert(out, item)
+            end
+        end
+
+        return out
+    end,
+}
+
 BUtil.Providers.snippets = {
     should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
+}
+
+BUtil.Providers.lsp = {
+    name = 'LSP',
+    module = 'blink.cmp.sources.lsp',
+    transform_items = function(_, items)
+        return vim.tbl_filter(
+            function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword end,
+            items
+        )
+    end,
 }
 
 if exists('blink-cmp-git') then
