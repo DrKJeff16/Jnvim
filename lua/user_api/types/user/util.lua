@@ -30,8 +30,24 @@
 ---@field hide_from_history? boolean Defaults to `false`
 ---@field animate? boolean Defaults to `true`
 
+---@class User.Util.Notify.Levels
+---@field [0] 'trace'
+---@field [1] 'debug'
+---@field [2] 'info'
+---@field [3] 'warn'
+---@field [4] 'error'
+---@field [5] 'off'
+---@field TRACE 0
+---@field DEBUG 1
+---@field INFO 2
+---@field WARN 3
+---@field ERROR 4
+---@field OFF 5
+
 ---@class User.Util.Notify
----@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: NotifyOpts?)
+---@field Opts notify.Options
+---@field Levels User.Util.Notify.Levels
+---@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl|number|string?, opts: notify.Options|table?)
 
 ---@class User.Util.String.Alphabet.Vowels
 ---@field upper_map { ['A']: 'A', ['E']: 'E', ['I']: 'I', ['O']: 'O', ['U']: 'U' }
