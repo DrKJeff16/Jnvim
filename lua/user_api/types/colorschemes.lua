@@ -1,5 +1,7 @@
 ---@meta
 
+---@alias Cpc.Variants 'frappe'|'latte'|'macchiato'|'mocha'
+
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
 
@@ -34,7 +36,7 @@
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
 ---@class CscSubMod
----@field setup fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)|nil
+---@field setup fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)
 ---@field variants? string[]
 ---@field mod_cmd string
 ---@field new fun(O: table?): CscSubMod|table
@@ -43,7 +45,21 @@
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
 ---@class ODSubMod: CscSubMod
 ---@field setup fun(self: ODSubMod, variant: OD.Variant, transparent: boolean?, override: OD?)|nil
----@field new fun(O): ODSubMod|table
+---@field new fun(O: table?): ODSubMod|table
+---@field variants OD.Variant[]
+
+--- A `CscSubMod` variant but for the `dracula` colorscheme
+---@class DraculaSubMod
+---@field setup fun(self: DraculaSubMod)
+---@field new fun(O: table?): DraculaSubMod|table
+---@field mod_cmd string
+
+---@see CscSubMod
+--- A `CscSubMod` variant but for the `catppuccin.nvim` colorscheme
+---@class CpcSubMod: CscSubMod
+---@field variants Cpc.Variants
+---@field setup fun(self: CpcSubMod, variant: Cpc.Variant, transparent: boolean?, override: CatppuccinOptions|table?)
+---@field new fun(O: table?): CpcSubMod|table
 
 ---@see CscSubMod
 --- A table for each **explicitly** configured colorscheme
@@ -52,8 +68,8 @@
 --- The colorschemes must comply with the `CscSubMod` type specifications
 ---
 ---@class CscMod
----@field catppuccin CscSubMod
----@field dracula CscSubMod
+---@field catppuccin CpcSubMod
+---@field dracula DraculaSubMod
 ---@field gloombuddy CscSubMod
 ---@field gruvbox CscSubMod
 ---@field kanagawa CscSubMod

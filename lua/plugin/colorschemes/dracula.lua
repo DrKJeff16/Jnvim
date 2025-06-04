@@ -1,9 +1,13 @@
 ---@diagnostic disable:missing-fields
 
-local User = require('user_api')
-local csc_t = User.types.colorschemes
+---@module 'user_api.types.colorschemes'
 
----@type CscSubMod
+local User = require('user_api')
+local Check = User.check
+
+local is_tbl = Check.value.is_tbl
+
+---@type DraculaSubMod
 local Dracula = {
     mod_cmd = 'colorscheme dracula',
 }
@@ -12,10 +16,12 @@ if vim.g.installed_dracula == 1 then
     User:register_plugin('plugin.colorschemes.dracula')
 end
 
-function Dracula:setup(variant, transparent, override) vim.cmd(self.mod_cmd) end
+---@param self DraculaSubMod
+function Dracula:setup() vim.cmd(self.mod_cmd) end
 
+---@param O? table
 function Dracula.new(O)
-    O = User.check.value.is_tbl(O) and O or {}
+    O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Dracula })
 end
 
