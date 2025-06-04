@@ -44,10 +44,10 @@ function User:register_plugin(pathstr, i)
 
     if i >= 1 and i <= #self.registered_plugins then
         table.insert(self.registered_plugins, i, pathstr)
-    elseif i < 0 or i > #self.registered_plugins then
-        warning = 'Invalid index, appending instead'
     elseif i == 0 then
         table.insert(self.registered_plugins, pathstr)
+    elseif i < 0 or i > #self.registered_plugins then
+        warning = 'Invalid index, appending instead'
     end
 
     if is_nil(warning) then
@@ -58,7 +58,7 @@ function User:register_plugin(pathstr, i)
         hide_from_history = false,
         animate = false,
         timeout = 1750,
-        title = '(user_api.register_plugin)',
+        title = '(user_api:register_plugin)',
     })
 end
 
