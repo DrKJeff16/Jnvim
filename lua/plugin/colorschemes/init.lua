@@ -1,8 +1,9 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.colorschemes'
+
 local User = require('user_api')
 local Check = User.check
-local csc_t = User.types.colorschemes
 
 local is_tbl = Check.value.is_tbl
 
@@ -11,34 +12,34 @@ User:register_plugin('plugin.colorschemes')
 ---@type CscMod
 local Colorschemes = {}
 
----@type ODSubMod
-Colorschemes.onedark = require('plugin.colorschemes.onedark')
-
-Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
-
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 
-Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
+Colorschemes.dracula = require('plugin.colorschemes.dracula')
 
-Colorschemes.vscode = require('plugin.colorschemes.vscode')
+Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
 
 Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
 
 Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
 
-Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
+Colorschemes.molokai = require('plugin.colorschemes.molokai')
+
+Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
 
 Colorschemes.oak = require('plugin.colorschemes.oak')
 
-Colorschemes.molokai = require('plugin.colorschemes.molokai')
+---@type ODSubMod
+Colorschemes.onedark = require('plugin.colorschemes.onedark')
+
+Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
 
 Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
 
-Colorschemes.dracula = require('plugin.colorschemes.dracula')
-
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
 
-Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
+Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
+
+Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@param O? table
 ---@return CscMod|table
