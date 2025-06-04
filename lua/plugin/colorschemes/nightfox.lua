@@ -1,8 +1,9 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.colorschemes'
+
 local User = require('user_api')
 local Check = User.check
-local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
@@ -34,7 +35,7 @@ end
 ---@param override? table
 function Nightfox:setup(variant, transparent, override)
     variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
-        or 'nightfox'
+        or self.variants[1]
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -48,20 +49,20 @@ function Nightfox:setup(variant, transparent, override)
             transparent = transparent, -- Disable setting background
             terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
             dim_inactive = false, -- Non focused panes set to alternative background
-            module_default = false, -- Default enable value for modules
+            module_default = true, -- Default enable value for modules
             colorblind = { enable = false }, -- Disable colorblind support
             styles = { -- Style to be applied to different syntax groups
                 comments = 'NONE', -- Value is any valid attr-list value `:help attr-list`
                 conditionals = 'bold',
                 constants = 'bold',
                 functions = 'bold',
-                keywords = 'NONE',
+                keywords = 'bold',
                 numbers = 'NONE',
                 operators = 'NONE',
                 preprocs = 'bold',
                 strings = 'NONE',
                 types = 'bold',
-                variables = 'NONE',
+                variables = 'altfont',
             },
 
             inverse = { -- Inverse highlight for different types
@@ -103,6 +104,8 @@ function Nightfox:setup(variant, transparent, override)
     require('nightfox').compile()
 end
 
+---@param O? table
+---@return CscSubMod|table
 function Nightfox.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Nightfox })
