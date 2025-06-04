@@ -31,6 +31,7 @@ local function symbol_info()
     end, bufnr)
 end
 
+---@param bufnr integer
 local function switch_source_header(bufnr)
     local method_name = 'textDocument/switchSourceHeader'
     local client = vim.lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
@@ -66,7 +67,23 @@ Clients.bashls = {
     root_markers = { '.git' },
     settings = {
         bashIde = {
-            globPattern = '*@(.sh|.inc|.bash|.command)',
+            backgroundAnalysisMaxFiles = 500,
+            enableSourceErrorDiagnostics = true,
+            globPattern = '**/*@(.sh|.inc|.bash|.command)',
+            includeAllWorkspaceSymbols = true,
+            logLevel = 'warning',
+            shellcheckPath = 'shellcheck',
+            shfmt = {
+                binaryNextLine = true,
+                caseIndent = true,
+                funcNextLine = false,
+                ignoreEditorconfig = false,
+                keepPadding = true,
+                languageDialect = 'auto',
+                path = 'shfmt',
+                simplifyCode = false,
+                spaceRedirects = true,
+            },
         },
     },
 }
