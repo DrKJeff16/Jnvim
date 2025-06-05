@@ -157,7 +157,7 @@
 --- ---
 ---@field empty fun(v: string|table|number|integer|(string|table|number|integer)[], multiple: boolean?): boolean
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
----@field tbl_values fun(values: any[], T: table, return_keys: boolean?): boolean|string|integer|(string|integer)[]
+---@field tbl_values fun(values: any[], T: table, return_keys: boolean?): (string|integer)[]|boolean|string|integer
 ---@field single_type_tbl fun(type_str: Types, T: table): boolean
 
 ---@class User.Check

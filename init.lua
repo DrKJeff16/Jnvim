@@ -71,7 +71,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     sts = 4, -- `softtabstop`
     ts = 4, -- `tabstop`
     title = true,
-    wrap = true,
+    wrap = false,
 })
 
 Keymaps:set_leader('<Space>')
