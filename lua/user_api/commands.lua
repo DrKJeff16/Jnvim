@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
-require('user_api.types.user.commands')
+---@module 'user_api.types.user.commands')
 
 local desc = require('user_api.maps.kmap').desc
 
