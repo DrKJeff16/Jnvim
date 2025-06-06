@@ -5,17 +5,26 @@
 local User = require('user_api')
 local Check = User.check
 
+local is_nil = Check.value.is_nil
+
+local notify = User.util.notify.notify or vim.notify
+local uri_fname = vim.uri_to_fname
+local curr_buf = vim.api.nvim_get_current_buf
+local curr_win = vim.api.nvim_get_current_win
+
+User:register_plugin('plugin.lsp.server_config')
+
 local function symbol_info()
     local lsp = vim.lsp
 
-    local bufnr = vim.api.nvim_get_current_buf()
+    local bufnr = curr_buf()
     local clangd_client = lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
 
-    if not (clangd_client and clangd_client.supports_method('textDocument/symbolInfo')) then
-        return vim.notify('Clangd client not found', vim.log.levels.ERROR)
+    if is_nil(clangd_client) or not clangd_client.supports_method('textDocument/symbolInfo') then
+        return notify('Clangd client not found', vim.log.levels.ERROR)
     end
 
-    local win = vim.api.nvim_get_current_win()
+    local win = curr_win()
     local params = lsp.util.make_position_params(win, clangd_client.offset_encoding)
 
     clangd_client.request('textDocument/symbolInfo', params, function(err, res)
@@ -24,8 +33,11 @@ local function symbol_info()
             return
         end
 
-        local container = string.format('container: %s', res[1].containerName) ---@type string
-        local name = string.format('name: %s', res[1].name) ---@type string
+        ---@type string
+        local container = string.format('container: %s', res[1].containerName)
+
+        ---@type string
+        local name = string.format('name: %s', res[1].name)
 
         lsp.util.open_floating_preview({ name, container }, '', {
             height = 2,
@@ -48,7 +60,7 @@ local function switch_source_header(bufnr)
     if not client then
         local msg = 'method %s is not supported by any servers active on the current buffer'
 
-        return vim.notify(msg:format(method_name))
+        return notify(msg:format(method_name))
     end
 
     local params = lsp.util.make_text_document_params(bufnr)
@@ -59,15 +71,13 @@ local function switch_source_header(bufnr)
         end
 
         if not result then
-            vim.notify('corresponding file cannot be determined')
+            notify('corresponding file cannot be determined')
             return
         end
 
-        vim.cmd.edit(vim.uri_to_fname(result))
+        vim.cmd.edit(uri_fname(result))
     end, bufnr)
 end
-
-User:register_plugin('plugin.lsp.server_config')
 
 ---@type Lsp.Server.Clients
 local Clients = {}
@@ -115,7 +125,65 @@ Clients.lua_ls = {
         end
 
         client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+            addonManager = { enable = true },
+            codeLens = { enable = true },
+            completion = {
+                autoRequire = false,
+                callSnippet = 'Replace',
+                displayContext = 8,
+                enable = true,
+                keywordSnippet = 'Replace',
+                postfix = '@',
+                requireSeparator = '.',
+                showParams = true,
+                showWord = 'Enable',
+                workspaceWord = true,
+            },
+            diagnostics = {
+                disable = { 'inject-field' },
+                enable = true,
+                globals = { 'vim' },
+            },
+            format = { enable = true },
+            hint = {
+                arrayIndex = 'Auto',
+                await = true,
+                enable = true,
+                paramName = 'All',
+                paramType = true,
+                semicolon = 'SameLine',
+                setType = true,
+            },
+            hover = {
+                enable = true,
+                enumsLimit = 30,
+                expandAlias = true,
+                previewFields = 50,
+                viewNumber = true,
+                viewString = true,
+                viewStringMax = 1000,
+            },
+            semantic = {
+                annotation = true,
+                enable = true,
+                keyword = true,
+                variable = true,
+            },
+            signatureHelp = { enable = true },
+            type = {
+                castNumberToInteger = false,
+                inferParamType = true,
+                weakNilCheck = true,
+                weakUnionCheck = true,
+            },
+            window = {
+                progressBar = true,
+                statusBar = true,
+            },
             runtime = {
+                fileEncoding = 'utf8',
+                pathStrict = false,
+                unicodeName = false,
                 -- Tell the language server which version of Lua you're using (most
                 -- likely LuaJIT in the case of Neovim)
                 version = 'LuaJIT',
@@ -141,8 +209,8 @@ Clients.lua_ls = {
                 -- your own configuration.
                 -- See https://github.com/neovim/nvim-lspconfig/issues/3189
                 -- library = {
-                --   vim.api.nvim_get_runtime_file('', true),
-                -- }
+                --     vim.api.nvim_get_runtime_file('', true),
+                -- },
             },
         })
     end,
@@ -196,6 +264,10 @@ Clients.lua_ls = {
                 pathStrict = false,
                 unicodeName = false,
                 version = 'LuaJIT',
+                path = {
+                    'lua/?.lua',
+                    'lua/?/init.lua',
+                },
             },
             semantic = {
                 annotation = true,
@@ -217,6 +289,10 @@ Clients.lua_ls = {
             workspace = {
                 checkThirdParty = false,
                 useGitIgnore = true,
+                library = {
+                    vim.env.VIMRUNTIME,
+                    -- vim.api.nvim_get_runtime_file('', true),
+                },
             },
         },
     },
