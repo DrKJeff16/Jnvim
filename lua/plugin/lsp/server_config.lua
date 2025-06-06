@@ -133,8 +133,8 @@ Clients.lua_ls = {
                     vim.env.VIMRUNTIME,
                     -- Depending on the usage, you might want to add additional paths
                     -- here.
-                    '${3rd}/luv/library',
-                    '${3rd}/busted/library',
+                    -- '${3rd}/luv/library',
+                    -- '${3rd}/busted/library',
                 },
                 -- Or pull in all of 'runtimepath'.
                 -- NOTE: this is a lot slower and will cause issues when working on
@@ -147,12 +147,83 @@ Clients.lua_ls = {
         })
     end,
 
-    settings = { Lua = {} },
+    settings = {
+        Lua = {
+            addonManager = {
+                enable = true,
+            },
+            codeLens = { enable = true },
+            completion = {
+                autoRequire = false,
+                callSnippet = 'Replace',
+                displayContext = 8,
+                enable = true,
+                keywordSnippet = 'Replace',
+                postfix = '@',
+                requireSeparator = '.',
+                showParams = true,
+                showWord = 'Enable',
+                workspaceWord = true,
+            },
+            diagnostics = {
+                disable = { 'inject-field' },
+                enable = true,
+                globals = {
+                    'vim',
+                },
+            },
+            format = { enable = true },
+            hint = {
+                arrayIndex = 'Auto',
+                await = true,
+                enable = true,
+                paramName = 'All',
+                paramType = true,
+                semicolon = 'SameLine',
+                setType = true,
+            },
+            hover = {
+                enable = true,
+                enumsLimit = 30,
+                expandAlias = true,
+                previewFields = 50,
+                viewNumber = true,
+                viewString = true,
+                viewStringMax = 1000,
+            },
+            runtime = {
+                fileEncoding = 'utf8',
+                pathStrict = false,
+                unicodeName = false,
+                version = 'LuaJIT',
+            },
+            semantic = {
+                annotation = true,
+                enable = true,
+                keyword = true,
+                variable = true,
+            },
+            signatureHelp = { enable = true },
+            type = {
+                castNumberToInteger = false,
+                inferParamType = true,
+                weakNilCheck = true,
+                weakUnionCheck = true,
+            },
+            window = {
+                progressBar = true,
+                statusBar = true,
+            },
+            workspace = {
+                checkThirdParty = false,
+                useGitIgnore = true,
+            },
+        },
+    },
 }
 
 Clients.clangd = {
     cmd = { 'clangd' },
-
     filetypes = {
         'c',
         'cpp',
