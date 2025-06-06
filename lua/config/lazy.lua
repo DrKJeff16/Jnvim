@@ -106,7 +106,7 @@ Lazy.setup({
 
     checker = {
         enabled = false,
-        notify = true,
+        notify = false,
         frequency = 900,
         check_pinned = false,
     },
