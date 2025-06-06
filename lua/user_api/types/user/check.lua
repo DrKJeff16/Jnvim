@@ -3,6 +3,12 @@
 ---@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table'|'thread'|'userdata')
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
+--- Exitstance checks
+--- ---
+--- ## Description
+---
+--- This contains many checkers for environment, modules, namespaces, etc.
+--- Also, simplified Vim functions can be found here
 ---@class User.Check.Existance
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string|string[], need_all: boolean?): boolean|table<string, boolean>
@@ -163,7 +169,25 @@
 ---@class User.Check
 ---@field exists User.Check.Existance
 ---@field value User.Check.Value
+--- Check whether Nvim is running in a Linux Console rather than a `pty`
+--- ---
+--- ## Description
+---
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
+--- ---
+--- ## Return
+---
+--- A boolean that confirms whether the environment is a Linux Console
 ---@field in_console fun(): boolean
+--- Check whether Nvim is running in a Linux Console rather than a `pty`
+--- ---
+--- ## Description
+---
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
+--- ---
+--- ## Return
+---
+--- A boolean that confirms whether the environment is a Linux Console
 ---@field is_root fun(): boolean
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
