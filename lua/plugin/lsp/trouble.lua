@@ -6,6 +6,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
+local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 
 if not exists('trouble') then
@@ -14,10 +15,13 @@ end
 
 User:register_plugin('plugin.lsp.trouble')
 
-local Trouble = require('trouble')
+local trouble = require('trouble')
+
+---@type Lsp.SubMods.Trouble
+local Trouble = {}
 
 ---@type trouble.Config
-local Opts = {
+Trouble.Opts = {
     auto_close = false, -- auto close when there are no items
     auto_open = false, -- auto open when there are items
     auto_preview = true, -- automatically open preview when on an item
@@ -189,20 +193,18 @@ local Opts = {
     },
 }
 
-Trouble.setup(Opts)
-
 ---@type KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
-local Keys = {
+Trouble.Keys = {
     n = {
         ['<leader>lx'] = { group = '+Trouble' },
 
         ['<leader>lxx'] = {
             function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
-            desc('Toggle Trouble Diagnostics'),
+            desc('Toggle Diagnostics'),
         },
         ['<leader>lxs'] = {
             function() vim.cmd('Trouble symbols toggle focus=false') end,
-            desc('Toggle Trouble Symbols'),
+            desc('Toggle Symbols'),
         },
         ['<leader>lxl'] = {
             function() vim.cmd('Trouble lsp toggle focus=false') end,
@@ -210,7 +212,7 @@ local Keys = {
         },
         ['<leader>lxL'] = {
             function() vim.cmd('Trouble loclist toggle') end,
-            desc('Toggle Location List'),
+            desc('Toggle Loclist'),
         },
         ['<leader>lxr'] = {
             function() vim.cmd('Trouble lsp_references') end,
@@ -222,11 +224,11 @@ local Keys = {
 
         ['<leader>lxx'] = {
             function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
-            desc('Toggle Trouble Diagnostics'),
+            desc('Toggle Diagnostics'),
         },
         ['<leader>lxs'] = {
             function() vim.cmd('Trouble symbols toggle focus=false') end,
-            desc('Toggle Trouble Symbols'),
+            desc('Toggle Symbols'),
         },
         ['<leader>lxl'] = {
             function() vim.cmd('Trouble lsp toggle focus=false') end,
@@ -234,7 +236,7 @@ local Keys = {
         },
         ['<leader>lxL'] = {
             function() vim.cmd('Trouble loclist toggle') end,
-            desc('Toggle Location List'),
+            desc('Toggle Loclist'),
         },
         ['<leader>lxr'] = {
             function() vim.cmd('Trouble lsp_references') end,
@@ -243,10 +245,29 @@ local Keys = {
     },
 }
 
-vim.schedule(function()
-    local Keymaps = require('config.keymaps')
+---@param self Lsp.SubMods.Trouble
+---@param O table|trouble.Config?
+function Trouble:setup(O)
+    O = is_tbl(O) and O or {}
 
-    Keymaps:setup(Keys)
-end)
+    O = vim.tbl_deep_extend('keep', vim.deepcopy(O), self.Opts)
+
+    trouble.setup(O)
+
+    vim.schedule(function()
+        local Keymaps = require('config.keymaps')
+
+        Keymaps:setup(self.Keys)
+    end)
+end
+
+---@param O? table
+---@return table|Lsp.SubMods.Trouble
+function Trouble.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Trouble })
+end
+
+return Trouble
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
