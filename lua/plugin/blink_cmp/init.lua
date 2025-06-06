@@ -4,7 +4,6 @@
 
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
 
 local exists = Check.exists.module
 
@@ -23,8 +22,6 @@ local Blink = require('blink.cmp')
 if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()
 end
-
----@type blink.cmp.Config
 
 Blink.setup(Cfg.config)
 

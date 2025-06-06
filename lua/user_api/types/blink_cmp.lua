@@ -12,7 +12,7 @@
 ---@field reset_sources fun(self: BlinkCmp.Util.Sources)
 ---@field reset_providers fun(self: BlinkCmp.Util.Sources)
 ---@field gen_sources fun(self: BlinkCmp.Util): BlinkCmp.Util.Sources
----@field gen_providers fun(self: BlinkCmp.Util, P: blink.cmp.SourceProviderConfigPartial?): BlinkCmp.Util.Sources
+---@field gen_providers fun(self: BlinkCmp.Util, P: table<string, blink.cmp.SourceProviderConfigPartial>?)
 ---@field new fun(O: table?): BlinkCmp.Util|table
 
 ---@alias BlinkCmp.Cfg.Config blink.cmp.Config
