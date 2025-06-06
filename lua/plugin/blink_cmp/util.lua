@@ -7,11 +7,13 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local tbl_values = Check.value.tbl_values
 local is_tbl = Check.value.is_tbl
+local is_str = Check.value.is_str
 local empty = Check.value.empty
 local ft_get = Util.ft_get
-local au = Util.au.au_from_dict
+local au = Util.au.au_repeated_events
+
+local in_tbl = vim.tbl_contains
 
 User:register_plugin('plugin.blink_cmp.util')
 
@@ -19,7 +21,12 @@ User:register_plugin('plugin.blink_cmp.util')
 local BUtil = {}
 
 ---@type BlinkCmp.Util.Sources
-BUtil.Sources = {}
+BUtil.Sources = {
+    'lsp',
+    'path',
+    'buffer',
+    'snippets',
+}
 
 BUtil.curr_ft = ''
 
@@ -34,6 +41,7 @@ function BUtil:reset_sources()
 end
 
 ---@param self BlinkCmp.Util
+---@return BlinkCmp.Util.Sources
 function BUtil:gen_sources()
     local ft = ft_get()
 
@@ -42,8 +50,8 @@ function BUtil:gen_sources()
         self.curr_ft = ft
     end
 
-    if self.curr_ft == 'lua' and exists('lazydev') then
-        if not tbl_values({ 'lazydev' }, self.Sources) then
+    if ft == 'lua' and exists('lazydev') then
+        if not in_tbl(self.Sources, 'lazydev') then
             table.insert(self.Sources, 1, 'lazydev')
         end
 
@@ -57,13 +65,15 @@ function BUtil:gen_sources()
         'gitrebase',
     }
 
-    if tbl_values({ self.curr_ft }, git_fts) and not tbl_values({ 'git' }, self.Sources) then
+    if in_tbl(git_fts, ft) and not in_tbl(self.Sources, 'git') then
         table.insert(self.Sources, 1, 'git')
     end
 
-    if self.curr_ft == 'gitcommit' and not tbl_values({ 'conventional_commits' }, self.Sources) then
+    if ft == 'gitcommit' and not in_tbl(self.Sources, 'conventional_commits') then
         table.insert(self.Sources, 1, 'conventional_commits')
     end
+
+    return self.Sources
 end
 
 ---@type BlinkCmp.Util.Providers
@@ -74,7 +84,12 @@ function BUtil:reset_providers()
     self.Providers = {}
 
     self.Providers.buffer = {
+        score_offset = -20,
+
         -- keep case of first char
+        ---@param a blink.cmp.Context
+        ---@param items blink.cmp.CompletionItem[]
+        ---@return blink.cmp.CompletionItem[]
         transform_items = function(a, items)
             local keyword = a.get_keyword()
             local correct = ''
@@ -116,12 +131,14 @@ function BUtil:reset_providers()
     }
 
     self.Providers.snippets = {
+        score_offset = -10,
         should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
     }
 
     self.Providers.lsp = {
         name = 'LSP',
         module = 'blink.cmp.sources.lsp',
+        score_offset = 100,
         transform_items = function(_, items)
             return vim.tbl_filter(
                 function(item)
@@ -134,7 +151,7 @@ function BUtil:reset_providers()
 end
 
 ---@param self BlinkCmp.Util
----@param P? blink.cmp.SourceProviderConfigPartial[]
+---@param P? table<string, blink.cmp.SourceProviderConfigPartial>
 function BUtil:gen_providers(P)
     self:reset_providers()
 
@@ -143,13 +160,14 @@ function BUtil:gen_providers(P)
             module = 'blink-cmp-git',
             name = 'Git',
             enabled = function()
-                ---@type boolean
-                local res = tbl_values(
-                    { ft_get() },
-                    { 'git', 'gitcommit', 'gitattributes', 'gitrebase' }
-                )
+                local git_fts = {
+                    'git',
+                    'gitcommit',
+                    'gitattributes',
+                    'gitrebase',
+                }
 
-                return res
+                return in_tbl(git_fts, ft_get())
             end,
         }
     end
@@ -174,6 +192,16 @@ function BUtil:gen_providers(P)
             enabled = function() return vim.bo.filetype == 'lua' end,
         }
     end
+
+    if not is_tbl(P) or empty(P) then
+        return
+    end
+
+    for provider, cfg in next, P do
+        if is_str(provider) and is_tbl(cfg) and not empty(cfg) then
+            self.Providers[provider] = cfg
+        end
+    end
 end
 
 ---@param O? table
@@ -184,15 +212,23 @@ function BUtil.new(O)
 end
 
 local au_group = vim.api.nvim_create_augroup('BlinkAU', { clear = true })
-au({
-    ['BufEnter'] = {
-        group = au_group,
-        callback = function()
-            BUtil:reset_sources()
-            BUtil.curr_ft = ft_get()
-        end,
+---@type AuRepeatEvents[]
+local au_tbl = {
+    {
+        events = { 'BufEnter', 'BufNew', 'WinEnter' },
+        opts_tbl = {
+            {
+                group = au_group,
+                pattern = '*',
+                callback = function() BUtil.curr_ft = ft_get() end,
+            },
+        },
     },
-})
+}
+
+for _, autocmd in next, au_tbl do
+    au(autocmd)
+end
 
 return BUtil
 

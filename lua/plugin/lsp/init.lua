@@ -110,7 +110,15 @@ for client, v in next, Server.clients do
     vim.lsp.enable(client)
 end
 
----@type KeyMapDict|RegKeysNamed
+vim.diagnostic.config({
+    signs = true,
+    float = true,
+    underline = true,
+    virtual_lines = false,
+    virtual_text = true,
+})
+
+---@type KeyMapDict|RegKeysNamed|RegKeys
 local Keys = {
     ['<leader>l'] = { group = '+LSP' },
 
@@ -132,19 +140,10 @@ local Keys = {
     },
 }
 
-vim.schedule(function()
-    local Keymaps = require('config.keymaps')
-
-    Keymaps:setup({
-        n = Keys,
-    })
-end)
-
-local group = augroup('UserLspConfig', { clear = false })
+local Keymaps = require('config.keymaps')
+Keymaps:setup({ n = Keys })
 
 au('LspAttach', {
-    group = group,
-
     callback = function(args)
         local buf = args.buf
         local client = Lsp.get_client_by_id(args.data.client_id)
@@ -222,11 +221,9 @@ au('LspAttach', {
             ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
         }
 
-        vim.schedule(function()
-            local Keymaps = require('config.keymaps')
+        local Keymaps = require('config.keymaps')
 
-            Keymaps:setup({ n = NK, v = VK })
-        end)
+        Keymaps:setup({ n = NK, v = VK })
 
         if client.name == 'lua_ls' then
             require('plugin.lazydev')
@@ -234,17 +231,14 @@ au('LspAttach', {
     end,
 })
 
-au('LspDetach', {
-    group = group,
-
-    callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        -- Do something with the client
-        vim.cmd('setlocal tagfunc< omnifunc<')
-    end,
-})
+-- au('LspDetach', {
+--     callback = function(args)
+--         local client = vim.lsp.get_client_by_id(args.data.client_id)
+--         -- Do something with the client
+--         vim.cmd('setlocal tagfunc< omnifunc<')
+--     end,
+-- })
 au('LspProgress', {
-    group = group,
     pattern = '*',
     callback = function() vim.cmd('redrawstatus') end,
 })

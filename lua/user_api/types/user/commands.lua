@@ -1,10 +1,9 @@
 ---@meta
 
----@alias CtxFun fun(ctx: table): any?
----@alias User.Commands.Mappings
----|ModeRegKeys
----|ModeRegKeysNamed
----|KeyMapModeDict
+---@module 'user_api.types.user.maps'
+
+---@alias CtxFun fun(ctx: table)
+---@alias User.Commands.Mappings AllModeMaps
 
 ---@class User.Commands.CtxSpec
 ---@field [1] CtxFun
@@ -15,6 +14,7 @@
 
 ---@class User.Commands
 ---@field commands User.Commands.Spec
+---@field new_command fun(self: User.Commands, name: string, C: User.Commands.CtxSpec|table)
 ---@field setup fun(self: User.Commands)
 ---@field setup_keys fun(self: User.Commands)
 

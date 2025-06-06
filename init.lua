@@ -135,10 +135,10 @@ local CscKeys = {
 
 --- Reorder to your liking
 local selected = {
-    'nightfox',
+    'tokyonight',
     'catppuccin',
     'kanagawa',
-    'tokyonight',
+    'nightfox',
     'vscode',
     'onedark',
     'gruvbox',
@@ -208,34 +208,30 @@ for _, name in next, selected do
     ::continue::
 end
 
-vim.schedule(function()
-    if empty(valid) then
-        notify('No valid colorschemes!', 'error', {
-            animate = false,
-            hide_from_history = false,
-            timeout = 2250,
-            title = '(init.lua)',
-        })
+if empty(valid) then
+    notify('No valid colorschemes!', 'error', {
+        animate = false,
+        hide_from_history = false,
+        timeout = 2250,
+        title = '(init.lua)',
+    })
+end
 
-        return
+for _, mod in next, valid do
+    ---@type CscSubMod
+    local Color = Csc[mod]
+
+    if is_nil(Color.setup) then
+        goto continue
+    else
+        Color:setup()
+
+        Keymaps:setup({ n = CscKeys })
+        break
     end
 
-    for _, mod in next, valid do
-        ---@type CscSubMod
-        local Color = Csc[mod]
-
-        if is_nil(Color.setup) then
-            goto continue
-        else
-            Color:setup()
-
-            Keymaps:setup({ n = CscKeys })
-            break
-        end
-
-        ::continue::
-    end
-end)
+    ::continue::
+end
 
 -- Call the User API file associations and other autocmds
 Util:assoc()

@@ -11,6 +11,7 @@ local is_tbl = Check.value.is_tbl
 local has_words_before = Util.has_words_before
 
 local BUtil = require('plugin.blink_cmp.util')
+BUtil:gen_providers()
 
 User:register_plugin('plugin.blink_cmp.config')
 
@@ -27,10 +28,7 @@ Cfg.config.keymap = {
     preset = 'super-tab',
 
     ['<C-Space>'] = {
-        function(cmp)
-            BUtil:gen_sources()
-            return cmp.show({ providers = BUtil.Sources })
-        end,
+        function(cmp) return cmp.show({ providers = BUtil:gen_sources() }) end,
         'show_documentation',
         'hide_documentation',
     },
@@ -43,23 +41,21 @@ Cfg.config.keymap = {
     ['<Tab>'] = {
         function(cmp)
             if not cmp.is_menu_visible() and has_words_before() then
-                BUtil:gen_sources()
-                return cmp.show({ providers = BUtil.Sources })
+                return cmp.show({ providers = BUtil:gen_sources() })
             end
         end,
-        function(cmp) return cmp.select_next({ auto_insert = true }) end,
         'snippet_forward',
+        function(cmp) return cmp.select_next({ auto_insert = true }) end,
         'fallback',
     },
     ['<S-Tab>'] = {
         function(cmp)
             if not cmp.is_menu_visible() and has_words_before() then
-                BUtil:gen_sources()
-                return cmp.show({ providers = BUtil.Sources })
+                return cmp.show({ providers = BUtil:gen_sources() })
             end
         end,
-        function(cmp) return cmp.select_prev({ auto_insert = true }) end,
         'snippet_backward',
+        function(cmp) return cmp.select_prev({ auto_insert = true }) end,
         'fallback',
     },
 
