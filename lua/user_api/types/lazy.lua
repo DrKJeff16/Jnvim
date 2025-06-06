@@ -1,12 +1,13 @@
 ---@meta
 
-require('user_api.types.colorschemes')
-require('user_api.types.user.maps')
+---@module 'lazy'
+---@module 'user_api.types.colorschemes'
+---@module 'user_api.types.user.maps'
 
 ---@class LazySources
 ---@field [1] 'lazy'
----@field [2]? 'rockspec'|'pathspec'
----@field [3]? 'rockspec'|'pathspec'
+---@field [2]? 'rockspec'|'packspec'
+---@field [3]? 'rockspec'|'packspec'
 
 ---@class LazyMods
 ---@field colorschemes CscMod

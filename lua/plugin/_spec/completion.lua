@@ -1,7 +1,8 @@
+---@module 'user_api.types.lazy'
+
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util') ---@see PluginUtils
-local types = User.types.lazy
 
 local source = CfgUtil.source
 local executable = Check.exists.executable

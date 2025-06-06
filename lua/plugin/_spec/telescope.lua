@@ -1,7 +1,8 @@
+---@module 'user_api.types.lazy'
+
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
-local types = User.types.lazy
 
 local source = CfgUtil.source
 local tel_fzf_build = CfgUtil.tel_fzf_build

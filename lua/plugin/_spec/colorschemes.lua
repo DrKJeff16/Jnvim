@@ -1,11 +1,9 @@
-local User = require('user_api')
-local CfgUtil = require('config.util')
-local types = User.types.lazy
+---@module 'user_api.types.lazy'
 
-local source = CfgUtil.source
+local CfgUtil = require('config.util')
+
 local has_tgc = CfgUtil.has_tgc
 local colorscheme_init = CfgUtil.colorscheme_init
-local vim_exists = User.check.exists.vim_exists
 
 ---@type (LazySpec)[]
 local M = {

@@ -1,10 +1,10 @@
+---@module 'user_api.types.lazy'
+
 local User = require('user_api')
 local CfgUtil = require('config.util')
 local Check = User.check
-local Types = User.types.lazy
 
 local key_variant = CfgUtil.key_variant
-local executable = Check.exists.executable
 local in_console = Check.in_console
 local is_root = Check.is_root
 local desc = User.maps.kmap.desc
@@ -87,10 +87,6 @@ Lazy.setup({
                 if require('config.util').luarocks_check() then
                     table.insert(S, 'rockspec')
                 end
-                -- --- If `pathspec-find` is available
-                -- if executable('pathspec-find') then
-                --     table.insert(S, 'pathspec')
-                -- end
             end
 
             return S

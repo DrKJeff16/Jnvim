@@ -1,12 +1,12 @@
+---@module 'user_api.types.lazy'
+
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
-local types = User.types.lazy
 
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
-local in_console = Check.in_console
 
 ---@type (LazySpec)[]
 local M = {
