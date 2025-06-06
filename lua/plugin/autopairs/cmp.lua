@@ -1,10 +1,11 @@
+---@module 'user_api.types.autopairs'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.autopairs
 
 local mods_exist = Check.exists.modules
 
-if not mods_exist({ 'nvim-autopairs', 'cmp' }) then
+if not mods_exist('cmp') then
     return
 end
 
@@ -13,7 +14,6 @@ local cmp_ap = require('nvim-autopairs.completion.cmp')
 local Handlers = require('nvim-autopairs.completion.handlers')
 
 local cmp_lsp = cmp.lsp
-local insp = vim.inspect
 
 local ft_handles = {
     filetypes = {
