@@ -1,8 +1,9 @@
-require('user_api.types.user.check')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.check'
 
 ---@type User.Check.Value
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Value = {}
 
 -- NOTE: We define `is_nil` first as it's used by the other checkers
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
@@ -24,7 +25,7 @@ local M = {}
 ---@param var any
 ---@param multiple? boolean
 ---@return boolean
-function M.is_nil(var, multiple)
+function Value.is_nil(var, multiple)
     multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
     if not multiple then
@@ -79,19 +80,20 @@ local function type_fun(t)
     end
 
     return function(var, multiple)
-        multiple = (not M.is_nil(multiple) and type(multiple) == 'boolean') and multiple or false
+        multiple = (not Value.is_nil(multiple) and type(multiple) == 'boolean') and multiple
+            or false
 
         if not multiple then
-            return not M.is_nil(var) and type(var) == t
+            return not Value.is_nil(var) and type(var) == t
         end
 
         --- Treat `var` as a table from here on
-        if M.is_nil(var) or type(var) ~= 'table' then
+        if Value.is_nil(var) or type(var) ~= 'table' then
             return false
         end
 
         for _, v in next, var do
-            if M.is_nil(t) or type(v) ~= t then
+            if Value.is_nil(t) or type(v) ~= t then
                 vim.notify(
                     '(user_api.check.value.'
                         .. name
@@ -122,7 +124,7 @@ end
 ---
 --- A boolean value indicating whether the data is a string or not.
 --- ---
-M.is_str = type_fun('string')
+Value.is_str = type_fun('string')
 
 --- Checks whether a value is a boolean
 --- ---
@@ -140,7 +142,7 @@ M.is_str = type_fun('string')
 ---
 --- A boolean value indicating whether the data is a boolean or not.
 --- ---
-M.is_bool = type_fun('boolean')
+Value.is_bool = type_fun('boolean')
 
 --- Checks whether a value is a function
 --- ---
@@ -158,7 +160,7 @@ M.is_bool = type_fun('boolean')
 ---
 --- A boolean value indicating whether the data is a function or not.
 --- ---
-M.is_fun = type_fun('function')
+Value.is_fun = type_fun('function')
 
 --- Checks whether a value is a number
 --- ---
@@ -176,7 +178,7 @@ M.is_fun = type_fun('function')
 ---
 --- A boolean value indicating whether the data is a number or not.
 --- ---
-M.is_num = type_fun('number')
+Value.is_num = type_fun('number')
 
 --- Checks whether a value is a table
 --- ---
@@ -194,7 +196,7 @@ M.is_num = type_fun('number')
 ---
 --- A boolean value indicating whether the data is a table or not.
 --- ---
-M.is_tbl = type_fun('table')
+Value.is_tbl = type_fun('table')
 
 --- Checks whether a value is an integer i.e. _greater than or equal to `0` and a **whole number**_.
 --- ---
@@ -212,10 +214,10 @@ M.is_tbl = type_fun('table')
 ---
 --- A boolean value indicating whether the data is an integer or not.
 --- ---
-function M.is_int(var, multiple)
-    local is_tbl = M.is_tbl
-    local is_bool = M.is_bool
-    local is_num = M.is_num
+function Value.is_int(var, multiple)
+    local is_tbl = Value.is_tbl
+    local is_bool = Value.is_bool
+    local is_num = Value.is_num
 
     local floor = math.floor
     local ceil = math.ceil
@@ -269,11 +271,11 @@ end
 ---@param v string|table|number|integer|(string|table|number|integer)[]
 ---@param multiple? boolean
 ---@return boolean
-function M.empty(v, multiple)
-    local is_str = M.is_str
-    local is_tbl = M.is_tbl
-    local is_num = M.is_num
-    local is_bool = M.is_bool
+function Value.empty(v, multiple)
+    local is_str = Value.is_str
+    local is_tbl = Value.is_tbl
+    local is_num = Value.is_num
+    local is_bool = Value.is_bool
 
     multiple = is_bool(multiple) and multiple or false
 
@@ -300,7 +302,7 @@ function M.empty(v, multiple)
 
         for _, val in next, v do
             -- NOTE: NO RECURSIVE CHECKING
-            if M.empty(val, false) then
+            if Value.empty(val, false) then
                 return true
             end
         end
@@ -318,11 +320,11 @@ end
 ---@param field string|integer|(string|integer)[]
 ---@param T table<string|integer, any>
 ---@return boolean
-function M.fields(field, T)
-    local is_tbl = M.is_tbl
-    local is_str = M.is_str
-    local is_num = M.is_num
-    local empty = M.empty
+function Value.fields(field, T)
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_num = Value.is_num
+    local empty = Value.empty
 
     if not is_tbl(T) then
         local t_t = type(T)
@@ -343,11 +345,11 @@ function M.fields(field, T)
     end
 
     if not is_tbl(field) then
-        return not M.is_nil(T[field])
+        return not Value.is_nil(T[field])
     end
 
     for _, v in next, field do
-        if not M.fields(v, T) then
+        if not Value.fields(v, T) then
             return false
         end
     end
@@ -359,12 +361,12 @@ end
 ---@param T table
 ---@param return_keys boolean
 ---@return boolean|string|integer|(string|integer)[] res
-function M.tbl_values(values, T, return_keys)
-    local is_tbl = M.is_tbl
-    local is_str = M.is_str
-    local is_int = M.is_int
-    local is_bool = M.is_bool
-    local empty = M.empty
+function Value.tbl_values(values, T, return_keys)
+    local is_tbl = Value.is_tbl
+    local is_str = Value.is_str
+    local is_int = Value.is_int
+    local is_bool = Value.is_bool
+    local empty = Value.empty
 
     if not is_tbl(values) or empty(values) then
         vim.notify(
@@ -417,10 +419,10 @@ end
 ---@param type_str Types
 ---@param T table
 ---@return boolean
-function M.single_type_tbl(type_str, T)
-    local is_str = M.is_str
-    local is_tbl = M.is_tbl
-    local empty = M.empty
+function Value.single_type_tbl(type_str, T)
+    local is_str = Value.is_str
+    local is_tbl = Value.is_tbl
+    local empty = Value.empty
 
     local ALLOWED_TYPES = {
         'boolean',
@@ -458,7 +460,7 @@ function M.single_type_tbl(type_str, T)
     end
 
     for _, v in next, T do
-        if type_str == 'nil' and not M.is_nil(v) then
+        if type_str == 'nil' and not Value.is_nil(v) then
             return false
         end
         if type(v) ~= type_str then
@@ -469,6 +471,6 @@ function M.single_type_tbl(type_str, T)
     return true
 end
 
-return M
+return Value
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -1,4 +1,6 @@
-require('user_api.types.user.check')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.check'
 
 local Value = require('user_api.check.value')
 
@@ -12,13 +14,12 @@ local empty = Value.empty
 local ERROR = vim.log.levels.ERROR
 
 ---@type User.Check.Existance
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Exists = {}
 
 ---@param mod string
 ---@param return_mod? boolean
 ---@return boolean|unknown|nil
-function M.module(mod, return_mod)
+function Exists.module(mod, return_mod)
     if not is_str(mod) then
         error('`(user_api.check.exists.module)`: Input is not a string')
     end
@@ -44,8 +45,8 @@ end
 ---@param mod string|string[]
 ---@param need_all? boolean
 ---@return boolean|table<string, boolean>
-function M.modules(mod, need_all)
-    local exists = M.module
+function Exists.modules(mod, need_all)
+    local exists = Exists.module
 
     if not (is_str(mod) or is_tbl(mod)) or empty(mod) then
         error('`(user_api.check.exists.modules)`: Input is neither a string nor a table')
@@ -80,14 +81,14 @@ end
 
 ---@param expr string|string[]
 ---@return boolean
-function M.vim_has(expr)
+function Exists.vim_has(expr)
     if is_str(expr) then
         return vim.fn.has(expr) == 1
     end
 
     if is_tbl(expr) and not empty(expr) then
         for _, v in next, expr do
-            if not M.vim_has(v) then
+            if not Exists.vim_has(v) then
                 return false
             end
         end
@@ -100,7 +101,7 @@ end
 
 ---@param expr string|string[]
 ---@return boolean
-function M.vim_exists(expr)
+function Exists.vim_exists(expr)
     local exists = vim.fn.exists
 
     if is_str(expr) then
@@ -110,7 +111,7 @@ function M.vim_exists(expr)
     if is_tbl(expr) and not empty(expr) then
         local res = false
         for _, v in next, expr do
-            res = M.vim_exists(v)
+            res = Exists.vim_exists(v)
 
             if not res then
                 break
@@ -126,7 +127,7 @@ end
 ---@param vars string|string[]
 ---@param fallback? fun()
 ---@return boolean
-function M.env_vars(vars, fallback)
+function Exists.env_vars(vars, fallback)
     local environment = vim.fn.environ()
 
     if not (is_str(vars) or is_tbl(vars)) then
@@ -145,7 +146,7 @@ function M.env_vars(vars, fallback)
         res = vim.fn.has_key(environment, vars) == 1
     elseif is_tbl(vars) then
         for _, v in next, vars do
-            res = M.env_vars(v)
+            res = Exists.env_vars(v)
 
             if not res then
                 break
@@ -154,7 +155,7 @@ function M.env_vars(vars, fallback)
     end
 
     if not res and is_fun(fallback) then
-        fallback()
+        pcall(fallback)
     end
 
     return res
@@ -163,7 +164,7 @@ end
 ---@param exe string|string[]
 ---@param fallback? fun()
 ---@return boolean
-function M.executable(exe, fallback)
+function Exists.executable(exe, fallback)
     if not (is_str(exe) or is_tbl(exe)) then
         vim.notify(
             '(user_api.check.exists.executable): Argument type is neither string nor table',
@@ -180,7 +181,7 @@ function M.executable(exe, fallback)
         res = vim.fn.executable(exe) == 1
     elseif is_tbl(exe) then
         for _, v in next, exe do
-            res = M.executable(v)
+            res = Exists.executable(v)
 
             if not res then
                 break
@@ -189,7 +190,7 @@ function M.executable(exe, fallback)
     end
 
     if not res and is_fun(fallback) then
-        fallback()
+        pcall(fallback)
     end
 
     return res
@@ -197,10 +198,10 @@ end
 
 ---@param path string
 ---@return boolean
-function M.vim_isdir(path)
+function Exists.vim_isdir(path)
     return (is_str(path) and not empty(path)) and (vim.fn.isdirectory(path) == 1) or false
 end
 
-return M
+return Exists
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

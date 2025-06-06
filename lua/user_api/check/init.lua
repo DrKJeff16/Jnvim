@@ -1,10 +1,11 @@
-require('user_api.types.user.check')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.check'
 
 --- Checking Utilities
 --- ---
 ---@type User.Check
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Check = {}
 
 --- Value checking utilities
 --- ---
@@ -13,7 +14,7 @@ local M = {}
 --- Pretty much reserved for data checking, type checking and conditional operations
 --- ---
 ---@type User.Check.Value
-M.value = require('user_api.check.value')
+Check.value = require('user_api.check.value')
 
 --- Exitstance checks
 --- ---
@@ -21,9 +22,8 @@ M.value = require('user_api.check.value')
 ---
 --- This contains many checkers for environment, modules, namespaces, etc.
 --- Also, simplified Vim functions can be found here
---- ---
 ---@type User.Check.Existance
-M.exists = require('user_api.check.exists')
+Check.exists = require('user_api.check.exists')
 
 --- Check whether Nvim is running in a Linux Console rather than a `pty`
 --- ---
@@ -36,25 +36,27 @@ M.exists = require('user_api.check.exists')
 --- A boolean that confirms whether the environment is a Linux Console
 --- ---
 ---@return boolean
-function M.in_console()
+function Check.in_console()
+    local fields = Check.value.fields
     ---@type table<string, any>
     local env = vim.fn.environ()
 
     --- FIXME: This is not a good enough check. Must find a better solution
-    return vim.tbl_contains({ 'linux' }, env['TERM']) and not M.value.fields('DISPLAY', env)
+    return (vim.tbl_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
 end
 
 ---@return boolean
-function M.is_root()
+function Check.is_root()
+    local is_nil = Check.value.is_nil
     ---@type table<string, any>
     local env = vim.fn.environ()
 
-    return env['USER'] == 'root'
+    return (not is_nil(env['USER']) and env['USER'] == 'root')
 end
 
-_G.in_console = M.in_console()
-_G.is_root = M.is_root()
+_G.in_console = Check.in_console()
+_G.is_root = Check.is_root()
 
-return M
+return Check
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -6,21 +6,28 @@ local User = require('user_api')
 local Check = User.check
 
 local function symbol_info()
+    local lsp = vim.lsp
+
     local bufnr = vim.api.nvim_get_current_buf()
-    local clangd_client = vim.lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
-    if not clangd_client or not clangd_client.supports_method('textDocument/symbolInfo') then
+    local clangd_client = lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
+
+    if not (clangd_client and clangd_client.supports_method('textDocument/symbolInfo')) then
         return vim.notify('Clangd client not found', vim.log.levels.ERROR)
     end
+
     local win = vim.api.nvim_get_current_win()
-    local params = vim.lsp.util.make_position_params(win, clangd_client.offset_encoding)
+    local params = lsp.util.make_position_params(win, clangd_client.offset_encoding)
+
     clangd_client.request('textDocument/symbolInfo', params, function(err, res)
         if err or #res == 0 then
             -- Clangd always returns an error, there is not reason to parse it
             return
         end
+
         local container = string.format('container: %s', res[1].containerName) ---@type string
         local name = string.format('name: %s', res[1].name) ---@type string
-        vim.lsp.util.open_floating_preview({ name, container }, '', {
+
+        lsp.util.open_floating_preview({ name, container }, '', {
             height = 2,
             width = math.max(string.len(name), string.len(container)),
             focusable = false,
@@ -33,25 +40,29 @@ end
 
 ---@param bufnr integer
 local function switch_source_header(bufnr)
+    local lsp = vim.lsp
+
     local method_name = 'textDocument/switchSourceHeader'
-    local client = vim.lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
+    local client = lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
+
     if not client then
-        return vim.notify(
-            ('method %s is not supported by any servers active on the current buffer'):format(
-                method_name
-            )
-        )
+        local msg = 'method %s is not supported by any servers active on the current buffer'
+
+        return vim.notify(msg:format(method_name))
     end
 
-    local params = vim.lsp.util.make_text_document_params(bufnr)
+    local params = lsp.util.make_text_document_params(bufnr)
+
     client.request(method_name, params, function(err, result)
         if err then
             error(tostring(err))
         end
+
         if not result then
             vim.notify('corresponding file cannot be determined')
             return
         end
+
         vim.cmd.edit(vim.uri_to_fname(result))
     end, bufnr)
 end
@@ -90,14 +101,14 @@ Clients.bashls = {
 
 Clients.lua_ls = {
     on_init = function(client)
+        local fs_stat = (vim.uv or vim.loop).fs_stat
+
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
+
             if
                 path ~= vim.fn.stdpath('config')
-                and (
-                    vim.uv.fs_stat(path .. '/.luarc.json')
-                    or vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                )
+                and (fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc'))
             then
                 return
             end
@@ -122,8 +133,8 @@ Clients.lua_ls = {
                     vim.env.VIMRUNTIME,
                     -- Depending on the usage, you might want to add additional paths
                     -- here.
-                    '${3rd}/luv/library',
-                    '${3rd}/busted/library',
+                    -- '${3rd}/luv/library',
+                    -- '${3rd}/busted/library',
                 },
                 -- Or pull in all of 'runtimepath'.
                 -- NOTE: this is a lot slower and will cause issues when working on
@@ -136,12 +147,83 @@ Clients.lua_ls = {
         })
     end,
 
-    settings = { Lua = {} },
+    settings = {
+        Lua = {
+            addonManager = {
+                enable = true,
+            },
+            codeLens = { enable = true },
+            completion = {
+                autoRequire = false,
+                callSnippet = 'Replace',
+                displayContext = 8,
+                enable = true,
+                keywordSnippet = 'Replace',
+                postfix = '@',
+                requireSeparator = '.',
+                showParams = true,
+                showWord = 'Enable',
+                workspaceWord = true,
+            },
+            diagnostics = {
+                disable = { 'inject-field' },
+                enable = true,
+                globals = {
+                    'vim',
+                },
+            },
+            format = { enable = true },
+            hint = {
+                arrayIndex = 'Auto',
+                await = true,
+                enable = true,
+                paramName = 'All',
+                paramType = true,
+                semicolon = 'SameLine',
+                setType = true,
+            },
+            hover = {
+                enable = true,
+                enumsLimit = 30,
+                expandAlias = true,
+                previewFields = 50,
+                viewNumber = true,
+                viewString = true,
+                viewStringMax = 1000,
+            },
+            runtime = {
+                fileEncoding = 'utf8',
+                pathStrict = false,
+                unicodeName = false,
+                version = 'LuaJIT',
+            },
+            semantic = {
+                annotation = true,
+                enable = true,
+                keyword = true,
+                variable = true,
+            },
+            signatureHelp = { enable = true },
+            type = {
+                castNumberToInteger = false,
+                inferParamType = true,
+                weakNilCheck = true,
+                weakUnionCheck = true,
+            },
+            window = {
+                progressBar = true,
+                statusBar = true,
+            },
+            workspace = {
+                checkThirdParty = false,
+                useGitIgnore = true,
+            },
+        },
+    },
 }
 
 Clients.clangd = {
     cmd = { 'clangd' },
-
     filetypes = {
         'c',
         'cpp',
@@ -210,6 +292,31 @@ Clients.pylsp = {
             },
         },
     },
+}
+
+Clients.vimls = {
+    cmd = { 'vim-language-server', '--stdio' },
+    filetypes = { 'vim' },
+    init_options = {
+        diagnostic = {
+            enable = true,
+        },
+        indexes = {
+            count = 3,
+            gap = 100,
+            projectRootPatterns = { 'runtime', 'nvim', '.git', 'autoload', 'plugin' },
+            runtimepath = true,
+        },
+        isNeovim = true,
+        iskeyword = '@,48-57,_,192-255,-#',
+        runtimepath = '',
+        suggest = {
+            fromRuntimepath = true,
+            fromVimruntime = true,
+        },
+        vimruntime = '',
+    },
+    root_markers = { '.git' },
 }
 
 return Clients

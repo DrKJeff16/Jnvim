@@ -22,12 +22,16 @@ User:register_plugin('plugin.lsp')
 
 require('plugin.lsp.mason')
 require('plugin.lsp.neoconf')
-require('plugin.lsp.trouble')
+
+---@type Lsp.SubMods.Trouble
+local Trouble = require('plugin.lsp.trouble')
 
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 
 Kinds:setup()
+
+Trouble:setup()
 
 local api = vim.api
 local bo = vim.bo

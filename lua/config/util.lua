@@ -1,6 +1,9 @@
+---@diagnostic disable:missing-fields
+
+---@module 'user_apitypes.lazy'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.lazy
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -16,18 +19,17 @@ local in_console = Check.in_console
 User:register_plugin('config.util')
 
 ---@type PluginUtils
----@diagnostic disable-next-line:missing-fields
 local M = {}
 
 ---@param force? boolean
 function M.set_tgc(force)
     force = is_bool(force) and force or false
 
-    if (not vim_exists('+termguicolors') or in_console()) and not force then
-        return
+    if force then
+        vim.opt.termguicolors = true
     end
 
-    vim.opt.termguicolors = true
+    vim.opt.termguicolors = (not vim_exists('+termguicolors') or in_console())
 end
 
 ---@param name string

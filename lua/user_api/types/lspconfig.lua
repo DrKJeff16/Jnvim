@@ -2,6 +2,7 @@
 
 ---@module 'user_api.types.user.autocmd'
 ---@module 'user_api.types.user.highlight'
+---@module 'trouble'
 
 ---@class EvBuf
 ---@field buf integer
@@ -32,6 +33,12 @@
 ---@class Lsp.SubMods.Kinds
 ---@field icons Lsp.SubMods.Kinds.Icons
 ---@field setup fun(self: Lsp.SubMods.Kinds)
+
+---@class Lsp.SubMods.Trouble
+---@field Opts trouble.Config
+---@field Keys KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
+---@field setup fun(self: Lsp.SubMods.Trouble, O: table|trouble.Config?)
+---@field new fun(O: table?): table|Lsp.SubMods.Trouble
 
 ---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
 
