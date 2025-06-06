@@ -1,13 +1,13 @@
+---@module 'user_api.types.lazy'
+
 local User = require('user_api')
 local Check = User.check
 local CfgUtil = require('config.util')
-local types = User.types.lazy
 
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local luarocks_check = CfgUtil.luarocks_check
 local set_tgc = CfgUtil.set_tgc
-local vim_exists = Check.exists.vim_exists
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 local is_root = Check.is_root
@@ -82,6 +82,7 @@ local M = {
         event = 'VeryLazy',
         version = false,
         config = source('plugin.hover'),
+        enabled = false,
     },
     {
         'nvim-tree/nvim-web-devicons',

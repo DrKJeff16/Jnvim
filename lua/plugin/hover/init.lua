@@ -21,26 +21,38 @@ Hover.setup({
         exists('hover.providers.diagnostic', true)
         exists('hover.providers.lsp', true)
 
-        if executable('man') then
-            exists('hover.providers.man', true)
+        if executable('man') and exists('hover.providers.man') then
+            require('hover.providers.man')
         end
 
         if executable('gh') then
             --- Github
-            exists('hover.providers.gh', true)
+            if exists('hover.providers.gh') then
+                require('hover.providers.gh')
+            end
+
             --- Github: Users
-            exists('hover.providers.gh_user', true)
+            if exists('hover.providers.gh_user') then
+                require('hover.providers.gh_user')
+            end
         end
 
         --- Dictionary
-        -- exists('hover.providers.dictionary', true)
+        -- if exists('hover.providers.dictionary') then
+        --     require('hover.providers.dictionary')
+        -- end
 
         --- Jira
-        -- exists('hover.providers.jira', true)
+        -- if exists('hover.providers.jira') then
+        --     require('hover.providers.jira')
+        -- end
 
         --- DAP
-        -- exists('hover.providers.dap', true)
+        -- if exists('hover.providers.dap') then
+        --     require('hover.providers.dap')
+        -- end
     end,
+
     preview_opts = {
         ---@type 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|table
         border = 'rounded',
