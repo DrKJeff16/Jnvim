@@ -1,4 +1,6 @@
-require('user_api.types.user.maps')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.maps'
 
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
@@ -9,13 +11,11 @@ local is_str = Value.is_str
 local is_int = Value.is_int
 local is_bool = Value.is_bool
 local empty = Value.empty
-local field = Value.fields
 local strip_fields = Util.strip_fields
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 ---@type User.Maps
----@diagnostic disable-next-line:missing-fields
 local Maps = {}
 
 Maps.kmap = require('user_api.maps.kmap')

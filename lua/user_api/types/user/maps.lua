@@ -30,6 +30,9 @@ require('user_api.types.which_key')
 ---@alias KeyMapDict table<string, KeyMapRhsOptsArr>
 ---@alias KeyMapDicts table<string, KeyMapRhsOptsDict>
 
+---@alias AllMaps table<string, KeyMapRhsOptsDict|RegKey|RegPfx>
+---@alias AllModeMaps table<MspModes, AllMsps>
+
 ---@class KeyMapTbl
 ---@field lhs string
 ---@field rhs string|fun()
