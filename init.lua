@@ -1,5 +1,11 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.lazy'
+---@module 'user_api.types.user.check'
+---@module 'user_api.types.user.commands'
+---@module 'user_api.types.user.util'
+---@module 'user_api.types.user.maps'
+
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect

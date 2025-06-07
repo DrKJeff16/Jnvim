@@ -1,11 +1,24 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.user.check'
+---@module 'user_api.types.user.maps'
+---@module 'user_api.types.user.util'
+
+---@class Keymaps.PreExec
+---@field ft string[]
+---@field bt string[]
+
+---@class Config.Keymaps
+---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
+---@field Keys KeyMapModeDict|ModeRegKeysNamed|ModeRegKeys
+---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
+---@field setup fun(self: Config.Keymaps, keys: AllModeMaps)
+
 local User = require('user_api') ---@see UserAPI User API
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Util = require('user_api.util') ---@see User.Util Utilities
 local Maps = require('user_api.maps') ---@see User.Maps Mapping utilities
 local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping utilities
-local WK = require('user_api.maps.wk') ---@see User.Maps.WK Mapping utilities
 
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Value.is_str ---@see User.Check.Value.is_str
@@ -17,9 +30,9 @@ local nop = Maps.nop ---@see User.Maps.nop
 local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local desc = Kmap.desc ---@see User.Maps.Keymap.desc
 
-User:register_plugin('config.keymaps')
-
 local curr_buf = vim.api.nvim_get_current_buf
+
+User:register_plugin('config.keymaps')
 
 ---@param force? boolean
 ---@return fun()
@@ -32,16 +45,17 @@ local function buf_del(force)
         'noice',
         'trouble',
     }
-    local pre_exc = {
-        ft = {
-            'help',
-            'lazy',
-            'man',
-            'noice',
-        },
-        bt = {
-            'help',
-        },
+
+    ---@type Keymaps.PreExec
+    local pre_exc = {}
+    pre_exc.ft = {
+        'help',
+        'lazy',
+        'man',
+        'noice',
+    }
+    pre_exc.bt = {
+        'help',
     }
 
     return function()
@@ -66,12 +80,6 @@ local function buf_del(force)
         end
     end
 end
-
----@class Config.Keymaps
----@field NOP string[] Table of keys to no-op after `<leader>` is pressed
----@field Keys KeyMapModeDict|ModeRegKeysNamed|ModeRegKeys
----@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field setup fun(self: Config.Keymaps, keys: (ModeRegKeys|KeyMapModeDict|ModeRegKeysNamed))
 
 ---@type Config.Keymaps
 local Keymaps = {}
