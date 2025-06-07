@@ -84,7 +84,7 @@ function BUtil:reset_providers()
     self.Providers = {}
 
     self.Providers.buffer = {
-        score_offset = -20,
+        score_offset = -70,
 
         -- keep case of first char
         ---@param a blink.cmp.Context
@@ -131,14 +131,14 @@ function BUtil:reset_providers()
     }
 
     self.Providers.snippets = {
-        score_offset = -10,
+        score_offset = -50,
         should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
     }
 
     self.Providers.lsp = {
         name = 'LSP',
         module = 'blink.cmp.sources.lsp',
-        score_offset = 100,
+        score_offset = -10,
         transform_items = function(_, items)
             return vim.tbl_filter(
                 function(item)
@@ -159,6 +159,7 @@ function BUtil:gen_providers(P)
         self.Providers.git = {
             module = 'blink-cmp-git',
             name = 'Git',
+            score_offset = 0,
             enabled = function()
                 local git_fts = {
                     'git',
@@ -188,7 +189,7 @@ function BUtil:gen_providers(P)
         self.Providers.lazydev = {
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
-            score_offset = 100,
+            score_offset = 10,
             enabled = function() return vim.bo.filetype == 'lua' end,
         }
     end

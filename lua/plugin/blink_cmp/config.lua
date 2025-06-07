@@ -93,6 +93,8 @@ Cfg.config.appearance.nerd_font_variant = 'mono'
 Cfg.config.completion = {}
 Cfg.config.completion.trigger = {}
 Cfg.config.completion.trigger.show_in_snippet = true
+Cfg.config.completion.trigger.show_on_trigger_character = true
+Cfg.config.completion.trigger.show_on_blocked_trigger_characters = { ' ', '\t' }
 
 Cfg.config.completion.documentation = {}
 Cfg.config.completion.documentation.auto_show = true
@@ -107,7 +109,10 @@ Cfg.config.completion.accept.create_undo_point = true
 
 Cfg.config.completion.list = {}
 Cfg.config.completion.list.selection = {}
-Cfg.config.completion.list.selection.preselect = false
+-- Cfg.config.completion.list.selection.preselect = false
+Cfg.config.completion.list.selection.preselect = function(ctx)
+    return not require('blink.cmp').snippet_active({ direction = 1 })
+end
 Cfg.config.completion.list.selection.auto_insert = true
 
 Cfg.config.completion.list.cycle = {}
@@ -122,6 +127,7 @@ Cfg.config.completion.menu.border = 'single'
 -- nvim-cmp style menu
 Cfg.config.completion.menu.draw = {}
 Cfg.config.completion.menu.draw.padding = { 0, 1 }
+Cfg.config.completion.menu.draw.treesitter = { 'lsp' }
 
 Cfg.config.completion.menu.draw.components = {}
 Cfg.config.completion.menu.draw.components.kind_icon = {
@@ -169,10 +175,10 @@ Cfg.config.cmdline = {}
 Cfg.config.cmdline.enabled = true
 
 Cfg.config.sources = {}
-Cfg.config.sources.default = (function()
-    BUtil:gen_sources()
-    return BUtil.Sources
-end)()
+Cfg.config.sources.default = (function() return BUtil:gen_sources() end)()
+Cfg.config.sources.per_filetype = {
+    lua = { inherit_defaults = true, 'lazydev' },
+}
 Cfg.config.sources.providers = BUtil.Providers
 
 Cfg.config.fuzzy = {}
@@ -203,8 +209,41 @@ Cfg.config.signature.window.show_documentation = true
 Cfg.config.signature.window.border = 'double'
 Cfg.config.signature.window.scrollbar = true
 Cfg.config.signature.window.treesitter_highlighting = true
--- Cfg.config.signature.window.direction_priority = { 'n', 's' }
-Cfg.config.signature.window.direction_priority = { 's', 'n' }
+Cfg.config.signature.window.direction_priority = { 'n', 's' }
+-- Cfg.config.signature.window.direction_priority = { 's', 'n' }
+
+Cfg.config.cmdline = {}
+Cfg.config.cmdline.enabled = true
+-- use 'inherit' to inherit mappings from top level `keymap` config
+Cfg.config.cmdline.keymap = { preset = 'cmdline' }
+Cfg.config.cmdline.sources = function()
+    local type = vim.fn.getcmdtype()
+    -- Search forward and backward
+    if type == '/' or type == '?' then
+        return { 'buffer' }
+    end
+    -- Commands
+    if type == ':' or type == '@' then
+        return { 'cmdline' }
+    end
+    return {}
+end
+Cfg.config.cmdline.completion = {}
+Cfg.config.cmdline.completion.trigger = {
+    show_on_blocked_trigger_characters = {},
+    show_on_x_blocked_trigger_characters = {},
+}
+Cfg.config.cmdline.completion.list = {}
+Cfg.config.cmdline.completion.list.selection = {
+    -- When `true`, will automatically select the first item in the completion list
+    preselect = true,
+    -- When `true`, inserts the completion item automatically when selecting it
+    auto_insert = true,
+}
+-- Whether to automatically show the window when new completion items are available
+Cfg.config.cmdline.completion.menu = { auto_show = false }
+-- Displays a preview of the selected item on the current line
+Cfg.config.cmdline.completion.ghost_text = { enabled = true }
 
 ---@param O? table
 ---@return BlinkCmp.Cfg|table
