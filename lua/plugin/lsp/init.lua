@@ -8,7 +8,6 @@ local Check = User.check
 local Maps = User.maps
 
 local exists = Check.exists.module
-local executable = Check.exists.executable
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local desc = Maps.kmap.desc
@@ -38,10 +37,9 @@ local bo = vim.bo
 local Lsp = vim.lsp
 local Diag = vim.diagnostic
 local lsp_buf = Lsp.buf
--- local lsp_handlers = Lsp.handlers
 
-local au = api.nvim_create_autocmd
 local augroup = api.nvim_create_augroup
+local au = api.nvim_create_autocmd
 
 ---@type Lsp.Server
 local Server = {}
@@ -56,17 +54,18 @@ function Server:populate()
             goto continue
         end
 
-        if exists('blink.cmp') then
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
+        local caps = vim.lsp.protocol.make_client_capabilities()
 
-            capabilities = vim.tbl_deep_extend(
+        local ok, _ = pcall(require, 'blink.cmp')
+        if ok then
+            caps = vim.tbl_deep_extend(
                 'force',
-                capabilities,
+                caps,
                 require('blink.cmp').get_lsp_capabilities({}, false)
             )
-
-            self.clients[k].capabilities = capabilities
         end
+
+        self.clients[k].capabilities = caps
 
         if k == 'jsonls' then
             self.clients[k].capabilities.textDocument.completion.completionItem.snippetSupport =
@@ -82,7 +81,9 @@ function Server:populate()
                     schemas = SchSt.json.schemas(),
                     validate = { enable = true },
                 }
-            elseif k == 'yamlls' then
+            end
+
+            if k == 'yamlls' then
                 self.clients[k].settings = {}
                 self.clients[k].settings.yaml = {
                     schemaStore = { enable = false, url = '' },
@@ -143,93 +144,7 @@ local Keys = {
 local Keymaps = require('config.keymaps')
 Keymaps:setup({ n = Keys })
 
-au('LspAttach', {
-    callback = function(args)
-        local buf = args.buf
-        local client = Lsp.get_client_by_id(args.data.client_id)
-
-        if is_nil(client) then
-            return
-        end
-
-        bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-        Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-
-        bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
-
-        -- local on_references = Lsp.handlers['textDocument/references']
-        -- Lsp.handlers['textDocument/references'] = Lsp.with(on_references, { loclist = true })
-        --
-        -- Lsp.handlers['textDocument/publishDiagnostics'] =
-        --     Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
-        --         signs = true,
-        --         virtual_text = true,
-        --     })
-
-        ---@type KeyMapDict|RegKeysNamed
-        local NK = {
-            ['<leader>lc'] = { group = '+Code Actions' },
-            ['<leader>lf'] = { group = '+File Analysis' },
-            ['<leader>lw'] = { group = '+Workspace' },
-
-            ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration') },
-            ['<leader>lfd'] = { lsp_buf.definition, desc('Definition') },
-            -- ['<leader>lk'] = { lsp_buf.hover, desc('Hover') },
-            ['K'] = { lsp_buf.hover, desc('Hover') },
-            ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation') },
-            ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help') },
-            ['<leader>lwa'] = {
-                lsp_buf.add_workspace_folder,
-                desc('Add Workspace Folder'),
-            },
-            ['<leader>lwr'] = {
-                lsp_buf.remove_workspace_folder,
-                desc('Remove Workspace Folder'),
-            },
-            ['<leader>lwl'] = {
-                function()
-                    local out = lsp_buf.list_workspace_folders()
-                    local msg = ''
-
-                    local notify = require('user_api.util.notify').notify
-                    for _, v in next, out do
-                        msg = msg .. '\n - ' .. v
-                    end
-
-                    notify(msg, 'info', {
-                        title = 'Workspace Folders',
-                        hide_from_history = false,
-                        timeout = 500,
-                    })
-                end,
-                desc('List Workspace Folders'),
-            },
-            ['<leader>lfT'] = { lsp_buf.type_definition, desc('Type Definition') },
-            ['<leader>lfR'] = { lsp_buf.rename, desc('Rename...') },
-            ['<leader>lfr'] = { lsp_buf.references, desc('References') },
-            ['<leader>lff'] = {
-                function() lsp_buf.format({ async = true }) end,
-                desc('Format File'),
-            },
-            ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
-            ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
-            ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
-        }
-        local VK = {
-            ['<leader>lc'] = { group = '+Code Actions' },
-
-            ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
-        }
-
-        local Keymaps = require('config.keymaps')
-
-        Keymaps:setup({ n = NK, v = VK })
-
-        if client.name == 'lua_ls' then
-            require('plugin.lazydev')
-        end
-    end,
-})
+local group = augroup('UserLsp', { clear = false })
 
 -- au('LspDetach', {
 --     callback = function(args)
@@ -238,15 +153,109 @@ au('LspAttach', {
 --         vim.cmd('setlocal tagfunc< omnifunc<')
 --     end,
 -- })
-au('LspProgress', {
-    pattern = '*',
-    callback = function() vim.cmd('redrawstatus') end,
-})
 
 ---@type AuRepeat
 local aus = {
+    ['LspAttach'] = {
+        {
+            group = group,
+            callback = function(args)
+                local buf = args.buf
+                local client = Lsp.get_client_by_id(args.data.client_id)
+
+                if is_nil(client) then
+                    return
+                end
+
+                bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                Lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+
+                bo[buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+
+                -- local on_references = Lsp.handlers['textDocument/references']
+                -- Lsp.handlers['textDocument/references'] = Lsp.with(on_references, { loclist = true })
+                --
+                -- Lsp.handlers['textDocument/publishDiagnostics'] =
+                --     Lsp.with(Lsp.diagnostic.on_publish_diagnostics, {
+                --         signs = true,
+                --         virtual_text = true,
+                --     })
+
+                ---@type KeyMapDict|RegKeysNamed
+                local NK = {
+                    ['<leader>lc'] = { group = '+Code Actions' },
+                    ['<leader>lf'] = { group = '+File Analysis' },
+                    ['<leader>lw'] = { group = '+Workspace' },
+
+                    ['<leader>lfD'] = { lsp_buf.declaration, desc('Declaration') },
+                    ['<leader>lfd'] = { lsp_buf.definition, desc('Definition') },
+                    -- ['<leader>lk'] = { lsp_buf.hover, desc('Hover') },
+                    ['K'] = { lsp_buf.hover, desc('Hover') },
+                    ['<leader>lfi'] = { lsp_buf.implementation, desc('Implementation') },
+                    ['<leader>lfS'] = { lsp_buf.signature_help, desc('Signature Help') },
+                    ['<leader>lwa'] = {
+                        lsp_buf.add_workspace_folder,
+                        desc('Add Workspace Folder'),
+                    },
+                    ['<leader>lwr'] = {
+                        lsp_buf.remove_workspace_folder,
+                        desc('Remove Workspace Folder'),
+                    },
+                    ['<leader>lwl'] = {
+                        function()
+                            local out = lsp_buf.list_workspace_folders()
+                            local msg = ''
+
+                            local notify = require('user_api.util.notify').notify
+                            for _, v in next, out do
+                                msg = msg .. '\n - ' .. v
+                            end
+
+                            notify(msg, 'info', {
+                                title = 'Workspace Folders',
+                                hide_from_history = false,
+                                timeout = 500,
+                            })
+                        end,
+                        desc('List Workspace Folders'),
+                    },
+                    ['<leader>lfT'] = { lsp_buf.type_definition, desc('Type Definition') },
+                    ['<leader>lfR'] = { lsp_buf.rename, desc('Rename...') },
+                    ['<leader>lfr'] = { lsp_buf.references, desc('References') },
+                    ['<leader>lff'] = {
+                        function() lsp_buf.format({ async = true }) end,
+                        desc('Format File'),
+                    },
+                    ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
+                    ['<leader>le'] = { Diag.open_float, desc('Diagnostics Float') },
+                    ['<leader>lq'] = { Diag.setloclist, desc('Add Loclist') },
+                }
+                local VK = {
+                    ['<leader>lc'] = { group = '+Code Actions' },
+
+                    ['<leader>lca'] = { lsp_buf.code_action, desc('Code Actions') },
+                }
+
+                local Keymaps = require('config.keymaps')
+
+                Keymaps:setup({ n = NK, v = VK })
+
+                if client.name == 'lua_ls' then
+                    require('plugin.lazydev')
+                end
+            end,
+        },
+    },
+    ['LspProgress'] = {
+        {
+            group = group,
+            pattern = '*',
+            callback = function() vim.cmd('redrawstatus') end,
+        },
+    },
     ['ColorScheme'] = {
         {
+            group = group,
             pattern = '*',
             callback = function()
                 hi('NormalFloat', { bg = '#2c1a3a' })
