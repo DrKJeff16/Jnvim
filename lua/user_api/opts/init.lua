@@ -156,8 +156,8 @@ function Opts:print_set_opts()
     notify(msg, 'info', {
         animate = true,
         hide_from_history = true,
-        timeout = 3000,
-        title = '(user_api.opts.print_set_opts)',
+        timeout = 3250,
+        title = '(user_api.opts:print_set_opts)',
     })
 end
 
@@ -175,7 +175,8 @@ end
 --     end
 -- end
 
-vim.schedule(function()
+---@param self User.Opts
+function Opts:setup_keys()
     local Keymaps = require('config.keymaps')
 
     local desc = require('user_api.maps.kmap').desc
@@ -189,7 +190,7 @@ vim.schedule(function()
             },
         },
     })
-end)
+end
 
 return Opts
 

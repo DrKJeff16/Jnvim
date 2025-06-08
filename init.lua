@@ -258,6 +258,7 @@ Commands:setup()
 -- Mappings related specifically to `user_api`
 User:setup_keys()
 Commands:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
+Opts:setup_keys()
 
 vim.cmd([[
 filetype plugin indent on

@@ -1,3 +1,4 @@
+---@type table<string, string>
 return {
     ['allowrevins'] = 'ari',
     ['ambiwidth'] = 'ambw',

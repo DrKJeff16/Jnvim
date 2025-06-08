@@ -9,6 +9,6 @@
 ---@field DEFAULT_OPTIONS User.Opts.Spec
 ---@field options User.Opts.Spec
 ---@field print_set_opts fun(self: User.Opts)
----@field setup_maps fun(self: User.Opts)
+---@field setup_keys fun(self: User.Opts)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
