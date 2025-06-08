@@ -1,3 +1,6 @@
+---@diagnostic disable:unused-local
+---@diagnostic disable:unused-function
+
 local User = require('user_api')
 local Check = User.check
 
@@ -18,7 +21,7 @@ local SP = BLine.style_preset
 ---@param diags? table<string, any>
 ---@param context? table
 ---@return string s
-local diagnostics_indicator = function(count, lvl, diags, context)
+local function diagnostics_indicator(count, lvl, diags, context)
     if not context.buffer:current() then
         return ''
     end
@@ -43,7 +46,7 @@ end
 
 ---@param buf Bufferline.Buf
 ---@return string?
-local name_formatter = function(buf) -- buf contains:
+local function name_formatter(buf) -- buf contains:
     -- name                | str        | the basename of the active file
     -- path                | str        | the full path of the active file
     -- bufnr (buffer only) | int        | the number of the active buffer
