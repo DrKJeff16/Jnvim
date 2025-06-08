@@ -10,6 +10,7 @@
 
 ---@class Config.Keymaps
 ---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
+---@field no_oped? boolean
 ---@field Keys AllModeMaps
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
 ---@field setup fun(self: Config.Keymaps, keys: AllModeMaps)
@@ -21,6 +22,7 @@ local Util = require('user_api.util') ---@see User.Util Utilities
 local Maps = require('user_api.maps') ---@see User.Maps
 local Kmap = Maps.kmap ---@see User.Maps.Keymap Mapping utilities
 
+local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Value.is_str ---@see User.Check.Value.is_str
 local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
@@ -32,6 +34,7 @@ local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local desc = Kmap.desc ---@see User.Maps.Keymap.desc
 
 local curr_buf = vim.api.nvim_get_current_buf
+local tbl_contains = vim.tbl_contains
 
 User:register_plugin('config.keymaps')
 
@@ -60,8 +63,6 @@ local function buf_del(force)
     }
 
     return function()
-        local tbl_contains = vim.tbl_contains
-
         local prev_ft = ft_get(curr_buf())
         local prev_bt = bt_get(curr_buf())
 
@@ -488,8 +489,9 @@ function Keymaps:setup(keys)
 
     --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, MODES do
-        if vim.tbl_contains({ 'n', 'v' }, mode) then
+        if (is_nil(self.no_oped) or not self.no_oped) and vim.tbl_contains({ 'n', 'v' }, mode) then
             nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
+            self.no_oped = true
         end
     end
 
