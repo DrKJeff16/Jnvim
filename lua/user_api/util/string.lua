@@ -1,12 +1,12 @@
-require('user_api.types.user.util')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.util'
 
 ---@type User.Util.String
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local String = {}
 
----@diagnostic disable-next-line:missing-fields
-M.alphabet = {}
-M.alphabet.upper_list = {
+String.alphabet = {}
+String.alphabet.upper_list = {
     'A',
     'B',
     'C',
@@ -34,7 +34,7 @@ M.alphabet.upper_list = {
     'Y',
     'Z',
 }
-M.alphabet.lower_list = {
+String.alphabet.lower_list = {
     'a',
     'b',
     'c',
@@ -62,7 +62,7 @@ M.alphabet.lower_list = {
     'y',
     'z',
 }
-M.alphabet.upper_map = {
+String.alphabet.upper_map = {
     A = 'A',
     B = 'B',
     C = 'C',
@@ -90,7 +90,7 @@ M.alphabet.upper_map = {
     Y = 'Y',
     Z = 'Z',
 }
-M.alphabet.lower_map = {
+String.alphabet.lower_map = {
     a = 'a',
     b = 'b',
     c = 'c',
@@ -119,30 +119,29 @@ M.alphabet.lower_map = {
     z = 'z',
 }
 
----@diagnostic disable-next-line:missing-fields
-M.alphabet.vowcals = {}
-M.alphabet.vowcals.upper_list = {
+String.alphabet.vowcals = {}
+String.alphabet.vowcals.upper_list = {
     'A',
     'E',
     'I',
     'O',
     'U',
 }
-M.alphabet.vowcals.lower_list = {
+String.alphabet.vowcals.lower_list = {
     'a',
     'e',
     'i',
     'o',
     'u',
 }
-M.alphabet.vowcals.upper_map = {
+String.alphabet.vowcals.upper_map = {
     A = 'A',
     E = 'E',
     I = 'I',
     O = 'O',
     U = 'U',
 }
-M.alphabet.vowcals.lower_map = {
+String.alphabet.vowcals.lower_map = {
     a = 'a',
     e = 'e',
     i = 'i',
@@ -150,9 +149,8 @@ M.alphabet.vowcals.lower_map = {
     u = 'u',
 }
 
----@diagnostic disable-next-line:missing-fields
-M.digits = {}
-M.digits.all = {
+String.digits = {}
+String.digits.all = {
     ['0'] = '0',
     ['1'] = '1',
     ['2'] = '2',
@@ -164,28 +162,28 @@ M.digits.all = {
     ['8'] = '8',
     ['9'] = '9',
 }
-M.digits.odd_list = {
+String.digits.odd_list = {
     '1',
     '3',
     '5',
     '7',
     '9',
 }
-M.digits.even_list = {
+String.digits.even_list = {
     '0',
     '2',
     '4',
     '6',
     '8',
 }
-M.digits.even_map = {
+String.digits.even_map = {
     ['0'] = '0',
     ['2'] = '2',
     ['4'] = '4',
     ['6'] = '6',
     ['8'] = '8',
 }
-M.digits.odd_map = {
+String.digits.odd_map = {
     ['1'] = '1',
     ['3'] = '3',
     ['5'] = '5',
@@ -197,7 +195,7 @@ M.digits.odd_map = {
 ---@param use_dot? boolean
 ---@param triggers? string[]
 ---@return string new_str
-function M.capitalize(s, use_dot, triggers)
+function String.capitalize(s, use_dot, triggers)
     if not require('user_api.check.value').is_str(s) then
         error('(user_api.util.string.capitalize): Input is not string')
     end
@@ -217,7 +215,7 @@ function M.capitalize(s, use_dot, triggers)
         table.insert(triggers, '')
     end
 
-    local strlen = s:len()
+    local strlen = string.len(s)
 
     local prev_char = ''
     local new_str = ''
@@ -253,6 +251,6 @@ function M.capitalize(s, use_dot, triggers)
     return new_str
 end
 
-return M
+return String
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

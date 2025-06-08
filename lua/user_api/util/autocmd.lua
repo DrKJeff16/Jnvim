@@ -1,9 +1,10 @@
-require('user_api.types.user.util')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.util'
 
 local au = vim.api.nvim_create_autocmd
 
 ---@type User.Util.Autocmd
----@diagnostic disable-next-line:missing-fields
 local M = {}
 
 ---@param T AuPair

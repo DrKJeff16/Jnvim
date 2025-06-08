@@ -22,6 +22,10 @@ Maps.kmap = require('user_api.maps.kmap')
 Maps.wk = require('user_api.maps.wk')
 Maps.modes = MODES
 
+---@param T string|string[]
+---@param opts? User.Maps.Keymap.Opts
+---@param mode? MapModes
+---@param prefix? string
 function Maps.nop(T, opts, mode, prefix)
     if not (is_str(T) or is_tbl(T)) then
         error('(user_api.maps.nop): Argument is neither a string nor a table')
@@ -53,6 +57,11 @@ function Maps.nop(T, opts, mode, prefix)
     end
 end
 
+---@param T AllModeMaps|AllMaps
+---@param map_func 'kmap'|'wk.register'
+---@param dict_has_modes? boolean
+---@param mode? MapModes
+---@param bufnr? integer
 function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     if not (is_tbl(T) and not empty(T)) then
         vim.notify("Keys either aren't table or table is empty", 'error', {

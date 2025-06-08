@@ -56,8 +56,8 @@ Notify.Levels = {
 }
 
 ---@param msg string
----@param lvl? NotifyLvl|VimNotifyLvl|number|string
----@param opts? notify.Options|table
+---@param lvl? NotifyLvl|VimNotifyLvl
+---@param opts? notify.Options
 function Notify.notify(msg, lvl, opts)
     if type(msg) ~= 'string' then
         error('(user_api.util.notify.notify): Message is not a string', ERROR)
@@ -96,16 +96,16 @@ function Notify.notify(msg, lvl, opts)
 end
 
 ---@param msg string
----@param lvl? NotifyLvl|VimNotifyLvl|number|string
----@param opts? notify.Options|table
+---@param lvl? NotifyLvl|VimNotifyLvl
+---@param opts? table|notify.Options
 function _G.anotify(msg, lvl, opts)
     local func = function() Notify.notify(msg, lvl or 'info', opts or {}) end
     require('plenary.async').run(func)
 end
 
 ---@param msg string
----@param lvl? NotifyLvl|VimNotifyLvl|number|string
----@param opts? notify.Options|table
+---@param lvl? NotifyLvl|VimNotifyLvl
+---@param opts? table|notify.Options
 function _G.insp_anotify(msg, lvl, opts)
     local func = function() Notify.notify((inspect or vim.inspect)(msg), lvl or 'info', opts or {}) end
 
