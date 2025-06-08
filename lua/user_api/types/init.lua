@@ -23,19 +23,6 @@
 ---@field treesitter nil
 ---@field which_key nil
 
----@class User.Distro.Spec
----@field setup fun(self: User.Distro.Spec)
-
----@class User.Distro.Archlinux: User.Distro.Spec
----@field setup fun(self: User.Distro.Archlinux)
-
----@class User.Distro.Termux: User.Distro.Spec
----@field setup fun(self: User.Distro.Termux)
-
----@class User.Distro
----@field archlinux User.Distro.Archlinux
----@field termux User.Distro.Termux
-
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table

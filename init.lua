@@ -246,7 +246,7 @@ Util:assoc()
 vim.g.markdown_minlines = 500
 
 --- Call runtimepath optimizations for Arch Linux (WIP)
-Distro.termux:setup()
+Distro:setup()
 
 -- Define any custom commands
 Commands:setup()
