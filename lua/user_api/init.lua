@@ -1,19 +1,26 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types'
+---@module 'user_api.types.user.autocmd'
+---@module 'user_api.types.user.check'
+---@module 'user_api.types.user.commands'
+---@module 'user_api.types.user.distro'
+---@module 'user_api.types.user.highlight'
+---@module 'user_api.types.user.maps'
+---@module 'user_api.types.user.opts'
+---@module 'user_api.types.user.util'
 
 ---@type UserAPI
 local User = {}
 
 User.types = require('user_api.types')
-User.util = require('user_api.util')
 User.check = require('user_api.check')
-User.maps = require('user_api.maps')
-User.highlight = require('user_api.highlight')
-User.opts = require('user_api.opts')
-User.distro = require('user_api.distro')
-User.update = require('user_api.update')
 User.commands = require('user_api.commands')
+User.distro = require('user_api.distro')
+User.highlight = require('user_api.highlight')
+User.maps = require('user_api.maps')
+User.opts = require('user_api.opts')
+User.update = require('user_api.update')
+User.util = require('user_api.util')
 
 User.registered_plugins = {}
 

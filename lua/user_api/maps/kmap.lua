@@ -1,7 +1,8 @@
-require('user_api.types.user.maps')
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.maps'
 
 ---@type KeyMapOpts
----@diagnostic disable-next-line:missing-fields
 local O = {}
 
 ---@param T? User.Maps.Keymap.Opts|table

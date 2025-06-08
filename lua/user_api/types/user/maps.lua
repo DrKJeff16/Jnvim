@@ -30,8 +30,8 @@ require('user_api.types.which_key')
 ---@alias KeyMapDict table<string, KeyMapRhsOptsArr>
 ---@alias KeyMapDicts table<string, KeyMapRhsOptsDict>
 
----@alias AllMaps table<string, KeyMapRhsOptsDict|RegKey|RegPfx>
----@alias AllModeMaps table<MspModes, AllMsps>
+---@alias AllMaps table<string, KeyMapRhsOptsArr|RegKey|RegPfx>
+---@alias AllModeMaps table<MapModes, AllMaps>
 
 ---@class KeyMapTbl
 ---@field lhs string
@@ -49,7 +49,7 @@ require('user_api.types.which_key')
 
 ---@alias MapFuncs KeyMapFunction
 
----@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts|table
+---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts
 
 ---@class User.Maps.Keymap
 ---@field n KeyMapFunction
@@ -71,6 +71,6 @@ require('user_api.types.which_key')
 ---@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
 ---@field wk User.Maps.WK
 ---@field modes Modes
----@field map_dict fun(T: RegKeysNamed|RegKeys|ModeRegKeysNamed|ModeRegKeys|KeyMapModeDict|KeyMapDict, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
+---@field map_dict fun(T: AllModeMaps|AllMaps, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
