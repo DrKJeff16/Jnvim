@@ -10,15 +10,16 @@
 
 ---@class Config.Keymaps
 ---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
----@field Keys KeyMapModeDict|ModeRegKeysNamed|ModeRegKeys
+---@field Keys AllModeMaps
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
 ---@field setup fun(self: Config.Keymaps, keys: AllModeMaps)
+---@field new fun(O: table?): table|Config.Keymaps
 
-local User = require('user_api') ---@see UserAPI User API
+local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Util = require('user_api.util') ---@see User.Util Utilities
-local Maps = require('user_api.maps') ---@see User.Maps Mapping utilities
-local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping utilities
+local Maps = require('user_api.maps') ---@see User.Maps
+local Kmap = Maps.kmap ---@see User.Maps.Keymap Mapping utilities
 
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_str = Value.is_str ---@see User.Check.Value.is_str
@@ -452,9 +453,6 @@ Keymaps.Keys = {
 
         ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
         ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
-
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
-        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
     },
     t = {
         ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
@@ -462,7 +460,7 @@ Keymaps.Keys = {
 }
 
 ---@param self Config.Keymaps
----@param keys? KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
+---@param keys? AllModeMaps
 function Keymaps:setup(keys)
     local MODES = require('user_api.maps').modes
 
@@ -471,50 +469,32 @@ function Keymaps:setup(keys)
     if not leader_set then
         notify("Leader hasn't been set through `set_leader()`", 'warn', {
             hide_from_history = false,
-            timeout = 1250,
+            timeout = 3250,
             title = '[WARNING] (config.keymaps.setup)',
         })
     end
 
     keys = is_tbl(keys) and keys or {}
 
-    local checker_tbl = { keys }
-
-    for _, T in next, checker_tbl do
-        if empty(T) then
-            goto continue
+    for k, _ in next, keys do
+        if not vim.tbl_contains(MODES, k) then
+            notify("Input tables aren't using Vim modes as dictionary keys, ignoring", 'warn', {
+                title = '(config.keymaps)',
+                hide_from_history = false,
+                timeout = 200,
+            })
         end
-
-        for k, _ in next, T do
-            if not vim.tbl_contains(MODES, k) then
-                vim.notify(
-                    "Input tables aren't using Vim modes as dictionary keys, ignoring",
-                    'warn',
-                    {
-                        title = '(config.keymaps)',
-                        hide_from_history = false,
-                        timeout = 200,
-                    }
-                )
-
-                keys = {}
-                names = {}
-                break
-            end
-        end
-
-        ::continue::
     end
 
-    --- Set keymaps
-    map_dict(vim.tbl_deep_extend('keep', keys, self.Keys), 'wk.register', true)
-
     --- Noop keys after `<leader>` to avoid accidents
-    for _, mode in next, User.maps.modes do
+    for _, mode in next, MODES do
         if vim.tbl_contains({ 'n', 'v' }, mode) then
             nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
         end
     end
+
+    --- Set keymaps
+    map_dict(vim.tbl_deep_extend('keep', keys, self.Keys), 'wk.register', true)
 end
 
 --- Set the `<leader>` key and, if desired, the `<localleader>` aswell
@@ -575,6 +555,13 @@ function Keymaps:set_leader(leader, local_leader, force)
     vim.g.maplocalleader = vim_vars.localleader
 
     _G.leader_set = true
+end
+
+---@param O? table
+---@return table|Config.Keymaps
+function Keymaps.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Keymaps })
 end
 
 return Keymaps

@@ -129,6 +129,10 @@ Keymaps:setup({
             desc('Run `:Notifications`'),
         },
     },
+    v = {
+        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
+        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
+    },
 })
 
 -- A table containing various possible colorschemes
