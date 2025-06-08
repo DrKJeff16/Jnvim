@@ -1,6 +1,7 @@
+---@module 'user_api.types.user.highlight'
+
 local User = require('user_api')
 local Check = User.check
-local hl_t = User.types.user.highlight
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
@@ -67,6 +68,7 @@ local function line_cond(bufnr)
     return vim.api.nvim_buf_line_count(is_int(bufnr) and bufnr or 0) < 5000
 end
 
+---@return boolean
 local function linebreak_check()
     local vim_has = User.check.exists.vim_has
 
