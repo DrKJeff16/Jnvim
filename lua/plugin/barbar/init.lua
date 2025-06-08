@@ -1,16 +1,16 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
+---@module 'user_api.types.user.maps'
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local map_t = User.types.user.maps
-local Maps = User.maps
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local empty = Check.value.empty
-local desc = Maps.map.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
 
 if not exists('barbar') then
     return
@@ -18,11 +18,11 @@ end
 
 User:register_plugin('plugin.barbar')
 
-local Bar = require('barbar')
+local Barbar = require('barbar')
 
 vim.g.barbar_auto_setup = 0
 
-Bar.setup({
+local Opts = {
     animation = false,
     auto_hide = false,
     tabpages = true,
@@ -97,11 +97,16 @@ Bar.setup({
     letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
 
     no_name_title = nil,
-})
+}
 
----@type table<MapModes, ApiMapDict>
+Barbar.setup(Opts)
+
+---@type AllModeMaps
 local Keys = {
     n = {
+        ['<leader>b'] = { group = '+Barbar Buffer' },
+        ['<leader>bM'] = { group = '+Buffer Move' },
+
         ['<leader>bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
         ['<leader>bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
         ['<leader>bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
@@ -136,6 +141,9 @@ local Keys = {
         },
     },
     v = {
+        ['<leader>b'] = { group = '+Barbar Buffer' },
+        ['<leader>bM'] = { group = '+Buffer Move' },
+
         ['<leader>bp'] = { '<CMD>BufferPrevious<CR>', desc('Previous Buffer') },
         ['<leader>bn'] = { '<CMD>BufferNext<CR>', desc('Next Buffer') },
         ['<leader>bl'] = { '<CMD>BufferLast<CR>', desc('Last Buffer') },
@@ -171,19 +179,6 @@ local Keys = {
     },
 }
 
----@type table<MapModes, RegKeysNamed>
-local Names = {
-    n = {
-        ['<leader>b'] = { group = '+Barbar Buffer' },
-        ['<leader>bM'] = { group = '+Buffer Move' },
-    },
-    v = {
-        ['<leader>b'] = { group = '+Barbar Buffer' },
-        ['<leader>bM'] = { group = '+Buffer Move' },
-    },
-}
-
-map_dict(Keys, 'wk.register', true)
-map_dict(Names, 'wk.register', true)
+Keymaps:setup(Keys)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
