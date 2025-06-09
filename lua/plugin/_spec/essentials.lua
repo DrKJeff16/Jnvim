@@ -1,32 +1,30 @@
 ---@module 'user_api.types.lazy'
 
 local User = require('user_api')
-local Check = User.check
 local CfgUtil = require('config.util')
+local Check = User.check
+
+local vim_has = Check.exists.vim_has
+local in_console = Check.in_console
 
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local luarocks_check = CfgUtil.luarocks_check
-local set_tgc = CfgUtil.set_tgc
-local vim_has = Check.exists.vim_has
-local in_console = Check.in_console
-local is_root = Check.is_root
 
 ---@type (LazySpec)[]
-local M = {
+local Essentials = {
     {
         'folke/which-key.nvim',
         main = 'which-key',
         version = false,
         init = function()
             vim.opt.timeout = true
-            vim.opt.timeoutlen = 300
             vim.opt.ttimeout = true
+            vim.opt.timeoutlen = 500
             vim.opt.ttimeoutlen = -1
-            set_tgc()
         end,
         config = source('plugin.which_key'),
-        cond = vim_has('nvim-0.9'),
+        cond = vim_has('nvim-0.10'),
     },
     {
         'dstein64/vim-startuptime',
@@ -40,7 +38,7 @@ local M = {
         lazy = false,
         version = false,
         config = source('plugin.luarocks'),
-        cond = luarocks_check() and not is_root(),
+        cond = luarocks_check(),
         enabled = false,
     },
     {
@@ -51,6 +49,7 @@ local M = {
     },
     {
         'tiagovla/scope.nvim',
+        lazy = false,
         version = false,
         init = function()
             --- NOTE: Required for `scope`
@@ -73,16 +72,14 @@ local M = {
         priority = 1000,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
-        init = set_tgc,
         config = source('plugin.notify'),
         cond = not in_console(),
     },
     {
         'lewis6991/hover.nvim',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
         config = source('plugin.hover'),
-        enabled = false,
     },
     {
         'nvim-tree/nvim-web-devicons',
@@ -94,9 +91,10 @@ local M = {
     {
         'equalsraf/neovim-gui-shim',
         version = false,
+        cond = not in_console(),
     },
 }
 
-return M
+return Essentials
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

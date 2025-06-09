@@ -2,14 +2,14 @@
 
 local User = require('user_api')
 local CfgUtil = require('config.util')
+local Keymaps = require('config.keymaps')
 local Check = User.check
+
+local desc = User.maps.kmap.desc
 
 local key_variant = CfgUtil.key_variant
 local in_console = Check.in_console
 local is_root = Check.is_root
-local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
-local wk_avail = User.maps.wk.available
 
 --- Set installation dir for `Lazy`
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -65,7 +65,7 @@ Lazy.setup({
     },
 
     install = {
-        colorscheme = { 'carbonfox', 'tokyonight', 'habamax' },
+        colorscheme = { 'tokyonight', 'habamax' },
         missing = true,
     },
 
@@ -100,8 +100,8 @@ Lazy.setup({
     },
 
     change_detection = {
-        enabled = true,
-        notify = true,
+        enabled = false,
+        notify = false,
     },
 
     checker = {
@@ -145,31 +145,27 @@ local P = {
     colorschemes = require('plugin.colorschemes'),
 }
 
----@type KeyMapDict
+---@type AllModeMaps
 local Keys = {
-    ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-    ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-    ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-    ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
-    ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-    ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-    ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-    ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-    ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-    ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
-    ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
-}
----@type RegKeysNamed
-local Names = {
-    ['<leader>L'] = { group = '+Lazy' },
-    ['<leader>Le'] = { group = '+Edit Lazy File' },
+    n = {
+        ['<leader>L'] = { group = '+Lazy' },
+        ['<leader>Le'] = { group = '+Edit Lazy File' },
+
+        ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+        ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+        ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+        ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+        ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+        ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+        ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+        ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+        ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+        ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+        ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+    },
 }
 
-if wk_avail() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-
-map_dict(Keys, 'wk.register', false, 'n')
+Keymaps:setup(Keys)
 
 return P
 
