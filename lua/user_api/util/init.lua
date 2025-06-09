@@ -382,27 +382,6 @@ function Util:assoc()
                     end,
                 },
                 {
-                    pattern = 'markdown',
-                    group = group,
-                    callback = function()
-                        local opts = {
-                            ts = 2,
-                            sts = 2,
-                            sw = 2,
-                            et = true,
-                            ai = true,
-                            si = true,
-                            ci = false,
-                            pi = false,
-                            rnu = false,
-                        }
-
-                        for option, val in next, opts do
-                            Util.opt_set(option, val, curr_buf())
-                        end
-                    end,
-                },
-                {
                     pattern = 'lua',
                     group = group,
                     callback = function()
