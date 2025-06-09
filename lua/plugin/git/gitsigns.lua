@@ -1,16 +1,12 @@
+---@module 'user_api.types.gitsigns'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.gitsigns
 local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local is_nil = Check.value.is_nil
-local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
-local is_num = Check.value.is_num
-local is_fun = Check.value.is_fun
-local empty = Check.value.empty
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
 

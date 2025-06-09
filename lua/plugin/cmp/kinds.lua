@@ -1,5 +1,6 @@
+---@module 'user_api.types.cmp'
+
 local User = require('user_api')
-local Types = User.types.cmp
 
 local hl_dict = User.highlight.hl_from_dict
 
@@ -109,7 +110,7 @@ local extra_hls = {
 }
 
 ---@type CmpKindMod
-local M = {
+local Kinds = {
     kind_icons = kind_icons,
     kind_codicons = kind_codicons,
     formatting = {
@@ -158,6 +159,6 @@ local M = {
     hilite = function() hl_dict(extra_hls) end,
 }
 
-return M
+return Kinds
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

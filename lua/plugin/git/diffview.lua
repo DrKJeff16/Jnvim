@@ -1,5 +1,8 @@
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.diffview'
+
 local User = require('user_api')
-local Types = User.types.diffview
 local Check = User.check
 
 local exists = Check.exists.module

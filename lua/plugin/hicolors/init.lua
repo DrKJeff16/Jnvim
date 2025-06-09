@@ -1,10 +1,8 @@
 local User = require('user_api')
 local Check = User.check
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('nvim-highlight-colors') then
     return
@@ -79,21 +77,18 @@ HiColors.setup({
     },
 })
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
+    ['<leader>u'] = { group = '+UI' },
+    ['<leader>uC'] = { group = '+Color Highlighting' },
+
     ['<leader>uCt'] = { HiColors.toggle, desc('Toggle Color Highlighting') },
     ['<leader>uC+'] = { HiColors.turnOn, desc('Turn Color Highlighting On') },
     ['<leader>uC-'] = { HiColors.turnOff, desc('Turn Color Highlighting Off') },
 }
----@type table RegKeysNamed
-local Names = {
-    ['<leader>u'] = { group = '+UI' },
-    ['<leader>uC'] = { group = '+Color Highlighting' },
-}
 
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-map_dict(Keys, 'wk.register', false, 'n')
+local Keymaps = require('config.keymaps')
+
+Keymaps:setup(Keys)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

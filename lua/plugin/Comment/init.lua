@@ -1,5 +1,4 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@diagnostic disable:missing-fieldsg
 
 local User = require('user_api')
 local Check = User.check

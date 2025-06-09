@@ -1,9 +1,9 @@
+---@module 'user_api.types.cmp'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.cmp
 
 local exists = Check.exists.module
-local modules = Check.exists.modules
 local is_nil = Check.value.is_nil
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
@@ -14,7 +14,6 @@ end
 
 local cmp = require('cmp')
 
-local get_mode = vim.api.nvim_get_mode
 local buf_lines = vim.api.nvim_buf_get_lines
 local win_cursor = vim.api.nvim_win_get_cursor
 local rep_tc = vim.api.nvim_replace_termcodes
@@ -23,7 +22,7 @@ local curr_win = vim.api.nvim_get_current_win
 
 ---@type CmpUtil
 ---@diagnostic disable-next-line:missing-fields
-local M = {
+local CmpUtil = {
     ---@param key string
     ---@param mode MapModes|''
     feedkey = function(key, mode)
@@ -66,15 +65,15 @@ local M = {
 }
 
 ---@param fallback fun()
-function M.n_select(fallback)
+function CmpUtil.n_select(fallback)
     ---@type cmp.SelectOption
     local opts = { behavior = cmp.SelectBehavior.Insert }
 
     if cmp.visible() then
         cmp.select_next_item(opts)
     elseif vim.fn['vsnip#available'](1) == 1 then
-        M.feedkey('<Plug>(vsnip-expand-or-jump)', '')
-    elseif M.has_words_before() then
+        CmpUtil.feedkey('<Plug>(vsnip-expand-or-jump)', '')
+    elseif CmpUtil.has_words_before() then
         cmp.complete()
         if cmp.visible() then
             cmp.select_next_item(opts)
@@ -85,15 +84,15 @@ function M.n_select(fallback)
 end
 
 ---@param fallback fun()
-function M.n_shift_select(fallback)
+function CmpUtil.n_shift_select(fallback)
     ---@type cmp.SelectOption
     local opts = { behavior = cmp.SelectBehavior.Replace }
 
     if cmp.visible() then
         cmp.select_prev_item(opts)
     elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-        M.feedkey('<Plug>(vsnip-jump-prev)', '')
-    elseif M.has_words_before() then
+        CmpUtil.feedkey('<Plug>(vsnip-jump-prev)', '')
+    elseif CmpUtil.has_words_before() then
         cmp.complete()
         if cmp.visible() then
             cmp.select_prev_item(opts)
@@ -103,9 +102,9 @@ function M.n_shift_select(fallback)
     end
 end
 
-M.tab_map = {
-    i = M.n_select,
-    s = M.n_select,
+CmpUtil.tab_map = {
+    i = CmpUtil.n_select,
+    s = CmpUtil.n_select,
 
     ---@param fallback fun()
     c = function(fallback)
@@ -113,7 +112,7 @@ M.tab_map = {
 
         if cmp.visible() then
             cmp.select_next_item(opts)
-        elseif M.has_words_before() then
+        elseif CmpUtil.has_words_before() then
             cmp.complete()
         else
             fallback()
@@ -121,9 +120,9 @@ M.tab_map = {
     end,
 }
 
-M.s_tab_map = {
-    i = M.n_shift_select,
-    s = M.n_shift_select,
+CmpUtil.s_tab_map = {
+    i = CmpUtil.n_shift_select,
+    s = CmpUtil.n_shift_select,
 
     ---@param fallback fun()
     c = function(fallback)
@@ -131,7 +130,7 @@ M.s_tab_map = {
 
         if cmp.visible() then
             cmp.select_prev_item(opts)
-        elseif M.has_words_before() then
+        elseif CmpUtil.has_words_before() then
             cmp.complete()
         else
             fallback()
@@ -139,13 +138,13 @@ M.s_tab_map = {
     end,
 }
 
-M.cr_map = {
-    i = M.confirm(),
-    s = M.confirm(),
+CmpUtil.cr_map = {
+    i = CmpUtil.confirm(),
+    s = CmpUtil.confirm(),
     ---@diagnostic disable-next-line:missing-fields
-    c = M.confirm({ select = true }),
+    c = CmpUtil.confirm({ select = true }),
 }
 
-return M
+return CmpUtil
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

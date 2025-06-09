@@ -34,12 +34,12 @@ end
 
 ---@type Sources
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Sources = {}
 
 ---@param group_index? integer
 ---@param all_bufs? boolean
 ---@return SourceBuf
-function M.buffer(group_index, all_bufs)
+function Sources.buffer(group_index, all_bufs)
     all_bufs = is_bool(all_bufs) and all_bufs or true
 
     ---@type SourceBuf
@@ -61,7 +61,7 @@ end
 
 ---@param group_index? integer
 ---@return SourceAsyncPath
-function M.async_path(group_index)
+function Sources.async_path(group_index)
     ---@type SourceAsyncPath
     local res = {
         name = 'async_path',
@@ -80,13 +80,13 @@ function M.async_path(group_index)
 end
 
 ---@type table<string, (cmp.SourceConfig|SourceBuf|SourceAsyncPath)[]>
-M.Sources = {
+Sources.Sources = {
     c = {
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'vsnip', group_index = 2 },
         { name = 'nvim_lsp_signature_help', group_index = 3 },
-        M.buffer(4),
-        M.async_path(5),
+        Sources.buffer(4),
+        Sources.async_path(5),
     },
 
     lua = {
@@ -94,23 +94,23 @@ M.Sources = {
         { name = 'nvim_lua', group_index = 2 },
         { name = 'vsnip', group_index = 3 },
         { name = 'nvim_lsp_signature_help', group_index = 4 },
-        M.buffer(5),
+        Sources.buffer(5),
     },
 }
 
 if exists('cmp_doxygen') then
-    table.insert(M.Sources.c, { name = 'doxygen' })
+    table.insert(Sources.Sources.c, { name = 'doxygen' })
 end
 
 if exists('lazydev') then
-    table.insert(M.Sources.lua, {
+    table.insert(Sources.Sources.lua, {
         name = 'lazydev',
         group_index = 0,
     })
 end
 
 ---@type SetupSources
-M.ft = {
+Sources.ft = {
     {
         {
             'bash',
@@ -129,9 +129,9 @@ M.ft = {
             sources = gen_sources({
                 { name = 'nvim_lsp', group_index = 1 },
                 { name = 'vsnip', group_index = 3 },
-                M.async_path(2),
+                Sources.async_path(2),
                 { name = 'nvim_lsp_signature_help', group_index = 4 },
-                M.buffer(5),
+                Sources.buffer(5),
             }),
         },
     },
@@ -139,55 +139,55 @@ M.ft = {
         { 'conf', 'config', 'cfg', 'confini', 'gitconfig' },
         {
             sources = gen_sources({
-                M.buffer(1),
-                M.async_path(2),
+                Sources.buffer(1),
+                Sources.async_path(2),
             }),
         },
     },
     {
         { 'c', 'cpp' },
         {
-            sources = gen_sources(M.Sources.c),
+            sources = gen_sources(Sources.Sources.c),
         },
     },
     ['lua'] = {
-        sources = gen_sources(M.Sources.lua),
+        sources = gen_sources(Sources.Sources.lua),
     },
     ['lisp'] = {
         sources = gen_sources({
             { name = 'vlime', group_index = 1 },
-            M.buffer(2),
+            Sources.buffer(2),
         }),
     },
     ['gitcommit'] = {
         sources = gen_sources({
             { name = 'conventionalcommits', group_index = 1 },
             { name = 'git', group_index = 2 },
-            M.buffer(3),
-            M.async_path(4),
+            Sources.buffer(3),
+            Sources.async_path(4),
         }),
     },
 }
 
 if exists('neorg') then
-    M.ft['norg'] = {
+    Sources.ft['norg'] = {
         sources = gen_sources({
             { name = 'neorg', group_index = 1 },
-            M.buffer(2),
-            M.async_path(3),
+            Sources.buffer(2),
+            Sources.async_path(3),
         }),
     }
 end
 
 ---@type SetupSources
-M.cmdline = {
+Sources.cmdline = {
     {
         { '/', '?' },
         {
             mapping = cmp.mapping.preset.cmdline(),
             sources = gen_sources({
                 { name = 'nvim_lsp_document_symbol', group_index = 1 },
-                M.buffer(2),
+                Sources.buffer(2),
             }),
         },
     },
@@ -201,7 +201,7 @@ M.cmdline = {
                     treat_trailing_slash = false,
                 },
             },
-            M.async_path(2),
+            Sources.async_path(2),
         }),
 
         ---@diagnostic disable-next-line:missing-fields
@@ -209,15 +209,15 @@ M.cmdline = {
     },
 }
 
-function M.setup(T)
+function Sources.setup(T)
     local notify = require('user_api.util.notify').notify
 
     if is_tbl(T) and not empty(T) then
         for k, v in next, T do
             if is_num(k) and is_tbl({ v[1], v[2] }, true) then
-                table.insert(M.ft, v)
+                table.insert(Sources.ft, v)
             elseif is_str(k) and is_tbl(v) then
-                M.ft[k] = v
+                Sources.ft[k] = v
             else
                 notify("Couldn't parse the input table value", 'error', {
                     hide_from_history = false,
@@ -228,7 +228,7 @@ function M.setup(T)
         end
     end
 
-    for k, v in next, M.ft do
+    for k, v in next, Sources.ft do
         if is_num(k) and is_tbl({ v[1], v[2] }, true) then
             local names = v[1]
             local opts = v[2]
@@ -247,7 +247,7 @@ function M.setup(T)
 
     require('cmp_git').setup()
 
-    for k, v in next, M.cmdline do
+    for k, v in next, Sources.cmdline do
         if is_num(k) then
             local names = v[1]
             local opts = v[2]
@@ -265,8 +265,8 @@ function M.setup(T)
     end
 end
 
-function M.new() return setmetatable({}, { __index = M }) end
+function Sources.new() return setmetatable({}, { __index = Sources }) end
 
-return M
+return Sources
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
