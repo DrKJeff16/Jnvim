@@ -26,8 +26,8 @@ User.registered_plugins = {}
 
 ---@param self UserAPI
 ---@param pathstr string
----@param i? integer
-function User:register_plugin(pathstr, i)
+---@param index? integer
+function User:register_plugin(pathstr, index)
     local Value = self.check.value
 
     local is_nil = Value.is_nil
@@ -37,7 +37,7 @@ function User:register_plugin(pathstr, i)
     local notify = self.util.notify.notify
     local tbl_contains = vim.tbl_contains
 
-    i = (is_int(i) and i >= 1) and i or 0
+    index = (is_int(index) and index >= 1) and index or 0
     if not is_str(pathstr) or empty(pathstr) then
         error('(user_api.register_plugin): Plugin must be a non-empty string')
     end
@@ -49,11 +49,11 @@ function User:register_plugin(pathstr, i)
     ---@type string|nil
     local warning = nil
 
-    if i >= 1 and i <= #self.registered_plugins then
-        table.insert(self.registered_plugins, i, pathstr)
-    elseif i == 0 then
+    if index >= 1 and index <= #self.registered_plugins then
+        table.insert(self.registered_plugins, index, pathstr)
+    elseif index == 0 then
         table.insert(self.registered_plugins, pathstr)
-    elseif i < 0 or i > #self.registered_plugins then
+    elseif index < 0 or index > #self.registered_plugins then
         warning = 'Invalid index, appending instead'
     end
 
@@ -64,7 +64,7 @@ function User:register_plugin(pathstr, i)
     notify(warning, 'warn', {
         hide_from_history = false,
         animate = false,
-        timeout = 1750,
+        timeout = 1000,
         title = '(user_api:register_plugin)',
     })
 end

@@ -39,7 +39,7 @@
 ---@field update User.Update
 ---@field commands User.Commands
 ---@field registered_plugins string[]
----@field register_plugin fun(self: UserAPI, pathstr: string, i: integer?)
+---@field register_plugin fun(self: UserAPI, pathstr: string, index: integer?)
 ---@field reload_plugins fun(self: UserAPI): (failed: string[]|nil)
 ---@field setup_keys fun(self: UserAPI)
 ---@field new fun(O: table?): UserAPI|table
