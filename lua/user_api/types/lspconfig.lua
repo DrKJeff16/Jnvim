@@ -40,6 +40,12 @@
 ---@field setup fun(self: Lsp.SubMods.Trouble, O: table|trouble.Config?)
 ---@field new fun(O: table?): table|Lsp.SubMods.Trouble
 
+---@class Lsp.SubMods.Autocmd
+---@field AUKeys AllModeMaps
+---@field autocommands AuRepeat
+---@field setup fun(self: Lsp.SubMods.Autocmd, T: AuRepeat?)
+---@field new fun(O: table?): table|Lsp.SubMods.Autocmd
+
 ---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
 
 ---@class Lsp.Server.Clients
@@ -62,6 +68,7 @@
 
 ---@class Lsp.Server
 ---@field clients Lsp.Server.Clients
+---@field make_capabilities fun(): lsp.ClientCapabilities
 ---@field populate fun(self: Lsp.Server)
 ---@field new fun(O: table?): Lsp.Server|table
 
