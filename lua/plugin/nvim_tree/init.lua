@@ -1,4 +1,4 @@
----@module 'usee_api.types.nvim_tree'
+---@module 'user_api.types.user.util'
 
 local User = require('user_api')
 local Keymaps = require('config.keymaps')
@@ -79,31 +79,31 @@ local function map_keys(keys, bufnr)
 
     keys['<leader>ft'] = { group = '+NvimTree' }
 
-    Keymaps:setup({ n = keys, v = keys })
+    require('user_api.maps').map_dict(keys, 'wk.register', true, bufnr)
 end
 
 ---@type AllMaps
 local my_maps = {
     ['<leader>fto'] = {
         open,
-        desc('Open NvimTree', true, 0),
+        desc('Open NvimTree'),
     },
     ['<leader>ftt'] = {
         toggle,
-        desc('Toggle NvimTree', true, 0),
+        desc('Toggle NvimTree'),
     },
     ['<leader>ftd'] = {
         close,
-        desc('Close NvimTree', true, 0),
+        desc('Close NvimTree'),
     },
 
     ['<leader>ftf'] = {
         focus,
-        desc('Focus NvimTree', true, 0),
+        desc('Focus NvimTree'),
     },
 }
 
-map_keys(my_maps)
+Keymaps:setup({ n = my_maps })
 
 ---@param nwin? integer
 local function tab_win_close(nwin)
@@ -292,7 +292,7 @@ local on_attach = function(bufn)
         },
     }
 
-    map_keys(Keys)
+    map_keys(Keys, bufn)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
