@@ -401,6 +401,18 @@ Keymaps.Keys = {
             function() vim.cmd.wincmd('w') end,
             desc('Next Window'),
         },
+        ['<leader>wc'] = {
+            function() vim.cmd.wincmd('o') end,
+            desc('Close All Other Windows'),
+        },
+        ['<leader>wS'] = {
+            function() vim.cmd.wincmd('x') end,
+            desc('Swap Current WithNext'),
+        },
+        ['<leader>wt'] = {
+            function() vim.cmd.wincmd('T') end,
+            desc('Break Current Window Into Tab'),
+        },
         ['<leader>wp'] = {
             function() vim.cmd.wincmd('W') end,
             desc('Previous Window'),
