@@ -31,19 +31,46 @@ User.registered_plugins = {}
 function User:register_plugin(pathstr, index)
     local Value = self.check.value
 
+    local notify = self.util.notify.notify
     local is_nil = Value.is_nil
     local is_str = Value.is_str
     local is_int = Value.is_int
     local empty = Value.empty
-    local notify = self.util.notify.notify
     local tbl_contains = vim.tbl_contains
 
-    index = (is_int(index) and index >= 1) and index or 0
+    index = (is_int(index) and index >= 1 and index <= #self.registered_plugins) and index or 0
     if not is_str(pathstr) or empty(pathstr) then
-        error('(user_api.register_plugin): Plugin must be a non-empty string')
+        error('(user_api:register_plugin): Plugin must be a non-empty string')
     end
 
     if tbl_contains(self.registered_plugins, pathstr) then
+        local old_idx = 0
+        for i, v in next, self.registered_plugins do
+            if v == pathstr then
+                old_idx = i
+                break
+            end
+        end
+
+        table.remove(self.registered_plugins, old_idx)
+
+        if tbl_contains({ 0, old_idx }, index) or index > #self.registered_plugins then
+            table.insert(self.registered_plugins, old_idx, pathstr)
+        else
+            table.insert(self.registered_plugins, index, pathstr)
+
+            notify(
+                string.format('Moved `%s` from index `%d` to `%d`', pathstr, old_idx, index),
+                'info',
+                {
+                    title = 'User API - register_plugin()',
+                    animate = true,
+                    timeout = 1050,
+                    hide_from_history = false,
+                }
+            )
+        end
+
         return
     end
 
@@ -56,6 +83,7 @@ function User:register_plugin(pathstr, index)
         table.insert(self.registered_plugins, pathstr)
     elseif index < 0 or index > #self.registered_plugins then
         warning = 'Invalid index, appending instead'
+        table.insert(self.registered_plugins, pathstr)
     end
 
     if is_nil(warning) then
@@ -162,7 +190,7 @@ function User:print_loaded_plugins()
     notify(msg, empty(msg) and 'error' or 'info', {
         animate = true,
         hide_from_history = false,
-        timeout = 1750,
+        timeout = 1500,
         title = 'User API',
     })
 end
