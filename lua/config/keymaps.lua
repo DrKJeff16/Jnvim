@@ -1,8 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.check'
 ---@module 'user_api.types.user.maps'
----@module 'user_api.types.user.util'
 
 ---@class Keymaps.PreExec
 ---@field ft string[]
@@ -20,7 +18,6 @@ local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Util = require('user_api.util') ---@see User.Util Utilities
 local Maps = require('user_api.maps') ---@see User.Maps
-local Kmap = Maps.kmap ---@see User.Maps.Keymap Mapping utilities
 
 local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
@@ -31,12 +28,37 @@ local ft_get = Util.ft_get ---@see User.Util.ft_get
 local bt_get = Util.bt_get ---@see User.Util.bt_get
 local nop = Maps.nop ---@see User.Maps.nop
 local map_dict = Maps.map_dict ---@see User.Maps.map_dict
-local desc = Kmap.desc ---@see User.Maps.Keymap.desc
+local desc = Maps.kmap.desc ---@see User.Maps.Keymap.desc
 
 local curr_buf = vim.api.nvim_get_current_buf
 local tbl_contains = vim.tbl_contains
 
 User:register_plugin('config.keymaps')
+
+---@param vertical? boolean
+---@return fun()|false
+local function gen_fun_blank(vertical)
+    vertical = is_bool(vertical) and vertical or false
+
+    return function()
+        local optset = vim.api.nvim_set_option_value
+
+        local buf = vim.api.nvim_create_buf(true, false)
+        local win = vim.api.nvim_open_win(buf, true, { vertical = vertical })
+
+        ---@type vim.api.keyset.option
+        local set_opts = { buf = buf }
+
+        vim.api.nvim_set_current_win(win)
+
+        optset('modifiable', true, set_opts)
+        optset('ft', '', set_opts)
+        optset('fileencoding', 'utf-8', set_opts)
+        optset('fileformat', 'unix', set_opts)
+        optset('buftype', '', set_opts)
+        optset('modified', false, set_opts)
+    end
+end
 
 ---@param force? boolean
 ---@return fun()
@@ -182,140 +204,184 @@ Keymaps.NOP = {
 --- Global keymaps, plugin-agnostic
 Keymaps.Keys = {
     n = {
+        ['<leader>F'] = { group = '+Folding' }, --- Folding Control
         ['<leader>H'] = { group = '+Help' }, --- Help
         ['<leader>HM'] = { group = '+Man Pages' }, --- Help
         ['<leader>b'] = { group = '+Buffer' }, --- Buffer Handling
         ['<leader>f'] = { group = '+File' }, --- File Handling
         ['<leader>fF'] = { group = '+New File' }, --- New File Creation
-        ['<leader>F'] = { group = '+Folding' }, --- Folding Control
         ['<leader>fi'] = { group = '+Indent' }, --- Indent Control
         ['<leader>fv'] = { group = '+Script Files' }, --- Script File Handling
         ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
         ['<leader>t'] = { group = '+Tabs' }, --- Tabs Handling
         ['<leader>v'] = { group = '+Vim' }, --- Vim
         ['<leader>ve'] = { group = '+Edit Nvim Config File' }, --- `init.lua` Editing
+        ['<leader>vh'] = { group = '+Checkhealth' }, --- `init.lua` Editing
         ['<leader>w'] = { group = '+Window' }, --- Window Handling
         ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
 
         ['<Esc><Esc>'] = {
-            function() vim.schedule(vim.cmd.nohls) end,
+            function() vim.schedule(vim.cmd.noh) end,
             desc('Remove Highlighted Search'),
         },
 
+        ['<leader>bd'] = {
+            buf_del(),
+            desc('Close Buffer'),
+        },
         ['<leader>bD'] = {
             buf_del(true),
             desc('Close Buffer Forcefully'),
         },
-        ['<leader>bd'] = {
-            buf_del(false),
-            desc('Close Buffer'),
-        },
-        ['<leader>bf'] = { ':bfirst<CR>', desc('Goto First Buffer') },
-        ['<leader>bl'] = { ':blast<CR>', desc('Goto Last Buffer') },
-        ['<leader>bn'] = { ':bNext<CR>', desc('Next Buffer') },
-        ['<leader>bp'] = { ':bprevious<CR>', desc('Previous Buffer') },
+        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
+        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer') },
+        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer') },
+        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer') },
+
+        ['<leader>/'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
 
         ['<leader>Fc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>Fo'] = { ':%foldopen<CR>', desc('Open All Folds') },
+
         ['<leader>fFx'] = {
-            function()
-                local optset = vim.api.nvim_set_option_value
-
-                local buf = vim.api.nvim_create_buf(true, false)
-                local win = vim.api.nvim_open_win(buf, true, {
-                    vertical = false,
-                })
-
-                vim.api.nvim_set_current_win(win)
-
-                optset('modifiable', true, { buf = buf })
-                optset('modified', true, { buf = buf })
-                optset('fileencoding', 'utf-8', { buf = buf })
-                optset('fileformat', 'unix', { buf = buf })
-                optset('buftype', '', { buf = buf })
-            end,
+            gen_fun_blank(false),
             desc('New Horizontal Blank File'),
         },
         ['<leader>fFv'] = {
-            function()
-                local optset = vim.api.nvim_set_option_value
-
-                local buf = vim.api.nvim_create_buf(true, false)
-                local win = vim.api.nvim_open_win(buf, true, {
-                    vertical = true,
-                })
-
-                vim.api.nvim_set_current_win(win)
-
-                optset('modifiable', true, { buf = buf })
-                optset('modified', true, { buf = buf })
-                optset('fileencoding', 'utf-8', { buf = buf })
-                optset('fileformat', 'unix', { buf = buf })
-                optset('buftype', '', { buf = buf })
-            end,
+            gen_fun_blank(true),
             desc('New Vertical Blank File'),
         },
-        ['<leader>fS'] = { ':w ', desc('Save File (Prompt)', false) },
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-        ['<leader>/'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
+
         ['<leader>fs'] = {
             function()
+                local notify = require('user_api.util.notify').notify
+
+                ---@type boolean
+                local ok = true
+                ---@type unknown
+                local err = nil
+
                 if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
-                    vim.cmd.write()
-                else
-                    require('user_api.util.notify').notify('Not writeable', 'error')
+                    ok, err = pcall(vim.cmd.write)
+
+                    if ok then
+                        return
+                    end
                 end
+
+                notify(err or 'Unable to write', 'error', {
+                    animate = true,
+                    title = 'Vim Write',
+                    timeout = 2250,
+                    hide_from_history = false,
+                })
             end,
             desc('Save File'),
         },
+        ['<leader>fS'] = { ':w ', desc('Prompt Save File', false) },
+
+        ['<leader>fir'] = {
+            function()
+                local notify = require('user_api.util.notify').notify
+
+                ---@diagnostic disable-next-line
+                local ok, err = pcall(vim.cmd, '%retab<CR>')
+
+                if ok then
+                    ok, err = pcall(vim.cmd.write)
+
+                    if ok then
+                        return
+                    end
+                end
+
+                notify(err or 'Error attempting to retab', 'error', {
+                    animate = true,
+                    title = 'Retab',
+                    timeout = 2500,
+                    hide_from_history = false,
+                })
+            end,
+            desc('Retab File'),
+        },
+
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
         ['<leader>fvl'] = {
             function()
-                local ft = require('user_api.util').ft_get()
-                local err_msg = 'Filetype `' .. ft .. '` not sourceable by Lua'
+                local notify = require('user_api.util.notify').notify
+
+                local ft = ft_get()
+
+                ---@type boolean
+                local ok = true
+
+                ---@type unknown
+                local err = nil
 
                 if ft == 'lua' then
-                    vim.cmd('luafile %')
-                    require('user_api.util.notify').notify(
-                        'Sourced current Lua file',
-                        'info',
-                        { title = 'Lua', timeout = 150, hide_from_history = true }
-                    )
-                else
-                    require('user_api.util.notify').notify(
-                        err_msg,
-                        'error',
-                        { title = 'Lua', timeout = 250, hide_from_history = true }
-                    )
+                    ---@diagnostic disable-next-line
+                    ok, err = pcall(vim.cmd.luafile, '%')
+
+                    if ok then
+                        notify('Sourced current Lua file', 'info', {
+                            animate = true,
+                            title = 'Lua',
+                            timeout = 1500,
+                            hide_from_history = true,
+                        })
+
+                        return
+                    end
                 end
+
+                notify(err, 'error', {
+                    animate = true,
+                    title = 'Lua',
+                    timeout = 2000,
+                    hide_from_history = false,
+                })
             end,
             desc('Source Current File As Lua File'),
         },
         ['<leader>fvv'] = {
             function()
-                local ft = require('user_api.util').ft_get()
-                local err_msg = 'Filetype `' .. ft .. '` not sourceable by Vim'
+                local notify = require('user_api.util.notify').notify
+
+                local ft = ft_get()
+
+                ---@type boolean
+                local ok = true
+
+                ---@type unknown
+                local err = nil
 
                 if ft == 'vim' then
-                    vim.cmd('so %')
-                    require('user_api.util.notify').notify(
-                        'Sourced current Vim file',
-                        'info',
-                        { title = 'Vim', timeout = 150, hide_from_history = true }
-                    )
-                else
-                    require('user_api.util.notify').notify(
-                        err_msg,
-                        'error',
-                        { title = 'Vim', timeout = 250, hide_from_history = true }
-                    )
+                    ---@diagnostic disable-next-line
+                    ok, err = pcall(vim.cmd, 'so %')
+
+                    if ok then
+                        notify('Sourced current Vim file', 'info', {
+                            animate = true,
+                            title = 'Vim',
+                            timeout = 1000,
+                            hide_from_history = true,
+                        })
+
+                        return
+                    end
                 end
+
+                notify(err, 'error', {
+                    animate = true,
+                    title = 'Vim',
+                    timeout = 2000,
+                    hide_from_history = false,
+                })
             end,
             desc('Source Current File As VimScript File'),
         },
 
-        ['<leader>vH'] = { ':checkhealth ', desc('Prompt For Checkhealth', false) },
         ['<leader>vee'] = { '<CMD>ed ' .. MYVIMRC .. '<CR>', desc('Open In Current Window') },
         ['<leader>ves'] = {
             '<CMD>split ' .. MYVIMRC .. '<CR>',
@@ -326,15 +392,46 @@ Keymaps.Keys = {
             '<CMD>vsplit ' .. MYVIMRC .. '<CR>',
             desc('Open In Vertical Split'),
         },
-        ['<leader>vh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
+
+        ['<leader>vhh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
+        ['<leader>vhH'] = { ':checkhealth', desc('Prompt Checkhealth', false) },
+        ['<leader>vhd'] = {
+            '<CMD>checkhealth vim.health<CR>',
+            desc('Run `vim.health` Checkhealth', false),
+        },
+        ['<leader>vhD'] = {
+            '<CMD>checkhealth vim.deprecated<CR>',
+            desc('Run `vim.deprecated` Checkhealth', false),
+        },
+        ['<leader>vhl'] = {
+            '<CMD>checkhealth vim.lsp<CR>',
+            desc('Run `vim.lsp` Checkhealth', false),
+        },
+
         ['<leader>vs'] = {
             function()
-                vim.cmd('luafile ' .. MYVIMRC)
-                require('user_api.util.notify').notify(
-                    'Sourced `init.lua`',
-                    'info',
-                    { title = 'luafile', timeout = 250, hide_from_history = true }
-                )
+                local notify = require('user_api.util.notify').notify
+
+                ---@diagnostic disable-next-line
+                local ok, err = pcall(vim.cmd, 'luafile ' .. MYVIMRC)
+
+                if ok then
+                    notify('Sourced `init.lua`', 'info', {
+                        animate = true,
+                        title = 'luafile',
+                        timeout = 1000,
+                        hide_from_history = true,
+                    })
+
+                    return
+                end
+
+                notify(err, 'error', {
+                    animate = true,
+                    title = 'luafile',
+                    timeout = 2500,
+                    hide_from_history = true,
+                })
             end,
             desc('Source $MYVIMRC'),
         },
@@ -346,7 +443,6 @@ Keymaps.Keys = {
         ['<leader>Ht'] = { ':tab h ', desc('Prompt For Help On New Tab') },
         ['<leader>Hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split') },
         ['<leader>Hx'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split') },
-
         ['<leader>HMM'] = { ':Man ', desc('Prompt For Man') },
         ['<leader>HMT'] = { ':tab Man ', desc('Prompt For Arbitrary Man Page (Tab)') },
         ['<leader>HMV'] = { ':vert Man ', desc('Prompt For Arbitrary Man Page (Vertical)') },
@@ -368,8 +464,9 @@ Keymaps.Keys = {
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 
-                vim.bo.modifiable = true
                 vim.api.nvim_set_option_value('ft', ft, { buf = curr_buf() })
+                vim.api.nvim_set_option_value('modifiable', true, { buf = curr_buf() })
+                vim.api.nvim_set_option_value('modified', false, { buf = curr_buf() })
             end,
             desc('New Blank File'),
         },
@@ -475,7 +572,8 @@ Keymaps.Keys = {
 ---@param self Config.Keymaps
 ---@param keys? AllModeMaps
 function Keymaps:setup(keys)
-    local MODES = require('user_api.maps').modes
+    local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
+    local insp = inspect or vim.inspect
 
     local notify = require('user_api.util.notify').notify
 
@@ -491,11 +589,16 @@ function Keymaps:setup(keys)
 
     for k, _ in next, keys do
         if not vim.tbl_contains(MODES, k) then
-            notify("Input tables aren't using Vim modes as dictionary keys, ignoring", 'warn', {
-                title = '(config.keymaps)',
-                hide_from_history = false,
-                timeout = 200,
-            })
+            notify(
+                string.format("Table isn't formatted correctly. Ignoring\n\n%s", insp(keys)),
+                'warn',
+                {
+                    animate = true,
+                    title = '(config.keymaps:setup())',
+                    hide_from_history = false,
+                    timeout = 1250,
+                }
+            )
         end
     end
 
