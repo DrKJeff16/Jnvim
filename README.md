@@ -169,9 +169,11 @@ To call the options:
 ```lua
 local Opts1 = require('user_api.opts')
 Opts1:setup()
+Opts1:setup_keys() -- Setup keymaps
 --- Or by using the entry point:
 local Opts2 = require('user_api').opts
 Opts2:setup()
+Opts2:setup_keys() -- Setup keymaps
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
