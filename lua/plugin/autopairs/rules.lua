@@ -14,8 +14,6 @@ local api = vim.api
 local Ap = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
 local Conds = require('nvim-autopairs.conds')
-local Handlers = require('nvim-autopairs.completion.handlers')
-local ts_conds = require('nvim-autopairs.ts-conds')
 
 local BPAIRS = {
     { '(', ')' },

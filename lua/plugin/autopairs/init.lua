@@ -14,9 +14,6 @@ end
 User:register_plugin('plugin.autopairs')
 
 local Ap = require('nvim-autopairs')
-local Rule = require('nvim-autopairs.rule')
-local Conds = require('nvim-autopairs.conds')
-local Handlers = require('nvim-autopairs.completion.handlers')
 
 Ap.setup({
     active = true,
