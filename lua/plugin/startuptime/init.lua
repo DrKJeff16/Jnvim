@@ -1,9 +1,9 @@
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local is_int = Check.value.is_int
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 local hi = User.highlight.hl
 
 if not is_int(vim.g.installed_startuptime) or vim.g.installed_startuptime ~= 1 then
@@ -12,7 +12,7 @@ end
 
 User:register_plugin('plugin.startuptime')
 
-local flags = {
+local Flags = {
     more_info_key_seq = 'K',
     split_edit_key_seq = 'gf',
     sort = true,
@@ -31,11 +31,11 @@ local flags = {
     zero_progress_time = 2500,
 }
 
-for flag, val in next, flags do
+for flag, val in next, Flags do
     vim.g['startuptime_' .. flag] = val
 end
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
     ['<leader>vS'] = {
         function() vim.cmd('StartupTime') end,
@@ -43,8 +43,7 @@ local Keys = {
     },
 }
 
-map_dict(Keys, 'wk.register', false, 'n')
-map_dict(Keys, 'wk.register', false, 'v')
+Keymaps:setup({ n = Keys, v = Keys })
 
 hi('StartupTimeSourcingEvent', { link = 'Title' })
 

@@ -1,12 +1,11 @@
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.user.highlight'
+
 local User = require('user_api')
 local Check = User.check
-local hl_t = User.types.user.highlight
 
-local is_nil = Check.value.is_nil
-local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
 local exists = Check.exists.module
-local empty = Check.value.empty
 local hl_from_dict = User.highlight.hl_from_dict
 
 if not exists('notify') then
@@ -15,10 +14,9 @@ end
 
 User:register_plugin('plugin.notify')
 
-local notify = require('notify')
+local Notify = require('notify')
 
----@diagnostic disable-next-line:missing-fields
-notify.setup({
+Notify.setup({
     background_colour = 'NotifyBackground',
     fps = 60,
     icons = {
@@ -28,18 +26,19 @@ notify.setup({
         TRACE = '✎',
         WARN = '',
     },
-    level = vim.log.levels.DEBUG,
-    minimum_width = 12,
+    level = vim.log.levels.INFO,
+    minimum_width = 15,
     render = 'default',
     stages = 'fade_in_slide_out',
     time_formats = {
         notification = '%T',
         notification_history = '%FT%T',
     },
-    timeout = 1000,
+    timeout = 2500,
     top_down = true,
 })
-vim.notify = notify
+
+vim.notify = Notify
 
 ---@type HlDict
 local NotifyHl = {

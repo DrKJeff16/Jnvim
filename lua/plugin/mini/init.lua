@@ -1,7 +1,10 @@
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.mini'
+
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
-local Types = User.types.mini
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -23,7 +26,7 @@ local function src(mini_mod, opts)
         notify('Invalid or empty Mini module', 'error', {
             animate = true,
             hide_from_history = false,
-            timeout = 500,
+            timeout = 2750,
             title = '(plugin.mini:src)',
         })
         return
@@ -37,7 +40,7 @@ local function src(mini_mod, opts)
         notify('Unable to import `' .. og_mini_mod .. '`', 'error', {
             animate = true,
             hide_from_history = false,
-            timeout = 1200,
+            timeout = 2250,
             title = '(plugin.mini:src)',
         })
         return
@@ -48,6 +51,7 @@ local function src(mini_mod, opts)
     opts = is_tbl(opts) and opts or nil
 
     if is_fun(M.setup) then
+        ---@type boolean
         local ok
 
         if is_nil(opts) then
@@ -70,7 +74,6 @@ end
 ---@type MiniModules
 local Mods = {}
 
-Mods.align = nil
 --[[ Mods.align = {
     -- Module mappings. Use `''` (empty string) to disable one
     mappings = {
@@ -166,112 +169,9 @@ Mods.bufremove = {
     silent = true,
 }
 
-Mods.cursorword = { delay = 1000 }
-
-Mods.doc = nil
-
 Mods.extra = {}
-
-Mods.icons = {}
-
-Mods.map = {
-    -- Highlight integrations (none by default)
-    integrations = {
-        require('mini.map').gen_integration.diagnostic(),
-        require('mini.map').gen_integration.diff(),
-        require('mini.map').gen_integration.builtin_search(),
-    },
-
-    -- Symbols used to display data
-    symbols = {
-        -- Encode symbols. See `:h MiniMap.config` for specification and
-        -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
-        -- Default: solid blocks with 3x2 resolution.
-        encode = nil,
-
-        -- Scrollbar parts for view and line. Use empty string to disable any.
-        scroll_line = '█',
-        scroll_view = '┃',
-    },
-
-    -- Window options
-    window = {
-        -- Whether window is focusable in normal way (with `wincmd` or mouse)
-        focusable = false,
-
-        -- Side to stick ('left' or 'right')
-        side = 'right',
-
-        -- Whether to show count of multiple integration highlights
-        show_integration_count = false,
-
-        -- Total width
-        width = 10,
-
-        -- Value of 'winblend' option
-        winblend = 35,
-
-        -- Z-index
-        zindex = 10,
-    },
-}
-
-Mods.move = {
-    -- Module mappings. Use `''` (empty string) to disable one
-    mappings = {
-        -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl
-        left = '<leader>Ml',
-        right = '<leader>Mr',
-        down = '<leader>Md',
-        up = '<leader>Mu',
-
-        -- Move current line in Normal mode
-        line_left = '<leader>Ml',
-        line_right = '<leader>Mr',
-        line_down = '<leader>Md',
-        line_up = '<leader>Mu',
-    },
-
-    -- Options which control moving behavior
-    options = {
-        -- Automatically reindent selection during linewise vertical move
-        reindent_linewise = true,
-    },
-}
-
-Mods.basics = {
-    options = {
-        basic = true,
-        extra_ui = true,
-        win_borders = 'rounded',
-    },
-
-    mappings = {
-        basic = false,
-        option_toggle_prefix = '',
-        windows = true,
-        move_with_alt = false,
-    },
-
-    autocommands = {
-        basic = true,
-        relnum_in_visual_mode = true,
-    },
-
-    silent = true,
-}
-
-Mods.bufremove = {
-    set_vim_settings = true,
-    silent = true,
-}
 
 -- Mods.cursorword = { delay = 1000 }
-Mods.cursorword = nil
-
-Mods.doc = nil
-
-Mods.extra = {}
 
 Mods.icons = {
     style = 'glyph',

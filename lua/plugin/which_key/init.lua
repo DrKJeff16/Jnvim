@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 
@@ -16,9 +18,11 @@ local WK = require('which-key')
 WK.setup({
     ---@type false|'classic'|'modern'|'helix'
     preset = 'modern',
+
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
     delay = function(ctx) return ctx.plugin and 0 or 100 end,
+
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
     spec = {
@@ -81,7 +85,6 @@ WK.setup({
     },
 
     ---@type wk.Win
-    ---@diagnostic disable-next-line:missing-fields
     win = {
         -- width = { min = math.floor(vim.opt.columns:get() * 2 / 3 ), max = math.floor(vim.opt.columns:get() * 3 / 4) },
         -- height = { min = 4, max = 25 },
@@ -102,16 +105,18 @@ WK.setup({
             winblend = in_console() and 0 or 15, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         },
     },
+
     layout = {
         width = { min = 20, max = math.floor(vim.opt_local.columns:get() * 3 / 4) }, -- min and max width of the columns
         spacing = 2, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
+
     keys = {
         scroll_down = '<c-d>', -- binding to scroll down inside the popup
         scroll_up = '<c-u>', -- binding to scroll up inside the popup
     },
-    ---@type (string|wk.Sorter)[]
+
     --- Mappings are sorted using configured sorters and natural sort of the keys
     --- Available sorters:
     --- * local: buffer-local mappings first
@@ -121,11 +126,15 @@ WK.setup({
     --- * mod: special modifier keys last
     --- * manual: the order the mappings were added
     --- * case: lower-case first
+    ---@type (string|wk.Sorter)[]
     sort = { 'local', 'order', 'case', 'alphanum', 'manual', 'group', 'mod' },
+
     -- expand = 0, -- expand groups when <= n mappings
+
     expand = function(node)
         return not node.desc -- expand all nodes without a description
     end,
+
     ---@type table<string, ({ [1]: string, [2]: string }|fun(str: string): string)[]>
     replace = {
         key = {
@@ -143,11 +152,13 @@ WK.setup({
             { '^:%s*', '' },
         },
     },
+
     icons = {
         breadcrumb = '»', -- symbol used in the command line area that shows your active key combo
         separator = '➜', -- symbol used between a key and it's label
         group = '+', -- symbol prepended to a group
         ellipsis = '…',
+
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
         ---@type wk.IconRule[]|false
@@ -155,9 +166,11 @@ WK.setup({
             { pattern = 'toggleterm', icon = ' ', color = 'cyan' },
             { pattern = 'lsp', icon = ' ', color = 'purple' },
         },
+
         -- use the highlights from mini.icons
         -- When `false`, it will use `WhichKeyIcon` instead
         colors = true,
+
         -- used by key format
         keys = {
             Up = '',
@@ -197,6 +210,7 @@ WK.setup({
     },
 
     show_help = true, -- show a help message in the command line for using WhichKey
+
     show_keys = true, -- show the currently pressed key and its label as a message in the command line
 
     -- Which-key automatically sets up triggers for your mappings.

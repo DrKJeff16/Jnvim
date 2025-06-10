@@ -1,6 +1,9 @@
+---@diagnostic disable:missing-fields
+
+---@module 'usee_api.types.mini'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.mini
 
 local exists = Check.exists.module
 
@@ -15,10 +18,9 @@ local Sections = MS.sections
 local gen_hook = MS.gen_hook
 
 ---@type StarterPresets
----@diagnostic disable-next-line:missing-fields
-local M = {}
+local Starter = {}
 
-M.simple = {
+Starter.simple = {
     evaluate_single = false,
 
     items = {
@@ -41,7 +43,7 @@ M.simple = {
     query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
 }
 
-M.telescope = {
+Starter.telescope = {
     evaluate_single = false,
 
     items = {
@@ -60,6 +62,6 @@ M.telescope = {
     query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
 }
 
-return M
+return Starter
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

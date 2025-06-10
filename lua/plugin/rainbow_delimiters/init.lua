@@ -29,7 +29,9 @@ local QRY = {
 ---@return rainbow_delimiters.strategy
 local function strat(s)
     s = (is_str(s) and vim.tbl_contains({ 'global', 'local', 'noop' }, s)) and s or 'global'
-    return require('rainbow-delimiters').strategy[s]
+
+    ---@diagnostic disable-next-line
+    return RD.strategy[s]
 end
 
 require('rainbow-delimiters.setup').setup({

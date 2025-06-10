@@ -1,33 +1,28 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
+---@module 'user_api.types.user.highlight'
+---@module 'user_api.types.user.maps'
 
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local hl_t = User.types.user.highlight
-local map_t = User.types.user.maps
-local Maps = User.maps
-local kmap = Maps.kmap
-local WK = Maps.wk
-local Highlight = User.highlight
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local hi = User.highlight.hl_from_dict
-local desc = kmap.desc
-local map_dict = Maps.map_dict
+local desc = User.maps.kmap.desc
 
 if not exists('treesitter-context') then
     return
 end
 
+User:register_plugin('plugin.treesitter.context')
+
 local Context = require('treesitter-context')
-local Config = require('treesitter-context.config')
 
 Context.setup({
     enable = true,
+
     ---@type 'topline'|'cursor'
     mode = 'cursor',
+
     ---@type 'inner'|'outer'
     trim_scope = 'outer',
     line_numbers = true,
@@ -35,9 +30,11 @@ Context.setup({
     zindex = 20,
     multiline_threshold = 20,
     max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() + 1 or 3,
+
     -- Separator between context and content. Should be a single character string, like '-'.
     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline
     separator = nil,
+
     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 })
 
@@ -48,22 +45,18 @@ local hls = {
     ['TreesitterContext'] = { link = 'PmenuSel' },
 }
 
----@type KeyMapDict
+hi(hls)
+
+---@type AllMaps
 local Keys = {
+    ['<leader>C'] = { group = '+Context' },
+
     ['<leader>Cn'] = {
         function() pcall(Context.goto_context, vim.v.count1) end,
         desc('Previous Context'),
     },
 }
----@type RegKeysNamed
-local Names = {
-    ['<leader>C'] = { group = '+Context' },
-}
 
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n', 0)
-end
-map_dict(Keys, 'wk.register', false, 'n', 0)
-hi(hls)
+Keymaps:setup({ n = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

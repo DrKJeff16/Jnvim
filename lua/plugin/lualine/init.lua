@@ -6,6 +6,8 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 
+local tbl_contains = vim.tbl_contains
+
 if not exists('lualine') then
     return
 end
@@ -16,16 +18,26 @@ local Lualine = require('lualine')
 
 local Presets = require('plugin.lualine.presets')
 
----@type fun(theme: string?, force_auto: boolean?): string
+---@param theme? ''|'auto'|string
+---@param force_auto? boolean
+---@return string
 local function theme_select(theme, force_auto)
-    theme = (is_str(theme) and not empty(theme)) and theme or 'auto'
+    theme = is_str(theme) and theme or 'auto'
+    theme = not empty(theme) and theme or 'auto'
 
     force_auto = is_bool(force_auto) and force_auto or false
+
+    local themes = {
+        'tokyonight',
+        'catppuccin',
+        'nightfox',
+        'onedark',
+    }
 
     -- If `auto` theme and permitted to select from fallbacks.
     -- Keep in mind these fallbacks are the same strings as their `require()` module strings
     if theme == 'auto' and not force_auto then
-        for _, t in next, { 'nightfox', 'onedark', 'catppuccin', 'tokyonight' } do
+        for _, t in next, themes do
             if exists(t) then
                 theme = t
                 break -- Be contempt with the first theme you find
@@ -39,7 +51,7 @@ end
 local Opts = {
     options = {
         icons_enabled = true,
-        theme = theme_select('nightfox', true),
+        theme = theme_select('auto', false),
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         ignore_focus = {},
@@ -62,13 +74,13 @@ local Opts = {
     },
 }
 
-if exists('lazy') then
+if exists('lazy') and not tbl_contains(Opts.extensions, 'lazy') then
     table.insert(Opts.extensions, 'lazy')
 end
-if exists('nvim-tree') then
+if exists('nvim-tree') and not tbl_contains(Opts.extensions, 'nvim-tree') then
     table.insert(Opts.extensions, 'nvim-tree')
 end
-if exists('toggleterm') then
+if exists('toggleterm') and not tbl_contains(Opts.extensions, 'toggleterm') then
     table.insert(Opts.extensions, 'toggleterm')
 end
 

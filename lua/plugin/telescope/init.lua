@@ -1,6 +1,9 @@
+---@diagnostic disable:need-check-nil
+
+---@module 'user_api.types.telescope'
+
 local User = require('user_api')
 local Check = User.check
-local types = User.types.telescope
 
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
@@ -25,7 +28,6 @@ local Actions = require('telescope.actions')
 local ActionsLayout = require('telescope.actions.layout')
 local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
-local Pickers = require('telescope.pickers')
 local Themes = require('telescope.themes')
 
 -- Clone the default Telescope configuration
@@ -136,7 +138,6 @@ if exists('trouble.sources.telescope') then
 
     local open_with_trouble = pfx.open
     -- Use this to add more results without clearing the trouble list
-    local add_to_trouble = pfx.add
 
     Opts.defaults.mappings.i['<C-T>'] = open_with_trouble
     Opts.defaults.mappings.n['<C-T>'] = open_with_trouble

@@ -1,16 +1,19 @@
-local user = require('user_api')
-local Check = user.check
-local types = user.types.lualine
+---@module 'user_api.types.lualine'
+
+local User = require('user_api')
 
 local floor = math.floor
 
+User:register_plugin('plugin.lualine.presets')
+
 ---@type LuaLine.Presets
 ---@diagnostic disable-next-line:missing-fields
-local M = {}
+local Presets = {}
 
+---@type LuaLine.ComponentsDict
 ---@diagnostic disable-next-line:missing-fields
-M.components = {}
-M.components.buffers = {
+Presets.components = {}
+Presets.components.buffers = {
     'buffers',
 
     filetype_names = {
@@ -37,7 +40,7 @@ M.components.buffers = {
     max_length = floor(vim.opt.columns:get() / 4),
 }
 
-M.components.diff = {
+Presets.components.diff = {
     'diff',
     colored = true,
     diff_color = {
@@ -53,29 +56,30 @@ M.components.diff = {
     },
 }
 
-M.components.branch = { 'branch' }
-M.components.encoding = { 'encoding' }
-M.components.hostname = { 'hostname' }
-M.components.location = { 'location' }
-M.components.selectioncount = { 'selectioncount' }
-M.components.filesize = { 'filesize' }
+Presets.components.branch = { 'branch' }
+Presets.components.encoding = { 'encoding' }
+Presets.components.hostname = { 'hostname' }
+Presets.components.location = { 'location' }
+Presets.components.selectioncount = { 'selectioncount' }
+Presets.components.filesize = { 'filesize' }
 
-M.components.filename = {
+Presets.components.filename = {
     'filename',
 
     file_status = true,
-    newfile_status = false,
-    path = 4,
+    newfile_status = true,
+    path = 0,
 }
 
-M.components.filetype = {
+Presets.components.filetype = {
     'filetype',
-    colored = true,
+
+    colored = false,
     icon_only = false,
     icon = { align = 'right' },
 }
 
-M.components.fileformat = {
+Presets.components.fileformat = {
     'fileformat',
 
     symbols = {
@@ -85,13 +89,14 @@ M.components.fileformat = {
     },
 }
 
-M.components.searchcount = {
+Presets.components.searchcount = {
     'searchcount',
+
     maxcount = 999,
     timeout = 500,
 }
 
-M.components.tabs = {
+Presets.components.tabs = {
     'tabs',
 
     tab_max_length = floor(vim.opt.columns:get() / 3),
@@ -104,7 +109,7 @@ M.components.tabs = {
     },
 }
 
-M.components.windows = {
+Presets.components.windows = {
     'windows',
 
     max_length = floor(vim.opt.columns:get() / 5),
@@ -120,14 +125,14 @@ M.components.windows = {
     },
 }
 
-M.components.diagnostics = {
+Presets.components.diagnostics = {
     'diagnostics',
 
     sources = {
         'nvim_workspace_diagnostic',
     },
 
-    sections = { 'error', 'warn', 'info', 'hint' },
+    sections = { 'error', 'warn' },
 
     diagnostics_color = {
         error = 'DiagnosticError',
@@ -148,56 +153,60 @@ M.components.diagnostics = {
     always_visible = true,
 }
 
-M.components.datetime = {
+Presets.components.datetime = {
     'datetime',
+
     style = 'uk',
 }
 
-M.components.mode = {
+Presets.components.mode = {
     'mode',
+
     fmt = function(str) return str:sub(1, 1) end,
 }
 
-M.default = {
+Presets.default = {
     lualine_a = {
-        M.components.mode,
+        -- Presets.components.datetime,
+        Presets.components.mode,
     },
     lualine_b = {
-        M.components.branch,
-        M.components.filename,
+        -- Presets.components.branch,
+        Presets.components.filename,
+        -- Presets.components.filesize,
     },
     lualine_c = {
-        M.components.diagnostics,
-        M.components.diff,
+        -- Presets.components.diff,
+        Presets.components.diagnostics,
     },
     lualine_x = {
-        M.components.encoding,
-        M.components.fileformat,
-        M.components.filetype,
+        -- Presets.components.encoding,
+        Presets.components.fileformat,
+        Presets.components.filetype,
     },
     lualine_y = {
-        M.components.progress,
+        Presets.components.progress,
     },
     lualine_z = {
-        M.components.location,
+        Presets.components.location,
     },
 }
 
-M.default_inactive = {
+Presets.default_inactive = {
     lualine_a = {},
     lualine_b = {
-        M.components.filename,
+        Presets.components.filename,
     },
     lualine_c = {},
     lualine_x = {
-        M.components.filetype,
+        Presets.components.filetype,
     },
     lualine_y = {},
     lualine_z = {
-        M.components.location,
+        Presets.components.location,
     },
 }
 
-return M
+return Presets
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

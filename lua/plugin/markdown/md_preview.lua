@@ -1,13 +1,11 @@
+---@module 'user_api.types.user.maps'
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local maps_t = User.types.user.maps
 
 local executable = Check.exists.executable
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local desc = User.maps.kmap.desc
-local wk_avail = User.maps.wk.available
-local map_dict = User.maps.map_dict
 
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
@@ -46,36 +44,28 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
     group = augroup('MarkdownPreviewInitHook', { clear = false }),
     pattern = { '*.md', '*.markdown', '*.MD' },
     callback = function()
-        ---@type KeyMapDict
+        ---@type AllMaps
         local Keys = {
+            ['<leader>f<C-M>'] = { group = '+MarkdownPreview' },
+
             ['<leader>f<C-M>t'] = {
-                function() vim.cmd('MarkdownPreviewToggle') end,
+                ---@diagnostic disable-next-line
+                function() pcall(vim.cmd, 'MarkdownPreviewToggle') end,
                 desc('Toggle Markdown Preview', true, 0),
             },
             ['<leader>f<C-M>p'] = {
-                function() vim.cmd('MarkdownPreview') end,
+                ---@diagnostic disable-next-line
+                function() pcall(vim.cmd, 'MarkdownPreview') end,
                 desc('Run Markdown Preview', true, 0),
             },
             ['<leader>f<C-M>s'] = {
-                function() vim.cmd('MarkdownPreviewStop') end,
+                ---@diagnostic disable-next-line
+                function() pcall(vim.cmd, 'MarkdownPreviewStop') end,
                 desc('Stop Markdown Preview', true, 0),
             },
         }
 
-        ---@type RegKeysNamed
-        local Names = {
-            ['<leader>f<C-M>'] = { group = '+MarkdownPreview' },
-        }
-
-        local bufnr = vim.api.nvim_get_current_buf()
-
-        if wk_avail() then
-            map_dict(Names, 'wk.register', false, 'n', 0)
-            map_dict(Names, 'wk.register', false, 'v', 0)
-        end
-
-        map_dict(Keys, 'wk.register', false, 'n', 0)
-        map_dict(Keys, 'wk.register', false, 'v', 0)
+        Keymaps:setup({ n = Keys, v = Keys })
     end,
 })
 

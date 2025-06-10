@@ -1,11 +1,11 @@
+---@module 'user_api.types.user.maps'
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local maps_t = User.types.user.maps
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('neo-tree') then
     return
@@ -24,11 +24,7 @@ NeoTree.setup({
     open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf', 'lazy', 'checkhealth' }, -- when opening files, do not use windows containing these filetypes or buftypes
     sort_case_insensitive = false, -- used when sorting files and directories in the tree
     sort_function = function(a, b)
-        if a.type == b.type then
-            return a.path < b.path
-        else
-            return a.type > b.type
-        end
+        return (a.type == b.type) and (a.path < b.path) or (a.type > b.type)
     end, -- this sorts files and directories descendantly
 
     default_component_configs = {
@@ -300,21 +296,16 @@ NeoTree.setup({
     },
 })
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
+    ['<leader>ft'] = { group = '+NeoTree' },
+
     ['<leader>ftt'] = {
         function() vim.cmd('Neotree reveal') end,
         desc('Reveal NeoTree'),
     },
 }
----@type RegKeysNamed
-local Names = {
-    ['<leader>ft'] = { group = '+NeoTree' },
-}
 
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-map_dict(Keys, 'wk.register', false, 'n')
+Keymaps:setup({ n = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

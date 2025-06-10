@@ -16,6 +16,7 @@ WDI.setup({
     color_icons = true,
     default_icons = true,
     strict = true,
+
     override_by_filename = {
         ['.gitignore'] = {
             icon = '',
@@ -23,6 +24,7 @@ WDI.setup({
             name = 'Gitignore',
         },
     },
+
     override_by_operating_system = {
         ['apple'] = {
             icon = '',

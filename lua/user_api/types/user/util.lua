@@ -47,7 +47,7 @@
 ---@class User.Util.Notify
 ---@field Opts notify.Options
 ---@field Levels User.Util.Notify.Levels
----@field notify fun(msg: string, lvl: NotifyLvl|VimNotifyLvl?, opts: table|notify.Options?)
+---@field notify fun(msg: string, lvl: (NotifyLvl|VimNotifyLvl)?, opts: table|notify.Options?)
 
 ---@class User.Util.String.Alphabet.Vowels
 ---@field upper_map { ['A']: 'A', ['E']: 'E', ['I']: 'I', ['O']: 'O', ['U']: 'U' }

@@ -86,12 +86,18 @@
 ---@field info? string|integer
 ---@field hint? string|integer
 
+---@class DiagnosticsSections
+---@field [1]? 'error'
+---@field [2]? 'warn'
+---@field [3]? 'info'
+---@field [4]? 'hint'
+
 ---@class LuaLine.Components.Diagnostics
 ---@field [1] 'diagnostics'
 ---@field sources?
 ---|('nvim_lsp'|'nvim_diagnostic'|'nvim_workspace_diagnostic'|'coc'|'ale'|'vim_lsp')[]
 ---|fun(...): DiagnosticsInteger
----@field sections? ('error'|'warn'|'info'|'hint')[]
+---@field sections? DiagnosticsSections|('error'|'warn'|'info'|'hint')[]
 ---@field diagnostics_color? DiagnosticsColor
 ---@field symbols? DiagnosticsColor
 ---@field colored? boolean

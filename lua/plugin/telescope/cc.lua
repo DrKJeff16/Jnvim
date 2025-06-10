@@ -1,18 +1,22 @@
+---@diagnostic disable:missing-fields
+
+---@module 'user_api.types.telescope'
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local types = User.types.telescope
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
-
----@type TelCC|nil
-local M = nil
 
 if not exists('telescope') or not exists('telescope._extensions.conventional_commits.actions') then
-    return M
+    return nil
 end
+
+User:register_plugin('plugin.telescope.cc')
+
+---@type TelCC
+local CC = {}
 
 local function create_cc()
     local Actions = require('telescope._extensions.conventional_commits.actions')
@@ -21,15 +25,15 @@ local function create_cc()
     local picker = require('telescope._extensions.conventional_commits.picker')
 
     -- if you use the picker directly you have to provide your theme manually
-    local opts = {
+    local Opts = {
         action = Actions.prompt,
         include_body_and_footer = false,
     }
 
-    picker(vim.tbl_extend('keep', opts, Themes.get_dropdown({})))
+    picker(vim.tbl_extend('keep', Opts, Themes.get_dropdown({})))
 end
 
-M = {
+CC = {
     cc = {
         theme = 'dropdown', -- custom theme
         action = function(entry)
@@ -45,18 +49,20 @@ M = {
     },
 
     loadkeys = function()
-        if WK.available() then
-            map_dict({ ['<leader>Gc'] = { group = '+Commit' } }, 'wk.register', false, 'n')
-        end
-        map_dict({
+        ---@type AllMaps
+        local Keys = {
+            ['<leader>Gc'] = { group = '+Commit' },
+
             ['<leader>GcC'] = {
                 create_cc,
                 desc('Create Conventional Commit'),
             },
-        }, 'wk.register', false, 'n')
+        }
+
+        Keymaps:setup({ n = Keys })
     end,
 }
 
-return M
+return CC
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

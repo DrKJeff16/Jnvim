@@ -1,3 +1,5 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
 local Check = User.check
 
@@ -14,8 +16,10 @@ local Noice = require('noice')
 Noice.setup({
     cmdline = {
         enabled = true,
+
         ---@type 'cmdline_popup'|'cmdline'
         view = 'cmdline_popup',
+
         ---@type NoiceFormatOptions
         format = {
             -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern
@@ -37,6 +41,7 @@ Noice.setup({
             -- lua = false, -- to disable a format, set to `false`
         },
     },
+
     messages = {
         -- NOTE: If you enable messages, then the cmdline is enabled automatically.
         -- This is a current Neovim limitation
@@ -47,6 +52,7 @@ Noice.setup({
         view_history = 'messages', -- view for :messages
         view_search = 'virtualtext', -- view for search count messages. Set to `false` to disable
     },
+
     popupmenu = {
         enabled = true, -- enables the Noice popupmenu UI
         ---@type 'nui'|'cmp'
@@ -78,8 +84,8 @@ Noice.setup({
         }, -- set to `false` to disable icons
         opts = {
             win_options = {
-                concealcursor = '',
-                conceallevel = 3,
+                -- concealcursor = '',
+                -- conceallevel = 3,
                 winhighlight = {
                     Normal = 'NormalFloat',
                     FloatBorder = 'FloatBorder',
@@ -87,6 +93,7 @@ Noice.setup({
             },
         },
     },
+
     -- default options for require('noice').redirect
     -- see the section on Command Redirection
     ---@type NoiceRouteConfig
@@ -107,6 +114,7 @@ Noice.setup({
             },
         },
     },
+
     commands = {
         history = {
             -- options for the message history that you get with `:Noice`
@@ -147,6 +155,7 @@ Noice.setup({
             filter_opts = { reverse = true },
         },
     },
+
     notify = {
         enabled = exists('notify'),
         view = 'notify',
@@ -161,9 +170,10 @@ Noice.setup({
             },
         },
     },
+
     lsp = {
         progress = {
-            enabled = false,
+            enabled = true,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
             -- See the section on formatting for more details on how to customize
             --- @type NoiceFormat|string
@@ -172,6 +182,7 @@ Noice.setup({
             format_done = 'lsp_progress_done',
             throttle = 1000 / 30, -- frequency to update lsp progress message
             view = 'mini',
+
             ---@type NoiceViewOptions
             opts = {
                 enter = false,
@@ -187,12 +198,14 @@ Noice.setup({
                 },
             },
         },
+
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
             ['vim.lsp.util.stylize_markdown'] = true,
             ['cmp.entry.get_documentation'] = true,
         },
+
         message = {
             enabled = true,
             view = 'notify',
@@ -207,16 +220,18 @@ Noice.setup({
                 },
             },
         },
+
         hover = {
             enabled = true,
             silent = true,
             view = nil,
+
             ---@type NoiceViewOptions
             opts = {
                 border = 'solid',
                 merge = true,
                 zindex = 100,
-                timeout = 3500,
+                timeout = 0,
                 scrollbar = true,
                 enter = false,
                 win_options = {
@@ -229,15 +244,18 @@ Noice.setup({
                 },
             },
         },
+
         signature = {
             enabled = true,
             auto_open = {
                 enabled = true,
                 trigger = true,
-                luasnip = true,
+                luasnip = exists('luasnip'),
                 throttle = 500,
             },
+
             view = nil,
+
             ---@type NoiceViewOptions
             opts = {
                 win_options = {
@@ -252,6 +270,7 @@ Noice.setup({
         },
         documentation = {
             view = 'hover',
+
             ---@type NoiceViewOptions
             opts = {
                 lang = 'markdown',
@@ -269,11 +288,13 @@ Noice.setup({
             },
         },
     },
+
     all = {
         view = 'popup',
         opts = { enter = false, format = 'details' },
         filter = {},
     },
+
     markdown = {
         hover = {
             ['|(%S-)|'] = vim.cmd.help,
@@ -288,7 +309,9 @@ Noice.setup({
             ['{%S-}'] = '@parameter',
         },
     },
+
     health = { checker = true },
+
     -- you can enable a preset for easier configuration
     presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
@@ -297,13 +320,16 @@ Noice.setup({
         inc_rename = exists('inc_rename'), -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
     },
+
     throttle = 1000 / 30,
+
     ---@type NoiceConfigViews
     views = {
         split = {
             enabled = true,
         },
     }, ---@see section on views
+
     ---@type NoiceRouteConfig
     routes = {
         {
@@ -315,8 +341,10 @@ Noice.setup({
             filter = { event = 'msg_show', min_height = 14 },
         },
     }, ---@see section on routes
+
     ---@type table<string, NoiceFilter>
     status = {}, ---@see section on statusline components
+
     ---@type NoiceFormatOptions
     format = {}, ---@see section on formatting
 })

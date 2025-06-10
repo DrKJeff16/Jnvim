@@ -1,12 +1,11 @@
+---@diagnostic disable:missing-fields
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
 local desc = User.maps.kmap.desc
-local wk_avail = User.maps.wk.available
-local map_dict = User.maps.map_dict
 
 if not exists('project_nvim') then
     return
@@ -86,8 +85,10 @@ Project.setup({
     datapath = vim.fn.stdpath('state') .. '/projects/',
 })
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
+    ['<leader>p'] = { group = '+Project' },
+
     ['<leader>pr'] = {
         function()
             local notify = require('user_api.util.notify').notify
@@ -96,6 +97,7 @@ local Keys = {
             for _, v in next, recent_proj() do
                 msg = msg .. '- ' .. v .. newline or string.char(10)
             end
+
             notify(msg, 'info', {
                 title = 'Recent Projects',
                 animate = false,
@@ -107,14 +109,6 @@ local Keys = {
     },
 }
 
----@type RegKeysNamed
-local Names = {
-    ['<leader>p'] = { group = '+Project' },
-}
-
-if wk_avail() then
-    map_dict(Names, 'wk.register', false, 'n', 0)
-end
-map_dict(Keys, 'wk.register', false, 'n', 0)
+Keymaps:setup({ n = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

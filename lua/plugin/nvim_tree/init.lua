@@ -1,19 +1,17 @@
+---@module 'usee_api.types.nvim_tree'
+
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
-local types = User.types.nvim_tree
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
-local is_fun = Check.value.is_fun
-local is_num = Check.value.is_num
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 local hi = User.highlight.hl_from_dict
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('nvim-tree') then
     return
@@ -25,9 +23,7 @@ User:register_plugin('plugin.nvim_tree')
 local USE_FLOAT = false
 
 local api = vim.api
-local opt = vim.opt
 local fn = vim.fn
-local bo = vim.bo
 
 local sched = vim.schedule
 local sched_wp = vim.schedule_wrap
@@ -45,7 +41,6 @@ local list_wins = api.nvim_list_wins
 local floor = math.floor
 
 local Tree = require('nvim-tree')
-local View = require('nvim-tree.view')
 local Api = require('nvim-tree.api')
 
 local Tapi = Api.tree
@@ -62,8 +57,8 @@ local toggle = Tapi.toggle
 local toggle_help = Tapi.toggle_help
 ---@type AnyFunc
 local focus = Tapi.focus
----@type AnyFunc
-local change_root = Tapi.change_root
+-- ---@type AnyFunc
+-- local change_root = Tapi.change_root
 ---@type AnyFunc
 local change_root_to_parent = Tapi.change_root_to_parent
 ---@type AnyFunc
@@ -73,7 +68,8 @@ local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
 
----@type fun(keys: KeyMapDict, bufnr: integer|nil?)
+---@param keys AllMaps
+---@param bufnr? integer
 local function map_keys(keys, bufnr)
     if not is_tbl(keys) or empty(keys) then
         return
@@ -81,38 +77,29 @@ local function map_keys(keys, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or nil
 
-    for _, mode in next, { 'n', 'v' } do
-        if WK.available() then
-            map_dict(
-                { ['<leader>ft'] = { group = '+NvimTree' } },
-                'wk.register',
-                false,
-                mode,
-                bufnr or nil
-            )
-        end
-        map_dict(keys, 'wk.register', false, mode, bufnr or nil)
-    end
+    keys['<leader>ft'] = { group = '+NvimTree' }
+
+    Keymaps:setup({ n = keys, v = keys })
 end
 
----@type KeyMapDict
+---@type AllMaps
 local my_maps = {
     ['<leader>fto'] = {
         open,
-        desc('Open NvimTree'),
+        desc('Open NvimTree', true, 0),
     },
     ['<leader>ftt'] = {
         toggle,
-        desc('Toggle NvimTree'),
+        desc('Toggle NvimTree', true, 0),
     },
     ['<leader>ftd'] = {
         close,
-        desc('Close NvimTree'),
+        desc('Close NvimTree', true, 0),
     },
 
     ['<leader>ftf'] = {
         focus,
-        desc('Focus NvimTree'),
+        desc('Focus NvimTree', true, 0),
     },
 }
 
@@ -175,8 +162,8 @@ local function tree_open(data)
     ---@type TreeToggleOpts
     local toggle_opts = { focus = false, find_file = true }
 
-    ---@type TreeOpenOpts
-    local open_opts = { find_file = true }
+    -- ---@type TreeOpenOpts
+    -- local open_opts = { find_file = true }
 
     if dir then
         vim.cmd('cd ' .. name)
@@ -269,43 +256,43 @@ end
 local on_attach = function(bufn)
     CfgApi.mappings.default_on_attach(bufn)
 
-    ---@type KeyMapDict
-    local keys = {
+    ---@type AllMaps
+    local Keys = {
         ['<C-U>'] = {
             change_root_to_parent,
-            desc('Set Root To Upper Dir'),
+            desc('Set Root To Upper Dir', true, bufn),
         },
         ['?'] = {
             toggle_help,
-            desc('Help'),
+            desc('Help', true, bufn),
         },
         ['<C-f>'] = {
             edit_or_open,
-            desc('Edit Or Open'),
+            desc('Edit Or Open', true, bufn),
         },
         ['P'] = {
             vsplit_preview,
-            desc('Vsplit Preview'),
+            desc('Vsplit Preview', true, bufn),
         },
         ['c'] = {
             close,
-            desc('Close'),
+            desc('Close', true, bufn),
         },
         ['HA'] = {
             collapse_all,
-            desc('Collapse All'),
+            desc('Collapse All', true, bufn),
         },
         ['ga'] = {
             git_add,
-            desc('Git Add...'),
+            desc('Git Add...', true, bufn),
         },
         ['t'] = {
             swap_then_open_tab,
-            desc('Open Tab'),
+            desc('Open Tab', true, bufn),
         },
     }
 
-    map_keys(keys, bufn)
+    map_keys(Keys)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
@@ -489,92 +476,6 @@ Tree.setup({
         show_on_open_dirs = true,
     },
 })
-
-if exists('telescope') then
-    local Fs = Api.fs
-    local tree_actions = {
-        {
-            name = 'Create node',
-            handler = Fs.create,
-        },
-        {
-            name = 'Remove node',
-            handler = Fs.remove,
-        },
-        {
-            name = 'Trash node',
-            handler = Fs.trash,
-        },
-        {
-            name = 'Rename node',
-            handler = Fs.rename,
-        },
-        {
-            name = 'Fully rename node',
-            handler = Fs.rename_sub,
-        },
-        {
-            name = 'Copy',
-            handler = Fs.copy.node,
-        },
-
-        -- ... other custom actions you may want to display in the menu
-    }
-
-    local function tree_actions_menu(node)
-        local Finders = require('telescope.finders')
-        local Pickers = require('telescope.pickers')
-        local Sorters = require('telescope.sorters')
-
-        local entry_maker = function(menu_item)
-            return {
-                value = menu_item,
-                ordinal = menu_item.name,
-                display = menu_item.name,
-            }
-        end
-
-        local finder = Finders.new_table({
-            results = tree_actions,
-            entry_maker = entry_maker,
-        })
-
-        local sorter = Sorters.get_generic_fuzzy_sorter()
-
-        local default_options = {
-            finder = finder,
-            sorter = sorter,
-            attach_mappings = function(prompt_buffer_number)
-                local actions = require('telescope.actions')
-
-                -- On item select
-                actions.select_default:replace(function()
-                    local state = require('telescope.actions.state')
-                    local selection = state.get_selected_entry()
-
-                    -- Closing the picker
-                    actions.close(prompt_buffer_number)
-                    -- Executing the callback
-                    selection.value.handler(node)
-                end)
-
-                -- The following actions are disabled in this example
-                -- You may want to map them too depending on your needs though
-                -- actions.add_selection:replace(function() end)
-                -- actions.remove_selection:replace(function() end)
-                -- actions.toggle_selection:replace(function() end)
-                -- actions.select_all:replace(function() end)
-                -- actions.drop_all:replace(function() end)
-                -- actions.toggle_all:replace(function() end)
-
-                return true
-            end,
-        }
-
-        -- Opening the menu
-        Pickers.new({ prompt_title = 'Tree Menu' }, default_options):find()
-    end
-end
 
 -- Auto-open file after creation
 --[[ Api.events.subscribe(Api.events.Event.FileCreated, function(file)

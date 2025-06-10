@@ -1,11 +1,10 @@
 local User = require('user_api')
+local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
-local map_dict = User.maps.map_dict
 
 local au_exec = vim.api.nvim_exec_autocmds
 local augroup = vim.api.nvim_create_augroup
@@ -19,21 +18,20 @@ User:register_plugin('plugin.scope')
 
 local Scope = require('scope')
 
-local opts = { hooks = {} }
+local Opts = {}
+Opts.hooks = {}
 
-function opts.hooks.pre_tab_leave()
+function Opts.hooks.pre_tab_leave()
     au_exec('User', { pattern = 'ScopeTabLeavePre' })
     -- [other statements]
 end
 
-function opts.hooks.post_tab_enter()
+function Opts.hooks.post_tab_enter()
     au_exec('User', { pattern = 'ScopeTabEnterPost' })
     -- [other statements]
 end
 
 local tab_hook = function()
-    local WK = require('user_api.maps.wk')
-
     local desc = require('user_api.maps.kmap').desc
     local nop = require('user_api.maps').nop
 
@@ -51,8 +49,10 @@ local tab_hook = function()
     local nop_opts = { noremap = false, nowait = false, silent = true }
     local tab_count = #vim.api.nvim_list_tabpages()
 
-    ---@type KeyMapDict
+    ---@type AllMaps
     local Keys = {
+        [prefix] = { group = '+Move Buf To Tab' },
+
         [prefix .. 't'] = { tab_cmd(), desc('Prompt Moving Buf To Tab') },
     }
 
@@ -73,13 +73,9 @@ local tab_hook = function()
             i = i + 1
         end
 
-        if WK.available() then
-            map_dict({ [prefix] = { group = '+Move Buf To Tab' } }, 'wk.register', false, 'n', 0)
-        end
-
-        map_dict(Keys, 'wk.register', false, 'n', 0)
+        Keymaps:setup({ n = Keys })
     else
-        if WK.available() then
+        if User.maps.wk.available() then
             require('which-key').add({ prefix, hidden = true, mode = 'n' }, { create = true })
         end
 
@@ -100,9 +96,10 @@ local group = augroup('ScopeMapHook', { clear = false })
 
 au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
     group = group,
+    pattern = '*',
     callback = tab_hook,
 })
 
-Scope.setup(opts)
+Scope.setup(Opts)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

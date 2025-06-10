@@ -1,13 +1,11 @@
-local User = require('user_api')
-local Check = User.check
-local types = User.types.toggleterm
-local WK = User.maps.wk
+---@module 'user_api.types.toggleterm'
 
-local empty = Check.value.empty
-local is_tbl = Check.value.is_tbl
+local User = require('user_api')
+local Keymaps = require('config.keymaps')
+local Check = User.check
+
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('toggleterm') then
     return
@@ -91,8 +89,8 @@ TT.setup({
 })
 
 function _G.set_terminal_keymaps()
-    ---@type KeyMapDict
-    local K = {
+    ---@type AllMaps
+    local Keys = {
         ['<esc>'] = {
             [[<C-\><C-n>]],
             desc('Escape Terminal', true, 0),
@@ -119,14 +117,16 @@ function _G.set_terminal_keymaps()
         },
     }
 
-    require('user_api.maps').map_dict(K, 'wk.register', false, 't', 0)
+    Keymaps:setup({ t = Keys })
 end
 
 local cmd_str = '<CMD>exe v:count1 . "ToggleTerm"<CR>'
 
----@type KeyMapModeDict
+---@type AllModeMaps
 local Keys = {
     n = {
+        ['<leader>T'] = { group = '+Toggleterm' },
+
         ['<c-t>'] = {
             cmd_str,
             desc('Toggle', true, 0),
@@ -144,15 +144,7 @@ local Keys = {
     },
 }
 
----@type ModeRegKeysNamed
-local Names = {
-    n = { ['<leader>T'] = { group = '+Toggleterm' } },
-}
-
-if WK.available() then
-    map_dict(Names, 'wk.register', true)
-end
-map_dict(Keys, 'wk.register', true)
+Keymaps:setup(Keys)
 
 ---@type AuDict
 local aus = {
