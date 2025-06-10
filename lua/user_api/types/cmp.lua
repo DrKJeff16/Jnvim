@@ -1,5 +1,7 @@
 ---@meta
 
+---@module 'cmp'
+
 ---@alias CmpModes ('i'|'s'|'c')
 
 ---@class CmpMap
@@ -97,7 +99,7 @@
 ---@field s_tab_map CmpMap
 ---@field cr_map CmpMap
 
----@alias SetupSources table<string, cmp.ConfigSchema>|MultiSources[]
+---@alias SetupSources MultiSources[]|table<string, cmp.ConfigSchema>
 
 ---@class Sources
 ---@field setup fun(T: SetupSources?)
