@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pynvim = "*"
 typing = "*"
 typing-extensions = "*"
 argparse = "*"
+argcomplete = "*"
 setuptools = "*"
 pre-commit = "*"
 
@@ -19,7 +21,6 @@ pylsp-mypy = "*"
 pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
-argcomplete = "*"
 
 [requires]
 python_version = "3.12"
