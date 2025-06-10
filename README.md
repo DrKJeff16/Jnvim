@@ -9,14 +9,13 @@
     2. [Structure](#structure)
     3. [Plugins](#plugins)
 2. [User API](#the-user-api)
-    1. [`user_api.types`](#user_apitypes)
-    2. [`user_api.util`](#user_apiutil)
-    3. [`user_api.opts`](#user_apiutil)
-    4. [`user_api.check`](#user_apicheck)
-    5. [`user_api.maps`](#user_apimaps)
+    1. [`user_api.util`](#user_apiutil)
+    2. [`user_api.opts`](#user_apiutil)
+    3. [`user_api.check`](#user_apicheck)
+    4. [`user_api.maps`](#user_apimaps)
         1. [`user_api.maps.kmap.desc`](#user_apimapskmapdesc)
         2. [`user_api.maps.wk`](#user_apimapswk)
-    6. [`user_api.highlight`](#user_apihighlight)
+    5. [`user_api.highlight`](#user_apihighlight)
 
 ---
 
@@ -94,7 +93,8 @@ For these to work, the following executables must be installed and in your `$PAT
 │   ├── commands.lua  <== User-defined commands
 │   ├── distro/  <== OS Utilities
 │   │   ├── init.lua  <== Entry points are defined here
-│   │   └── archlinux.lua  <== Arch Linux utilities
+│   │   ├── archlinux.lua  <== Arch Linux utilities
+│   │   └── termux.lua <== Termux (Android) utilities
 │   ├── highlight.lua  <== Highlight Functions
 │   ├── maps/  <== Mapping Utilities
 │   │   ├── init.lua  <== Entry points are defined here
@@ -111,9 +111,8 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── notify.lua  <== Notification utilities
 │   │   └── string.lua  <== String operators/pre-defined lists
 │   └── types/  <== Lua Type Annotations and Documentation
-│       ├── init.lua  <== Entry points are defined here
 │       ├── user/  <== User API Documentation
-│       │   ├── init.lua  <== Entry points are defined here
+│       │   ├── user.lua  <== User API module annotations (WIP)
 │       │   ├── autocmd.lua  <== Autocommand annotations
 │       │   ├── check.lua  <== `check` module annotations
 │       │   ├── commands.lua  <== `commands` module annotations
@@ -158,30 +157,6 @@ The `user` API can be found in [`lua/user_api`](lua/user_api).
 It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
 **_It's still at an experimental phase, but it works as-is_**.
-
-### `user_api.types`
-
-This submodule includes type annotations and documentation.
-It can be found in [`user_api/types`](lua/user_api/types).
-
-- You can include it by using the following code snippet:
-
-```lua
-require('user_api.types.module_name')
--- Or by using the entry point (not recommended):
-require('user_api').types.module_name
-```
-
-For API-specific documentation, you can find them in the submodule [`user_api/types/user`](lua/user_api/types/user):
-
-```lua
-require('user_api.types.user.module_name')
--- Or by using the entry point (not recommended):
-require('user_api').types.user.module_name
-```
-
-Each directory serves as an entry point for its pertinent files,
-sourced by the `init.lua` file in it.
 
 ### `user_api.opts`
 
@@ -298,13 +273,19 @@ The function returns this table:
 ```lua
 -- DO NOT COPY THIS DIRECTLY
 {
+    ---@type string|'Unnamed Key'
     desc = 'Unnamed Key' or msg, -- First option is the default
+    ---@type boolean
     silent = true or false, -- First option is the default
+    ---@type boolean
     noremap = true or false, -- First option is the default
+    ---@type boolean
     nowait = true or false, -- First option is the default
+    ---@type boolean
     expr = false or true, -- First option is the default
 
     -- If buffer is passed as an argument:
+    ---@type integer
     buffer = bufnr or 0,
 }
 ```
@@ -430,7 +411,7 @@ complete in the future._**
 This module provides utilities for setting highlights in an easier way.
 It can be found in [`user_api/highlight.lua`](lua/user_api/highlight.lua).
 
-_A description will be pending until further notice, i.e. when the module is
-structured in a satisfactory manner._
+**_A description will be pending until further notice, i.e. when the module is
+structured in a satisfactory manner._**
 
 ---
