@@ -60,9 +60,9 @@ Notify.Levels = {
 ---@param opts? notify.Options
 function Notify.notify(msg, lvl, opts)
     if type(msg) ~= 'string' then
-        error('(user_api.util.notify.notify): Message is not a string', ERROR)
+        error('(user_api.util.notify.notify): Message is not a string')
     elseif msg == '' then
-        error('(user_api.util.notify.notify): Empty message', ERROR)
+        error('(user_api.util.notify.notify): Empty message')
     end
 
     lvl = (not vim.tbl_contains({ 'string', 'number' }, type(lvl))) and 'info' or lvl

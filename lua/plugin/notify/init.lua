@@ -1,12 +1,21 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'user_api.types.user.highlight'
+---@module 'user_api.types.user.autocmd'
 
 local User = require('user_api')
 local Check = User.check
+local Util = User.util
 
 local exists = Check.exists.module
 local hl_from_dict = User.highlight.hl_from_dict
+local au = Util.au.au_from_arr
+local ft_get = Util.ft_get
+
+local optset = vim.api.nvim_set_option_value
+local curr_buf = vim.api.nvim_get_current_buf
+
+local augroup = vim.api.nvim_create_augroup
 
 if not exists('notify') then
     return
@@ -74,5 +83,41 @@ local NotifyHl = {
 }
 
 vim.schedule(function() hl_from_dict(NotifyHl) end)
+
+---@type AuPair[]
+local aucmds = {
+    {
+        event = 'WinEnter',
+        opts = {
+            group = augroup('User.Notify', { clear = false }),
+            callback = function()
+                local buf = curr_buf()
+
+                if ft_get(buf) ~= 'notify' then
+                    return
+                end
+
+                optset('wrap', true, { scope = 'local' })
+            end,
+        },
+    },
+    {
+        event = 'BufWinLeave',
+        opts = {
+            group = augroup('User.Notify', { clear = false }),
+            callback = function()
+                local buf = curr_buf()
+
+                if ft_get(buf) ~= 'notify' then
+                    return
+                end
+
+                optset('wrap', false, { scope = 'local' })
+            end,
+        },
+    },
+}
+
+au(aucmds)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
