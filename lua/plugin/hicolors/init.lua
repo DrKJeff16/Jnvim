@@ -89,6 +89,6 @@ local Keys = {
 
 local Keymaps = require('config.keymaps')
 
-Keymaps:setup(Keys)
+Keymaps:setup({ n = Keys, v = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
