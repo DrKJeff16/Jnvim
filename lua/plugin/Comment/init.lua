@@ -1,4 +1,4 @@
----@diagnostic disable:missing-fieldsg
+---@diagnostic disable:missing-fields
 
 local User = require('user_api')
 local Check = User.check
@@ -12,7 +12,7 @@ User:register_plugin('plugin.Comment')
 
 local Comment = require('Comment')
 
-local pre_hook = function(ctx) return vim.bo.commentstring end
+local function pre_hook(ctx) return vim.bo.commentstring end
 
 if exists('ts_context_commentstring') then
     pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
