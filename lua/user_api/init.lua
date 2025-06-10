@@ -1,5 +1,6 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.user.user'
 ---@module 'user_api.types.user.autocmd'
 ---@module 'user_api.types.user.check'
 ---@module 'user_api.types.user.commands'
@@ -7,12 +8,12 @@
 ---@module 'user_api.types.user.highlight'
 ---@module 'user_api.types.user.maps'
 ---@module 'user_api.types.user.opts'
+---@module 'user_api.types.user.update'
 ---@module 'user_api.types.user.util'
 
 ---@type UserAPI
 local User = {}
 
-User.types = require('user_api.types')
 User.check = require('user_api.check')
 User.commands = require('user_api.commands')
 User.distro = require('user_api.distro')

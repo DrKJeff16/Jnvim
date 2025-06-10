@@ -1,7 +1,8 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.colorschemes'
+
 local User = require('user_api')
-local csc_t = User.types.colorschemes
 
 local is_tbl = User.check.value.is_tbl
 

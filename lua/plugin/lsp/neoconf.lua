@@ -1,6 +1,7 @@
+---@module 'user_api.types.lspconfig'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.lspconfig
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil

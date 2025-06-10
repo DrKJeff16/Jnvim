@@ -1,6 +1,7 @@
+---@module 'user.types.autopairs'
+
 local User = require('user_api')
 local Check = User.check
-local Types = User.types.autopairs
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl

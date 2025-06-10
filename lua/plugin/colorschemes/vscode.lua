@@ -1,8 +1,9 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.colorschemes'
+
 local User = require('user_api')
 local Check = User.check
-local csc_t = User.types.colorschemes
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
