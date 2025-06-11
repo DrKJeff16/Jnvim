@@ -1,9 +1,6 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'user_api.types.lspconfig'
----@module 'user_api.types.user.check'
----@module 'user_api.types.user.maps'
----@module 'user_api.types.user.util'
 
 local User = require('user_api')
 local Keymaps = require('config.keymaps')
@@ -12,6 +9,7 @@ local Check = User.check
 local Au = User.util.au
 local Notify = User.util.notify
 
+local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 local au = Au.au_repeated
