@@ -310,6 +310,28 @@ function Util.ft_get(bufnr)
     return optget('ft', { buf = bufnr })
 end
 
+---@param T table
+---@param V any
+---@return table, ...
+function Util.pop_values(T, V)
+    local idx = 0
+
+    for i, v in next, T do
+        if v == V then
+            idx = i
+            break
+        end
+    end
+
+    if idx < 1 or idx > #T then
+        return T, nil
+    end
+
+    local val = table.remove(T, idx)
+
+    return T, val
+end
+
 function Util:assoc()
     local au_repeated_events = self.au.au_repeated_events
 
@@ -472,6 +494,7 @@ function Util.displace_letter(c, direction, cycle)
     local lower = vim.deepcopy(A.lower_map)
     local upper = vim.deepcopy(A.upper_map)
 
+    ---@diagnostic disable:need-check-nil
     if direction == 'prev' and fields(c, lower) then
         return mv(lower, 1, 'r')[c]
     elseif direction == 'next' and fields(c, lower) then
@@ -481,6 +504,7 @@ function Util.displace_letter(c, direction, cycle)
     elseif direction == 'next' and fields(c, upper) then
         return mv(upper, 1, 'l')[c]
     end
+    ---@diagnostic enable:need-check-nil
 
     error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`', ERROR)
 end

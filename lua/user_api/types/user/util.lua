@@ -90,6 +90,7 @@
 ---@field au User.Util.Autocmd
 ---@field string User.Util.String
 ---@field has_words_before fun(): boolean
+---@field pop_values fun(T: table, V: any): (table, ...)
 ---@field xor fun(x: boolean, y: boolean): boolean
 ---@field strip_fields fun(T: table<string|integer, any>, values: string|string[]): table
 ---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
