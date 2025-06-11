@@ -1,15 +1,6 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'user_api.types.user.user'
----@module 'user_api.types.user.autocmd'
----@module 'user_api.types.user.check'
----@module 'user_api.types.user.commands'
----@module 'user_api.types.user.distro'
----@module 'user_api.types.user.highlight'
----@module 'user_api.types.user.maps'
----@module 'user_api.types.user.opts'
----@module 'user_api.types.user.update'
----@module 'user_api.types.user.util'
 
 ---@type UserAPI
 local User = {}
@@ -196,7 +187,7 @@ function User:print_loaded_plugins()
 end
 
 ---@param O? table
----@return UserAPI|table
+---@return table|UserAPI
 function User.new(O)
     local is_tbl = User.check.value.is_tbl
 
