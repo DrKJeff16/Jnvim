@@ -17,9 +17,17 @@ local Hover = require('hover')
 Hover.setup({
     --- Setup Providers
     init = function()
-        exists('hover.providers.fold_preview', true)
-        exists('hover.providers.diagnostic', true)
-        exists('hover.providers.lsp', true)
+        if exists('hover.providers.fold_preview') then
+            require('hover.providers.fold_preview')
+        end
+
+        if exists('hover.providers.diagnostic') then
+            require('hover.providers.diagnostic')
+        end
+
+        if exists('hover.providers.lsp') then
+            require('hover.providers.lsp')
+        end
 
         if executable('man') and exists('hover.providers.man') then
             require('hover.providers.man')
@@ -55,7 +63,7 @@ Hover.setup({
 
     preview_opts = {
         ---@type 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|table
-        border = 'rounded',
+        border = 'double',
     },
     preview_window = true,
     title = true,
