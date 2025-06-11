@@ -10,8 +10,10 @@ local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local has_words_before = Util.has_words_before
 
+local replace_termcodes = vim.api.nvim_replace_termcodes
+local feedkeys = vim.api.nvim_feedkeys
+
 local BUtil = require('plugin.blink_cmp.util')
-BUtil:gen_providers()
 
 User:register_plugin('plugin.blink_cmp.config')
 
@@ -22,51 +24,148 @@ local lspkind = require('lspkind')
 local Cfg = {}
 
 ---@type BlinkCmp.Cfg.Config
-Cfg.config = {}
+Cfg.Config = {}
 
-Cfg.config.keymap = {
+Cfg.Config.keymap = {
     preset = 'super-tab',
 
     ['<C-Space>'] = {
-        function(cmp) return cmp.show({ providers = BUtil:gen_sources() }) end,
-        'show_documentation',
-        'hide_documentation',
-    },
-    ['<C-e>'] = {
-        'cancel',
+        function(cmp)
+            if cmp.is_documentation_visible() then
+                cmp.hide_documentation()
+            else
+                cmp.show_documentation()
+            end
+
+            return cmp.show({ providers = BUtil:gen_sources(true, true) })
+        end,
         'fallback',
     },
-    ['<CR>'] = { 'accept', 'fallback' },
+
+    ['<C-e>'] = {
+        function(cmp)
+            return cmp.cancel({
+                callback = function()
+                    local termcode = replace_termcodes('<C-e>', true, false, true)
+                    feedkeys(termcode, 'i', false)
+                end,
+            })
+        end,
+        'fallback',
+    },
+
+    ['<CR>'] = {
+        'accept',
+        'fallback',
+    },
 
     ['<Tab>'] = {
         function(cmp)
-            if not cmp.is_menu_visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources() })
+            local visible = cmp.is_menu_visible
+
+            if not visible() and has_words_before() then
+                cmp.reload()
+                return cmp.show({ providers = BUtil:gen_sources(false, false) })
             end
         end,
-        'snippet_forward',
-        function(cmp) return cmp.select_next({ auto_insert = true }) end,
+
+        function(cmp)
+            if cmp.snippet_active({ direction = 1 }) then
+                return cmp.snippet_forward()
+            end
+        end,
+
+        function(cmp) return cmp.select_next({ auto_insert = false, preselect = false }) end,
         'fallback',
     },
     ['<S-Tab>'] = {
         function(cmp)
-            if not cmp.is_menu_visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources() })
+            local visible = cmp.is_menu_visible
+
+            if not visible() and has_words_before() then
+                return cmp.show({ providers = BUtil:gen_sources(true, true) })
             end
         end,
-        'snippet_backward',
-        function(cmp) return cmp.select_prev({ auto_insert = true }) end,
+
+        function(cmp)
+            if cmp.snippet_active({ direction = -1 }) then
+                return cmp.snippet_backward()
+            end
+        end,
+
+        function(cmp) return cmp.select_prev({ auto_insert = false, preselect = false }) end,
+
         'fallback',
     },
 
-    ['<Up>'] = { 'fallback' },
-    ['<Down>'] = { 'fallback' },
+    ['<Up>'] = {
+        function(cmp)
+            if cmp.is_active() or cmp.is_visible() then
+                return cmp.cancel({
+                    callback = function()
+                        local termcode = replace_termcodes('<Up>', true, false, true)
+                        feedkeys(termcode, 'i', false)
+                    end,
+                })
+            end
+        end,
+        'fallback',
+    },
+    ['<Down>'] = {
+        function(cmp)
+            if cmp.is_visible() or cmp.is_active() then
+                return cmp.cancel({
+                    callback = function()
+                        local termcode = replace_termcodes('<Down>', true, false, true)
+                        feedkeys(termcode, 'i', false)
+                    end,
+                })
+            end
+        end,
+        'fallback',
+    },
+    ['<Right>'] = {
+        function(cmp)
+            if cmp.is_active() or cmp.is_visible() then
+                return cmp.cancel({
+                    callback = function()
+                        local termcode =
+                            vim.api.nvim_replace_termcodes('<Right>', true, false, true)
+                        vim.api.nvim_feedkeys(termcode, 'i', false)
+                    end,
+                })
+            end
+
+            if cmp.is_visible() and cmp.is_active() then
+                cmp.reload()
+            end
+        end,
+        'fallback',
+    },
+    ['<Left>'] = {
+        function(cmp)
+            if cmp.is_active() or cmp.is_visible() then
+                return cmp.cancel({
+                    callback = function()
+                        local termcode = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
+                        vim.api.nvim_feedkeys(termcode, 'i', false)
+                    end,
+                })
+            end
+
+            if cmp.is_visible() and cmp.is_active() then
+                cmp.reload()
+            end
+        end,
+        'fallback',
+    },
+
     ['<C-p>'] = { 'fallback' },
     ['<C-n>'] = { 'fallback' },
 
     ['<C-b>'] = {
         function(cmp)
-            if cmp.is_active() then
+            if cmp.is_documentation_visible() then
                 return cmp.scroll_documentation_up(4)
             end
         end,
@@ -74,176 +173,220 @@ Cfg.config.keymap = {
     },
     ['<C-f>'] = {
         function(cmp)
-            if cmp.is_active() then
+            if cmp.is_documentation_visible() then
                 return cmp.scroll_documentation_down(4)
             end
         end,
         'fallback',
     },
     ['<C-k>'] = {
-        'show_signature',
-        'hide_signature',
+        function(cmp)
+            if not cmp.is_active() then
+                return
+            end
+
+            if not cmp.is_signature_visible() then
+                return cmp.show_signature()
+            end
+
+            return cmp.hide_signature()
+        end,
         'fallback',
     },
 }
 
-Cfg.config.appearance = {}
-Cfg.config.appearance.nerd_font_variant = 'mono'
+Cfg.Config.appearance = {}
+Cfg.Config.appearance.nerd_font_variant = 'mono'
 
-Cfg.config.completion = {}
-Cfg.config.completion.trigger = {}
-Cfg.config.completion.trigger.show_in_snippet = true
-Cfg.config.completion.trigger.show_on_trigger_character = true
-Cfg.config.completion.trigger.show_on_blocked_trigger_characters = { ' ', '\t' }
+Cfg.Config.completion = {
+    trigger = {
+        show_in_snippet = true,
+        show_on_trigger_character = true,
+        show_on_blocked_trigger_characters = { ' ', '\t' },
+    },
 
-Cfg.config.completion.documentation = {}
-Cfg.config.completion.documentation.auto_show = true
-Cfg.config.completion.documentation.auto_show_delay_ms = 1000
-Cfg.config.completion.documentation.window = { border = 'rounded' }
+    documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 1000,
+        window = { border = 'rounded' },
+    },
 
-Cfg.config.completion.keyword = { range = 'prefix' }
+    keyword = { range = 'prefix' },
 
-Cfg.config.completion.accept = {}
-Cfg.config.completion.accept.auto_brackets = { enabled = false }
-Cfg.config.completion.accept.create_undo_point = true
+    accept = {
+        auto_brackets = { enabled = false },
+        create_undo_point = true,
+    },
 
-Cfg.config.completion.list = {}
-Cfg.config.completion.list.selection = {}
--- Cfg.config.completion.list.selection.preselect = false
-Cfg.config.completion.list.selection.preselect = function(ctx)
-    return not require('blink.cmp').snippet_active({ direction = 1 })
-end
-Cfg.config.completion.list.selection.auto_insert = true
+    list = {
+        selection = {
+            -- preselect = false
+            preselect = function(ctx)
+                ctx = is_tbl(ctx) and ctx or {}
 
-Cfg.config.completion.list.cycle = {}
-Cfg.config.completion.list.cycle.from_top = true
-Cfg.config.completion.list.cycle.from_bottom = true
+                return not require('blink.cmp').snippet_active({ direction = 1 })
+            end,
 
-Cfg.config.completion.menu = {}
--- Don't automatically show the completion menu
-Cfg.config.completion.menu.auto_show = true
-Cfg.config.completion.menu.border = 'single'
+            auto_insert = true,
+        },
 
--- nvim-cmp style menu
-Cfg.config.completion.menu.draw = {}
-Cfg.config.completion.menu.draw.padding = { 0, 1 }
-Cfg.config.completion.menu.draw.treesitter = { 'lsp' }
+        cycle = {
+            from_top = true,
+            from_bottom = true,
+        },
+    },
 
-Cfg.config.completion.menu.draw.components = {}
-Cfg.config.completion.menu.draw.components.kind_icon = {
-    text = function(ctx)
-        local icon = ctx.kind_icon
+    menu = {
+        -- Don't automatically show the completion menu
+        auto_show = true,
+        border = 'single',
 
-        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-            local dev_icon, _ = Devicons.get_icon(ctx.label)
-            if dev_icon then
-                icon = dev_icon
-            end
-        else
-            icon = lspkind.symbolic(ctx.kind, {
-                mode = 'symbol',
-            })
+        -- nvim-cmp style menu
+        draw = {
+            padding = { 0, 1 },
+            treesitter = { 'lsp' },
+
+            components = {
+                kind_icon = {
+                    text = function(ctx)
+                        local icon = ctx.kind_icon
+
+                        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                            local dev_icon, _ = Devicons.get_icon(ctx.label)
+                            if dev_icon then
+                                icon = dev_icon
+                            end
+                        else
+                            icon = lspkind.symbolic(ctx.kind, {
+                                mode = 'symbol',
+                            })
+                        end
+
+                        return icon .. ctx.icon_gap
+                    end,
+
+                    -- Optionally, use the highlight groups from nvim-web-devicons
+                    -- You can also add the same function for `kind.highlight` if you want to
+                    -- keep the highlight groups in sync with the icons.
+                    highlight = function(ctx)
+                        local hl = ctx.kind_hl
+                        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                            local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
+                            if dev_icon then
+                                hl = dev_hl
+                            end
+                        end
+                        return hl
+                    end,
+                },
+            },
+
+            columns = {
+                { 'label', 'label_description', gap = 1 },
+                { 'kind_icon', 'kind' },
+            },
+        },
+
+        ghost_text = { enabled = false },
+    },
+}
+
+Cfg.Config.cmdline = { enabled = true }
+
+Cfg.Config.sources = {
+    default = (function() return BUtil:gen_sources(true, false) end)(),
+
+    per_filetype = {
+        lua = { inherit_defaults = true, 'lazydev' },
+    },
+
+    providers = BUtil:gen_providers(),
+}
+
+Cfg.Config.fuzzy = {
+    -- implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
+    implementation = 'lua',
+
+    sorts = {
+        'exact',
+        -- 'label',
+        -- 'kind',
+        'score',
+        'sort_text',
+    },
+}
+
+Cfg.Config.snippets = {
+    preset = exists('luasnip') and 'luasnip' or 'default',
+
+    -- Function to use when expanding LSP provided snippets
+    expand = function(snippet) vim.snippet.expand(snippet) end,
+
+    -- Function to use when checking if a snippet is active
+    active = function(filter) return vim.snippet.active(filter) end,
+
+    -- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
+    ---@diagnostic disable-next-line
+    jump = function(direction) vim.snippet.jump(direction) end,
+}
+
+Cfg.Config.signature = {
+    enabled = true,
+
+    window = {
+        show_documentation = true,
+        border = 'single',
+        scrollbar = true,
+        treesitter_highlighting = true,
+        direction_priority = { 'n', 's' },
+        -- direction_priority = { 's', 'n' },
+    },
+}
+
+Cfg.Config.cmdline = {
+    enabled = true,
+
+    -- use 'inherit' to inherit mappings from top level `keymap` config
+    keymap = { preset = 'cmdline' },
+
+    sources = function()
+        local type = vim.fn.getcmdtype()
+        -- Search forward and backward
+        if type == '/' or type == '?' then
+            return { 'buffer' }
         end
-
-        return icon .. ctx.icon_gap
+        -- Commands
+        if type == ':' or type == '@' then
+            return { 'cmdline' }
+        end
+        return {}
     end,
 
-    -- Optionally, use the highlight groups from nvim-web-devicons
-    -- You can also add the same function for `kind.highlight` if you want to
-    -- keep the highlight groups in sync with the icons.
-    highlight = function(ctx)
-        local hl = ctx.kind_hl
-        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-            local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
-            if dev_icon then
-                hl = dev_hl
-            end
-        end
-        return hl
-    end,
+    completion = {
+        trigger = {
+            show_on_blocked_trigger_characters = {},
+            show_on_x_blocked_trigger_characters = {},
+        },
+
+        list = {
+            selection = {
+                -- When `true`, will automatically select the first item in the completion list
+                preselect = false,
+
+                -- When `true`, inserts the completion item automatically when selecting it
+                auto_insert = true,
+            },
+        },
+
+        -- Whether to automatically show the window when new completion items are available
+        menu = { auto_show = true },
+
+        -- Displays a preview of the selected item on the current line
+        ghost_text = { enabled = true },
+    },
 }
 
-Cfg.config.completion.menu.draw.columns = {
-    { 'label', 'label_description', gap = 1 },
-    { 'kind_icon', 'kind' },
-}
-
-Cfg.config.completion.ghost_text = {}
-Cfg.config.completion.ghost_text.enabled = false
-
-Cfg.config.cmdline = {}
-Cfg.config.cmdline.enabled = true
-
-Cfg.config.sources = {}
-Cfg.config.sources.default = (function() return BUtil:gen_sources() end)()
-Cfg.config.sources.per_filetype = {
-    lua = { inherit_defaults = true, 'lazydev' },
-}
-Cfg.config.sources.providers = BUtil.Providers
-
-Cfg.config.fuzzy = {}
--- Cfg.config.fuzzy.implementatio = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua'
-Cfg.config.fuzzy.implementation = 'lua'
-Cfg.config.fuzzy.sorts = {
-    'exact',
-    -- 'label',
-    -- 'kind',
-    'score',
-    'sort_text',
-}
-
-Cfg.config.snippets = {}
-Cfg.config.snippets.preset = exists('luasnip') and 'luasnip' or 'default'
--- Function to use when expanding LSP provided snippets
-Cfg.config.snippets.expand = function(snippet) vim.snippet.expand(snippet) end
--- Function to use when checking if a snippet is active
-Cfg.config.snippets.active = function(filter) return vim.snippet.active(filter) end
--- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
-Cfg.config.snippets.jump = function(direction) vim.snippet.jump(direction) end
-
-Cfg.config.signature = {}
-Cfg.config.signature.enabled = true
-
-Cfg.config.signature.window = {}
-Cfg.config.signature.window.show_documentation = true
-Cfg.config.signature.window.border = 'double'
-Cfg.config.signature.window.scrollbar = true
-Cfg.config.signature.window.treesitter_highlighting = true
-Cfg.config.signature.window.direction_priority = { 'n', 's' }
--- Cfg.config.signature.window.direction_priority = { 's', 'n' }
-
-Cfg.config.cmdline = {}
-Cfg.config.cmdline.enabled = true
--- use 'inherit' to inherit mappings from top level `keymap` config
-Cfg.config.cmdline.keymap = { preset = 'cmdline' }
-Cfg.config.cmdline.sources = function()
-    local type = vim.fn.getcmdtype()
-    -- Search forward and backward
-    if type == '/' or type == '?' then
-        return { 'buffer' }
-    end
-    -- Commands
-    if type == ':' or type == '@' then
-        return { 'cmdline' }
-    end
-    return {}
-end
-Cfg.config.cmdline.completion = {}
-Cfg.config.cmdline.completion.trigger = {
-    show_on_blocked_trigger_characters = {},
-    show_on_x_blocked_trigger_characters = {},
-}
-Cfg.config.cmdline.completion.list = {}
-Cfg.config.cmdline.completion.list.selection = {
-    -- When `true`, will automatically select the first item in the completion list
-    preselect = true,
-    -- When `true`, inserts the completion item automatically when selecting it
-    auto_insert = true,
-}
--- Whether to automatically show the window when new completion items are available
-Cfg.config.cmdline.completion.menu = { auto_show = false }
--- Displays a preview of the selected item on the current line
-Cfg.config.cmdline.completion.ghost_text = { enabled = true }
+Cfg.Config.term = { enabled = false }
 
 ---@param O? table
 ---@return BlinkCmp.Cfg|table

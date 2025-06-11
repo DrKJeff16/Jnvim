@@ -9,16 +9,16 @@
 ---@field curr_ft string
 ---@field Sources BlinkCmp.Util.Sources
 ---@field Providers BlinkCmp.Util.Providers
----@field reset_sources fun(self: BlinkCmp.Util.Sources)
+---@field reset_sources fun(self: BlinkCmp.Util.Sources, no_snipps: boolean?, no_buf: boolean?)
 ---@field reset_providers fun(self: BlinkCmp.Util.Sources)
----@field gen_sources fun(self: BlinkCmp.Util): BlinkCmp.Util.Sources
----@field gen_providers fun(self: BlinkCmp.Util, P: table<string, blink.cmp.SourceProviderConfigPartial>?)
+---@field gen_sources fun(self: BlinkCmp.Util, no_snipps: boolean?, no_buf: boolean?): BlinkCmp.Util.Sources
+---@field gen_providers fun(self: BlinkCmp.Util, P: BlinkCmp.Util.Providers?): BlinkCmp.Util.Providers
 ---@field new fun(O: table?): BlinkCmp.Util|table
 
 ---@alias BlinkCmp.Cfg.Config blink.cmp.Config
 
 ---@class BlinkCmp.Cfg
----@field config BlinkCmp.Cfg.Config
+---@field Config BlinkCmp.Cfg.Config
 ---@field new fun(O: table?): BlinkCmp.Cfg|table
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

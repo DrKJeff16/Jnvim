@@ -8,7 +8,7 @@ local Util = User.util
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
-local is_str = Check.value.is_str
+local is_bool = Check.value.is_bool
 local empty = Check.value.empty
 local ft_get = Util.ft_get
 local au = Util.au.au_repeated_events
@@ -21,32 +21,42 @@ User:register_plugin('plugin.blink_cmp.util')
 local BUtil = {}
 
 ---@type BlinkCmp.Util.Sources
-BUtil.Sources = {
-    'lsp',
-    'path',
-    'buffer',
-    'snippets',
-}
+BUtil.Sources = {}
 
 BUtil.curr_ft = ''
 
 ---@param self BlinkCmp.Util
-function BUtil:reset_sources()
+---@param no_snipps? boolean
+---@param no_buf? boolean
+function BUtil:reset_sources(no_snipps, no_buf)
+    no_snipps = is_bool(no_snipps) and no_snipps or false
+    no_buf = is_bool(no_buf) and no_buf or false
+
     self.Sources = {
         'lsp',
         'path',
-        'buffer',
-        'snippets',
     }
+
+    if not no_snipps then
+        table.insert(self.Sources, 'snippets')
+    end
+    if not no_buf then
+        table.insert(self.Sources, 'buffer')
+    end
 end
 
 ---@param self BlinkCmp.Util
+---@param no_snipps? boolean
+---@param no_buf? boolean
 ---@return BlinkCmp.Util.Sources
-function BUtil:gen_sources()
+function BUtil:gen_sources(no_snipps, no_buf)
+    no_snipps = is_bool(no_snipps) and no_snipps or false
+    no_buf = is_bool(no_buf) and no_buf or false
+
     local ft = ft_get()
 
     if self.curr_ft ~= ft or empty(self.Sources) then
-        self:reset_sources()
+        self:reset_sources(no_snipps, no_buf)
         self.curr_ft = ft
     end
 
@@ -84,7 +94,9 @@ function BUtil:reset_providers()
     self.Providers = {}
 
     self.Providers.buffer = {
-        score_offset = -70,
+        score_offset = -100,
+
+        max_items = 15,
 
         -- keep case of first char
         ---@param a blink.cmp.Context
@@ -131,14 +143,15 @@ function BUtil:reset_providers()
     }
 
     self.Providers.snippets = {
-        score_offset = -50,
+        score_offset = -70,
+        max_items = 10,
         should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
     }
 
     self.Providers.lsp = {
         name = 'LSP',
         module = 'blink.cmp.sources.lsp',
-        score_offset = -10,
+        score_offset = 100,
         transform_items = function(_, items)
             return vim.tbl_filter(
                 function(item)
@@ -151,7 +164,8 @@ function BUtil:reset_providers()
 end
 
 ---@param self BlinkCmp.Util
----@param P? table<string, blink.cmp.SourceProviderConfigPartial>
+---@param P? BlinkCmp.Util.Providers
+---@return BlinkCmp.Util.Providers
 function BUtil:gen_providers(P)
     self:reset_providers()
 
@@ -195,14 +209,10 @@ function BUtil:gen_providers(P)
     end
 
     if not is_tbl(P) or empty(P) then
-        return
+        return self.Providers
     end
 
-    for provider, cfg in next, P do
-        if is_str(provider) and is_tbl(cfg) and not empty(cfg) then
-            self.Providers[provider] = cfg
-        end
-    end
+    return vim.tbl_deep_extend('keep', P, self.Providers)
 end
 
 ---@param O? table
@@ -212,14 +222,13 @@ function BUtil.new(O)
     return setmetatable(O, { __index = BUtil })
 end
 
-local au_group = vim.api.nvim_create_augroup('BlinkAU', { clear = true })
 ---@type AuRepeatEvents[]
 local au_tbl = {
     {
         events = { 'BufEnter', 'BufNew', 'WinEnter' },
         opts_tbl = {
             {
-                group = au_group,
+                group = vim.api.nvim_create_augroup('BlinkAU', { clear = false }),
                 pattern = '*',
                 callback = function() BUtil.curr_ft = ft_get() end,
             },
