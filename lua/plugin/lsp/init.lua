@@ -11,8 +11,6 @@ local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local desc = Maps.kmap.desc
 
-local curr_buf = vim.api.nvim_get_current_buf
-
 if not exists('lspconfig') then
     return
 end
@@ -22,21 +20,19 @@ User:register_plugin('plugin.lsp')
 require('plugin.lsp.mason')
 require('plugin.lsp.neoconf')
 
----@type Lsp.SubMods.Trouble
-local Trouble = require('plugin.lsp.trouble')
-
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
-
 Kinds:setup()
 
+---@type Lsp.SubMods.Trouble
+local Trouble = require('plugin.lsp.trouble')
 Trouble:setup()
 
 ---@type Lsp.Server
 local Server = {}
 
 ---@type Lsp.Server.Clients
-Server.clients = require('plugin.lsp.server_config')
+Server.Clients = require('plugin.lsp.server_config')
 
 ---@return lsp.ClientCapabilities
 function Server.make_capabilities()
@@ -58,24 +54,27 @@ end
 
 ---@param self Lsp.Server
 function Server:populate()
-    for k, v in next, self.clients do
+    for k, v in next, self.Clients do
         if not is_tbl(v) then
             goto continue
         end
 
-        self.clients[k].capabilities = self.make_capabilities()
+        ---@type Lsp.Server.Key
+        local key = k
 
-        if k == 'jsonls' then
-            self.clients[k].capabilities.textDocument.completion.completionItem.snippetSupport =
+        self.Clients[key].capabilities = self.make_capabilities()
+
+        if key == 'jsonls' then
+            self.Clients[key].capabilities.textDocument.completion.completionItem.snippetSupport =
                 true
         end
 
         if exists('schemastore') then
             local ss = require('schemastore')
 
-            if k == 'jsonls' then
-                self.clients[k].settings =
-                    vim.tbl_deep_extend('force', self.clients[k].settings or {}, {
+            if key == 'jsonls' then
+                self.Clients[key].settings =
+                    vim.tbl_deep_extend('force', self.Clients[key].settings or {}, {
                         json = {
                             schemas = ss.json.schemas(),
                             validate = { enable = true },
@@ -83,9 +82,9 @@ function Server:populate()
                     })
             end
 
-            if k == 'yamlls' then
-                self.clients[k].settings =
-                    vim.tbl_deep_extend('force', self.clients[k].settings or {}, {
+            if key == 'yamlls' then
+                self.Clients[k].settings =
+                    vim.tbl_deep_extend('force', self.Clients[key].settings or {}, {
                         yaml = {
                             schemaStore = { enable = false, url = '' },
                             schemas = ss.yaml.schemas(),
@@ -111,7 +110,7 @@ vim.lsp.config('*', {
 
 Server:populate()
 
-for client, v in next, Server.clients do
+for client, v in next, Server.Clients do
     vim.lsp.config(client, v)
     vim.lsp.enable(client)
 end
@@ -138,6 +137,8 @@ local Keys = {
             desc('Stop LSP Servers'),
         },
     },
+
+    v = { ['<leader>l'] = { group = '+LSP' } },
 }
 
 ---@type Config.Keymaps

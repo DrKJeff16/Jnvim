@@ -35,7 +35,6 @@ local Autocmd = {}
 ---@type AllModeMaps
 Autocmd.AUKeys = {
     n = {
-        ['<leader>lc'] = { group = '+Code Actions' },
         ['<leader>lf'] = { group = '+File Operations' },
         ['<leader>lw'] = { group = '+Workspace' },
 
@@ -65,14 +64,12 @@ Autocmd.AUKeys = {
             function() vim.lsp.buf.format({ async = true }) end,
             desc('Format File'),
         },
-        ['<leader>lca'] = { vim.lsp.buf.code_action, desc('Code Actions') },
+        ['<leader>lc'] = { vim.lsp.buf.code_action, desc('Code Action') },
         ['<leader>le'] = { vim.diagnostic.open_float, desc('Open Diagnostics Float') },
         ['<leader>lq'] = { vim.diagnostic.setloclist, desc('Set Loclist') },
     },
     v = {
-        ['<leader>lc'] = { group = '+Code Actions' },
-
-        ['<leader>lca'] = { vim.lsp.buf.code_action, desc('Code Action') },
+        ['<leader>lc'] = { vim.lsp.buf.code_action, desc('LSP Code Action') },
     },
 }
 
@@ -80,7 +77,7 @@ Autocmd.AUKeys = {
 Autocmd.autocommands = {
     ['LspAttach'] = {
         {
-            group = augroup('UserLsp', {}),
+            group = augroup('UserLsp', { clear = false }),
             callback = function(args)
                 local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 
@@ -107,8 +104,6 @@ Autocmd.autocommands = {
                     require('plugin.lazydev')
                 end
 
-                local ClientCfg = vim.deepcopy(client.config)
-
                 ---@type AllMaps
                 local Keys = {
                     ['<leader>lS'] = { group = '+Server', buffer = args.buf },
@@ -117,9 +112,10 @@ Autocmd.autocommands = {
                         function()
                             vim.lsp.stop_client(client.id, true)
 
-                            vim.schedule(
-                                function() vim.lsp.start(ClientCfg, { bufnr = args.buf }) end
-                            )
+                            vim.schedule(function()
+                                local ClientCfg = vim.deepcopy(client.config)
+                                vim.lsp.start(ClientCfg, { bufnr = args.buf })
+                            end)
                         end,
                         desc('Force Server Restart', true, args.buf),
                         buffer = args.buf,
@@ -128,11 +124,27 @@ Autocmd.autocommands = {
                         function()
                             vim.lsp.stop_client(client.id, false)
 
-                            vim.schedule(
-                                function() vim.lsp.start(ClientCfg, { bufnr = args.buf }) end
-                            )
+                            vim.schedule(function()
+                                local ClientCfg = vim.deepcopy(client.config)
+                                vim.lsp.start(ClientCfg, { bufnr = args.buf })
+                            end)
                         end,
                         desc('Server Restart', true, args.buf),
+                        buffer = args.buf,
+                    },
+                    ['<leader>lSS'] = {
+                        function() vim.lsp.stop_client(client.id, true) end,
+                        desc('Force Server Stop', true, args.buf),
+                        buffer = args.buf,
+                    },
+                    ['<leader>lSs'] = {
+                        function() vim.lsp.stop_client(client.id, false) end,
+                        desc('Server Stop', true, args.buf),
+                        buffer = args.buf,
+                    },
+                    ['<leader>lSi'] = {
+                        '<CMD>LspInfo<CR>',
+                        desc('Show LSP Info', true, args.buf),
                         buffer = args.buf,
                     },
                 }
@@ -143,9 +155,9 @@ Autocmd.autocommands = {
     },
     ['LspProgress'] = {
         {
-            group = augroup('UserLsp', {}),
+            group = augroup('UserLsp', { clear = false }),
             pattern = '*',
-            callback = function() vim.cmd('redrawstatus') end,
+            callback = function() vim.cmd.redrawstatus() end,
         },
     },
 }

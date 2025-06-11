@@ -66,8 +66,27 @@
 ---@field vimls? Lsp.Server.Clients.Spec|nil
 ---@field yamlls? Lsp.Server.Clients.Spec|nil
 
+---@alias Lsp.Server.Key
+---|'lua_ls'
+---|'bashls'
+---|'clangd'
+---|'cmake'
+---|'css_variables'
+---|'cssls'
+---|'html'
+---|'jdtls'
+---|'jsonls'
+---|'julials'
+---|'marksman'
+---|'pylsp'
+---|'taplo'
+---|'texlab'
+---|'vimls'
+---|'yamlls'
+---|string
+
 ---@class Lsp.Server
----@field clients Lsp.Server.Clients
+---@field Clients Lsp.Server.Clients
 ---@field make_capabilities fun(): lsp.ClientCapabilities
 ---@field populate fun(self: Lsp.Server)
 ---@field new fun(O: table?): Lsp.Server|table
