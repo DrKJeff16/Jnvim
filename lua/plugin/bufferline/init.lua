@@ -1,6 +1,3 @@
----@diagnostic disable:unused-local
----@diagnostic disable:unused-function
-
 local User = require('user_api')
 local Check = User.check
 
@@ -139,6 +136,7 @@ BLine.setup({
 
         diagnostics = 'nvim_lsp',
         diagnostics_update_in_insert = false,
+        diagnostics_update_on_event = false,
         diagnostics_indicator = diagnostics_indicator,
 
         color_icons = true,
@@ -185,6 +183,10 @@ BLine.setup({
 
         sort_by = 'tabs',
 
+        pick = {
+            alphabet = 'abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ1234567890',
+        },
+
         offsets = {
             {
                 filetype = 'NvimTree',
@@ -196,7 +198,7 @@ BLine.setup({
                 filetype = 'lazy',
                 text = 'Lazy',
                 text_align = 'center',
-                separator = false,
+                separator = true,
             },
         },
     },
