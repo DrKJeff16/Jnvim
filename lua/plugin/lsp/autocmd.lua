@@ -108,6 +108,38 @@ Autocmd.autocommands = {
                 if client.name == 'lua_ls' then
                     require('plugin.lazydev')
                 end
+
+                local ClientCfg = vim.deepcopy(client.config)
+
+                ---@type AllMaps
+                local Keys = {
+                    ['<leader>lS'] = { group = '+Server', buffer = args.buf },
+
+                    ['<leader>lSR'] = {
+                        function()
+                            vim.lsp.stop_client(client.id, true)
+
+                            vim.schedule(
+                                function() vim.lsp.start(ClientCfg, { bufnr = args.buf }) end
+                            )
+                        end,
+                        desc('Force Server Restart', true, args.buf),
+                        buffer = args.buf,
+                    },
+                    ['<leader>lSr'] = {
+                        function()
+                            vim.lsp.stop_client(client.id, false)
+
+                            vim.schedule(
+                                function() vim.lsp.start(ClientCfg, { bufnr = args.buf }) end
+                            )
+                        end,
+                        desc('Server Restart', true, args.buf),
+                        buffer = args.buf,
+                    },
+                }
+
+                Keymaps:setup({ n = Keys })
             end,
         },
     },

@@ -137,11 +137,6 @@ local Keys = {
             function() vim.lsp.stop_client(vim.lsp.get_clients(), true) end,
             desc('Stop LSP Servers'),
         },
-
-        ['<leader>lS'] = {
-            ':LspStart ',
-            desc('Prompt To Start Server', false, curr_buf()),
-        },
     },
 }
 
