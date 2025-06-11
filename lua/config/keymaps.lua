@@ -285,7 +285,7 @@ Keymaps.Keys = {
                 local notify = require('user_api.util.notify').notify
 
                 ---@diagnostic disable-next-line
-                local ok, err = pcall(vim.cmd, '%retab<CR>')
+                local ok, err = pcall(vim.cmd, '%retab')
 
                 if ok then
                     ok, err = pcall(vim.cmd.write)
