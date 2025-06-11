@@ -3,6 +3,7 @@
 local User = require('user_api')
 local Keymaps = require('config.keymaps')
 local Check = User.check
+local Maps = User.maps
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -11,7 +12,7 @@ local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local empty = Check.value.empty
 local hi = User.highlight.hl_from_dict
-local desc = User.maps.kmap.desc
+local desc = Maps.kmap.desc
 
 if not exists('nvim-tree') then
     return
@@ -19,10 +20,9 @@ end
 
 User:register_plugin('plugin.nvim_tree')
 
---- Use floating Tree? You decide
+--- NOTE: Use floating Tree? You decide
 local USE_FLOAT = false
 
-local api = vim.api
 local fn = vim.fn
 
 local sched = vim.schedule
@@ -31,12 +31,12 @@ local in_tbl = vim.tbl_contains
 local filter = vim.tbl_filter
 local tbl_map = vim.tbl_map
 
-local augroup = api.nvim_create_augroup
-local get_tabpage = api.nvim_win_get_tabpage
-local get_bufn = api.nvim_win_get_buf
-local win_list = api.nvim_tabpage_list_wins
-local close_win = api.nvim_win_close
-local list_wins = api.nvim_list_wins
+local augroup = vim.api.nvim_create_augroup
+local get_tabpage = vim.api.nvim_win_get_tabpage
+local get_bufn = vim.api.nvim_win_get_buf
+local win_list = vim.api.nvim_tabpage_list_wins
+local close_win = vim.api.nvim_win_close
+local list_wins = vim.api.nvim_list_wins
 
 local floor = math.floor
 
@@ -45,6 +45,14 @@ local Api = require('nvim-tree.api')
 
 local Tapi = Api.tree
 local Tnode = Api.node
+
+---@class Tree.CfgAPI.Mappings
+---@field default_on_attach fun(bufnr: integer)
+
+---@class Tree.CfgAPI
+---@field mappings Tree.CfgAPI.Mappings
+
+---@type Tree.CfgAPI
 local CfgApi = Api.config
 
 ---@type AnyFunc
@@ -77,13 +85,13 @@ local function map_keys(keys, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or nil
 
-    keys['<leader>ft'] = { group = '+NvimTree' }
-
-    require('user_api.maps').map_dict(keys, 'wk.register', true, bufnr)
+    Maps.map_dict(keys, 'wk.register', true, nil, bufnr)
 end
 
 ---@type AllMaps
 local my_maps = {
+    ['<leader>ft'] = { group = '+NvimTree' },
+
     ['<leader>fto'] = {
         open,
         desc('Open NvimTree'),
@@ -247,12 +255,12 @@ local function swap_then_open_tab()
     local node = get_node()
 
     if is_tbl(node) and not empty(node) then
-        vim.cmd('wincmd l')
+        vim.cmd.wincmd('l')
         tab(node)
     end
 end
 
----@type fun(bufn: integer)
+---@param bufn integer
 local on_attach = function(bufn)
     CfgApi.mappings.default_on_attach(bufn)
 
@@ -295,8 +303,8 @@ local on_attach = function(bufn)
     map_keys(Keys, bufn)
 end
 
-local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1.
-local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 3 / 7
+local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1
+local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 1 / 4
 
 Tree.setup({
     on_attach = on_attach,
