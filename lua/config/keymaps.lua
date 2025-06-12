@@ -486,6 +486,10 @@ Keymaps.Keys = {
             function() vim.cmd.wincmd('w') end,
             desc('Next Window'),
         },
+        ['<leader>ww'] = {
+            function() vim.cmd.wincmd('w') end,
+            desc('Next Window'),
+        },
         ['<leader>wc'] = {
             function() vim.cmd.wincmd('o') end,
             desc('Close All Other Windows'),
