@@ -86,6 +86,8 @@ local Opts = {
 
     indent = { enable = false },
     incremental_selection = { enable = false },
+
+    textobjects = { enable = true },
 }
 
 if exists('nvim-treesitter-refactor') then
