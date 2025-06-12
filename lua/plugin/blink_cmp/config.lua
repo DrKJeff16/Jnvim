@@ -42,29 +42,16 @@ Cfg.Config.keymap = {
         'fallback',
     },
 
-    ['<C-e>'] = {
-        function(cmp)
-            return cmp.cancel({
-                callback = function()
-                    local termcode = replace_termcodes('<C-e>', true, false, true)
-                    feedkeys(termcode, 'i', false)
-                end,
-            })
-        end,
-        'fallback',
-    },
+    --- Also known as `<Esc>`
+    ['<C-e>'] = { 'cancel', 'fallback' },
 
-    ['<CR>'] = {
-        'accept',
-        'fallback',
-    },
+    ['<CR>'] = { 'accept', 'fallback' },
 
     ['<Tab>'] = {
         function(cmp)
             local visible = cmp.is_menu_visible
 
             if not visible() and has_words_before() then
-                cmp.reload()
                 return cmp.show({ providers = BUtil:gen_sources(false, false) })
             end
         end,
@@ -124,44 +111,9 @@ Cfg.Config.keymap = {
         end,
         'fallback',
     },
-    ['<Right>'] = {
-        function(cmp)
-            if cmp.is_active() or cmp.is_visible() then
-                return cmp.cancel({
-                    callback = function()
-                        local termcode =
-                            vim.api.nvim_replace_termcodes('<Right>', true, false, true)
-                        vim.api.nvim_feedkeys(termcode, 'i', false)
-                    end,
-                })
-            end
 
-            if cmp.is_visible() and cmp.is_active() then
-                cmp.reload()
-            end
-        end,
-        'fallback',
-    },
-    ['<Left>'] = {
-        function(cmp)
-            if cmp.is_active() or cmp.is_visible() then
-                return cmp.cancel({
-                    callback = function()
-                        local termcode = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
-                        vim.api.nvim_feedkeys(termcode, 'i', false)
-                    end,
-                })
-            end
-
-            if cmp.is_visible() and cmp.is_active() then
-                cmp.reload()
-            end
-        end,
-        'fallback',
-    },
-
-    ['<C-p>'] = { 'fallback' },
-    ['<C-n>'] = { 'fallback' },
+    ['<C-p>'] = { 'fallback_to_mappings' },
+    ['<C-n>'] = { 'fallback_to_mappings' },
 
     ['<C-b>'] = {
         function(cmp)
@@ -220,12 +172,12 @@ Cfg.Config.completion = {
 
     list = {
         selection = {
-            -- preselect = false
-            preselect = function(ctx)
-                ctx = is_tbl(ctx) and ctx or {}
-
-                return not require('blink.cmp').snippet_active({ direction = 1 })
-            end,
+            -- preselect = function(ctx)
+            --     ctx = is_tbl(ctx) and ctx or {}
+            --
+            --     return not require('blink.cmp').snippet_active({ direction = 1 })
+            -- end,
+            preselect = false,
 
             auto_insert = true,
         },
@@ -286,9 +238,9 @@ Cfg.Config.completion = {
                 { 'kind_icon', 'kind' },
             },
         },
-
-        ghost_text = { enabled = false },
     },
+
+    ghost_text = { enabled = false },
 }
 
 Cfg.Config.cmdline = { enabled = true }
