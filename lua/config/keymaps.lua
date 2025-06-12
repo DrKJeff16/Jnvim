@@ -1,18 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.maps'
-
----@class Keymaps.PreExec
----@field ft string[]
----@field bt string[]
-
----@class Config.Keymaps
----@field NOP string[] Table of keys to no-op after `<leader>` is pressed
----@field no_oped? boolean
----@field Keys AllModeMaps
----@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field setup fun(self: Config.Keymaps, keys: AllModeMaps)
----@field new fun(O: table?): table|Config.Keymaps
+---@module 'config.types'
 
 local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
@@ -36,7 +24,7 @@ local tbl_contains = vim.tbl_contains
 User:register_plugin('config.keymaps')
 
 ---@param vertical? boolean
----@return fun()|false
+---@return false|fun()
 local function gen_fun_blank(vertical)
     vertical = is_bool(vertical) and vertical or false
 
