@@ -1,6 +1,21 @@
 ---@meta
 
----@alias Types ('nil'|'string'|'number'|'function'|'boolean'|'table'|'thread'|'userdata')
+---@alias Types
+---|'nil'
+---|'string'
+---|'number'
+---|'function'
+---|'boolean'
+---|'table'
+---|'thread'
+---|'userdata'
+
+---@alias EmptyTypes
+---|'string'
+---|'number'
+---|'integer'
+---|'table'
+
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
 --- Exitstance checks
@@ -165,6 +180,7 @@
 ---@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?):((string|integer)[]|boolean|string|integer)
 ---@field single_type_tbl fun(type_str: Types, T: table): boolean
+---@field type_not_empty fun(type_str: EmptyTypes, data: table|string|number): boolean
 
 ---@class User.Check
 ---@field exists User.Check.Existance

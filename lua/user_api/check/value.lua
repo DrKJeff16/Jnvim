@@ -472,6 +472,45 @@ function Value.single_type_tbl(type_str, T)
     return true
 end
 
+--- Check if given data is a string/table/integer/number and whether it's empty or not
+--- ---
+--- ## Description
+---
+--- Specify what data type should the given value be
+--- and this function will check both if it's that type
+--- and if so, whether it's empty (for numbers this means a value of `0`)
+--- ---
+--- ## Parameters
+---
+---
+---@param type_str EmptyTypes
+---@param data string|number|table
+---@return boolean
+function Value.type_not_empty(type_str, data)
+    local is_nil = Value.is_nil
+    local empty = Value.empty
+
+    if is_nil(data) then
+        return false
+    end
+
+    ---@type table<EmptyTypes, ValueFunc>
+    local valid_types = {
+        ['string'] = Value.is_str,
+        ['integer'] = Value.is_int,
+        ['number'] = Value.is_num,
+        ['table'] = Value.is_tbl,
+    }
+
+    if not vim.tbl_contains(vim.tbl_keys(valid_types), type_str) then
+        return false
+    end
+
+    local checker = valid_types[type_str]
+
+    return checker(data) and not empty(data)
+end
+
 return Value
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
