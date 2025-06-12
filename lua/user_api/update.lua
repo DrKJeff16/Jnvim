@@ -72,7 +72,7 @@ function Update:setup_maps()
         n = {
             ['<leader>U'] = { group = '+User API' },
             ['<leader>Uu'] = {
-                self.update,
+                function() self:update() end,
                 desc('Update User Config'),
             },
         },

@@ -18,7 +18,6 @@
 ---@field vim_has fun(expr: string|string[]): boolean
 ---@field vim_isdir fun(path: string): boolean
 
----@class User.Check.Value
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
 --- ---
 --- ## Parameters
@@ -35,6 +34,7 @@
 ---
 --- A boolean value indicating whether the data is `nil` or doesn't exist
 --- ---
+---@class User.Check.Value
 ---@field is_nil ValueFunc
 --- Checks whether a value is a string
 --- ---

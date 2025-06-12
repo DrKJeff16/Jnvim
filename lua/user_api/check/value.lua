@@ -6,6 +6,7 @@
 local Value = {}
 
 -- NOTE: We define `is_nil` first as it's used by the other checkers
+
 --- Checks whether a value is `nil`, i.e. non existant or explicitly set as nil
 --- ---
 --- ## Parameters

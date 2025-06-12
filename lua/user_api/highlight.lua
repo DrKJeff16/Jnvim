@@ -43,8 +43,11 @@ function Hl.hl_from_arr(A)
     local notify = require('user_api.util.notify').notify
 
     if not is_tbl(A) or empty(A) then
-        notify('Bad argument', ERROR, {
+        notify('Bad argument', 'error', {
             title = '(user_api.highlight.hl_from_arr)',
+            animate = true,
+            timeout = 2500,
+            hide_from_history = false,
         })
         return
     end
@@ -53,7 +56,11 @@ function Hl.hl_from_arr(A)
         if not (is_str(t.name) and is_tbl(t.opts)) or empty(t.name) then
             notify('A highlight value is not permitted, skipping', ERROR, {
                 title = '(user_api.highlight.hl_from_arr)',
+                animate = true,
+                timeout = 2500,
+                hide_from_history = false,
             })
+
             goto continue
         end
 
