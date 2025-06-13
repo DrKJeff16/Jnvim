@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local executable = Check.exists.executable
@@ -10,7 +10,7 @@ local in_console = Check.in_console
 local is_root = Check.is_root
 
 ---@type (LazySpec)[]
-local M = {
+local MD = {
     {
         'iamcco/markdown-preview.nvim',
         ft = 'markdown',
@@ -28,6 +28,6 @@ local M = {
     },
 }
 
-return M
+return MD
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

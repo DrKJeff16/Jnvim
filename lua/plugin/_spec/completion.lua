@@ -8,7 +8,7 @@ local source = CfgUtil.source
 local executable = Check.exists.executable
 
 ---@type (LazySpec)[]
-local M = {
+local Completion = {
     --[[ {
 
         'hrsh7th/vim-vsnip',
@@ -137,6 +137,6 @@ local M = {
     },
 }
 
-return M
+return Completion
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

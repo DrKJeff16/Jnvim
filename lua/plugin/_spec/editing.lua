@@ -12,17 +12,17 @@ local executable = Check.exists.executable
 local in_console = Check.in_console
 
 ---@type (LazySpec)[]
-local M = {
+local Editing = {
     {
         'folke/persistence.nvim',
-        event = 'BufReadPre',
+        lazy = false,
         version = false,
         config = source('plugin.persistence'),
         enabled = false,
     },
     {
         'olimorris/persisted.nvim',
-        event = 'BufReadPre',
+        lazy = false,
         version = false,
         config = source('plugin.persisted'),
     },
@@ -39,13 +39,13 @@ local M = {
 
     {
         'tpope/vim-endwise',
-        lazy = false,
+        event = 'InsertEnter',
         version = false,
     },
     --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
-        event = 'BufReadPre',
+        event = 'VeryLazy',
         version = false,
         dependencies = {
             'nvim-treesitter/nvim-treesitter',
@@ -58,6 +58,7 @@ local M = {
     {
         'windwp/nvim-autopairs',
         main = 'nvim-autopairs',
+        event = 'InsertEnter',
         version = false,
         config = source('plugin.autopairs'),
     },
@@ -67,76 +68,109 @@ local M = {
         version = false,
         init = flag_installed('a_vim'),
         config = function()
-            local wk_avail = require('user_api.maps.wk').available
             local desc = require('user_api.maps.kmap').desc
             local map_dict = require('user_api.maps').map_dict
             local curr_buf = vim.api.nvim_get_current_buf
 
-            ---@type KeyMapDict
+            local buf = curr_buf()
+
+            ---@type AllMaps
             local Keys = {
+                ['<leader><C-h>'] = {
+                    group = '+Header/Source Switch (C/C++)',
+                    buffer = buf,
+                },
+
                 ['<leader><C-h>s'] = {
                     ':A<CR>',
-                    desc('Cycle Header/Source', true, curr_buf()),
+                    desc('Cycle Header/Source', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>x'] = {
                     ':AS<CR>',
-                    desc('Horizontal Cycle Header/Source', true, curr_buf()),
+                    desc('Horizontal Cycle Header/Source', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>v'] = {
                     ':AV<CR>',
-                    desc('Vertical Cycle Header/Source', true, curr_buf()),
+                    desc('Vertical Cycle Header/Source', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>t'] = {
                     ':AT<CR>',
-                    desc('Tab Cycle Header/Source', true, curr_buf()),
+                    desc('Tab Cycle Header/Source', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>S'] = {
                     ':IH<CR>',
-                    desc('Cycle Header/Source (Cursor)', true, curr_buf()),
+                    desc('Cycle Header/Source (Cursor)', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>X'] = {
                     ':IHS<CR>',
-                    desc('Horizontal Cycle Header/Source (Cursor)', true, curr_buf()),
+                    desc('Horizontal Cycle Header/Source (Cursor)', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>V'] = {
                     ':IHV<CR>',
-                    desc('Vertical Cycle Header/Source (Cursor)', true, curr_buf()),
+                    desc('Vertical Cycle Header/Source (Cursor)', true, buf),
+                    buffer = buf,
                 },
                 ['<leader><C-h>T'] = {
                     ':IHT<CR>',
-                    desc('Tab Cycle Header/Source (Cursor)', true, curr_buf()),
+                    desc('Tab Cycle Header/Source (Cursor)', true, buf),
+                    buffer = buf,
                 },
             }
-            ---@type RegKeysNamed
-            local Names = {
-                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
-            }
-            if wk_avail() then
-                map_dict(Names, 'wk.register', false, 'n', curr_buf())
-            end
-            map_dict(Keys, 'wk.register', false, 'n', curr_buf())
 
+            local Keymaps = require('config.keymaps')
+            Keymaps:setup(Keys)
+
+            -- Kill plugin-defined mappings
             vim.schedule(function()
-                -- Kill plugin-defined mappings
-
-                local opts = desc('', true, curr_buf())
+                local opts = desc('', true, buf)
                 opts.hidden = true
 
+                ---@type AllModeMaps
                 local i_del = {
                     i = {
-                        ['<leader>ih'] = { '<Nop>', opts, hidden = true },
-                        ['<leader>is'] = { '<Nop>', opts, hidden = true },
-                        ['<leader>ihn'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>ih'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
+                        ['<leader>is'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
+                        ['<leader>ihn'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
                     },
                     n = {
-                        ['<leader>ih'] = { '<Nop>', opts, hidden = true },
-                        ['<leader>is'] = { '<Nop>', opts, hidden = true },
-                        ['<leader>ihn'] = { '<Nop>', opts, hidden = true },
+                        ['<leader>ih'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
+                        ['<leader>is'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
+                        ['<leader>ihn'] = {
+                            '<Nop>',
+                            opts,
+                            hidden = true,
+                        },
                     },
                 }
 
-                for _, lhs in next, i_del do
-                    map_dict(i_del, 'wk.register', true, nil, curr_buf())
+                for f, key in next, i_del do
+                    map_dict(key, 'wk.register', false, f, buf)
                 end
             end)
         end,
@@ -149,6 +183,6 @@ local M = {
     },
 }
 
-return M
+return Editing
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

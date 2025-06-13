@@ -16,6 +16,7 @@ local Essentials = {
     {
         'folke/which-key.nvim',
         main = 'which-key',
+        lazy = false,
         version = false,
         init = function()
             vim.opt.timeout = true
@@ -77,7 +78,7 @@ local Essentials = {
     },
     {
         'lewis6991/hover.nvim',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.hover'),
     },
@@ -90,6 +91,7 @@ local Essentials = {
     },
     {
         'equalsraf/neovim-gui-shim',
+        lazy = false,
         version = false,
         cond = not in_console(),
     },

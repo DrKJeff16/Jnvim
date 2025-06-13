@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local executable = Check.exists.executable
@@ -11,9 +11,10 @@ local in_console = Check.in_console
 local is_root = Check.is_root
 
 ---@type (LazySpec)[]
-local M = {
+local LSP = {
     {
         'neovim/nvim-lspconfig',
+        lazy = false,
         version = false,
         config = source('plugin.lsp'),
         enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
@@ -36,12 +37,10 @@ local M = {
     --- optional `vim.uv` typings
     {
         'Bilal2453/luvit-meta',
-        lazy = true,
         version = false,
     },
     {
         'folke/neoconf.nvim',
-        lazy = true,
         version = false,
     },
     {
@@ -66,7 +65,7 @@ local M = {
     },
     {
         'williamboman/mason-lspconfig.nvim',
-        lazy = true,
+        lazy = false,
         version = false,
         dependencies = {
             'williamboman/mason.nvim',
@@ -76,6 +75,6 @@ local M = {
     },
 }
 
-return M
+return LSP
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

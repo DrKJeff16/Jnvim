@@ -9,7 +9,7 @@ local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 
 ---@type (LazySpec)[]
-local M = {
+local VCS = {
     {
         'tpope/vim-fugitive',
         version = false,
@@ -42,6 +42,6 @@ local M = {
     },
 }
 
-return M
+return VCS
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -10,10 +10,11 @@ local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
 ---@type (LazySpec)[]
-local M = {
+local UI = {
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
+        lazy = false,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -28,6 +29,7 @@ local M = {
     --- Tabline
     {
         'akinsho/bufferline.nvim',
+        lazy = false,
         version = false,
         dependencies = {
             'nvim-web-devicons',
@@ -44,11 +46,13 @@ local M = {
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.blank_line'),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.rainbow_delimiters'),
     },
@@ -56,6 +60,7 @@ local M = {
     {
         'nvim-tree/nvim-tree.lua',
         main = 'nvim-tree',
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -105,12 +110,14 @@ local M = {
     },
     {
         'akinsho/toggleterm.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.toggleterm'),
         cond = not in_console(),
     },
     {
         'folke/noice.nvim',
+        lazy = false,
         version = false,
         dependencies = {
             'MunifTanjim/nui.nvim',
@@ -122,6 +129,6 @@ local M = {
     },
 }
 
-return M
+return UI
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

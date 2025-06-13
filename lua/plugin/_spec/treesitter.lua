@@ -9,9 +9,10 @@ local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
 ---@type (LazySpec)[]
-local M = {
+local TS = {
     {
         'nvim-treesitter/nvim-treesitter',
+        lazy = true,
         build = ':TSUpdate',
         version = false,
         config = source('plugin.treesitter'),
@@ -39,6 +40,6 @@ local M = {
     },
 }
 
-return M
+return TS
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

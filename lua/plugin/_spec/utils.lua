@@ -9,7 +9,7 @@ local flag_installed = CfgUtil.flag_installed
 local in_console = Check.in_console
 
 ---@type (LazySpec)[]
-local M = {
+local Utils = {
     {
         'vim-scripts/UTL.vim',
         lazy = false,
@@ -28,7 +28,7 @@ local M = {
     --- The task runner used for `makeit.nvim`
     {
         'stevearc/overseer.nvim',
-        event = 'VeryLazy',
+        lazy = true,
         version = false,
         config = source('plugin.overseer'),
         cond = not in_console(),
@@ -36,13 +36,17 @@ local M = {
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',
-        event = 'VeryLazy',
+        cmd = {
+            'DookuOpen',
+            'DookuAutoSetup',
+            'DookuGenerate',
+        },
         version = false,
         config = source('plugin.dooku'),
         cond = not in_console(),
     },
 }
 
-return M
+return Utils
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -10,9 +10,10 @@ local executable = Check.exists.executable
 local in_console = Check.in_console
 
 ---@type (LazySpec)[]
-local M = {
+local Telescope = {
     {
         'nvim-telescope/telescope.nvim',
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'plenary.nvim' },
         config = source('plugin.telescope'),
@@ -41,7 +42,7 @@ local M = {
     -- TODO: Split into its file
     {
         'LukasPietzschmann/telescope-tabs',
-        event = 'TabNew',
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
         config = function()
@@ -73,7 +74,7 @@ local M = {
     },
     {
         'DrKJeff16/telescope-makefile',
-        ft = { 'make' },
+        ft = 'make',
         version = false,
         dependencies = {
             'nvim-telescope/telescope.nvim',
@@ -88,7 +89,7 @@ local M = {
     },
     {
         'olacin/telescope-cc.nvim',
-        ft = { 'gitcommit' },
+        ft = 'gitcommit',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
     },
@@ -96,12 +97,13 @@ local M = {
     {
         'DrKJeff16/project.nvim',
         main = 'project_nvim',
+        event = 'VeryLazy',
         version = false,
         init = function() vim.opt.autochdir = true end,
         config = source('plugin.project'),
     },
 }
 
-return M
+return Telescope
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
