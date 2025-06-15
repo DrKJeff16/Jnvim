@@ -63,6 +63,7 @@ For these to work, the following executables must be installed and in your `$PAT
 ├── config/  <== Folder containing all Lua plugin configurations
 │   ├── keymaps.lua  <== Setup default, non-plugin keymaps here
 │   ├── lazy.lua  <== Plugin Installation. `plugin._spec` entry points are called here
+│   ├── types.lua  <== Annotations. Mostly for `config.keymaps`
 │   └── util.lua  <== Utilities used in the file above (env checks, etc.)
 ├── plugin/  <==  Plugins are configured in this directory
 │   ├── _spec/  <== Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
@@ -134,6 +135,8 @@ Just make sure to read the
 
 **_Some of the included plugins..._**
 
+<!-- - [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp) -->
+- [`blink.cmp`](https://github.com/Saghen/blink.cmp)
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
 - [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
@@ -142,7 +145,6 @@ Just make sure to read the
 - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
 - [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
 - [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
-- [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp)
 - [`noice.nvim`](https://github.com/folke/noice.nvim)
 - [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
 - [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
