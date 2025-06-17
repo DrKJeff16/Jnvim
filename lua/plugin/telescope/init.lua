@@ -169,23 +169,21 @@ end
 
 Telescope.setup(Opts)
 
-local load_ext = exists('telescope._extensions.picker_list.main')
-        ---@param name string
-        and function(name)
-            Telescope.load_extension(name)
+---@param name string
+local load_ext = function(name)
+    Telescope.load_extension(name)
 
-            -- Make sure `picker_list` doesn't load itself
-            if name == 'picker_list' then
-                _G.telescope_picker_list_loaded = true
-                return
-            end
+    -- Make sure `picker_list` doesn't load itself
+    if name == 'picker_list' then
+        _G.telescope_picker_list_loaded = true
+        return
+    end
 
-            -- If `picker_list` is loaded, also register extension with it
-            if telescope_picker_list_loaded then
-                require('telescope._extensions.picker_list.main').register(name)
-            end
-        end
-    or Telescope.load_extension
+    -- If `picker_list` is loaded, also register extension with it
+    if telescope_picker_list_loaded then
+        require('telescope._extensions.picker_list.main').register(name)
+    end
+end
 
 ---@type KeyMapDict
 local Keys = {
