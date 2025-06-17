@@ -11,8 +11,6 @@ if not exists('nvim-autopairs') then
     return
 end
 
-User:register_plugin('plugin.autopairs')
-
 local Ap = require('nvim-autopairs')
 
 Ap.setup({
@@ -82,10 +80,14 @@ local M = {
 
 M.rules()
 
-local ap_cmp = M.cmp()
+if exists('cmp') then
+    local ap_cmp = M.cmp()
 
-if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
-    ap_cmp.on()
+    if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
+        ap_cmp.on()
+    end
 end
+
+User:register_plugin('plugin.autopairs')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

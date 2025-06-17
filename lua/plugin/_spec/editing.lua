@@ -58,7 +58,7 @@ local Editing = {
     {
         'windwp/nvim-autopairs',
         main = 'nvim-autopairs',
-        event = 'InsertEnter',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.autopairs'),
     },
