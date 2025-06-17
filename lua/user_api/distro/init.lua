@@ -16,10 +16,10 @@ function Distro:setup()
     local archlinux = self.archlinux
     local termux = self.termux
 
-    if archlinux:validate() then
-        archlinux:setup()
-    elseif termux:validate() then
+    if termux:validate() then
         termux:setup()
+    elseif archlinux:validate() then
+        archlinux:setup()
     end
 end
 
