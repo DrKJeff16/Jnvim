@@ -28,6 +28,35 @@ local curr_win = vim.api.nvim_get_current_win
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 
+---@type fun(...)
+---@diagnostic disable-next-line:unused-vararg
+function _G.print_inspect(...)
+    local msg = ''
+
+    for _, v in next, arg do
+        msg = msg .. string.format('%s\n', inspect(v))
+    end
+
+    vim.print(msg)
+end
+
+---@type fun(...)
+---@diagnostic disable-next-line:unused-vararg
+function _G.notify_inspect(...)
+    local msg = ''
+
+    for _, v in next, arg do
+        msg = msg .. string.format('%s\n', inspect(v))
+    end
+
+    notify(msg, 'info', {
+        title = 'Message',
+        hide_from_history = true,
+        animate = true,
+        timeout = 2500,
+    })
+end
+
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
     bg = 'dark', -- `background`
