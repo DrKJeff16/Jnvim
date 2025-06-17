@@ -5,15 +5,31 @@
 ---@type UserAPI
 local User = {}
 
+---@type User.Check
 User.check = require('user_api.check')
+
+---@type User.Commands
 User.commands = require('user_api.commands')
+
+---@type User.Distro
 User.distro = require('user_api.distro')
+
+---@type User.Hl
 User.highlight = require('user_api.highlight')
+
+---@type User.Maps
 User.maps = require('user_api.maps')
+
+---@type User.Opts
 User.opts = require('user_api.opts')
+
+---@type User.Update
 User.update = require('user_api.update')
+
+---@type User.Util
 User.util = require('user_api.util')
 
+---@type string[]
 User.registered_plugins = {}
 
 ---@param self UserAPI
@@ -112,6 +128,21 @@ function User:reload_plugins()
 end
 
 ---@param self UserAPI
+function User:print_loaded_plugins()
+    local notify = self.util.notify.notify
+    local empty = self.check.value.empty
+
+    local msg = inspect(self.registered_plugins)
+
+    notify(msg, 'info', {
+        animate = true,
+        hide_from_history = true,
+        timeout = 2250,
+        title = 'Loaded Plugins',
+    })
+end
+
+---@param self UserAPI
 function User:setup_keys()
     local wk_avail = self.maps.wk.available
     local desc = self.maps.kmap.desc
@@ -120,10 +151,13 @@ function User:setup_keys()
     local notify = self.util.notify.notify
     local insp = inspect or vim.inspect
 
+    ---@type RegKeysNamed
     local groups = {
         ['<leader>U'] = { group = '+User API' },
         ['<leader>UP'] = { group = '+Plugins' },
     }
+
+    ---@type RegKeys|KeyMapDict
     local maps = {
         ['<leader>UPr'] = {
             function()
@@ -164,26 +198,6 @@ function User:setup_keys()
     map_dict(maps, 'wk.register', false, 'n')
 
     self.update:setup_maps()
-end
-
----@param self UserAPI
-function User:print_loaded_plugins()
-    local notify = self.util.notify.notify
-    local empty = self.check.value.empty
-    local nwl = newline or string.char(10)
-
-    local msg = ''
-
-    for _, P in next, self.registered_plugins do
-        msg = msg .. nwl .. '- ' .. P
-    end
-
-    notify(msg, empty(msg) and 'error' or 'info', {
-        animate = true,
-        hide_from_history = false,
-        timeout = 1500,
-        title = 'User API',
-    })
 end
 
 ---@param O? table
