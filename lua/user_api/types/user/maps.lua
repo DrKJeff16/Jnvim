@@ -1,6 +1,6 @@
 ---@meta
 
-require('user_api.types.which_key')
+---@module 'user_api.types.which_key'
 
 ---@alias User.Maps.Keymap.Opts vim.keymap.set.Opts
 

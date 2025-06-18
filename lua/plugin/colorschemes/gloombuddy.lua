@@ -5,8 +5,7 @@
 local User = require('user_api')
 local Check = User.check
 
-local exists = Check.exists.module
-local modules = Check.exists.modules
+local type_not_empty = Check.value.type_not_empty
 local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
@@ -14,8 +13,12 @@ local Gloombuddy = {
     mod_cmd = 'colorscheme gloombuddy',
 }
 
-if modules({ 'colorbuddy', 'gloombuddy' }) then
-    User:register_plugin('plugin.colorschemes.gloombuddy')
+---@return boolean
+function Gloombuddy.valid()
+    return (
+        type_not_empty('integer', vim.g.installed_colorbuddy)
+        and type_not_empty('integer', vim.g.installed_gloombuddy)
+    )
 end
 
 function Gloombuddy:setup()
@@ -27,6 +30,8 @@ function Gloombuddy.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Gloombuddy })
 end
+
+User:register_plugin('plugin.colorschemes.gloombuddy')
 
 return Gloombuddy
 

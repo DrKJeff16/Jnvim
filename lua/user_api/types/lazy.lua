@@ -10,9 +10,9 @@
 ---@field [3]? 'rockspec'|'packspec'
 
 ---@class LazyMods
----@field colorschemes CscMod
+---@field Colorschemes CscMod
 
----@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport|string|LazyPluginSpec|LazySpecImport[][]
+---@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
 ---@alias LazyPlugs (LazyPlug)[]
 
 ---@class PluginUtils

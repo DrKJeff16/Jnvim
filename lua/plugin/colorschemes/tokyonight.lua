@@ -22,9 +22,8 @@ local TokyoNight = {
     mod_cmd = 'colorscheme tokyonight',
 }
 
-if exists('tokyonight') then
-    User:register_plugin('plugin.colorschemes.tokyonight')
-end
+---@return boolean
+function TokyoNight.valid() return exists('tokyonight') end
 
 ---@param self CscSubMod
 ---@param variant? 'night'|'moon'|'day'
@@ -37,7 +36,7 @@ function TokyoNight:setup(variant, transparent, override)
 
     local TN = require('tokyonight')
     local Opts = {
-        cache = false,
+        cache = true,
 
         ---@param colors ColorScheme|table
         on_colors = function(colors)
@@ -103,7 +102,7 @@ function TokyoNight:setup(variant, transparent, override)
             comments = { italic = false },
             keywords = { italic = false, bold = true },
             functions = { bold = true, italic = false },
-            variables = {},
+            variables = { italic = false },
             sidebars = 'dark',
             floats = 'dark',
         },
@@ -119,10 +118,14 @@ function TokyoNight:setup(variant, transparent, override)
     vim.cmd(self.mod_cmd)
 end
 
+---@param O? table
+---@return table|CscSubMod
 function TokyoNight.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = TokyoNight })
 end
+
+User:register_plugin('plugin.colorschemes.tokyonight')
 
 return TokyoNight
 

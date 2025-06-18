@@ -4,8 +4,8 @@
 
 ---@class User.Opts
 ---@field optset fun(self: User.Opts, opts: User.Opts.Spec)
----@field setup fun(self: User.Opts, override: User.Opts.Spec?, verbose: boolean?)
----@field ALL_OPTIONS table<string, string>
+---@field setup fun(self: User.Opts, override: table|User.Opts.Spec?, verbose: boolean?)
+---@field protected ALL_OPTIONS table<string, string>
 ---@field DEFAULT_OPTIONS User.Opts.Spec
 ---@field options User.Opts.Spec
 ---@field print_set_opts fun(self: User.Opts)

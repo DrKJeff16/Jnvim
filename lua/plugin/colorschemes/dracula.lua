@@ -12,9 +12,8 @@ local Dracula = {
     mod_cmd = 'colorscheme dracula',
 }
 
-if vim.g.installed_dracula == 1 then
-    User:register_plugin('plugin.colorschemes.dracula')
-end
+---@return boolean
+function Dracula.valid() return vim.g.installed_dracula == 1 end
 
 ---@param self DraculaSubMod
 function Dracula:setup() vim.cmd(self.mod_cmd) end
@@ -24,6 +23,8 @@ function Dracula.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Dracula })
 end
+
+User:register_plugin('plugin.colorschemes.dracula')
 
 return Dracula
 

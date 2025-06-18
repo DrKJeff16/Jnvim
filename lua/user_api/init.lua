@@ -2,6 +2,8 @@
 
 ---@module 'user_api.types.user.user'
 
+local ERROR = vim.log.levels.ERROR
+
 ---@type UserAPI
 local User = {}
 
@@ -47,7 +49,7 @@ function User:register_plugin(pathstr, index)
 
     index = (is_int(index) and index >= 1 and index <= #self.registered_plugins) and index or 0
     if not is_str(pathstr) or empty(pathstr) then
-        error('(user_api:register_plugin): Plugin must be a non-empty string')
+        error('(user_api:register_plugin): Plugin must be a non-empty string', ERROR)
     end
 
     if tbl_contains(self.registered_plugins, pathstr) then

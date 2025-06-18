@@ -563,8 +563,9 @@ Keymaps.Keys = {
 
 ---@param self Config.Keymaps
 ---@param keys? AllModeMaps
-function Keymaps:setup(keys)
-    local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
+---@param bufnr? integer
+function Keymaps:setup(keys, bufnr)
+    local MODES = Maps.modes
     local insp = inspect or vim.inspect
 
     local notify = require('user_api.util.notify').notify

@@ -1,32 +1,24 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.lazy'
-
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
 local User = require('user_api') ---@see UserAPI User API
-local Keymaps = require('config.keymaps')
+local Keymaps = require('config.keymaps') ---@see Config.Keymaps
 
-local Check = User.check ---@see User.check Checking utilities
-local Util = User.util ---@see User.util General utilities
-local Opts = User.opts ---@see User.opts Option setting
-local Commands = User.commands ---@see User.commands User command generation (WIP)
-local Distro = User.distro ---@see User.distro Platform-specific optimizations (WIP)
+local Check = User.check ---@see User.Check Checking utilities
+local Util = User.util ---@see User.Util General utilities
+local Opts = User.opts ---@see User.Opts Option setting
+local Commands = User.commands ---@see User.Commands User command generation (**WIP**)
+local Distro = User.distro ---@see User.Distro Platform-specific optimizations (**WIP**)
 
+local in_console = Check.in_console ---@see User.Check.in_console
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
-local is_tbl = Check.value.is_tbl ---@see User.Check.Value.is_tbl
-local empty = Check.value.empty ---@see User.Check.Value.empty
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
-local displace_letter = Util.displace_letter ---@see User.Util.displace_letter
-local capitalize = Util.string.capitalize ---@see User.Util.String.capitalize
-local notify = (Util.notify or vim).notify
-
-local curr_buf = vim.api.nvim_get_current_buf
-local curr_win = vim.api.nvim_get_current_win
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
+_G.in_console = in_console
 
 ---@type fun(...)
 ---@diagnostic disable-next-line:unused-vararg
@@ -117,7 +109,12 @@ vim.g.loaded_netrwPlugin = 1
 --- vim.o.clipboard = 'unnamedplus'
 
 --- List of manually-callable plugin
-_G.Pkg = require('config.lazy')
+require('config.lazy')
+
+---@type CscMod
+local Color = require('plugin.colorschemes')
+
+Color('tokyonight', 'moon')
 
 --- Setup keymaps
 Keymaps:setup({
@@ -160,114 +157,6 @@ Keymaps:setup({
     },
 })
 
--- A table containing various possible colorschemes
-local Csc = Pkg.colorschemes
-
----@type KeyMapDict|RegKeys|RegKeysNamed
-local CscKeys = {
-    ['<leader>vc'] = { group = '+Colorschemes' },
-}
-
---- Reorder to your liking
-local selected = {
-    'tokyonight',
-    'catppuccin',
-    'kanagawa',
-    'nightfox',
-    'vscode',
-    'onedark',
-    'gruvbox',
-    'spacemacs',
-    'molokai',
-    'oak',
-    'spaceduck',
-    'dracula',
-    'space_vim_dark',
-}
-
-local csc_group = 'A'
-local i = 1
-
----@type string[]
-local valid = {}
-
--- TODO: Use `Keymaps:setup()` instead of `map_dict()`
--- TODO: Try to put the following loop inside a function
--- NOTE: This was also a pain in the ass
---
--- Generate keybinds for each colorscheme that is found
--- Try checking them by typing `<leader>vc` IN NORMAL MODE
-for _, name in next, selected do
-    ---@type CscSubMod|ODSubMod|table
-    local TColor = Csc[name]
-
-    if is_nil(TColor.setup) then
-        goto continue
-    end
-
-    table.insert(valid, name)
-
-    CscKeys['<leader>vc' .. csc_group] = {
-        group = '+Group ' .. csc_group,
-    }
-
-    if is_tbl(TColor.variants) and not empty(TColor.variants) then
-        local v = 'a'
-        for _, variant in next, TColor.variants do
-            CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                group = '+' .. capitalize(name),
-            }
-            CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                function() TColor:setup(variant) end,
-                desc('Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'),
-            }
-
-            v = displace_letter(v, 'next', false)
-        end
-    else
-        CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-            function() TColor:setup() end,
-            desc('Set Colorscheme `' .. capitalize(name) .. '`'),
-        }
-    end
-
-    -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
-    if i == 9 then
-        -- If last  keymap set ended on 9, reset back to 1, and go to next letter alphabetically
-        i = 1
-        csc_group = displace_letter(csc_group, 'next', false)
-    elseif i < 9 then
-        i = i + 1
-    end
-
-    ::continue::
-end
-
-if empty(valid) then
-    notify('No valid colorschemes!', 'error', {
-        animate = false,
-        hide_from_history = false,
-        timeout = 2250,
-        title = '(init.lua)',
-    })
-end
-
-for _, mod in next, valid do
-    ---@type CscSubMod
-    local Color = Csc[mod]
-
-    if is_nil(Color.setup) then
-        goto continue
-    else
-        Color:setup()
-
-        Keymaps:setup({ n = CscKeys })
-        break
-    end
-
-    ::continue::
-end
-
 -- Call the User API file associations and other autocmds
 Util:assoc()
 
@@ -284,10 +173,5 @@ Commands:setup()
 User:setup_keys()
 Commands:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 Opts:setup_keys()
-
-vim.cmd([[
-filetype plugin indent on
-syntax on
-]])
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

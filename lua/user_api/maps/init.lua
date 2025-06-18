@@ -11,9 +11,11 @@ local is_str = Value.is_str
 local is_int = Value.is_int
 local is_bool = Value.is_bool
 local empty = Value.empty
+local type_not_empty = Value.type_not_empty
 local strip_fields = Util.strip_fields
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
+local ERROR = vim.log.levels.ERROR
 
 ---@type User.Maps
 local Maps = {}
@@ -63,34 +65,33 @@ end
 ---@param mode? MapModes
 ---@param bufnr? integer
 function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
-    if not (is_tbl(T) and not empty(T)) then
-        vim.notify("Keys either aren't table or table is empty", 'error', {
-            timeout = 700,
-            title = '(user_api.maps.map_dict)',
-        })
-        return
+    if not (type_not_empty('table', T)) then
+        error("(user_api.maps.map_dict): Keys either aren't table or table is empty", ERROR)
     end
 
-    if is_str(mode) and not vim.tbl_contains(MODES, mode) then
+    if (is_str(mode) and not vim.tbl_contains(MODES, mode)) or (is_tbl(mode) and empty(mode)) then
         mode = 'n'
-    elseif is_tbl(mode) and not empty(mode) then
+    elseif type_not_empty('table', mode) then
         for _, v in next, mode do
             if not vim.tbl_contains(MODES, v) then
-                error('(user_api.maps.map_dict): Bad modes table', vim.log.levels.ERROR)
+                error('(user_api.maps.map_dict): Bad modes table', ERROR)
             end
         end
-    elseif is_tbl(mode) and empty(mode) then
-        mode = 'n'
     end
 
+    -- NOTE: Quite redundant the type definition below, isn't it?
+    ---@type { [1]: 'kmap', [2]: 'wk.register' }
     local map_choices = { 'kmap', 'wk.register' }
 
     map_func = (is_str(map_func) and vim.tbl_contains(map_choices)) and map_func or 'wk.register'
+
+    -- Choose `which-key` by default
     map_func = Maps.wk.available() and map_func or 'kmap'
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
     dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
 
+    ---@see User.Maps.Keymap
     ---@type KeyMapFunction
     local func
 

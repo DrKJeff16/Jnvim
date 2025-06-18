@@ -9,19 +9,21 @@ local is_tbl = User.check.value.is_tbl
 ---@type CscSubMod
 local SpaceDuck = {
     mod_cmd = 'colorscheme spaceduck',
-    setup = nil,
 }
 
-if vim.g.installed_spaceduck == 1 then
-    User:register_plugin('plugin.colorschemes.spaceduck')
+---@return boolean
+function SpaceDuck.valid() return vim.g.installed_spaceduck == 1 end
 
-    function SpaceDuck:setup(variant, transparent, override) vim.cmd(self.mod_cmd) end
-end
+function SpaceDuck:setup() vim.cmd(self.mod_cmd) end
 
+---@param O? table
+---@return table|CscSubMod
 function SpaceDuck.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = SpaceDuck })
 end
+
+User:register_plugin('plugin.colorschemes.spaceduck')
 
 return SpaceDuck
 

@@ -14,11 +14,10 @@ local Gruvbox = {
     mod_cmd = 'colorscheme gruvbox',
 }
 
-if exists('gruvbox') then
-    User:register_plugin('plugin.colorschemes.gruvbox')
-end
+function Gruvbox.valid() return exists('gruvbox') end
 
 function Gruvbox:setup(variant, transparent, override)
+    variant = variant or nil
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -56,6 +55,8 @@ function Gruvbox.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Gruvbox })
 end
+
+User:register_plugin('plugin.colorschemes.gruvbox')
 
 return Gruvbox
 

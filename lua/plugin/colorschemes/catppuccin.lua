@@ -22,9 +22,8 @@ local Catppuccin = {
     mod_cmd = 'colorscheme catppuccin',
 }
 
-if exists('catppuccin') then
-    User:register_plugin('plugin.colorschemes.catppuccin')
-end
+---@return boolean
+function Catppuccin.valid() return exists('catppuccin') end
 
 ---@param self CscSubMod
 ---@param variant? Cpc.Variants
@@ -148,6 +147,8 @@ function Catppuccin.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Catppuccin })
 end
+
+User:register_plugin('plugin.colorschemes.catppuccin')
 
 return Catppuccin
 

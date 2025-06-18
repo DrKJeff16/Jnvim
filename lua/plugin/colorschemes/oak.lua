@@ -10,19 +10,22 @@ local is_tbl = Check.value.is_tbl
 ---@type CscSubMod
 local Oak = {
     mod_cmd = 'colorscheme oak',
-    setup = nil,
 }
 
-if vim.g.installed_oak == 1 then
-    User:register_plugin('plugin.colorschemes.oak')
+---@return boolean
+function Oak.valid() return vim.g.installed_oak == 1 end
 
-    function Oak:setup(variant, transparent, override) vim.cmd(self.mod_cmd) end
-end
+---@param self CscSubMod
+function Oak:setup() vim.cmd(self.mod_cmd) end
 
+---@param O? table
+---@return table|CscSubMod
 function Oak.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Oak })
 end
+
+User:register_plugin('plugin.colorschemes.oak')
 
 return Oak
 

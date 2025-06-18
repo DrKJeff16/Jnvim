@@ -1,6 +1,8 @@
 ---@meta
 
----@alias Cpc.Variants 'frappe'|'latte'|'macchiato'|'mocha'
+---@alias CpcSubMod.Variants ('frappe'|'latte'|'macchiato'|'mocha')
+---@alias NFoxSubMod.Variants ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
+---@alias VSCodeSubMod.Variants ('dark'|'light')
 
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
@@ -24,6 +26,11 @@
 ---@field [2] 'moon'
 ---@field [3] 'day'
 
+---@class KanagawaSubMod.Variants
+---@field [1] 'dragon'
+---@field [2] 'wave
+---@field [3] 'lotus'
+
 --- A loadable color schemes table
 ---
 --- ## Fields
@@ -37,44 +44,92 @@
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
 ---@class CscSubMod
 ---@field setup fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)
+---@field valid fun(): boolean
 ---@field variants? string[]
 ---@field mod_cmd string
 ---@field new fun(O: table?): CscSubMod|table
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
+---@class KanagawaSubMod: CscSubMod
+---@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variants, transparent: boolean?, override: table|KanagawaConfig?)|nil
+---@field new fun(O: table?): KanagawaSubMod|table
+---@field variants KanagawaSubMod.Variants
+
+---@see CscSubMod
+--- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
 ---@class ODSubMod: CscSubMod
----@field setup fun(self: ODSubMod, variant: OD.Variant, transparent: boolean?, override: OD?)|nil
+---@field setup fun(self: ODSubMod, variant: OD.Variant?, transparent: boolean?, override: table|OD?)
 ---@field new fun(O: table?): ODSubMod|table
 ---@field variants OD.Variant[]
 
 --- A `CscSubMod` variant but for the `dracula` colorscheme
 ---@class DraculaSubMod
 ---@field setup fun(self: DraculaSubMod)
----@field new fun(O: table?): DraculaSubMod|table
+---@field valid fun(): boolean
+---@field new fun(O: table?): table|DraculaSubMod
 ---@field mod_cmd string
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `catppuccin.nvim` colorscheme
 ---@class CpcSubMod: CscSubMod
----@field variants Cpc.Variants
----@field setup fun(self: CpcSubMod, variant: Cpc.Variant, transparent: boolean?, override: CatppuccinOptions|table?)
----@field new fun(O: table?): CpcSubMod|table
+---@field variants CpcSubMod.Variants[]
+---@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variants, transparent: boolean?, override: table|CatppuccinOptions?)
+---@field new fun(O: table?): table|CpcSubMod
 
 ---@see CscSubMod
+--- A `CscSubMod` variant but for the `nightfox.nvim` colorscheme
+---@class NFoxSubMod: CscSubMod
+---@field variants NFoxSubMod.Variants[]
+---@field setup fun(self: NFoxSubMod, variant: NFoxSubMod.Variants?, transparent: boolean?, override: table?)
+---@field new fun(O: table?): table|NFoxSubMod
+
+---@see CscSubMod
+--- A `CscSubMod` variant but for the `vscode` colorscheme
+---@class VSCodeSubMod: CscSubMod
+---@field variants VSCodeSubMod.Variants[]
+---@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variants?, transparent: boolean?, override: table?)
+---@field new fun(O: table?): table|VSCodeSubMod
+---override: table?)
+
+---@alias AllColorSubMods
+---|CscSubMod
+---|CpcSubMod
+---|DraculaSubMod
+---|ODSubMod
+---|NFoxSubMod
+---|VSCodeSubMod
+
+---@alias AllCsc
+---|'catppuccin'
+---|'dracula'
+---|'gloombuddy'
+---|'gruvbox'
+---|'kanagawa'
+---|'molokai'
+---|'nightfox'
+---|'oak'
+---|'onedark'
+---|'space_vim_dark'
+---|'spaceduck'
+---|'spacemacs'
+---|'tokyonight'
+---|'vscode'
+
 --- A table for each **explicitly** configured colorscheme
 ---
 --- ## Description
 --- The colorschemes must comply with the `CscSubMod` type specifications
 ---
 ---@class CscMod
+---@field OPTIONS AllCsc[]
 ---@field catppuccin CpcSubMod
 ---@field dracula DraculaSubMod
 ---@field gloombuddy CscSubMod
 ---@field gruvbox CscSubMod
----@field kanagawa CscSubMod
+---@field kanagawa KanagawaSubMod
 ---@field molokai CscSubMod
----@field nightfox CscSubMod
+---@field nightfox NFoxSubMod
 ---@field oak CscSubMod
 ---@field onedark ODSubMod
 ---@field space_vim_dark CscSubMod

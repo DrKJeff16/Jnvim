@@ -24,7 +24,7 @@ Opts.DEFAULT_OPTIONS = require('user_api.opts.config')
 Opts.options = {}
 
 ---@param T User.Opts.Spec
----@return User.Opts.Spec parsed_opts, string msg
+---@return User.Opts.Spec parsed_opts, string? msg
 local function long_opts_convert(T)
     ---@type User.Opts.Spec
     local parsed_opts = {}

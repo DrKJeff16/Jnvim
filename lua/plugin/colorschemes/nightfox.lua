@@ -10,9 +10,9 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
----@type CscSubMod
+---@type NFoxSubMod
 local Nightfox = {
-    ---@type ('carbonfox'|'dayfox'|'nightfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')[]
+    ---@type NFoxSubMod.Variants[]
     variants = {
         'carbonfox',
         'nightfox',
@@ -25,12 +25,11 @@ local Nightfox = {
     mod_cmd = 'colorscheme ', -- Leave a whitespace for variant selection
 }
 
-if exists('nightfox') then
-    User:register_plugin('plugin.colorschemes.nightfox')
-end
+---@return boolean
+function Nightfox.valid() return exists('nightfox') end
 
----@param self CscSubMod
----@param variant? 'nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox'
+---@param self NFoxSubMod
+---@param variant? NFoxSubMod.Variants
 ---@param transparent? boolean
 ---@param override? table
 function Nightfox:setup(variant, transparent, override)
@@ -46,13 +45,13 @@ function Nightfox:setup(variant, transparent, override)
             -- Compiled file's destination location
             compile_path = compile_path,
             compile_file_suffix = '_compiled', -- Compiled file suffix
-            transparent = transparent, -- Disable setting background
-            terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+            transparent = not in_console() and transparent or false, -- Disable setting background
+            terminal_colors = not in_console(), -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
             dim_inactive = false, -- Non focused panes set to alternative background
             module_default = false, -- Default enable value for modules
             colorblind = { enable = false }, -- Disable colorblind support
             styles = { -- Style to be applied to different syntax groups
-                comments = 'NONE', -- Value is any valid attr-list value `:help attr-list`
+                comments = 'altfont', -- Value is any valid attr-list value `:help attr-list`
                 conditionals = 'bold',
                 constants = 'bold',
                 functions = 'bold',
@@ -60,7 +59,7 @@ function Nightfox:setup(variant, transparent, override)
                 numbers = 'NONE',
                 operators = 'NONE',
                 preprocs = 'bold',
-                strings = 'NONE',
+                strings = 'altfont',
                 types = 'bold',
                 variables = 'altfont',
             },
@@ -105,11 +104,13 @@ function Nightfox:setup(variant, transparent, override)
 end
 
 ---@param O? table
----@return CscSubMod|table
+---@return NFoxSubMod|table
 function Nightfox.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Nightfox })
 end
+
+User:register_plugin('plugin.colorschemes.nightfox')
 
 return Nightfox
 

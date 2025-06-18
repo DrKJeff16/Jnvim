@@ -105,7 +105,7 @@ Lazy.setup({
     },
 
     checker = {
-        enabled = false,
+        enabled = true,
         notify = false,
         frequency = 900,
         check_pinned = false,
@@ -140,33 +140,24 @@ Lazy.setup({
     },
 })
 
----@type LazyMods
-local P = {
-    colorschemes = require('plugin.colorschemes'),
-}
-
----@type AllModeMaps
+---@type AllMaps
 local Keys = {
-    n = {
-        ['<leader>L'] = { group = '+Lazy' },
-        ['<leader>Le'] = { group = '+Edit Lazy File' },
+    ['<leader>L'] = { group = '+Lazy' },
+    ['<leader>Le'] = { group = '+Edit Lazy File' },
 
-        ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-        ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-        ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-        ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
-        ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-        ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-        ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-        ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-        ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-        ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
-        ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
-    },
+    ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
+    ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
+    ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
+    ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+    ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
+    ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
+    ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
+    ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
+    ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+    ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+    ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
 
-Keymaps:setup(Keys)
-
-return P
+Keymaps:setup({ n = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

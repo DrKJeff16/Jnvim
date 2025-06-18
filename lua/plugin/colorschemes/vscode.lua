@@ -6,53 +6,61 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
+local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 
----@type CscSubMod
+---@type VSCodeSubMod
 local VSCode = {
-    mod_cmd = 'colorscheme vscode', -- Leave a whitespace for variant selection
-    setup = nil,
+    ---@type VSCodeSubMod.Variants[]
+    variants = {
+        'dark',
+        'light',
+    },
+    mod_cmd = 'colorscheme vscode',
 }
 
-if exists('vscode') then
-    User:register_plugin('plugin.colorschemes.vscode')
+---@return boolean
+function VSCode.valid() return exists('vscode') end
 
-    ---@param self CscSubMod
-    ---@param variant? any
-    ---@param transparent? boolean
-    ---@param override? table
-    function VSCode:setup(variant, transparent, override)
-        transparent = is_bool(transparent) and transparent or false
-        override = is_tbl(override) and override or {}
+---@param self VSCodeSubMod
+---@param variant? VSCodeSubMod.Variants
+---@param transparent? boolean
+---@param override? table
+function VSCode:setup(variant, transparent, override)
+    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'dark'
+    transparent = is_bool(transparent) and transparent or false
+    override = is_tbl(override) and override or {}
 
-        local C = require('vscode.colors').get_colors()
+    local C = require('vscode.colors').get_colors()
 
-        require('vscode').setup(vim.tbl_extend('keep', override, {
-            style = 'dark',
-            transparent = transparent,
-            italic_comments = false,
-            underline_links = true,
-            disable_nvimtree_bg = false,
-            color_overrides = {},
-            group_overrides = {
-                -- this supports the same val table as vim.api.nvim_set_hl
-                -- use colors from this colorscheme by requiring vscode.colors!
-                Cursor = { fg = C.vscDarkBlue, bg = C.vscLightGreen, bold = true },
-            },
-        }))
+    require('vscode').setup(vim.tbl_extend('keep', override, {
+        style = 'dark',
+        transparent = transparent,
+        italic_comments = false,
+        underline_links = true,
+        disable_nvimtree_bg = false,
+        color_overrides = {},
+        group_overrides = {
+            -- this supports the same val table as vim.api.nvim_set_hl
+            -- use colors from this colorscheme by requiring vscode.colors!
+            Cursor = { fg = C.vscDarkBlue, bg = C.vscLightGreen, bold = true },
+        },
+    }))
 
-        require('vscode').load()
+    require('vscode').load()
 
-        vim.cmd(self.mod_cmd)
-    end
+    vim.cmd(self.mod_cmd)
 end
 
+---@param O? table
+---@return table|VSCodeSubMod
 function VSCode.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = VSCode })
 end
+
+User:register_plugin('plugin.colorschemes.vscode')
 
 return VSCode
 

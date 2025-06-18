@@ -25,10 +25,11 @@ local OneDark = {
     mod_cmd = 'colorscheme onedark',
 }
 
-if exists('onedark') then
-    User:register_plugin('plugin.colorschemes.onedark')
-end
+function OneDark.valid() return exists('onedark') end
 
+---@param variant? string|OD.Variant
+---@param transparent? boolean
+---@param override? table|OD
 function OneDark:setup(variant, transparent, override)
     variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'deep'
     transparent = is_bool(transparent) and transparent or false
@@ -77,10 +78,14 @@ function OneDark:setup(variant, transparent, override)
     OD.load()
 end
 
+---@param O? table
+---@return table|ODSubMod
 function OneDark.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = OneDark })
 end
+
+User:register_plugin('plugin.colorschemes.onedark')
 
 return OneDark
 

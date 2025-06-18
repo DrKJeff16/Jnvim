@@ -124,7 +124,7 @@ local Editing = {
             }
 
             local Keymaps = require('config.keymaps')
-            Keymaps:setup(Keys)
+            Keymaps:setup({ n = Keys })
 
             -- Kill plugin-defined mappings
             vim.schedule(function()
@@ -138,16 +138,19 @@ local Editing = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                         ['<leader>is'] = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                         ['<leader>ihn'] = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                     },
                     n = {
@@ -155,28 +158,30 @@ local Editing = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                         ['<leader>is'] = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                         ['<leader>ihn'] = {
                             '<Nop>',
                             opts,
                             hidden = true,
+                            buffer = buf,
                         },
                     },
                 }
 
-                for f, key in next, i_del do
-                    map_dict(key, 'wk.register', false, f, buf)
-                end
+                map_dict(i_del, 'wk.register', true, nil, buf)
             end)
         end,
     },
     {
         'folke/zen-mode.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.zen_mode'),
         cond = not is_root(),
