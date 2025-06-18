@@ -18,15 +18,16 @@ local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
 local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
-_G.in_console = in_console
+_G.in_console = require('user_api.check').in_console
 
 ---@type fun(...)
 ---@diagnostic disable-next-line:unused-vararg
 function _G.print_inspect(...)
     local msg = ''
+    local insp = inspect or vim.inspect
 
     for _, v in next, arg do
-        msg = msg .. string.format('%s\n', inspect(v))
+        msg = msg .. string.format('%s\n', insp(v))
     end
 
     vim.print(msg)
@@ -36,12 +37,13 @@ end
 ---@diagnostic disable-next-line:unused-vararg
 function _G.notify_inspect(...)
     local msg = ''
+    local insp = inspect or vim.inspect
 
     for _, v in next, arg do
-        msg = msg .. string.format('%s\n', inspect(v))
+        msg = msg .. string.format('%s\n', insp(v))
     end
 
-    notify(msg, 'info', {
+    require('user_api.util.notify').notify(msg, 'info', {
         title = 'Message',
         hide_from_history = true,
         animate = true,
