@@ -20,6 +20,8 @@ local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 _G.in_console = require('user_api.check').in_console
 
+local curr_buf = vim.api.nvim_get_current_buf
+
 ---@type fun(...)
 ---@diagnostic disable-next-line:unused-vararg
 function _G.print_inspect(...)
@@ -128,7 +130,6 @@ Keymaps:setup({
         ['<leader>fii'] = {
             function()
                 local opt_get = vim.api.nvim_get_option_value
-                local curr_buf = vim.api.nvim_get_current_buf
                 local cursor_set = vim.api.nvim_win_set_cursor
                 local cursor_get = vim.api.nvim_win_get_cursor
 
@@ -178,8 +179,22 @@ Distro:setup()
 Commands:setup()
 
 -- Mappings related specifically to `user_api`
-User:setup_keys()
-Commands:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
-Opts:setup_keys()
+User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
+
+vim.schedule(function()
+    local opt_set = vim.api.nvim_set_option_value
+
+    vim.cmd('noh') -- HACK: Disable highlights when reloading
+
+    local DISABLE_ON = { 'lazy', 'notify', 'help' }
+
+    local curr_ft = Util.ft_get(curr_buf())
+
+    --- HACK: In case we're on specific buffer filetypes
+    if vim.tbl_contains(DISABLE_ON, curr_ft) then
+        opt_set('number', false, { scope = 'local' })
+        opt_set('signcolumn', 'no', { scope = 'local' })
+    end
+end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -35,9 +35,7 @@ function Util:opt_get(s, bufnr)
     local Value = require('user_api.check.value')
 
     local is_int = Value.is_int
-    local is_tbl = Value.is_tbl
-    local is_str = Value.is_str
-    local empty = Value.empty
+    local type_not_empty = Value.type_not_empty
     local single_type_tbl = Value.single_type_tbl
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
@@ -45,11 +43,11 @@ function Util:opt_get(s, bufnr)
     ---@type table<string, any>|table
     local res = {}
 
-    if is_str(s) and not empty(s) then
+    if type_not_empty('string', s) then
         res[s] = optget(s, { buf = bufnr })
     end
 
-    if is_tbl(s) and not empty(s) and single_type_tbl('string', s) then
+    if type_not_empty('table', s) and single_type_tbl('string', s) then
         for _, opt in next, s do
             res[opt] = self:opt_get(opt, bufnr)
         end
@@ -62,9 +60,7 @@ end
 ---@param val any
 ---@param bufnr? integer
 function Util.opt_set(s, val, bufnr)
-    local Value = require('user_api.check.value')
-
-    local is_int = Value.is_int
+    local is_int = require('user_api.check.value').is_int
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
@@ -78,24 +74,23 @@ end
 function Util.mv_tbl_values(T, steps, direction)
     local Value = require('user_api.check.value')
 
-    local is_tbl = Value.is_tbl
-    local is_str = Value.is_str
     local is_int = Value.is_int
-    local empty = Value.empty
+    local type_not_empty = Value.type_not_empty
     local notify = Util.notify.notify
 
-    if not is_tbl(T) then
-        notify("Input isn't a table", ERROR, {
+    if not type_not_empty('table', T) then
+        notify("Input isn't a table, or it is empty", ERROR, {
             title = '(user_api.util.mv_tbl_values)',
+            animate = true,
+            hide_from_history = false,
+            timeout = 2500,
         })
     end
 
-    if empty(T) then
-        return T
-    end
-
     steps = (is_int(steps) and steps > 0) and steps or 1
-    direction = (is_str(direction) and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
+    direction = (type_not_empty('string', direction) and in_tbl({ 'l', 'r' }, direction))
+            and direction
+        or 'r'
 
     ---@type DirectionFuns
     local direction_funcs = {
@@ -146,8 +141,10 @@ function Util.mv_tbl_values(T, steps, direction)
     ---@type table<string|integer, any>
     local res = T
 
+    local func = direction_funcs[direction]
+
     while steps > 0 do
-        res = direction_funcs[direction](res)
+        res = func(res)
         steps = steps - 1
     end
 
@@ -160,14 +157,14 @@ end
 function Util.xor(x, y)
     local Value = require('user_api.check.value')
 
-    local notify = Util.notify.notify
     local is_bool = Value.is_bool
 
     if not is_bool({ x, y }, true) then
-        notify('An argument is not of boolean type', 'error', {
+        Util.notify.notify('An argument is not of boolean type', 'error', {
             hide_from_history = false,
-            timeout = 850,
+            timeout = 2250,
             title = '(user_api.util.xor)',
+            animate = true,
         })
         return false
     end
@@ -181,20 +178,15 @@ end
 function Util.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
-    local is_tbl = Value.is_tbl
     local is_str = Value.is_str
-    local empty = Value.empty
     local field = Value.fields
+    local type_not_empty = Value.type_not_empty
 
-    if not is_tbl(T) then
+    if not type_not_empty('table', T) then
         error('(user_api.util.strip_fields): Argument is not a table', ERROR)
     end
 
-    if empty(T) then
-        return T
-    end
-
-    if not (is_str(fields) or is_tbl(fields)) or empty(fields) then
+    if not (type_not_empty('string', fields) or type_not_empty('table', fields)) then
         return T
     end
 
@@ -211,11 +203,13 @@ function Util.strip_fields(T, fields)
                 res[k] = v
             end
         end
-    else
-        for k, v in next, T do
-            if not in_tbl(fields, k) then
-                res[k] = v
-            end
+
+        return res
+    end
+
+    for k, v in next, T do
+        if not in_tbl(fields, k) then
+            res[k] = v
         end
     end
 
@@ -229,19 +223,16 @@ end
 function Util.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
-    local is_tbl = Value.is_tbl
+    local type_not_empty = Value.type_not_empty
     local is_int = Value.is_int
-    local empty = Value.empty
     local notify = Util.notify.notify
 
-    if not is_tbl({ T, values }, true) then
+    if not (type_not_empty('table', T) or type_not_empty('table', values)) then
         notify('Not a table', ERROR, {
             title = '(user_api.util.strip_values)',
-        })
-    end
-    if empty(values) then
-        notify('No values given', ERROR, {
-            title = '(user_api.util.strip_values)',
+            animate = true,
+            hide_from_history = false,
+            timeout = 1750,
         })
     end
 
@@ -289,9 +280,7 @@ end
 ---@param bufnr? integer
 ---@return string
 function Util.bt_get(bufnr)
-    local Value = require('user_api.check.value')
-
-    local is_int = Value.is_int
+    local is_int = require('user_api.check.value').is_int
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
@@ -301,9 +290,7 @@ end
 ---@param bufnr? integer
 ---@return string
 function Util.ft_get(bufnr)
-    local Value = require('user_api.check.value')
-
-    local is_int = Value.is_int
+    local is_int = require('user_api.check.value').is_int
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
@@ -335,7 +322,7 @@ end
 function Util:assoc()
     local au_repeated_events = self.au.au_repeated_events
 
-    local group = vim.api.nvim_create_augroup('UserAssocs', { clear = true })
+    local group = vim.api.nvim_create_augroup('UserAssocs', { clear = false })
 
     ---@type AuRepeatEvents[]
     local AUS = {
@@ -348,38 +335,21 @@ function Util:assoc()
             },
         },
         {
-            events = { 'BufRead', 'WinEnter', 'BufReadPost', 'TabEnter' },
+            events = { 'BufEnter', 'WinEnter', 'FileType' },
             opts_tbl = {
                 {
-                    pattern = '*.txt',
                     group = group,
                     callback = function()
-                        if
-                            not in_tbl({
-                                self.ft_get(curr_buf()),
-                                self.bt_get(curr_buf()),
-                            }, 'help')
-                        then
+                        local bufnr = curr_buf()
+                        if not (self.ft_get(bufnr) == 'help' and self.bt_get(bufnr) == 'help') then
                             return
                         end
 
-                        vim.cmd.wincmd('=')
-                    end,
-                },
-            },
-        },
-        {
-            events = { 'FileType', 'BufEnter' },
-            opts_tbl = {
-                {
-                    pattern = 'help',
-                    group = group,
-                    callback = function()
-                        if self.bt_get(curr_buf()) ~= 'help' then
-                            return
-                        end
-
-                        vim.schedule(function() vim.cmd.wincmd('=') end)
+                        vim.schedule(function()
+                            vim.api.nvim_set_option_value('signcolumn', 'no', { scope = 'local' })
+                            vim.cmd.wincmd('=')
+                            vim.cmd.noh()
+                        end)
                     end,
                 },
                 {
@@ -406,48 +376,47 @@ function Util:assoc()
                     pattern = 'lua',
                     group = group,
                     callback = function()
+                        local executable = require('user_api.check.exists').executable
                         local buf = curr_buf()
 
                         -- Make sure the buffer is modifiable
-                        if not optget('modifiable', { buf = buf }) then
+                        if not optget('modifiable', { buf = buf }) or not executable('stylua') then
+                            self.notify.notify('No stylua???')
                             return
                         end
 
-                        if require('user_api.check.exists').executable('stylua') then
-                            local map_dict = require('user_api.maps').map_dict
-                            local desc = require('user_api.maps.kmap').desc
+                        local map_dict = require('user_api.maps').map_dict
+                        local desc = require('user_api.maps.kmap').desc
 
-                            map_dict({
-                                ['<leader><C-l>'] = {
-                                    ':silent !stylua %<CR>',
-                                    desc('Format With `stylua`', true, buf),
-                                },
-                            }, 'wk.register', false, 'n', buf)
-                        end
+                        map_dict({
+                            ['<leader><C-l>'] = {
+                                ':silent !stylua %<CR>',
+                                desc('Format With `stylua`', true, buf),
+                            },
+                        }, 'wk.register', false, 'n', buf)
                     end,
                 },
                 {
                     pattern = 'python',
                     group = group,
                     callback = function()
+                        local executable = require('user_api.check.exists').executable
                         local buf = curr_buf()
 
                         -- Make sure the buffer is modifiable
-                        if not optget('modifiable', { buf = buf }) then
+                        if not (optget('modifiable', { buf = buf }) and executable('isort')) then
                             return
                         end
 
-                        if require('user_api.check.exists').executable('isort') then
-                            local map_dict = require('user_api.maps').map_dict
-                            local desc = require('user_api.maps.kmap').desc
+                        local map_dict = require('user_api.maps').map_dict
+                        local desc = require('user_api.maps.kmap').desc
 
-                            map_dict({
-                                ['<leader><C-l>'] = {
-                                    ':silent !isort %<CR>',
-                                    desc('Format With `isort`', true, buf),
-                                },
-                            }, 'wk.register', false, 'n', buf)
-                        end
+                        map_dict({
+                            ['<leader><C-l>'] = {
+                                ':silent !isort %<CR>',
+                                desc('Format With `isort`', true, buf),
+                            },
+                        }, 'wk.register', false, 'n', buf)
                     end,
                 },
             },
@@ -490,60 +459,49 @@ function Util.displace_letter(c, direction, cycle)
         return 'a'
     end
 
-    local lower = vim.deepcopy(A.lower_map)
-    local upper = vim.deepcopy(A.upper_map)
+    local LOWER = vim.deepcopy(A.lower_map)
+    local UPPER = vim.deepcopy(A.upper_map)
 
-    ---@diagnostic disable:need-check-nil
-    if direction == 'prev' and fields(c, lower) then
-        return mv(lower, 1, 'r')[c]
-    elseif direction == 'next' and fields(c, lower) then
-        return mv(lower, 1, 'l')[c]
-    elseif direction == 'prev' and fields(c, upper) then
-        return mv(upper, 1, 'r')[c]
-    elseif direction == 'next' and fields(c, upper) then
-        return mv(upper, 1, 'l')[c]
+    ---@type string
+    local res = ''
+
+    if direction == 'prev' and fields(c, LOWER) then
+        res = mv(LOWER, 1, 'r')[c]
+    elseif direction == 'next' and fields(c, LOWER) then
+        res = mv(LOWER, 1, 'l')[c]
+    elseif direction == 'prev' and fields(c, UPPER) then
+        res = mv(UPPER, 1, 'r')[c]
+    elseif direction == 'next' and fields(c, UPPER) then
+        res = mv(UPPER, 1, 'l')[c]
     end
-    ---@diagnostic enable:need-check-nil
 
-    error('(user_api.util.displace_letter): Invalid argument `' .. c .. '`', ERROR)
+    assert(res ~= '', string.format('(user_api.util.displace_letter): Invalid argument `%s`\n', c))
+
+    return res
 end
 
 ---@param data string|table
----@return string|table res
+---@return string|table
 function Util.discard_dups(data)
     local Value = require('user_api.check.value')
 
-    local is_tbl = Value.is_tbl
     local is_str = Value.is_str
-    local empty = Value.empty
+    local type_not_empty = Value.type_not_empty
     local notify = Util.notify.notify
+
+    if not (type_not_empty('string', data) or type_not_empty('table', data)) then
+        notify('Input is not valid!', 'error', {
+            animate = true,
+            hide_from_history = false,
+            timeout = 2750,
+            title = '(user_api.util.discard_dups)',
+        })
+
+        return data
+    end
 
     ---@type string|table
     local res
-
-    if not (is_str(data) or is_tbl(data)) then
-        notify('Input is neither a string nor a table', 'error', {
-            hide_from_history = false,
-            timeout = 750,
-            title = '(user_api.util.discard_dups)',
-        })
-
-        res = data
-
-        return res
-    end
-
-    if empty(data) then
-        notify('Input is empty', 'error', {
-            hide_from_history = false,
-            timeout = 750,
-            title = '(user_api.util.discard_dups)',
-        })
-
-        res = data
-
-        return res
-    end
 
     if is_str(data) then
         res = data:sub(1, 1)
@@ -561,6 +519,7 @@ function Util.discard_dups(data)
         return res
     end
 
+    ---@type table
     res = {}
 
     for k, v in next, data do
@@ -570,6 +529,15 @@ function Util.discard_dups(data)
     end
 
     return res
+end
+
+---@param O? table
+---@return table|User.Util
+function Util.new(O)
+    local is_tbl = require('user_api.check.value').is_tbl
+    O = is_tbl(O) and O or {}
+
+    return setmetatable(O, { __index = Util })
 end
 
 return Util

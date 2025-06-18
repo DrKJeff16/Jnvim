@@ -20,10 +20,9 @@ Archlinux.rtpaths = {
 ---@param self User.Distro.Archlinux
 ---@return boolean
 function Archlinux:validate()
-    local Value = require('user_api.check.value')
+    local type_not_empty = require('user_api.check.value').type_not_empty
 
-    local empty = Value.empty
-
+    ---@type string[]|table
     local new_rtpaths = {}
 
     for _, p in next, self.rtpaths do
@@ -32,11 +31,11 @@ function Archlinux:validate()
         end
     end
 
-    if empty(new_rtpaths) then
+    if not type_not_empty('table', new_rtpaths) then
         return false
     end
 
-    self.rtpaths = new_rtpaths
+    self.rtpaths = vim.tbl_deep_extend('force', {}, new_rtpaths)
     return true
 end
 
@@ -49,7 +48,7 @@ function Archlinux:setup()
     local Util = require('user_api.util')
 
     local is_dir = Check.exists.vim_isdir
-    local empty = Check.value.empty
+    local type_not_empty = Check.value.type_not_empty
     local strip_values = Util.strip_values
 
     ---@type table
@@ -62,16 +61,18 @@ function Archlinux:setup()
         end
     end
 
-    if not empty(self.rtpaths) then
-        for _, path in next, self.rtpaths do
-            vim.opt.rtp:append(path)
-        end
+    if not type_not_empty('table', self.rtpaths) then
+        error('(user_api.distro.archlinux:setup()): Runtimepaths are empty or not a table')
+    end
+
+    for _, path in next, self.rtpaths do
+        vim.opt.rtp:append(path)
     end
 
     ---@diagnostic disable-next-line
-    pcall(vim.cmd, 'runtime! archlinux.vim')
+    local ok, _ = pcall(vim.cmd, 'runtime! archlinux.vim')
 
-    vim.schedule(function() vim.api.nvim_set_option_value('wrap', false, { scope = 'global' }) end)
+    assert(ok, 'BAD SETUP FOR Archlinux!')
 end
 
 ---@param O? table

@@ -101,7 +101,8 @@
 ---@field opt_set fun(s: string, val: any, bufnr: integer?)
 ---@field assoc fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
----@field mv_tbl_values? fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
----@field discard_dups fun(data: string|table): (res: string|table)
+---@field mv_tbl_values fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
+---@field discard_dups fun(data: string|table): (string|table)
+---@field new fun(O: table?): table|User.Util
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

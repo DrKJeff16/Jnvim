@@ -18,7 +18,7 @@ error('`user_apu.types.user.user` is not to be sourced!', vim.log.levels.ERROR)
 ---@field util User.Util
 ---@field registered_plugins string[]
 ---@field register_plugin fun(self: UserAPI, pathstr: string, index: integer?)
----@field reload_plugins fun(self: UserAPI): (failed: string[]|nil)
+---@field reload_plugins fun(self: UserAPI): (failed: string[]|table)
 ---@field setup_keys fun(self: UserAPI)
 ---@field new fun(O: table?): UserAPI|table
 ---@field print_loaded_plugins fun(self: UserAPI)

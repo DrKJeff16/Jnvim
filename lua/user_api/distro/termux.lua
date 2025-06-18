@@ -5,6 +5,8 @@
 
 ---@module 'user_api.types.user.distro'
 
+local is_dir = require('user_api.check.exists').vim_isdir
+
 local environ = vim.fn.environ
 
 ---@type User.Distro.Termux
@@ -15,12 +17,12 @@ Termux.PREFIX = vim.fn.has_key(environ(), 'PREFIX') and environ()['PREFIX'] or '
 _G.PREFIX = Termux.PREFIX
 
 Termux.rtpaths = {
-    PREFIX .. '/local/share/nvim/runtime',
-    PREFIX .. '/share/nvim/runtime',
-    PREFIX .. '/local/share/vim/vimfiles',
-    PREFIX .. '/local/share/vim/vimfiles/after',
-    PREFIX .. '/share/vim/vimfiles',
-    PREFIX .. '/share/vim/vimfiles/after',
+    string.format('%s/local/share/nvim/runtime', PREFIX),
+    string.format('%s/share/nvim/runtime', PREFIX),
+    string.format('%s/local/share/vim/vimfiles', PREFIX),
+    string.format('%s/local/share/vim/vimfiles/after', PREFIX),
+    string.format('%s/share/vim/vimfiles', PREFIX),
+    string.format('%s/share/vim/vimfiles/after', PREFIX),
 }
 
 ---@param self User.Distro.Termux
@@ -28,15 +30,16 @@ Termux.rtpaths = {
 function Termux:validate()
     local empty = require('user_api.check.value').empty
 
-    if self.PREFIX == '' then
+    if self.PREFIX == '' or not is_dir(self.PREFIX) then
         return false
     end
 
+    ---@type string[]|table
     local new_rtpaths = {}
 
-    for _, p in next, self.rtpaths do
-        if vim.fn.isdirectory(p) then
-            table.insert(new_rtpaths, p)
+    for _, path in next, self.rtpaths do
+        if is_dir(path) then
+            table.insert(new_rtpaths, path)
         end
     end
 
@@ -44,7 +47,7 @@ function Termux:validate()
         return false
     end
 
-    self.rtpaths = new_rtpaths
+    self.rtpaths = vim.tbl_deep_extend('force', {}, new_rtpaths)
     return true
 end
 

@@ -42,13 +42,13 @@ function User:register_plugin(pathstr, index)
 
     local notify = self.util.notify.notify
     local is_nil = Value.is_nil
-    local is_str = Value.is_str
     local is_int = Value.is_int
-    local empty = Value.empty
+    local type_not_empty = Value.type_not_empty
     local tbl_contains = vim.tbl_contains
 
     index = (is_int(index) and index >= 1 and index <= #self.registered_plugins) and index or 0
-    if not is_str(pathstr) or empty(pathstr) then
+
+    if not type_not_empty('string', pathstr) then
         error('(user_api:register_plugin): Plugin must be a non-empty string', ERROR)
     end
 
@@ -108,9 +108,8 @@ function User:register_plugin(pathstr, index)
 end
 
 ---@param self UserAPI
----@return string[]|nil
+---@return string[]|table failed
 function User:reload_plugins()
-    local empty = self.check.value.empty
     local exists = self.check.exists.module
 
     ---@type string[]
@@ -126,17 +125,14 @@ function User:reload_plugins()
         ::continue::
     end
 
-    return empty(failed) and nil or failed
+    return failed
 end
 
 ---@param self UserAPI
 function User:print_loaded_plugins()
     local notify = self.util.notify.notify
-    local empty = self.check.value.empty
 
-    local msg = inspect(self.registered_plugins)
-
-    notify(msg, 'info', {
+    notify(inspect(self.registered_plugins), 'info', {
         animate = true,
         hide_from_history = true,
         timeout = 2250,
@@ -146,44 +142,42 @@ end
 
 ---@param self UserAPI
 function User:setup_keys()
-    local wk_avail = self.maps.wk.available
     local desc = self.maps.kmap.desc
-    local map_dict = self.maps.map_dict
-    local is_nil = self.check.value.is_nil
     local notify = self.util.notify.notify
     local insp = inspect or vim.inspect
+    local type_not_empty = self.check.value.type_not_empty
 
-    ---@type RegKeysNamed
-    local groups = {
+    ---@type AllMaps
+    local Keys = {
         ['<leader>U'] = { group = '+User API' },
         ['<leader>UP'] = { group = '+Plugins' },
-    }
 
-    ---@type RegKeys|KeyMapDict
-    local maps = {
         ['<leader>UPr'] = {
             function()
-                notify('Reloading...', 'info', {
+                notify('Reloading...', 'debug', {
                     hide_from_history = true,
                     title = 'User API',
-                    timeout = 400,
+                    timeout = 1000,
+                    animate = true,
                 })
                 local res = self:reload_plugins()
 
-                if not is_nil(res) then
+                if type_not_empty('table', res) then
                     notify(insp(res), 'error', {
                         hide_from_history = false,
-                        timeout = 1000,
-                        title = 'User API [ERROR]',
+                        timeout = 2250,
+                        title = '[User API]: PLUGINS FAILED TO RELOAD',
                         animate = true,
                     })
+
                     return
                 end
 
                 notify('Success!', 'info', {
-                    hide_from_history = true,
-                    timeout = 200,
-                    title = 'User API',
+                    hide_from_history = false,
+                    timeout = 1500,
+                    title = '[User API]: PLUGINS SUCCESSFULLY RELOADED',
+                    animate = true,
                 })
             end,
             desc('Reload All Plugins'),
@@ -194,12 +188,12 @@ function User:setup_keys()
         },
     }
 
-    if wk_avail() then
-        map_dict(groups, 'wk.register', false, 'n')
-    end
-    map_dict(maps, 'wk.register', false, 'n')
+    local Keymaps = require('config.keymaps')
+    Keymaps:setup({ n = Keys })
 
     self.update:setup_maps()
+    self.commands:setup_keys()
+    self.opts:setup_keys()
 end
 
 ---@param O? table
