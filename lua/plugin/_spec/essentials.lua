@@ -47,6 +47,7 @@ local Essentials = {
         lazy = false,
         version = false,
         config = source('plugin.mini'),
+        cond = vim_has('nvim-0.9'),
     },
     {
         'tiagovla/scope.nvim',

@@ -11,6 +11,11 @@ local in_console = Check.in_console
 
 ---@type (LazySpec)[]
 local UI = {
+    {
+        'MunifTanjim/nui.nvim',
+        lazy = true,
+        version = false,
+    },
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
