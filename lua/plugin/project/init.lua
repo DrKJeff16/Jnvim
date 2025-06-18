@@ -5,13 +5,12 @@ local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
+local empty = Check.value.empty
 local desc = User.maps.kmap.desc
 
 if not exists('project_nvim') then
     return
 end
-
-User:register_plugin('plugin.project')
 
 local Project = require('project_nvim')
 
@@ -87,11 +86,17 @@ local Keys = {
 
     ['<leader>pr'] = {
         function()
-            local recent_proj = require('project_nvim').get_recent_projects
+            local Proj = require('project_nvim')
+
+            local recent_proj = Proj.get_recent_projects()
             local notify = require('user_api.util.notify').notify
             local msg = ''
 
-            for _, v in next, recent_proj() do
+            if empty(recent_proj) then
+                error('NO PROJECTS')
+            end
+
+            for _, v in next, recent_proj do
                 msg = msg .. '- ' .. v .. newline or string.char(10)
             end
 
@@ -107,5 +112,7 @@ local Keys = {
 }
 
 Keymaps:setup({ n = Keys })
+
+User:register_plugin('plugin.project')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
