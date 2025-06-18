@@ -9,8 +9,6 @@ if not exists('rainbow-delimiters') then
     return
 end
 
-User:register_plugin('plugin.rainbow_delimiters')
-
 local RD = require('rainbow-delimiters')
 
 ---@type rainbow_delimiters.config.queries
@@ -23,12 +21,19 @@ local QRY = {
     lua = 'rainbow-blocks',
     python = 'rainbow-blocks',
     sh = 'rainbow-blocks',
+    yaml = 'rainbow-blocks',
 }
 
 ---@param s 'local'|'global'|'noop'
 ---@return rainbow_delimiters.strategy
 local function strat(s)
-    s = (is_str(s) and vim.tbl_contains({ 'global', 'local', 'noop' }, s)) and s or 'global'
+    local VALID_ARGS = {
+        'global',
+        'local',
+        'noop',
+    }
+
+    s = (is_str(s) and vim.tbl_contains(VALID_ARGS, s)) and s or 'global'
 
     ---@diagnostic disable-next-line
     return RD.strategy[s]
@@ -39,6 +44,7 @@ require('rainbow-delimiters.setup').setup({
         [''] = strat('global'),
         commonlisp = strat('local'),
         html = strat('local'),
+        lua = strat('global'),
         markdown = strat('local'),
         vim = strat('local'),
     },
@@ -68,5 +74,7 @@ local HL = {
 }
 
 vim.schedule(function() hl_from_dict(HL) end)
+
+User:register_plugin('plugin.rainbow_delimiters')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
