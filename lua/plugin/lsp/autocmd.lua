@@ -26,7 +26,12 @@ local function print_workspace_folders()
         msg = msg .. '\n - ' .. v
     end
 
-    notify(msg, vim.log.levels.INFO)
+    notify(msg, 'debug', {
+        title = 'LSP',
+        animate = true,
+        hide_from_history = true,
+        timeout = 5000,
+    })
 end
 
 ---@type Lsp.SubMods.Autocmd
@@ -110,24 +115,20 @@ Autocmd.autocommands = {
 
                     ['<leader>lSR'] = {
                         function()
-                            vim.lsp.stop_client(client.id, true)
+                            local ClientCfg = vim.deepcopy(client.config)
 
-                            vim.schedule(function()
-                                local ClientCfg = vim.deepcopy(client.config)
-                                vim.lsp.start(ClientCfg, { bufnr = args.buf })
-                            end)
+                            vim.lsp.stop_client(client.id, true)
+                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
                         end,
                         desc('Force Server Restart', true, args.buf),
                         buffer = args.buf,
                     },
                     ['<leader>lSr'] = {
                         function()
-                            vim.lsp.stop_client(client.id, false)
+                            local ClientCfg = vim.deepcopy(client.config)
 
-                            vim.schedule(function()
-                                local ClientCfg = vim.deepcopy(client.config)
-                                vim.lsp.start(ClientCfg, { bufnr = args.buf })
-                            end)
+                            vim.lsp.stop_client(client.id, false)
+                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
                         end,
                         desc('Server Restart', true, args.buf),
                         buffer = args.buf,
@@ -163,9 +164,12 @@ Autocmd.autocommands = {
 }
 
 ---@param self Lsp.SubMods.Autocmd
----@param T? AuRepeat
-function Autocmd:setup(T)
-    T = is_tbl(T) and T or {}
+---@param override? AuRepeat
+function Autocmd:setup(override)
+    override = is_tbl(override) and override or {}
+
+    self.autocommands = vim.tbl_deep_extend('keep', override, vim.deepcopy(self.autocommands))
+
     au(self.autocommands)
 end
 

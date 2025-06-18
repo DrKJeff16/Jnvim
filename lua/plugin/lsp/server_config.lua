@@ -14,71 +14,6 @@ local curr_win = vim.api.nvim_get_current_win
 
 User:register_plugin('plugin.lsp.server_config')
 
-local function symbol_info()
-    local lsp = vim.lsp
-
-    local bufnr = curr_buf()
-    local clangd_client = lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
-
-    if is_nil(clangd_client) or not clangd_client.supports_method('textDocument/symbolInfo') then
-        return notify('Clangd client not found', vim.log.levels.ERROR)
-    end
-
-    local win = curr_win()
-    local params = lsp.util.make_position_params(win, clangd_client.offset_encoding)
-
-    clangd_client.request('textDocument/symbolInfo', params, function(err, res)
-        if err or #res == 0 then
-            -- Clangd always returns an error, there is not reason to parse it
-            return
-        end
-
-        ---@type string
-        local container = string.format('container: %s', res[1].containerName)
-
-        ---@type string
-        local name = string.format('name: %s', res[1].name)
-
-        lsp.util.open_floating_preview({ name, container }, '', {
-            height = 2,
-            width = math.max(string.len(name), string.len(container)),
-            focusable = false,
-            focus = false,
-            border = 'single',
-            title = 'Symbol Info',
-        })
-    end, bufnr)
-end
-
----@param bufnr integer
-local function switch_source_header(bufnr)
-    local lsp = vim.lsp
-
-    local method_name = 'textDocument/switchSourceHeader'
-    local client = lsp.get_clients({ bufnr = bufnr, name = 'clangd' })[1]
-
-    if not client then
-        local msg = 'method %s is not supported by any servers active on the current buffer'
-
-        return notify(msg:format(method_name))
-    end
-
-    local params = lsp.util.make_text_document_params(bufnr)
-
-    client.request(method_name, params, function(err, result)
-        if err then
-            error(tostring(err))
-        end
-
-        if not result then
-            notify('corresponding file cannot be determined')
-            return
-        end
-
-        vim.cmd.edit(uri_fname(result))
-    end, bufnr)
-end
-
 ---@type Lsp.Server.Clients
 local Clients = {}
 
@@ -323,27 +258,25 @@ Clients.clangd = {
         offsetEncoding = { 'utf-8', 'utf-16' },
 
         textDocument = {
-            completion = {
-                editsNearCursor = true,
-            },
+            completion = { editsNearCursor = true },
         },
     },
 
-    on_attach = function()
-        vim.api.nvim_buf_create_user_command(
-            0,
-            'LspClangdSwitchSourceHeader',
-            function() switch_source_header(0) end,
-            { desc = 'Switch between source/header' }
-        )
-
-        vim.api.nvim_buf_create_user_command(
-            0,
-            'LspClangdShowSymbolInfo',
-            function() symbol_info() end,
-            { desc = 'Show symbol info' }
-        )
-    end,
+    settings = {
+        clangd = {
+            checkUpdates = false,
+            detectExtensionConflicts = true,
+            enableCodeCompletion = true,
+            inactiveRegions = {
+                opacity = 0.90,
+                useBackgroundHighlight = false,
+            },
+            onConfigChanged = 'restart',
+            path = '/usr/bin/clangd',
+            restartAfterCrash = true,
+            serverCompletionRanking = true,
+        },
+    },
 }
 
 Clients.pylsp = {

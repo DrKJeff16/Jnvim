@@ -43,7 +43,7 @@
 ---@class Lsp.SubMods.Autocmd
 ---@field AUKeys AllModeMaps
 ---@field autocommands AuRepeat
----@field setup fun(self: Lsp.SubMods.Autocmd, T: AuRepeat?)
+---@field setup fun(self: Lsp.SubMods.Autocmd, override: AuRepeat?)
 ---@field new fun(O: table?): table|Lsp.SubMods.Autocmd
 
 ---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
