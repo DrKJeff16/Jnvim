@@ -379,7 +379,7 @@ function Util:assoc()
                             return
                         end
 
-                        vim.cmd.wincmd('=')
+                        vim.schedule(function() vim.cmd.wincmd('=') end)
                     end,
                 },
                 {
@@ -387,15 +387,14 @@ function Util:assoc()
                     group = group,
                     callback = function()
                         local buf_opts = {
-                            ts = 2,
-                            sts = 2,
-                            sw = 2,
-                            ai = true,
-                            si = true,
-                            et = true,
-                            ci = false,
-                            pi = false,
-                            rnu = false,
+                            tabstop = 2,
+                            softtabstop = 2,
+                            shiftwidth = 2,
+                            autoindent = true,
+                            smartindent = true,
+                            expandtab = true,
+                            copyindent = false,
+                            preserveindent = false,
                         }
 
                         for option, val in next, buf_opts do
