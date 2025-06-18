@@ -15,8 +15,6 @@ User:register_plugin('plugin.project')
 
 local Project = require('project_nvim')
 
-local recent_proj = Project.get_recent_projects
-
 Project.setup({
     -- Manual mode doesn't automatically change your root directory, so you have
     -- the option to manually do so using `:ProjectRoot` command
@@ -32,13 +30,11 @@ Project.setup({
     -- detection_methods
     patterns = {
         '.git',
-        '!.git/worktrees',
         '.github',
         '_darcs',
         '.hg',
         '.bzr',
         '.svn',
-        'Makefile',
         'package.json',
         'package.lock',
         'pyproject.toml',
@@ -78,7 +74,7 @@ Project.setup({
     -- * global (default)
     -- * tab
     -- * win
-    scope_chdir = 'tab',
+    scope_chdir = 'global',
 
     -- Path where project.nvim will store the project history for use in
     -- telescope
@@ -91,6 +87,7 @@ local Keys = {
 
     ['<leader>pr'] = {
         function()
+            local recent_proj = require('project_nvim').get_recent_projects
             local notify = require('user_api.util.notify').notify
             local msg = ''
 
