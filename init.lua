@@ -51,6 +51,7 @@ end
 
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
+    backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
     cmdwinheight = 10,
@@ -70,12 +71,14 @@ Opts:setup({ ---@see User.Opts.Spec For more info
         q = true,
         w = true,
     },
-    hlg = { 'en' }, -- `helplang`
+    hlg = {
+        'en',
+    }, -- `helplang`
     hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
     matchtime = 30,
-    menuitems = 40,
+    menuitems = 50,
     mouse = { a = false },
     nu = true, -- `number`
     pi = false, -- `preserveindent`
@@ -94,7 +97,8 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     sts = 4, -- `softtabstop`
     ts = 4, -- `tabstop`
     title = true,
-    wrap = true,
+    termguicolors = not in_console(),
+    wrap = Distro.termux:validate(),
 })
 
 Keymaps:set_leader('<Space>')
@@ -121,20 +125,22 @@ Keymaps:setup({
     n = {
         ['<leader>fii'] = {
             function()
-                local buf = curr_buf()
-
-                if not vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
-                    return
-                end
-
+                local opt_get = vim.api.nvim_get_option_value
+                local curr_buf = vim.api.nvim_get_current_buf
                 local cursor_set = vim.api.nvim_win_set_cursor
                 local cursor_get = vim.api.nvim_win_get_cursor
 
-                local win = curr_win()
+                assert(
+                    opt_get('modifiable', { buf = curr_buf() }),
+                    'Unable to indent. File is unmodifiable!'
+                )
+
+                local win = vim.api.nvim_get_current_win()
                 local saved_pos = cursor_get(win)
+
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
-                -- Wait for `feedkeys` to end, then reset to position
+                -- HACK: Wait for `feedkeys` to end, then reset to position
                 vim.schedule(function() cursor_set(win, saved_pos) end)
             end,
             desc('Indent Whole File'),
