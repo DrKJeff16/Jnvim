@@ -8,7 +8,6 @@ local exists = Check.exists.module
 if not exists('Comment') then
     return
 end
-User:register_plugin('plugin.Comment')
 
 local Comment = require('Comment')
 
@@ -31,6 +30,7 @@ local Opts = {
             vim.api.nvim_win_set_cursor(0, { r + 1, 0 })
         end
     end,
+
     ---Add a space b/w comment and the line
     padding = true,
     ---Whether the cursor should stay at its position
@@ -69,5 +69,7 @@ local Opts = {
 }
 
 Comment.setup(Opts)
+
+User:register_plugin('plugin.Comment')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
