@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local set_tgc = CfgUtil.set_tgc
@@ -34,7 +34,7 @@ local UI = {
     --- Tabline
     {
         'akinsho/bufferline.nvim',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         dependencies = {
             'nvim-web-devicons',
@@ -51,13 +51,11 @@ local UI = {
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.blank_line'),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.rainbow_delimiters'),
     },
@@ -65,7 +63,7 @@ local UI = {
     {
         'nvim-tree/nvim-tree.lua',
         main = 'nvim-tree',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -99,7 +97,6 @@ local UI = {
     },
     {
         'nvim-zh/colorful-winsep.nvim',
-        event = 'WinNew',
         version = false,
         config = source('plugin.colorful_winsep'),
         cond = not in_console(),
@@ -108,6 +105,7 @@ local UI = {
     {
         'brenoprata10/nvim-highlight-colors',
         main = 'nvim-highlight-colors',
+        event = 'VeryLazy',
         version = false,
         init = set_tgc,
         config = source('plugin.hicolors'),
@@ -115,7 +113,6 @@ local UI = {
     },
     {
         'akinsho/toggleterm.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.toggleterm'),
         cond = not in_console(),
@@ -123,6 +120,7 @@ local UI = {
     {
         'folke/noice.nvim',
         lazy = false,
+        priority = 1000,
         version = false,
         dependencies = {
             'MunifTanjim/nui.nvim',

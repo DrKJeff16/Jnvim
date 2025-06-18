@@ -1,3 +1,5 @@
+local Keymaps = require('config.keymaps')
+
 local User = require('user_api')
 local Check = User.check
 
@@ -7,8 +9,6 @@ local desc = User.maps.kmap.desc
 if not exists('nvim-highlight-colors') then
     return
 end
-
-User:register_plugin('plugin.hicolors')
 
 local HiColors = require('nvim-highlight-colors')
 
@@ -31,7 +31,7 @@ HiColors.setup({
     --- `eol` stands for `end of column` - Recommended to set `virtual_symbol_suffix = ''` when used.
     --- `eow` stands for `end of word` - Recommended to set `virtual_symbol_prefix = ' ' and virtual_symbol_suffix = ''` when used
     ---@type 'inline'|'eol'|'eow'
-    virtual_symbol_position = 'eow',
+    virtual_symbol_position = 'inline',
 
     ---Highlight hex colors, e.g. '#FFFFFF'
     enable_hex = true,
@@ -58,8 +58,8 @@ HiColors.setup({
     ---Label must be properly escaped with '%' to adhere to `string.gmatch`
     --- :help string.gmatch
     custom_colors = {
-        { label = '%-%-theme%-primary%-color', color = '#0f1219' },
-        { label = '%-%-theme%-secondary%-color', color = '#5a5d64' },
+        -- { label = '%-%-theme%-primary%-color', color = '#0f1219' },
+        -- { label = '%-%-theme%-secondary%-color', color = '#5a5d64' },
     },
 
     -- Exclude filetypes or buftypes from highlighting e.g. 'exclude_buftypes = {'text'}'
@@ -70,6 +70,7 @@ HiColors.setup({
         'NvimTree',
         'packer',
         'prompt',
+        'qf',
     },
     exclude_buftypes = {
         'terminal',
@@ -87,8 +88,8 @@ local Keys = {
     ['<leader>uC-'] = { HiColors.turnOff, desc('Turn Color Highlighting Off') },
 }
 
-local Keymaps = require('config.keymaps')
+Keymaps:setup({ n = Keys })
 
-Keymaps:setup({ n = Keys, v = Keys })
+User:register_plugin('plugin.hicolors')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

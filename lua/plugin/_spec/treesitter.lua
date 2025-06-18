@@ -12,7 +12,7 @@ local in_console = Check.in_console
 local TS = {
     {
         'nvim-treesitter/nvim-treesitter',
-        lazy = true,
+        lazy = false,
         build = ':TSUpdate',
         version = false,
         config = source('plugin.treesitter'),

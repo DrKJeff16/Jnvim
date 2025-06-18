@@ -9,109 +9,6 @@ local executable = Check.exists.executable
 
 ---@type (LazySpec)[]
 local Completion = {
-    --[[ {
-
-        'hrsh7th/vim-vsnip',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        gversion = false,
-    },
-    {
-        'onsails/lspkind.nvim',
-        lazy = true,
-        A
-        version = false,
-    },
-    {
-        'hrsh7th/vim-vsnip',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-    },
-    {
-        'onsails/lspkind.nvim',
-        lazy = true,
-        version = false,
-    },
-    {
-        'hrsh7th/nvim-cmp',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        dependencies = { 'vim-vsnip' },
-        init = function()
-            vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' }
-        end,
-        config = source('plugin.cmp'),
-    },
-    {
-        'hrsh7th/cmp-nvim-lsp',
-        version = false,
-        dependencies = { 'neovim/nvim-lspconfig', 'nvim-cmp' },
-    },
-    {
-        'hrsh7th/cmp-nvim-lsp-document-symbol',
-        version = false,
-        dependencies = { 'neovim/nvim-lspconfig', 'nvim-cmp' },
-    },
-    {
-        'hrsh7th/cmp-nvim-lsp-signature-help',
-        version = false,
-        dependencies = { 'neovim/nvim-lspconfig', 'nvim-cmp' },
-    },
-    {
-        'hrsh7th/cmp-buffer',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        dependencies = { 'nvim-cmp' },
-    },
-    {
-        'hrsh7th/cmp-path',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        dependencies = { 'nvim-cmp' },
-    },
-    {
-        'https://codeberg.org/FelipeLema/cmp-async-path',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        dependencies = { 'nvim-cmp' },
-    },
-    {
-        'petertriho/cmp-git',
-        event = { 'InsertEnter', 'CmdlineEnter' },
-        version = false,
-        dependencies = { 'nvim-cmp' },
-        cond = executable('git'),
-    },
-    {
-        'davidsierradz/cmp-conventionalcommits',
-        ft = 'gitcommit',
-        version = false,
-        dependencies = { 'nvim-cmp' },
-        cond = executable('git'),
-    },
-    {
-        'hrsh7th/cmp-cmdline',
-        event = 'CmdlineEnter',
-        version = false,
-        dependencies = { 'nvim-cmp' },
-    },
-    {
-        'paopaol/cmp-doxygen',
-        ft = 'doxygen',
-        version = false,
-        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects', 'nvim-cmp' },
-        cond = executable('doxygen'),
-    },
-    {
-        'vlime/vlime',
-        ft = 'lisp',
-        version = false,
-    },
-    {
-        'HiPhish/nvim-cmp-vlime',
-        ft = 'lisp',
-        version = false,
-        dependencies = { 'vlime', 'nvim-cmp' },
-    }, ]]
     {
         'saghen/blink.cmp',
         version = false,
@@ -129,11 +26,13 @@ local Completion = {
     {
         'L3MON4D3/LuaSnip',
         lazy = true,
+        version = false,
         build = executable('make') and 'make -j $(nproc) install_jsregexp' or false,
     },
     {
         'onsails/lspkind.nvim',
         lazy = true,
+        version = false,
     },
 }
 

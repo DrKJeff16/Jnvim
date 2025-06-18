@@ -17,7 +17,7 @@ local LSP = {
         lazy = false,
         version = false,
         config = source('plugin.lsp'),
-        enabled = vim_has('nvim-0.8'), --- Constraint specified in the repo
+        enabled = vim_has('nvim-0.10'), --- Constraint specified in the repo
     },
     {
         'b0o/SchemaStore',
@@ -41,11 +41,11 @@ local LSP = {
     },
     {
         'folke/neoconf.nvim',
+        lazy = false,
         version = false,
     },
     {
         'folke/trouble.nvim',
-        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
         cond = not in_console(),
@@ -59,19 +59,8 @@ local LSP = {
     },
     {
         'smjonas/inc-rename.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.lsp.inc_rename'),
-    },
-    {
-        'williamboman/mason-lspconfig.nvim',
-        lazy = false,
-        version = false,
-        dependencies = {
-            'williamboman/mason.nvim',
-            'neovim/nvim-lspconfig',
-        },
-        cond = not is_root(),
     },
 }
 

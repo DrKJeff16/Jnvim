@@ -79,7 +79,6 @@ local Essentials = {
     },
     {
         'lewis6991/hover.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.hover'),
     },
