@@ -73,6 +73,7 @@ function Update:setup_maps()
     Keymaps:setup({
         n = {
             ['<leader>U'] = { group = '+User API' },
+
             ['<leader>Uu'] = {
                 function() self:update() end,
                 desc('Update User Config'),
