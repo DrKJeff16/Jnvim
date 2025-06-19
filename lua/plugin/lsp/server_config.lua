@@ -5,13 +5,6 @@
 local User = require('user_api')
 local Check = User.check
 
-local is_nil = Check.value.is_nil
-
-local notify = User.util.notify.notify or vim.notify
-local uri_fname = vim.uri_to_fname
-local curr_buf = vim.api.nvim_get_current_buf
-local curr_win = vim.api.nvim_get_current_win
-
 User:register_plugin('plugin.lsp.server_config')
 
 ---@type Lsp.Server.Clients
@@ -20,7 +13,7 @@ local Clients = {}
 Clients.bashls = {
     cmd = { 'bash-language-server', 'start' },
     filetypes = { 'bash', 'sh' },
-    root_markers = { '.git' },
+    root_markers = { '.git', '.stylua.toml', 'stylua.toml' },
     settings = {
         bashIde = {
             backgroundAnalysisMaxFiles = 500,
@@ -59,7 +52,7 @@ Clients.lua_ls = {
             end
         end
 
-        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        client.config.settings.Lua = vim.tbl_deep_extend('keep', client.config.settings.Lua, {
             addonManager = { enable = true },
             codeLens = { enable = true },
             completion = {
@@ -75,7 +68,7 @@ Clients.lua_ls = {
                 workspaceWord = true,
             },
             diagnostics = {
-                disable = { 'inject-field' },
+                disable = { 'inject-field', 'missing-fields' },
                 enable = true,
                 globals = { 'vim' },
             },
@@ -91,7 +84,7 @@ Clients.lua_ls = {
             },
             hover = {
                 enable = true,
-                enumsLimit = 30,
+                enumsLimit = 50,
                 expandAlias = true,
                 previewFields = 50,
                 viewNumber = true,
@@ -112,8 +105,8 @@ Clients.lua_ls = {
                 weakUnionCheck = true,
             },
             window = {
-                progressBar = true,
-                statusBar = true,
+                progressBar = false,
+                statusBar = false,
             },
             runtime = {
                 fileEncoding = 'utf8',
@@ -125,6 +118,8 @@ Clients.lua_ls = {
                 -- Tell the language server how to find Lua modules same way as Neovim
                 -- (see `:h lua-module-load`)
                 path = {
+                    'init.lua',
+                    '?.lua',
                     'lua/?.lua',
                     'lua/?/init.lua',
                 },
@@ -169,11 +164,9 @@ Clients.lua_ls = {
                 workspaceWord = true,
             },
             diagnostics = {
-                disable = { 'inject-field' },
+                disable = { 'inject-field', 'missing-fields' },
                 enable = true,
-                globals = {
-                    'vim',
-                },
+                globals = { 'vim' },
             },
             format = { enable = true },
             hint = {
@@ -187,7 +180,7 @@ Clients.lua_ls = {
             },
             hover = {
                 enable = true,
-                enumsLimit = 30,
+                enumsLimit = 50,
                 expandAlias = true,
                 previewFields = 50,
                 viewNumber = true,
@@ -200,6 +193,8 @@ Clients.lua_ls = {
                 unicodeName = false,
                 version = 'LuaJIT',
                 path = {
+                    'init.lua',
+                    '?.lua',
                     'lua/?.lua',
                     'lua/?/init.lua',
                 },
@@ -218,8 +213,8 @@ Clients.lua_ls = {
                 weakUnionCheck = true,
             },
             window = {
-                progressBar = true,
-                statusBar = true,
+                progressBar = false,
+                statusBar = false,
             },
             workspace = {
                 checkThirdParty = false,
@@ -264,7 +259,7 @@ Clients.clangd = {
 
     settings = {
         clangd = {
-            checkUpdates = false,
+            checkUpdates = true,
             detectExtensionConflicts = true,
             enableCodeCompletion = true,
             inactiveRegions = {
@@ -288,16 +283,93 @@ Clients.pylsp = {
         'setup.cfg',
         'requirements.txt',
         'Pipfile',
+        'Pipfile.lock',
         '.git',
     },
 
     settings = {
         pylsp = {
+            configurationSources = { 'flake8' },
             plugins = {
+                autopep8 = { enabled = true },
+                flake8 = {
+                    enabled = true,
+                    executable = 'flake8',
+                    hangClosing = true,
+                    indentSize = 4,
+                    maxComplexity = 15,
+                    maxLineLength = 100,
+                    ignore = {
+                        'D400',
+                        'D401',
+                        'F401',
+                    },
+                },
+                pydocstyle = {
+                    enabled = true,
+                    convention = 'numpy',
+                    addIgnore = {
+                        'D400',
+                        'D401',
+                    },
+                    ignore = {
+                        'D400',
+                        'D401',
+                    },
+                },
+                pyflakes = { enabled = false },
+                pylint = { enabled = false },
+                jedi = {
+                    auto_import_modules = { 'sys', 'argparse', 'typing' },
+                },
+                jedi_completion = {
+                    enabled = true,
+                    eager = true,
+                    fuzzy = true,
+                    resolve_at_most = 30,
+
+                    cache_for = {
+                        'argparse',
+                        'numpy',
+                        'os',
+                        'sys',
+                        'tensorflow',
+                        'typing',
+                    },
+                },
+                jedi_definition = {
+                    enabled = true,
+                    follow_imports = true,
+                    follow_builtin_imports = true,
+                    follow_builtin_definitions = true,
+                },
+                jedi_hover = { enabled = true },
+                jedi_references = { enabled = true },
+                jedi_signature_help = { enabled = true },
+                jedi_symbols = {
+                    enabled = true,
+                    all_scopes = false,
+                    include_import_symbols = false,
+                },
                 pycodestyle = {
+                    enabled = false,
                     ignore = { 'W391' },
                     maxLineLength = 100,
                 },
+                preload = { enabled = false },
+                mccabe = { enabled = true, threshold = 15 },
+                rope_autoimport = {
+                    completions = { enabled = false },
+                },
+                rope_completion = {
+                    enabled = true,
+                    eager = true,
+                },
+                yapf = { enabled = false },
+            },
+
+            rope = {
+                ropeFolder = nil,
             },
         },
     },
