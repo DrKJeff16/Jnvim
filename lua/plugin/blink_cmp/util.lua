@@ -4,18 +4,14 @@
 
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local is_bool = Check.value.is_bool
 local empty = Check.value.empty
-local ft_get = Util.ft_get
-local au = Util.au.au_repeated_events
+local type_not_empty = Check.value.type_not_empty
 
 local in_tbl = vim.tbl_contains
-
-User:register_plugin('plugin.blink_cmp.util')
 
 ---@type BlinkCmp.Util
 local BUtil = {}
@@ -23,49 +19,32 @@ local BUtil = {}
 ---@type BlinkCmp.Util.Sources
 BUtil.Sources = {}
 
+---@type BlinkCmp.Util.Providers
+BUtil.Providers = {}
+
 BUtil.curr_ft = ''
 
 ---@param self BlinkCmp.Util
----@param no_snipps? boolean
----@param no_buf? boolean
-function BUtil:reset_sources(no_snipps, no_buf)
-    no_snipps = is_bool(no_snipps) and no_snipps or false
-    no_buf = is_bool(no_buf) and no_buf or false
+---@param snipps? boolean
+---@param buf? boolean
+function BUtil:reset_sources(snipps, buf)
+    snipps = is_bool(snipps) and snipps or false
+    buf = is_bool(buf) and buf or true
 
     self.Sources = {
         'lsp',
         'path',
     }
 
-    if not no_snipps then
+    if not snipps then
         table.insert(self.Sources, 'snippets')
     end
-    if not no_buf then
+    if not buf then
         table.insert(self.Sources, 'buffer')
     end
-end
 
----@param self BlinkCmp.Util
----@param no_snipps? boolean
----@param no_buf? boolean
----@return BlinkCmp.Util.Sources
-function BUtil:gen_sources(no_snipps, no_buf)
-    no_snipps = is_bool(no_snipps) and no_snipps or false
-    no_buf = is_bool(no_buf) and no_buf or false
-
-    local ft = ft_get()
-
-    if self.curr_ft ~= ft or empty(self.Sources) then
-        self:reset_sources(no_snipps, no_buf)
-        self.curr_ft = ft
-    end
-
-    if ft == 'lua' and exists('lazydev') then
-        if not in_tbl(self.Sources, 'lazydev') then
-            table.insert(self.Sources, 1, 'lazydev')
-        end
-
-        return self.Sources
+    if vim.bo.filetype == 'lua' then
+        table.insert(self.Sources, 1, 'lazydev')
     end
 
     local git_fts = {
@@ -75,19 +54,27 @@ function BUtil:gen_sources(no_snipps, no_buf)
         'gitrebase',
     }
 
-    if in_tbl(git_fts, ft) and not in_tbl(self.Sources, 'git') then
+    if in_tbl(git_fts, vim.bo.filetype) then
         table.insert(self.Sources, 1, 'git')
     end
 
-    if ft == 'gitcommit' and not in_tbl(self.Sources, 'conventional_commits') then
+    if vim.bo.filetype == 'gitcommit' then
         table.insert(self.Sources, 1, 'conventional_commits')
     end
+end
+
+---@param self BlinkCmp.Util
+---@param snipps? boolean
+---@param buf? boolean
+---@return BlinkCmp.Util.Sources
+function BUtil:gen_sources(snipps, buf)
+    snipps = is_bool(snipps) and snipps or false
+    buf = is_bool(buf) and buf or true
+
+    self:reset_sources(snipps, buf)
 
     return self.Sources
 end
-
----@type BlinkCmp.Util.Providers
-BUtil.Providers = {}
 
 ---@param self BlinkCmp.Util
 function BUtil:reset_providers()
@@ -96,7 +83,7 @@ function BUtil:reset_providers()
     self.Providers.buffer = {
         score_offset = -100,
 
-        max_items = 15,
+        max_items = 10,
 
         -- keep case of first char
         ---@param a blink.cmp.Context
@@ -143,8 +130,9 @@ function BUtil:reset_providers()
     }
 
     self.Providers.snippets = {
+        name = 'Snip',
         score_offset = -70,
-        max_items = 10,
+        max_items = 7,
         should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
     }
 
@@ -161,19 +149,12 @@ function BUtil:reset_providers()
             )
         end,
     }
-end
-
----@param self BlinkCmp.Util
----@param P? BlinkCmp.Util.Providers
----@return BlinkCmp.Util.Providers
-function BUtil:gen_providers(P)
-    self:reset_providers()
 
     if exists('blink-cmp-git') then
         self.Providers.git = {
             module = 'blink-cmp-git',
             name = 'Git',
-            score_offset = 0,
+            score_offset = 40,
             enabled = function()
                 local git_fts = {
                     'git',
@@ -182,15 +163,16 @@ function BUtil:gen_providers(P)
                     'gitrebase',
                 }
 
-                return in_tbl(git_fts, ft_get())
+                return in_tbl(git_fts, vim.bo.filetype)
             end,
         }
     end
 
     if exists('blink-cmp-conventional-commits') then
         self.Providers.conventional_commits = {
-            name = 'Conventional Commits',
+            name = 'CC',
             module = 'blink-cmp-conventional-commits',
+            score_offset = 60,
             enabled = function() return vim.bo.filetype == 'gitcommit' end,
 
             ---@module 'blink-cmp-conventional-commits'
@@ -203,16 +185,23 @@ function BUtil:gen_providers(P)
         self.Providers.lazydev = {
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
-            score_offset = 10,
+            score_offset = 100,
             enabled = function() return vim.bo.filetype == 'lua' end,
         }
     end
+end
 
-    if not is_tbl(P) or empty(P) then
-        return self.Providers
+---@param self BlinkCmp.Util
+---@param P? BlinkCmp.Util.Providers
+---@return BlinkCmp.Util.Providers
+function BUtil:gen_providers(P)
+    self:reset_providers()
+
+    if type_not_empty('table', P) then
+        self.Providers = vim.tbl_deep_extend('keep', P, self.Providers)
     end
 
-    return vim.tbl_deep_extend('keep', P, self.Providers)
+    return self.Providers
 end
 
 ---@param O? table
@@ -222,23 +211,7 @@ function BUtil.new(O)
     return setmetatable(O, { __index = BUtil })
 end
 
----@type AuRepeatEvents[]
-local au_tbl = {
-    {
-        events = { 'BufEnter', 'BufNew', 'WinEnter' },
-        opts_tbl = {
-            {
-                group = vim.api.nvim_create_augroup('BlinkAU', { clear = false }),
-                pattern = '*',
-                callback = function() BUtil.curr_ft = ft_get() end,
-            },
-        },
-    },
-}
-
-for _, autocmd in next, au_tbl do
-    au(autocmd)
-end
+User:register_plugin('plugin.blink_cmp.util')
 
 return BUtil
 

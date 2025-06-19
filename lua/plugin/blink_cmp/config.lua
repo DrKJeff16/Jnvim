@@ -62,7 +62,7 @@ Cfg.Config.keymap = {
             end
         end,
 
-        function(cmp) return cmp.select_next({ auto_insert = false, preselect = false }) end,
+        function(cmp) return cmp.select_next({ auto_insert = true, preselect = false }) end,
         'fallback',
     },
     ['<S-Tab>'] = {
@@ -80,7 +80,7 @@ Cfg.Config.keymap = {
             end
         end,
 
-        function(cmp) return cmp.select_prev({ auto_insert = false, preselect = false }) end,
+        function(cmp) return cmp.select_prev({ auto_insert = true, preselect = false }) end,
 
         'fallback',
     },
@@ -112,8 +112,8 @@ Cfg.Config.keymap = {
         'fallback',
     },
 
-    ['<C-p>'] = { 'fallback_to_mappings' },
-    ['<C-n>'] = { 'fallback_to_mappings' },
+    ['<C-p>'] = { 'fallback' },
+    ['<C-n>'] = { 'fallback' },
 
     ['<C-b>'] = {
         function(cmp)
@@ -243,7 +243,17 @@ Cfg.Config.completion = {
     ghost_text = { enabled = false },
 }
 
-Cfg.Config.cmdline = { enabled = true }
+Cfg.Config.cmdline = {
+    enabled = true,
+    keymap = {
+        preset = 'inherit',
+
+        ['<Right>'] = { 'fallback' },
+        ['<Left>'] = { 'fallback' },
+        ['<C-p>'] = { 'fallback' },
+        ['<C-n>'] = { 'fallback' },
+    },
+}
 
 Cfg.Config.sources = {
     default = (function() return BUtil:gen_sources(true, false) end)(),
