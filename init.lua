@@ -55,6 +55,7 @@ end
 
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
+    autochdir = false,
     backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
