@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.lspconfig'
+---@module 'user_api.types.lsp'
 
 local User = require('user_api')
 local Check = User.check

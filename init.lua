@@ -125,6 +125,8 @@ local Color = require('plugin.colorschemes')
 
 Color('tokyonight', 'moon')
 
+require('plugin.lsp')
+
 --- Setup keymaps
 Keymaps:setup({
     n = {

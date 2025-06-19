@@ -1,12 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.lspconfig'
+---@module 'user_api.types.lsp'
 
 local User = require('user_api')
 local Check = User.check
 
-local is_str = Check.value.is_str
-local empty = Check.value.empty
+local type_not_empty = Check.value.type_not_empty
 
 ---@type Lsp.SubMods.Kinds
 local Kinds = {}
@@ -42,7 +41,7 @@ function Kinds:setup()
     local kinds = vim.lsp.protocol.CompletionItemKind
 
     for s, kind in next, kinds do
-        kinds[s] = (is_str(self.icons[s]) and not empty(self.icons[s])) and self.icons[s] or kind
+        kinds[s] = type_not_empty('string', self.icons[s]) and self.icons[s] or kind
     end
 end
 

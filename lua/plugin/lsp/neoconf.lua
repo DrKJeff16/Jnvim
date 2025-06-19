@@ -1,4 +1,4 @@
----@module 'user_api.types.lspconfig'
+---@module 'user_api.types.lsp'
 
 local User = require('user_api')
 local Check = User.check
@@ -8,11 +8,11 @@ local is_nil = Check.value.is_nil
 local is_num = Check.value.is_num
 local notify = User.util.notify.notify
 
-local Lspconfig = require('lspconfig')
-
 if not exists('neoconf') then
     return
 end
+
+local Lspconfig = require('lspconfig')
 
 if is_num(neoconf_configured) and neoconf_configured == 1 then
     notify("Neoconf can't be re-sourced.", 'error', {

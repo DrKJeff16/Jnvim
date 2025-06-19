@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 ---@diagnostic disable:need-check-nil
 
----@module 'user_api.types.lspconfig'
+---@module 'user_api.types.lsp'
 
 local User = require('user_api')
 local Check = User.check
@@ -10,12 +10,6 @@ local Maps = User.maps
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local desc = Maps.kmap.desc
-
-if not exists('lspconfig') then
-    return
-end
-
-User:register_plugin('plugin.lsp')
 
 require('plugin.lsp.mason')
 require('plugin.lsp.neoconf')
@@ -104,13 +98,15 @@ function Server.new(O)
     return setmetatable(O, { __index = Server })
 end
 
+local S = Server.new()
+
+S:populate()
+
 vim.lsp.config('*', {
-    capabilities = Server.make_capabilities(),
+    capabilities = S.make_capabilities(),
 })
 
-Server:populate()
-
-for client, v in next, Server.Clients do
+for client, v in next, S.Clients do
     vim.lsp.config(client, v)
     vim.lsp.enable(client)
 end
@@ -121,6 +117,7 @@ vim.diagnostic.config({
     underline = true,
     virtual_lines = false,
     virtual_text = true,
+    severity_sort = true,
 })
 
 ---@type AllModeMaps
@@ -148,5 +145,7 @@ Keymaps:setup(Keys)
 ---@type Lsp.SubMods.Autocmd
 local Autocmd = require('plugin.lsp.autocmd')
 Autocmd:setup()
+
+User:register_plugin('plugin.lsp')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

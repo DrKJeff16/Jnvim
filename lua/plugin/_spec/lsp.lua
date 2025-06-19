@@ -8,7 +8,6 @@ local source = CfgUtil.source
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
-local is_root = Check.is_root
 
 ---@type (LazySpec)[]
 local LSP = {
@@ -43,12 +42,12 @@ local LSP = {
         'folke/neoconf.nvim',
         lazy = false,
         version = false,
+        enabled = false,
     },
     {
         'folke/trouble.nvim',
         version = false,
         dependencies = { 'nvim-web-devicons' },
-        cond = not in_console(),
     },
     {
         'p00f/clangd_extensions.nvim',
@@ -61,6 +60,7 @@ local LSP = {
         'smjonas/inc-rename.nvim',
         version = false,
         config = source('plugin.lsp.inc_rename'),
+        enabled = false,
     },
 }
 
