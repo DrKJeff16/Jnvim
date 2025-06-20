@@ -1,3 +1,5 @@
+---@diagnostic disable:need-check-nil
+
 ---@module 'user_api.types.user.util'
 
 local User = require('user_api')
@@ -17,8 +19,6 @@ local desc = Maps.kmap.desc
 if not exists('nvim-tree') then
     return
 end
-
-User:register_plugin('plugin.nvim_tree')
 
 --- NOTE: Use floating Tree? You decide
 local USE_FLOAT = false
@@ -43,6 +43,7 @@ local floor = math.floor
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')
 
+local FsApi = Api.fs
 local Tapi = Api.tree
 local Tnode = Api.node
 
@@ -67,14 +68,25 @@ local toggle_help = Tapi.toggle_help
 local focus = Tapi.focus
 -- ---@type AnyFunc
 -- local change_root = Tapi.change_root
----@type AnyFunc
-local change_root_to_parent = Tapi.change_root_to_parent
+-- ---@type AnyFunc
+-- local change_root_to_parent = Tapi.change_root_to_parent
 ---@type AnyFunc
 local reload = Tapi.reload
 ---@type AnyFunc
 local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
+
+local function open_tab_silent(node)
+    Tnode.open.tab(node)
+    vim.cmd.tabprev()
+end
+
+local function change_root_to_global_cwd()
+    -- local global_cwd = vim.fn.getcwd(-1, -1)
+    local global_cwd = vim.fn.getcwd(0, 0)
+    Tapi.change_root(global_cwd)
+end
 
 ---@param keys AllMaps
 ---@param bufnr? integer
@@ -97,7 +109,7 @@ local my_maps = {
         desc('Open NvimTree'),
     },
     ['<leader>ftt'] = {
-        toggle,
+        function() toggle({ find_file = true, update_root = true, focus = true }) end,
         desc('Toggle NvimTree'),
     },
     ['<leader>ftd'] = {
@@ -153,7 +165,7 @@ local function tree_open(data)
     local buf = vim.bo[nbuf]
 
     local real = fn.filereadable(name) == 1
-    local no_name = name == '' and buf.buftype == ''
+    local no_name = (name == '' and buf.buftype == '')
     local dir = fn.isdirectory(name) == 1
 
     if not (real or no_name) then
@@ -168,14 +180,11 @@ local function tree_open(data)
     end
 
     ---@type TreeToggleOpts
-    local toggle_opts = { focus = false, find_file = true }
-
-    -- ---@type TreeOpenOpts
-    -- local open_opts = { find_file = true }
+    local toggle_opts = { focus = false, find_file = true, update_root = true }
 
     if dir then
         vim.cmd('cd ' .. name)
-        open()
+        open(toggle_opts)
     else
         toggle(toggle_opts)
     end
@@ -255,7 +264,7 @@ local function swap_then_open_tab()
     local node = get_node()
 
     if is_tbl(node) and not empty(node) then
-        vim.cmd.wincmd('l')
+        vim.cmd('wincmd l')
         tab(node)
     end
 end
@@ -264,8 +273,38 @@ end
 local on_attach = function(bufn)
     CfgApi.mappings.default_on_attach(bufn)
 
+    -- custom mappings
+    local function change_root_to_node(node)
+        if node == nil then
+            node = Tapi.get_node_under_cursor()
+        end
+
+        if node ~= nil and node.type == 'directory' then
+            vim.api.nvim_set_current_dir(node.absolute_path)
+        end
+
+        Tapi.change_root_to_node(node)
+    end
+
+    local function change_root_to_parent(node)
+        local abs_path
+        if node == nil then
+            abs_path = Tapi.get_nodes().absolute_path
+        else
+            abs_path = node.absolute_path
+        end
+
+        local parent_path = vim.fs.dirname(abs_path)
+        vim.api.nvim_set_current_dir(parent_path)
+        Tapi.change_root(parent_path)
+    end
+
     ---@type AllMaps
     local Keys = {
+        ['<C-c>'] = {
+            change_root_to_global_cwd,
+            desc('Change Root To Global CWD', true, bufn),
+        },
         ['<C-U>'] = {
             change_root_to_parent,
             desc('Set Root To Upper Dir', true, bufn),
@@ -282,7 +321,7 @@ local on_attach = function(bufn)
             vsplit_preview,
             desc('Vsplit Preview', true, bufn),
         },
-        ['c'] = {
+        ['d'] = {
             close,
             desc('Close', true, bufn),
         },
@@ -298,16 +337,102 @@ local on_attach = function(bufn)
             swap_then_open_tab,
             desc('Open Tab', true, bufn),
         },
+        ['T'] = {
+            open_tab_silent,
+            desc('Open Tab Silently', true, bufn),
+        },
+
+        -- BEGIN_DEFAULT_ON_ATTACH
+        ['-'] = { Tapi.change_root_to_parent, desc('Up', true, bufn) },
+        ['.'] = { Tnode.run.cmd, desc('Run Command', true, bufn) },
+        ['<'] = { Tnode.navigate.sibling.prev, desc('Previous Sibling', true, bufn) },
+        ['<BS>'] = { Tnode.navigate.parent_close, desc('Close Directory', true, bufn) },
+        ['<C-]>'] = { Tapi.change_root_to_node, desc('CD', true, bufn) },
+        ['<C-d>'] = { FsApi.remove, desc('Delete', true, bufn) },
+        ['<C-e>'] = { Tnode.open.replace_tree_buffer, desc('Open: In Place', true, bufn) },
+        ['<C-k>'] = { Tnode.show_info_popup, desc('Info', true, bufn) },
+        ['<C-r>'] = { FsApi.rename_sub, desc('Rename: Omit Filename', true, bufn) },
+        ['<C-t>'] = { Tapi.change_root_to_parent, desc('Change Root To Parent', true, bufn) },
+        ['<C-v>'] = { Tnode.open.vertical, desc('Open: Vertical Split', true, bufn) },
+        ['<C-x>'] = { Tnode.open.horizontal, desc('Open: Horizontal Split', true, bufn) },
+        ['<CR>'] = { Tnode.open.edit, desc('Open', true, bufn) },
+        ['<Tab>'] = { Tnode.open.preview, desc('Open Preview', true, bufn) },
+        ['>'] = { Tnode.navigate.sibling.next, desc('Next Sibling', true, bufn) },
+        ['B'] = { Tapi.toggle_no_buffer_filter, desc('Toggle No Buffer', true, bufn) },
+        ['C'] = { Tapi.toggle_git_clean_filter, desc('Toggle Git Clean', true, bufn) },
+        ['D'] = { FsApi.trash, desc('Trash', true, bufn) },
+        ['E'] = { Tapi.expand_all, desc('Expand All', true, bufn) },
+        ['F'] = { Api.live_filter.clear, desc('Clean Filter', true, bufn) },
+        ['H'] = { Tapi.toggle_hidden_filter, desc('Toggle Dotfiles', true, bufn) },
+        ['I'] = { Tapi.toggle_gitignore_filter, desc('Toggle Git Ignore', true, bufn) },
+        ['J'] = { Tnode.navigate.sibling.last, desc('Last Sibling', true, bufn) },
+        ['K'] = { Tnode.navigate.sibling.first, desc('First Sibling', true, bufn) },
+        ['O'] = { Tnode.open.no_window_picker, desc('Open: No Window Picker', true, bufn) },
+        ['R'] = { Tapi.reload, desc('Refresh', true, bufn) },
+        ['S'] = { Tapi.search_node, desc('Search', true, bufn) },
+        ['U'] = { Tapi.toggle_custom_filter, desc('Toggle Hidden', true, bufn) },
+        ['W'] = { Tapi.collapse_all, desc('Collapse', true, bufn) },
+        ['Y'] = { FsApi.copy.relative_path, desc('Copy Relative Path', true, bufn) },
+        ['[c'] = { Tnode.navigate.git.prev, desc('Prev Git', true, bufn) },
+        ['[e'] = { Tnode.navigate.diagnostics.prev, desc('Prev Diagnostic', true, bufn) },
+        [']c'] = { Tnode.navigate.git.next, desc('Next Git', true, bufn) },
+        [']e'] = { Tnode.navigate.diagnostics.next, desc('Next Diagnostic', true, bufn) },
+        ['a'] = { FsApi.create, desc('Create', true, bufn) },
+        ['bmv'] = { Api.marks.bulk.move, desc('Move Bookmarked', true, bufn) },
+        ['c'] = { FsApi.copy.node, desc('Copy', true, bufn) },
+        ['e'] = { FsApi.rename_basename, desc('Rename: Basename', true, bufn) },
+        ['f'] = { Api.live_filter.start, desc('Filter', true, bufn) },
+        ['g?'] = { Tapi.toggle_help, desc('Help', true, bufn) },
+        ['gy'] = { FsApi.copy.absolute_path, desc('Copy Absolute Path', true, bufn) },
+        ['m'] = { Api.marks.toggle, desc('Toggle Bookmark', true, bufn) },
+        ['o'] = { Tnode.open.edit, desc('Open', true, bufn) },
+        ['p'] = { FsApi.paste, desc('Paste', true, bufn) },
+        ['q'] = { Tapi.close, desc('Close', true, bufn) },
+        ['r'] = { FsApi.rename, desc('Rename', true, bufn) },
+        ['s'] = { Tnode.run.system, desc('Run System', true, bufn) },
+        ['x'] = { FsApi.cut, desc('Cut', true, bufn) },
+        ['y'] = { FsApi.copy.filename, desc('Copy Name', true, bufn) },
     }
 
+    if vim.o.mouse ~= '' then
+        Keys['<2-LeftMouse>'] = { Tnode.open.edit, desc('Open', true, bufn) }
+        Keys['<2-RightMouse>'] = { Tapi.change_root_to_node, desc('CD', true, bufn) }
+    end
     map_keys(Keys, bufn)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1
 local WIDTH_RATIO = USE_FLOAT and 2 / 3 or 1 / 4
 
+local function label(path)
+    path = path:gsub(os.getenv('HOME'), '~', 1)
+    return path:gsub('([a-zA-Z])[a-z0-9]+', '%1') .. (path:match('[a-zA-Z]([a-z0-9]*)$') or '')
+end
+
+local VIEW_WIDTH_FIXED = 30
+local view_width_max = VIEW_WIDTH_FIXED -- fixed to start
+
+-- toggle the width and redraw
+local function toggle_width_adaptive()
+    if view_width_max == -1 then
+        view_width_max = VIEW_WIDTH_FIXED
+    else
+        view_width_max = -1
+    end
+
+    require('nvim-tree.api').tree.reload()
+end
+
+-- get current view width
+local function get_view_width_max() return view_width_max end
+
 Tree.setup({
     on_attach = on_attach,
+
+    sync_root_with_cwd = true,
+    respect_buf_cwd = true,
+
+    prefer_startup_root = false,
 
     sort = {
         sorter = 'name',
@@ -317,12 +442,30 @@ Tree.setup({
 
     auto_reload_on_write = true,
 
-    update_focused_file = {
+    filesystem_watchers = {
         enable = true,
+    },
+
+    update_focused_file = {
+        enable = false,
         update_root = {
             enable = true,
         },
         exclude = false,
+    },
+
+    actions = {
+        use_system_clipboard = true,
+        change_dir = {
+            enable = false,
+            global = false,
+            restrict_above_cwd = true,
+        },
+
+        open_file = {
+            quit_on_open = true,
+            resize_window = true,
+        },
     },
 
     system_open = {
@@ -368,13 +511,14 @@ Tree.setup({
                 }
             end,
         },
-        width = function() return floor(vim.opt.columns:get() * WIDTH_RATIO) end,
+        -- width = function() return floor(vim.opt.columns:get() * WIDTH_RATIO) end,
+        width = get_view_width_max,
 
         cursorline = true,
         preserve_window_proportions = true,
         number = false,
         relativenumber = false,
-        signcolumn = vim.opt_local.signcolumn:get(),
+        signcolumn = 'yes',
     },
 
     diagnostics = {
@@ -394,13 +538,27 @@ Tree.setup({
     modified = {
         enable = true,
         show_on_dirs = true,
-        show_on_open_dirs = false,
+        show_on_open_dirs = true,
     },
 
     renderer = {
-        group_empty = false,
         add_trailing = false,
         full_name = true,
+
+        decorators = {
+            'Git',
+            'Open',
+            'Hidden',
+            'Modified',
+            'Bookmark',
+            'Diagnostics',
+            'Copied',
+            'Cut',
+        },
+
+        root_folder_label = label,
+        group_empty = label,
+        -- group_empty = false,
 
         indent_width = 2,
         indent_markers = {
@@ -486,22 +644,19 @@ Tree.setup({
 })
 
 -- Auto-open file after creation
---[[ Api.events.subscribe(Api.events.Event.FileCreated, function(file)
-	vim.cmd('ed ' .. file.fname)
-end) ]]
-
----@type HlDict
-local hl_groups = {
-    ['NvimTreeExecFile'] = { fg = '#ffa0a0' },
-    ['NvimTreeSpecialFile'] = { fg = '#ff80ff', underline = true },
-    ['NvimTreeSymlink'] = { fg = 'Yellow', italic = true },
-    ['NvimTreeImageFile'] = { link = 'Title' },
-}
+Api.events.subscribe(
+    Api.events.Event.FileCreated,
+    function(file) vim.cmd('edit ' .. vim.fn.fnameescape(file.fname)) end
+)
 
 ---@type AuDict
 local au_cmds = {
-    ['VimEnter'] = { callback = tree_open },
+    ['VimEnter'] = {
+        group = augroup('NvimTree.Au', { clear = false }),
+        callback = tree_open,
+    },
     ['WinClosed'] = {
+        group = augroup('NvimTree.Au', { clear = false }),
         nested = true,
         callback = function()
             local nwin = math.floor(tonumber(fn.expand('<amatch>')))
@@ -514,11 +669,10 @@ local au_cmds = {
     ['VimResized'] = {
         group = augroup('NvimTreeResize', { clear = true }),
         callback = function()
-            local V = require('nvim-tree.view')
-            local A = require('nvim-tree.api').tree
-            if V.is_visible() then
-                V.close()
-                A.open()
+            local Explorer = require('nvim-tree.core').get_explorer()
+            if not (is_nil(Explorer) and Explorer.view:is_visible({ any_tabpage = true })) then
+                close()
+                Tapi.open({ update_root = true, focus = true, find_file = true })
             end
         end,
     },
@@ -527,9 +681,80 @@ local au_cmds = {
 
         end,
     } ]]
+    ['BufEnter'] = {
+        group = augroup('NvimTree.Au', { clear = false }),
+        pattern = 'NvimTree*',
+        callback = function()
+            local Explorer = require('nvim-tree.core').get_explorer()
+
+            if not (is_nil(Explorer) and Explorer.view:is_visible({ any_tabpage = true })) then
+                Tapi.open({ update_root = true, focus = true, find_file = true })
+            end
+        end,
+    },
 }
 
 User.util.au.au_from_dict(au_cmds)
+
+---@type AuRepeatEvents[]
+local extra_Au = {
+    {
+        events = { 'BufEnter', 'BufLeave', 'QuitPre' },
+        opts_tbl = {
+            {
+                nested = false,
+                group = augroup('NvimTree.Extra.Au', { clear = false }),
+
+                callback = function(e)
+                    local Explorer = require('nvim-tree.core').get_explorer()
+
+                    -- Nothing to do if Tapi is not opened
+                    if not (is_nil(Explorer) and Tapi.is_visible()) then
+                        return
+                    end
+
+                    -- How many focusable windows do we have? (excluding e.g. incline status window)
+                    local winCount = 0
+                    for _, winId in next, vim.api.nvim_list_wins() do
+                        if vim.api.nvim_win_get_config(winId).focusable then
+                            winCount = winCount + 1
+                        end
+                    end
+
+                    -- We want to quit and only one window besides Tapi is left
+                    if e.event == 'QuitPre' and winCount == 2 then
+                        vim.api.nvim_cmd({ cmd = 'qall' }, {})
+                    end
+
+                    -- :bd was probably issued an only Tapi window is left
+                    -- Behave as if Tapi was closed (see `:h :bd`)
+                    if e.event == 'BufEnter' and winCount == 1 then
+                        -- Required to avoid "Vim:E444: Cannot close last window"
+                        vim.defer_fn(function()
+                            Tapi.toggle({ update_root = true, find_file = true, focus = true })
+                            Tapi.toggle({ update_root = true, find_file = true, focus = false })
+                        end, 10)
+                    end
+                end,
+            },
+        },
+    },
+}
+
+for _, au in next, extra_Au do
+    User.util.au.au_repeated_events(au)
+end
+
+---@type HlDict
+local hl_groups = {
+    ['NvimTreeExecFile'] = { fg = '#ffa0a0' },
+    ['NvimTreeSpecialFile'] = { fg = '#ff80ff', underline = true },
+    ['NvimTreeSymlink'] = { fg = 'Yellow', italic = false },
+    ['NvimTreeImageFile'] = { link = 'Title' },
+}
+
 hi(hl_groups)
+
+User:register_plugin('plugin.nvim_tree')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
