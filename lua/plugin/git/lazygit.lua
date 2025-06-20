@@ -11,8 +11,6 @@ if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
     return
 end
 
-User:register_plugin('plugin.git.lazygit')
-
 local au = vim.api.nvim_create_autocmd
 
 local LG_Utils = require('lazygit.utils')
@@ -93,7 +91,9 @@ au({ 'BufEnter', 'WinEnter' }, {
 vim.cmd([[
 " NOTE: added lazygit check to avoid lua error
 " NOTE: added "silent!" to avoid error when FZF terminal window is closed
-autocmd TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
+au TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
 ]])
+
+User:register_plugin('plugin.git.lazygit')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
