@@ -1,5 +1,5 @@
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
@@ -9,8 +9,6 @@ local desc = User.maps.kmap.desc
 if not exists('zen-mode') then
     return
 end
-
-User:register_plugin('plugin.zen_mode')
 
 local ZM = require('zen-mode')
 
@@ -37,6 +35,7 @@ ZM.setup({
             foldcolumn = '0', -- disable fold column
             foldmethod = 'manual',
             list = false, -- disable whitespace characters
+            wrap = true,
         },
     },
 
@@ -54,7 +53,7 @@ ZM.setup({
             showtabline = 0, -- turn off the statusline in zen mode
         },
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
-        gitsigns = { enabled = false }, -- disables git signs
+        gitsigns = { enabled = false },
         tmux = { enabled = false }, -- disables the tmux statusline
         todo = { enabled = false }, -- disables todo comments
         -- this will change the font size on kitty when in zen mode
@@ -70,7 +69,7 @@ ZM.setup({
         -- uses `alacritty msg` subcommand to change font size
         alacritty = {
             enabled = executable('alacritty'),
-            font = '19', -- font size
+            font = '22', -- font size
         },
         -- this will change the font size on wezterm when in zen mode
         -- See alse also the Plugins/Wezterm section in this projects README
@@ -97,5 +96,7 @@ local Keys = {
 }
 
 Keymaps:setup({ n = Keys })
+
+User:register_plugin('plugin.zen_mode')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
