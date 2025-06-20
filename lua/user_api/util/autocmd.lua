@@ -4,43 +4,23 @@
 
 local au = vim.api.nvim_create_autocmd
 
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
+
 ---@type User.Util.Autocmd
 local M = {}
 
 ---@param T AuPair
 function M.au_pair(T)
-    local Value = require('user_api.check.value')
+    local type_not_empty = require('user_api.check.value').type_not_empty
 
-    local is_str = Value.is_str
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
-
-    if not is_tbl(T) then
-        vim.notify('(user_api.util.au.au_pair): Not a table', vim.log.levels.ERROR)
-        return
-    end
-    if empty(T) then
-        vim.notify('(user_api.util.au.au_pair): Empty table', vim.log.levels.WARN)
+    if not type_not_empty('table', T) then
+        vim.notify('(user_api.util.au.au_pair): Not a table, or empty table', ERROR)
         return
     end
 
-    if not (is_str(T.event) or is_tbl(T.event)) then
-        vim.notify(
-            '(user_api.util.au.au_pair): Event is neither a string nor a table',
-            vim.log.levels.ERROR
-        )
-        return
-    end
-    if empty(T.event) then
-        vim.notify('(user_api.util.au.au_pair): Event is empty', vim.log.levels.ERROR)
-        return
-    end
-    if not is_tbl(T.opts) then
-        vim.notify('(user_api.util.au.au_pair): Options are not in a table', vim.log.levels.ERROR)
-        return
-    end
-    if empty(T.opts) then
-        vim.notify('(user_api.util.au.au_pair): Options table is empty', vim.log.levels.ERROR)
+    if not (type_not_empty('string', T.event) or type_not_empty('table', T.event)) then
+        vim.notify('(user_api.util.au.au_pair): Event is neither a string nor a table', ERROR)
         return
     end
 
@@ -49,47 +29,26 @@ end
 
 ---@param T AuList
 function M.au_from_arr(T)
-    local Value = require('user_api.check.value')
+    local type_not_empty = require('user_api.check.value').type_not_empty
 
-    local is_str = Value.is_str
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
-
-    if not is_tbl(T) then
-        vim.notify('(user_api.util.au.au_from_arr): Not a table', vim.log.levels.ERROR)
-        return
-    end
-    if empty(T) then
-        vim.notify('(user_api.util.au.au_from_arr): Empty table', vim.log.levels.WARN)
+    if not type_not_empty('table', T) then
+        vim.notify('(user_api.util.au.au_from_arr): Not a table', ERROR)
         return
     end
 
     for _, v in next, T do
-        if not (is_str(v.event) or is_tbl(v.event)) then
+        if not (type_not_empty('string', v.event) or type_not_empty('table', v.event)) then
             vim.notify(
                 '(user_api.util.au.au_from_arr): Event is neither a string nor a table, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
             goto continue
         end
-        if empty(v.event) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Event is either an empty string/table, skipping',
-                vim.log.levels.ERROR
-            )
-            goto continue
-        end
-        if not is_tbl(v.opts) then
+
+        if not type_not_empty('table', v.opts) then
             vim.notify(
                 '(user_api.util.au.au_from_arr): Options are not in a table, skipping',
-                vim.log.levels.ERROR
-            )
-            goto continue
-        end
-        if empty(v.opts) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Options are in an empty table, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
             goto continue
         end
@@ -104,38 +63,27 @@ end
 function M.au_from_dict(T)
     local Value = require('user_api.check.value')
 
-    local is_int = Value.is_int
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
+    local is_str = Value.is_str
+    local type_not_empty = Value.type_not_empty
 
-    if not is_tbl(T) then
-        vim.notify('(user_api.util.au.au_from_arr): Not a table', vim.log.levels.ERROR)
-        return
-    end
-    if empty(T) then
-        vim.notify('(user_api.util.au.au_from_arr): Empty table', vim.log.levels.WARN)
+    if not type_not_empty('table', T) then
+        vim.notify('(user_api.util.au.au_from_arr): Not a table', ERROR)
         return
     end
 
     for k, v in next, T do
-        if is_int(k) then
+        if not is_str(k) then
             vim.notify(
                 '(user_api.util.au.au_from_arr): Dictionary key is not a string, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
             goto continue
         end
-        if not is_tbl(v) then
+
+        if not type_not_empty('table', v) then
             vim.notify(
                 '(user_api.util.au.au_from_arr): Dictionary value is not a table, skipping',
-                vim.log.levels.ERROR
-            )
-            goto continue
-        end
-        if empty(v) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Dictionary value is an table empty, skipping',
-                vim.log.levels.ERROR
+                ERROR
             )
             goto continue
         end
@@ -150,48 +98,28 @@ end
 function M.au_repeated(T)
     local Value = require('user_api.check.value')
 
-    local is_int = Value.is_int
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
+    local is_str = Value.is_str
+    local type_not_empty = Value.type_not_empty
 
-    if not is_tbl(T) then
-        vim.notify('(user_api.util.au.au_repeated): Not a table', vim.log.levels.ERROR)
-        return
-    end
-    if empty(T) then
-        vim.notify('(user_api.util.au.au_repeated): Empty table', vim.log.levels.WARN)
+    if not type_not_empty('table', T) then
+        vim.notify('(user_api.util.au.au_repeated): Param is not a valid table', ERROR)
         return
     end
 
     for event, t in next, T do
-        if is_int(t) then
-            vim.notify(
-                '(user_api.util.au.au_repeated): Event is not a string, skipping',
-                vim.log.levels.ERROR
-            )
+        if not is_str(event) then
+            vim.notify('(user_api.util.au.au_repeated): Event is not a string, skipping', ERROR)
             goto continue
         end
-        if not is_tbl(t) then
-            vim.notify(
-                '(user_api.util.au.au_repeated): Invalid options table, skipping',
-                vim.log.levels.ERROR
-            )
-            goto continue
-        end
-        if empty(t) then
-            vim.notify(
-                '(user_api.util.au.au_repeated): Multi-options table is empty, skipping',
-                vim.log.levels.ERROR
-            )
+
+        if not type_not_empty('table', t) then
+            vim.notify('(user_api.util.au.au_repeated): Invalid options table, skipping', ERROR)
             goto continue
         end
 
         for _, opts in next, t do
-            if empty(opts) then
-                vim.notify(
-                    '(user_api.util.au.au_repeated): Option table is empty, skipping',
-                    vim.log.levels.ERROR
-                )
+            if not type_not_empty('table', opts) then
+                vim.notify('(user_api.util.au.au_repeated): Option table is empty, skipping', ERROR)
                 break
             end
 
@@ -204,32 +132,23 @@ end
 
 ---@param T AuRepeatEvents
 function M.au_repeated_events(T)
-    local Value = require('user_api.check.value')
+    local type_not_empty = require('user_api.check.value').type_not_empty
 
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
-
-    if not is_tbl({ T, T.events, T.opts_tbl }, true) then
-        vim.notify('(user_api.util.au.au_repeated_events): Not a valid table', vim.log.levels.ERROR)
+    if not type_not_empty('table', T) then
+        vim.notify('(user_api.util.au.au_repeated_events): Not a valid table', ERROR)
         return
     end
-    if empty({ T, T.events, T.opts_tbl }, true) then
-        vim.notify('(user_api.util.au.au_repeated_events): Empty table(s)', vim.log.levels.WARN)
+
+    if not (type_not_empty('table', T.events) and type_not_empty('table', T.opts_tbl)) then
+        vim.notify('(user_api.util.au.au_repeated_events): Invalid autocmd tables', WARN)
         return
     end
 
     for _, opts in next, T.opts_tbl do
-        if not is_tbl(opts) then
+        if not type_not_empty('table', opts) then
             vim.notify(
-                '(user_api.util.au.au_repeated_events): Options are not a table',
-                vim.log.levels.ERROR
-            )
-            goto continue
-        end
-        if empty(opts) then
-            vim.notify(
-                '(user_api.util.au.au_repeated_events): Empty options table',
-                vim.log.levels.WARN
+                '(user_api.util.au.au_repeated_events): Options are not a vaild table',
+                ERROR
             )
             goto continue
         end
