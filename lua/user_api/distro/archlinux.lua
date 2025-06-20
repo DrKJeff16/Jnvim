@@ -25,17 +25,20 @@ function Archlinux:validate()
     ---@type string[]|table
     local new_rtpaths = {}
 
+    -- First check for each dir's existance
     for _, p in next, self.rtpaths do
         if vim.fn.isdirectory(p) then
             table.insert(new_rtpaths, p)
         end
     end
 
+    -- If no dirs...
     if not type_not_empty('table', new_rtpaths) then
         return false
     end
 
     self.rtpaths = vim.tbl_deep_extend('force', {}, new_rtpaths)
+
     return true
 end
 
@@ -47,16 +50,13 @@ function Archlinux:setup()
     local Check = require('user_api.check')
     local Util = require('user_api.util')
 
-    local is_dir = Check.exists.vim_isdir
+    local is_dir = vim.fn.isdirectory
     local type_not_empty = Check.value.type_not_empty
     local strip_values = Util.strip_values
 
-    ---@type table
-    ---@diagnostic disable-next-line
-    local rtp = vim.opt.rtp:get()
-
-    for _, path in next, vim.deepcopy(self.rtpaths) do
-        if not (is_dir(path) or vim.tbl_contains(rtp, path)) then
+    -- Check if path is in rtp already
+    for _, path in next, self.rtpaths do
+        if not (is_dir(path) ~= 1 or vim.tbl_contains(vim.opt.rtp:get(), path)) then ---@diagnostic disable-line
             self.rtpaths = strip_values(self.rtpaths, { path })
         end
     end
@@ -73,6 +73,10 @@ function Archlinux:setup()
     local ok, _ = pcall(vim.cmd, 'runtime! archlinux.vim')
 
     assert(ok, 'BAD SETUP FOR Archlinux!')
+
+    if ok then
+        _G.I_USE_ARCH = 'BTW'
+    end
 end
 
 ---@param O? table
