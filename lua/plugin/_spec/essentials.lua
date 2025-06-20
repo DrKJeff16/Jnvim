@@ -97,6 +97,8 @@ local Essentials = {
     },
     {
         'gennaro-tedesco/nvim-possession',
+        lazy = false,
+        version = false,
         dependencies = {
             'ibhagwan/fzf-lua',
         },

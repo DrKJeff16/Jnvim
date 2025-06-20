@@ -5,7 +5,7 @@ local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
-local empty = Check.value.empty
+local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
 if not exists('project_nvim') then
@@ -47,7 +47,7 @@ Project.setup({
         '.stylua.toml',
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
-        '.clangd',
+        '.clangd', -- WARNING: Should it be here...?
     },
 
     -- Don't calculate root dir on specific directories
@@ -73,7 +73,7 @@ Project.setup({
     -- * global (default)
     -- * tab
     -- * win
-    scope_chdir = 'global',
+    scope_chdir = 'tab',
 
     -- Path where project.nvim will store the project history for use in
     -- telescope
@@ -86,24 +86,32 @@ local Keys = {
 
     ['<leader>pr'] = {
         function()
-            local Proj = require('project_nvim')
-
-            local recent_proj = Proj.get_recent_projects()
             local notify = require('user_api.util.notify').notify
+
+            local recent_proj = require('project_nvim').get_recent_projects()
             local msg = ''
 
-            if empty(recent_proj) then
-                error('NO PROJECTS')
+            if type_not_empty('table', recent_proj) then
+                for i, v in next, recent_proj do
+                    msg = msg .. string.format(' - `%s`', v)
+                    if i < #recent_proj then
+                        msg = msg .. newline or string.char(10)
+                    end
+                end
+                notify(string.format('{\n%s\n}', msg), 'info', {
+                    title = 'Recent Projects',
+                    animate = true,
+                    timeout = 3000,
+                    hide_from_history = false,
+                })
+
+                return
             end
 
-            for _, v in next, recent_proj do
-                msg = msg .. '- ' .. v .. newline or string.char(10)
-            end
-
-            notify(msg, 'info', {
-                title = 'Recent Projects',
-                animate = false,
-                timeout = 1750,
+            notify('{}', 'error', {
+                title = 'Recent Projects | NO PROJECTS',
+                animate = true,
+                timeout = 2000,
                 hide_from_history = false,
             })
         end,

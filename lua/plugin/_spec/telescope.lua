@@ -97,7 +97,7 @@ local Telescope = {
     {
         'DrKJeff16/project.nvim',
         main = 'project_nvim',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
         init = function() vim.opt.autochdir = true end,
         config = source('plugin.project'),
