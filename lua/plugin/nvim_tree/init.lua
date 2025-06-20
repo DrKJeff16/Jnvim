@@ -11,8 +11,8 @@ local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
-local is_str = Check.value.is_str
 local empty = Check.value.empty
+local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 local desc = Maps.kmap.desc
 
@@ -43,9 +43,9 @@ local floor = math.floor
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')
 
-local FsApi = Api.fs
-local Tapi = Api.tree
-local Tnode = Api.node
+local FsApi = require('nvim-tree.api').fs
+local Tapi = require('nvim-tree.api').tree
+local Tnode = require('nvim-tree.api').node
 
 ---@class Tree.CfgAPI.Mappings
 ---@field default_on_attach fun(bufnr: integer)
@@ -54,7 +54,7 @@ local Tnode = Api.node
 ---@field mappings Tree.CfgAPI.Mappings
 
 ---@type Tree.CfgAPI
-local CfgApi = Api.config
+local CfgApi = require('nvim-tree.api').config
 
 ---@type AnyFunc
 local open = Tapi.open
@@ -83,15 +83,14 @@ local function open_tab_silent(node)
 end
 
 local function change_root_to_global_cwd()
-    -- local global_cwd = vim.fn.getcwd(-1, -1)
-    local global_cwd = vim.fn.getcwd(0, 0)
+    local global_cwd = vim.fn.getcwd(-1, -1)
     Tapi.change_root(global_cwd)
 end
 
 ---@param keys AllMaps
 ---@param bufnr? integer
 local function map_keys(keys, bufnr)
-    if not is_tbl(keys) or empty(keys) then
+    if not type_not_empty('table', keys) then
         return
     end
 
@@ -153,9 +152,9 @@ local function tab_win_close(nwin)
     end
 end
 
----@param data BufData
+---@param data vim.api.keyset.create_autocmd.callback_args
 local function tree_open(data)
-    if not (is_str(data.file)) or empty(data.file) then
+    if not type_not_empty('string', data.file) then
         return
     end
 
@@ -175,7 +174,7 @@ local function tree_open(data)
     local ft = buf.ft
     local noignore = {}
 
-    if ft == '' or empty(noignore) or not in_tbl(noignore, ft) then
+    if ft == '' or not (type_not_empty('table', noignore) and in_tbl(noignore, ft)) then
         return
     end
 
@@ -185,6 +184,7 @@ local function tree_open(data)
     if dir then
         vim.cmd('cd ' .. name)
         open(toggle_opts)
+        vim.schedule(change_root_to_global_cwd)
     else
         toggle(toggle_opts)
     end
@@ -195,7 +195,7 @@ local function edit_or_open()
     local edit = Tnode.open.edit
 
     ---@type TreeNode
-    local node = get_node()
+    local node = Tapi.get_node_under_cursor()
     local nodes = node.nodes or nil
 
     edit()
@@ -289,14 +289,14 @@ local on_attach = function(bufn)
     local function change_root_to_parent(node)
         local abs_path
         if node == nil then
-            abs_path = Tapi.get_nodes().absolute_path
+            abs_path = get_node().absolute_path
         else
             abs_path = node.absolute_path
         end
 
         local parent_path = vim.fs.dirname(abs_path)
         vim.api.nvim_set_current_dir(parent_path)
-        Tapi.change_root(parent_path)
+        vim.schedule(function() Tapi.change_root(parent_path) end)
     end
 
     ---@type AllMaps
@@ -398,6 +398,7 @@ local on_attach = function(bufn)
         Keys['<2-LeftMouse>'] = { Tnode.open.edit, desc('Open', true, bufn) }
         Keys['<2-RightMouse>'] = { Tapi.change_root_to_node, desc('CD', true, bufn) }
     end
+
     map_keys(Keys, bufn)
 end
 
@@ -429,10 +430,10 @@ local function get_view_width_max() return view_width_max end
 Tree.setup({
     on_attach = on_attach,
 
-    sync_root_with_cwd = true,
+    sync_root_with_cwd = false,
     respect_buf_cwd = true,
 
-    prefer_startup_root = false,
+    prefer_startup_root = true,
 
     sort = {
         sorter = 'name',
@@ -672,7 +673,7 @@ local au_cmds = {
             local Explorer = require('nvim-tree.core').get_explorer()
             if not (is_nil(Explorer) and Explorer.view:is_visible({ any_tabpage = true })) then
                 close()
-                Tapi.open({ update_root = true, focus = true, find_file = true })
+                open({ update_root = true, focus = true, find_file = true })
             end
         end,
     },
@@ -684,66 +685,11 @@ local au_cmds = {
     ['BufEnter'] = {
         group = augroup('NvimTree.Au', { clear = false }),
         pattern = 'NvimTree*',
-        callback = function()
-            local Explorer = require('nvim-tree.core').get_explorer()
-
-            if not (is_nil(Explorer) and Explorer.view:is_visible({ any_tabpage = true })) then
-                Tapi.open({ update_root = true, focus = true, find_file = true })
-            end
-        end,
+        callback = tree_open,
     },
 }
 
 User.util.au.au_from_dict(au_cmds)
-
----@type AuRepeatEvents[]
-local extra_Au = {
-    {
-        events = { 'BufEnter', 'BufLeave', 'QuitPre' },
-        opts_tbl = {
-            {
-                nested = false,
-                group = augroup('NvimTree.Extra.Au', { clear = false }),
-
-                callback = function(e)
-                    local Explorer = require('nvim-tree.core').get_explorer()
-
-                    -- Nothing to do if Tapi is not opened
-                    if not (is_nil(Explorer) and Tapi.is_visible()) then
-                        return
-                    end
-
-                    -- How many focusable windows do we have? (excluding e.g. incline status window)
-                    local winCount = 0
-                    for _, winId in next, vim.api.nvim_list_wins() do
-                        if vim.api.nvim_win_get_config(winId).focusable then
-                            winCount = winCount + 1
-                        end
-                    end
-
-                    -- We want to quit and only one window besides Tapi is left
-                    if e.event == 'QuitPre' and winCount == 2 then
-                        vim.api.nvim_cmd({ cmd = 'qall' }, {})
-                    end
-
-                    -- :bd was probably issued an only Tapi window is left
-                    -- Behave as if Tapi was closed (see `:h :bd`)
-                    if e.event == 'BufEnter' and winCount == 1 then
-                        -- Required to avoid "Vim:E444: Cannot close last window"
-                        vim.defer_fn(function()
-                            Tapi.toggle({ update_root = true, find_file = true, focus = true })
-                            Tapi.toggle({ update_root = true, find_file = true, focus = false })
-                        end, 10)
-                    end
-                end,
-            },
-        },
-    },
-}
-
-for _, au in next, extra_Au do
-    User.util.au.au_repeated_events(au)
-end
 
 ---@type HlDict
 local hl_groups = {
