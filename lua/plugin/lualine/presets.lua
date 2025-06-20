@@ -2,6 +2,8 @@
 
 local User = require('user_api')
 
+local exists = User.check.exists.module
+
 local floor = math.floor
 
 User:register_plugin('plugin.lualine.presets')
@@ -68,7 +70,7 @@ Presets.components.filename = {
 
     file_status = true,
     newfile_status = true,
-    path = 0,
+    path = 4,
 }
 
 Presets.components.filetype = {
@@ -165,12 +167,21 @@ Presets.components.mode = {
     fmt = function(str) return str:sub(1, 1) end,
 }
 
+Presets.components.possession = exists('nvim-possession')
+        and {
+            require('nvim-possession').status,
+
+            cond = function() return require('nvim-possession').status() ~= nil end,
+        }
+    or {}
+
 Presets.default = {
     lualine_a = {
         -- Presets.components.datetime,
         Presets.components.mode,
     },
     lualine_b = {
+        Presets.components.possession,
         -- Presets.components.branch,
         Presets.components.filename,
         -- Presets.components.filesize,

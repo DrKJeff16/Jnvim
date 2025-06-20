@@ -95,6 +95,13 @@ local Essentials = {
         version = false,
         cond = not in_console(),
     },
+    {
+        'gennaro-tedesco/nvim-possession',
+        dependencies = {
+            'ibhagwan/fzf-lua',
+        },
+        config = source('plugin.possession'),
+    },
 }
 
 return Essentials
