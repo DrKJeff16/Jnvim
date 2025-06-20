@@ -33,17 +33,17 @@ Hover.setup({
             require('hover.providers.man')
         end
 
-        if executable('gh') then
-            --- Github
-            if exists('hover.providers.gh') then
-                require('hover.providers.gh')
-            end
-
-            --- Github: Users
-            if exists('hover.providers.gh_user') then
-                require('hover.providers.gh_user')
-            end
-        end
+        -- if executable('gh') then
+        --     --- Github
+        --     if exists('hover.providers.gh') then
+        --         require('hover.providers.gh')
+        --     end
+        --
+        --     --- Github: Users
+        --     if exists('hover.providers.gh_user') then
+        --         require('hover.providers.gh_user')
+        --     end
+        -- end
 
         --- Dictionary
         -- if exists('hover.providers.dictionary') then
@@ -100,20 +100,5 @@ if vim.opt.mouse:get()['a'] then
 end
 
 map_dict(Keys, 'wk.register', false, 'n')
-
---[[ -- Simple
-require('hover').register {
-    name = 'Simple',
-    --- @param bufnr integer
-    enabled = function(bufnr)
-        return true
-    end,
-    --- @param opts Hover.Options
-    --- @param done fun(result: any)
-    execute = function(opts, done)
-        done{lines={'TEST'}, filetype="markdown"}
-    end,
-    priority = 1000,
-} ]]
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
