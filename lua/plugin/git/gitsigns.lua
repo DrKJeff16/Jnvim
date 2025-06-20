@@ -58,7 +58,7 @@ GS.setup({
                     desc('Reset Current Hunk', true, bufnr),
                 },
                 ['<leader>Ghu'] = {
-                    GS.undo_stage_hunk,
+                    GS.stage_hunk,
                     desc('Undo Hunk Stage', true, bufnr),
                 },
                 ['<leader>Ghp'] = {
@@ -90,7 +90,7 @@ GS.setup({
                     desc('Toggle Line Blame', true, bufnr),
                 },
                 ['<leader>Gtd'] = {
-                    GS.toggle_deleted,
+                    GS.preview_hunk_inline,
                     desc('Toggle Deleted', true, bufnr),
                 },
             },
@@ -156,7 +156,7 @@ GS.setup({
     attach_to_untracked = true,
     current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
     current_line_blame_opts = {
-        virt_text = false,
+        virt_text = true,
         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
         delay = 1500,
         ignore_whitespace = false,
