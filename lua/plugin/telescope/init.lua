@@ -9,6 +9,7 @@ local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
+local type_not_empty = Check.value.type_not_empty
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
 local map_dict = User.maps.map_dict
@@ -185,7 +186,7 @@ local load_ext = function(name)
     end
 end
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
     ['<leader><leader>'] = { function() vim.cmd('Telescope') end, desc('Open Telescope') },
     ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
@@ -230,15 +231,60 @@ local Extensions = Telescope.extensions
 ---@type table<string, TelExtension>
 local known_exts = {
     ['telescope._extensions.file_browser'] = { 'file_browser' },
-    ['plugin.telescope.cc'] = { 'conventional_commits' },
-    scope = { 'scope' },
-    persisted = { 'persisted' },
+    ['plugin.telescope.cc'] = {
+        'conventional_commits',
+
+        ---@return AllMaps
+        function()
+            if not type_not_empty('table', Extensions.conventional_commits) then
+                return {}
+            end
+
+            local pfx = Extensions.conventional_commits
+
+            return {
+                ['<leader>fTeC'] = { pfx.conventional_commits, desc('Scope Buffers Picker') },
+            }
+        end,
+    },
+    scope = {
+        'scope',
+
+        ---@return AllMaps
+        function()
+            if not type_not_empty('table', Extensions.scope) then
+                return {}
+            end
+
+            local pfx = Extensions.scope
+
+            return {
+                ['<leader>fTeS'] = { pfx.buffers, desc('Scope Buffers Picker') },
+            }
+        end,
+    },
+    persisted = {
+        'persisted',
+
+        ---@return table|AllMaps
+        keys = function()
+            if not type_not_empty('table', Extensions.persisted) then
+                return {}
+            end
+
+            local pfx = Extensions.persisted
+
+            return {
+                ['<leader>fTef'] = { pfx.persisted, desc('Persisted Picker') },
+            }
+        end,
+    },
     ['telescope-makefile'] = {
         'make',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            if is_nil(Extensions.make) then
+            if not type_not_empty('table', Extensions.make) then
                 return {}
             end
 
@@ -252,9 +298,9 @@ local known_exts = {
     project_nvim = {
         'projects',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            if is_nil(Extensions.projects) then
+            if not type_not_empty('table', Extensions.projects) then
                 return {}
             end
 
@@ -268,9 +314,9 @@ local known_exts = {
     notify = {
         'notify',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            if is_nil(Extensions.notify) then
+            if not type_not_empty('table', Extensions.notify) then
                 return {}
             end
 
@@ -284,9 +330,9 @@ local known_exts = {
     noice = {
         'noice',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            ---@type KeyMapDict
+            ---@type AllMaps
             local res = {
                 ['<leader>fTenl'] = {
                     function() require('noice').cmd('last') end,
@@ -298,7 +344,7 @@ local known_exts = {
                 },
             }
 
-            if require('user_api.maps.wk').available() and is_tbl(Names) then
+            if require('user_api.maps.wk').available() and type_not_empty('table', Names) then
                 Names['<leader>fTen'] = { group = '+Noice' }
             end
 
@@ -308,15 +354,15 @@ local known_exts = {
     ['lazygit.utils'] = {
         'lazygit',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            if is_nil(Extensions.lazygit) then
+            if not type_not_empty('table', Extensions.lazygit) then
                 return {}
             end
 
             local pfx = Extensions.lazygit
 
-            ---@type KeyMapDict
+            ---@type AllMaps
             local res = {
                 ['<leader>fTeG'] = { pfx.lazygit, desc('LazyGit Picker') },
             }
@@ -329,9 +375,9 @@ local known_exts = {
     ['telescope-picker-list'] = {
         'picker_list',
 
-        ---@return table|KeyMapDict
+        ---@return table|AllMaps
         keys = function()
-            if is_nil(Extensions.picker_list) then
+            if not type_not_empty('table', Extensions.picker_list) then
                 return {}
             end
 
