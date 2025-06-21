@@ -430,10 +430,10 @@ local function get_view_width_max() return view_width_max end
 Tree.setup({
     on_attach = on_attach,
 
-    sync_root_with_cwd = false,
+    sync_root_with_cwd = true,
     respect_buf_cwd = true,
 
-    prefer_startup_root = true,
+    prefer_startup_root = false,
 
     sort = {
         sorter = 'name',
