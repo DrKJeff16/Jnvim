@@ -3,9 +3,6 @@
 ---@module 'user_api.types.lsp'
 
 local User = require('user_api')
-local Check = User.check
-
-User:register_plugin('plugin.lsp.server_config')
 
 ---@type Lsp.Server.Clients
 local Clients = {}
@@ -13,7 +10,7 @@ local Clients = {}
 Clients.bashls = {
     cmd = { 'bash-language-server', 'start' },
     filetypes = { 'bash', 'sh' },
-    root_markers = { '.git', '.stylua.toml', 'stylua.toml' },
+    root_markers = { '.git' },
     settings = {
         bashIde = {
             backgroundAnalysisMaxFiles = 500,
@@ -147,9 +144,7 @@ Clients.lua_ls = {
 
     settings = {
         Lua = {
-            addonManager = {
-                enable = true,
-            },
+            addonManager = { enable = true },
             codeLens = { enable = true },
             completion = {
                 autoRequire = false,
@@ -332,6 +327,7 @@ Clients.pylsp = {
                         'argparse',
                         'numpy',
                         'os',
+                        're',
                         'sys',
                         'tensorflow',
                         'typing',
@@ -368,9 +364,7 @@ Clients.pylsp = {
                 yapf = { enabled = false },
             },
 
-            rope = {
-                ropeFolder = nil,
-            },
+            rope = { ropeFolder = nil },
         },
     },
 }
@@ -379,9 +373,7 @@ Clients.vimls = {
     cmd = { 'vim-language-server', '--stdio' },
     filetypes = { 'vim' },
     init_options = {
-        diagnostic = {
-            enable = true,
-        },
+        diagnostic = { enable = true },
         indexes = {
             count = 3,
             gap = 100,
@@ -403,11 +395,24 @@ Clients.vimls = {
 Clients.jsonls = {
     cmd = { 'vscode-json-language-server', '--stdio' },
     filetypes = { 'json', 'jsonc' },
-    init_options = {
-        provideFormatter = true,
-    },
+    init_options = { provideFormatter = true },
     root_markers = { '.git' },
 }
+
+Clients.marksman = {
+    cmd = { 'marksman', 'server' },
+    filetypes = { 'markdown', 'markdown.mdx' },
+    root_markers = { '.git', '.marksman.toml' },
+}
+
+Clients.cmake = {
+    cmd = { 'cmake-language-server' },
+    filetypes = { 'cmake' },
+    init_options = { buildDirectory = 'build' },
+    root_markers = { 'CMakePresets.json', 'CTestConfig.cmake', '.git', 'build', 'cmake' },
+}
+
+User:register_plugin('plugin.lsp.server_config')
 
 return Clients
 
