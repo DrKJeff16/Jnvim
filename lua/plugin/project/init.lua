@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
@@ -77,7 +77,7 @@ Project.setup({
 
     -- Path where project.nvim will store the project history for use in
     -- telescope
-    datapath = vim.fn.stdpath('state') .. '/projects/',
+    datapath = vim.fn.stdpath('data'),
 })
 
 ---@type AllMaps

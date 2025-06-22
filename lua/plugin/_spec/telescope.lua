@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local tel_fzf_build = CfgUtil.tel_fzf_build
@@ -18,7 +18,6 @@ local Telescope = {
         dependencies = { 'plenary.nvim' },
         config = source('plugin.telescope'),
     },
-    -- TODO: ADD 'OliverChao/telescope-picker-list.nvim'
     {
         'OliverChao/telescope-picker-list.nvim',
         lazy = true,
@@ -96,10 +95,10 @@ local Telescope = {
     --- Project Manager
     {
         'DrKJeff16/project.nvim',
+        dev = true,
         main = 'project_nvim',
         lazy = false,
         version = false,
-        init = function() vim.opt.autochdir = true end,
         config = source('plugin.project'),
     },
 }
