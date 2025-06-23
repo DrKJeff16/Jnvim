@@ -353,26 +353,6 @@ function Util:assoc()
                     end,
                 },
                 {
-                    pattern = { 'c', 'cpp' },
-                    group = group,
-                    callback = function()
-                        local buf_opts = {
-                            tabstop = 2,
-                            softtabstop = 2,
-                            shiftwidth = 2,
-                            autoindent = true,
-                            smartindent = true,
-                            expandtab = true,
-                            copyindent = false,
-                            preserveindent = false,
-                        }
-
-                        for option, val in next, buf_opts do
-                            Util.opt_set(option, val, curr_buf())
-                        end
-                    end,
-                },
-                {
                     pattern = 'lua',
                     group = group,
                     callback = function()
