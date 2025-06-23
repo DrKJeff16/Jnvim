@@ -1,11 +1,9 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.highlight'
----@module 'user_api.types.user.autocmd'
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
+local Termux = User.distro.termux
 
 local exists = Check.exists.module
 local hl_from_dict = User.highlight.hl_from_dict
@@ -20,8 +18,6 @@ local augroup = vim.api.nvim_create_augroup
 if not exists('notify') then
     return
 end
-
-User:register_plugin('plugin.notify')
 
 local Notify = require('notify')
 
@@ -47,7 +43,44 @@ Notify.setup({
     top_down = true,
 })
 
+---@type notify
 vim.notify = Notify
+
+---@type AuPair[]
+local aucmds = {
+    {
+        event = 'WinEnter',
+        opts = {
+            group = augroup('User.Notify', { clear = false }),
+            callback = function()
+                local buf = curr_buf()
+
+                if ft_get(buf) ~= 'notify' then
+                    return
+                end
+
+                optset('wrap', Termux:validate(), { scope = 'local' })
+            end,
+        },
+    },
+    {
+        event = 'BufWinLeave',
+        opts = {
+            group = augroup('User.Notify', { clear = false }),
+            callback = function()
+                local buf = curr_buf()
+
+                if ft_get(buf) ~= 'notify' then
+                    return
+                end
+
+                optset('wrap', false, { scope = 'local' })
+            end,
+        },
+    },
+}
+
+au(aucmds)
 
 ---@type HlDict
 local NotifyHl = {
@@ -84,40 +117,6 @@ local NotifyHl = {
 
 vim.schedule(function() hl_from_dict(NotifyHl) end)
 
----@type AuPair[]
-local aucmds = {
-    {
-        event = 'WinEnter',
-        opts = {
-            group = augroup('User.Notify', { clear = false }),
-            callback = function()
-                local buf = curr_buf()
-
-                if ft_get(buf) ~= 'notify' then
-                    return
-                end
-
-                optset('wrap', true, { scope = 'local' })
-            end,
-        },
-    },
-    {
-        event = 'BufWinLeave',
-        opts = {
-            group = augroup('User.Notify', { clear = false }),
-            callback = function()
-                local buf = curr_buf()
-
-                if ft_get(buf) ~= 'notify' then
-                    return
-                end
-
-                optset('wrap', false, { scope = 'local' })
-            end,
-        },
-    },
-}
-
-au(aucmds)
+User:register_plugin('plugin.notify')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
