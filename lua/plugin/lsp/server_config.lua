@@ -412,6 +412,61 @@ Clients.cmake = {
     root_markers = { 'CMakePresets.json', 'CTestConfig.cmake', '.git', 'build', 'cmake' },
 }
 
+Clients.html = {
+    cmd = { 'vscode-html-language-server', '--stdio' },
+    filetypes = { 'html', 'templ' },
+    init_options = {
+        configurationSection = { 'html', 'css', 'javascript' },
+        embeddedLanguages = {
+            css = true,
+            javascript = true,
+        },
+        provideFormatter = true,
+    },
+    root_markers = { 'package.json', '.git' },
+    settings = {},
+}
+
+Clients.cssls = {
+    cmd = { 'vscode-css-language-server', '--stdio' },
+
+    filetypes = { 'css', 'scss', 'less' },
+    init_options = { provideFormatter = true },
+    root_markers = { 'package.json', '.git' },
+
+    settings = {
+        css = { validate = true },
+        less = { validate = true },
+        scss = { validate = true },
+    },
+}
+
+Clients.css_variables = {
+    cmd = { 'css-variables-language-server', '--stdio' },
+    filetypes = { 'css', 'scss', 'less' },
+    root_markers = { 'package.json', '.git' },
+
+    settings = {
+        cssVariables = {
+            blacklistFolders = {
+                '**/.cache',
+                '**/.DS_Store',
+                '**/.git',
+                '**/.hg',
+                '**/.next',
+                '**/.svn',
+                '**/bower_components',
+                '**/CVS',
+                '**/dist',
+                '**/node_modules',
+                '**/tests',
+                '**/tmp',
+            },
+            lookupFiles = { '**/*.less', '**/*.scss', '**/*.sass', '**/*.css' },
+        },
+    },
+}
+
 User:register_plugin('plugin.lsp.server_config')
 
 return Clients

@@ -58,7 +58,7 @@ function Server:populate()
 
         self.Clients[key].capabilities = self.make_capabilities()
 
-        if key == 'jsonls' then
+        if vim.tbl_contains({ 'html', 'jsonls' }, key) then
             self.Clients[key].capabilities.textDocument.completion.completionItem.snippetSupport =
                 true
         end
