@@ -22,28 +22,20 @@ _G.in_console = require('user_api.check').in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
 
+-- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
----@diagnostic disable-next-line:unused-vararg
 function _G.print_inspect(...)
-    local msg = ''
-    local insp = inspect or vim.inspect
-
-    for _, v in next, arg do
-        msg = msg .. string.format('%s\n', insp(v))
-    end
+    local args = { ... }
+    local msg = table.concat(args, '\n')
 
     vim.print(msg)
 end
 
+-- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
----@diagnostic disable-next-line:unused-vararg
 function _G.notify_inspect(...)
-    local msg = ''
-    local insp = inspect or vim.inspect
-
-    for _, v in next, arg do
-        msg = msg .. string.format('%s\n', insp(v))
-    end
+    local args = { ... }
+    local msg = table.concat(args, '\n')
 
     require('user_api.util.notify').notify(msg, 'info', {
         title = 'Message',
