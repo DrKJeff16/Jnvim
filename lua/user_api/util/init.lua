@@ -380,20 +380,24 @@ function Util:assoc()
                         local buf = curr_buf()
 
                         -- Make sure the buffer is modifiable
-                        if not optget('modifiable', { buf = buf }) or not executable('stylua') then
+                        if
+                            not (optget('modifiable', { scope = 'local' }) and executable('stylua'))
+                        then
                             self.notify.notify('No stylua???')
                             return
                         end
 
-                        local map_dict = require('user_api.maps').map_dict
+                        local Keymaps = require('config.keymaps')
                         local desc = require('user_api.maps.kmap').desc
 
-                        map_dict({
-                            ['<leader><C-l>'] = {
-                                ':silent !stylua %<CR>',
-                                desc('Format With `stylua`', true, buf),
+                        Keymaps:setup({
+                            n = {
+                                ['<leader><C-l>'] = {
+                                    ':silent !stylua %<CR>',
+                                    desc('Format With `stylua`', true, buf),
+                                },
                             },
-                        }, 'wk.register', false, 'n', buf)
+                        })
                     end,
                 },
                 {
@@ -408,15 +412,17 @@ function Util:assoc()
                             return
                         end
 
-                        local map_dict = require('user_api.maps').map_dict
+                        local Keymaps = require('config.keymaps')
                         local desc = require('user_api.maps.kmap').desc
 
-                        map_dict({
-                            ['<leader><C-l>'] = {
-                                ':silent !isort %<CR>',
-                                desc('Format With `isort`', true, buf),
+                        Keymaps:setup({
+                            n = {
+                                ['<leader><C-l>'] = {
+                                    ':silent !isort %<CR>',
+                                    desc('Format With `isort`', true, buf),
+                                },
                             },
-                        }, 'wk.register', false, 'n', buf)
+                        })
                     end,
                 },
             },

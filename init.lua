@@ -50,7 +50,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
-    cmdwinheight = 10,
+    cmdwinheight = 15,
     ci = false, -- `copyindent`
     completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' },
     confirm = true,
@@ -143,7 +143,7 @@ Keymaps:setup({
             desc('Indent Whole File'),
         },
         ['<leader>vM'] = {
-            function() vim.cmd('messages') end,
+            function() vim.cmd.messages() end,
             desc('Run `:messages`'),
         },
         ['<leader>vN'] = {
@@ -178,9 +178,9 @@ User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it wo
 vim.schedule(function()
     local opt_set = vim.api.nvim_set_option_value
 
-    vim.cmd('noh') -- HACK: Disable highlights when reloading
+    vim.cmd.noh() -- HACK: Disable highlights when reloading
 
-    local DISABLE_ON = { 'lazy', 'notify', 'help' }
+    local DISABLE_ON = { 'lazy', 'notify', 'help', 'qf' }
 
     local curr_ft = Util.ft_get(curr_buf())
 
