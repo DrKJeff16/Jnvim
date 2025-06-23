@@ -12,7 +12,7 @@ local Neorg = {
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        enabled = not Termux:validate(),
+        cond = not Termux:validate(),
     },
 }
 

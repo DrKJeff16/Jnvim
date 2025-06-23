@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local vim_exists = Check.exists.vim_exists

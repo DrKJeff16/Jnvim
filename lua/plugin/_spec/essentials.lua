@@ -1,7 +1,7 @@
 ---@module 'user_api.types.lazy'
 
-local User = require('user_api')
 local CfgUtil = require('config.util')
+local User = require('user_api')
 local Check = User.check
 
 local vim_has = Check.exists.vim_has
@@ -17,6 +17,7 @@ local Essentials = {
         'folke/which-key.nvim',
         main = 'which-key',
         lazy = false,
+        priority = 1000,
         version = false,
         init = function()
             vim.opt.timeout = true

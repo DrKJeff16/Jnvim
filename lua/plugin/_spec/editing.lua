@@ -1,8 +1,8 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 local set_tgc = CfgUtil.set_tgc
@@ -39,7 +39,7 @@ local Editing = {
 
     {
         'tpope/vim-endwise',
-        event = 'InsertEnter',
+        event = 'VeryLazy',
         version = false,
     },
     --- TODO COMMENTS

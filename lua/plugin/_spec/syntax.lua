@@ -1,7 +1,7 @@
 ---@module 'user_api.types.lazy'
 
-local User = require('user_api')
 local CfgUtil = require('config.util')
+local User = require('user_api')
 local Check = User.check
 
 local source = CfgUtil.source
@@ -13,6 +13,7 @@ local is_root = Check.is_root
 local Syntax = {
     {
         'rhysd/vim-syntax-codeowners',
+        event = 'VeryLazy',
         version = false,
         init = flag_installed('codeowners'),
         cond = not is_root(),
