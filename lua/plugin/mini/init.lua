@@ -2,6 +2,7 @@
 
 ---@module 'user_api.types.mini'
 
+local Keymaps = require('config.keymaps')
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
@@ -10,38 +11,33 @@ local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
-local is_str = Check.value.is_str
-local empty = Check.value.empty
-local map_dict = User.maps.map_dict
+local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
-local wk_avail = User.maps.wk.available
 local notify = Util.notify.notify
-
-User:register_plugin('plugin.mini')
 
 ---@param mini_mod string
 ---@param opts table|nil
 local function src(mini_mod, opts)
-    if not is_str(mini_mod) or empty(mini_mod) then
+    if not type_not_empty('string', mini_mod) then
         notify('Invalid or empty Mini module', 'error', {
             animate = true,
             hide_from_history = false,
             timeout = 2750,
-            title = '(plugin.mini:src)',
+            title = '(plugin.mini.src)',
         })
         return
     end
 
     -- If table key doesn't start with `mini.`
     local og_mini_mod = mini_mod
-    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and 'mini.' .. mini_mod or mini_mod
+    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and string.format('mini.%s', mini_mod) or mini_mod
 
     if not exists(mini_mod) then
-        notify('Unable to import `' .. og_mini_mod .. '`', 'error', {
+        notify(string.format('Unable to import `%s`', og_mini_mod), 'error', {
             animate = true,
             hide_from_history = false,
-            timeout = 2250,
-            title = '(plugin.mini:src)',
+            timeout = 2750,
+            title = '(plugin.mini.src)',
         })
         return
     end
@@ -53,19 +49,20 @@ local function src(mini_mod, opts)
     if is_fun(M.setup) then
         ---@type boolean
         local ok
+        local _
 
         if is_nil(opts) then
-            ok = pcall(M.setup)
+            ok, _ = pcall(M.setup)
         else
-            ok = pcall(M.setup, opts)
+            ok, _ = pcall(M.setup, opts)
         end
 
         if not ok then
-            notify('Could not setup `' .. mini_mod .. '`', 'error', {
+            notify(string.format('Could not setup `%s`', mini_mod), 'error', {
                 animate = true,
                 hide_from_history = false,
-                timeout = 600,
-                title = '(plugin.mini:src)',
+                timeout = 2750,
+                title = '(plugin.mini.src)',
             })
         end
     end
@@ -73,74 +70,6 @@ end
 
 ---@type MiniModules
 local Mods = {}
-
---[[ Mods.align = {
-    -- Module mappings. Use `''` (empty string) to disable one
-    mappings = {
-        start = 'ga',
-        start_with_preview = 'gA',
-    },
-
-    -- Modifiers changing alignment steps and/or options
-    modifiers = {
-        -- TODO: Implement this if necessary
-        -- Main option modifiers
-        -- ['s'] = --<function: enter split pattern>,
-        -- ['j'] = --<function: choose justify side>,
-        -- ['m'] = --<function: enter merge delimiter>,
-        --
-        -- -- Modifiers adding pre-steps
-        -- ['f'] = --<function: filter parts by entering Lua expression>,
-        -- ['i'] = --<function: ignore some split matches>,
-        -- ['p'] = --<function: pair parts>,
-        -- ['t'] = --<function: trim parts>,
-        --
-        -- -- Delete some last pre-step
-        -- ['<BS>'] = --<function: delete some last pre-step>,
-        --
-        -- -- Special configurations for common splits
-        -- ['='] = --<function: enhanced setup for '='>,
-        -- [','] = --<function: enhanced setup for ','>,
-        -- [' '] = --<function: enhanced setup for ' '>,
-
-        t = function(steps, _)
-            local trim_high = require('mini.align').gen_step.trim('both', 'high')
-            table.insert(steps.pre_justify, trim_high)
-        end,
-
-        T = function(steps, _)
-            table.insert(steps.pre_justify, require('mini.align').gen_step.trim('both', 'remove'))
-        end,
-
-        j = function(_, opts)
-            local next_option = ({
-                left = 'center',
-                center = 'right',
-                right = 'none',
-                none = 'left',
-            })[opts.justify_side]
-            opts.justify_side = next_option or 'left'
-        end,
-    },
-
-    -- Default options controlling alignment process
-    options = {
-        split_pattern = '',
-        justify_side = { 'right', 'left' },
-        merge_delimiter = '',
-    },
-
-    -- Default steps performing alignment (if `nil`, default is used)
-    steps = {
-        pre_split = {},
-        split = nil,
-        pre_justify = {
-            require('mini.align').gen_step.filter('n == 1'),
-        },
-
-    -- Whether to disable showing non-error feedback
-    silent = true,
-} ]]
 
 Mods.basics = {
     options = {
@@ -158,7 +87,7 @@ Mods.basics = {
 
     autocommands = {
         basic = true,
-        relnum_in_visual_mode = true,
+        relnum_in_visual_mode = false,
     },
 
     silent = true,
@@ -167,6 +96,72 @@ Mods.basics = {
 Mods.bufremove = {
     set_vim_settings = true,
     silent = true,
+}
+
+Mods.doc = {
+    -- Function which extracts part of line used to denote annotation.
+    -- For more information see 'Notes' in |MiniDoc.config|.
+    annotation_extractor = function(l) return string.find(l, '^%-%-%-(%S*) ?') end,
+
+    -- Identifier of block annotation lines until first captured identifier
+    default_section_id = '@text',
+
+    -- Hooks to be applied at certain stage of document life cycle. Should
+    -- modify its input in place (and not return new one).
+    hooks = {
+        -- Applied to block before anything else
+        -- block_pre = --<function: infers header sections (tag and/or signature)>,
+
+        -- Applied to section before anything else
+        -- section_pre = --<function: replaces current aliases>,
+
+        -- Applied if section has specified captured id
+        -- sections = {
+        --     ['@alias'] = --<function: registers alias in MiniDoc.current.aliases>,
+        --     ['@class'] = --<function>,
+        --     ['@diagnostic'] = --<function: ignores any section content>,
+        --     -- For most typical usage see |MiniDoc.afterlines_to_code|
+        --     ['@eval'] = --<function: evaluates lines; replaces with their return>,
+        --     ['@field'] = --<function>,
+        --     ['@overload'] = --<function>,
+        --     ['@param'] = --<function>,
+        --     ['@private'] = --<function: registers block for removal>,
+        --     ['@return'] = --<function>,
+        --     ['@seealso'] = --<function>,
+        --     ['@signature'] = --<function: formats signature of documented object>,
+        --     ['@tag'] = --<function: turns its line in proper tag lines>,
+        --     ['@text'] = --<function: purposefully does nothing>,
+        --     ['@toc'] = --<function: clears all section lines>,
+        --     ['@toc_entry'] = --<function: registers lines for table of contents>,
+        --     ['@type'] = --<function>,
+        --     ['@usage'] = --<function>,
+        -- },
+
+        -- Applied to section after all previous steps
+        -- section_post = --<function: currently does nothing>,
+
+        -- Applied to block after all previous steps
+        -- block_post = --<function: does many things>,
+
+        -- Applied to file after all previous steps
+        -- file = --<function: adds separator>,
+
+        -- Applied to doc after all previous steps
+        -- doc = --<function: adds modeline>,
+
+        -- Applied before output file is written. Takes lines array as argument.
+        -- write_pre = --<function: currently returns its input>,
+
+        -- Applied after output help file is written. Takes doc as argument.
+        -- write_post = --<function: various convenience actions>,
+    },
+
+    -- Path (relative to current directory) to script which handles project
+    -- specific help file generation (like custom input files, hooks, etc.).
+    script_path = 'scripts/minidoc.lua',
+
+    -- Whether to disable showing non-error feedback
+    silent = false,
 }
 
 Mods.extra = {}
@@ -181,7 +176,9 @@ Mods.icons = {
         file = { glyph = '󰈤' },
     },
     directory = {},
-    extension = {},
+    extension = {
+        lua = { hl = 'Special' },
+    },
     file = {},
     filetype = {},
     lsp = {},
@@ -193,7 +190,7 @@ Mods.icons = {
     ---@return boolean
     ---@diagnostic disable-next-line:unused-local
     use_file_extension = function(ext, file)
-        if is_str(ext) then
+        if type_not_empty('string', ext) then
             ---@diagnostic disable-next-line:need-check-nil
             return ext:sub(-3) ~= 'scm'
         end
@@ -205,9 +202,10 @@ Mods.icons = {
 Mods.map = {
     -- Highlight integrations (none by default)
     integrations = {
+        require('mini.map').gen_integration.builtin_search(),
         require('mini.map').gen_integration.diagnostic(),
         require('mini.map').gen_integration.diff(),
-        require('mini.map').gen_integration.builtin_search(),
+        require('mini.map').gen_integration.gitsigns(),
     },
 
     -- Symbols used to display data
@@ -215,7 +213,9 @@ Mods.map = {
         -- Encode symbols. See `:h MiniMap.config` for specification and
         -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
         -- Default: solid blocks with 3x2 resolution.
-        encode = nil,
+        -- encode = require('mini.map').gen_encode_symbols.block('2x1'),
+        -- encode = require('mini.map').gen_encode_symbols.dodt('1x2'),
+        encode = require('mini.map').gen_encode_symbols.shade('1x2'),
 
         -- Scrollbar parts for view and line. Use empty string to disable any.
         scroll_line = '█',
@@ -225,22 +225,22 @@ Mods.map = {
     -- Window options
     window = {
         -- Whether window is focusable in normal way (with `wincmd` or mouse)
-        focusable = true,
+        focusable = false,
 
         -- Side to stick ('left' or 'right')
         side = 'right',
 
         -- Whether to show count of multiple integration highlights
-        show_integration_count = false,
+        show_integration_count = true,
 
         -- Total width
-        width = 10,
+        width = 20,
 
         -- Value of 'winblend' option
-        winblend = 35,
+        winblend = 25,
 
         -- Z-index
-        zindex = 10,
+        zindex = 50,
     },
 }
 
@@ -248,16 +248,20 @@ Mods.move = {
     -- Module mappings. Use `''` (empty string) to disable one
     mappings = {
         -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl
-        left = '<leader>Ml',
-        right = '<leader>Mr',
-        down = '<leader>Md',
-        up = '<leader>Mu',
+        -- left = '<leader>Ml',
+        -- right = '<leader>Mr',
+        -- down = '<leader>Md',
+        -- up = '<leader>Mu',
+        left = '<C-Left>',
+        right = '<C-Right>',
+        down = '<C-Down>',
+        up = '<C-Up>',
 
         -- Move current line in Normal mode
-        line_left = '<leader>Ml',
-        line_right = '<leader>Mr',
-        line_down = '<leader>Md',
-        line_up = '<leader>Mu',
+        line_left = '<C-Left>',
+        line_right = '<C-Right>',
+        line_down = '<C-Down>',
+        line_up = '<C-Up>',
     },
 
     -- Options which control moving behavior
@@ -315,58 +319,52 @@ if not exists('todo-comments') then
     }
 end
 
+---@type AllModeMaps
+local Keys = {
+    n = {},
+    v = {},
+}
+
 for mod, opts in next, Mods do
     src(mod, opts)
-    if not wk_avail() then
-        goto continue
-    end
 
-    if mod == 'move' then
-        map_dict({
-            n = {
-                ['<leader>M'] = { group = '+Mini Move' },
-            },
-            v = {
-                ['<leader>MM'] = { group = '+Mini Move' },
-            },
-        }, 'wk.register', true)
-    elseif mod == 'map' then
-        map_dict({
-            ['<leader>m'] = { group = '+Mini Map' },
-            ['<leader>mt'] = { group = '+Toggles' },
-        }, 'wk.register', false, 'n')
+    if mod == 'icons' and exists('nvim-web-devicons') then
+        require('mini.icons').mock_nvim_web_devicons()
     end
-
-    ::continue::
 
     if mod == 'map' then
-        map_dict({
-            ['<leader>mtt'] = {
-                require('mini.map').toggle,
-                desc('Toggle Mini Map'),
-            },
-            ['<leader>mts'] = {
-                require('mini.map').toggle_side,
-                desc('Toggle Side'),
-            },
-            ['<leader>mtf'] = {
-                require('mini.map').toggle_focus,
-                desc('Toggle Focus'),
-            },
-            ['<leader>mo'] = {
-                require('mini.map').open,
-                desc('Open Mini Map'),
-            },
-            ['<leader>md'] = {
-                require('mini.map').close,
-                desc('Close Mini Map'),
-            },
-            ['<leader>mr'] = {
-                require('mini.map').refresh,
-                desc('Refresh Mini Map'),
-            },
-        }, 'wk.register', false, 'n')
+        Keys.n['<leader>m'] = { group = '+Mini Map' }
+        Keys.n['<leader>mt'] = { group = '+Toggles' }
+
+        Keys.n['<leader>mtt'] = {
+            require('mini.map').toggle,
+            desc('Toggle Mini Map'),
+        }
+        Keys.n['<leader>mts'] = {
+            require('mini.map').toggle_side,
+            desc('Toggle Side'),
+        }
+        Keys.n['<leader>mtf'] = {
+            require('mini.map').toggle_focus,
+            desc('Toggle Focus'),
+        }
+        Keys.n['<leader>mo'] = {
+            require('mini.map').open,
+            desc('Open Mini Map'),
+        }
+        Keys.n['<leader>md'] = {
+            require('mini.map').close,
+            desc('Close Mini Map'),
+        }
+        Keys.n['<leader>mr'] = {
+            require('mini.map').refresh,
+            desc('Refresh Mini Map'),
+        }
     end
 end
+
+Keymaps:setup(Keys)
+
+User:register_plugin('plugin.mini')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
