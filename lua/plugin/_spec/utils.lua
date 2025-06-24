@@ -1,12 +1,12 @@
 ---@module 'user_api.types.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
+local in_console = Check.in_console
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
-local in_console = Check.in_console
 
 ---@type (LazySpec)[]
 local Utils = {
@@ -16,23 +16,23 @@ local Utils = {
         version = false,
         init = flag_installed('utl'),
     },
-    --- Makefile viewer
-    {
-        'Zeioth/makeit.nvim',
-        ft = 'make',
-        version = false,
-        dependencies = { 'stevearc/overseer.nvim' },
-        opts = {},
-        cond = not in_console(),
-    },
-    --- The task runner used for `makeit.nvim`
-    {
-        'stevearc/overseer.nvim',
-        lazy = true,
-        version = false,
-        config = source('plugin.overseer'),
-        cond = not in_console(),
-    },
+    -- --- Makefile viewer
+    -- {
+    --     'Zeioth/makeit.nvim',
+    --     ft = 'make',
+    --     version = false,
+    --     dependencies = { 'stevearc/overseer.nvim' },
+    --     opts = {},
+    --     cond = not in_console(),
+    -- },
+    -- --- The task runner used for `makeit.nvim`
+    -- {
+    --     'stevearc/overseer.nvim',
+    --     lazy = true,
+    --     version = false,
+    --     config = source('plugin.overseer'),
+    --     cond = not in_console(),
+    -- },
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',

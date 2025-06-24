@@ -2,8 +2,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local executable = Check.exists.executable
-local is_nil = Check.value.is_nil
 local empty = Check.value.empty
 
 local ucmd = vim.api.nvim_create_user_command
@@ -212,5 +210,7 @@ ucmd('OverseerRestartLast', function()
         overseer.run_action(tasks[1], 'restart')
     end
 end, {})
+
+User:register_plugin('plugin.overseer')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
