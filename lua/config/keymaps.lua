@@ -9,9 +9,11 @@ local Maps = require('user_api.maps') ---@see User.Maps
 
 local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
+local is_int = Value.is_int ---@see User.Check.Value.is_int
 local is_str = Value.is_str ---@see User.Check.Value.is_str
 local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
 local empty = Value.empty ---@see User.Check.Value.empty
+local type_not_empty = Value.type_not_empty ---@see User.Check.Value.type_not_empty
 local ft_get = Util.ft_get ---@see User.Util.ft_get
 local bt_get = Util.bt_get ---@see User.Util.bt_get
 local nop = Maps.nop ---@see User.Maps.nop
@@ -579,6 +581,7 @@ function Keymaps:setup(keys, bufnr)
     end
 
     keys = is_tbl(keys) and keys or {}
+    bufnr = is_int(bufnr) and bufnr or nil
 
     for k, _ in next, keys do
         if not vim.tbl_contains(MODES, k) then
@@ -603,8 +606,14 @@ function Keymaps:setup(keys, bufnr)
         end
     end
 
+    local res = vim.tbl_deep_extend('keep', keys, self.Keys)
+
     --- Set keymaps
-    map_dict(vim.tbl_deep_extend('keep', keys, self.Keys), 'wk.register', true)
+    if is_nil(bufnr) then
+        map_dict(res, 'wk.register', true)
+    else
+        map_dict(res, 'wk.register', true, nil, bufnr)
+    end
 end
 
 --- Set the `<leader>` key and, if desired, the `<localleader>` aswell
@@ -619,8 +628,8 @@ end
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
 function Keymaps:set_leader(leader, local_leader, force)
-    leader = (is_str(leader) and not empty(leader)) and leader or '<Space>'
-    local_leader = (is_str(local_leader) and not empty(local_leader)) and local_leader or leader
+    leader = type_not_empty('string', leader) and leader or '<Space>'
+    local_leader = type_not_empty('string', local_leader) and local_leader or leader
     force = is_bool(force) and force or false
 
     if leader_set and not force then
