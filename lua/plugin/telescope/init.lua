@@ -19,8 +19,6 @@ if not exists('telescope') then
     return
 end
 
-User:register_plugin('plugin.telescope')
-
 local au = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
@@ -447,5 +445,7 @@ for event, v in next, au_tbl do
         au(event, au_opts)
     end
 end
+
+User:register_plugin('plugin.telescope')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -79,7 +79,6 @@ FileBrowser.file_browser = {
 
 function FileBrowser.loadkeys()
     local Keymaps = require('config.keymaps')
-
     local desc = require('user_api.maps.kmap').desc
 
     ---@type AllMaps
@@ -96,6 +95,8 @@ function FileBrowser.loadkeys()
 
     Keymaps:setup({ n = Keys })
 end
+
+User:register_plugin('plugin.telescope.file_browser')
 
 return FileBrowser
 

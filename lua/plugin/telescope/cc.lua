@@ -13,8 +13,6 @@ if not exists('telescope') or not exists('telescope._extensions.conventional_com
     return nil
 end
 
-User:register_plugin('plugin.telescope.cc')
-
 ---@type TelCC
 local CC = {}
 

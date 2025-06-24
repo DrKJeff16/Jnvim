@@ -45,6 +45,14 @@ local Utils = {
         config = source('plugin.dooku'),
         cond = not in_console(),
     },
+
+    {
+        'vim-pandoc/vim-pandoc',
+        lazy = true,
+        version = false,
+        dependencies = { 'vim-pandoc/vim-pandoc-syntax' },
+        init = CfgUtil.flag_installed('vim_pandoc'),
+    },
 }
 
 return Utils

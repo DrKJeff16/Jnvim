@@ -15,7 +15,7 @@ local Telescope = {
         'nvim-telescope/telescope.nvim',
         event = 'VeryLazy',
         version = false,
-        dependencies = { 'plenary.nvim' },
+        dependencies = { 'plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
         config = source('plugin.telescope'),
     },
     {

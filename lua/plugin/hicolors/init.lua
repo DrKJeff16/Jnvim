@@ -1,5 +1,4 @@
 local Keymaps = require('config.keymaps')
-
 local User = require('user_api')
 local Check = User.check
 

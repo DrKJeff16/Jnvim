@@ -1,23 +1,31 @@
+---@module 'lazy'
 ---@module 'user_api.types.lazy'
 
 local User = require('user_api')
 local CfgUtil = require('config.util')
 local Keymaps = require('config.keymaps')
-local Check = User.check
+local Archlinux = require('user_api.distro.archlinux')
 
-local desc = User.maps.kmap.desc
+local desc = require('user_api.maps.kmap').desc
 
 local key_variant = CfgUtil.key_variant
-local in_console = Check.in_console
-local is_root = Check.is_root
+local in_console = require('user_api.check').in_console
+local is_root = require('user_api.check').is_root
+
+local uv = vim.uv or vim.loop
+
+_G.LAZY_DATA = vim.fn.stdpath('data') .. '/lazy'
+_G.LAZY_STATE = vim.fn.stdpath('state') .. '/lazy'
 
 --- Set installation dir for `Lazy`
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+_G.LAZYPATH = LAZY_DATA .. '/lazy.nvim'
+
+_G.README_PATH = LAZY_STATE .. '/readme'
 
 --- Install `Lazy` automatically
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not uv.fs_stat(LAZYPATH) then
     local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-    local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, lazypath })
+    local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, LAZYPATH })
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
@@ -30,11 +38,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 
 --- Add `Lazy` to runtimepath
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(LAZYPATH)
 
 local Lazy = require('lazy')
-
-local plugin_root = vim.fn.stdpath('data') .. '/lazy'
 
 Lazy.setup({
     spec = {
@@ -46,9 +52,11 @@ Lazy.setup({
         version = false,
     },
 
-    root = plugin_root,
+    root = LAZY_DATA,
 
     performance = {
+        reset_packpath = true,
+
         rtp = {
             reset = true,
             disabled_plugins = {
@@ -65,7 +73,7 @@ Lazy.setup({
     },
 
     install = {
-        colorscheme = { 'tokyonight', 'habamax' },
+        colorscheme = { 'habamax' },
         missing = true,
     },
 
@@ -76,17 +84,15 @@ Lazy.setup({
     },
 
     pkg = {
-        cache = vim.fn.stdpath('state') .. '/lazy/pkg-cache.lua',
+        cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
         sources = (function()
             ---@type LazySources
             local S = { 'lazy', 'packspec' }
 
-            if not is_root() then
+            if not is_root() and require('config.util').luarocks_check() then
                 --- If `luarocks` is available and configured
-                if require('config.util').luarocks_check() then
-                    table.insert(S, 'rockspec')
-                end
+                table.insert(S, 'rockspec')
             end
 
             return S
@@ -100,20 +106,20 @@ Lazy.setup({
     },
 
     change_detection = {
-        enabled = false,
-        notify = false,
+        enabled = true,
+        notify = Archlinux:validate(),
     },
 
     checker = {
-        enabled = true,
-        notify = false,
+        enabled = Archlinux:validate(),
+        notify = Archlinux:validate(),
         frequency = 900,
         check_pinned = false,
     },
 
     ui = {
         backdrop = not in_console() and 60 or 100,
-        border = 'rounded',
+        border = 'double',
         title = 'L        A        Z        Y',
         wrap = true,
         title_pos = 'center',
@@ -122,14 +128,14 @@ Lazy.setup({
 
     readme = {
         enabled = true,
-        root = vim.fn.stdpath('state') .. '/lazy/readme',
+        root = README_PATH,
         files = { 'README.md', 'lua/**/README.md' },
 
         -- only generate markdown helptags for plugins that dont have docs
         skip_if_doc_exists = true,
     },
 
-    state = vim.fn.stdpath('state') .. '/lazy/state.json',
+    state = LAZY_STATE .. '/state.json',
 
     profiling = {
         -- Enables extra stats on the debug tab related to the loader cache.
@@ -149,15 +155,19 @@ local Keys = {
     ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
     ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
     ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+
     ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
     ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
     ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
     ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
     ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-    ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+    -- ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
+
     ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
 
 Keymaps:setup({ n = Keys })
+
+User:register_plugin('config.lazy', 1)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
