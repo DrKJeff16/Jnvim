@@ -166,6 +166,15 @@ if exists('plugin.telescope.cc') then
     end
 end
 
+if exists('plugin.telescope.tabs') then
+    local pfx = require('plugin.telescope.tabs')
+
+    if not is_nil(pfx) then
+        pfx.create()
+        pfx.loadkeys()
+    end
+end
+
 Telescope.setup(Opts)
 
 ---@param name string
