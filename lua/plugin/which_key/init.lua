@@ -11,13 +11,11 @@ if not exists('which-key') then
     return
 end
 
-User:register_plugin('plugin.which_key')
-
 local WK = require('which-key')
 
 WK.setup({
     ---@type false|'classic'|'modern'|'helix'
-    preset = 'modern',
+    preset = 'classic',
 
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
@@ -41,6 +39,10 @@ WK.setup({
     -- Only used by enabled xo mapping modes.
     ---@param ctx { mode: string, operator: string }
     defer = function(ctx)
+        if vim.list_contains({ 'd', 'y' }, ctx.operator) then
+            return true
+        end
+
         local deferred_modes = {
             'o',
             'v',
@@ -70,7 +72,7 @@ WK.setup({
         -- the presets plugin, adds help for a bunch of default keybindings in Neovim
         -- No actual key bindings are created
         spelling = {
-            enabled = vim.opt.spell:get(), -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+            enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
             suggestions = 10, -- how many suggestions should be shown in the list?
         },
         presets = {
@@ -79,7 +81,7 @@ WK.setup({
             text_objects = true, -- help for text objects triggered after entering an operator
             windows = true, -- default bindings on <c-w>
             nav = true, -- misc bindings to work with windows
-            z = false, -- bindings for folds, spelling and others prefixed with z
+            z = true, -- bindings for folds, spelling and others prefixed with z
             g = true, -- bindings for prefixed with g
         },
     },
@@ -91,7 +93,7 @@ WK.setup({
         -- col = 0,
         -- row = 0,
         fixed = true,
-        no_overlap = false,
+        no_overlap = true,
         border = 'rounded',
         padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
         title = true,
@@ -108,7 +110,7 @@ WK.setup({
 
     layout = {
         width = { min = 20, max = math.floor(vim.opt_local.columns:get() * 3 / 4) }, -- min and max width of the columns
-        spacing = 2, -- spacing between columns
+        spacing = 3, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
 
@@ -127,7 +129,7 @@ WK.setup({
     --- * manual: the order the mappings were added
     --- * case: lower-case first
     ---@type (string|wk.Sorter)[]
-    sort = { 'local', 'order', 'case', 'alphanum', 'manual', 'group', 'mod' },
+    sort = { 'alphanum', 'case', 'group', 'local', 'mod' },
 
     -- expand = 0, -- expand groups when <= n mappings
 
@@ -158,6 +160,8 @@ WK.setup({
         separator = '➜', -- symbol used between a key and it's label
         group = '+', -- symbol prepended to a group
         ellipsis = '…',
+
+        mappings = true,
 
         --- See `lua/which-key/icons.lua` for more details
         --- Set to `false` to disable keymap icons
@@ -218,20 +222,20 @@ WK.setup({
     -- Be aware, that triggers are not needed for visual and operator pending mode.
     ---@type wk.Spec
     triggers = {
-        { '<auto>', mode = { 'n', 'x', 's', 'o', 't', 'v' } },
-        { '<leader>', mode = { 'n', 'v' } },
+        { '<auto>', mode = 'nxsotv' },
+        { '<leader>', mode = 'nv' },
     },
 
     disable = {
         -- disable WhichKey for certain buf types and file types.
         ft = {},
         bt = {},
-        --[[ -- disable a trigger for a certain context by returning true
+        -- disable a trigger for a certain context by returning true
         ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-        trigger = function(ctx)
-            return false
-        end, ]]
+        -- trigger = function(ctx) return false end,
     },
 })
+
+User:register_plugin('plugin.which_key')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
