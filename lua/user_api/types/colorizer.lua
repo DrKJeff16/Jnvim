@@ -10,7 +10,6 @@
 ---@field css? boolean
 ---@field css_fn? boolean
 ---@field mode? 'foreground'|'background'
----@field new? fun(): ColorizerOpts
----@field __index? ColorizerOpts
+---@field new? fun(O: table?): table|ColorizerOpts
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

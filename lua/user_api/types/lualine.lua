@@ -58,7 +58,7 @@
 ---@field alternate_file string
 ---@field directory string
 
----@class LuaLine.Components.Buffers
+---@class LuaLine.Components.Buffers: LuaLine.Components.Spec
 ---@field [1] 'buffers'
 ---@field show_filename_only? boolean
 ---@field hide_filename_extension? boolean
@@ -70,7 +70,7 @@
 ---@field buffers_color? ComponentsColor
 ---@field symbols? BuffersSymbols
 
----@class LuaLine.Components.DateTime
+---@class LuaLine.Components.DateTime: LuaLine.Components.Spec
 ---@field [1] 'datetime'
 ---@field style? 'default'|'us'|'uk'|'iso'|string
 
@@ -92,12 +92,12 @@
 ---@field [3]? 'info'
 ---@field [4]? 'hint'
 
----@class LuaLine.Components.Diagnostics
+---@class LuaLine.Components.Diagnostics: LuaLine.Components.Spec
 ---@field [1] 'diagnostics'
 ---@field sources?
 ---|('nvim_lsp'|'nvim_diagnostic'|'nvim_workspace_diagnostic'|'coc'|'ale'|'vim_lsp')[]
 ---|fun(...): DiagnosticsInteger
----@field sections? DiagnosticsSections|('error'|'warn'|'info'|'hint')[]
+---@field sections? ('error'|'warn'|'info'|'hint')[]|DiagnosticsSections
 ---@field diagnostics_color? DiagnosticsColor
 ---@field symbols? DiagnosticsColor
 ---@field colored? boolean
@@ -114,7 +114,7 @@
 ---@field modified integer
 ---@field removed integer
 
----@class LuaLine.Components.Diff
+---@class LuaLine.Components.Diff: LuaLine.Components.Spec
 ---@field [1] 'diff'
 ---@field colored? boolean
 ---@field diff_color? DiffColor
@@ -138,7 +138,7 @@
 ---@field unnamed string
 ---@field newfile string
 
----@class LuaLine.Components.Filename
+---@class LuaLine.Components.Filename: LuaLine.Components.Spec
 ---@field [1] 'filename'
 ---@field file_status? boolean
 ---@field newfile_status? boolean
@@ -150,13 +150,13 @@
 ---@field [1]? string
 ---@field align string
 
----@class LuaLine.Components.Filetype
+---@class LuaLine.Components.Filetype: LuaLine.Components.Spec
 ---@field [1] 'filetype'
 ---@field colored? boolean
 ---@field icon_only? boolean
 ---@field icon? FileTypeIcon
 
----@class LuaLine.Components.Searchcount
+---@class LuaLine.Components.Searchcount: LuaLine.Components.Spec
 ---@field [1] 'searchcount'
 ---@field maxcount? integer
 ---@field timeout? integer
@@ -164,7 +164,7 @@
 ---@class TabsSymbols
 ---@field modified string
 
----@class LuaLine.Components.Tabs
+---@class LuaLine.Components.Tabs: LuaLine.Components.Spec
 ---@field [1] 'tabs'
 ---@field tab_max_length? integer
 ---@field max_length? number
@@ -176,7 +176,7 @@
 ---@field symbols? TabsSymbols
 ---@field fmt? fun(name: string, context: table?): string
 
----@class LuaLine.Components.Windows
+---@class LuaLine.Components.Windows: LuaLine.Components.Spec
 ---@field show_filename_only? boolean
 ---@field show_modified_status? boolean
 ---@field mode? 0|1|2
@@ -253,12 +253,12 @@
 ---@field windows LuaLine.Components.Windows
 
 ---@class LuaLine.Sections
----@field lualine_a table|(LuaLine.Components|SectionComponentStr|fun())[]
----@field lualine_b table|(LuaLine.Components|SectionComponentStr|fun())[]
----@field lualine_c table|(LuaLine.Components|SectionComponentStr|fun())[]
----@field lualine_x table|(LuaLine.Components|SectionComponentStr|fun())[]
----@field lualine_y table|(LuaLine.Components|SectionComponentStr|fun())[]
----@field lualine_z table|(LuaLine.Components|SectionComponentStr|fun())[]
+---@field lualine_a (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_b (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_c (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_x (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_y (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_z (LuaLine.Components|SectionComponentStr|fun())[]|table
 
 ---@class LuaLine.Presets
 ---@field components LuaLine.ComponentsDict

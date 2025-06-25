@@ -27,6 +27,6 @@
 
 ---@class TelExtension
 ---@field [1] string
----@field keys? fun(): (table|KeyMapDict)
+---@field keys? fun(): (table|AllMaps)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -36,7 +36,7 @@
 
 ---@class Lsp.SubMods.Trouble
 ---@field Opts trouble.Config
----@field Keys KeyMapModeDict|ModeRegKeys|ModeRegKeysNamed
+---@field Keys AllModeMaps
 ---@field setup fun(self: Lsp.SubMods.Trouble, O: table|trouble.Config?)
 ---@field new fun(O: table?): table|Lsp.SubMods.Trouble
 
@@ -89,10 +89,9 @@
 ---@field Clients Lsp.Server.Clients
 ---@field make_capabilities fun(): lsp.ClientCapabilities
 ---@field populate fun(self: Lsp.Server)
----@field new fun(O: table?): Lsp.Server|table
+---@field new fun(O: table?): table|Lsp.Server
 
 ---@class Lsp.SubMods
----@field neoconf fun()|nil
 ---@field neodev fun()|nil
 ---@field trouble? fun()|nil
 ---@field clangd? fun()|nil
