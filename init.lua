@@ -22,22 +22,27 @@ _G.in_console = require('user_api.check').in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
 
--- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
----@type fun(...)
-function _G.print_inspect(...)
-    local args = { ... }
-    local msg = table.concat(args, '\n')
-
-    vim.print(msg)
+function _G.foldr(f, ...)
+    if select('#', ...) < 2 then
+        return ...
+    end
+    local function helper(x, ...)
+        if select('#', ...) == 0 then
+            return x
+        end
+        return f(x, helper(...))
+    end
+    return helper(...)
 end
 
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
-function _G.notify_inspect(...)
-    local args = { ... }
-    local msg = table.concat(args, '\n')
+function _G.print_inspect(...) vim.print(inspect(...)) end
 
-    require('user_api.util.notify').notify(msg, 'info', {
+-- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
+---@type fun(...)
+function _G.notify_inspect(...)
+    require('user_api.util.notify').notify(inspect(...), 'info', {
         title = 'Message',
         hide_from_history = true,
         animate = true,
