@@ -4,7 +4,7 @@
 ---@alias AuGroupOpts vim.api.keyset.create_augroup
 
 ---@class AuPair
----@field event string|string[]
+---@field event string[]|string
 ---@field opts AuOpts
 
 ---@class AuRepeatEvents

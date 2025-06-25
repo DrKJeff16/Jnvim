@@ -251,6 +251,35 @@ function String.capitalize(s, use_dot, triggers)
     return new_str
 end
 
+---@param str string
+---@param target string
+---@param new string
+---@return string
+function String.replace(str, target, new)
+    if string.len(str) == 0 then
+        return str
+    end
+    if string.len(target) == 0 then
+        return str
+    end
+    if string.len(new) == 0 or new == target then
+        return str
+    end
+
+    ---@type string
+    local new_str = ''
+    local len = string.len(str)
+
+    for i = 1, len, 1 do
+        local c = str:sub(i, i)
+        c = c == target and new or c
+
+        new_str = new_str .. c
+    end
+
+    return new_str
+end
+
 return String
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

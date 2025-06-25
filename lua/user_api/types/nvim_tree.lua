@@ -1,8 +1,8 @@
 ---@meta
 
-require('user_api.types.user.maps')
-require('user_api.types.user.highlight')
-require('user_api.types.user.autocmd')
+---@module 'user_api.types.user.maps'
+---@module 'user_api.types.user.highlight'
+---@module 'user_api.types.user.autocmd'
 
 ---@alias AnyFunc fun(...)
 ---@alias TreeApi table<string, string|AnyFunc|table>

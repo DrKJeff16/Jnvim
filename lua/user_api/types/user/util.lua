@@ -71,6 +71,7 @@
 ---@field alphabet User.Util.String.Alphabet
 ---@field digits User.Util.String.Digits
 ---@field capitalize fun(s: string, use_dot: boolean?, triggers: string[]?): (new_str: string)
+---@field replace fun(str: string, target: string, new: string): string
 
 ---@class User.Util.Autocmd
 ---@field au_pair fun(T: AuPair)
@@ -92,16 +93,16 @@
 ---@field has_words_before fun(): boolean
 ---@field pop_values fun(T: table, V: any): (table, ...)
 ---@field xor fun(x: boolean, y: boolean): boolean
----@field strip_fields fun(T: table<string|integer, any>, values: string|string[]): table
+---@field strip_fields fun(T: table<string|integer, any>, values: string[]|string): table
 ---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
----@field opt_get fun(self: User.Util, s: string|string[], bufnr: integer?): table<string, any>|table
+---@field opt_get fun(self: User.Util, s: string[]|string, bufnr: integer?): table<string, any>|table
 ---@field opt_set fun(s: string, val: any, bufnr: integer?)
 ---@field assoc fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
----@field mv_tbl_values fun(T: table|table<string|integer, any>, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
+---@field mv_tbl_values fun(T: table<string|integer, any>|table, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
 ---@field discard_dups fun(data: string|table): (string|table)
 ---@field new fun(O: table?): table|User.Util
 

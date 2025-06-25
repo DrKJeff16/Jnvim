@@ -1,7 +1,7 @@
 ---@meta
 
-require('user_api.types.user.maps')
-require('user_api.types.user.autocmd')
+---@module 'user_api.types.user.maps'
+---@module 'user_api.types.user.autocmd'
 
 ---@class TelCC.Opts
 ---@field theme? 'ivy'|'dropdown'|'cursor'
