@@ -1,7 +1,5 @@
----@module 'user_api.types.user.maps'
-
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local executable = Check.exists.executable
@@ -9,8 +7,6 @@ local desc = User.maps.kmap.desc
 
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
-
-User:register_plugin('plugin.markdown.md_preview')
 
 local Fields = {
     mkdp_auto_start = 0,
@@ -36,37 +32,43 @@ local Fields = {
     mkdp_theme = 'dark',
 }
 
-for k, v in next, Fields do
-    vim.g[k] = v
+for key, value in next, Fields do
+    vim.g[key] = value
 end
 
+local group = augroup('MarkdownPreviewInitHook', { clear = false })
+
 au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
-    group = augroup('MarkdownPreviewInitHook', { clear = false }),
     pattern = { '*.md', '*.markdown', '*.MD' },
-    callback = function()
+    group = group,
+    callback = function(args)
+        local bufnr = args.buf
+
         ---@type AllMaps
         local Keys = {
-            ['<leader>f<C-M>'] = { group = '+MarkdownPreview' },
+            ['<leader>f<C-M>'] = { group = '+MarkdownPreview', buffer = bufnr },
 
             ['<leader>f<C-M>t'] = {
                 ---@diagnostic disable-next-line
                 function() pcall(vim.cmd, 'MarkdownPreviewToggle') end,
-                desc('Toggle Markdown Preview', true, 0),
+                desc('Toggle Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>p'] = {
                 ---@diagnostic disable-next-line
                 function() pcall(vim.cmd, 'MarkdownPreview') end,
-                desc('Run Markdown Preview', true, 0),
+                desc('Run Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>s'] = {
                 ---@diagnostic disable-next-line
                 function() pcall(vim.cmd, 'MarkdownPreviewStop') end,
-                desc('Stop Markdown Preview', true, 0),
+                desc('Stop Markdown Preview', true, bufnr),
             },
         }
 
-        Keymaps:setup({ n = Keys, v = Keys })
+        Keymaps:setup({ n = Keys }, bufnr)
     end,
 })
+
+User:register_plugin('plugin.markdown.md_preview')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
