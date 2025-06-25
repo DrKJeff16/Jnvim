@@ -1,8 +1,5 @@
----@module 'user_api.types.user.highlight'
----@module 'user_api.types.user.maps'
-
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
@@ -13,9 +10,9 @@ if not exists('treesitter-context') then
     return
 end
 
-User:register_plugin('plugin.treesitter.context')
-
 local Context = require('treesitter-context')
+
+---@type integer
 
 Context.setup({
     enable = true,
@@ -29,13 +26,15 @@ Context.setup({
     min_window_height = 0,
     zindex = 20,
     multiline_threshold = 20,
-    max_lines = vim.opt.scrolloff:get() ~= 0 and vim.opt.scrolloff:get() + 1 or 3,
+    max_lines = 4,
 
     -- Separator between context and content. Should be a single character string, like '-'.
     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline
     separator = nil,
 
-    on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+    -- Return false to disable attaching
+    ---@type nil|(fun(buf: integer): boolean)
+    on_attach = nil,
 })
 
 ---@type HlDict
@@ -58,5 +57,7 @@ local Keys = {
 }
 
 Keymaps:setup({ n = Keys })
+
+User:register_plugin('plugin.treesitter.context')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
