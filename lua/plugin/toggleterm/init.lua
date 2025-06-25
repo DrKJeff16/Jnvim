@@ -5,17 +5,18 @@ local Keymaps = require('config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
+local is_int = Check.value.is_int
 local desc = User.maps.kmap.desc
+local tmap = User.maps.kmap.t
 
 if not exists('toggleterm') then
     return
 end
 
-User:register_plugin('plugin.toggleterm')
-
 local floor = math.floor
 
 local au = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
 
 local TT = require('toggleterm')
 
@@ -65,7 +66,7 @@ TT.setup({
     start_in_insert = true,
     insert_mappings = true,
     terminal_mappings = true,
-    shell = vim.o.shell,
+    shell = vim.opt.shell:get(),
     auto_scroll = true,
 
     persist_size = true,
@@ -88,36 +89,43 @@ TT.setup({
     },
 })
 
-function _G.set_terminal_keymaps()
+---@param bufnr? integer
+function _G.set_terminal_keymaps(bufnr)
+    bufnr = is_int(bufnr) and bufnr or 0
+
     ---@type AllMaps
     local Keys = {
-        ['<esc>'] = {
+        ['<Esc>'] = {
             [[<C-\><C-n>]],
-            desc('Escape Terminal', true, 0),
+            desc('Escape Terminal', true, bufnr),
+        },
+        ['<C-e>'] = {
+            [[<C-\><C-n>]],
+            desc('Escape Terminal', true, bufnr),
         },
         ['<C-h>'] = {
             function() vim.cmd.wincmd('h') end,
-            desc('Goto Left Window', true, 0),
+            desc('Goto Left Window', true, bufnr),
         },
         ['<C-j>'] = {
             function() vim.cmd.wincmd('j') end,
-            desc('Goto Down Window', true, 0),
+            desc('Goto Down Window', true, bufnr),
         },
         ['<C-k>'] = {
             function() vim.cmd.wincmd('k') end,
-            desc('Goto Up Window', true, 0),
+            desc('Goto Up Window', true, bufnr),
         },
         ['<C-l>'] = {
             function() vim.cmd.wincmd('l') end,
-            desc('Goto Right Window', true, 0),
+            desc('Goto Right Window', true, bufnr),
         },
         ['<C-w>'] = {
-            [[<C-\><C-n><C-w>]],
-            { buffer = 0, silent = true, noremap = true, nowait = false },
+            [[<C-\><C-n><C-w>w]],
+            desc('Switch Window', true, bufnr),
         },
     }
 
-    Keymaps:setup({ t = Keys })
+    Keymaps:setup({ t = Keys }, bufnr)
 end
 
 local cmd_str = '<CMD>exe v:count1 . "ToggleTerm"<CR>'
@@ -146,19 +154,25 @@ local Keys = {
 
 Keymaps:setup(Keys)
 
+local group = augroup('ToggleTerm.Hooks', { clear = true })
+
 ---@type AuDict
 local aus = {
     ['TermEnter'] = {
+        group = group,
         pattern = { 'term://*toggleterm#*' },
-        callback = function() User.maps.kmap.t('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
+        callback = function() tmap('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
     },
     ['TermOpen'] = {
-        callback = function() set_terminal_keymaps() end,
+        group = group,
+        callback = function(args) set_terminal_keymaps(args.buf) end,
     },
 }
 
 for event, v in next, aus do
     au(event, v)
 end
+
+User:register_plugin('plugin.toggleterm')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
