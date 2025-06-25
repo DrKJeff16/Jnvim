@@ -9,8 +9,6 @@ if not exists('noice') then
     return
 end
 
-User:register_plugin('plugin.noice')
-
 local Noice = require('noice')
 
 Noice.setup({
@@ -254,7 +252,7 @@ Noice.setup({
                 throttle = 500,
             },
 
-            view = nil,
+            view = 'mini',
 
             ---@type NoiceViewOptions
             opts = {
@@ -348,5 +346,7 @@ Noice.setup({
     ---@type NoiceFormatOptions
     format = {}, ---@see section on formatting
 })
+
+User:register_plugin('plugin.noice')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
