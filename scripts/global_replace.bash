@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
-
-## TODO!: Implement option parsing
+#
+# TODO!: Implement option parsing
+#
 
 # Parts of code yanked from a custom build script I made
 
