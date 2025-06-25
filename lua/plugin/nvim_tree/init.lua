@@ -667,21 +667,6 @@ local au_cmds = {
             sched_wp(tabc)
         end,
     },
-    ['VimResized'] = {
-        group = augroup('NvimTreeResize', { clear = true }),
-        callback = function()
-            local Explorer = require('nvim-tree.core').get_explorer()
-            if not (is_nil(Explorer) and Explorer.view:is_visible({ any_tabpage = true })) then
-                close()
-                open({ update_root = true, focus = true, find_file = true })
-            end
-        end,
-    },
-    --[[ ['WinEnter'] = {
-        callback = function()
-
-        end,
-    } ]]
     ['BufEnter'] = {
         group = augroup('NvimTree.Au', { clear = false }),
         pattern = 'NvimTree*',
