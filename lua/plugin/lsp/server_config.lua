@@ -467,6 +467,8 @@ Clients.css_variables = {
     },
 }
 
+_G.CLIENTS = Clients
+
 User:register_plugin('plugin.lsp.server_config')
 
 return Clients

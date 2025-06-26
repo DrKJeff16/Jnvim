@@ -2,9 +2,8 @@
 
 ---@module 'user_api.types.lsp'
 
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
-
+local User = require('user_api')
 local Check = User.check
 local Au = User.util.au
 local Notify = User.util.notify
@@ -16,8 +15,6 @@ local au = Au.au_repeated
 local notify = Notify.notify
 
 local augroup = vim.api.nvim_create_augroup
-
-User:register_plugin('plugin.lsp.autocmd')
 
 local function print_workspace_folders()
     local msg = ''
@@ -125,7 +122,11 @@ Autocmd.autocommands = {
                     },
                     ['<leader>lSr'] = {
                         function()
-                            local ClientCfg = vim.deepcopy(client.config)
+                            local ClientCfg = vim.tbl_deep_extend(
+                                'keep',
+                                _G.CLIENT_CONFS[client.name],
+                                client.config
+                            )
 
                             vim.lsp.stop_client(client.id, false)
                             vim.lsp.start(ClientCfg, { bufnr = args.buf })
@@ -134,7 +135,16 @@ Autocmd.autocommands = {
                         buffer = args.buf,
                     },
                     ['<leader>lSS'] = {
-                        function() vim.lsp.stop_client(client.id, true) end,
+                        function()
+                            local ClientCfg = vim.tbl_deep_extend(
+                                'keep',
+                                _G.CLIENT_CONFS[client.name],
+                                client.config
+                            )
+
+                            vim.lsp.stop_client(client.id, true)
+                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
+                        end,
                         desc('Force Server Stop', true, args.buf),
                         buffer = args.buf,
                     },
@@ -179,6 +189,8 @@ function Autocmd.new(O)
     O = is_nil(O) and O or {}
     return setmetatable(O, { __index = Autocmd })
 end
+
+User:register_plugin('plugin.lsp.autocmd')
 
 return Autocmd
 
