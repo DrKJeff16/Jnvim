@@ -15,11 +15,11 @@ local WK = require('which-key')
 
 WK.setup({
     ---@type false|'classic'|'modern'|'helix'
-    preset = 'classic',
+    preset = 'modern',
 
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
-    delay = function(ctx) return ctx.plugin and 0 or 100 end,
+    delay = function(ctx) return ctx.plugin and 0 or 200 end,
 
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
@@ -28,10 +28,6 @@ WK.setup({
             '<leader>?',
             function() WK.show({ global = false }) end,
             desc = 'Buffer Local Keymaps (which_key)',
-            noremap = false,
-            buffer = 0,
-            nowait = true,
-            silent = true,
         },
     },
 
@@ -43,16 +39,14 @@ WK.setup({
             return true
         end
 
-        local deferred_modes = {
+        local deferred_ops = {
             'o',
             'v',
             'V',
             '<C-v>',
             '<C-V>',
-            '<C-e>',
-            '<ESC>',
         }
-        return vim.tbl_contains(deferred_modes, ctx.mode)
+        return not vim.tbl_contains(deferred_ops, ctx.operator)
     end,
 
     ---@param mapping wk.Mapping
@@ -88,12 +82,8 @@ WK.setup({
 
     ---@type wk.Win
     win = {
-        -- width = { min = math.floor(vim.opt.columns:get() * 2 / 3 ), max = math.floor(vim.opt.columns:get() * 3 / 4) },
-        -- height = { min = 4, max = 25 },
-        -- col = 0,
-        -- row = 0,
-        fixed = true,
         no_overlap = true,
+
         border = 'rounded',
         padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
         title = true,
@@ -104,13 +94,13 @@ WK.setup({
             modifiable = false,
         },
         wo = {
-            winblend = in_console() and 0 or 15, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+            winblend = in_console() and 0 or 35, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         },
     },
 
     layout = {
         width = { min = 20, max = math.floor(vim.opt_local.columns:get() * 3 / 4) }, -- min and max width of the columns
-        spacing = 3, -- spacing between columns
+        spacing = 1, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
 
@@ -222,18 +212,22 @@ WK.setup({
     -- Be aware, that triggers are not needed for visual and operator pending mode.
     ---@type wk.Spec
     triggers = {
-        { '<auto>', mode = 'nxsotv' },
-        { '<leader>', mode = 'nv' },
+        { '<auto>', mode = 'nxso' },
+        { '<leader>', mode = { 'n', 'v' } },
+        { 'a', mode = { 'n', 'v' } },
     },
 
     disable = {
         -- disable WhichKey for certain buf types and file types.
         ft = {},
         bt = {},
-        -- disable a trigger for a certain context by returning true
-        ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
+
+        -- -- disable a trigger for a certain context by returning true
+        -- ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
         -- trigger = function(ctx) return false end,
     },
+
+    debug = false,
 })
 
 User:register_plugin('plugin.which_key')
