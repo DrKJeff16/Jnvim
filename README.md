@@ -127,15 +127,16 @@ For these to work, the following executables must be installed and in your `$PAT
 
 ### Plugins
 
-There's a lot of plugins included.
+There's a lot of plugins included...
+
 The plugins are installed based on the files in the [`lua/plugin/_spec`](lua/plugin/_spec) directory.
 _You can create your own category file or expand from the existant files in said directory._
 Just make sure to read the
 [`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins.
 
-**_Some of the included plugins..._**
-
+<ins>Some of the included plugins</ins>
 <!-- - [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp) -->
+
 - [`blink.cmp`](https://github.com/Saghen/blink.cmp)
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
