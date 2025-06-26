@@ -15,7 +15,6 @@ local Completion = {
         dependencies = {
             'L3MON4D3/LuaSnip',
             'folke/lazydev.nvim',
-            'rafamadriz/friendly-snippets',
             'onsails/lspkind.nvim',
             'Kaiser-Yang/blink-cmp-git',
             'disrupted/blink-cmp-conventional-commits',
@@ -27,6 +26,9 @@ local Completion = {
         'L3MON4D3/LuaSnip',
         lazy = true,
         version = false,
+        dependencies = {
+            'rafamadriz/friendly-snippets',
+        },
         build = executable('make') and 'make -j $(nproc) install_jsregexp' or false,
     },
     {
