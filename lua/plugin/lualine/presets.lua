@@ -6,8 +6,6 @@ local exists = User.check.exists.module
 
 local floor = math.floor
 
-User:register_plugin('plugin.lualine.presets')
-
 ---@type LuaLine.Presets
 ---@diagnostic disable-next-line:missing-fields
 local Presets = {}
@@ -26,6 +24,7 @@ Presets.components.buffers = {
         fzf = 'FZF',
         alpha = 'Alpha',
         NvimTree = 'Nvim Tree',
+        qf = 'Quickfix',
     },
 
     symbols = {
@@ -35,8 +34,8 @@ Presets.components.buffers = {
     },
 
     buffers_color = {
-        active = 'lualine_a_normal',
-        inactive = 'lualine_a_inactive',
+        active = 'lualine_c_normal',
+        inactive = 'lualine_c_inactive',
     },
 
     max_length = floor(vim.opt.columns:get() / 4),
@@ -117,8 +116,10 @@ Presets.components.windows = {
     max_length = floor(vim.opt.columns:get() / 5),
 
     disabled_buftypes = {
-        'quickfix',
+        'help',
         'prompt',
+        'quickfix',
+        'terminal',
     },
 
     windows_color = {
@@ -175,8 +176,47 @@ Presets.components.possession = exists('nvim-possession')
         }
     or {}
 
+Presets.components.noice = {
+    hl_get = {},
+    command_get = {},
+    mode_get = {},
+    search_get = {},
+}
+
+if exists('noice') then
+    local NoiceAPI = require('noice.api')
+
+    ---@diagnostic disable
+    Presets.components.noice = {
+        hl_get = {
+            NoiceAPI.status.message.get_hl,
+            cond = NoiceAPI.status.message.has,
+        },
+        command_get = {
+            NoiceAPI.status.command.get,
+            cond = NoiceAPI.status.command.has,
+            color = { fg = '#ff9e64' },
+        },
+        mode_get = {
+            NoiceAPI.status.mode.get,
+            cond = NoiceAPI.status.mode.has,
+            color = { fg = '#ff9e64' },
+        },
+        search_get = {
+            NoiceAPI.status.search.get,
+            cond = NoiceAPI.status.search.has,
+            color = { fg = '#ff9e64' },
+        },
+    }
+end
+
+---@diagnostic enable
+
 Presets.default = {
     lualine_a = {
+        Presets.components.noice.mode_get,
+        -- Presets.components.noice.command_get,
+        -- Presets.components.noice.search_get,
         -- Presets.components.datetime,
         Presets.components.mode,
     },
@@ -196,6 +236,7 @@ Presets.default = {
         Presets.components.filetype,
     },
     lualine_y = {
+        Presets.components.noice.search_get,
         Presets.components.progress,
     },
     lualine_z = {
@@ -210,6 +251,7 @@ Presets.default_inactive = {
     },
     lualine_c = {},
     lualine_x = {
+        Presets.components.noice.command_get,
         Presets.components.filetype,
     },
     lualine_y = {},
@@ -217,6 +259,8 @@ Presets.default_inactive = {
         Presets.components.location,
     },
 }
+
+User:register_plugin('plugin.lualine.presets')
 
 return Presets
 

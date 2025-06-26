@@ -1,18 +1,16 @@
 local User = require('user_api')
 local Check = User.check
+local Distro = User.distro
 
 local exists = Check.exists.module
-local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
-local empty = Check.value.empty
+local type_not_empty = Check.value.type_not_empty
 
 local tbl_contains = vim.tbl_contains
 
 if not exists('lualine') then
     return
 end
-
-User:register_plugin('plugin.lualine')
 
 local Lualine = require('lualine')
 
@@ -22,10 +20,15 @@ local Presets = require('plugin.lualine.presets')
 ---@param force_auto? boolean
 ---@return string
 local function theme_select(theme, force_auto)
-    theme = is_str(theme) and theme or 'auto'
-    theme = not empty(theme) and theme or 'auto'
+    theme = type_not_empty('string', theme) and theme or 'auto'
 
     force_auto = is_bool(force_auto) and force_auto or false
+
+    -- If `auto` theme and permitted to select from fallbacks.
+    -- Keep in mind these fallbacks are the same strings as their `require()` module strings
+    if tbl_contains({ 'auto', '' }, theme) or force_auto then
+        return 'auto'
+    end
 
     local themes = {
         'tokyonight',
@@ -34,28 +37,27 @@ local function theme_select(theme, force_auto)
         'onedark',
     }
 
-    -- If `auto` theme and permitted to select from fallbacks.
-    -- Keep in mind these fallbacks are the same strings as their `require()` module strings
-    if theme == 'auto' and not force_auto then
-        for _, t in next, themes do
-            if exists(t) then
-                theme = t
-                break -- Be contempt with the first theme you find
-            end
+    if not tbl_contains(themes, theme) then
+        return 'auto'
+    end
+
+    for _, t in next, themes do
+        if t == theme and exists(theme) then
+            return theme
         end
     end
 
-    return theme
+    return 'auto'
 end
 
 local Opts = {
     options = {
         icons_enabled = true,
-        theme = theme_select('auto', false),
+        theme = theme_select('catppuccin', false),
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         ignore_focus = {},
-        always_divide_middle = true,
+        always_divide_middle = Distro.termux:validate(),
         globalstatus = false,
         refresh = {
             statusline = 1000,
@@ -85,5 +87,7 @@ if exists('toggleterm') and not tbl_contains(Opts.extensions, 'toggleterm') then
 end
 
 Lualine.setup(Opts)
+
+User:register_plugin('plugin.lualine')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
