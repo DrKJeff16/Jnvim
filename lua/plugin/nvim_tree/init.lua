@@ -2,10 +2,9 @@
 
 ---@module 'user_api.types.user.util'
 
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
-local Maps = User.maps
 
 local exists = Check.exists.module
 local is_nil = Check.value.is_nil
@@ -14,7 +13,8 @@ local is_int = Check.value.is_int
 local empty = Check.value.empty
 local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
-local desc = Maps.kmap.desc
+local desc = User.maps.kmap.desc
+local map_dict = User.maps.map_dict
 
 if not exists('nvim-tree') then
     return
@@ -23,6 +23,8 @@ end
 --- NOTE: Use floating Tree? You decide
 local USE_FLOAT = false
 
+local dERROR = vim.diagnostic.severity.ERROR
+local dWARN = vim.diagnostic.severity.WARN
 local fn = vim.fn
 
 local sched = vim.schedule
@@ -66,20 +68,20 @@ local toggle = Tapi.toggle
 local toggle_help = Tapi.toggle_help
 ---@type AnyFunc
 local focus = Tapi.focus
--- ---@type AnyFunc
--- local change_root = Tapi.change_root
--- ---@type AnyFunc
--- local change_root_to_parent = Tapi.change_root_to_parent
 ---@type AnyFunc
 local reload = Tapi.reload
 ---@type AnyFunc
 local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
+-- ---@type AnyFunc
+-- local change_root = Tapi.change_root
+-- ---@type AnyFunc
+-- local change_root_to_parent = Tapi.change_root_to_parent
 
 local function open_tab_silent(node)
     Tnode.open.tab(node)
-    vim.cmd.tabprev()
+    vim.cmd.tabprevious()
 end
 
 local function change_root_to_global_cwd()
@@ -96,7 +98,7 @@ local function map_keys(keys, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or nil
 
-    Maps.map_dict(keys, 'wk.register', true, nil, bufnr)
+    map_dict(keys, 'wk.register', true, nil, bufnr)
 end
 
 ---@type AllMaps
@@ -143,7 +145,7 @@ local function tab_win_close(nwin)
         if lbuf_info.name:match('.*NvimTree_%d*$') then
             sched(function()
                 if #list_wins() == 1 then
-                    vim.cmd('quit')
+                    vim.cmd.quit()
                 else
                     close_win(tab_wins[1], true)
                 end
@@ -234,9 +236,9 @@ local function git_add()
     local gs = ngsf or ''
 
     if empty(gs) then
-        if is_tbl(ngs.dir.direct) and not empty(ngs.dir.direct) then
+        if type_not_empty('table', ngs.dir.direct) then
             gs = ngs.dir.direct[1]
-        elseif is_tbl(ngs.dir.indirect) and not empty(ngs.dir.indirect) then
+        elseif type_not_empty('table', ngs.dir.indirect) then
             gs = ngs.dir.indirect[1]
         end
     end
@@ -525,8 +527,8 @@ Tree.setup({
     diagnostics = {
         enable = true,
         severity = {
-            min = vim.diagnostic.severity.WARN,
-            max = vim.diagnostic.severity.ERROR,
+            min = dWARN,
+            max = dERROR,
         },
         icons = {
             hint = '',
@@ -660,7 +662,7 @@ local au_cmds = {
         group = augroup('NvimTree.Au', { clear = false }),
         nested = true,
         callback = function()
-            local nwin = math.floor(tonumber(fn.expand('<amatch>')))
+            local nwin = floor(tonumber(fn.expand('<amatch>')))
 
             local tabc = function() return tab_win_close(nwin) end
 
