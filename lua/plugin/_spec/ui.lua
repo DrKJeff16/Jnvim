@@ -107,7 +107,7 @@ local UI = {
         main = 'nvim-highlight-colors',
         event = 'VeryLazy',
         version = false,
-        init = set_tgc,
+        init = function() set_tgc(true) end,
         config = source('plugin.hicolors'),
         cond = vim_exists('+termguicolors'),
     },

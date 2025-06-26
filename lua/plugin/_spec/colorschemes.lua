@@ -11,7 +11,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'onedark',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_onedark'),
+        init = CfgUtil:colorscheme_init('installed_onedark', true),
         cond = has_tgc(),
     },
     {
@@ -20,7 +20,7 @@ local ColorSchemes = {
         name = 'catppuccin',
         main = 'catppuccin',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_catppuccin'),
+        init = CfgUtil:colorscheme_init('installed_catppuccin', true),
         cond = has_tgc(),
     },
     {
@@ -28,7 +28,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'tokyonight',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_tokyonight'),
+        init = CfgUtil:colorscheme_init('installed_tokyonight', true),
         cond = has_tgc(),
     },
     {
@@ -36,7 +36,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'nightfox',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_nightfox'),
+        init = CfgUtil:colorscheme_init('installed_nightfox', true),
         cond = has_tgc(),
     },
     {
@@ -44,7 +44,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'kanagawa',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_kanagawa'),
+        init = CfgUtil:colorscheme_init('installed_kanagawa', true),
         cond = has_tgc(),
     },
     {
@@ -52,7 +52,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'vscode',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_vscode'),
+        init = CfgUtil:colorscheme_init('installed_vscode', true),
         cond = has_tgc(),
     },
     {
@@ -60,7 +60,7 @@ local ColorSchemes = {
         priority = 1000,
         main = 'gruvbox',
         version = false,
-        init = CfgUtil:colorscheme_init('installed_gruvbox'),
+        init = CfgUtil:colorscheme_init('installed_gruvbox', true),
         cond = has_tgc(),
     },
     {
@@ -68,7 +68,7 @@ local ColorSchemes = {
         priority = 1000,
         version = false,
         dependencies = { 'colorbuddy.vim' },
-        init = CfgUtil:colorscheme_init('installed_gloombuddy'),
+        init = CfgUtil:colorscheme_init('installed_gloombuddy', true),
     },
     {
         'vigoux/oak',
@@ -78,20 +78,20 @@ local ColorSchemes = {
         init = CfgUtil:colorscheme_init({
             ['installed_oak'] = 1,
             ['oak_virtualtext_bg'] = 1,
-        }),
+        }, true),
     },
     {
         'tjdevries/colorbuddy.vim',
         priority = 1000,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_colorbuddy'),
+        init = CfgUtil:colorscheme_init('installed_colorbuddy', true),
     },
     {
         'pineapplegiant/spaceduck',
         priority = 1000,
         lazy = false,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_spaceduck'),
+        init = CfgUtil:colorscheme_init('installed_spaceduck', true),
         cond = has_tgc(),
     },
     {
@@ -100,21 +100,21 @@ local ColorSchemes = {
         name = 'dracula',
         lazy = false,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_dracula'),
+        init = CfgUtil:colorscheme_init('installed_dracula', true),
     },
     {
         'liuchengxu/space-vim-dark',
         priority = 1000,
         lazy = false,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_space_vim_dark'),
+        init = CfgUtil:colorscheme_init('installed_space_vim_dark', true),
     },
     {
         'tomasr/molokai',
         priority = 1000,
         lazy = false,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_molokai'),
+        init = CfgUtil:colorscheme_init('installed_molokai', true),
     },
     {
         'colepeters/spacemacs-theme.vim',
@@ -122,7 +122,7 @@ local ColorSchemes = {
         name = 'spacemacs',
         lazy = false,
         version = false,
-        init = CfgUtil:colorscheme_init('installed_spacemacs'),
+        init = CfgUtil:colorscheme_init('installed_spacemacs', true),
     },
 }
 
