@@ -15,8 +15,6 @@ local feedkeys = vim.api.nvim_feedkeys
 
 local BUtil = require('plugin.blink_cmp.util')
 
-User:register_plugin('plugin.blink_cmp.config')
-
 local Devicons = require('nvim-web-devicons')
 local lspkind = require('lspkind')
 
@@ -37,35 +35,36 @@ Cfg.Config.keymap = {
                 cmp.show_documentation()
             end
 
-            return cmp.show({ providers = BUtil:gen_sources(true, true) })
+            return cmp.show({ providers = BUtil:gen_sources(false, true) })
         end,
         'fallback',
     },
 
     --- Also known as `<Esc>`
-    ['<C-e>'] = { 'cancel', 'fallback' },
+    ['<C-e>'] = {
+        function(cmp)
+            if cmp.is_documentation_visible() then
+                cmp.hide_documentation()
+            end
+            if cmp.is_signature_visible() then
+                cmp.hide_signature()
+            end
+            if cmp.snippet_active() or cmp.is_active() or cmp.is_menu_visible() then
+                return cmp.cancel()
+            end
+        end,
+        'fallback',
+    },
 
     ['<CR>'] = { 'accept', 'fallback' },
 
     ['<Tab>'] = {
-        function(cmp)
-            local visible = cmp.is_menu_visible
-
-            if not visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources(false, false) })
-            end
-        end,
-
         function(cmp)
             if cmp.snippet_active({ direction = 1 }) then
                 return cmp.snippet_forward()
             end
         end,
 
-        function(cmp) return cmp.select_next({ auto_insert = true, preselect = false }) end,
-        'fallback',
-    },
-    ['<S-Tab>'] = {
         function(cmp)
             local visible = cmp.is_menu_visible
 
@@ -74,9 +73,21 @@ Cfg.Config.keymap = {
             end
         end,
 
+        function(cmp) return cmp.select_next({ auto_insert = true, preselect = false }) end,
+        'fallback',
+    },
+    ['<S-Tab>'] = {
         function(cmp)
             if cmp.snippet_active({ direction = -1 }) then
                 return cmp.snippet_backward()
+            end
+        end,
+
+        function(cmp)
+            local visible = cmp.is_menu_visible
+
+            if not visible() and has_words_before() then
+                return cmp.show({ providers = BUtil:gen_sources(true, true) })
             end
         end,
 
@@ -256,7 +267,7 @@ Cfg.Config.cmdline = {
 }
 
 Cfg.Config.sources = {
-    default = (function() return BUtil:gen_sources(true, false) end)(),
+    default = (function() return BUtil:gen_sources(false, true) end)(),
 
     per_filetype = {
         lua = { inherit_defaults = true, 'lazydev' },
@@ -306,7 +317,7 @@ Cfg.Config.signature = {
 }
 
 Cfg.Config.cmdline = {
-    enabled = true,
+    enabled = false,
 
     -- use 'inherit' to inherit mappings from top level `keymap` config
     keymap = { preset = 'cmdline' },
@@ -356,6 +367,8 @@ function Cfg.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Cfg })
 end
+
+User:register_plugin('plugin.blink_cmp.config')
 
 return Cfg
 
