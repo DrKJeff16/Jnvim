@@ -19,7 +19,7 @@ local TokyoNight = {
         'moon',
         'day',
     },
-    mod_cmd = 'colorscheme tokyonight',
+    mod_cmd = 'silent! colorscheme tokyonight',
 }
 
 ---@return boolean
@@ -77,7 +77,7 @@ function TokyoNight:setup(variant, transparent, override)
             }
         end,
         terminal_colors = true,
-        transparent = transparent,
+        transparent = transparent and not in_console(),
         sidebars = {
             'NvimTree',
             'TelescopePrompt',
@@ -95,8 +95,9 @@ function TokyoNight:setup(variant, transparent, override)
 
         style = variant,
         live_reload = true,
+
         use_background = true,
-        hide_inactive_statusline = false,
+        hide_inactive_statusline = true,
         lualine_bold = false,
         styles = {
             comments = { italic = false },

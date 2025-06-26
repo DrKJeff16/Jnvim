@@ -6,34 +6,33 @@ local Keymaps = require('config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
-local is_str = Check.value.is_str
 local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
+local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local capitalize = User.util.string.capitalize
 local displace_letter = User.util.displace_letter
 local desc = User.maps.kmap.desc
 
 ---@type CscMod
-local Colorschemes = {
-    ---@type AllCsc[]
-    OPTIONS = {
-        'catppuccin',
-        'tokyonight',
-        'vscode',
-        'kanagawa',
-        'gruvbox',
-        'nightfox',
-        'dracula',
-        'onedark',
-        'gloombuddy',
-        'molokai',
-        'oak',
-        'space_vim_dark',
-        'spaceduck',
-        'spacemacs',
-    },
+local Colorschemes = {}
+---@type AllCsc[]
+Colorschemes.OPTIONS = {
+    'catppuccin',
+    'tokyonight',
+    'vscode',
+    'kanagawa',
+    'gruvbox',
+    'nightfox',
+    'dracula',
+    'onedark',
+    'gloombuddy',
+    'molokai',
+    'oak',
+    'space_vim_dark',
+    'spaceduck',
+    'spacemacs',
 }
 
 ---@type CpcSubMod
@@ -46,10 +45,12 @@ Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
 
 Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
 
+---@type KanagawaSubMod
 Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
 
 Colorschemes.molokai = require('plugin.colorschemes.molokai')
 
+---@type NFoxSubMod
 Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
 
 Colorschemes.oak = require('plugin.colorschemes.oak')
@@ -125,7 +126,11 @@ function Colorschemes.new(O)
                         CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
                             function() TColor:setup(variant) end,
                             desc(
-                                'Set Colorscheme `' .. capitalize(name) .. '` (' .. variant .. ')'
+                                string.format(
+                                    'Set Colorscheme `%s` (%s)',
+                                    capitalize(name),
+                                    variant
+                                )
                             ),
                         }
 
@@ -134,7 +139,7 @@ function Colorschemes.new(O)
                 else
                     CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
                         function() TColor:setup() end,
-                        desc('Set Colorscheme `' .. capitalize(name) .. '`'),
+                        desc(string.format('Set Colorscheme `%s`', capitalize(name))),
                     }
                 end
 
@@ -153,8 +158,7 @@ function Colorschemes.new(O)
             assert(type_not_empty('table', valid), 'No valid colorschemes!')
             Keymaps:setup({ n = CscKeys })
 
-            color = is_str(color) and color or valid[1]
-            color = vim.tbl_contains(valid, color) and color or valid[1]
+            color = (is_str(color) and vim.tbl_contains(valid, color)) and color or valid[1]
 
             ---@type AllColorSubMods
             local Selected = self[color]

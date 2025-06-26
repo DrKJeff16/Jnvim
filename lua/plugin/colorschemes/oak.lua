@@ -9,7 +9,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
 local Oak = {
-    mod_cmd = 'colorscheme oak',
+    mod_cmd = 'silent! colorscheme oak',
 }
 
 ---@return boolean

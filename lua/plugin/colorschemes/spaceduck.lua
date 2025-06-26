@@ -8,7 +8,7 @@ local is_tbl = User.check.value.is_tbl
 
 ---@type CscSubMod
 local SpaceDuck = {
-    mod_cmd = 'colorscheme spaceduck',
+    mod_cmd = 'silent! colorscheme spaceduck',
 }
 
 ---@return boolean

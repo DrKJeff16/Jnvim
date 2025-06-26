@@ -8,7 +8,7 @@ local is_tbl = User.check.value.is_tbl
 
 ---@type CscSubMod
 local Molokai = {
-    mod_cmd = 'colorscheme molokai',
+    mod_cmd = 'silent! colorscheme molokai',
 }
 
 ---@return boolean

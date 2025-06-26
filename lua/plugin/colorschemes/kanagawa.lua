@@ -19,7 +19,7 @@ local Kanagawa = {
         'wave',
         'lotus',
     },
-    mod_cmd = 'colorscheme kanagawa',
+    mod_cmd = 'silent! colorscheme kanagawa',
 }
 
 ---@return boolean
@@ -30,9 +30,8 @@ function Kanagawa.valid() return exists('kanagawa') end
 ---@param transparent? boolean
 ---@param override? table|KanagawaConfig
 function Kanagawa:setup(variant, transparent, override)
-    variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant
-        or 'dragon'
-    transparent = (is_bool(transparent) and not in_console()) and transparent or false
+    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'dragon'
+    transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
     local KANAGAWA_COMPILE = true
@@ -42,14 +41,17 @@ function Kanagawa:setup(variant, transparent, override)
     local DEFAULTS = {
         compile = KANAGAWA_COMPILE, -- enable compiling the colorscheme
         undercurl = not in_console(), -- enable undercurls
+
         commentStyle = { italic = false },
-        functionStyle = { bold = true },
-        keywordStyle = { bold = true },
-        statementStyle = { bold = true },
+        functionStyle = { bold = true, italic = false },
+        keywordStyle = { bold = true, italic = false },
+        statementStyle = { bold = true, italic = false },
         typeStyle = { italic = false, bold = true },
-        transparent = transparent, -- do not set background color
+
+        transparent = transparent and not in_console(), -- do not set background color
         dimInactive = not in_console(), -- dim inactive window `:h hl-NormalNC`
-        terminalColors = not in_console(), -- define vim.g.terminal_color_{0,17}
+        terminalColors = true, -- define vim.g.terminal_color_{0,17}
+
         colors = { -- add/modify theme and palette colors
             palette = {},
             theme = {
@@ -85,6 +87,7 @@ function Kanagawa:setup(variant, transparent, override)
                 PmenuThumb = { bg = theme.ui.bg_p2 },
             }
         end,
+
         theme = variant, -- Load "wave" theme when 'background' option is not set
         background = { -- map the value of 'background' option to a theme
             dark = variant ~= 'lotus' and variant or 'dragon', -- try "dragon" !

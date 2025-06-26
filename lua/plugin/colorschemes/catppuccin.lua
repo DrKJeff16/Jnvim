@@ -12,7 +12,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type CpcSubMod
 local Catppuccin = {
-    ---@type Cpc.Variants[]
+    ---@type CpcSubMod.Variants[]
     variants = {
         'frappe',
         'macchiato',
@@ -25,12 +25,12 @@ local Catppuccin = {
 ---@return boolean
 function Catppuccin.valid() return exists('catppuccin') end
 
----@param self CscSubMod
----@param variant? Cpc.Variants
+---@param self CpcSubMod
+---@param variant? CpcSubMod.Variants
 ---@param transparent? boolean
----@param override? CatppuccinOptions|table
+---@param override? table|CatppuccinOptions
 function Catppuccin:setup(variant, transparent, override)
-    variant = (is_str(variant) and not vim.tbl_contains(self.variants, variant)) and variant
+    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
         or self.variants[1]
     transparent = is_bool(transparent) and transparent or false
 
@@ -42,7 +42,7 @@ function Catppuccin:setup(variant, transparent, override)
             light = 'latte',
             dark = variant ~= 'latte' and variant or 'mocha',
         },
-        transparent_background = transparent, -- disables setting the background color
+        transparent_background = transparent and not in_console(), -- disables setting the background color
         show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
         term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
         dim_inactive = {
@@ -104,14 +104,14 @@ function Catppuccin:setup(variant, transparent, override)
             native_lsp = {
                 enabled = true,
                 virtual_text = {
-                    errors = { 'bold', 'undercurl' },
-                    warnings = { 'underline' },
-                    hints = { 'italic' },
+                    errors = { 'bold', 'underdouble' },
+                    warnings = { 'bold', 'underline' },
+                    hints = { 'bold', 'underline' },
                     information = { 'altfont', 'underline' },
                     ok = { 'bold' },
                 },
                 underlines = {
-                    errors = { 'underline' },
+                    errors = { 'underdouble' },
                     hints = { 'underline' },
                     warnings = { 'underline' },
                     information = { 'underline' },

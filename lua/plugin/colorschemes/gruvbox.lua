@@ -11,7 +11,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
 local Gruvbox = {
-    mod_cmd = 'colorscheme gruvbox',
+    mod_cmd = 'silent! colorscheme gruvbox',
 }
 
 function Gruvbox.valid() return exists('gruvbox') end
@@ -22,16 +22,17 @@ function Gruvbox:setup(variant, transparent, override)
     override = is_tbl(override) and override or {}
 
     require('gruvbox').setup(vim.tbl_deep_extend('keep', override, {
-        transparent_mode = transparent,
+        transparent_mode = transparent and not in_console(),
         dim_inactive = true,
         terminal_colors = true,
+
         undercurl = true,
         underline = true,
         bold = true,
         italic = {
-            comments = true,
-            emphasis = true,
-            folds = true,
+            comments = false,
+            emphasis = false,
+            folds = false,
             operators = false,
             strings = false,
         },

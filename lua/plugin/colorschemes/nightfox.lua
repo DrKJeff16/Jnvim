@@ -22,7 +22,7 @@ local Nightfox = {
         'nordfox',
         'terafox',
     },
-    mod_cmd = 'colorscheme ', -- Leave a whitespace for variant selection
+    mod_cmd = 'silent! colorscheme ', -- Leave a whitespace for variant selection
 }
 
 ---@return boolean
@@ -38,7 +38,7 @@ function Nightfox:setup(variant, transparent, override)
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
-    local compile_path = vim.fn.stdpath('cache') .. '/nightfox'
+    local compile_path = vim.fn.stdpath('state') .. '/nightfox'
 
     require('nightfox').setup(vim.tbl_deep_extend('keep', override, {
         options = {
@@ -46,7 +46,7 @@ function Nightfox:setup(variant, transparent, override)
             compile_path = compile_path,
             compile_file_suffix = '_compiled', -- Compiled file suffix
             transparent = not in_console() and transparent or false, -- Disable setting background
-            terminal_colors = not in_console(), -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+            terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
             dim_inactive = false, -- Non focused panes set to alternative background
             module_default = false, -- Default enable value for modules
             colorblind = { enable = false }, -- Disable colorblind support
@@ -99,6 +99,7 @@ function Nightfox:setup(variant, transparent, override)
     }))
 
     vim.cmd(self.mod_cmd .. variant)
+    self.mod_cmd = self.mod_cmd .. variant
 
     require('nightfox').compile()
 end

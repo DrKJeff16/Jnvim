@@ -10,7 +10,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type CscSubMod
 local Gloombuddy = {
-    mod_cmd = 'colorscheme gloombuddy',
+    mod_cmd = 'silent! colorscheme gloombuddy',
 }
 
 ---@return boolean

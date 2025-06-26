@@ -22,12 +22,12 @@ local OneDark = {
         'warm',
         'warmer',
     },
-    mod_cmd = 'colorscheme onedark',
+    mod_cmd = 'silent! colorscheme onedark',
 }
 
 function OneDark.valid() return exists('onedark') end
 
----@param variant? string|OD.Variant
+---@param variant? OD.Variant
 ---@param transparent? boolean
 ---@param override? table|OD
 function OneDark:setup(variant, transparent, override)
@@ -40,7 +40,7 @@ function OneDark:setup(variant, transparent, override)
     ---@type OD
     local Opts = {
         style = variant,
-        transparent = transparent,
+        transparent = transparent and not in_console(),
         term_colors = true,
         ending_tildes = true,
         cmp_itemkind_reverse = true,
@@ -64,11 +64,11 @@ function OneDark:setup(variant, transparent, override)
             -- miscs = '', -- Uncomment to turn off hard-coded styles
         },
 
-        lualine = { transparent = transparent },
+        lualine = { transparent = transparent and not in_console() },
 
         diagnostics = {
-            darker = true,
-            undercurl = true,
+            darker = false,
+            undercurl = false,
             background = true,
         },
     }

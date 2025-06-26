@@ -8,7 +8,7 @@ local is_tbl = User.check.value.is_tbl
 
 ---@type CscSubMod
 local SpaceVimDark = {
-    mod_cmd = 'colorscheme space-vim-dark',
+    mod_cmd = 'silent! colorscheme space-vim-dark',
 }
 
 ---@return boolean
