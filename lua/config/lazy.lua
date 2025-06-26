@@ -108,7 +108,7 @@ local Config = {
     },
 
     change_detection = {
-        enabled = true,
+        enabled = false,
         notify = Archlinux:validate(),
     },
 

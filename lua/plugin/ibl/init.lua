@@ -8,13 +8,12 @@ local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
+local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 
 if not exists('ibl') then
     return
 end
-
-User:register_plugin('plugin.blank_line')
 
 local Ibl = require('ibl')
 local Hooks = require('ibl.hooks')
@@ -52,10 +51,10 @@ local names = {}
 local options = {}
 
 for k, v in next, Hilite do
-    if is_str(k) and not empty(k) then
+    if type_not_empty('string', k) then
         table.insert(names, k)
     end
-    if is_tbl(v) and not empty(v) then
+    if type_not_empty('table', v) then
         table.insert(options, v)
     end
 end
@@ -72,7 +71,7 @@ end
 local function linebreak_check()
     local vim_has = User.check.exists.vim_has
 
-    return vim_has('nvim-0.10') and vim.opt.breakindent and vim.opt.breakindentopt:get() ~= ''
+    return vim_has('nvim-0.10') and vim.o.breakindent and vim.o.breakindentopt ~= ''
 end
 
 if exists('rainbow-delimiters.setup') then
@@ -154,5 +153,7 @@ Ibl.setup({
         },
     },
 })
+
+User:register_plugin('plugin.ibl')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

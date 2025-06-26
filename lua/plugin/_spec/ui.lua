@@ -52,7 +52,7 @@ local UI = {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
         version = false,
-        config = source('plugin.blank_line'),
+        config = source('plugin.ibl'),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
