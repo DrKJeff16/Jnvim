@@ -42,7 +42,8 @@ vim.opt.rtp:prepend(LAZYPATH)
 
 local Lazy = require('lazy')
 
-Lazy.setup({
+---@type LazyConfig
+local Config = {
     spec = {
         { import = 'plugin._spec' },
     },
@@ -84,6 +85,7 @@ Lazy.setup({
     },
 
     pkg = {
+        enabled = true,
         cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
         sources = (function()
@@ -144,7 +146,9 @@ Lazy.setup({
         -- Track each new require in the Lazy profiling tab
         require = true,
     },
-})
+}
+
+Lazy.setup(Config)
 
 ---@type AllMaps
 local Keys = {
@@ -168,6 +172,6 @@ local Keys = {
 
 Keymaps:setup({ n = Keys })
 
-User:register_plugin('config.lazy', 1)
+User:register_plugin('config.lazy', 1) -- Always put it on first place
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
