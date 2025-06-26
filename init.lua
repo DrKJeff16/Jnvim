@@ -72,6 +72,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
         q = true,
         w = true,
     },
+    hidden = true,
     hlg = {
         'en',
     }, -- `helplang`
@@ -83,9 +84,9 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     mouse = { a = false },
     nu = true, -- `number`
     pi = false, -- `preserveindent`
-    rnu = false, -- `relativenumber`
-    ru = true, -- `ruler`
-    so = 3, -- `scrolloff`
+    relativenumber = false,
+    ruler = true,
+    scrolloff = 3,
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
     sw = 4, -- `shiftwidth`
     showmatch = true,
