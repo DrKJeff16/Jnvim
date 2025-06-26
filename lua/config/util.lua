@@ -12,13 +12,9 @@ local exists = Exists.module
 local executable = Exists.executable
 local env_vars = Exists.env_vars
 local vim_exists = Exists.vim_exists
-local is_nil = Value.is_nil
 local is_bool = Value.is_bool
 local is_str = Value.is_str
-local is_tbl = Value.is_tbl
-local empty = Value.empty
-
-User:register_plugin('config.util')
+local type_not_empty = Value.type_not_empty
 
 ---@type PluginUtils
 local CfgUtil = {}
@@ -75,7 +71,7 @@ function CfgUtil:colorscheme_init(fields, force_tgc)
 
         if is_str(fields) then
             self.flag_installed(fields)()
-        elseif is_tbl(fields) and not empty(fields) then
+        elseif type_not_empty('table', fields) then
             for field, val in next, fields do
                 vim.g[field] = val
             end
@@ -162,8 +158,10 @@ end
 ---@return boolean
 function CfgUtil.has_tgc()
     ---@diagnostic disable-next-line
-    return vim_exists('+termguicolors') and vim.opt.termguicolors:get()
+    return (vim_exists('+termguicolors') and vim.o.termguicolors)
 end
+
+User:register_plugin('config.util')
 
 return CfgUtil
 
