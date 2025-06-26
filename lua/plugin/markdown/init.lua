@@ -7,8 +7,6 @@ if not exists('markdown') then
     return
 end
 
-User:register_plugin('plugin.markdown')
-
 local MD = require('markdown')
 
 MD.setup({
@@ -70,7 +68,12 @@ MD.setup({
         --   (refer to documentation on <Plug> mappings for explanation of when this option is used)
         follow_link = nil,
     },
-    on_attach = nil, -- (fun(bufnr: integer)) callback when plugin attaches to a buffer
+
+    -- callback when plugin attaches to a buffer
+    ---@type nil|(fun(bufnr: integer))
+    on_attach = nil,
 })
+
+User:register_plugin('plugin.markdown')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
