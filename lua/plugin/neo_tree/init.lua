@@ -11,8 +11,6 @@ if not exists('neo-tree') then
     return
 end
 
-User:register_plugin('plugin.neo_tree')
-
 local NeoTree = require('neo-tree')
 
 NeoTree.setup({
@@ -152,11 +150,11 @@ NeoTree.setup({
             ['p'] = 'paste_from_clipboard',
             ['c'] = 'copy', -- takes text input for destination, also accepts the optional config.show_path option like "add":
             --[[ ["c"] = {
-				"copy",
-				config = {
-					show_path = "none" -- "none", "relative", "absolute"
-				}
-			} ]]
+                "copy",
+                config = {
+                    show_path = "none" -- "none", "relative", "absolute"
+                }
+            } ]]
             ['m'] = 'move', -- takes text input for destination, also accepts the optional config.show_path option like "add"
             ['q'] = 'close_window',
             ['R'] = 'refresh',
@@ -307,5 +305,7 @@ local Keys = {
 }
 
 Keymaps:setup({ n = Keys })
+
+User:register_plugin('plugin.neo_tree')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
