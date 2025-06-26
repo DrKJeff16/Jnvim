@@ -8,16 +8,23 @@ local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 
 local source = CfgUtil.source
+local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
 local luarocks_check = CfgUtil.luarocks_check
 
 ---@type (LazySpec)[]
 local Essentials = {
     {
-        'folke/which-key.nvim',
-        main = 'which-key',
+        'folke/snacks.nvim',
         lazy = false,
         priority = 1000,
+        config = source('plugin.snacks'),
+        enabled = false,
+    },
+    {
+        'folke/which-key.nvim',
+        main = 'which-key',
+        event = 'VeryLazy',
         version = false,
         init = function()
             vim.opt.timeout = true

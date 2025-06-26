@@ -63,7 +63,7 @@ local UI = {
     {
         'nvim-tree/nvim-tree.lua',
         main = 'nvim-tree',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -119,12 +119,11 @@ local UI = {
     },
     {
         'folke/noice.nvim',
-        lazy = false,
-        priority = 1000,
+        event = 'VeryLazy',
         version = false,
         dependencies = {
             'MunifTanjim/nui.nvim',
-            'nvim-notify',
+            'rcarriga/nvim-notify',
             'mini.nvim',
         },
         config = source('plugin.noice'),
