@@ -1,10 +1,8 @@
 init.lua @DrKJeff16
-gitin.vim @DrKJeff16
-Pipfile @DrKJeff16
+ginit.vim @DrKJeff16
 lua/ @DrKJeff16
 README.md @DrKJeff16
 scripts/ @DrKJeff16
-requirements.txt @DrKJeff16
 version.txt @DrKJeff16
 .gitignore @DrKJeff16
 .github/CODEOWNERS @DrKJeff16
