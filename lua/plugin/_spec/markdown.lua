@@ -1,13 +1,13 @@
 ---@module 'user_api.types.lazy'
 
 local CfgUtil = require('config.util')
-local User = require('user_api')
-local Check = User.check
+local Check = require('user_api.check')
 
 local source = CfgUtil.source
 local executable = Check.exists.executable
-local in_console = Check.in_console
 local is_root = Check.is_root
+
+_G.in_console = in_console or Check.in_console
 
 ---@type (LazySpec)[]
 local MD = {
@@ -15,10 +15,10 @@ local MD = {
         'iamcco/markdown-preview.nvim',
         ft = 'markdown',
         version = false,
-        build = executable('yarn') and 'cd app && yarn install' or '',
+        build = executable('yarn') and 'cd app && yarn install' or false,
         init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
         config = source('plugin.markdown.md_preview'),
-        cond = not (in_console() or is_root()),
+        enabled = not (in_console() or is_root()),
     },
     {
         'tadmccorkle/markdown.nvim',

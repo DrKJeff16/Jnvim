@@ -81,7 +81,6 @@ local Essentials = {
     {
         'rcarriga/nvim-notify',
         lazy = false,
-        priority = 1000,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = function() set_tgc(true) end,

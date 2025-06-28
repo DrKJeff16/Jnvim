@@ -172,6 +172,15 @@ local Keys = {
 
 Keymaps:setup({ n = Keys })
 
+local Csc = require('plugin.colorschemes')
+
+local M = {}
+
+---@type CscMod
+M.colorschemes = Csc
+
 User:register_plugin('config.lazy', 1) -- Always put it on first place
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

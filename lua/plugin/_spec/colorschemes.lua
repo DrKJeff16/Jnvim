@@ -8,6 +8,7 @@ local has_tgc = CfgUtil.has_tgc
 local ColorSchemes = {
     {
         'navarasu/onedark.nvim',
+        lazy = false,
         priority = 1000,
         main = 'onedark',
         version = false,
@@ -16,6 +17,7 @@ local ColorSchemes = {
     },
     {
         'catppuccin/nvim',
+        lazy = false,
         priority = 1000,
         name = 'catppuccin',
         main = 'catppuccin',
@@ -25,6 +27,7 @@ local ColorSchemes = {
     },
     {
         'folke/tokyonight.nvim',
+        lazy = false,
         priority = 1000,
         main = 'tokyonight',
         version = false,
@@ -33,6 +36,7 @@ local ColorSchemes = {
     },
     {
         'EdenEast/nightfox.nvim',
+        lazy = false,
         priority = 1000,
         main = 'nightfox',
         version = false,
@@ -41,6 +45,7 @@ local ColorSchemes = {
     },
     {
         'rebelot/kanagawa.nvim',
+        lazy = false,
         priority = 1000,
         main = 'kanagawa',
         version = false,
@@ -49,6 +54,7 @@ local ColorSchemes = {
     },
     {
         'Mofiqul/vscode.nvim',
+        lazy = false,
         priority = 1000,
         main = 'vscode',
         version = false,
@@ -57,6 +63,7 @@ local ColorSchemes = {
     },
     {
         'ellisonleao/gruvbox.nvim',
+        lazy = false,
         priority = 1000,
         main = 'gruvbox',
         version = false,
@@ -65,6 +72,7 @@ local ColorSchemes = {
     },
     {
         'bkegley/gloombuddy',
+        lazy = false,
         priority = 1000,
         version = false,
         dependencies = { 'colorbuddy.vim' },
@@ -72,8 +80,8 @@ local ColorSchemes = {
     },
     {
         'vigoux/oak',
-        priority = 1000,
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init({
             ['installed_oak'] = 1,
@@ -82,45 +90,46 @@ local ColorSchemes = {
     },
     {
         'tjdevries/colorbuddy.vim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_colorbuddy', true),
     },
     {
         'pineapplegiant/spaceduck',
-        priority = 1000,
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_spaceduck', true),
         cond = has_tgc(),
     },
     {
         'dracula/vim',
-        priority = 1000,
         name = 'dracula',
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_dracula', true),
     },
     {
         'liuchengxu/space-vim-dark',
-        priority = 1000,
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_space_vim_dark', true),
     },
     {
         'tomasr/molokai',
-        priority = 1000,
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_molokai', true),
     },
     {
         'colepeters/spacemacs-theme.vim',
-        priority = 1000,
         name = 'spacemacs',
         lazy = false,
+        priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_spacemacs', true),
     },

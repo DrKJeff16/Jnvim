@@ -1,24 +1,21 @@
 ---@diagnostic disable:missing-fields
 
----@module 'config.types'
+---@module 'config._types'
 
 local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Util = require('user_api.util') ---@see User.Util Utilities
-local Maps = require('user_api.maps') ---@see User.Maps
 
 local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_int = Value.is_int ---@see User.Check.Value.is_int
-local is_str = Value.is_str ---@see User.Check.Value.is_str
 local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
-local empty = Value.empty ---@see User.Check.Value.empty
 local type_not_empty = Value.type_not_empty ---@see User.Check.Value.type_not_empty
 local ft_get = Util.ft_get ---@see User.Util.ft_get
 local bt_get = Util.bt_get ---@see User.Util.bt_get
-local nop = Maps.nop ---@see User.Maps.nop
-local map_dict = Maps.map_dict ---@see User.Maps.map_dict
-local desc = Maps.kmap.desc ---@see User.Maps.Keymap.desc
+local nop = User.maps.nop ---@see User.Maps.nop
+local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
+local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 
 local curr_buf = vim.api.nvim_get_current_buf
 local tbl_contains = vim.tbl_contains
@@ -41,11 +38,9 @@ local function gen_fun_blank(vertical)
 
         vim.api.nvim_set_current_win(win)
 
-        optset('modifiable', true, set_opts)
         optset('ft', '', set_opts)
-        optset('fileencoding', 'utf-8', set_opts)
-        optset('fileformat', 'unix', set_opts)
         optset('buftype', '', set_opts)
+        optset('modifiable', true, set_opts)
         optset('modified', false, set_opts)
     end
 end
@@ -403,7 +398,7 @@ Keymaps.Keys = {
                 local notify = require('user_api.util.notify').notify
 
                 ---@diagnostic disable-next-line
-                local ok, err = pcall(vim.cmd, 'luafile ' .. MYVIMRC)
+                local ok, err = pcall(vim.cmd, 'luafile ' .. _G.MYVIMRC)
 
                 if ok then
                     notify('Sourced `init.lua`', 'info', {
@@ -567,7 +562,7 @@ Keymaps.Keys = {
 ---@param keys? AllModeMaps
 ---@param bufnr? integer
 function Keymaps:setup(keys, bufnr)
-    local MODES = Maps.modes
+    local MODES = User.maps.modes
     local insp = inspect or vim.inspect
 
     local notify = require('user_api.util.notify').notify

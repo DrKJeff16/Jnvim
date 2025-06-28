@@ -115,10 +115,10 @@ vim.g.loaded_netrwPlugin = 1
 --- vim.o.clipboard = 'unnamedplus'
 
 --- List of manually-callable plugin
-require('config.lazy')
+local L = require('config.lazy')
 
 ---@type CscMod
-local Color = require('plugin.colorschemes')
+local Color = L.colorschemes
 
 Color('tokyonight', 'moon')
 

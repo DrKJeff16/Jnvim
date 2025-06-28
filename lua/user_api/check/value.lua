@@ -2,6 +2,8 @@
 
 ---@module 'user_api.types.user.check'
 
+local tbl_isempty = vim.tbl_isempty
+
 ---@type User.Check.Value
 local Value = {}
 
@@ -34,7 +36,7 @@ function Value.is_nil(var, multiple)
     end
 
     --- Treat `var` as a table from here on
-    if type(var) ~= 'table' or vim.tbl_isempty(var) then
+    if type(var) ~= 'table' or tbl_isempty(var) then
         return false
     end
 
@@ -280,20 +282,23 @@ function Value.empty(v, multiple)
 
     multiple = is_bool(multiple) and multiple or false
 
+    -- Empty string
     if is_str(v) then
         return v == ''
     end
 
+    -- Number is 0
     if is_num(v) then
         return v == 0
     end
 
+    -- Empty table
     if is_tbl(v) and not multiple then
-        return vim.tbl_isempty(v)
+        return tbl_isempty(v)
     end
 
     if is_tbl(v) and multiple then
-        if vim.tbl_isempty(v) then
+        if tbl_isempty(v) then
             vim.notify(
                 '(user_api.check.value.empty): No values to check despite `multiple` being `true`',
                 vim.log.levels.WARN
@@ -509,6 +514,28 @@ function Value.type_not_empty(type_str, data)
     local checker = valid_types[type_str]
 
     return checker(data) and not empty(data)
+end
+
+-- Checs whether a certain `num` does not exceed table index range
+---@param num integer
+---@param T table
+---@return boolean
+function Value.in_tbl_range(num, T)
+    if not Value.is_int(num) then
+        return false
+    end
+
+    if not Value.is_tbl(T) then
+        return false
+    end
+
+    local len = #T
+
+    if len == 0 then
+        return false
+    end
+
+    return (num > 0 and num <= len)
 end
 
 return Value

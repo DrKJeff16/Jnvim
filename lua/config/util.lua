@@ -1,5 +1,6 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'config._types'
 ---@module 'user_api.types.lazy'
 
 local User = require('user_api')
@@ -27,13 +28,13 @@ function CfgUtil.set_tgc(force)
         vim.opt.termguicolors = true
     end
 
-    vim.opt.termguicolors = (not vim_exists('+termguicolors') or in_console())
+    vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
 end
 
 ---@param name string
 ---@return fun()
 function CfgUtil.flag_installed(name)
-    if not is_str(name) or name == '' then
+    if not type_not_empty('string', name) then
         error('Unable to set `vim.g` var')
     end
 
@@ -66,7 +67,7 @@ end
 function CfgUtil:colorscheme_init(fields, force_tgc)
     return function()
         if is_bool(force_tgc) and force_tgc then
-            self.set_tgc()
+            self.set_tgc(true)
         end
 
         if is_str(fields) then

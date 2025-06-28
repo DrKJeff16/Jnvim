@@ -56,8 +56,9 @@ function User:register_plugin(pathstr, index)
     local is_int = Value.is_int
     local type_not_empty = Value.type_not_empty
     local tbl_contains = vim.tbl_contains
+    local in_tbl_range = Value.in_tbl_range
 
-    index = (is_int(index) and index >= 1 and index <= #self.registered_plugins) and index or 0
+    index = (is_int(index) and in_tbl_range(index, self.registered_plugins)) and index or 0
 
     if not type_not_empty('string', pathstr) then
         error('(user_api:register_plugin): Plugin must be a non-empty string', ERROR)
