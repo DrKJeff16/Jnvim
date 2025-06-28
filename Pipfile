@@ -14,6 +14,8 @@ pre-commit = "*"
 
 [dev-packages]
 pynvim = "*"
+typing = "*"
+typing-extensions = "*"
 mypy = "*"
 mypy-extensions = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
