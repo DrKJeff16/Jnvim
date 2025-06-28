@@ -7,8 +7,6 @@ if not executable('doxygen') or vim.g.installed_doxygen_toolkit ~= 1 then
     return
 end
 
-User:register_plugin('plugin.doxygen')
-
 local g_vars = {
     DoxygenToolkit_briefTag_pre = '@brief  ',
     DoxygenToolkit_paramTag_pre = '@param ',
@@ -22,3 +20,7 @@ local g_vars = {
 for k, v in next, g_vars do
     vim.g[k] = v
 end
+
+User:register_plugin('plugin.doxygen')
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

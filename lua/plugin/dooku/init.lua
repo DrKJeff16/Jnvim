@@ -33,3 +33,5 @@ Dooku.setup({
     on_generate_notification = true,
     on_open_notification = true,
 })
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
