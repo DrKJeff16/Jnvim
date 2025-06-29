@@ -125,19 +125,13 @@ Clients.lua_ls = {
             workspace = {
                 checkThirdParty = false,
                 library = {
-                    vim.env.VIMRUNTIME,
+                    -- vim.env.VIMRUNTIME,
+                    vim.api.nvim_get_runtime_file('', true),
                     -- Depending on the usage, you might want to add additional paths
                     -- here.
-                    -- '${3rd}/luv/library',
-                    -- '${3rd}/busted/library',
+                    '${3rd}/luv/library',
+                    '${3rd}/busted/library',
                 },
-                -- Or pull in all of 'runtimepath'.
-                -- NOTE: this is a lot slower and will cause issues when working on
-                -- your own configuration.
-                -- See https://github.com/neovim/nvim-lspconfig/issues/3189
-                -- library = {
-                --     vim.api.nvim_get_runtime_file('', true),
-                -- },
             },
         })
     end,
@@ -215,8 +209,10 @@ Clients.lua_ls = {
                 checkThirdParty = false,
                 useGitIgnore = true,
                 library = {
-                    vim.env.VIMRUNTIME,
-                    -- vim.api.nvim_get_runtime_file('', true),
+                    -- vim.env.VIMRUNTIME,
+                    vim.api.nvim_get_runtime_file('', true),
+                    '${3rd}/luv/library',
+                    '${3rd}/busted/library',
                 },
             },
         },
@@ -244,27 +240,15 @@ Clients.clangd = {
         '.git',
     },
 
-    capabilities = {
-        offsetEncoding = { 'utf-8', 'utf-16' },
-
-        textDocument = {
-            completion = { editsNearCursor = true },
-        },
-    },
-
     settings = {
         clangd = {
-            checkUpdates = true,
+            checkUpdates = false,
             detectExtensionConflicts = true,
             enableCodeCompletion = true,
-            inactiveRegions = {
-                opacity = 0.90,
-                useBackgroundHighlight = false,
-            },
             onConfigChanged = 'restart',
             path = '/usr/bin/clangd',
             restartAfterCrash = true,
-            serverCompletionRanking = true,
+            serverCompletionRanking = false,
         },
     },
 }

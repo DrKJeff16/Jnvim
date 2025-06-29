@@ -5,6 +5,7 @@
 local User = require('user_api')
 local Check = User.check
 
+local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 
 ---@type Lsp.SubMods.Kinds
@@ -43,6 +44,13 @@ function Kinds:setup()
     for s, kind in next, kinds do
         kinds[s] = type_not_empty('string', self.icons[s]) and self.icons[s] or kind
     end
+end
+
+---@param O table
+---@return Lsp.SubMods.Kinds
+function Kinds.new(O)
+    O = is_tbl(O) and O or {}
+    return setmetatable(O, { __index = Kinds })
 end
 
 return Kinds

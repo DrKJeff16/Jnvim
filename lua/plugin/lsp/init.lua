@@ -1,6 +1,9 @@
 ---@diagnostic disable:missing-fields
 ---@diagnostic disable:need-check-nil
 
+---@module 'lua.vim.lsp'
+---@module 'lua.vim.diagnostic'
+---@module 'lua.vim.lsp.diagnostic'
 ---@module 'user_api.types.lsp'
 
 local User = require('user_api')
@@ -26,18 +29,21 @@ local Server = {}
 ---@type Lsp.Server.Clients
 Server.Clients = require('plugin.lsp.server_config')
 
+---@param T? table|lsp.ClientCapabilities
 ---@return lsp.ClientCapabilities
-function Server.make_capabilities()
-    local caps = vim.lsp.protocol.make_client_capabilities()
+function Server.make_capabilities(T)
+    T = is_tbl(T) and T or {}
+
+    T = vim.tbl_deep_extend('keep', T, vim.lsp.protocol.make_client_capabilities())
 
     local ok, _ = pcall(require, 'blink.cmp')
     if not ok then
-        return caps
+        return T
     end
 
-    caps = vim.tbl_deep_extend(
-        'force',
-        vim.deepcopy(caps),
+    local caps = vim.tbl_deep_extend(
+        'keep',
+        vim.deepcopy(T),
         require('blink.cmp').get_lsp_capabilities({}, true)
     )
 
@@ -54,7 +60,14 @@ function Server:populate()
         ---@type Lsp.Server.Key
         local key = k
 
-        self.Clients[key].capabilities = self.make_capabilities()
+        if not is_tbl(self.Clients[key].capabilities) then
+            self.Clients[key].capabilities = self.make_capabilities()
+        else
+            local old_caps = self.Clients[key].capabilities
+
+            self.Clients[key].capabilities =
+                vim.tbl_deep_extend('keep', old_caps, self.make_capabilities(old_caps))
+        end
 
         if vim.tbl_contains({ 'html', 'jsonls' }, key) then
             self.Clients[key].capabilities.textDocument.completion.completionItem.snippetSupport =
@@ -109,7 +122,7 @@ vim.lsp.config('*', {
 vim.diagnostic.config({
     signs = true,
     float = true,
-    underline = true,
+    underline = false,
     virtual_lines = false,
     virtual_text = true,
     severity_sort = true,

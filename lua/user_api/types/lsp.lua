@@ -1,8 +1,12 @@
 ---@meta
 
+-- HACK: Call builtin annotations manually
+---@module 'lua.vim.lsp'
+---@module 'lua.vim.diagnostic'
+
+---@module 'trouble'
 ---@module 'user_api.types.user.autocmd'
 ---@module 'user_api.types.user.highlight'
----@module 'trouble'
 
 ---@class EvBuf
 ---@field buf integer
@@ -33,6 +37,7 @@
 ---@class Lsp.SubMods.Kinds
 ---@field icons Lsp.SubMods.Kinds.Icons
 ---@field setup fun(self: Lsp.SubMods.Kinds)
+---@field new fun(O: table?): table|Lsp.SubMods.Kinds
 
 ---@class Lsp.SubMods.Trouble
 ---@field Opts trouble.Config
@@ -49,22 +54,22 @@
 ---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
 
 ---@class Lsp.Server.Clients
----@field lua_ls? Lsp.Server.Clients.Spec|nil
----@field bashls? Lsp.Server.Clients.Spec|nil
----@field clangd? Lsp.Server.Clients.Spec|nil
----@field cmake? Lsp.Server.Clients.Spec|nil
----@field css_variables? Lsp.Server.Clients.Spec|nil
----@field cssls? Lsp.Server.Clients.Spec|nil
----@field html? Lsp.Server.Clients.Spec|nil
----@field jdtls? Lsp.Server.Clients.Spec|nil
----@field jsonls? Lsp.Server.Clients.Spec|nil
----@field julials? Lsp.Server.Clients.Spec|nil
----@field marksman? Lsp.Server.Clients.Spec|nil
----@field pylsp? Lsp.Server.Clients.Spec|nil
----@field taplo? Lsp.Server.Clients.Spec|nil
----@field texlab? Lsp.Server.Clients.Spec|nil
----@field vimls? Lsp.Server.Clients.Spec|nil
----@field yamlls? Lsp.Server.Clients.Spec|nil
+---@field lua_ls? Lsp.Server.Clients.Spec
+---@field bashls? Lsp.Server.Clients.Spec
+---@field clangd? Lsp.Server.Clients.Spec
+---@field cmake? Lsp.Server.Clients.Spec
+---@field css_variables? Lsp.Server.Clients.Spec
+---@field cssls? Lsp.Server.Clients.Spec
+---@field html? Lsp.Server.Clients.Spec
+---@field jdtls? Lsp.Server.Clients.Spec
+---@field jsonls? Lsp.Server.Clients.Spec
+---@field julials? Lsp.Server.Clients.Spec
+---@field marksman? Lsp.Server.Clients.Spec
+---@field pylsp? Lsp.Server.Clients.Spec
+---@field taplo? Lsp.Server.Clients.Spec
+---@field texlab? Lsp.Server.Clients.Spec
+---@field vimls? Lsp.Server.Clients.Spec
+---@field yamlls? Lsp.Server.Clients.Spec
 
 ---@alias Lsp.Server.Key
 ---|'lua_ls'
@@ -86,8 +91,8 @@
 ---|string
 
 ---@class Lsp.Server
----@field Clients Lsp.Server.Clients
----@field make_capabilities fun(): lsp.ClientCapabilities
+---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
+---@field make_capabilities fun(T: table|lsp.ClientCapabilities): lsp.ClientCapabilities
 ---@field populate fun(self: Lsp.Server)
 ---@field new fun(O: table?): table|Lsp.Server
 
