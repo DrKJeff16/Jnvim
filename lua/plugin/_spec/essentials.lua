@@ -3,6 +3,7 @@
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
+local Termux = User.distro.termux
 
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
@@ -48,8 +49,7 @@ local Essentials = {
         version = false,
         init = function() set_tgc(true) end,
         config = source('plugin.luarocks'),
-        cond = luarocks_check(),
-        enabled = false,
+        enabled = luarocks_check() and not Termux:validate(),
     },
     {
         'echasnovski/mini.nvim',
@@ -85,33 +85,26 @@ local Essentials = {
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = function() set_tgc(true) end,
         config = source('plugin.notify'),
-        cond = not in_console(),
-    },
-    {
-        'lewis6991/hover.nvim',
-        version = false,
-        config = source('plugin.hover'),
+        enabled = not in_console(),
     },
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
         version = false,
         config = source('plugin.web_devicons'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'equalsraf/neovim-gui-shim',
         lazy = false,
         version = false,
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'gennaro-tedesco/nvim-possession',
         lazy = false,
         version = false,
-        dependencies = {
-            'ibhagwan/fzf-lua',
-        },
+        dependencies = { 'ibhagwan/fzf-lua' },
         config = source('plugin.possession'),
     },
 }
