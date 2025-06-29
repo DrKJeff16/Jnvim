@@ -516,26 +516,22 @@ function Value.type_not_empty(type_str, data)
     return checker(data) and not empty(data)
 end
 
--- Checs whether a certain `num` does not exceed table index range
+--- Checks whether a certain `num` does not exceed table index range
+--- i.e. `num >= 1 and num <= #T`
 ---@param num integer
 ---@param T table
 ---@return boolean
 function Value.in_tbl_range(num, T)
-    if not Value.is_int(num) then
-        return false
-    end
+    local is_int = Value.is_int
+    local is_tbl = Value.is_tbl
 
-    if not Value.is_tbl(T) then
+    if not (is_int(num) and is_tbl(T)) then
         return false
     end
 
     local len = #T
 
-    if len == 0 then
-        return false
-    end
-
-    return (num > 0 and num <= len)
+    return not len == 0 and (num >= 1 and num <= len) or false
 end
 
 return Value

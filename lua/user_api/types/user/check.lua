@@ -181,7 +181,8 @@
 ---@field tbl_values fun(values: any[], T: table, return_keys: boolean?):((string|integer)[]|boolean|string|integer)
 ---@field single_type_tbl fun(type_str: Types, T: table): boolean
 ---@field type_not_empty fun(type_str: EmptyTypes, data: table|string|number): boolean
--- Checs whether a certain `num` does not exceed table index range
+--- Checks whether a certain `num` does not exceed table index range
+--- i.e. `num >= 1 and num <= #T`
 ---@field in_tbl_range fun(num: integer, T: table): boolean
 
 ---@class User.Check
