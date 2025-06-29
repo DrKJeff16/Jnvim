@@ -11,6 +11,9 @@ end
 local Clangd = require('clangd_extensions')
 
 Clangd.setup({
+    inlay_hints = {
+        inline = false,
+    },
     ast = {
         -- These require codicons (https://github.com/microsoft/vscode-codicons)
         role_icons = {
@@ -35,7 +38,7 @@ Clangd.setup({
         highlights = { detail = 'Comment' },
     },
     memory_usage = { border = 'double' },
-    symbol_info = { border = 'rounded' },
+    symbol_info = { border = 'single' },
 })
 
 User:register_plugin('plugin.lsp.clangd')
