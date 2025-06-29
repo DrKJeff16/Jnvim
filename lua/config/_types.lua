@@ -14,10 +14,10 @@
 ---@field setup fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?)
 ---@field new fun(O: table?): table|Config.Keymaps
 
----@class PluginUtils
+---@class Config.Util
 ---@field set_tgc fun(force: boolean?)
 ---@field flag_installed fun(name: string): fun()
----@field colorscheme_init fun(self: PluginUtils, fields: string|table<string, any>, force_tgc: boolean?): fun()
+---@field colorscheme_init fun(self: Config.Util, fields: string|table<string, any>, force_tgc: boolean?): fun()
 ---@field source fun(mod_str: string): fun()
 ---@field tel_fzf_build fun(): string
 ---@field luarocks_check fun(): boolean

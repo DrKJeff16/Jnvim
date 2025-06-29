@@ -17,7 +17,7 @@ local is_bool = Value.is_bool
 local is_str = Value.is_str
 local type_not_empty = Value.type_not_empty
 
----@type PluginUtils
+---@type Config.Util
 local CfgUtil = {}
 
 ---@param force? boolean
@@ -60,7 +60,7 @@ end
 ---
 --- A function that sets the pre-loading for the colorscheme
 --- and initializes the `vim.g.<field>` variable(s)
----@param self PluginUtils
+---@param self Config.Util
 ---@param fields string|table<string, any>
 ---@param force_tgc? boolean
 ---@return fun()
