@@ -38,12 +38,12 @@ local LSP = {
         'Bilal2453/luvit-meta',
         version = false,
     },
-    {
-        'folke/neoconf.nvim',
-        lazy = false,
-        version = false,
-        enabled = false,
-    },
+    -- {
+    --     'folke/neoconf.nvim',
+    --     lazy = false,
+    --     version = false,
+    --     enabled = false,
+    -- },
     {
         'folke/trouble.nvim',
         version = false,
@@ -61,6 +61,13 @@ local LSP = {
         version = false,
         config = source('plugin.lsp.inc_rename'),
         enabled = false,
+    },
+    {
+        'lewis6991/hover.nvim',
+        lazy = false,
+        priority = 1000,
+        version = false,
+        config = source('plugin.hover'),
     },
 }
 
