@@ -10,8 +10,6 @@ if not exists('hover') then
     return
 end
 
-User:register_plugin('plugin.hover')
-
 local Hover = require('hover')
 
 Hover.setup({
@@ -100,5 +98,7 @@ if vim.opt.mouse:get()['a'] then
 end
 
 map_dict(Keys, 'wk.register', false, 'n')
+
+User:register_plugin('plugin.hover')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
