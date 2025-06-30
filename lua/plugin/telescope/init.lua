@@ -315,6 +315,7 @@ local known_exts = {
 
             return {
                 ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
+                ['<leader>pT'] = { pfx.projects, desc('Project Picker') },
             }
         end,
     },
@@ -431,7 +432,7 @@ local au_tbl = {
             pattern = 'TelescopePreviewerLoaded',
             group = group,
 
-            ---@param args TelAuArgs
+            ---@param args vim.api.keyset.create_autocmd.callback_args
             callback = function(args)
                 if
                     not (
