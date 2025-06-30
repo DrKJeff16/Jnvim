@@ -6,6 +6,7 @@ local Check = User.check
 
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
+local is_str = Check.value.is_str
 local desc = User.maps.kmap.desc
 
 if not exists('project_nvim') then
@@ -84,6 +85,39 @@ Project.setup({
 local Keys = {
     ['<leader>p'] = { group = '+Project' },
 
+    ['<leader>pC'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+
+            local cfg = require('project_nvim').get_config()
+            local msg = ''
+
+            if type_not_empty('table', cfg) then
+                for k, v in next, cfg do
+                    k = is_str(k) and k or inspect(k)
+                    v = is_str(v) and v or inspect(v)
+
+                    msg = msg .. ' ' .. k .. ' = ' .. v .. '\n'
+                end
+                notify(string.format('{\n%s\n}', msg), 'info', {
+                    title = 'Project | Config',
+                    animate = true,
+                    timeout = 3000,
+                    hide_from_history = false,
+                })
+
+                return
+            end
+
+            notify('{}', 'error', {
+                title = 'Project | NO CONFIG',
+                animate = true,
+                timeout = 2000,
+                hide_from_history = false,
+            })
+        end,
+        desc('Print Recent Projects'),
+    },
     ['<leader>pr'] = {
         function()
             local notify = require('user_api.util.notify').notify
@@ -99,7 +133,7 @@ local Keys = {
                     end
                 end
                 notify(string.format('{\n%s\n}', msg), 'info', {
-                    title = 'Recent Projects',
+                    title = 'Project | Recent Projects',
                     animate = true,
                     timeout = 3000,
                     hide_from_history = false,
