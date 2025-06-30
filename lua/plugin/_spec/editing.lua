@@ -27,6 +27,11 @@ local Editing = {
         config = source('plugin.persisted'),
     },
     {
+        'folke/twilight.nvim',
+        version = false,
+        config = source('plugin.twilight'),
+    },
+    {
         'numToStr/Comment.nvim',
         event = 'VeryLazy',
         version = false,
