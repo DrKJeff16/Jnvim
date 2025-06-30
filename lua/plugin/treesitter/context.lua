@@ -17,6 +17,8 @@ local Context = require('treesitter-context')
 Context.setup({
     enable = true,
 
+    multiwindow = false,
+
     ---@type 'topline'|'cursor'
     mode = 'cursor',
 
@@ -26,7 +28,7 @@ Context.setup({
     min_window_height = 0,
     zindex = 20,
     multiline_threshold = 20,
-    max_lines = 4,
+    max_lines = 0,
 
     -- Separator between context and content. Should be a single character string, like '-'.
     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline
@@ -39,9 +41,11 @@ Context.setup({
 
 ---@type HlDict
 local hls = {
-    ['TreesitterContextBottom'] = { link = 'FloatBorder' },
+    ['TreesitterContextBottom'] = { underline = true, sp = 'Grey' },
     ['TreesitterContextLineNumberBottom'] = { underline = true, sp = 'Grey' },
-    ['TreesitterContext'] = { link = 'PmenuSel' },
+    ['TreesitterContextLineNumber'] = { link = 'LineNr' },
+    ['TreesitterContextSeparator'] = { link = 'FloatBorder' },
+    ['TreesitterContext'] = { link = 'NormalFloat' },
 }
 
 hi(hls)
@@ -51,9 +55,11 @@ local Keys = {
     ['<leader>C'] = { group = '+Context' },
 
     ['<leader>Cn'] = {
-        function() pcall(Context.goto_context, vim.v.count1) end,
-        desc('Previous Context'),
+        function() require('treesitter-context').go_to_context(vim.v.count1) end,
+        desc('Go To Current Context'),
     },
+
+    ['<leader>Ct'] = { Context.toggle, desc('Toggle Context') },
 }
 
 Keymaps:setup({ n = Keys })
