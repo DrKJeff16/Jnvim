@@ -15,7 +15,8 @@ local MD = {
         'iamcco/markdown-preview.nvim',
         ft = 'markdown',
         version = false,
-        build = executable('yarn') and 'cd app && yarn install' or false,
+        build = executable('yarn') and 'cd app && yarn install'
+            or function() vim.fn['mkdp#util#install']() end,
         init = function() vim.g.mkdp_filetypes = { 'markdown' } end,
         config = source('plugin.markdown.md_preview'),
         enabled = not (in_console() or is_root()),
