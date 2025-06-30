@@ -517,6 +517,26 @@ function Util.discard_dups(data)
     return res
 end
 
+---@param T table
+---@return table
+function Util.reverse_tbl(T)
+    local Value = require('user_api.check.value')
+
+    local type_not_empty = Value.type_not_empty
+
+    if not type_not_empty('table', T) then
+        error('(user_api.util.reverse_tbl): Empty or non-existant table', ERROR)
+    end
+
+    local len = #T
+
+    for i = 1, math.floor(len / 2), 1 do
+        T[i], T[len - i + 1] = T[len - i + 1], T[i]
+    end
+
+    return T
+end
+
 ---@param O? table
 ---@return table|User.Util
 function Util.new(O)

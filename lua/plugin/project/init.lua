@@ -3,6 +3,7 @@
 local Keymaps = require('config.keymaps')
 local User = require('user_api')
 local Check = User.check
+local Util = User.util
 
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
@@ -123,16 +124,21 @@ local Keys = {
             local notify = require('user_api.util.notify').notify
 
             local recent_proj = require('project_nvim').get_recent_projects()
+
+            recent_proj = Util.reverse_tbl(vim.deepcopy(recent_proj))
+
+            local len = #recent_proj
             local msg = ''
 
             if type_not_empty('table', recent_proj) then
-                for i, v in next, recent_proj do
-                    msg = msg .. string.format(' - `%s`', v)
-                    if i < #recent_proj then
+                for k, v in next, recent_proj do
+                    msg = msg .. string.format(' %s. "%s"', tostring(k), v)
+
+                    if k < len then
                         msg = msg .. newline or string.char(10)
                     end
                 end
-                notify(string.format('{\n%s\n}', msg), 'info', {
+                notify(string.format('%s', msg), 'info', {
                     title = 'Project | Recent Projects',
                     animate = true,
                     timeout = 3000,

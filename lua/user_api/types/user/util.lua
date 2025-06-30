@@ -103,6 +103,7 @@
 ---@field assoc fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 ---@field mv_tbl_values fun(T: table<string|integer, any>|table, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
+---@field reverse_tbl fun(T: table): table
 ---@field discard_dups fun(data: string|table): (string|table)
 ---@field new fun(O: table?): table|User.Util
 
