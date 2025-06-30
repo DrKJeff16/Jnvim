@@ -49,7 +49,6 @@ Project.setup({
         '.stylua.toml',
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
-        '.clangd', -- WARNING: Should it be here...?
     },
 
     -- Don't calculate root dir on specific directories
