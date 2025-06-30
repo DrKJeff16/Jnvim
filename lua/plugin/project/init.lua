@@ -156,6 +156,10 @@ local Keys = {
         end,
         desc('Print Recent Projects'),
     },
+    ['<leader>ph'] = {
+        function() pcall(vim.cmd.checkhealth, 'project_nvim') end,
+        desc('Attempt to run `:checkhealth project_nvim`'),
+    },
 }
 
 Keymaps:setup({ n = Keys })
