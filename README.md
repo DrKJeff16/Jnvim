@@ -144,11 +144,10 @@ Just make sure to read the
 - [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
 - [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
 - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
-- [`neoconf.nvim`](https://github.com/folke/neoconf.nvim)
 - [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
 - [`noice.nvim`](https://github.com/folke/noice.nvim)
 - [`telescope.nvim`](https://github.com/nvim-telescope/telescope.nvim)
-- [`LuaLine`](https://github.com/nvim-lualine/lualine.nvim)
+- [`lualine.nvim`](https://github.com/nvim-lualine/lualine.nvim)
 - [`nvim-tree.lua`](https://github.com/nvim-tree/nvim-tree.lua)
 - [`nvim-web-devicons`](https://github.com/nvim-tree/nvim-web-devicons)
 
@@ -165,7 +164,7 @@ code structures and to simplify configuration.
 
 This submodule can be found at [`here`](lua/user_api/opts.lua).
 The options are defined in a default table to be processed
-by the funtion `opts.setup()`.
+by the funtion `Opts:setup()`.
 
 To call the options:
 
@@ -173,6 +172,7 @@ To call the options:
 local Opts1 = require('user_api.opts')
 Opts1:setup()
 Opts1:setup_keys() -- Setup keymaps
+
 --- Or by using the entry point:
 local Opts2 = require('user_api').opts
 Opts2:setup()
@@ -300,7 +300,7 @@ The function returns this table:
 #### `user_api.maps.wk`
 
 The `maps` API also includes integration with
-[`which_key`](https://github.com/folke/which-key.nvim) as `user_api.maps.wk`.
+[`which_key.nvim`](https://github.com/folke/which-key.nvim) as `user_api.maps.wk`.
 It can be found found in [`user_api/maps.lua`](lua/user_api/maps.lua)
 
 This module creates mappings using custom-made functions that convert
