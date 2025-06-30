@@ -23,3 +23,8 @@
 ---@field luarocks_check fun(): boolean
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 ---@field has_tgc fun(): boolean
+
+---@class Config.Lazy
+---@field colorschemes fun(): CscMod
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

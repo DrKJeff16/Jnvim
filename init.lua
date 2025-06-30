@@ -4,8 +4,8 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
-local User = require('user_api') ---@see UserAPI User API
 local Keymaps = require('config.keymaps') ---@see Config.Keymaps
+local User = require('user_api') ---@see UserAPI User API
 
 local Check = User.check ---@see User.Check Checking utilities
 local Util = User.util ---@see User.Util General utilities
@@ -52,6 +52,7 @@ end
 
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
+    autoread = true,
     backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
@@ -118,7 +119,7 @@ vim.g.loaded_netrwPlugin = 1
 local L = require('config.lazy')
 
 ---@type CscMod
-local Color = L.colorschemes
+local Color = L.colorschemes()
 
 Color('tokyonight', 'moon')
 
@@ -186,7 +187,12 @@ vim.schedule(function()
 
     vim.cmd.noh() -- HACK: Disable highlights when reloading
 
-    local DISABLE_ON = { 'lazy', 'notify', 'help', 'qf' }
+    local DISABLE_ON = {
+        'lazy',
+        'notify',
+        'help',
+        'qf',
+    }
 
     local curr_ft = Util.ft_get(curr_buf())
 

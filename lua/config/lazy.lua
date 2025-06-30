@@ -1,5 +1,6 @@
 ---@module 'lazy'
 ---@module 'user_api.types.lazy'
+---@module 'config._types'
 
 local User = require('user_api')
 local CfgUtil = require('config.util')
@@ -172,12 +173,11 @@ local Keys = {
 
 Keymaps:setup({ n = Keys })
 
-local Csc = require('plugin.colorschemes')
-
+---@type Config.Lazy
 local M = {}
 
----@type CscMod
-M.colorschemes = Csc
+---@return CscMod
+function M.colorschemes() return require('plugin.colorschemes') end
 
 User:register_plugin('config.lazy', 1) -- Always put it on first place
 
