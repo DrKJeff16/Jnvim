@@ -3,6 +3,7 @@
 ---@alias CpcSubMod.Variants ('frappe'|'latte'|'macchiato'|'mocha')
 ---@alias NFoxSubMod.Variants ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
 ---@alias VSCodeSubMod.Variants ('dark'|'light')
+---@alias DraculaSubMod.Variants ('dracula'|'dracula-soft')
 
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
@@ -64,8 +65,9 @@
 ---@field variants OD.Variant[]
 
 --- A `CscSubMod` variant but for the `dracula` colorscheme
----@class DraculaSubMod
----@field setup fun(self: DraculaSubMod)
+---@class DraculaSubMod: CscSubMod
+---@field variants (DraculaSubMod.Variants)[]
+---@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variants?, transparent: boolean?, override: table?)
 ---@field valid fun(): boolean
 ---@field new fun(O: table?): table|DraculaSubMod
 ---@field mod_cmd string

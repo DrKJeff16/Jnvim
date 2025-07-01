@@ -104,8 +104,9 @@ local ColorSchemes = {
         cond = has_tgc(),
     },
     {
-        'dracula/vim',
+        'Mofiqul/dracula.nvim',
         name = 'dracula',
+        main = 'dracula',
         lazy = false,
         priority = 1000,
         version = false,
