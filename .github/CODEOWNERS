@@ -7,3 +7,4 @@ version.txt @DrKJeff16
 .gitignore @DrKJeff16
 .github/CODEOWNERS @DrKJeff16
 .stylua.toml @DrKJeff16
+.deprecated/ @DrKJeff16
