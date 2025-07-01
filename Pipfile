@@ -23,6 +23,7 @@ pylsp-mypy = "*"
 pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.13"
