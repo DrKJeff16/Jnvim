@@ -180,6 +180,9 @@ local M = {}
 ---@return CscMod
 function M.colorschemes() return require('plugin.colorschemes') end
 
+---@return Lsp.Server
+function M.lsp() return require('plugin.lsp') end
+
 User:register_plugin('config.lazy', 1) -- Always put it on first place
 
 return M

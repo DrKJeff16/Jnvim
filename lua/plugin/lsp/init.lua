@@ -13,18 +13,15 @@ local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 
----@deprecated
--- require('plugin.lsp.mason')
-
----@deprecated
--- require('plugin.lsp.neoconf')
-
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds:setup()
 
 ---@type Lsp.Server
 local Server = {}
+
+---@type (string|Lsp.Server.Key)[]|table
+Server.client_names = {}
 
 ---@type Lsp.Server.Clients
 Server.Clients = require('plugin.lsp.server_config')
@@ -102,68 +99,83 @@ function Server:populate()
     end
 end
 
+---@param self Lsp.Server
+function Server:setup() end
+
 ---@param O? table
 ---@return table|Lsp.Server
 function Server.new(O)
     O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Server })
+    return setmetatable(O, {
+        __index = Server,
+
+        ---@param self Lsp.Server
+        __newindex = function(self, key, value) rawset(self, key, value) end,
+
+        ---@param self Lsp.Server
+        __call = function(self)
+            self:populate()
+
+            vim.lsp.config('*', {
+                capabilities = self.make_capabilities(),
+            })
+
+            vim.diagnostic.config({
+                signs = true,
+                float = true,
+                underline = false,
+                virtual_lines = false,
+                virtual_text = true,
+                severity_sort = true,
+            })
+
+            for client, v in next, self.Clients do
+                vim.lsp.config(client, v)
+                vim.lsp.enable(client)
+
+                table.insert(self.client_names, client)
+            end
+
+            ---@type AllModeMaps
+            local Keys = {
+                n = {
+                    ['<leader>l'] = { group = '+LSP' },
+
+                    ['<leader>lI'] = {
+                        ---@diagnostic disable-next-line
+                        function() pcall(vim.cmd, 'LspInfo') end,
+                        desc('Get LSP Config Info'),
+                    },
+                    ['<leader>lH'] = {
+                        function() vim.lsp.stop_client(vim.lsp.get_clients(), true) end,
+                        desc('Stop LSP Servers'),
+                    },
+                },
+
+                v = { ['<leader>l'] = { group = '+LSP' } },
+            }
+
+            ---@type Config.Keymaps
+            local Keymaps = require('config.keymaps')
+            Keymaps:setup(Keys)
+
+            ---@type Lsp.SubMods.Autocmd
+            local Autocmd = require('plugin.lsp.autocmd')
+            Autocmd:setup()
+
+            ---@type Lsp.SubMods.Trouble
+            local Trouble = require('plugin.lsp.trouble')
+            Trouble:setup()
+        end,
+    })
 end
 
 local S = Server.new()
 
-S:populate()
-
 _G.CLIENT_CONFS = vim.deepcopy(S.Clients)
 
-vim.lsp.config('*', {
-    capabilities = S.make_capabilities(),
-})
-
-vim.diagnostic.config({
-    signs = true,
-    float = true,
-    underline = false,
-    virtual_lines = false,
-    virtual_text = true,
-    severity_sort = true,
-})
-
-for client, v in next, S.Clients do
-    vim.lsp.config(client, v)
-    vim.lsp.enable(client)
-end
-
----@type AllModeMaps
-local Keys = {
-    n = {
-        ['<leader>l'] = { group = '+LSP' },
-
-        ['<leader>lI'] = {
-            ---@diagnostic disable-next-line
-            function() pcall(vim.cmd, 'LspInfo') end,
-            desc('Get LSP Config Info'),
-        },
-        ['<leader>lH'] = {
-            function() vim.lsp.stop_client(vim.lsp.get_clients(), true) end,
-            desc('Stop LSP Servers'),
-        },
-    },
-
-    v = { ['<leader>l'] = { group = '+LSP' } },
-}
-
----@type Config.Keymaps
-local Keymaps = require('config.keymaps')
-Keymaps:setup(Keys)
-
----@type Lsp.SubMods.Autocmd
-local Autocmd = require('plugin.lsp.autocmd')
-Autocmd:setup()
-
----@type Lsp.SubMods.Trouble
-local Trouble = require('plugin.lsp.trouble')
-Trouble:setup()
-
 User:register_plugin('plugin.lsp')
+
+return S
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

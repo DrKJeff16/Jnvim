@@ -1,5 +1,8 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.types.colorschemes'
+---@module 'user_api.types.lsp'
+
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect
@@ -120,10 +123,11 @@ local L = require('config.lazy')
 
 ---@type CscMod
 local Color = L.colorschemes()
+---@type Lsp.Server
+local Lsp = L.lsp()
 
 Color('tokyonight', 'moon')
-
-require('plugin.lsp')
+Lsp()
 
 --- Setup keymaps
 Keymaps:setup({

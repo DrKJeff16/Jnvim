@@ -15,8 +15,8 @@ local LSP = {
         'neovim/nvim-lspconfig',
         lazy = false,
         version = false,
-        config = source('plugin.lsp'),
-        enabled = vim_has('nvim-0.10'), --- Constraint specified in the repo
+        -- config = source('plugin.lsp'),
+        enabled = vim_has('nvim-0.11'), --- Constraint specified in the repo
     },
     {
         'b0o/SchemaStore',
@@ -38,12 +38,6 @@ local LSP = {
         'Bilal2453/luvit-meta',
         version = false,
     },
-    -- {
-    --     'folke/neoconf.nvim',
-    --     lazy = false,
-    --     version = false,
-    --     enabled = false,
-    -- },
     {
         'folke/trouble.nvim',
         version = false,

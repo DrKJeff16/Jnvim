@@ -1,6 +1,7 @@
 ---@meta
 
 ---@module 'user_api.types.user.maps'
+---@module 'user_api.types.lsp'
 
 ---@class Keymaps.PreExec
 ---@field ft string[]
@@ -26,5 +27,6 @@
 
 ---@class Config.Lazy
 ---@field colorschemes fun(): CscMod
+---@field lsp fun(): Lsp.Server
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
