@@ -169,7 +169,7 @@ Keymaps:setup({
         ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
         ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
     },
-})
+}, nil, true)
 
 -- Call the User API file associations and other autocmds
 Util:assoc()

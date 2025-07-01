@@ -20,8 +20,6 @@ local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 local curr_buf = vim.api.nvim_get_current_buf
 local tbl_contains = vim.tbl_contains
 
-User:register_plugin('config.keymaps')
-
 ---@param vertical? boolean
 ---@return false|fun()
 local function gen_fun_blank(vertical)
@@ -561,7 +559,8 @@ Keymaps.Keys = {
 ---@param self Config.Keymaps
 ---@param keys? AllModeMaps
 ---@param bufnr? integer
-function Keymaps:setup(keys, bufnr)
+---@param load_defaults? boolean
+function Keymaps:setup(keys, bufnr, load_defaults)
     local MODES = User.maps.modes
     local insp = inspect or vim.inspect
 
@@ -577,6 +576,7 @@ function Keymaps:setup(keys, bufnr)
 
     keys = is_tbl(keys) and keys or {}
     bufnr = is_int(bufnr) and bufnr or nil
+    load_defaults = is_bool(load_defaults) and load_defaults or false
 
     for k, _ in next, keys do
         if not vim.tbl_contains(MODES, k) then
@@ -601,7 +601,8 @@ function Keymaps:setup(keys, bufnr)
         end
     end
 
-    local res = vim.tbl_deep_extend('keep', keys, self.Keys)
+    ---@type AllModeMaps
+    local res = load_defaults and vim.tbl_deep_extend('keep', keys, self.Keys) or vim.deepcopy(keys)
 
     --- Set keymaps
     if is_nil(bufnr) then
@@ -677,5 +678,7 @@ function Keymaps.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Keymaps })
 end
+
+User:register_plugin('config.keymaps')
 
 return Keymaps
