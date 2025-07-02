@@ -12,21 +12,21 @@ local is_tbl = Check.value.is_tbl
 
 ---@type CpcSubMod
 local Catppuccin = {
-    ---@type CpcSubMod.Variants[]
+    ---@type CpcSubMod.Variants
     variants = {
         'frappe',
         'macchiato',
         'mocha',
         'latte',
     },
-    mod_cmd = 'colorscheme catppuccin',
+    mod_cmd = 'silent! colorscheme catppuccin',
 }
 
 ---@return boolean
 function Catppuccin.valid() return exists('catppuccin') end
 
 ---@param self CpcSubMod
----@param variant? CpcSubMod.Variants
+---@param variant? CpcSubMod.Variant
 ---@param transparent? boolean
 ---@param override? table|CatppuccinOptions
 function Catppuccin:setup(variant, transparent, override)

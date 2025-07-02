@@ -1,11 +1,42 @@
 ---@meta
 
----@alias CpcSubMod.Variants ('frappe'|'latte'|'macchiato'|'mocha')
----@alias NFoxSubMod.Variants ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
----@alias VSCodeSubMod.Variants ('dark'|'light')
----@alias DraculaSubMod.Variants ('dracula'|'dracula-soft')
-
+---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
+---@alias NFoxSubMod.Variant ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
+---@alias VSCodeSubMod.Variant ('dark'|'light')
+---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')
+---@alias TNSubMod.Variant ('night'|'moon'|'day')
+---@alias KanagawaSubMod.Variant ('dragon'|'wave'|'lotus')
+
+---@class NFoxSubMod.Variants
+---@field [1] 'carbonfox'
+---@field [2] 'nightfox'
+---@field [3] 'dawnfox'
+---@field [4] 'dayfox'
+---@field [5] 'duskfox'
+---@field [6] 'nordfox'
+---@field [7] 'terafox'
+
+---@class DraculaSubMod.Variants
+---@field [1] 'dracula'
+---@field [2] 'dracula-soft'
+
+---@class KanagawaSubMod.Variants
+---@field [1] 'dragon'
+---@field [2] 'wave'
+---@field [3] 'lotus'
+
+---@class TNSubMod.Variants
+---@field [1] 'night'
+---@field [2] 'moon'
+---@field [3] 'day'
+
+---@class CpcSubMod.Variants
+---@field [1] 'frappe'
+---@field [2] 'macchiato'
+---@field [3] 'mocha'
+---@field [4] 'latte'
+
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
 
 ---@class OD
@@ -21,16 +52,6 @@
 ---@field colors? table
 ---@field highlights? table
 ---@field diagnostics? OD.Diagnostics
-
----@class TN.Variants
----@field [1] 'night'
----@field [2] 'moon'
----@field [3] 'day'
-
----@class KanagawaSubMod.Variants
----@field [1] 'dragon'
----@field [2] 'wave
----@field [3] 'lotus'
 
 --- A loadable color schemes table
 ---
@@ -50,12 +71,17 @@
 ---@field mod_cmd string
 ---@field new fun(O: table?): CscSubMod|table
 
+---@class TNSubMod: CscSubMod
+---@field setup fun(self: TNSubMod, variant: TNSubMod.Variant?, transparent: boolean?, override: table?)
+---@field variants? TNSubMod.Variants
+---@field new fun(O: table?): TNSubMod|table
+
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
 ---@class KanagawaSubMod: CscSubMod
----@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variants, transparent: boolean?, override: table|KanagawaConfig?)|nil
----@field new fun(O: table?): KanagawaSubMod|table
+---@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variant?, transparent: boolean?, override: table|KanagawaConfig?)|nil
 ---@field variants KanagawaSubMod.Variants
+---@field new fun(O: table?): KanagawaSubMod|table
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
@@ -64,10 +90,11 @@
 ---@field new fun(O: table?): ODSubMod|table
 ---@field variants OD.Variant[]
 
+---@see CscSubMod
 --- A `CscSubMod` variant but for the `dracula` colorscheme
 ---@class DraculaSubMod: CscSubMod
----@field variants (DraculaSubMod.Variants)[]
----@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variants?, transparent: boolean?, override: table?)
+---@field variants DraculaSubMod.Variants
+---@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variant?, transparent: boolean?, override: table?)
 ---@field valid fun(): boolean
 ---@field new fun(O: table?): table|DraculaSubMod
 ---@field mod_cmd string
@@ -75,22 +102,22 @@
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `catppuccin.nvim` colorscheme
 ---@class CpcSubMod: CscSubMod
----@field variants CpcSubMod.Variants[]
----@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variants, transparent: boolean?, override: table|CatppuccinOptions?)
+---@field variants CpcSubMod.Variants
+---@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variant?, transparent: boolean?, override: table|CatppuccinOptions?)
 ---@field new fun(O: table?): table|CpcSubMod
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `nightfox.nvim` colorscheme
 ---@class NFoxSubMod: CscSubMod
----@field variants NFoxSubMod.Variants[]
----@field setup fun(self: NFoxSubMod, variant: NFoxSubMod.Variants?, transparent: boolean?, override: table?)
+---@field variants NFoxSubMod.Variants
+---@field setup fun(self: NFoxSubMod, variant: NFoxSubMod.Variant?, transparent: boolean?, override: table?)
 ---@field new fun(O: table?): table|NFoxSubMod
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `vscode` colorscheme
 ---@class VSCodeSubMod: CscSubMod
----@field variants VSCodeSubMod.Variants[]
----@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variants?, transparent: boolean?, override: table?)
+---@field variants (VSCodeSubMod.Variant)[]
+---@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variant?, transparent: boolean?, override: table?)
 ---@field new fun(O: table?): table|VSCodeSubMod
 ---override: table?)
 

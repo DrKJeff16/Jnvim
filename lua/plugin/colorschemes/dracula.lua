@@ -12,6 +12,7 @@ local is_bool = Check.value.is_bool
 
 ---@type DraculaSubMod
 local Dracula = {
+    ---@type DraculaSubMod.Variants
     variants = {
         'dracula',
         'dracula-soft',
@@ -23,7 +24,7 @@ local Dracula = {
 function Dracula.valid() return exists('dracula') end
 
 ---@param self DraculaSubMod
----@param variant? ''|'soft'
+---@param variant? DraculaSubMod.Variant
 ---@param transparent? boolean
 ---@param override? table
 function Dracula:setup(variant, transparent, override)
@@ -67,6 +68,7 @@ function Dracula:setup(variant, transparent, override)
 end
 
 ---@param O? table
+---@return DraculaSubMod|table
 function Dracula.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Dracula })

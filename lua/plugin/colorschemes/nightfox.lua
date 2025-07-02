@@ -12,7 +12,7 @@ local is_tbl = Check.value.is_tbl
 
 ---@type NFoxSubMod
 local Nightfox = {
-    ---@type NFoxSubMod.Variants[]
+    ---@type NFoxSubMod.Variants
     variants = {
         'carbonfox',
         'nightfox',

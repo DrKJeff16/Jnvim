@@ -11,9 +11,9 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
----@type CscSubMod
+---@type TNSubMod
 local TokyoNight = {
-    ---@type TN.Variants
+    ---@type TNSubMod.Variants
     variants = {
         'night',
         'moon',
@@ -25,8 +25,8 @@ local TokyoNight = {
 ---@return boolean
 function TokyoNight.valid() return exists('tokyonight') end
 
----@param self CscSubMod
----@param variant? 'night'|'moon'|'day'
+---@param self TNSubMod
+---@param variant? TNSubMod.Variant
 ---@param transparent? boolean
 ---@param override? tokyonight.Config|table
 function TokyoNight:setup(variant, transparent, override)
@@ -44,40 +44,42 @@ function TokyoNight:setup(variant, transparent, override)
             colors.info = colors.teal
         end,
 
-        ---@param hl tokyonight.Highlights|table
-        ---@param c ColorScheme|table
-        on_highlights = function(hl, c)
-            local prompt = '#2d3149'
-            hl.TelescopeNormal = {
-                bg = c.bg_dark,
-                fg = c.fg_dark,
-            }
-            hl.TelescopeBorder = {
-                bg = c.bg_dark,
-                fg = c.bg_dark,
-            }
-            hl.TelescopePromptNormal = {
-                bg = prompt,
-            }
-            hl.TelescopePromptBorder = {
-                bg = prompt,
-                fg = prompt,
-            }
-            hl.TelescopePromptTitle = {
-                bg = prompt,
-                fg = prompt,
-            }
-            hl.TelescopePreviewTitle = {
-                bg = c.bg_dark,
-                fg = c.bg_dark,
-            }
-            hl.TelescopeResultsTitle = {
-                bg = c.bg_dark,
-                fg = c.bg_dark,
-            }
-        end,
+        -- ---@param hl tokyonight.Highlights|table
+        -- ---@param c ColorScheme|table
+        -- on_highlights = function(hl, c)
+        --     local prompt = '#2d3149'
+        --     hl.TelescopeNormal = {
+        --         bg = c.bg_dark,
+        --         fg = c.fg_dark,
+        --     }
+        --     hl.TelescopeBorder = {
+        --         bg = c.bg_dark,
+        --         fg = c.bg_dark,
+        --     }
+        --     hl.TelescopePromptNormal = {
+        --         bg = prompt,
+        --     }
+        --     hl.TelescopePromptBorder = {
+        --         bg = prompt,
+        --         fg = prompt,
+        --     }
+        --     hl.TelescopePromptTitle = {
+        --         bg = prompt,
+        --         fg = prompt,
+        --     }
+        --     hl.TelescopePreviewTitle = {
+        --         bg = c.bg_dark,
+        --         fg = c.bg_dark,
+        --     }
+        --     hl.TelescopeResultsTitle = {
+        --         bg = c.bg_dark,
+        --         fg = c.bg_dark,
+        --     }
+        -- end,
+
         terminal_colors = true,
         transparent = transparent and not in_console(),
+
         sidebars = {
             'NvimTree',
             'TelescopePrompt',
