@@ -13,9 +13,7 @@ local in_console = Check.in_console
 local LSP = {
     {
         'neovim/nvim-lspconfig',
-        lazy = false,
         version = false,
-        -- config = source('plugin.lsp'),
         enabled = vim_has('nvim-0.11'), --- Constraint specified in the repo
     },
     {
@@ -29,14 +27,8 @@ local LSP = {
         'folke/lazydev.nvim',
         ft = 'lua',
         version = false,
-        dependencies = { 'Bilal2453/luvit-meta' },
         config = source('plugin.lazydev'),
         cond = executable('lua-language-server'),
-    },
-    --- optional `vim.uv` typings
-    {
-        'Bilal2453/luvit-meta',
-        version = false,
     },
     {
         'folke/trouble.nvim',

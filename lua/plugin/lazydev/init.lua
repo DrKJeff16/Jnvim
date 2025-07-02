@@ -17,7 +17,7 @@ local LazyDev = require('lazydev')
 
 ---@type lazydev.Library.spec[]
 local library = vim.deepcopy(vim.opt.rtp:get())
-table.insert(library, { path = 'luvit-meta/library', words = { 'vim%.uv' } })
+table.insert(library, { path = '${3rd}/luv/library', words = { 'vim%.uv' } })
 
 LazyDev.setup({
     runtime = vim.env.VIMRUNTIME --[[@as string]],
