@@ -76,6 +76,10 @@ Project.setup({
     -- * win
     scope_chdir = 'tab',
 
+    allow_different_owners = true,
+
+    telescope = { sort = 'newest' },
+
     -- Path where project.nvim will store the project history for use in
     -- telescope
     datapath = vim.fn.stdpath('data'),
