@@ -2,18 +2,16 @@
 
 ---@module 'user_api.types.telescope'
 
+local Keymaps = require('config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
 local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
-local wk_avail = User.maps.wk.available
 
 if not exists('telescope') then
     return
@@ -50,15 +48,20 @@ local Opts = {
         layout_strategy = 'flex',
         layout_config = {
             vertical = {
-                width = math.floor(vim.opt.columns:get() * 3 / 4),
-                height = math.floor(vim.opt.lines:get() * 3 / 5),
+                width = math.floor(vim.o.columns * 3 / 4),
+                height = math.floor(vim.o.lines * 4 / 5),
+            },
+            horizontal = {
+                width = math.floor(vim.o.columns * 4 / 5),
+                height = math.floor(vim.o.lines * 3 / 4),
             },
         },
 
         mappings = {
             i = {
                 ['<C-h>'] = 'which_key',
-                ['<C-u>'] = false, --- Clear prompt
+                ['<C-?>'] = 'which_key',
+                ['<C-u>'] = false, -- Clear prompt
                 ['<C-d>'] = Actions.delete_buffer + Actions.move_to_top,
                 ['<Esc>'] = Actions.close,
                 ['<C-e>'] = Actions.close,
@@ -75,11 +78,27 @@ local Opts = {
         vimgrep_arguments = vimgrep_arguments,
 
         preview = {
-            filesize_limit = 0.75, -- MB
+            filesize_limit = 0.75, -- MiB
         },
     },
 
-    extensions = {},
+    extensions = {
+        picker_list = {
+            theme = 'ivy',
+            opts = {
+                projects = { display_type = 'full' },
+                project = { display_type = 'full' },
+                notify = Themes.get_dropdown({}),
+            },
+
+            excluded_pickers = {},
+
+            user_pickers = {
+                'todo-comments',
+                function() vim.cmd('TodoTelescope theme=cursor') end,
+            },
+        },
+    },
 
     pickers = {
         autocommands = { theme = 'ivy' },
@@ -89,48 +108,26 @@ local Opts = {
         current_buffer_fuzzy_find = { theme = 'cursor' },
         fd = { theme = 'dropdown' },
         find_files = {
-            theme = 'dropdown',
+            theme = 'ivy',
             -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`'d
             find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
         },
         git_branches = { theme = 'ivy' },
         git_status = { theme = 'dropdown' },
         git_stash = { theme = 'dropdown' },
-        highlights = { theme = 'dropdown' },
-        lsp_definitions = { theme = 'dropdown' },
-        lsp_document_symbols = { theme = 'dropdown' },
-        lsp_implementations = { theme = 'dropdown' },
-        lsp_type_definitions = { theme = 'dropdown' },
-        lsp_workspace_symbols = { theme = 'dropdown' },
-        man_pages = { theme = 'dropdown' },
-        pickers = { theme = 'dropdown' },
-        picker_list = { theme = 'dropdown' },
-        planets = { theme = 'dropdown' },
+        highlights = { theme = 'ivf' },
+        lsp_definitions = { theme = 'cursor' },
+        lsp_document_symbols = { theme = 'cursor' },
+        lsp_implementations = { theme = 'cursor' },
+        lsp_type_definitions = { theme = 'cursor' },
+        lsp_workspace_symbols = { theme = 'cursor' },
+        man_pages = { theme = 'ivy' },
+        picker_list = { theme = 'cursor' },
+        pickers = { theme = 'cursor' },
+        planets = { theme = 'ivy' },
         vim_options = { theme = 'ivy' },
     },
 }
-
-if exists('telescope._extensions.picker_list') then
-    Opts.extensions.picker_list = {
-        theme = 'dropdown',
-        opts = {
-            projects = { display_type = 'full' },
-            project = { display_type = 'full' },
-            notify = Themes.get_dropdown({}),
-        },
-
-        excluded_pickers = {
-            'fzf',
-            'fd',
-            'live_grep',
-        },
-
-        user_pickers = {
-            'todo-comments',
-            function() vim.cmd('TodoTelescope theme=dropdown') end,
-        },
-    }
-end
 
 if exists('trouble.sources.telescope') then
     local pfx = require('trouble.sources.telescope')
@@ -178,7 +175,7 @@ end
 Telescope.setup(Opts)
 
 ---@param name string
-local load_ext = function(name)
+local function load_ext(name)
     Telescope.load_extension(name)
 
     -- Make sure `picker_list` doesn't load itself
@@ -195,7 +192,10 @@ end
 
 ---@type AllMaps
 local Keys = {
-    ['<leader><leader>'] = { function() vim.cmd('Telescope') end, desc('Open Telescope') },
+    ['<leader><C-t>'] = { group = '+Telescope' },
+    ['<leader><C-t>b'] = { group = '+Builtins' },
+    ['<leader><C-t>e'] = { group = '+Extensions' },
+
     ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
     ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
@@ -218,19 +218,12 @@ local Keys = {
     ['<leader>vO'] = { Builtin.vim_options, desc('Telescope Vim Options') },
     ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
-    ['<leader>fTb/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
-    ['<leader>fTbA'] = { Builtin.autocommands, desc('Autocommands') },
-    ['<leader>fTbC'] = { Builtin.commands, desc('Commands') },
-    ['<leader>fTbg'] = { Builtin.live_grep, desc('Live Grep') },
-    ['<leader>fTbh'] = { Builtin.highlights, desc('Highlights') },
-    ['<leader>fTbp'] = { Builtin.pickers, desc('Pickers') },
-}
-
----@type RegKeysNamed
-local Names = {
-    ['<leader>fT'] = { group = '+Telescope' },
-    ['<leader>fTb'] = { group = '+Builtins' },
-    ['<leader>fTe'] = { group = '+Extensions' },
+    ['<leader><C-t>b/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
+    ['<leader><C-t>bA'] = { Builtin.autocommands, desc('Autocommands') },
+    ['<leader><C-t>bC'] = { Builtin.commands, desc('Commands') },
+    ['<leader><C-t>bg'] = { Builtin.live_grep, desc('Live Grep') },
+    ['<leader><C-t>bh'] = { Builtin.highlights, desc('Highlights') },
+    ['<leader><C-t>bp'] = { Builtin.pickers, desc('Pickers') },
 }
 
 local Extensions = Telescope.extensions
@@ -250,7 +243,7 @@ local known_exts = {
             local pfx = Extensions.conventional_commits
 
             return {
-                ['<leader>fTeC'] = { pfx.conventional_commits, desc('Scope Buffers Picker') },
+                ['<leader><C-t>eC'] = { pfx.conventional_commits, desc('Scope Buffers Picker') },
             }
         end,
     },
@@ -266,7 +259,7 @@ local known_exts = {
             local pfx = Extensions.scope
 
             return {
-                ['<leader>fTeS'] = { pfx.buffers, desc('Scope Buffers Picker') },
+                ['<leader><C-t>eS'] = { pfx.buffers, desc('Scope Buffers Picker') },
             }
         end,
     },
@@ -282,7 +275,7 @@ local known_exts = {
             local pfx = Extensions.persisted
 
             return {
-                ['<leader>fTef'] = { pfx.persisted, desc('Persisted Picker') },
+                ['<leader><C-t>ef'] = { pfx.persisted, desc('Persisted Picker') },
             }
         end,
     },
@@ -298,7 +291,7 @@ local known_exts = {
             local pfx = Extensions.make
 
             return {
-                ['<leader>fTeM'] = { pfx.make, desc('Makefile Picker') },
+                ['<leader><C-t>eM'] = { pfx.make, desc('Makefile Picker') },
             }
         end,
     },
@@ -314,7 +307,7 @@ local known_exts = {
             local pfx = Extensions.projects
 
             return {
-                ['<leader>fTep'] = { pfx.projects, desc('Project Picker') },
+                ['<leader><C-t>ep'] = { pfx.projects, desc('Project Picker') },
                 ['<leader>pT'] = { pfx.projects, desc('Project Picker') },
             }
         end,
@@ -331,7 +324,7 @@ local known_exts = {
             local pfx = Extensions.notify
 
             return {
-                ['<leader>fTeN'] = { pfx.notify, desc('Notify Picker') },
+                ['<leader><C-t>eN'] = { pfx.notify, desc('Notify Picker') },
             }
         end,
     },
@@ -342,18 +335,18 @@ local known_exts = {
         keys = function()
             ---@type AllMaps
             local res = {
-                ['<leader>fTenl'] = {
+                ['<leader><C-t>enl'] = {
                     function() require('noice').cmd('last') end,
                     desc('NoiceLast'),
                 },
-                ['<leader>fTenh'] = {
+                ['<leader><C-t>enh'] = {
                     function() require('noice').cmd('history') end,
                     desc('NoiceHistory'),
                 },
             }
 
-            if require('user_api.maps.wk').available() and type_not_empty('table', Names) then
-                Names['<leader>fTen'] = { group = '+Noice' }
+            if require('user_api.maps.wk').available() and type_not_empty('table', Keys) then
+                Keys['<leader><C-t>en'] = { group = '+Noice' }
             end
 
             return res
@@ -372,7 +365,7 @@ local known_exts = {
 
             ---@type AllMaps
             local res = {
-                ['<leader>fTeG'] = { pfx.lazygit, desc('LazyGit Picker') },
+                ['<leader><C-t>eG'] = { pfx.lazygit, desc('LazyGit Picker') },
             }
 
             return res
@@ -392,8 +385,8 @@ local known_exts = {
             local pfx = Extensions.picker_list
 
             return {
-                ['<leader>fTeP'] = { pfx.picker_list, desc('Picker List') },
-                ['<leader>fTbp'] = { pfx.picker_list, desc('Picker List (Extension)') },
+                ['<leader><C-t>eP'] = { pfx.picker_list, desc('Picker List') },
+                ['<leader><C-t>bp'] = { pfx.picker_list, desc('Picker List (Extension)') },
                 ['<leader><leader>'] = { pfx.picker_list, desc('Telescope Picker List') },
             }
         end,
@@ -418,11 +411,6 @@ for mod, ext in next, known_exts do
     ::continue::
 end
 
-if wk_avail() then
-    map_dict(Names, 'wk.register', false, 'n')
-end
-map_dict(Keys, 'wk.register', false, 'n')
-
 local group = augroup('UserTelescope', { clear = false })
 
 ---@type AuRepeat
@@ -434,13 +422,7 @@ local au_tbl = {
 
             ---@param args vim.api.keyset.create_autocmd.callback_args
             callback = function(args)
-                if
-                    not (
-                        is_tbl(args.data)
-                        and is_str(args.data.filetype)
-                        and args.data.filetype == 'help'
-                    )
-                then
+                if args.data.filetype ~= 'help' then
                     vim.wo.number = true
                 elseif args.data.bufname:match('*.csv') then
                     vim.wo.wrap = false
@@ -455,6 +437,8 @@ for event, v in next, au_tbl do
         au(event, au_opts)
     end
 end
+
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.telescope')
 
