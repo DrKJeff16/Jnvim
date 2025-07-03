@@ -79,16 +79,7 @@ Noice.setup({
             Value = ' ',
             Variable = ' ',
         }, -- set to `false` to disable icons
-        opts = {
-            win_options = {
-                -- concealcursor = '',
-                -- conceallevel = 3,
-                winhighlight = {
-                    Normal = 'NormalFloat',
-                    FloatBorder = 'FloatBorder',
-                },
-            },
-        },
+        opts = {},
     },
 
     -- default options for require('noice').redirect
@@ -97,18 +88,11 @@ Noice.setup({
     redirect = {
         view = 'popup',
         filter = { event = 'msg_show' },
+
         ---@type NoiceViewOptions
         opts = {
             enter = true,
             format = 'details',
-            win_options = {
-                concealcursor = '',
-                conceallevel = 3,
-                winhighlight = {
-                    Normal = 'NormalFloat',
-                    FloatBorder = 'FloatBorder',
-                },
-            },
         },
     },
 
@@ -145,8 +129,8 @@ Noice.setup({
         -- `:Noice errors`
         errors = {
             -- options for the message history that you get with `:Noice`
-            view = 'notify',
-            opts = { enter = false, format = 'details' },
+            view = 'popup',
+            opts = { enter = true, format = 'details' },
             ---@type NoiceFilter
             filter = { error = true, has = true, warning = true },
             filter_opts = { reverse = true },
@@ -156,21 +140,12 @@ Noice.setup({
     notify = {
         enabled = exists('notify'),
         view = 'notify',
-        opts = {
-            win_options = {
-                concealcursor = '',
-                conceallevel = 3,
-                winhighlight = {
-                    Normal = 'NormalFloat',
-                    FloatBorder = 'FloatBorder',
-                },
-            },
-        },
+        opts = {},
     },
 
     lsp = {
         progress = {
-            enabled = true,
+            enabled = false,
             -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
             -- See the section on formatting for more details on how to customize
             --- @type NoiceFormat|string
@@ -185,14 +160,6 @@ Noice.setup({
                 enter = false,
                 border = 'rounded',
                 focusable = false,
-                win_options = {
-                    concealcursor = '',
-                    conceallevel = 3,
-                    winhighlight = {
-                        Normal = 'NormalFloat',
-                        FloatBorder = 'FloatBorder',
-                    },
-                },
             },
         },
 
@@ -206,16 +173,7 @@ Noice.setup({
         message = {
             enabled = true,
             view = 'notify',
-            opts = {
-                win_options = {
-                    concealcursor = '',
-                    conceallevel = 3,
-                    winhighlight = {
-                        Normal = 'NormalFloat',
-                        FloatBorder = 'FloatBorder',
-                    },
-                },
-            },
+            opts = {},
         },
 
         hover = {
@@ -224,22 +182,7 @@ Noice.setup({
             view = nil,
 
             ---@type NoiceViewOptions
-            opts = {
-                border = 'solid',
-                merge = true,
-                zindex = 100,
-                timeout = 0,
-                scrollbar = true,
-                enter = false,
-                win_options = {
-                    concealcursor = '',
-                    conceallevel = 3,
-                    winhighlight = {
-                        Normal = 'NormalFloat',
-                        FloatBorder = 'FloatBorder',
-                    },
-                },
-            },
+            opts = {},
         },
 
         signature = {
@@ -247,24 +190,16 @@ Noice.setup({
             auto_open = {
                 enabled = true,
                 trigger = true,
-                luasnip = exists('luasnip'),
+                luasnip = true,
                 throttle = 500,
             },
 
-            view = 'mini',
+            view = nil,
 
             ---@type NoiceViewOptions
-            opts = {
-                win_options = {
-                    concealcursor = '',
-                    conceallevel = 3,
-                    winhighlight = {
-                        Normal = 'NormalFloat',
-                        FloatBorder = 'FloatBorder',
-                    },
-                },
-            },
+            opts = {},
         },
+
         documentation = {
             view = 'hover',
 
@@ -275,20 +210,16 @@ Noice.setup({
                 render = 'plain',
                 format = { '{message}' },
                 win_options = {
-                    concealcursor = '',
+                    concealcursor = 'n',
                     conceallevel = 3,
-                    winhighlight = {
-                        Normal = 'NormalFloat',
-                        FloatBorder = 'FloatBorder',
-                    },
                 },
             },
         },
     },
 
     all = {
-        view = 'popup',
-        opts = { enter = false, format = 'details' },
+        view = 'split',
+        opts = { enter = true, format = 'details' },
         filter = {},
     },
 
@@ -315,7 +246,7 @@ Noice.setup({
         command_palette = true, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = exists('inc_rename'), -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = false, -- add a border to hover docs and signature help
+        lsp_doc_border = true, -- add a border to hover docs and signature help
     },
 
     throttle = 1000 / 30,
@@ -323,19 +254,21 @@ Noice.setup({
     ---@type NoiceConfigViews
     views = {
         split = {
-            enabled = true,
+            enter = true,
         },
     }, ---@see section on views
 
     ---@type NoiceRouteConfig
     routes = {
+        -- skip search_count messages instead of showing them as virtual text
         {
             filter = { event = 'msg_show', kind = 'search_count' },
             opts = { skip = true },
         },
+        -- always route any messages with more than N lines to the split view
         {
             view = 'split',
-            filter = { event = 'msg_show', min_height = 14 },
+            filter = { event = 'msg_show', min_height = 15 },
         },
     }, ---@see section on routes
 
