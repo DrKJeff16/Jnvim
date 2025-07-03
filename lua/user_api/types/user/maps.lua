@@ -11,7 +11,7 @@
 ---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
 
 --- Array for available modes
----@alias Modes MapModes[]
+---@alias Modes (MapModes)[]
 
 ---@class KeyMapRhsOptsArr
 ---@field [1] User.Maps.Keymap.Rhs
@@ -31,7 +31,14 @@
 ---@alias KeyMapDicts table<string, KeyMapRhsOptsDict>
 
 ---@alias AllMaps table<string, KeyMapRhsOptsArr|RegKey|RegPfx>
----@alias AllModeMaps table<MapModes, AllMaps>
+
+---@class AllModeMaps
+---@field n? AllMaps
+---@field i? AllMaps
+---@field v? AllMaps
+---@field t? AllMaps
+---@field o? AllMaps
+---@field x? AllMaps
 
 ---@class KeyMapTbl
 ---@field lhs string

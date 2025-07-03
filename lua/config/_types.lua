@@ -14,6 +14,7 @@
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
 ---@field setup fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 ---@field new fun(O: table?): table|Config.Keymaps
+---@field __call fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)

@@ -4,6 +4,8 @@
 
 local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
+local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities
+local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping Utilities (`vim.keymap` version)
 local Util = require('user_api.util') ---@see User.Util Utilities
 
 local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
@@ -13,12 +15,12 @@ local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
 local type_not_empty = Value.type_not_empty ---@see User.Check.Value.type_not_empty
 local ft_get = Util.ft_get ---@see User.Util.ft_get
 local bt_get = Util.bt_get ---@see User.Util.bt_get
-local nop = User.maps.nop ---@see User.Maps.nop
-local map_dict = User.maps.map_dict ---@see User.Maps.map_dict
-local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
+local nop = Maps.nop ---@see User.Maps.nop
+local map_dict = Maps.map_dict ---@see User.Maps.map_dict
+local desc = Kmap.desc ---@see User.Maps.Keymap.desc
 
 local curr_buf = vim.api.nvim_get_current_buf
-local tbl_contains = vim.tbl_contains
+local in_tbl = vim.tbl_contains
 
 ---@param vertical? boolean
 ---@return false|fun()
@@ -78,11 +80,11 @@ local function buf_del(force)
             vim.cmd(cmd)
         end
 
-        if tbl_contains(pre_exc.ft, prev_ft) or tbl_contains(pre_exc.bt, prev_bt) then
+        if in_tbl(pre_exc.ft, prev_ft) or in_tbl(pre_exc.bt, prev_bt) then
             return
         end
 
-        if tbl_contains(ft_triggers, ft_get(curr_buf())) then
+        if in_tbl(ft_triggers, ft_get(curr_buf())) then
             vim.cmd('bprevious')
         end
     end
@@ -216,10 +218,10 @@ Keymaps.Keys = {
             buf_del(true),
             desc('Close Buffer Forcefully'),
         },
-        ['<leader>bf'] = { '<CMD>bfirst<CR>', desc('Goto First Buffer') },
-        ['<leader>bl'] = { '<CMD>blast<CR>', desc('Goto Last Buffer') },
-        ['<leader>bn'] = { '<CMD>bNext<CR>', desc('Next Buffer') },
-        ['<leader>bp'] = { '<CMD>bprevious<CR>', desc('Previous Buffer') },
+        ['<leader>bf'] = { vim.cmd.bfirst, desc('Goto First Buffer') },
+        ['<leader>bl'] = { vim.cmd.blast, desc('Goto Last Buffer') },
+        ['<leader>bn'] = { vim.cmd.bnext, desc('Next Buffer') },
+        ['<leader>bp'] = { vim.cmd.bprevious, desc('Previous Buffer') },
 
         ['<leader>/'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
 
@@ -365,29 +367,35 @@ Keymaps.Keys = {
             desc('Source Current File As VimScript File'),
         },
 
-        ['<leader>vee'] = { '<CMD>ed ' .. MYVIMRC .. '<CR>', desc('Open In Current Window') },
+        ['<leader>vee'] = {
+            function() vim.cmd.edit(MYVIMRC) end,
+            desc('Open In Current Window'),
+        },
         ['<leader>ves'] = {
-            '<CMD>split ' .. MYVIMRC .. '<CR>',
+            function() vim.cmd.split(MYVIMRC) end,
             desc('Open In Horizontal Split'),
         },
-        ['<leader>vet'] = { '<CMD>tabnew ' .. MYVIMRC .. '<CR>', desc('Open In New Tab') },
+        ['<leader>vet'] = {
+            function() vim.cmd.tabnew(MYVIMRC) end,
+            desc('Open In New Tab'),
+        },
         ['<leader>vev'] = {
-            '<CMD>vsplit ' .. MYVIMRC .. '<CR>',
+            function() vim.cmd.vsplit(MYVIMRC) end,
             desc('Open In Vertical Split'),
         },
 
-        ['<leader>vhh'] = { '<CMD>checkhealth<CR>', desc('Run Checkhealth') },
-        ['<leader>vhH'] = { ':checkhealth', desc('Prompt Checkhealth', false) },
+        ['<leader>vhh'] = { vim.cmd.checkhealth, desc('Run Checkhealth') },
+        ['<leader>vhH'] = { ':checkhealth ', desc('Prompt Checkhealth', false) },
         ['<leader>vhd'] = {
-            '<CMD>checkhealth vim.health<CR>',
+            function() vim.cmd.checkhealth('vim.health') end,
             desc('Run `vim.health` Checkhealth', false),
         },
         ['<leader>vhD'] = {
-            '<CMD>checkhealth vim.deprecated<CR>',
+            function() vim.cmd.checkhealth('vim.deprecated') end,
             desc('Run `vim.deprecated` Checkhealth', false),
         },
         ['<leader>vhl'] = {
-            '<CMD>checkhealth vim.lsp<CR>',
+            function() vim.cmd.checkhealth('vim.lsp') end,
             desc('Run `vim.lsp` Checkhealth', false),
         },
 
@@ -396,7 +404,7 @@ Keymaps.Keys = {
                 local notify = require('user_api.util.notify').notify
 
                 ---@diagnostic disable-next-line
-                local ok, err = pcall(vim.cmd, 'luafile ' .. _G.MYVIMRC)
+                local ok, err = pcall(vim.cmd.luafile, _G.MYVIMRC)
 
                 if ok then
                     notify('Sourced `init.lua`', 'info', {
@@ -419,9 +427,9 @@ Keymaps.Keys = {
             desc('Source $MYVIMRC'),
         },
 
-        ['<leader>HT'] = { '<CMD>tab h<CR>', desc('Open Help On New Tab') },
-        ['<leader>HV'] = { '<CMD>vertical h<CR>', desc('Open Help On Vertical Split') },
-        ['<leader>HX'] = { '<CMD>horizontal h<CR>', desc('Open Help On Horizontal Split') },
+        ['<leader>HT'] = { ':tab h<CR>', desc('Open Help On New Tab') },
+        ['<leader>HV'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
+        ['<leader>HX'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
         ['<leader>Hh'] = { ':h ', desc('Prompt For Help') },
         ['<leader>Ht'] = { ':tab h ', desc('Prompt For Help On New Tab') },
         ['<leader>Hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split') },
@@ -512,17 +520,17 @@ Keymaps.Keys = {
             desc('Vertical Split'),
         },
 
-        ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
-        ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
+        ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
+        ['<leader>qq'] = { vim.cmd.qa, desc('Quit Nvim') },
 
-        ['<leader>tA'] = { '<CMD>tabnew<CR>', desc('New Tab') },
-        ['<leader>tD'] = { '<CMD>tabc!<CR>', desc('Close Tab Forcefully') },
+        ['<leader>tA'] = { vim.cmd.tabnew, desc('New Tab') },
+        ['<leader>tD'] = { ':tabclose!<CR>', desc('Close Tab Forcefully') },
         ['<leader>ta'] = { ':tabnew ', desc('New Tab (Prompt)', false) },
-        ['<leader>td'] = { '<CMD>tabc<CR>', desc('Close Tab') },
-        ['<leader>tf'] = { '<CMD>tabfirst<CR>', desc('Goto First Tab') },
-        ['<leader>tl'] = { '<CMD>tablast<CR>', desc('Goto Last Tab') },
-        ['<leader>tn'] = { '<CMD>tabN<CR>', desc('Next Tab') },
-        ['<leader>tp'] = { '<CMD>tabp<CR>', desc('Previous Tab') },
+        ['<leader>td'] = { vim.cmd.tabclose, desc('Close Tab') },
+        ['<leader>tf'] = { vim.cmd.tabfirst, desc('Goto First Tab') },
+        ['<leader>tl'] = { vim.cmd.tablast, desc('Goto Last Tab') },
+        ['<leader>tn'] = { vim.cmd.tabnext, desc('Next Tab') },
+        ['<leader>tp'] = { vim.cmd.tabprevious, desc('Previous Tab') },
     },
     v = {
         ['<leader>f'] = { group = '+File' }, --- File Handling
@@ -537,11 +545,27 @@ Keymaps.Keys = {
         ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
         ['<leader>fs'] = {
             function()
+                local notify = require('user_api.util.notify').notify
+
+                ---@type boolean
+                local ok = true
+                ---@type unknown
+                local err = nil
+
                 if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
-                    vim.cmd.write()
-                else
-                    require('user_api.util.notify').notify('Not writeable', 'error')
+                    ok, err = pcall(vim.cmd.write)
+
+                    if ok then
+                        return
+                    end
                 end
+
+                notify(err or 'Unable to write', 'error', {
+                    animate = true,
+                    title = 'Vim Write',
+                    timeout = 2250,
+                    hide_from_history = false,
+                })
             end,
             desc('Save File'),
         },
@@ -549,7 +573,7 @@ Keymaps.Keys = {
         ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 
         ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
-        ['<leader>qq'] = { '<CMD>qa<CR>', desc('Quit Nvim') },
+        ['<leader>qq'] = { vim.cmd.qa, desc('Quit Nvim') },
     },
     t = {
         ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
@@ -561,13 +585,13 @@ Keymaps.Keys = {
 ---@param bufnr? integer
 ---@param load_defaults? boolean
 function Keymaps:setup(keys, bufnr, load_defaults)
-    local MODES = User.maps.modes
+    local MODES = Maps.modes
     local insp = inspect or vim.inspect
 
     local notify = require('user_api.util.notify').notify
 
     if not leader_set then
-        notify("Leader hasn't been set through `set_leader()`", 'warn', {
+        notify('`set_leader()` not called!', 'warn', {
             hide_from_history = false,
             timeout = 3250,
             title = '[WARNING] (config.keymaps.setup)',
@@ -578,10 +602,13 @@ function Keymaps:setup(keys, bufnr, load_defaults)
     bufnr = is_int(bufnr) and bufnr or nil
     load_defaults = is_bool(load_defaults) and load_defaults or false
 
-    for k, _ in next, keys do
-        if not vim.tbl_contains(MODES, k) then
+    ---@type AllModeMaps
+    local parsed_keys = {}
+
+    for k, v in next, keys do
+        if not in_tbl(MODES, k) then
             notify(
-                string.format("Table isn't formatted correctly. Ignoring\n\n%s", insp(keys)),
+                string.format('Table not formatted correctly. Ignoring\n\n%s', insp(keys)),
                 'warn',
                 {
                     animate = true,
@@ -590,19 +617,28 @@ function Keymaps:setup(keys, bufnr, load_defaults)
                     timeout = 1250,
                 }
             )
+        else
+            parsed_keys[k] = v
         end
     end
+
+    self.no_oped = is_bool(self.no_oped) and self.no_oped or false
 
     --- Noop keys after `<leader>` to avoid accidents
     for _, mode in next, MODES do
-        if (is_nil(self.no_oped) or not self.no_oped) and vim.tbl_contains({ 'n', 'v' }, mode) then
+        if self.no_oped then
+            break
+        end
+
+        if in_tbl({ 'n', 'v' }, mode) then
             nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
-            self.no_oped = true
         end
     end
 
+    self.no_oped = true
+
     ---@type AllModeMaps
-    local res = load_defaults and vim.tbl_deep_extend('keep', keys, self.Keys) or vim.deepcopy(keys)
+    local res = load_defaults and vim.tbl_deep_extend('keep', parsed_keys, self.Keys) or parsed_keys
 
     --- Set keymaps
     if is_nil(bufnr) then
@@ -676,9 +712,82 @@ end
 ---@return table|Config.Keymaps
 function Keymaps.new(O)
     O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Keymaps })
+    return setmetatable(O, {
+        __index = Keymaps,
+
+        ---@param self Config.Keymaps
+        ---@param keys? AllModeMaps
+        ---@param bufnr? integer
+        ---@param load_defaults? boolean
+        __call = function(self, keys, bufnr, load_defaults)
+            local MODES = Maps.modes
+            local insp = inspect or vim.inspect
+
+            local notify = require('user_api.util.notify').notify
+
+            if not leader_set then
+                notify('`set_leader()` not called!', 'warn', {
+                    hide_from_history = false,
+                    timeout = 3250,
+                    title = '[WARNING] (config.keymaps.setup)',
+                })
+            end
+
+            keys = is_tbl(keys) and keys or {}
+            bufnr = is_int(bufnr) and bufnr or nil
+            load_defaults = is_bool(load_defaults) and load_defaults or false
+
+            ---@type AllModeMaps
+            local parsed_keys = {}
+
+            for k, v in next, keys do
+                if not in_tbl(MODES, k) then
+                    notify(
+                        string.format('Table not formatted correctly. Ignoring\n\n%s', insp(keys)),
+                        'warn',
+                        {
+                            animate = true,
+                            title = '(config.keymaps:setup())',
+                            hide_from_history = false,
+                            timeout = 1250,
+                        }
+                    )
+                else
+                    parsed_keys[k] = v
+                end
+            end
+
+            self.no_oped = is_bool(self.no_oped) and self.no_oped or false
+
+            --- Noop keys after `<leader>` to avoid accidents
+            for _, mode in next, MODES do
+                if self.no_oped then
+                    break
+                end
+
+                if in_tbl({ 'n', 'v' }, mode) then
+                    nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
+                end
+            end
+
+            self.no_oped = true
+
+            ---@type AllModeMaps
+            local res = load_defaults and vim.tbl_deep_extend('keep', parsed_keys, self.Keys)
+                or parsed_keys
+
+            --- Set keymaps
+            if is_nil(bufnr) then
+                map_dict(res, 'wk.register', true)
+            else
+                map_dict(res, 'wk.register', true, nil, bufnr)
+            end
+        end,
+    })
 end
+
+local K = Keymaps.new()
 
 User:register_plugin('config.keymaps')
 
-return Keymaps
+return K
