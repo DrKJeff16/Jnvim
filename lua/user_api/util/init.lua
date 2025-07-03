@@ -321,17 +321,30 @@ end
 
 function Util:assoc()
     local au_repeated_events = self.au.au_repeated_events
+    local ft_set = self.ft_set
 
     local group = vim.api.nvim_create_augroup('UserAssocs', { clear = false })
 
     ---@type AuRepeatEvents[]
     local AUS = {
         { -- NOTE: Keep this as first element for `orgmode` addition
-            events = { 'BufNewFile', 'BufReadPre' },
+            events = { 'BufNewFile', 'BufReadPre', 'BufWinEnter', 'BufEnter', 'WinEnter' },
             opts_tbl = {
-                { pattern = '.spacemacs', callback = self.ft_set('lisp'), group = group },
-                { pattern = '.clangd', callback = self.ft_set('yaml'), group = group },
-                { pattern = '*.norg', callback = self.ft_set('norg'), group = group },
+                {
+                    group = group,
+                    pattern = '.spacemacs',
+                    callback = function(ev) ft_set('lisp', ev.buf)() end,
+                },
+                {
+                    group = group,
+                    pattern = '.clangd',
+                    callback = function(ev) ft_set('yaml', ev.buf)() end,
+                },
+                {
+                    group = group,
+                    pattern = '*.norg',
+                    callback = function(ev) ft_set('norg', ev.buf)() end,
+                },
             },
         },
         {
@@ -402,6 +415,8 @@ function Util:assoc()
                                     },
                                 },
                             }, buf)
+
+                            return
                         end
                     end,
                 },
@@ -415,7 +430,7 @@ function Util:assoc()
         table.insert(AUS[1].opts_tbl, {
             group = group,
             pattern = '*.org',
-            callback = self.ft_set('org'),
+            callback = function(ev) self.ft_set('org', ev.buf)() end,
         })
     end
 
