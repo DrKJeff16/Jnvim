@@ -335,74 +335,74 @@ function Util:assoc()
             },
         },
         {
-            events = { 'BufEnter', 'WinEnter', 'FileType' },
+            events = { 'BufEnter', 'WinEnter', 'BufWinEnter' },
             opts_tbl = {
                 {
                     group = group,
-                    callback = function()
-                        local bufnr = curr_buf()
-                        if not (self.ft_get(bufnr) == 'help' and self.bt_get(bufnr) == 'help') then
-                            return
-                        end
-
-                        vim.schedule(function()
-                            vim.api.nvim_set_option_value('signcolumn', 'no', { scope = 'local' })
-                            vim.cmd.wincmd('=')
-                            vim.cmd.noh()
-                        end)
-                    end,
-                },
-                {
-                    pattern = 'lua',
-                    group = group,
-                    callback = function()
+                    callback = function(args)
                         local executable = require('user_api.check.exists').executable
-                        local buf = curr_buf()
-
-                        -- Make sure the buffer is modifiable
-                        if
-                            not (optget('modifiable', { scope = 'local' }) and executable('stylua'))
-                        then
-                            self.notify.notify('No stylua???')
-                            return
-                        end
-
                         local Keymaps = require('config.keymaps')
                         local desc = require('user_api.maps.kmap').desc
 
-                        Keymaps:setup({
-                            n = {
-                                ['<leader><C-l>'] = {
-                                    ':silent !stylua %<CR>',
-                                    desc('Format With `stylua`', true, buf),
-                                },
-                            },
-                        })
-                    end,
-                },
-                {
-                    pattern = 'python',
-                    group = group,
-                    callback = function()
-                        local executable = require('user_api.check.exists').executable
-                        local buf = curr_buf()
+                        local buf = args.buf
 
-                        -- Make sure the buffer is modifiable
-                        if not (optget('modifiable', { buf = buf }) and executable('isort')) then
+                        local bt = self.bt_get(buf)
+                        local ft = self.ft_get(buf)
+
+                        if bt == 'help' or ft == 'help' then
+                            vim.schedule(function()
+                                vim.api.nvim_set_option_value(
+                                    'signcolumn',
+                                    'no',
+                                    { scope = 'local' }
+                                )
+                                vim.cmd.wincmd('=')
+                                vim.cmd.noh()
+                            end)
+
                             return
                         end
 
-                        local Keymaps = require('config.keymaps')
-                        local desc = require('user_api.maps.kmap').desc
+                        if ft == 'lua' then
+                            -- Make sure the buffer is modifiable
+                            if not executable('stylua') then
+                                self.notify.notify('No stylua???', 'warn')
+                                return
+                            end
 
-                        Keymaps:setup({
-                            n = {
-                                ['<leader><C-l>'] = {
-                                    ':silent !isort %<CR>',
-                                    desc('Format With `isort`', true, buf),
+                            if not optget('modifiable', { scope = 'local' }) then
+                                return
+                            end
+
+                            Keymaps:setup({
+                                n = {
+                                    ['<leader><C-l>'] = {
+                                        ':silent !stylua %<CR>',
+                                        desc('Format With `stylua`', true, buf),
+                                    },
                                 },
-                            },
-                        })
+                            }, buf)
+
+                            return
+                        end
+
+                        if ft == 'python' then
+                            -- Make sure the buffer is modifiable
+                            if
+                                not (optget('modifiable', { buf = buf }) and executable('isort'))
+                            then
+                                return
+                            end
+
+                            Keymaps:setup({
+                                n = {
+                                    ['<leader><C-l>'] = {
+                                        ':silent !isort %<CR>',
+                                        desc('Format With `isort`', true, buf),
+                                    },
+                                },
+                            }, buf)
+                        end
                     end,
                 },
             },
