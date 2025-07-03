@@ -121,11 +121,6 @@ vim.g.loaded_netrwPlugin = 1
 --- List of manually-callable plugin
 local L = require('config.lazy')
 
----@type table|CscMod|fun(color?: string, ...)
-local Color = L.colorschemes()
-
-Color('tokyonight', 'moon')
-
 --- Setup keymaps
 Keymaps:setup({
     n = {
@@ -167,6 +162,11 @@ Keymaps:setup({
         ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
     },
 }, nil, true)
+
+---@type table|CscMod|fun(color?: string, ...)
+local Color = L.colorschemes()
+
+Color('tokyonight', 'moon')
 
 local Lsp = L.lsp()
 Lsp()
