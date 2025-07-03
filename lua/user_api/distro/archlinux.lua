@@ -5,6 +5,9 @@
 
 ---@module 'user_api.types.user.distro'
 
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
+
 ---@type User.Distro.Archlinux
 local Archlinux = {}
 
@@ -27,7 +30,7 @@ function Archlinux:validate()
 
     -- First check for each dir's existance
     for _, p in next, self.rtpaths do
-        if vim.fn.isdirectory(p) then
+        if vim.fn.isdirectory(p) == 1 and not vim.tbl_contains(new_rtpaths, p) then
             table.insert(new_rtpaths, p)
         end
     end
@@ -37,7 +40,7 @@ function Archlinux:validate()
         return false
     end
 
-    self.rtpaths = vim.tbl_deep_extend('force', {}, new_rtpaths)
+    self.rtpaths = vim.deepcopy(new_rtpaths)
 
     return true
 end
@@ -47,36 +50,24 @@ function Archlinux:setup()
         return
     end
 
-    local Check = require('user_api.check')
-    local Util = require('user_api.util')
-
     local is_dir = vim.fn.isdirectory
-    local type_not_empty = Check.value.type_not_empty
-    local strip_values = Util.strip_values
 
     -- Check if path is in rtp already
     for _, path in next, self.rtpaths do
-        if not (is_dir(path) ~= 1 or vim.tbl_contains(vim.opt.rtp:get(), path)) then ---@diagnostic disable-line
-            self.rtpaths = strip_values(self.rtpaths, { path })
+        if is_dir(path) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), path) then ---@diagnostic disable-line
+            vim.opt.rtp:prepend(path)
         end
-    end
-
-    if not type_not_empty('table', self.rtpaths) then
-        error('(user_api.distro.archlinux:setup()): Runtimepaths are empty or not a table')
-    end
-
-    for _, path in next, self.rtpaths do
-        vim.opt.rtp:append(path)
     end
 
     ---@diagnostic disable-next-line
     local ok, _ = pcall(vim.cmd, 'runtime! archlinux.vim')
 
-    assert(ok, 'BAD SETUP FOR Archlinux!')
-
-    if ok then
-        _G.I_USE_ARCH = 'BTW'
+    if not ok then
+        vim.notify('BAD SETUP FOR Archlinux!', WARN)
+        return
     end
+
+    _G.I_USE_ARCH = 'BTW'
 end
 
 ---@param O? table

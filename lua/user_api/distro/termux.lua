@@ -47,7 +47,7 @@ function Termux:validate()
         return false
     end
 
-    self.rtpaths = vim.tbl_deep_extend('force', {}, new_rtpaths)
+    self.rtpaths = vim.deepcopy(new_rtpaths)
     return true
 end
 
@@ -57,30 +57,13 @@ function Termux:setup()
         return
     end
 
-    local Check = require('user_api.check')
-    local Util = require('user_api.util')
-
-    local is_dir = Check.exists.vim_isdir
-    local empty = Check.value.empty
-    local strip_values = Util.strip_values
-
     if not is_dir(PREFIX) then
         return
     end
 
-    ---@type table
-    ---@diagnostic disable-next-line
-    local rtp = vim.opt.rtp:get()
-
     for _, path in next, vim.deepcopy(self.rtpaths) do
-        if not (is_dir(path) or vim.tbl_contains(rtp, path)) then
-            self.rtpaths = strip_values(self.rtpaths, { path })
-        end
-    end
-
-    if not empty(self.rtpaths) then
-        for _, path in next, self.rtpaths do
-            vim.opt.rtp:append(path)
+        if is_dir(path) and not vim.tbl_contains(vim.opt.rtp:get(), path) then ---@diagnostic disable-line
+            vim.opt.rtp:prepend(path)
         end
     end
 
