@@ -96,7 +96,7 @@ local Essentials = {
     },
     {
         'equalsraf/neovim-gui-shim',
-        lazy = false,
+        lazy = true,
         version = false,
         enabled = not in_console(),
     },

@@ -19,7 +19,7 @@ local UI = {
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
         init = function()
@@ -58,6 +58,7 @@ local UI = {
         'HiPhish/rainbow-delimiters.nvim',
         version = false,
         config = source('plugin.rainbow_delimiters'),
+        enabled = false,
     },
     --- File Tree
     {
@@ -113,6 +114,7 @@ local UI = {
     },
     {
         'akinsho/toggleterm.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.toggleterm'),
         cond = not in_console(),

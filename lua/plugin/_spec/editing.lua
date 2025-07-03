@@ -28,6 +28,7 @@ local Editing = {
     },
     {
         'folke/twilight.nvim',
+        lazy = true,
         version = false,
         config = source('plugin.twilight'),
     },
