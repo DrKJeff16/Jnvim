@@ -13,8 +13,7 @@
 ---@field Keys AllModeMaps
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
 ---@field setup fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
----@field new fun(O: table?): table|Config.Keymaps
----@field __call fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+---@field new fun(O: table?): table|Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)
@@ -27,7 +26,7 @@
 ---@field has_tgc fun(): boolean
 
 ---@class Config.Lazy
----@field colorschemes fun(): CscMod
----@field lsp fun(): Lsp.Server
+---@field colorschemes fun(): table|CscMod|fun(color: string?, ...)
+---@field lsp fun(): table|Lsp.Server|fun()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

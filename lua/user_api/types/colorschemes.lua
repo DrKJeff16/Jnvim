@@ -151,7 +151,7 @@
 --- The colorschemes must comply with the `CscSubMod` type specifications
 ---
 ---@class CscMod
----@field OPTIONS AllCsc[]
+---@field OPTIONS (AllCsc)[]
 ---@field catppuccin CpcSubMod
 ---@field dracula DraculaSubMod
 ---@field gloombuddy CscSubMod
@@ -166,6 +166,6 @@
 ---@field spacemacs CscSubMod
 ---@field tokyonight CscSubMod
 ---@field vscode CscSubMod
----@field new fun(O: table?): CscMod|table
+---@field new fun(O: table?): CscMod|table|fun(color: string?, ...)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

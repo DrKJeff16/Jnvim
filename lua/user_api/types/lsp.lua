@@ -93,10 +93,9 @@
 ---@class Lsp.Server
 ---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
 ---@field client_names (string|Lsp.Server.Key)[]|table
----@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities
+---@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities|table
 ---@field populate fun(self: Lsp.Server)
----@field __call? fun(self: Lsp.Server)
----@field new fun(O: table?): table|Lsp.Server
+---@field new fun(O: table?): table|Lsp.Server|fun()
 
 ---@class Lsp.SubMods
 ---@field neodev fun()|nil

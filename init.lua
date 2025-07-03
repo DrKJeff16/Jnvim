@@ -121,13 +121,10 @@ vim.g.loaded_netrwPlugin = 1
 --- List of manually-callable plugin
 local L = require('config.lazy')
 
----@type CscMod
+---@type table|CscMod|fun(color?: string, ...)
 local Color = L.colorschemes()
----@type Lsp.Server
-local Lsp = L.lsp()
 
 Color('tokyonight', 'moon')
-Lsp()
 
 --- Setup keymaps
 Keymaps:setup({
@@ -171,6 +168,9 @@ Keymaps:setup({
     },
 }, nil, true)
 
+local Lsp = L.lsp()
+Lsp()
+
 -- Call the User API file associations and other autocmds
 Util:assoc()
 
@@ -188,6 +188,7 @@ User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it wo
 
 vim.schedule(function()
     local opt_set = vim.api.nvim_set_option_value
+    local ft_get = Util.ft_get
 
     vim.cmd.noh() -- HACK: Disable highlights when reloading
 
@@ -198,9 +199,9 @@ vim.schedule(function()
         'qf',
     }
 
-    local curr_ft = Util.ft_get(curr_buf())
+    local curr_ft = ft_get(curr_buf())
 
-    --- HACK: In case we're on specific buffer filetypes
+    -- HACK: In case we're on specific buffer filetypes
     if vim.tbl_contains(DISABLE_ON, curr_ft) then
         opt_set('number', false, { scope = 'local' })
         opt_set('signcolumn', 'no', { scope = 'local' })

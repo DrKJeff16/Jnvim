@@ -90,7 +90,7 @@ local function buf_del(force)
     end
 end
 
----@type Config.Keymaps
+---@type Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 local Keymaps = {}
 
 Keymaps.NOP = {
@@ -709,16 +709,13 @@ function Keymaps:set_leader(leader, local_leader, force)
 end
 
 ---@param O? table
----@return table|Config.Keymaps
+---@return table|Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 function Keymaps.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {
         __index = Keymaps,
 
-        ---@param self Config.Keymaps
-        ---@param keys? AllModeMaps
-        ---@param bufnr? integer
-        ---@param load_defaults? boolean
+        ---@type fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
         __call = function(self, keys, bufnr, load_defaults)
             local MODES = Maps.modes
             local insp = inspect or vim.inspect
@@ -791,3 +788,5 @@ local K = Keymaps.new()
 User:register_plugin('config.keymaps')
 
 return K
+
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

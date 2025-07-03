@@ -15,9 +15,10 @@ local capitalize = User.util.string.capitalize
 local displace_letter = User.util.displace_letter
 local desc = User.maps.kmap.desc
 
----@type CscMod
+---@type CscMod|fun(color: string?, ...)
 local Colorschemes = {}
----@type AllCsc[]
+
+---@type (AllCsc)[]
 Colorschemes.OPTIONS = {
     'catppuccin',
     'tokyonight',
@@ -64,13 +65,14 @@ Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
 
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
 
+---@type TNSubMod
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 
 ---@type VSCodeSubMod
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@param O? table
----@return CscMod|table
+---@return CscMod|table|fun(color: string?, ...)
 function Colorschemes.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {
@@ -85,8 +87,7 @@ function Colorschemes.new(O)
             end
         end,
 
-        ---@param self CscMod
-        ---@param color? string
+        ---@type fun(self: CscMod, color: string?, ...)
         __call = function(self, color, ...)
             ---@type AllMaps
             local CscKeys = {

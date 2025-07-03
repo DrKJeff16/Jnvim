@@ -17,7 +17,7 @@ local desc = User.maps.kmap.desc
 local Kinds = require('plugin.lsp.kinds')
 Kinds:setup()
 
----@type Lsp.Server
+---@type Lsp.Server|fun()
 local Server = {}
 
 ---@type (string|Lsp.Server.Key)[]|table
@@ -99,11 +99,8 @@ function Server:populate()
     end
 end
 
----@param self Lsp.Server
-function Server:setup() end
-
 ---@param O? table
----@return table|Lsp.Server
+---@return table|Lsp.Server|fun()
 function Server.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {
