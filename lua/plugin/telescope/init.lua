@@ -82,23 +82,7 @@ local Opts = {
         },
     },
 
-    extensions = {
-        picker_list = {
-            theme = 'ivy',
-            opts = {
-                projects = { display_type = 'full' },
-                project = { display_type = 'full' },
-                notify = Themes.get_dropdown({}),
-            },
-
-            excluded_pickers = {},
-
-            user_pickers = {
-                'todo-comments',
-                function() vim.cmd('TodoTelescope theme=cursor') end,
-            },
-        },
-    },
+    extensions = {},
 
     pickers = {
         autocommands = { theme = 'ivy' },
@@ -106,7 +90,7 @@ local Opts = {
         colorscheme = { theme = 'dropdown' },
         commands = { theme = 'ivy' },
         current_buffer_fuzzy_find = { theme = 'cursor' },
-        fd = { theme = 'dropdown' },
+        fd = { theme = 'ivy' },
         find_files = {
             theme = 'ivy',
             -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`'d
@@ -122,8 +106,22 @@ local Opts = {
         lsp_type_definitions = { theme = 'cursor' },
         lsp_workspace_symbols = { theme = 'cursor' },
         man_pages = { theme = 'ivy' },
-        picker_list = { theme = 'cursor' },
-        pickers = { theme = 'cursor' },
+        picker_list = {
+            theme = 'ivy',
+            opts = {
+                projects = { display_type = 'full' },
+                project = { display_type = 'full' },
+                notify = Themes.get_dropdown({}),
+            },
+
+            excluded_pickers = {},
+
+            user_pickers = {
+                'todo-comments',
+                function() vim.cmd('TodoTelescope theme=cursor') end,
+            },
+        },
+        pickers = { theme = 'ivy' },
         planets = { theme = 'ivy' },
         vim_options = { theme = 'ivy' },
     },
@@ -196,6 +194,8 @@ local Keys = {
     ['<leader><C-t>b'] = { group = '+Builtins' },
     ['<leader><C-t>e'] = { group = '+Extensions' },
 
+    ['<leader><leader>'] = { function() vim.cmd('Telescope') end, desc('Default Telescope Picker') },
+
     ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
     ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
     ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
@@ -226,8 +226,6 @@ local Keys = {
     ['<leader><C-t>bp'] = { Builtin.pickers, desc('Pickers') },
 }
 
-local Extensions = Telescope.extensions
-
 ---@type table<string, TelExtension>
 local known_exts = {
     ['telescope._extensions.file_browser'] = { 'file_browser' },
@@ -236,6 +234,8 @@ local known_exts = {
 
         ---@return AllMaps
         function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.conventional_commits) then
                 return {}
             end
@@ -252,6 +252,8 @@ local known_exts = {
 
         ---@return AllMaps
         function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.scope) then
                 return {}
             end
@@ -268,6 +270,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.persisted) then
                 return {}
             end
@@ -284,6 +288,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.make) then
                 return {}
             end
@@ -300,6 +306,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.projects) then
                 return {}
             end
@@ -317,6 +325,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.notify) then
                 return {}
             end
@@ -335,6 +345,8 @@ local known_exts = {
         keys = function()
             ---@type AllMaps
             local res = {
+                ['<leader><C-t>en'] = { group = '+Noice' },
+
                 ['<leader><C-t>enl'] = {
                     function() require('noice').cmd('last') end,
                     desc('NoiceLast'),
@@ -345,10 +357,6 @@ local known_exts = {
                 },
             }
 
-            if require('user_api.maps.wk').available() and type_not_empty('table', Keys) then
-                Keys['<leader><C-t>en'] = { group = '+Noice' }
-            end
-
             return res
         end,
     },
@@ -357,6 +365,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.lazygit) then
                 return {}
             end
@@ -378,6 +388,8 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
+            local Extensions = require('telescope._extensions')
+
             if not type_not_empty('table', Extensions.picker_list) then
                 return {}
             end
