@@ -234,7 +234,7 @@ local known_exts = {
 
         ---@return AllMaps
         function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.conventional_commits) then
                 return {}
@@ -252,7 +252,7 @@ local known_exts = {
 
         ---@return AllMaps
         function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.scope) then
                 return {}
@@ -270,7 +270,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.persisted) then
                 return {}
@@ -288,7 +288,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.make) then
                 return {}
@@ -306,7 +306,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.projects) then
                 return {}
@@ -325,7 +325,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.notify) then
                 return {}
@@ -365,7 +365,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.lazygit) then
                 return {}
@@ -388,7 +388,7 @@ local known_exts = {
 
         ---@return table|AllMaps
         keys = function()
-            local Extensions = require('telescope._extensions')
+            local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.picker_list) then
                 return {}
