@@ -72,13 +72,9 @@ end
 ---@param direction? 'l'|'r'
 ---@return table<string|integer, any> res
 function Util.mv_tbl_values(T, steps, direction)
-    local Value = require('user_api.check.value')
-
-    local is_int = Value.is_int
-    local type_not_empty = Value.type_not_empty
     local notify = Util.notify.notify
 
-    if not type_not_empty('table', T) then
+    if T == nil or type(T) ~= 'table' then
         notify("Input isn't a table, or it is empty", ERROR, {
             title = '(user_api.util.mv_tbl_values)',
             animate = true,
@@ -87,10 +83,8 @@ function Util.mv_tbl_values(T, steps, direction)
         })
     end
 
-    steps = (is_int(steps) and steps > 0) and steps or 1
-    direction = (type_not_empty('string', direction) and in_tbl({ 'l', 'r' }, direction))
-            and direction
-        or 'r'
+    steps = steps > 0 and steps or 1
+    direction = (direction ~= nil and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
 
     ---@type DirectionFuns
     local direction_funcs = {
@@ -174,7 +168,7 @@ end
 
 ---@param T table<string|integer, any>
 ---@param fields string|integer|(string|integer)[]
----@return table<string|integer, any> res
+---@return table<string|integer, any>
 function Util.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -460,8 +454,8 @@ function Util.displace_letter(c, direction, cycle)
         return 'a'
     end
 
-    local LOWER = vim.deepcopy(A.lower_map)
-    local UPPER = vim.deepcopy(A.upper_map)
+    -- NOTE: Copy the tables from the alphabet field
+    local LOWER, UPPER = vim.deepcopy(A.lower_map), vim.deepcopy(A.upper_map)
 
     ---@type string
     local res = ''
