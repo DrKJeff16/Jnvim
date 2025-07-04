@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.lsp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 -- HACK: Call builtin annotations manually
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'

@@ -2,7 +2,7 @@
 ---@diagnostic disable:unused-function
 ---@diagnostic disable:missing-fields
 
-require('user_api.types.user.maps')
+---@module 'user_api.types.user.maps'
 
 local Value = require('user_api.check.value')
 

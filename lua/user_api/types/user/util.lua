@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.user.util): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'user_api.types.user.autocmd'
 
 ---@alias VimNotifyLvl
@@ -91,9 +93,9 @@
 ---@field au User.Util.Autocmd
 ---@field string User.Util.String
 ---@field has_words_before fun(): boolean
----@field pop_values fun(T: table, V: any): (table, ...)
+---@field pop_values fun(T: table, V: any): table,...
 ---@field xor fun(x: boolean, y: boolean): boolean
----@field strip_fields fun(T: table<string|integer, any>, values: string[]|string): table
+---@field strip_fields fun(T: table<string|integer, any>, values: string[]|string): table<string|integer, any>
 ---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string

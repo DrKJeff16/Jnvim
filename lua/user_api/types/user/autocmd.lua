@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.user.autocmd): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@alias AuOpts vim.api.keyset.create_autocmd
 ---@alias AuGroupOpts vim.api.keyset.create_augroup
 

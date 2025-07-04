@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.user.check): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@alias Types
 ---|'nil'
 ---|'string'

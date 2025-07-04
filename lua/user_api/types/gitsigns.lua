@@ -1,6 +1,8 @@
 ---@meta
 
-require('user_api.types.user.maps')
+error('(user_api.types.gitsigns): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
+---@module 'user_api.types.user.maps'
 
 ---@class GitSignOpts
 ---@field text string

@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.autopairs): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@class APCmp
 ---@field on fun()
 

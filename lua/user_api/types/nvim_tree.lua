@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.nvim_tree): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'user_api.types.user.maps'
 ---@module 'user_api.types.user.highlight'
 ---@module 'user_api.types.user.autocmd'

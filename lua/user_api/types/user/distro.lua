@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.user.distro): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@class User.Distro.Spec
 ---@field rtpaths string[]
 ---@field validate fun(self: User.Distro.Spec): boolean

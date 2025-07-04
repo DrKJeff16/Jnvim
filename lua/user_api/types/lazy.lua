@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.lazy): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'lazy'
 ---@module 'config._types'
 ---@module 'user_api.types.colorschemes'

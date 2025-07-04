@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.colorizer): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@class ColorizerOpts
 ---@field RGB? boolean
 ---@field RRGGBB? boolean

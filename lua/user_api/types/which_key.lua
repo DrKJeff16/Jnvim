@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.which_key): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'which-key'
 
 -- The Vim modes used for `which-key` as a `string`

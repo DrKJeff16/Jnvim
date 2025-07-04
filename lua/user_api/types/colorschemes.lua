@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 ---@alias NFoxSubMod.Variant ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')

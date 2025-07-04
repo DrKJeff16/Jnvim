@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.mini): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@alias MiniModules table<string, table|nil>
 
 ---@class StarterItem.Spec

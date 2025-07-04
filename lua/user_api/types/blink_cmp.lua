@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.blink_cmp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'blink.cmp'
 
 ---@alias BlinkCmp.Util.Sources ('lsp'|'path'|'snippets'|'buffer'|string)[]

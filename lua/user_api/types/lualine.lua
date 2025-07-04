@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.lualine): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@alias SectionComponentStr
 ---|'branch'
 ---|'buffers'

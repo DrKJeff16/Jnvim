@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.user.maps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'user_api.types.which_key'
 
 ---@alias User.Maps.Keymap.Opts vim.keymap.set.Opts

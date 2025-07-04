@@ -1,5 +1,7 @@
 ---@meta
 
+error('(user_api.types.cmp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+
 ---@module 'cmp'
 
 ---@alias CmpModes ('i'|'s'|'c')
