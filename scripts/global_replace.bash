@@ -53,11 +53,14 @@ die() {
     exit "$EC"
 }
 
-[[ $# -eq 0 ]] && die 127 "No arguments were given. Aborting"
+# TODO: Make help/usage function
 
 ! _cmd 'find' && die 127 "\`find\` is not in PATH."
 
+[[ $# -eq 0 ]] && die 127 "No arguments were given. Aborting"
+
 EC=0
+
 while [[ $# -gt 0 ]]; do
     if ! [[ "$1" =~ ^s/.+/.*/g?.*$ ]] ; then
         error "Pattern \`$1\` not valid. Skipping..."
