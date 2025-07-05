@@ -1,5 +1,6 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'blink.cmp'
 ---@module 'user_api.types.blink_cmp'
 
 local User = require('user_api')
@@ -267,7 +268,7 @@ Cfg.Config.cmdline = {
 }
 
 Cfg.Config.sources = {
-    default = (function() return BUtil:gen_sources(false, true) end)(),
+    default = function() return BUtil:gen_sources(false, true) end,
 
     per_filetype = {
         lua = { inherit_defaults = true, 'lazydev' },

@@ -1,5 +1,6 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'blink.cmp'
 ---@module 'user_api.types.blink_cmp'
 
 local User = require('user_api')
@@ -81,9 +82,9 @@ function BUtil:reset_providers()
     self.Providers = {}
 
     self.Providers.buffer = {
-        score_offset = -100,
+        score_offset = -40,
 
-        max_items = 10,
+        max_items = 7,
 
         -- keep case of first char
         ---@param a blink.cmp.Context
@@ -131,15 +132,15 @@ function BUtil:reset_providers()
 
     self.Providers.snippets = {
         name = 'Snip',
-        score_offset = -70,
-        max_items = 7,
+        score_offset = -80,
+        max_items = 5,
         should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
     }
 
     self.Providers.lsp = {
         name = 'LSP',
         module = 'blink.cmp.sources.lsp',
-        score_offset = 100,
+        score_offset = 80,
         transform_items = function(_, items)
             return vim.tbl_filter(
                 function(item)
@@ -152,9 +153,8 @@ function BUtil:reset_providers()
 
     if exists('blink-cmp-git') then
         self.Providers.git = {
-            module = 'blink-cmp-git',
             name = 'Git',
-            score_offset = 40,
+            module = 'blink-cmp-git',
             enabled = function()
                 local git_fts = {
                     'git',
@@ -172,7 +172,7 @@ function BUtil:reset_providers()
         self.Providers.conventional_commits = {
             name = 'CC',
             module = 'blink-cmp-conventional-commits',
-            score_offset = 60,
+            score_offset = 100,
             enabled = function() return vim.bo.filetype == 'gitcommit' end,
 
             ---@module 'blink-cmp-conventional-commits'
@@ -186,7 +186,6 @@ function BUtil:reset_providers()
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
             score_offset = 100,
-            enabled = function() return vim.bo.filetype == 'lua' end,
         }
     end
 end
