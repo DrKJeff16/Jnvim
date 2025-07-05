@@ -4,7 +4,7 @@ local CfgUtil = require('config.util')
 
 local has_tgc = CfgUtil.has_tgc
 
----@type (LazySpec)[]
+---@type LazySpecs
 local ColorSchemes = {
     {
         'navarasu/onedark.nvim',

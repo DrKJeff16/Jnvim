@@ -8,7 +8,7 @@ local in_console = Check.in_console
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Utils = {
     {
         'vim-scripts/UTL.vim',

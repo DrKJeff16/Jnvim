@@ -13,7 +13,7 @@ local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
 local luarocks_check = CfgUtil.luarocks_check
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Essentials = {
     {
         'folke/snacks.nvim',

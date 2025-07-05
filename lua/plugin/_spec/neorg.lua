@@ -5,7 +5,7 @@ local Termux = require('user_api.distro.termux')
 
 local source = CfgUtil.source
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Neorg = {
     {
         'nvim-neorg/neorg',

@@ -8,7 +8,7 @@ local Check = User.check
 local source = CfgUtil.source
 local executable = Check.exists.executable
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Completion = {
     {
         'saghen/blink.cmp',

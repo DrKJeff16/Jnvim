@@ -9,7 +9,7 @@ local set_tgc = CfgUtil.set_tgc
 local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
----@type (LazySpec)[]
+---@type LazySpecs
 local UI = {
     {
         'MunifTanjim/nui.nvim',

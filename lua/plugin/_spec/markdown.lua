@@ -9,7 +9,7 @@ local is_root = Check.is_root
 
 _G.in_console = in_console or Check.in_console
 
----@type (LazySpec)[]
+---@type LazySpecs
 local MD = {
     {
         'iamcco/markdown-preview.nvim',

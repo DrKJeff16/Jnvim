@@ -9,7 +9,7 @@ local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 
----@type (LazySpec)[]
+---@type LazySpecs
 local LSP = {
     {
         'neovim/nvim-lspconfig',

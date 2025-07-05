@@ -6,6 +6,8 @@ error('(user_api.types.lazy): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.
 ---@module 'config._types'
 ---@module 'user_api.types.colorschemes'
 
+---@alias LazySpecs (LazySpec)[]
+
 ---@class LazySources
 ---@field [1] 'lazy'
 ---@field [2]? 'rockspec'|'packspec'

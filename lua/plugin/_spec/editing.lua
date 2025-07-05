@@ -11,7 +11,7 @@ local is_root = Check.is_root
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Editing = {
     {
         'folke/persistence.nvim',

@@ -8,7 +8,7 @@ local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 
----@type (LazySpec)[]
+---@type LazySpecs
 local VCS = {
     {
         'tpope/vim-fugitive',

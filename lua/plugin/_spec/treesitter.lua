@@ -5,7 +5,7 @@ local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
 
----@type (LazySpec)[]
+---@type LazySpecs
 local TS = {
     {
         'nvim-treesitter/nvim-treesitter',

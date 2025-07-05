@@ -9,7 +9,7 @@ local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local is_root = Check.is_root
 
----@type (LazySpec)[]
+---@type LazySpecs
 local Syntax = {
     {
         'rhysd/vim-syntax-codeowners',
