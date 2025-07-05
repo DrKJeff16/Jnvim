@@ -36,10 +36,10 @@ function BUtil:reset_sources(snipps, buf)
         'path',
     }
 
-    if not snipps then
+    if snipps then
         table.insert(self.Sources, 'snippets')
     end
-    if not buf then
+    if buf then
         table.insert(self.Sources, 'buffer')
     end
 
