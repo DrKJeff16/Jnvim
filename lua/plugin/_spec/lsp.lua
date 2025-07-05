@@ -25,6 +25,7 @@ local LSP = {
     --- Essential for Nvim Lua files
     {
         'folke/lazydev.nvim',
+        dev = true,
         ft = 'lua',
         version = false,
         config = source('plugin.lazydev'),
