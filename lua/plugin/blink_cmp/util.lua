@@ -186,6 +186,15 @@ function BUtil:reset_providers()
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
             score_offset = 100,
+            fallbacks = { 'lsp' },
+        }
+    end
+
+    if exists('orgmode') then
+        self.Providers.orgmode = {
+            name = 'Orgmode',
+            module = 'orgmode.org.autocompletion.blink',
+            fallbacks = { 'buffer' },
         }
     end
 end

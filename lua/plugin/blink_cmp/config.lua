@@ -272,6 +272,7 @@ Cfg.Config.sources = {
 
     per_filetype = {
         lua = { inherit_defaults = true, 'lazydev' },
+        org = { 'orgmode' },
     },
 
     providers = BUtil:gen_providers(),
