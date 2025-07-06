@@ -11,6 +11,7 @@ local Check = User.check
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
+local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
 ---@type Lsp.SubMods.Kinds
@@ -31,16 +32,17 @@ Server.Clients = require('plugin.lsp.server_config')
 function Server.make_capabilities(T)
     T = is_tbl(T) and T or {}
 
-    T = vim.tbl_deep_extend('keep', T, vim.lsp.protocol.make_client_capabilities())
+    local caps =
+        vim.tbl_deep_extend('keep', vim.deepcopy(T), vim.lsp.protocol.make_client_capabilities())
 
     local ok, _ = pcall(require, 'blink.cmp')
     if not ok then
-        return T
+        return caps
     end
 
-    local caps = vim.tbl_deep_extend(
+    caps = vim.tbl_deep_extend(
         'keep',
-        vim.deepcopy(T),
+        vim.deepcopy(caps),
         require('blink.cmp').get_lsp_capabilities({}, true)
     )
 
@@ -57,7 +59,7 @@ function Server:populate()
         ---@type Lsp.Server.Key
         local key = k
 
-        if not is_tbl(self.Clients[key].capabilities) then
+        if not type_not_empty('table', self.Clients[key].capabilities) then
             self.Clients[key].capabilities = self.make_capabilities()
         else
             local old_caps = self.Clients[key].capabilities
@@ -66,7 +68,7 @@ function Server:populate()
                 vim.tbl_deep_extend('keep', old_caps, self.make_capabilities(old_caps))
         end
 
-        if vim.tbl_contains({ 'html', 'jsonls' }, key) then
+        if vim.tbl_contains({ 'html', 'jsonls', 'lua_ls' }, key) then
             self.Clients[key].capabilities.textDocument.completion.completionItem.snippetSupport =
                 true
         end
@@ -107,9 +109,6 @@ function Server.new(O)
         __index = Server,
 
         ---@param self Lsp.Server
-        __newindex = function(self, key, value) rawset(self, key, value) end,
-
-        ---@param self Lsp.Server
         __call = function(self)
             self:populate()
 
@@ -146,6 +145,10 @@ function Server.new(O)
                     ['<leader>lH'] = {
                         function() vim.lsp.stop_client(vim.lsp.get_clients(), true) end,
                         desc('Stop LSP Servers'),
+                    },
+                    ['<leader>lC'] = {
+                        function() vim.print((inspect or vim.inspect)(self.client_names)) end,
+                        desc('List Clients'),
                     },
                 },
 
