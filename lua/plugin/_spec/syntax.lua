@@ -7,16 +7,14 @@ local Check = User.check
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
-local is_root = Check.is_root
 
 ---@type LazySpecs
 local Syntax = {
     {
         'rhysd/vim-syntax-codeowners',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
         init = flag_installed('codeowners'),
-        cond = not is_root(),
     },
     {
         'vim-scripts/DoxygenToolkit.vim',
