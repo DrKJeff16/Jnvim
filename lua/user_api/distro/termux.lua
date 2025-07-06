@@ -17,12 +17,12 @@ Termux.PREFIX = vim.fn.has_key(environ(), 'PREFIX') and environ()['PREFIX'] or '
 _G.PREFIX = Termux.PREFIX
 
 Termux.rtpaths = {
-    string.format('%s/local/share/nvim/runtime', PREFIX),
-    string.format('%s/share/nvim/runtime', PREFIX),
-    string.format('%s/local/share/vim/vimfiles', PREFIX),
-    string.format('%s/local/share/vim/vimfiles/after', PREFIX),
-    string.format('%s/share/vim/vimfiles', PREFIX),
     string.format('%s/share/vim/vimfiles/after', PREFIX),
+    string.format('%s/share/vim/vimfiles', PREFIX),
+    string.format('%s/share/nvim/runtime', PREFIX),
+    string.format('%s/local/share/vim/vimfiles/after', PREFIX),
+    string.format('%s/local/share/vim/vimfiles', PREFIX),
+    string.format('%s/local/share/nvim/runtime', PREFIX),
 }
 
 ---@param self User.Distro.Termux
@@ -63,7 +63,7 @@ function Termux:setup()
 
     for _, path in next, vim.deepcopy(self.rtpaths) do
         if is_dir(path) and not vim.tbl_contains(vim.opt.rtp:get(), path) then ---@diagnostic disable-line
-            vim.opt.rtp:prepend(path)
+            vim.opt.rtp:append(path)
         end
     end
 

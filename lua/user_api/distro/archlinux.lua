@@ -5,19 +5,18 @@
 
 ---@module 'user_api.types.user.distro'
 
-local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
 ---@type User.Distro.Archlinux
 local Archlinux = {}
 
 Archlinux.rtpaths = {
-    '/usr/local/share/nvim/runtime',
-    '/usr/share/nvim/runtime',
-    '/usr/local/share/vim/vimfiles',
-    '/usr/local/share/vim/vimfiles/after',
-    '/usr/share/vim/vimfiles',
     '/usr/share/vim/vimfiles/after',
+    '/usr/share/vim/vimfiles',
+    '/usr/share/nvim/runtime',
+    '/usr/local/share/vim/vimfiles/after',
+    '/usr/local/share/vim/vimfiles',
+    '/usr/local/share/nvim/runtime',
 }
 
 ---@param self User.Distro.Archlinux
@@ -55,7 +54,7 @@ function Archlinux:setup()
     -- Check if path is in rtp already
     for _, path in next, self.rtpaths do
         if is_dir(path) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), path) then ---@diagnostic disable-line
-            vim.opt.rtp:prepend(path)
+            vim.opt.rtp:append(path)
         end
     end
 
