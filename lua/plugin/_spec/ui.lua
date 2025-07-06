@@ -104,15 +104,6 @@ local UI = {
         enabled = false,
     },
     {
-        'brenoprata10/nvim-highlight-colors',
-        main = 'nvim-highlight-colors',
-        event = 'VeryLazy',
-        version = false,
-        init = function() set_tgc(true) end,
-        config = source('plugin.hicolors'),
-        cond = vim_exists('+termguicolors'),
-    },
-    {
         'akinsho/toggleterm.nvim',
         event = 'VeryLazy',
         version = false,
