@@ -24,6 +24,13 @@ local Syntax = {
         config = source('plugin.doxygen'),
         cond = executable('doxygen'),
     },
+    {
+        'nvim-orgmode/orgmode',
+        event = 'VeryLazy',
+        ft = { 'org' },
+        version = false,
+        config = source('plugin.orgmode'),
+    },
 }
 
 return Syntax
