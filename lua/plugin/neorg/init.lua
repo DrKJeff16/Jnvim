@@ -34,13 +34,6 @@ Neorg.setup({
         ['core.itero'] = {},
         ['core.esupports.indent'] = {},
         ['core.esupports.metagen'] = {},
-        ['core.completion'] = {
-            config = {
-                engine = 'nvim-cmp',
-                name = '[Neorg]',
-            },
-        },
-        ['core.integrations.nvim-cmp'] = {},
         ['core.integrations.treesitter'] = {
             config = {
                 configure_parsers = true,
