@@ -43,7 +43,7 @@ PSSN.setup({
 
         for _, bufnr in next, vim.api.nvim_list_bufs() do
             if is_nil(visible_buffers[bufnr]) then -- Delete buffer if not visible
-                vim.cmd('bd ' .. bufnr)
+                pcall(vim.cmd.bdel, bufnr)
             end
         end
     end,
