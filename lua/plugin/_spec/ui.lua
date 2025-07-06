@@ -6,7 +6,6 @@ local Check = User.check
 
 local source = CfgUtil.source
 local set_tgc = CfgUtil.set_tgc
-local vim_exists = Check.exists.vim_exists
 local in_console = Check.in_console
 
 ---@type LazySpecs
@@ -121,6 +120,12 @@ local UI = {
         },
         config = source('plugin.noice'),
         cond = not in_console(),
+    },
+    {
+        'lukas-reineke/headlines.nvim',
+        version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        config = true,
     },
 }
 
