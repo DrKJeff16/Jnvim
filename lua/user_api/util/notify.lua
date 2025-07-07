@@ -3,16 +3,14 @@
 
 ---@module 'user_api.types.user.util'
 
-local Lvl = vim.log.levels
+local TRACE = vim.log.levels.TRACE -- `0`
+local DEBUG = vim.log.levels.DEBUG -- `1`
+local INFO = vim.log.levels.INFO -- `2`
+local WARN = vim.log.levels.WARN -- `3`
+local ERROR = vim.log.levels.ERROR -- `4`
+local OFF = vim.log.levels.OFF -- `5`
 
-local TRACE = Lvl.TRACE
-local DEBUG = Lvl.DEBUG
-local INFO = Lvl.INFO
-local WARN = Lvl.WARN
-local ERROR = Lvl.ERROR
-local OFF = Lvl.OFF
-
---- Can't use `check.exists.module()` here as said module might
+--- Can't use `user_api.check.exists.module()` here as said module might
 --- end up requiring this module, so let's avoid an import loop,
 --- shall we?
 ---@param mod string The module `require()` string
@@ -47,12 +45,12 @@ Notify.Levels = {
     [WARN] = 'warn',
     [ERROR] = 'error',
     [OFF] = 'off',
-    TRACE = 0,
-    DEBUG = 1,
-    INFO = 2,
-    WARN = 3,
-    ERROR = 4,
-    OFF = 5,
+    TRACE = TRACE,
+    DEBUG = DEBUG,
+    INFO = INFO,
+    WARN = WARN,
+    ERROR = ERROR,
+    OFF = OFF,
 }
 
 ---@param msg string
@@ -61,7 +59,8 @@ Notify.Levels = {
 function Notify.notify(msg, lvl, opts)
     if type(msg) ~= 'string' then
         error('(user_api.util.notify.notify): Message is not a string')
-    elseif msg == '' then
+    end
+    if msg == '' then
         error('(user_api.util.notify.notify): Empty message')
     end
 
