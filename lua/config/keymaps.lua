@@ -241,15 +241,24 @@ Keymaps.Keys = {
             function()
                 local notify = require('user_api.util.notify').notify
 
+                local buf = curr_buf()
+
                 ---@type boolean
                 local ok = true
                 ---@type unknown
                 local err = nil
 
-                if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
+                if vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
                     ok, err = pcall(vim.cmd.write)
 
                     if ok then
+                        notify('File Written: ' .. vim.fn.expand('%:~'), 'info', {
+                            animate = true,
+                            title = 'Vim Write',
+                            timeout = 1000,
+                            hide_from_history = true,
+                        })
+
                         return
                     end
                 end
