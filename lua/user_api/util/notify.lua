@@ -111,6 +111,50 @@ function _G.insp_anotify(msg, lvl, opts)
     require('plenary.async').run(func)
 end
 
+---@param lvl VimNotifyLvl
+---@return fun(args: vim.api.keyset.create_user_command.command_args)
+local function gen_cmd_lvl(lvl)
+    ---@param args vim.api.keyset.create_user_command.command_args)
+    return function(args)
+        local notify = Notify.notify
+        local data = args.args
+
+        if data == '' then
+            return
+        end
+
+        local opts = {
+            animate = true,
+            title = 'Message',
+            timeout = 1750,
+            hide_from_history = args.bang,
+        }
+
+        notify(data, lvl, opts)
+    end
+end
+
+vim.api.nvim_create_user_command('Notify', gen_cmd_lvl(vim.log.levels.INFO), {
+    bang = true,
+    nargs = '+',
+    force = true,
+})
+vim.api.nvim_create_user_command('NotifyInfo', gen_cmd_lvl(vim.log.levels.INFO), {
+    bang = true,
+    nargs = '+',
+    force = true,
+})
+vim.api.nvim_create_user_command('NotifyWarn', gen_cmd_lvl(vim.log.levels.WARN), {
+    bang = true,
+    nargs = '+',
+    force = true,
+})
+vim.api.nvim_create_user_command('NotifyError', gen_cmd_lvl(vim.log.levels.ERROR), {
+    bang = true,
+    nargs = '+',
+    force = true,
+})
+
 return Notify
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
