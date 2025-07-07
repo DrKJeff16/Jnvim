@@ -107,6 +107,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     wrap = Distro.termux:validate(),
 })
 
+-- Set `<Leader>` key
 Keymaps:set_leader('<Space>')
 
 vim.g.markdown_minlines = 500
@@ -116,7 +117,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 --- Uncomment to use system clipboard
---- vim.o.clipboard = 'unnamedplus'
+-- vim.o.clipboard = 'unnamedplus'
 
 --- List of manually-callable plugin
 local L = require('config.lazy')
