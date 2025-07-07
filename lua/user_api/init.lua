@@ -121,7 +121,8 @@ function User:register_plugin(pathstr, index)
 end
 
 ---@param self UserAPI
----@return boolean,(string[]|table)
+---@return boolean
+---@return string[]|table
 function User:reload_plugins()
     local exists = self.check.exists.module
 
