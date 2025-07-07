@@ -188,25 +188,41 @@ Commands:setup()
 User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 
 vim.schedule(function()
+    local in_tbl = vim.tbl_contains
     local opt_set = vim.api.nvim_set_option_value
     local ft_get = Util.ft_get
+    local bt_get = Util.bt_get
 
     vim.cmd.noh() -- HACK: Disable highlights when reloading
 
     local DISABLE_ON = {
-        'lazy',
-        'notify',
-        'help',
-        'qf',
+        ft = {
+            'help',
+            'lazy',
+            'notify',
+            'qf',
+            'TelescopePrompt',
+            'TelescopeResults',
+        },
+
+        bt = {
+            'help',
+            'prompt',
+            'quickfix',
+            'terminal',
+        },
     }
 
     local curr_ft = ft_get(curr_buf())
+    local curr_bt = bt_get(curr_buf())
 
-    -- HACK: In case we're on specific buffer filetypes
-    if vim.tbl_contains(DISABLE_ON, curr_ft) then
-        opt_set('number', false, { scope = 'local' })
-        opt_set('signcolumn', 'no', { scope = 'local' })
+    -- HACK: In case we're on specific buffer (file|buf)types
+    if not (in_tbl(DISABLE_ON.ft, curr_ft) and in_tbl(DISABLE_ON.bt, curr_bt)) then
+        return
     end
+
+    opt_set('number', false, { scope = 'local' })
+    opt_set('signcolumn', 'no', { scope = 'local' })
 end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
