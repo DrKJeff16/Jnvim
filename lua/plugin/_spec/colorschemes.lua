@@ -2,8 +2,6 @@
 
 local CfgUtil = require('config.util')
 
-local has_tgc = CfgUtil.has_tgc
-
 ---@type LazySpecs
 local ColorSchemes = {
     {
@@ -13,7 +11,6 @@ local ColorSchemes = {
         main = 'onedark',
         version = false,
         init = CfgUtil:colorscheme_init('installed_onedark', true),
-        cond = has_tgc(),
     },
     {
         'catppuccin/nvim',
@@ -23,7 +20,6 @@ local ColorSchemes = {
         main = 'catppuccin',
         version = false,
         init = CfgUtil:colorscheme_init('installed_catppuccin', true),
-        cond = has_tgc(),
     },
     {
         'folke/tokyonight.nvim',
@@ -32,7 +28,6 @@ local ColorSchemes = {
         main = 'tokyonight',
         version = false,
         init = CfgUtil:colorscheme_init('installed_tokyonight', true),
-        cond = has_tgc(),
     },
     {
         'EdenEast/nightfox.nvim',
@@ -41,7 +36,6 @@ local ColorSchemes = {
         main = 'nightfox',
         version = false,
         init = CfgUtil:colorscheme_init('installed_nightfox', true),
-        cond = has_tgc(),
     },
     {
         'rebelot/kanagawa.nvim',
@@ -50,7 +44,6 @@ local ColorSchemes = {
         main = 'kanagawa',
         version = false,
         init = CfgUtil:colorscheme_init('installed_kanagawa', true),
-        cond = has_tgc(),
     },
     {
         'Mofiqul/vscode.nvim',
@@ -59,7 +52,6 @@ local ColorSchemes = {
         main = 'vscode',
         version = false,
         init = CfgUtil:colorscheme_init('installed_vscode', true),
-        cond = has_tgc(),
     },
     {
         'ellisonleao/gruvbox.nvim',
@@ -68,7 +60,6 @@ local ColorSchemes = {
         main = 'gruvbox',
         version = false,
         init = CfgUtil:colorscheme_init('installed_gruvbox', true),
-        cond = has_tgc(),
     },
     {
         'bkegley/gloombuddy',
@@ -101,7 +92,6 @@ local ColorSchemes = {
         priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_spaceduck', true),
-        cond = has_tgc(),
     },
     {
         'Mofiqul/dracula.nvim',
