@@ -77,7 +77,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     pi = false, -- `preserveindent`
     relativenumber = false,
     ruler = true,
-    scrolloff = 3,
+    scrolloff = 2,
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
     sw = 4, -- `shiftwidth`
     showmatch = true,
@@ -118,10 +118,18 @@ Keymaps:setup({
                 local cursor_set = vim.api.nvim_win_set_cursor
                 local cursor_get = vim.api.nvim_win_get_cursor
 
-                assert(
-                    opt_get('modifiable', { buf = curr_buf() }),
-                    'Unable to indent. File is unmodifiable!'
-                )
+                local notify = require('user_api.util.notify').notify
+
+                local buf = curr_buf()
+
+                if not opt_get('modifiable', { buf = buf }) then
+                    notify('Unable to indent. File is not modifiable!', 'error', {
+                        title = 'Vim - Indent',
+                        animate = true,
+                        timeout = 2500,
+                        hide_from_history = false,
+                    })
+                end
 
                 local win = vim.api.nvim_get_current_win()
                 local saved_pos = cursor_get(win)
