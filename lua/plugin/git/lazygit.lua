@@ -43,23 +43,33 @@ end
 ---@type KeyMapDict
 local Keys = {
     ['<leader>GlC'] = {
-        function() vim.cmd('LazyGitConfig') end,
+        function()
+            vim.cmd('LazyGitConfig')
+        end,
         desc("LazyGit's Config"),
     },
     ['<leader>GlF'] = {
-        function() vim.cmd('LazyGitFilter') end,
+        function()
+            vim.cmd('LazyGitFilter')
+        end,
         desc('Open Project Commits In Float'),
     },
     ['<leader>Glc'] = {
-        function() vim.cmd('LazyGitCurrentFile') end,
+        function()
+            vim.cmd('LazyGitCurrentFile')
+        end,
         desc('LazyGit On Current File'),
     },
     ['<leader>Glf'] = {
-        function() vim.cmd('LazyGitFilterCurrentFile') end,
+        function()
+            vim.cmd('LazyGitFilterCurrentFile')
+        end,
         desc("LazyGit's Config"),
     },
     ['<leader>Glg'] = {
-        function() vim.cmd('LazyGit') end,
+        function()
+            vim.cmd('LazyGit')
+        end,
         desc('Run LazyGit'),
     },
 }
@@ -77,7 +87,9 @@ map_dict(Keys, 'wk.register', false, 'n', 0)
 
 au({ 'BufEnter', 'WinEnter' }, {
     pattern = '*',
-    callback = function() require('lazygit.utils').project_root_dir() end,
+    callback = function()
+        require('lazygit.utils').project_root_dir()
+    end,
 })
 --[[ au('TermClose', {
     pattern = '*',

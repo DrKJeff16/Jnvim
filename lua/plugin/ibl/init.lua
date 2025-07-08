@@ -59,7 +59,9 @@ for k, v in next, Hilite do
     end
 end
 
-local function apply_Hilite() hi(Hilite) end
+local function apply_Hilite()
+    hi(Hilite)
+end
 
 ---@param bufnr? integer
 ---@return boolean

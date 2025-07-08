@@ -34,7 +34,9 @@ local ft_handles = {
 
 ---@type APCmp
 local M = {
-    on = function() cmp.event:on('confirm_done', cmp_ap.on_confirm_done(ft_handles)) end,
+    on = function()
+        cmp.event:on('confirm_done', cmp_ap.on_confirm_done(ft_handles))
+    end,
 }
 
 return M

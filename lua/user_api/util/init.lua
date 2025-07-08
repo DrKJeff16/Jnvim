@@ -268,7 +268,9 @@ function Util.ft_set(s, bufnr)
     s = is_str(s) and s or ''
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    return function() Util.opt_set('ft', s, bufnr) end
+    return function()
+        Util.opt_set('ft', s, bufnr)
+    end
 end
 
 ---@param bufnr? integer
@@ -327,17 +329,23 @@ function Util:assoc()
                 {
                     group = group,
                     pattern = '.spacemacs',
-                    callback = function(ev) ft_set('lisp', ev.buf)() end,
+                    callback = function(ev)
+                        ft_set('lisp', ev.buf)()
+                    end,
                 },
                 {
                     group = group,
                     pattern = '.clangd',
-                    callback = function(ev) ft_set('yaml', ev.buf)() end,
+                    callback = function(ev)
+                        ft_set('yaml', ev.buf)()
+                    end,
                 },
                 {
                     group = group,
                     pattern = '*.norg',
-                    callback = function(ev) ft_set('norg', ev.buf)() end,
+                    callback = function(ev)
+                        ft_set('norg', ev.buf)()
+                    end,
                 },
             },
         },
@@ -424,7 +432,9 @@ function Util:assoc()
         table.insert(AUS[1].opts_tbl, {
             group = group,
             pattern = '*.org',
-            callback = function(ev) self.ft_set('org', ev.buf)() end,
+            callback = function(ev)
+                self.ft_set('org', ev.buf)()
+            end,
         })
     end
 

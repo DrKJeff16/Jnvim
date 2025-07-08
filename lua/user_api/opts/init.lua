@@ -87,16 +87,14 @@ function Opts:optset(O)
     end
 
     if msg ~= '' then
-        vim.schedule(
-            function()
-                notify(msg, 'error', {
-                    animate = false,
-                    hide_from_history = false,
-                    timeout = 1750,
-                    title = '(user_api.opts:optset)',
-                })
-            end
-        )
+        vim.schedule(function()
+            notify(msg, 'error', {
+                animate = false,
+                hide_from_history = false,
+                timeout = 1750,
+                title = '(user_api.opts:optset)',
+            })
+        end)
     end
 end
 
@@ -122,29 +120,25 @@ function Opts:setup(override, verbose)
     self:optset(opts)
 
     if msg ~= '' then
-        vim.schedule(
-            function()
-                notify(msg, 'warn', {
-                    animate = false,
-                    hide_from_history = false,
-                    timeout = 1750,
-                    title = '(user_api.opts:setup)',
-                })
-            end
-        )
+        vim.schedule(function()
+            notify(msg, 'warn', {
+                animate = false,
+                hide_from_history = false,
+                timeout = 1750,
+                title = '(user_api.opts:setup)',
+            })
+        end)
     end
 
     if verbose then
-        vim.schedule(
-            function()
-                notify(insp(opts), 'warn', {
-                    animate = false,
-                    hide_from_history = false,
-                    timeout = 1750,
-                    title = '(user_api.opts:setup)',
-                })
-            end
-        )
+        vim.schedule(function()
+            notify(insp(opts), 'warn', {
+                animate = false,
+                hide_from_history = false,
+                timeout = 1750,
+                title = '(user_api.opts:setup)',
+            })
+        end)
     end
 end
 
@@ -185,7 +179,9 @@ function Opts:setup_keys()
         n = {
             ['<leader>UO'] = { group = '+Options' },
             ['<leader>UOl'] = {
-                function() Opts:print_set_opts() end,
+                function()
+                    Opts:print_set_opts()
+                end,
                 desc('Print options set by `user.opts`'),
             },
         },

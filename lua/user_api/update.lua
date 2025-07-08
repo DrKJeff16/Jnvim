@@ -75,11 +75,15 @@ function Update:setup_maps()
             ['<leader>U'] = { group = '+User API' },
 
             ['<leader>Uu'] = {
-                function() self:update() end,
+                function()
+                    self:update()
+                end,
                 desc('Update User Config'),
             },
             ['<leader>UU'] = {
-                function() self:update(true) end,
+                function()
+                    self:update(true)
+                end,
                 desc('Update User Config (Verbose)', false),
             },
         },

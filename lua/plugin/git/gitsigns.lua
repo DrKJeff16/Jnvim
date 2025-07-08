@@ -74,7 +74,9 @@ GS.setup({
                     desc('Reset The Whole Buffer', true, bufnr),
                 },
                 ['<leader>Ghb'] = {
-                    function() GS.blame_line({ full = true }) end,
+                    function()
+                        GS.blame_line({ full = true })
+                    end,
                     desc('Blame Current Line', true, bufnr),
                 },
                 ['<leader>Ghd'] = {
@@ -82,7 +84,9 @@ GS.setup({
                     desc('Diff Against Index', true, bufnr),
                 },
                 ['<leader>GhD'] = {
-                    function() GS.diffthis('~') end,
+                    function()
+                        GS.diffthis('~')
+                    end,
                     desc('Diff This', true, bufnr),
                 },
                 ['<leader>Gtb'] = {
@@ -96,11 +100,15 @@ GS.setup({
             },
             v = {
                 ['<leader>Ghs'] = {
-                    function() GS.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
+                    function()
+                        GS.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+                    end,
                     desc('Stage Selected Hunks', true, bufnr),
                 },
                 ['<leader>Ghr'] = {
-                    function() GS.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end,
+                    function()
+                        GS.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+                    end,
                     desc('Reset Selected Hunks', true, bufnr),
                 },
             },

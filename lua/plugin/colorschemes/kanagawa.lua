@@ -23,7 +23,9 @@ local Kanagawa = {
 }
 
 ---@return boolean
-function Kanagawa.valid() return exists('kanagawa') end
+function Kanagawa.valid()
+    return exists('kanagawa')
+end
 
 ---@param self KanagawaSubMod
 ---@param variant? 'dragon'|'wave'|'lotus'

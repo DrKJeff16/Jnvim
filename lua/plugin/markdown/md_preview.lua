@@ -50,17 +50,23 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
 
             ['<leader>f<C-M>t'] = {
                 ---@diagnostic disable-next-line
-                function() pcall(vim.cmd, 'MarkdownPreviewToggle') end,
+                function()
+                    pcall(vim.cmd, 'MarkdownPreviewToggle')
+                end,
                 desc('Toggle Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>p'] = {
                 ---@diagnostic disable-next-line
-                function() pcall(vim.cmd, 'MarkdownPreview') end,
+                function()
+                    pcall(vim.cmd, 'MarkdownPreview')
+                end,
                 desc('Run Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>s'] = {
                 ---@diagnostic disable-next-line
-                function() pcall(vim.cmd, 'MarkdownPreviewStop') end,
+                function()
+                    pcall(vim.cmd, 'MarkdownPreviewStop')
+                end,
                 desc('Stop Markdown Preview', true, bufnr),
             },
         }

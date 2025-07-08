@@ -299,7 +299,9 @@ local Keys = {
     ['<leader>ft'] = { group = '+NeoTree' },
 
     ['<leader>ftt'] = {
-        function() vim.cmd('Neotree reveal') end,
+        function()
+            vim.cmd('Neotree reveal')
+        end,
         desc('Reveal NeoTree'),
     },
 }

@@ -206,7 +206,9 @@ Keymaps.Keys = {
         ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
 
         ['<Esc><Esc>'] = {
-            function() vim.schedule(vim.cmd.noh) end,
+            function()
+                vim.schedule(vim.cmd.noh)
+            end,
             desc('Remove Highlighted Search'),
         },
 
@@ -377,34 +379,48 @@ Keymaps.Keys = {
         },
 
         ['<leader>vee'] = {
-            function() vim.cmd.edit(MYVIMRC) end,
+            function()
+                vim.cmd.edit(MYVIMRC)
+            end,
             desc('Open In Current Window'),
         },
         ['<leader>ves'] = {
-            function() vim.cmd.split(MYVIMRC) end,
+            function()
+                vim.cmd.split(MYVIMRC)
+            end,
             desc('Open In Horizontal Split'),
         },
         ['<leader>vet'] = {
-            function() vim.cmd.tabnew(MYVIMRC) end,
+            function()
+                vim.cmd.tabnew(MYVIMRC)
+            end,
             desc('Open In New Tab'),
         },
         ['<leader>vev'] = {
-            function() vim.cmd.vsplit(MYVIMRC) end,
+            function()
+                vim.cmd.vsplit(MYVIMRC)
+            end,
             desc('Open In Vertical Split'),
         },
 
         ['<leader>vhh'] = { vim.cmd.checkhealth, desc('Run Checkhealth') },
         ['<leader>vhH'] = { ':checkhealth ', desc('Prompt Checkhealth', false) },
         ['<leader>vhd'] = {
-            function() vim.cmd.checkhealth('vim.health') end,
+            function()
+                vim.cmd.checkhealth('vim.health')
+            end,
             desc('Run `vim.health` Checkhealth', false),
         },
         ['<leader>vhD'] = {
-            function() vim.cmd.checkhealth('vim.deprecated') end,
+            function()
+                vim.cmd.checkhealth('vim.deprecated')
+            end,
             desc('Run `vim.deprecated` Checkhealth', false),
         },
         ['<leader>vhl'] = {
-            function() vim.cmd.checkhealth('vim.lsp') end,
+            function()
+                vim.cmd.checkhealth('vim.lsp')
+            end,
             desc('Run `vim.lsp` Checkhealth', false),
         },
 
@@ -471,61 +487,89 @@ Keymaps.Keys = {
             desc('New Blank File'),
         },
         ['<leader>w='] = {
-            function() vim.cmd.wincmd('=') end,
+            function()
+                vim.cmd.wincmd('=')
+            end,
             desc('Resize all windows equally'),
         },
         ['<leader>w<Left>'] = {
-            function() vim.cmd.wincmd('h') end,
+            function()
+                vim.cmd.wincmd('h')
+            end,
             desc('Go To Window On The Left'),
         },
         ['<leader>w<Right>'] = {
-            function() vim.cmd.wincmd('l') end,
+            function()
+                vim.cmd.wincmd('l')
+            end,
             desc('Go To Window On The Right'),
         },
         ['<leader>w<Up>'] = {
-            function() vim.cmd.wincmd('k') end,
+            function()
+                vim.cmd.wincmd('k')
+            end,
             desc('Go To Window Above'),
         },
         ['<leader>w<Down>'] = {
-            function() vim.cmd.wincmd('j') end,
+            function()
+                vim.cmd.wincmd('j')
+            end,
             desc('Go To Window Below'),
         },
         ['<leader>wd'] = {
-            function() vim.cmd.wincmd('q') end,
+            function()
+                vim.cmd.wincmd('q')
+            end,
             desc('Close Window'),
         },
         ['<leader>wn'] = {
-            function() vim.cmd.wincmd('w') end,
+            function()
+                vim.cmd.wincmd('w')
+            end,
             desc('Next Window'),
         },
         ['<leader>ww'] = {
-            function() vim.cmd.wincmd('w') end,
+            function()
+                vim.cmd.wincmd('w')
+            end,
             desc('Next Window'),
         },
         ['<leader>wc'] = {
-            function() vim.cmd.wincmd('o') end,
+            function()
+                vim.cmd.wincmd('o')
+            end,
             desc('Close All Other Windows'),
         },
         ['<leader>wS'] = {
-            function() vim.cmd.wincmd('x') end,
+            function()
+                vim.cmd.wincmd('x')
+            end,
             desc('Swap Current WithNext'),
         },
         ['<leader>wt'] = {
-            function() vim.cmd.wincmd('T') end,
+            function()
+                vim.cmd.wincmd('T')
+            end,
             desc('Break Current Window Into Tab'),
         },
         ['<leader>wp'] = {
-            function() vim.cmd.wincmd('W') end,
+            function()
+                vim.cmd.wincmd('W')
+            end,
             desc('Previous Window'),
         },
         ['<leader>wsX'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
         ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
         ['<leader>wsx'] = {
-            function() vim.cmd.wincmd('s') end,
+            function()
+                vim.cmd.wincmd('s')
+            end,
             desc('Horizontal Split'),
         },
         ['<leader>wsv'] = {
-            function() vim.cmd.wincmd('v') end,
+            function()
+                vim.cmd.wincmd('v')
+            end,
             desc('Vertical Split'),
         },
 

@@ -19,14 +19,18 @@ WK.setup({
 
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
-    delay = function(ctx) return ctx.plugin and 0 or 200 end,
+    delay = function(ctx)
+        return ctx.plugin and 0 or 200
+    end,
 
     --- You can add any mappings here, or use `require('which-key').add()` later
     ---@type wk.Spec
     spec = {
         {
             '<leader>?',
-            function() WK.show({ global = false }) end,
+            function()
+                WK.show({ global = false })
+            end,
             desc = 'Buffer Local Keymaps (which_key)',
         },
     },
@@ -130,7 +134,9 @@ WK.setup({
     ---@type table<string, ({ [1]: string, [2]: string }|fun(str: string): string)[]>
     replace = {
         key = {
-            function(key) return require('which-key.view').format(key) end,
+            function(key)
+                return require('which-key.view').format(key)
+            end,
             { '<Space>', 'SPC' },
         },
         desc = {

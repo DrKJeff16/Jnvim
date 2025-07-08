@@ -21,7 +21,9 @@ local VSCode = {
 }
 
 ---@return boolean
-function VSCode.valid() return exists('vscode') end
+function VSCode.valid()
+    return exists('vscode')
+end
 
 ---@param self VSCodeSubMod
 ---@param variant? VSCodeSubMod.Variants

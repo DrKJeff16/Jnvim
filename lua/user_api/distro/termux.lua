@@ -67,7 +67,9 @@ function Termux:setup()
         end
     end
 
-    vim.schedule(function() vim.api.nvim_set_option_value('wrap', true, { scope = 'global' }) end)
+    vim.schedule(function()
+        vim.api.nvim_set_option_value('wrap', true, { scope = 'global' })
+    end)
 end
 
 ---@param O? table

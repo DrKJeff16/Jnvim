@@ -23,7 +23,9 @@ local Catppuccin = {
 }
 
 ---@return boolean
-function Catppuccin.valid() return exists('catppuccin') end
+function Catppuccin.valid()
+    return exists('catppuccin')
+end
 
 ---@param self CpcSubMod
 ---@param variant? CpcSubMod.Variant

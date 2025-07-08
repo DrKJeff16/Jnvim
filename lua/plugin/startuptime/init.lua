@@ -36,7 +36,9 @@ end
 ---@type AllMaps
 local Keys = {
     ['<leader>vS'] = {
-        function() vim.cmd('StartupTime') end,
+        function()
+            vim.cmd('StartupTime')
+        end,
         desc('Run StartupTime'),
     },
 }

@@ -265,7 +265,9 @@ function Sources.setup(T)
     end
 end
 
-function Sources.new() return setmetatable({}, { __index = Sources }) end
+function Sources.new()
+    return setmetatable({}, { __index = Sources })
+end
 
 return Sources
 

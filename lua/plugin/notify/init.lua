@@ -115,7 +115,9 @@ local NotifyHl = {
     ['NotifyWARNTitle'] = { fg = '#F79000' },
 }
 
-vim.schedule(function() hl_from_dict(NotifyHl) end)
+vim.schedule(function()
+    hl_from_dict(NotifyHl)
+end)
 
 User:register_plugin('plugin.notify')
 

@@ -18,9 +18,13 @@ local Scope = require('scope')
 local Opts = {}
 Opts.hooks = {}
 
-function Opts.hooks.pre_tab_leave() au_exec('User', { pattern = 'ScopeTabLeavePre' }) end
+function Opts.hooks.pre_tab_leave()
+    au_exec('User', { pattern = 'ScopeTabLeavePre' })
+end
 
-function Opts.hooks.post_tab_enter() au_exec('User', { pattern = 'ScopeTabEnterPost' }) end
+function Opts.hooks.post_tab_enter()
+    au_exec('User', { pattern = 'ScopeTabEnterPost' })
+end
 
 local group = augroup('ScopeMapHook', { clear = false })
 
@@ -41,7 +45,9 @@ au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
                 cmd = cmd .. tostring(tabnr)
             end
 
-            return function() vim.cmd(cmd) end
+            return function()
+                vim.cmd(cmd)
+            end
         end
 
         local prefix = '<leader>b<C-t>'

@@ -156,7 +156,9 @@ local Kinds = {
         hl_dict(vscode_hls)
     end,
     extra_hls = extra_hls,
-    hilite = function() hl_dict(extra_hls) end,
+    hilite = function()
+        hl_dict(extra_hls)
+    end,
 }
 
 return Kinds

@@ -21,7 +21,9 @@ local Dracula = {
 }
 
 ---@return boolean
-function Dracula.valid() return exists('dracula') end
+function Dracula.valid()
+    return exists('dracula')
+end
 
 ---@param self DraculaSubMod
 ---@param variant? DraculaSubMod.Variant

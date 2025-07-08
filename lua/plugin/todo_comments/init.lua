@@ -157,7 +157,9 @@ local function jump(direction, keywords)
         prev = TODO.jump_prev,
     }
 
-    return function() direction_map[direction]({ keywords = keywords }) end
+    return function()
+        direction_map[direction]({ keywords = keywords })
+    end
 end
 
 ---@type AllMaps

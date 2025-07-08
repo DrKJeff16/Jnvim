@@ -19,7 +19,9 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 ---@diagnostic disable-next-line:missing-fields
 local WK = {}
 
-function WK.available() return require('user_api.check.exists').module('which-key') end
+function WK.available()
+    return require('user_api.check.exists').module('which-key')
+end
 
 function WK.convert(lhs, rhs, opts)
     if not WK.available() then

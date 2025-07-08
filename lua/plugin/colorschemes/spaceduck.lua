@@ -12,9 +12,13 @@ local SpaceDuck = {
 }
 
 ---@return boolean
-function SpaceDuck.valid() return vim.g.installed_spaceduck == 1 end
+function SpaceDuck.valid()
+    return vim.g.installed_spaceduck == 1
+end
 
-function SpaceDuck:setup() vim.cmd(self.mod_cmd) end
+function SpaceDuck:setup()
+    vim.cmd(self.mod_cmd)
+end
 
 ---@param O? table
 ---@return table|CscSubMod

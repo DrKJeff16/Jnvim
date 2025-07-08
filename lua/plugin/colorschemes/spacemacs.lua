@@ -12,9 +12,13 @@ local Spacemacs = {
 }
 
 ---@return boolean
-function Spacemacs.valid() return vim.g.installed_spacemacs == 1 end
+function Spacemacs.valid()
+    return vim.g.installed_spacemacs == 1
+end
 
-function Spacemacs:setup() vim.cmd(self.mod_cmd) end
+function Spacemacs:setup()
+    vim.cmd(self.mod_cmd)
+end
 
 ---@param O? table
 ---@return table|CscSubMod

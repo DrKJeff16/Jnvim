@@ -125,7 +125,9 @@ function Colorschemes.new(O)
                             group = '+' .. capitalize(name),
                         }
                         CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
-                            function() TColor:setup(variant) end,
+                            function()
+                                TColor:setup(variant)
+                            end,
                             desc(
                                 string.format(
                                     'Set Colorscheme `%s` (%s)',
@@ -139,7 +141,9 @@ function Colorschemes.new(O)
                     end
                 else
                     CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                        function() TColor:setup() end,
+                        function()
+                            TColor:setup()
+                        end,
                         desc(string.format('Set Colorscheme `%s`', capitalize(name))),
                     }
                 end

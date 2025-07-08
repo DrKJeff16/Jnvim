@@ -25,9 +25,9 @@ local BPAIRS = {
 local rule2 = function(a1, ins, a2, lang)
     Ap.add_rules({
         Rule(ins, ins, lang)
-            :with_pair(
-                function(opts) return a1 .. a2 == opts.line:sub(opts.col - #a1, opts.col + #a2 - 1) end
-            )
+            :with_pair(function(opts)
+                return a1 .. a2 == opts.line:sub(opts.col - #a1, opts.col + #a2 - 1)
+            end)
             :with_move(Conds.none())
             :with_cr(Conds.none())
             :with_del(function(opts)
@@ -121,12 +121,16 @@ for _, bracket in next, BPAIRS do
         -- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
         Rule(bracket[1] .. ' ', ' ' .. bracket[2])
             :with_pair(Conds.none())
-            :with_move(function(opts) return opts.char == bracket[2] end)
+            :with_move(function(opts)
+                return opts.char == bracket[2]
+            end)
             :with_del(Conds.none())
             :use_key(bracket[2])
             -- Removes the trailing whitespace that can occur without this
             :replace_map_cr(
-                function(_) return '<C-c>2xi<CR><C-c>O' end
+                function(_)
+                    return '<C-c>2xi<CR><C-c>O'
+                end
             )
             :with_del(Conds.none())
     )
@@ -136,10 +140,18 @@ for _, punct in next, { ',', ';' } do
     table.insert(
         Rules,
         Rule('', punct)
-            :with_move(function(opts) return opts.char == punct end)
-            :with_pair(function() return false end)
-            :with_del(function() return false end)
-            :with_cr(function() return false end)
+            :with_move(function(opts)
+                return opts.char == punct
+            end)
+            :with_pair(function()
+                return false
+            end)
+            :with_del(function()
+                return false
+            end)
+            :with_cr(function()
+                return false
+            end)
             :use_key(punct)
     )
 end

@@ -110,7 +110,9 @@ local my_maps = {
         desc('Open NvimTree'),
     },
     ['<leader>ftt'] = {
-        function() toggle({ find_file = true, update_root = true, focus = true }) end,
+        function()
+            toggle({ find_file = true, update_root = true, focus = true })
+        end,
         desc('Toggle NvimTree'),
     },
     ['<leader>ftd'] = {
@@ -134,7 +136,9 @@ local function tab_win_close(nwin)
     local nbuf = get_bufn(nwin)
     local buf_info = fn.getbufinfo(nbuf)[1]
 
-    local tab_wins = filter(function(w) return w - nwin end, win_list(ntab))
+    local tab_wins = filter(function(w)
+        return w - nwin
+    end, win_list(ntab))
     local tab_bufs = tbl_map(get_bufn, tab_wins)
 
     if buf_info.name:match('.*NvimTree_%d*$') and not empty(tab_bufs) then
@@ -298,7 +302,9 @@ local on_attach = function(bufn)
 
         local parent_path = vim.fs.dirname(abs_path)
         vim.api.nvim_set_current_dir(parent_path)
-        vim.schedule(function() Tapi.change_root(parent_path) end)
+        vim.schedule(function()
+            Tapi.change_root(parent_path)
+        end)
     end
 
     ---@type AllMaps
@@ -427,7 +433,9 @@ local function toggle_width_adaptive()
 end
 
 -- get current view width
-local function get_view_width_max() return view_width_max end
+local function get_view_width_max()
+    return view_width_max
+end
 
 Tree.setup({
     on_attach = on_attach,
@@ -647,10 +655,9 @@ Tree.setup({
 })
 
 -- Auto-open file after creation
-Api.events.subscribe(
-    Api.events.Event.FileCreated,
-    function(file) vim.cmd('edit ' .. vim.fn.fnameescape(file.fname)) end
-)
+Api.events.subscribe(Api.events.Event.FileCreated, function(file)
+    vim.cmd('edit ' .. vim.fn.fnameescape(file.fname))
+end)
 
 ---@type AuDict
 local au_cmds = {
@@ -664,7 +671,9 @@ local au_cmds = {
         callback = function()
             local nwin = floor(tonumber(fn.expand('<amatch>')))
 
-            local tabc = function() return tab_win_close(nwin) end
+            local tabc = function()
+                return tab_win_close(nwin)
+            end
 
             sched_wp(tabc)
         end,

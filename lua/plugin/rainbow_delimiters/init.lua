@@ -73,7 +73,9 @@ local HL = {
     ['RainbowDelimiterRed'] = { link = 'WarningMsg' },
 }
 
-vim.schedule(function() hl_from_dict(HL) end)
+vim.schedule(function()
+    hl_from_dict(HL)
+end)
 
 User:register_plugin('plugin.rainbow_delimiters')
 

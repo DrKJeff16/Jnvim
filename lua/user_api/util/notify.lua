@@ -80,7 +80,9 @@ function Notify.notify(msg, lvl, opts)
 
         opts = vim.tbl_deep_extend('keep', opts, Notify.Opts)
 
-        vim.schedule(function() notify(msg, lvl, opts) end)
+        vim.schedule(function()
+            notify(msg, lvl, opts)
+        end)
     else
         if type(lvl) == 'string' and vim.tbl_contains(Notify.Levels, string.lower(lvl)) then
             lvl = Notify.Levels[string.upper(lvl)]
@@ -90,7 +92,9 @@ function Notify.notify(msg, lvl, opts)
             lvl = INFO
         end
 
-        vim.schedule(function() vim.notify(msg, lvl, opts) end)
+        vim.schedule(function()
+            vim.notify(msg, lvl, opts)
+        end)
     end
 end
 
@@ -98,7 +102,9 @@ end
 ---@param lvl? NotifyLvl|VimNotifyLvl
 ---@param opts? table|notify.Options
 function _G.anotify(msg, lvl, opts)
-    local func = function() Notify.notify(msg, lvl or 'info', opts or {}) end
+    local func = function()
+        Notify.notify(msg, lvl or 'info', opts or {})
+    end
     require('plenary.async').run(func)
 end
 
@@ -106,7 +112,9 @@ end
 ---@param lvl? NotifyLvl|VimNotifyLvl
 ---@param opts? table|notify.Options
 function _G.insp_anotify(msg, lvl, opts)
-    local func = function() Notify.notify((inspect or vim.inspect)(msg), lvl or 'info', opts or {}) end
+    local func = function()
+        Notify.notify((inspect or vim.inspect)(msg), lvl or 'info', opts or {})
+    end
 
     require('plenary.async').run(func)
 end

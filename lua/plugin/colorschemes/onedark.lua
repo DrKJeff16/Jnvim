@@ -25,7 +25,9 @@ local OneDark = {
     mod_cmd = 'silent! colorscheme onedark',
 }
 
-function OneDark.valid() return exists('onedark') end
+function OneDark.valid()
+    return exists('onedark')
+end
 
 ---@param variant? OD.Variant
 ---@param transparent? boolean

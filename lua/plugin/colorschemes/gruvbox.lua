@@ -14,7 +14,9 @@ local Gruvbox = {
     mod_cmd = 'silent! colorscheme gruvbox',
 }
 
-function Gruvbox.valid() return exists('gruvbox') end
+function Gruvbox.valid()
+    return exists('gruvbox')
+end
 
 function Gruvbox:setup(variant, transparent, override)
     variant = variant or nil

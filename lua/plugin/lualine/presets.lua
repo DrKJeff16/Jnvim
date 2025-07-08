@@ -165,14 +165,18 @@ Presets.components.datetime = {
 Presets.components.mode = {
     'mode',
 
-    fmt = function(str) return str:sub(1, 1) end,
+    fmt = function(str)
+        return str:sub(1, 1)
+    end,
 }
 
 Presets.components.possession = exists('nvim-possession')
         and {
             require('nvim-possession').status,
 
-            cond = function() return require('nvim-possession').status() ~= nil end,
+            cond = function()
+                return require('nvim-possession').status() ~= nil
+            end,
         }
     or {}
 

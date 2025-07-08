@@ -55,7 +55,9 @@ local Keys = {
     ['<leader>C'] = { group = '+Context' },
 
     ['<leader>Cn'] = {
-        function() require('treesitter-context').go_to_context(vim.v.count1) end,
+        function()
+            require('treesitter-context').go_to_context(vim.v.count1)
+        end,
         desc('Go To Current Context'),
     },
 

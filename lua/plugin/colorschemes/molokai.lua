@@ -12,9 +12,13 @@ local Molokai = {
 }
 
 ---@return boolean
-function Molokai.valid() return vim.g.installed_molokai == 1 end
+function Molokai.valid()
+    return vim.g.installed_molokai == 1
+end
 
-function Molokai:setup() vim.cmd(self.mod_cmd) end
+function Molokai:setup()
+    vim.cmd(self.mod_cmd)
+end
 
 ---@param O? table
 ---@return table|CscSubMod

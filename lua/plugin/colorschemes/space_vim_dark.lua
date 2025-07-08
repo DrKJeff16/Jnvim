@@ -12,9 +12,13 @@ local SpaceVimDark = {
 }
 
 ---@return boolean
-function SpaceVimDark.valid() return vim.g.installed_space_vim_dark end
+function SpaceVimDark.valid()
+    return vim.g.installed_space_vim_dark
+end
 
-function SpaceVimDark:setup() vim.cmd(self.mod_cmd) end
+function SpaceVimDark:setup()
+    vim.cmd(self.mod_cmd)
+end
 
 ---@param O? table
 ---@return table|CscSubMod

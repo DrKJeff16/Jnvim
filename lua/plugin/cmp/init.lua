@@ -107,7 +107,9 @@ local Opts = {
 
     snippet = {
         ---@param args cmp.SnippetExpansionParams
-        expand = function(args) vim.fn['vsnip#anonymous'](args.body) end,
+        expand = function(args)
+            vim.fn['vsnip#anonymous'](args.body)
+        end,
     },
 
     preselect = cmp.PreselectMode.None,

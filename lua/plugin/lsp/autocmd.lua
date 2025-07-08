@@ -63,7 +63,9 @@ Autocmd.AUKeys = {
         ['<leader>lfR'] = { vim.lsp.buf.rename, desc('Rename...') },
         ['<leader>lfr'] = { vim.lsp.buf.references, desc('References') },
         ['<leader>lff'] = {
-            function() vim.lsp.buf.format({ async = true }) end,
+            function()
+                vim.lsp.buf.format({ async = true })
+            end,
             desc('Format File'),
         },
         ['<leader>lc'] = { vim.lsp.buf.code_action, desc('Code Action') },
@@ -149,7 +151,9 @@ Autocmd.autocommands = {
                         buffer = args.buf,
                     },
                     ['<leader>lSs'] = {
-                        function() vim.lsp.stop_client(client.id, false) end,
+                        function()
+                            vim.lsp.stop_client(client.id, false)
+                        end,
                         desc('Server Stop', true, args.buf),
                         buffer = args.buf,
                     },
@@ -168,7 +172,9 @@ Autocmd.autocommands = {
         {
             group = augroup('UserLsp', { clear = false }),
             pattern = '*',
-            callback = function() vim.cmd.redrawstatus() end,
+            callback = function()
+                vim.cmd.redrawstatus()
+            end,
         },
     },
 }

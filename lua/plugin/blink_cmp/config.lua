@@ -74,7 +74,9 @@ Cfg.Config.keymap = {
             end
         end,
 
-        function(cmp) return cmp.select_next({ auto_insert = true, preselect = false }) end,
+        function(cmp)
+            return cmp.select_next({ auto_insert = true, preselect = false })
+        end,
         'fallback',
     },
     ['<S-Tab>'] = {
@@ -92,7 +94,9 @@ Cfg.Config.keymap = {
             end
         end,
 
-        function(cmp) return cmp.select_prev({ auto_insert = true, preselect = false }) end,
+        function(cmp)
+            return cmp.select_prev({ auto_insert = true, preselect = false })
+        end,
 
         'fallback',
     },
@@ -268,7 +272,9 @@ Cfg.Config.cmdline = {
 }
 
 Cfg.Config.sources = {
-    default = function() return BUtil:gen_sources(false, true) end,
+    default = function()
+        return BUtil:gen_sources(false, true)
+    end,
 
     per_filetype = {
         lua = { inherit_defaults = true, 'lazydev' },
@@ -295,14 +301,20 @@ Cfg.Config.snippets = {
     preset = exists('luasnip') and 'luasnip' or 'default',
 
     -- Function to use when expanding LSP provided snippets
-    expand = function(snippet) vim.snippet.expand(snippet) end,
+    expand = function(snippet)
+        vim.snippet.expand(snippet)
+    end,
 
     -- Function to use when checking if a snippet is active
-    active = function(filter) return vim.snippet.active(filter) end,
+    active = function(filter)
+        return vim.snippet.active(filter)
+    end,
 
     -- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
     ---@diagnostic disable-next-line
-    jump = function(direction) vim.snippet.jump(direction) end,
+    jump = function(direction)
+        vim.snippet.jump(direction)
+    end,
 }
 
 Cfg.Config.signature = {

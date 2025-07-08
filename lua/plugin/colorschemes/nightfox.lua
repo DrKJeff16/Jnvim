@@ -26,7 +26,9 @@ local Nightfox = {
 }
 
 ---@return boolean
-function Nightfox.valid() return exists('nightfox') end
+function Nightfox.valid()
+    return exists('nightfox')
+end
 
 ---@param self NFoxSubMod
 ---@param variant? NFoxSubMod.Variants

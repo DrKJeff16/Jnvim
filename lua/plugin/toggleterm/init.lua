@@ -85,7 +85,9 @@ TT.setup({
 
         ---@param term Terminal
         ---@return string
-        name_formatter = function(term) return term.name end,
+        name_formatter = function(term)
+            return term.name
+        end,
     },
 })
 
@@ -104,19 +106,27 @@ function _G.set_terminal_keymaps(bufnr)
             desc('Escape Terminal', true, bufnr),
         },
         ['<C-h>'] = {
-            function() vim.cmd.wincmd('h') end,
+            function()
+                vim.cmd.wincmd('h')
+            end,
             desc('Goto Left Window', true, bufnr),
         },
         ['<C-j>'] = {
-            function() vim.cmd.wincmd('j') end,
+            function()
+                vim.cmd.wincmd('j')
+            end,
             desc('Goto Down Window', true, bufnr),
         },
         ['<C-k>'] = {
-            function() vim.cmd.wincmd('k') end,
+            function()
+                vim.cmd.wincmd('k')
+            end,
             desc('Goto Up Window', true, bufnr),
         },
         ['<C-l>'] = {
-            function() vim.cmd.wincmd('l') end,
+            function()
+                vim.cmd.wincmd('l')
+            end,
             desc('Goto Right Window', true, bufnr),
         },
         ['<C-w>'] = {
@@ -161,11 +171,15 @@ local aus = {
     ['TermEnter'] = {
         group = group,
         pattern = { 'term://*toggleterm#*' },
-        callback = function() tmap('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>') end,
+        callback = function()
+            tmap('<c-t>', '<CMD>exe v:count1 . "ToggleTerm"<CR>')
+        end,
     },
     ['TermOpen'] = {
         group = group,
-        callback = function(args) set_terminal_keymaps(args.buf) end,
+        callback = function(args)
+            set_terminal_keymaps(args.buf)
+        end,
     },
 }
 

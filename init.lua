@@ -27,7 +27,9 @@ local curr_buf = vim.api.nvim_get_current_buf
 
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
-function _G.print_inspect(...) vim.print(inspect(...)) end
+function _G.print_inspect(...)
+    vim.print(inspect(...))
+end
 
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
@@ -137,12 +139,16 @@ Keymaps:setup({
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
                 -- HACK: Wait for `feedkeys` to end, then reset to position
-                vim.schedule(function() cursor_set(win, saved_pos) end)
+                vim.schedule(function()
+                    cursor_set(win, saved_pos)
+                end)
             end,
             desc('Indent Whole File'),
         },
         ['<leader>vM'] = {
-            function() vim.cmd.messages() end,
+            function()
+                vim.cmd.messages()
+            end,
             desc('Run `:messages`'),
         },
         ['<leader>vN'] = {

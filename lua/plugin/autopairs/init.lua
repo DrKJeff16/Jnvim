@@ -74,8 +74,12 @@ Ap.setup({
 
 ---@type APMods
 local M = {
-    cmp = function() return exists('plugin.autopairs.cmp', true) end,
-    rules = function() return exists('plugin.autopairs.rules', true) end,
+    cmp = function()
+        return exists('plugin.autopairs.cmp', true)
+    end,
+    rules = function()
+        return exists('plugin.autopairs.rules', true)
+    end,
 }
 
 M.rules()

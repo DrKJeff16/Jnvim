@@ -134,7 +134,9 @@ function BUtil:reset_providers()
         name = 'Snip',
         score_offset = -80,
         max_items = 5,
-        should_show_items = function(ctx) return ctx.trigger.initial_kind ~= 'trigger_character' end,
+        should_show_items = function(ctx)
+            return ctx.trigger.initial_kind ~= 'trigger_character'
+        end,
     }
 
     self.Providers.lsp = {
@@ -142,12 +144,9 @@ function BUtil:reset_providers()
         module = 'blink.cmp.sources.lsp',
         score_offset = 80,
         transform_items = function(_, items)
-            return vim.tbl_filter(
-                function(item)
-                    return item.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword
-                end,
-                items
-            )
+            return vim.tbl_filter(function(item)
+                return item.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword
+            end, items)
         end,
     }
 
@@ -173,7 +172,9 @@ function BUtil:reset_providers()
             name = 'CC',
             module = 'blink-cmp-conventional-commits',
             score_offset = 100,
-            enabled = function() return vim.bo.filetype == 'gitcommit' end,
+            enabled = function()
+                return vim.bo.filetype == 'gitcommit'
+            end,
 
             ---@module 'blink-cmp-conventional-commits'
             ---@type blink-cmp-conventional-commits.Options

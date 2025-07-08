@@ -199,7 +199,9 @@ function User:plugin_maps()
         local name = self.paths[i]
 
         Keys['<leader>UP' .. group .. tostring(cycle)] = {
-            function() vim.cmd.tabnew(name) end,
+            function()
+                vim.cmd.tabnew(name)
+            end,
             desc(name),
         }
 
@@ -259,7 +261,9 @@ function User:setup_keys()
             desc('Reload All Plugins'),
         },
         ['<leader>UPl'] = {
-            function() self:print_loaded_plugins() end,
+            function()
+                self:print_loaded_plugins()
+            end,
             desc('Print Loaded Plugins'),
         },
     }

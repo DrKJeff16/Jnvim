@@ -74,7 +74,9 @@ local HOpts = {
     ---@type fun(): integer
     bufnr = vim.api.nvim_get_current_buf,
     ---@return integer[]
-    pos = function() return vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()) end,
+    pos = function()
+        return vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+    end,
 }
 
 ---@type KeyMapDict
@@ -82,11 +84,15 @@ local Keys = {
     ['K'] = { Hover.hover, desc('Hover') },
     ['gK'] = { Hover.hover_select, desc('Hover Select') },
     ['<C-p>'] = {
-        function() Hover.hover_switch('previous', HOpts) end,
+        function()
+            Hover.hover_switch('previous', HOpts)
+        end,
         desc('Previous Hover'),
     },
     ['<C-n>'] = {
-        function() Hover.hover_switch('next', HOpts) end,
+        function()
+            Hover.hover_switch('next', HOpts)
+        end,
         desc('Next Hover'),
     },
 }

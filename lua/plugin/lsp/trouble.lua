@@ -98,7 +98,9 @@ Trouble.Opts = {
         zN = 'fold_enable',
         zi = 'fold_toggle_enable',
         gb = { -- example of a custom action that toggles the active view filter
-            action = function(view) view:filter({ buf = 0 }, { toggle = true }) end,
+            action = function(view)
+                view:filter({ buf = 0 }, { toggle = true })
+            end,
             desc = 'Toggle Current Buffer Filter',
         },
         s = { -- example of a custom action that toggles the severity
@@ -199,23 +201,33 @@ Trouble.Keys = {
         ['<leader>lx'] = { group = '+Trouble' },
 
         ['<leader>lxx'] = {
-            function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
+            function()
+                vim.cmd('Trouble diagnostics toggle filter.buf=0')
+            end,
             desc('Toggle Diagnostics'),
         },
         ['<leader>lxs'] = {
-            function() vim.cmd('Trouble symbols toggle focus=false') end,
+            function()
+                vim.cmd('Trouble symbols toggle focus=false')
+            end,
             desc('Toggle Symbols'),
         },
         ['<leader>lxl'] = {
-            function() vim.cmd('Trouble lsp toggle focus=false') end,
+            function()
+                vim.cmd('Trouble lsp toggle focus=false')
+            end,
             desc('Toggle LSP'),
         },
         ['<leader>lxL'] = {
-            function() vim.cmd('Trouble loclist toggle') end,
+            function()
+                vim.cmd('Trouble loclist toggle')
+            end,
             desc('Toggle Loclist'),
         },
         ['<leader>lxr'] = {
-            function() vim.cmd('Trouble lsp_references') end,
+            function()
+                vim.cmd('Trouble lsp_references')
+            end,
             desc('Toggle LSP References'),
         },
     },
@@ -223,23 +235,33 @@ Trouble.Keys = {
         ['<leader>lx'] = { group = '+Trouble' },
 
         ['<leader>lxx'] = {
-            function() vim.cmd('Trouble diagnostics toggle filter.buf=0') end,
+            function()
+                vim.cmd('Trouble diagnostics toggle filter.buf=0')
+            end,
             desc('Toggle Diagnostics'),
         },
         ['<leader>lxs'] = {
-            function() vim.cmd('Trouble symbols toggle focus=false') end,
+            function()
+                vim.cmd('Trouble symbols toggle focus=false')
+            end,
             desc('Toggle Symbols'),
         },
         ['<leader>lxl'] = {
-            function() vim.cmd('Trouble lsp toggle focus=false') end,
+            function()
+                vim.cmd('Trouble lsp toggle focus=false')
+            end,
             desc('Toggle LSP'),
         },
         ['<leader>lxL'] = {
-            function() vim.cmd('Trouble loclist toggle') end,
+            function()
+                vim.cmd('Trouble loclist toggle')
+            end,
             desc('Toggle Loclist'),
         },
         ['<leader>lxr'] = {
-            function() vim.cmd('Trouble lsp_references') end,
+            function()
+                vim.cmd('Trouble lsp_references')
+            end,
             desc('Toggle LSP References'),
         },
     },

@@ -451,6 +451,8 @@ Clients.css_variables = {
     },
 }
 
+Clients.taplo = {}
+
 _G.CLIENTS = Clients
 
 User:register_plugin('plugin.lsp.server_config')

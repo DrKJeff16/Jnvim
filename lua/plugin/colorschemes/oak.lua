@@ -13,10 +13,14 @@ local Oak = {
 }
 
 ---@return boolean
-function Oak.valid() return vim.g.installed_oak == 1 end
+function Oak.valid()
+    return vim.g.installed_oak == 1
+end
 
 ---@param self CscSubMod
-function Oak:setup() vim.cmd(self.mod_cmd) end
+function Oak:setup()
+    vim.cmd(self.mod_cmd)
+end
 
 ---@param O? table
 ---@return table|CscSubMod

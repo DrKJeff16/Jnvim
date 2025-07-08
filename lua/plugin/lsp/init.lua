@@ -139,15 +139,21 @@ function Server.new(O)
 
                     ['<leader>lI'] = {
                         ---@diagnostic disable-next-line
-                        function() pcall(vim.cmd, 'LspInfo') end,
+                        function()
+                            pcall(vim.cmd, 'LspInfo')
+                        end,
                         desc('Get LSP Config Info'),
                     },
                     ['<leader>lH'] = {
-                        function() vim.lsp.stop_client(vim.lsp.get_clients(), true) end,
+                        function()
+                            vim.lsp.stop_client(vim.lsp.get_clients(), true)
+                        end,
                         desc('Stop LSP Servers'),
                     },
                     ['<leader>lC'] = {
-                        function() vim.print((inspect or vim.inspect)(self.client_names)) end,
+                        function()
+                            vim.print((inspect or vim.inspect)(self.client_names))
+                        end,
                         desc('List Clients'),
                     },
                 },

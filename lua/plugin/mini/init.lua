@@ -101,7 +101,9 @@ Mods.bufremove = {
 Mods.doc = {
     -- Function which extracts part of line used to denote annotation.
     -- For more information see 'Notes' in |MiniDoc.config|.
-    annotation_extractor = function(l) return string.find(l, '^%-%-%-(%S*) ?') end,
+    annotation_extractor = function(l)
+        return string.find(l, '^%-%-%-(%S*) ?')
+    end,
 
     -- Identifier of block annotation lines until first captured identifier
     default_section_id = '@text',

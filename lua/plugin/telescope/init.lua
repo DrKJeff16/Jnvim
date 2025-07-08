@@ -118,7 +118,9 @@ local Opts = {
 
             user_pickers = {
                 'todo-comments',
-                function() vim.cmd('TodoTelescope theme=cursor') end,
+                function()
+                    vim.cmd('TodoTelescope theme=cursor')
+                end,
             },
         },
         pickers = { theme = 'ivy' },
@@ -194,7 +196,12 @@ local Keys = {
     ['<leader><C-t>b'] = { group = '+Builtins' },
     ['<leader><C-t>e'] = { group = '+Extensions' },
 
-    ['<leader><leader>'] = { function() vim.cmd('Telescope') end, desc('Default Telescope Picker') },
+    ['<leader><leader>'] = {
+        function()
+            vim.cmd('Telescope')
+        end,
+        desc('Default Telescope Picker'),
+    },
 
     ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
     ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
@@ -348,11 +355,15 @@ local known_exts = {
                 ['<leader><C-t>en'] = { group = '+Noice' },
 
                 ['<leader><C-t>enl'] = {
-                    function() require('noice').cmd('last') end,
+                    function()
+                        require('noice').cmd('last')
+                    end,
                     desc('NoiceLast'),
                 },
                 ['<leader><C-t>enh'] = {
-                    function() require('noice').cmd('history') end,
+                    function()
+                        require('noice').cmd('history')
+                    end,
                     desc('NoiceHistory'),
                 },
             }

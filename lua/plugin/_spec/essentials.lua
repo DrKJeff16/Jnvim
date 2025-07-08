@@ -47,7 +47,9 @@ local Essentials = {
         'vhyrro/luarocks.nvim',
         lazy = false,
         version = false,
-        init = function() set_tgc(true) end,
+        init = function()
+            set_tgc(true)
+        end,
         config = source('plugin.luarocks'),
         enabled = luarocks_check() and not Termux:validate(),
     },
@@ -55,7 +57,9 @@ local Essentials = {
         'echasnovski/mini.nvim',
         lazy = false,
         version = false,
-        init = function() set_tgc(true) end,
+        init = function()
+            set_tgc(true)
+        end,
         config = source('plugin.mini'),
         cond = vim_has('nvim-0.9'),
     },
@@ -83,7 +87,9 @@ local Essentials = {
         lazy = false,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
-        init = function() set_tgc(true) end,
+        init = function()
+            set_tgc(true)
+        end,
         config = source('plugin.notify'),
         enabled = not in_console(),
     },

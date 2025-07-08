@@ -45,7 +45,9 @@ function CfgUtil.flag_installed(name)
         flag = 'installed_' .. name
     end
 
-    return function() vim.g[flag] = 1 end
+    return function()
+        vim.g[flag] = 1
+    end
 end
 
 --- Set the global condition for a later submodule call
@@ -98,7 +100,9 @@ end
 ---@param mod_str string
 ---@return fun()
 function CfgUtil.source(mod_str)
-    return function() exists(mod_str, true) end
+    return function()
+        exists(mod_str, true)
+    end
 end
 
 --- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
@@ -147,10 +151,18 @@ function CfgUtil.key_variant(cmd)
     local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
     local FUNCS = {
-        ed = function() vim.cmd.ed(fpath) end,
-        tabnew = function() vim.cmd.tabnew(fpath) end,
-        split = function() vim.cmd.split(fpath) end,
-        vsplit = function() vim.cmd.vsplit(fpath) end,
+        ed = function()
+            vim.cmd.ed(fpath)
+        end,
+        tabnew = function()
+            vim.cmd.tabnew(fpath)
+        end,
+        split = function()
+            vim.cmd.split(fpath)
+        end,
+        vsplit = function()
+            vim.cmd.vsplit(fpath)
+        end,
     }
 
     return FUNCS[cmd]

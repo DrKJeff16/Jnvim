@@ -178,10 +178,14 @@ Keymaps:setup({ n = Keys })
 local M = {}
 
 ---@return table|CscMod|fun(color?: string, ...)
-function M.colorschemes() return require('plugin.colorschemes') end
+function M.colorschemes()
+    return require('plugin.colorschemes')
+end
 
 ---@return table|Lsp.Server|fun()
-function M.lsp() return require('plugin.lsp') end
+function M.lsp()
+    return require('plugin.lsp')
+end
 
 User:register_plugin('config.lazy', 1) -- Always put it on first place
 

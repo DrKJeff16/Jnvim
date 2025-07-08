@@ -23,7 +23,9 @@ local TokyoNight = {
 }
 
 ---@return boolean
-function TokyoNight.valid() return exists('tokyonight') end
+function TokyoNight.valid()
+    return exists('tokyonight')
+end
 
 ---@param self TNSubMod
 ---@param variant? TNSubMod.Variant
