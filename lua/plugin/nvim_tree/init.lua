@@ -450,7 +450,7 @@ Tree.setup({
     },
 
     update_focused_file = {
-        enable = false,
+        enable = true,
         update_root = {
             enable = true,
         },
@@ -460,7 +460,7 @@ Tree.setup({
     actions = {
         use_system_clipboard = true,
         change_dir = {
-            enable = false,
+            enable = true,
             global = false,
             restrict_above_cwd = true,
         },

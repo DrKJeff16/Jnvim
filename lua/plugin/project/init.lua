@@ -74,7 +74,7 @@ Project.setup({
     -- * global (default)
     -- * tab
     -- * win
-    scope_chdir = 'tab',
+    scope_chdir = 'global',
 
     allow_different_owners = true,
 
