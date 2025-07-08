@@ -172,8 +172,6 @@ end
 
 local S = Server.new()
 
-_G.CLIENT_CONFS = vim.deepcopy(S.Clients)
-
 User:register_plugin('plugin.lsp')
 
 return S
