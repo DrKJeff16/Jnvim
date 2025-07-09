@@ -8,17 +8,17 @@ _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
 local Keymaps = require('config.keymaps') ---@see Config.Keymaps
+local Neovide = require('config.neovide') ---@see Config.Neovide
 local User = require('user_api') ---@see UserAPI User API
+local Check = require('user_api.check') ---@see User.Check Checking utilities
+local Util = require('user_api.util') ---@see User.Util General utilities
+local Opts = require('user_api.opts') ---@see User.Opts Option setting
+local Commands = require('user_api.commands') ---@see User.Commands User command generation (**WIP**)
+local Distro = require('user_api.distro') ---@see User.Distro Platform-specific optimizations (**WIP**)
 
-local Check = User.check ---@see User.Check Checking utilities
-local Util = User.util ---@see User.Util General utilities
-local Opts = User.opts ---@see User.Opts Option setting
-local Commands = User.commands ---@see User.Commands User command generation (**WIP**)
-local Distro = User.distro ---@see User.Distro Platform-specific optimizations (**WIP**)
-
+local desc = require('user_api.maps.kmap').desc ---@see User.Maps.Keymap.desc
 local in_console = Check.in_console ---@see User.Check.in_console
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
-local desc = User.maps.kmap.desc ---@see User.Maps.Keymap.desc
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 _G.in_console = require('user_api.check').in_console
@@ -187,6 +187,8 @@ Commands:setup()
 
 -- Mappings related specifically to `user_api`
 User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
+
+Neovide:setup({}, false, true)
 
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
