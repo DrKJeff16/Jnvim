@@ -470,7 +470,7 @@ Tree.setup({
         change_dir = {
             enable = true,
             global = false,
-            restrict_above_cwd = true,
+            restrict_above_cwd = false,
         },
 
         open_file = {
@@ -656,7 +656,7 @@ Tree.setup({
 
 -- Auto-open file after creation
 Api.events.subscribe(Api.events.Event.FileCreated, function(file)
-    vim.cmd('edit ' .. vim.fn.fnameescape(file.fname))
+    vim.cmd.edit(vim.fn.fnameescape(file.fname))
 end)
 
 ---@type AuDict
