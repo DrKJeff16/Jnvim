@@ -5,22 +5,25 @@
 ---@type KeyMapOpts
 local O = {}
 
----@param T? User.Maps.Keymap.Opts|table
----@return KeyMapOpts|table
-function O.new(T)
-    T = require('user_api.check.value').is_tbl(T) and T or {}
-
-    return setmetatable(T, { __index = O })
-end
-
 ---@param self KeyMapOpts
 ---@param T table|KeyMapOpts
 function O:add(T)
+    local is_str = require('user_api.check.value').is_str
+
     for k, v in next, T do
-        if require('user_api.check.value').is_str(k) then
+        if is_str(k) then
             self[T] = v
         end
     end
+end
+
+---@param T? User.Maps.Keymap.Opts|table
+---@return KeyMapOpts|table
+function O.new(T)
+    local is_tbl = require('user_api.check.value').is_tbl
+    T = is_tbl(T) and T or {}
+
+    return setmetatable(T, { __index = O })
 end
 
 ---@param mode MapModes
@@ -45,7 +48,6 @@ local function variant(mode)
 end
 
 ---@type User.Maps.Keymap
----@diagnostic disable-next-line:missing-fields
 local Kmap = {}
 
 ---@param msg? string|'Unnamed Key'
