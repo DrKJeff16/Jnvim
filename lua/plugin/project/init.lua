@@ -24,7 +24,7 @@ Project.setup({
     -- Methods of detecting the root directory. **"lsp"** uses the native neovim
     -- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
     -- order matters: if one is not detected, the other is used as fallback. You
-    -- can also delete or rearangne the detection methods
+    -- can also delete or rearrange the detection methods
     detection_methods = { 'lsp', 'pattern' },
 
     -- All the patterns used to detect root dir, when **"pattern"** is in
@@ -74,7 +74,7 @@ Project.setup({
     -- * global (default)
     -- * tab
     -- * win
-    scope_chdir = 'global',
+    scope_chdir = 'tab',
 
     allow_different_owners = true,
 
