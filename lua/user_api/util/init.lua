@@ -9,6 +9,8 @@ local in_tbl = vim.tbl_contains
 
 local ERROR = vim.log.levels.ERROR
 
+local augroup = vim.api.nvim_create_augroup
+
 ---@type User.Util
 local Util = {}
 
@@ -319,7 +321,7 @@ function Util:assoc()
     local au_repeated_events = self.au.au_repeated_events
     local ft_set = self.ft_set
 
-    local group = vim.api.nvim_create_augroup('UserAssocs', { clear = false })
+    local group = augroup('UserAssocs', { clear = true })
 
     ---@type AuRepeatEvents[]
     local AUS = {
@@ -329,6 +331,13 @@ function Util:assoc()
                 {
                     group = group,
                     pattern = '.spacemacs',
+                    callback = function(ev)
+                        ft_set('lisp', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = '*.el',
                     callback = function(ev)
                         ft_set('lisp', ev.buf)()
                     end,
@@ -355,8 +364,8 @@ function Util:assoc()
                 {
                     group = group,
                     callback = function(args)
-                        local executable = require('user_api.check.exists').executable
                         local Keymaps = require('config.keymaps')
+                        local executable = require('user_api.check.exists').executable
                         local desc = require('user_api.maps.kmap').desc
 
                         local buf = args.buf
