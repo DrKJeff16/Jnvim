@@ -79,6 +79,11 @@ local Editing = {
         version = false,
         config = source('plugin.zen_mode'),
     },
+    {
+        'julienvincent/nvim-paredit',
+        version = false,
+        config = source('plugin.paredit'),
+    },
 }
 
 return Editing
