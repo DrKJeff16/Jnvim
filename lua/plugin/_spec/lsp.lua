@@ -17,10 +17,9 @@ local LSP = {
         enabled = vim_has('nvim-0.11'), --- Constraint specified in the repo
     },
     {
-        'b0o/SchemaStore',
         lazy = true,
+        'b0o/SchemaStore.nvim',
         version = false,
-        cond = executable('vscode-json-language-server'),
     },
     --- Essential for Nvim Lua files
     {

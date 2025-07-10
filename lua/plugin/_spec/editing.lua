@@ -1,13 +1,11 @@
 ---@module 'user_api.types.lazy'
 
 local CfgUtil = require('config.util')
-local User = require('user_api')
-local Check = User.check
+local Check = require('user_api.check')
 
 local source = CfgUtil.source
 local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
-local is_root = Check.is_root
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
@@ -45,9 +43,10 @@ local Editing = {
 
     {
         'tpope/vim-endwise',
-        event = 'VeryLazy',
+        lazy = false,
         version = false,
     },
+
     --- TODO COMMENTS
     {
         'folke/todo-comments.nvim',
@@ -59,7 +58,7 @@ local Editing = {
         },
         init = set_tgc(),
         config = source('plugin.todo_comments'),
-        cond = executable('rg') and not in_console(),
+        cond = executable('rg'),
     },
     {
         'windwp/nvim-autopairs',
@@ -190,7 +189,6 @@ local Editing = {
         event = 'VeryLazy',
         version = false,
         config = source('plugin.zen_mode'),
-        cond = not is_root(),
     },
 }
 
