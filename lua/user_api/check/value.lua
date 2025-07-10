@@ -2,6 +2,9 @@
 
 ---@module 'user_api.types.user.check'
 
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
+
 local tbl_isempty = vim.tbl_isempty
 
 ---@type User.Check.Value
@@ -44,7 +47,7 @@ function Value.is_nil(var, multiple)
         if v ~= nil then
             vim.notify(
                 '(user_api.check.value.is_nil): Input is not a table (`multiple` is true)',
-                vim.log.levels.WARN
+                WARN
             )
             return false
         end
@@ -76,10 +79,7 @@ local function type_fun(t)
     end
 
     if ret then
-        error(
-            '(user_api.check.value:type_fun): Invalid function type `' .. t .. '`',
-            vim.log.levels.ERROR
-        )
+        error('(user_api.check.value:type_fun): Invalid function type `' .. t .. '`', ERROR)
     end
 
     return function(var, multiple)
@@ -101,7 +101,7 @@ local function type_fun(t)
                     '(user_api.check.value.'
                         .. name
                         .. '): Input is not a table (`multiple` is true)',
-                    vim.log.levels.WARN
+                    WARN
                 )
                 return false
             end
@@ -232,10 +232,7 @@ function Value.is_int(var, multiple)
     end
 
     if not is_tbl(var) then
-        vim.notify(
-            '(user_api.check.value.is_int): Input is not a table (`multiple` is true)',
-            vim.log.levels.WARN
-        )
+        vim.notify('(user_api.check.value.is_int): Input is not a table (`multiple` is true)', WARN)
         return false
     end
 
@@ -301,7 +298,7 @@ function Value.empty(v, multiple)
         if tbl_isempty(v) then
             vim.notify(
                 '(user_api.check.value.empty): No values to check despite `multiple` being `true`',
-                vim.log.levels.WARN
+                WARN
             )
             return true
         end
@@ -316,11 +313,61 @@ function Value.empty(v, multiple)
         return false
     end
 
-    vim.notify(
-        '(user_api.check.value.empty): Value is neither a table, string nor a number',
-        vim.log.levels.WARN
-    )
+    vim.notify('(user_api.check.value.empty): Value is neither a table, string nor a number', WARN)
     return true
+end
+
+---@param num number
+---@param low number
+---@param high number
+---@param eq? EqTbl
+---@return boolean
+function Value.num_range(num, low, high, eq)
+    if not Value.is_num({ num, low, high }) then
+        error('(user_api.check.value.num_range): One argument is not a number', ERROR)
+    end
+
+    if eq == nil or tbl_isempty(eq) then
+        eq = { low = true, high = true }
+    elseif not Value.is_bool(eq.high) then
+        eq.high = true
+    elseif not Value.is_bool(eq.low) then
+        eq.low = true
+    end
+
+    if low > high then
+        low, high = high, low
+    end
+
+    local COMPS = {
+        low_no_high = function()
+            return num >= low and num < high
+        end,
+        high_no_low = function()
+            return num > low and num <= high
+        end,
+        high_low = function()
+            return num >= low and num <= high
+        end,
+        none = function()
+            return num > low and num < high
+        end,
+    }
+
+    ---@type fun(): boolean
+    local func
+
+    if eq.high and eq.low then
+        func = COMPS.high_low
+    elseif eq.high and not eq.low then
+        func = COMPS.high_no_low
+    elseif not eq.high and eq.low then
+        func = COMPS.low_no_high
+    else
+        func = COMPS.none
+    end
+
+    return func()
 end
 
 ---@param field string|integer|(string|integer)[]
@@ -337,7 +384,7 @@ function Value.fields(field, T)
 
         vim.notify(
             '(user_api.check.value.fields): Cannot look up a field on type: `' .. t_t .. '`',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -345,7 +392,7 @@ function Value.fields(field, T)
     if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
         vim.notify(
             '(user_api.check.value.fields): Field type `' .. type(T) .. '` is not parseable',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -377,7 +424,7 @@ function Value.tbl_values(values, T, return_keys)
     if not is_tbl(values) or empty(values) then
         vim.notify(
             '(user_api.check.value.tbl_values): Value argument is either not a table or an empty one',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -385,7 +432,7 @@ function Value.tbl_values(values, T, return_keys)
     if not is_tbl(T) or empty(T) then
         vim.notify(
             '(user_api.check.value.tbl_values): Table to check is either not a table or an empty one',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -444,7 +491,7 @@ function Value.single_type_tbl(type_str, T)
     if not is_str(type_str) then
         vim.notify(
             '(user_api.check.value.single_type_tbl): You need to define a type as a string',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
@@ -452,16 +499,13 @@ function Value.single_type_tbl(type_str, T)
     if not vim.tbl_contains(ALLOWED_TYPES, type_str) then
         vim.notify(
             '(user_api.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type',
-            vim.log.levels.ERROR
+            ERROR
         )
         return false
     end
 
     if not is_tbl(T) or empty(T) then
-        vim.notify(
-            '(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE',
-            vim.log.levels.ERROR
-        )
+        vim.notify('(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE', ERROR)
         return false
     end
 

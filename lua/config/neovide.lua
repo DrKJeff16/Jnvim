@@ -14,12 +14,14 @@
 ---@class Config.Neovide
 
 local User = require('user_api')
-local Check = User.check
+local Check = require('user_api.check')
 
+local executable = Check.exists.executable
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 local is_num = Check.value.is_num
 local is_bool = Check.value.is_bool
+local num_range = Check.value.num_range
 
 local INFO = vim.log.levels.INFO
 
@@ -37,112 +39,125 @@ Neovide.g_opts = {}
 Neovide.active = false
 
 ---@type Config.Neovide.Opts
-Neovide.default_opts = {}
+Neovide.default_opts = {
+    g = {
+        theme = 'auto',
 
-Neovide.default_opts.g = {
-    theme = 'auto',
+        refresh_rate = 60,
+        refresh_rate_idle = 60,
 
-    refresh_rate = 60,
-    refresh_rate_idle = 30,
+        no_idle = true,
 
-    no_idle = true,
+        confirm_quit = vim.opt.confirm:get(),
 
-    confirm_quit = vim.o.confirm,
+        fullscreen = false,
 
-    fullscreen = false,
+        cursor = {
+            hack = true,
+            animation_length = 0.0,
+            short_animation_length = 0.0,
 
-    cursor = {
-        hack = true,
-        animation_length = 0.03,
-        short_animation_length = 0.01,
+            trail_size = 1.0,
 
-        trail_size = 1.0,
+            antialiasing = true,
 
-        antialiasing = true,
+            smooth = {
+                blink = true,
+            },
 
-        smooth = {
-            blink = true,
+            animate = {
+                in_insert_mode = true,
+                command_line = true,
+            },
         },
 
-        animate = {
-            in_insert_mode = false,
-            command_line = false,
+        underline = {
+            stroke_scale = 1.0,
+        },
+
+        experimental = {
+            layer_grouping = false,
+        },
+
+        text = {
+            contrast = 0.5,
+            gamma = 0.0,
+        },
+
+        scale_factor = 1.0,
+
+        show_border = false,
+
+        hide_mouse_when_typing = false,
+
+        position = {
+            animation = {
+                length = 0.15,
+            },
+        },
+
+        scroll = {
+            animation = {
+                length = 0.00,
+                far_lines = vim.opt.scrolloff:get(),
+            },
+        },
+
+        padding = {
+            top = 0,
+            bottom = 0,
+            left = 0,
+            right = 0,
+        },
+
+        floating = {
+            blur_amount_x = 2.0,
+            blur_amount_y = 2.0,
+
+            shadow = true,
+            z_height = 50,
+
+            corner_radius = 0.2,
+        },
+
+        light = {
+            angle_degrees = 45,
+            radius = 5,
         },
     },
 
-    underline = {
-        stroke_scale = 1.0,
+    ---@type Config.Neovide.Opts.O
+    o = {
+        guifont = 'FiraCode Nerd Font Mono:h19',
     },
 
-    experimental = {
-        layer_grouping = false,
-    },
-
-    text = {
-        contrast = 0.5,
-        gamma = 0.0,
-    },
-
-    scale_factor = 1.0,
-
-    show_border = false,
-
-    hide_mouse_when_typing = false,
-
-    position = {
-        animation = {
-            length = 0.03,
-        },
-    },
-
-    scroll = {
-        animation = {
-            length = 0.03,
-            far_lines = vim.o.scrolloff,
-        },
-    },
-
-    padding = {
-        top = 0,
-        bottom = 0,
-        left = 0,
-        right = 0,
-    },
-
-    floating = {
-        blur_amount_x = 2.0,
-        blur_amount_y = 2.0,
-
-        shadow = true,
-        z_height = 10,
-
-        corner_radius = 0.4,
-    },
-
-    light = {
-        angle_degrees = 45,
-        radius = 5,
+    ---@type Config.Neovide.Opts.Opt
+    opt = {
+        linespace = 0,
     },
 }
 
----@type Config.Neovide.Opts.O
-Neovide.default_opts.o = {
-    guifont = 'FiraCode Nerd Font Mono:h19',
-}
+---@return boolean
+function Neovide:check()
+    if executable('neovide') and vim.g.neovide then
+        self.active = true
+    end
 
----@type Config.Neovide.Opts.Opt
-Neovide.default_opts.opt = {
-    linespace = 0,
-}
+    return self.active
+end
 
 ---@param opacity? number
 ---@param transparency? number
 ---@param bg? string
 function Neovide:set_transparency(opacity, transparency, bg)
-    if not (is_num(opacity) and opacity >= 0.0 and opacity <= 1.0) then
+    if not (is_num(opacity) and num_range(opacity, 0.0, 1.0, { high = true, low = true })) then
         opacity = 0.85
     end
-    if not (is_num(transparency) and transparency >= 0.0 and transparency <= 1.0) then
+    if
+        not (
+            is_num(transparency) and num_range(transparency, 0.0, 1.0, { high = true, low = true })
+        )
+    then
         transparency = 1.0
     end
 
@@ -180,17 +195,36 @@ function Neovide:parse_g_opts(O, pfx)
     end
 end
 
-function Neovide:check()
-    if vim.g.neovide then
-        self.active = true
+function Neovide:setup_keys()
+    if not self:check() then
+        return
     end
+
+    local Keymaps = require('config.keymaps')
+    local desc = require('user_api.maps.kmap').desc
+
+    ---@type AllMaps
+    local Keys = {
+        ['<leader><M-n>'] = { group = '+Neovide' },
+
+        ['<leader><M-n>V'] = {
+            function()
+                vim.notify(string.format('Neovide v%s', vim.g.neovide_version), INFO)
+            end,
+            desc('Show Neovide Version'),
+        },
+    }
+
+    Keymaps({ n = Keys })
 end
 
 ---@param T? table
 ---@param transparent? boolean
 ---@param verbose? boolean
 function Neovide:setup(T, transparent, verbose)
-    self:check()
+    if not self:check() then
+        return
+    end
 
     if not self.active then
         return
@@ -225,6 +259,8 @@ function Neovide:setup(T, transparent, verbose)
     if verbose then
         vim.notify((inspect or vim.inspect)(self.g_opts), INFO)
     end
+
+    self:setup_keys()
 
     User:register_plugin('config.neovide')
 end

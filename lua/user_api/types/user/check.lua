@@ -20,6 +20,10 @@ error('(user_api.types.user.check): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.l
 
 ---@alias ValueFunc fun(var: any, multiple: boolean?): boolean
 
+---@class EqTbl
+---@field low boolean
+---@field high boolean
+
 --- Exitstance checks
 --- ---
 --- ## Description
@@ -186,6 +190,7 @@ error('(user_api.types.user.check): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.l
 --- Checks whether a certain `num` does not exceed table index range
 --- i.e. `num >= 1 and num <= #T`
 ---@field in_tbl_range fun(num: integer, T: table): boolean
+---@field num_range fun(num: number, low: number, high: number, eq: EqTbl?): boolean
 
 ---@class User.Check
 ---@field exists User.Check.Existance
