@@ -188,7 +188,7 @@ Commands:setup()
 -- Mappings related specifically to `user_api`
 User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 
-Neovide:setup({}, false, true)
+Neovide:setup({}, false)
 
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
