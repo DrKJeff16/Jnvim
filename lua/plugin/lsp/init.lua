@@ -122,7 +122,7 @@ function Server.new(O)
                 n = {
                     ['<leader>l'] = { group = '+LSP' },
 
-                    ['<leader>lI'] = {
+                    ['<leader>li'] = {
                         ---@diagnostic disable-next-line
                         function()
                             pcall(vim.cmd, 'LspInfo') ---@diagnostic disable-line
