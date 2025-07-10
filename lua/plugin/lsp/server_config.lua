@@ -4,6 +4,8 @@
 
 local User = require('user_api')
 
+local uv = vim.uv or vim.loop
+
 ---@type Lsp.Server.Clients
 local Clients = {}
 
@@ -36,7 +38,7 @@ Clients.bashls = {
 
 Clients.lua_ls = {
     on_init = function(client)
-        local fs_stat = (vim.uv or vim.loop).fs_stat
+        local fs_stat = uv.fs_stat
 
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
@@ -115,9 +117,8 @@ Clients.lua_ls = {
                 -- Tell the language server how to find Lua modules same way as Neovim
                 -- (see `:h lua-module-load`)
                 path = {
-                    'init.lua',
-                    '?.lua',
                     'lua/?.lua',
+                    'lua/?/?.lua',
                     'lua/?/init.lua',
                 },
             },
@@ -180,11 +181,14 @@ Clients.lua_ls = {
                 fileEncoding = 'utf8',
                 pathStrict = false,
                 unicodeName = false,
+                -- Tell the language server which version of Lua you're using (most
+                -- likely LuaJIT in the case of Neovim)
                 version = 'LuaJIT',
+                -- Tell the language server how to find Lua modules same way as Neovim
+                -- (see `:h lua-module-load`)
                 path = {
-                    'init.lua',
-                    '?.lua',
                     'lua/?.lua',
+                    'lua/?/?.lua',
                     'lua/?/init.lua',
                 },
             },
@@ -211,6 +215,8 @@ Clients.lua_ls = {
                 library = {
                     -- vim.env.VIMRUNTIME,
                     vim.api.nvim_get_runtime_file('', true),
+                    -- Depending on the usage, you might want to add additional paths
+                    -- here.
                     '${3rd}/luv/library',
                     '${3rd}/busted/library',
                 },
@@ -452,6 +458,19 @@ Clients.css_variables = {
 }
 
 Clients.taplo = {}
+
+Clients.yamlls = {
+    cmd = { 'yaml-language-server', '--stdio' },
+    filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab', 'yaml.helm-values' },
+    root_markers = { '.git' },
+    settings = {
+        redhat = {
+            telemetry = {
+                enabled = false,
+            },
+        },
+    },
+}
 
 _G.CLIENTS = Clients
 
