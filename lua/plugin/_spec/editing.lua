@@ -84,6 +84,11 @@ local Editing = {
         version = false,
         config = source('plugin.paredit'),
     },
+    {
+        '3rd/image.nvim',
+        version = false,
+        config = source('plugin.image'),
+    },
 }
 
 return Editing
