@@ -14,6 +14,8 @@ local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
+local mk_caps = vim.lsp.protocol.make_client_capabilities
+
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds:setup()
@@ -32,8 +34,7 @@ Server.Clients = require('plugin.lsp.server_config')
 function Server.make_capabilities(T)
     T = is_tbl(T) and T or {}
 
-    local caps =
-        vim.tbl_deep_extend('keep', vim.deepcopy(T), vim.lsp.protocol.make_client_capabilities())
+    local caps = vim.tbl_deep_extend('keep', T, mk_caps())
 
     local ok, _ = pcall(require, 'blink.cmp')
     if not ok then
@@ -49,56 +50,40 @@ function Server.make_capabilities(T)
     return caps
 end
 
----@param self Lsp.Server
-function Server:populate()
-    for k, v in next, self.Clients do
-        if not is_tbl(v) then
-            goto continue
-        end
+---@param name string
+---@param client table|vim.lsp.ClientConfig
+---@return table|vim.lsp.ClientConfig client
+function Server.populate(name, client)
+    if type_not_empty('table', client.capabilities) then
+        local old_caps = vim.deepcopy(client.capabilities)
+        local caps = Server.make_capabilities(old_caps)
 
-        ---@type Lsp.Server.Key
-        local key = k
-
-        if not type_not_empty('table', self.Clients[key].capabilities) then
-            self.Clients[key].capabilities = self.make_capabilities()
-        else
-            local old_caps = self.Clients[key].capabilities
-
-            self.Clients[key].capabilities =
-                vim.tbl_deep_extend('keep', old_caps, self.make_capabilities(old_caps))
-        end
-
-        if vim.tbl_contains({ 'html', 'jsonls', 'lua_ls' }, key) then
-            self.Clients[key].capabilities.textDocument.completion.completionItem.snippetSupport =
-                true
-        end
-
-        if exists('schemastore') then
-            local ss = require('schemastore')
-
-            if key == 'jsonls' then
-                self.Clients[key].settings =
-                    vim.tbl_deep_extend('force', self.Clients[key].settings or {}, {
-                        json = {
-                            schemas = ss.json.schemas(),
-                            validate = { enable = true },
-                        },
-                    })
-            end
-
-            if key == 'yamlls' then
-                self.Clients[k].settings =
-                    vim.tbl_deep_extend('force', self.Clients[key].settings or {}, {
-                        yaml = {
-                            schemaStore = { enable = false, url = '' },
-                            schemas = ss.yaml.schemas(),
-                        },
-                    })
-            end
-        end
-
-        ::continue::
+        client.capabilities = vim.tbl_deep_extend('keep', old_caps, caps)
+    else
+        client.capabilities = Server.make_capabilities()
     end
+
+    client.capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+    if exists('schemastore') then
+        local ss = require('schemastore')
+
+        if name == 'jsonls' then
+            client.settings = is_tbl(client.settings) and client.settings or { json = {} }
+            client.settings.json = is_tbl(client.settings.json) and client.settings.json or {}
+            client.settings.json.schemas = ss.json.schemas()
+            client.settings.json.validate = { enable = true }
+        end
+
+        if name == 'yamlls' then
+            client.settings = is_tbl(client.settings) and client.settings or { yaml = {} }
+            client.settings.yaml = is_tbl(client.settings.yaml) and client.settings.yaml or {}
+            client.settings.yaml.schemaStore = { enable = false, url = '' }
+            client.settings.yaml.schemas = ss.yaml.schemas()
+        end
+    end
+
+    return client
 end
 
 ---@param O? table
@@ -110,8 +95,6 @@ function Server.new(O)
 
         ---@param self Lsp.Server
         __call = function(self)
-            self:populate()
-
             vim.lsp.config('*', {
                 capabilities = self.make_capabilities(),
             })
@@ -126,7 +109,9 @@ function Server.new(O)
             })
 
             for client, v in next, self.Clients do
-                vim.lsp.config(client, v)
+                local new_client = self.populate(client, v)
+
+                vim.lsp.config(client, new_client)
                 vim.lsp.enable(client)
 
                 table.insert(self.client_names, client)
@@ -140,7 +125,7 @@ function Server.new(O)
                     ['<leader>lI'] = {
                         ---@diagnostic disable-next-line
                         function()
-                            pcall(vim.cmd, 'LspInfo')
+                            pcall(vim.cmd, 'LspInfo') ---@diagnostic disable-line
                         end,
                         desc('Get LSP Config Info'),
                     },
@@ -161,9 +146,8 @@ function Server.new(O)
                 v = { ['<leader>l'] = { group = '+LSP' } },
             }
 
-            ---@type Config.Keymaps
             local Keymaps = require('config.keymaps')
-            Keymaps:setup(Keys)
+            Keymaps(Keys)
 
             ---@type Lsp.SubMods.Autocmd
             local Autocmd = require('plugin.lsp.autocmd')

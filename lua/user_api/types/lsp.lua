@@ -96,7 +96,7 @@ error('(user_api.types.lsp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.E
 ---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
 ---@field client_names (string|Lsp.Server.Key)[]|table
 ---@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities|table
----@field populate fun(self: Lsp.Server)
+---@field populate fun(name: string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
 ---@field new fun(O: table?): table|Lsp.Server|fun()
 
 ---@class Lsp.SubMods
