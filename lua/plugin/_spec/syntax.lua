@@ -6,6 +6,7 @@ local Check = User.check
 
 local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
+local in_console = Check.in_console
 local executable = Check.exists.executable
 
 ---@type LazySpecs
@@ -30,6 +31,7 @@ local Syntax = {
         ft = { 'org' },
         version = false,
         config = source('plugin.orgmode'),
+        cond = not in_console(),
     },
 }
 

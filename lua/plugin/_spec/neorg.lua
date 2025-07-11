@@ -4,6 +4,7 @@ local CfgUtil = require('config.util')
 local Termux = require('user_api.distro.termux')
 
 local source = CfgUtil.source
+local in_console = require('user_api.check').in_console
 
 ---@type LazySpecs
 local Neorg = {
@@ -12,7 +13,7 @@ local Neorg = {
         ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
-        cond = not Termux:validate(),
+        cond = not (Termux:validate() or in_console()),
     },
 }
 

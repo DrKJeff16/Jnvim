@@ -12,27 +12,10 @@ local flag_installed = CfgUtil.flag_installed
 local Utils = {
     {
         'vim-scripts/UTL.vim',
-        lazy = false,
+        event = 'VeryLazy',
         version = false,
         init = flag_installed('utl'),
     },
-    -- --- Makefile viewer
-    -- {
-    --     'Zeioth/makeit.nvim',
-    --     ft = 'make',
-    --     version = false,
-    --     dependencies = { 'stevearc/overseer.nvim' },
-    --     opts = {},
-    --     cond = not in_console(),
-    -- },
-    -- --- The task runner used for `makeit.nvim`
-    -- {
-    --     'stevearc/overseer.nvim',
-    --     lazy = true,
-    --     version = false,
-    --     config = source('plugin.overseer'),
-    --     cond = not in_console(),
-    -- },
     --- Docs viewer
     {
         'Zeioth/dooku.nvim',

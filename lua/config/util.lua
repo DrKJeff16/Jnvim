@@ -171,7 +171,7 @@ end
 ---@return boolean
 function CfgUtil.has_tgc()
     ---@diagnostic disable-next-line
-    return (vim_exists('+termguicolors') and vim.o.termguicolors)
+    return (not in_console()) and (vim_exists('+termguicolors') and vim.o.termguicolors) or false
 end
 
 User:register_plugin('config.util')

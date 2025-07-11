@@ -12,6 +12,7 @@ local executable = Check.exists.executable
 local Completion = {
     {
         'saghen/blink.cmp',
+        lazy = false,
         version = false,
         dependencies = {
             'L3MON4D3/LuaSnip',

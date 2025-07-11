@@ -14,11 +14,11 @@ local LSP = {
     {
         'neovim/nvim-lspconfig',
         version = false,
-        enabled = vim_has('nvim-0.11'), --- Constraint specified in the repo
+        cond = vim_has('nvim-0.11'), --- Constraint specified in the repo
     },
     {
-        lazy = true,
         'b0o/SchemaStore.nvim',
+        lazy = true,
         version = false,
     },
     --- Essential for Nvim Lua files

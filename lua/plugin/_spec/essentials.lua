@@ -20,6 +20,7 @@ local Essentials = {
         lazy = false,
         priority = 1000,
         config = source('plugin.snacks'),
+        cond = not in_console(),
         enabled = false,
     },
     {
@@ -39,6 +40,7 @@ local Essentials = {
     {
         'dstein64/vim-startuptime',
         lazy = false,
+        priority = 1000,
         version = false,
         init = flag_installed('startuptime'),
         config = source('plugin.startuptime'),
@@ -51,14 +53,14 @@ local Essentials = {
             set_tgc(true)
         end,
         config = source('plugin.luarocks'),
-        enabled = luarocks_check() and not Termux:validate(),
+        cond = luarocks_check() and not Termux:validate(),
     },
     {
         'echasnovski/mini.nvim',
         lazy = false,
         version = false,
         init = function()
-            set_tgc(true)
+            set_tgc()
         end,
         config = source('plugin.mini'),
         cond = vim_has('nvim-0.9'),
@@ -68,7 +70,7 @@ local Essentials = {
         lazy = false,
         version = false,
         init = function()
-            --- NOTE: Required for `scope`
+            -- NOTE: Required for `scope`
             vim.opt.sessionoptions = {
                 'buffers',
                 'tabpages',
@@ -88,23 +90,23 @@ local Essentials = {
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = function()
-            set_tgc(true)
+            set_tgc()
         end,
         config = source('plugin.notify'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
         version = false,
         config = source('plugin.web_devicons'),
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'equalsraf/neovim-gui-shim',
         lazy = true,
         version = false,
-        enabled = not in_console(),
+        cond = not in_console(),
     },
     {
         'gennaro-tedesco/nvim-possession',

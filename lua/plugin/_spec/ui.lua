@@ -5,7 +5,6 @@ local User = require('user_api')
 local Check = User.check
 
 local source = CfgUtil.source
-local set_tgc = CfgUtil.set_tgc
 local in_console = Check.in_console
 
 ---@type LazySpecs
@@ -25,7 +24,6 @@ local UI = {
             vim.opt.ls = 2
             vim.opt.stal = 2
             vim.opt.showmode = false
-            set_tgc()
         end,
         config = source('plugin.lualine'),
         cond = not in_console(),
@@ -41,7 +39,6 @@ local UI = {
         },
         init = function()
             vim.opt.stal = 2
-            set_tgc()
         end,
         config = source('plugin.bufferline'),
         cond = not in_console(),
@@ -52,11 +49,13 @@ local UI = {
         main = 'ibl',
         version = false,
         config = source('plugin.ibl'),
+        cond = not in_console(),
     },
     {
         'HiPhish/rainbow-delimiters.nvim',
         version = false,
         config = source('plugin.rainbow_delimiters'),
+        cond = not in_console(),
         enabled = false,
     },
     --- File Tree
@@ -70,8 +69,6 @@ local UI = {
             --- Disable `netrw`
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
-
-            set_tgc()
         end,
         config = source('plugin.nvim_tree'),
     },
@@ -88,8 +85,6 @@ local UI = {
             --- Disable `netrw`
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
-
-            set_tgc()
         end,
         config = source('plugin.neo_tree'),
         cond = not in_console(),
@@ -116,16 +111,10 @@ local UI = {
         dependencies = {
             'MunifTanjim/nui.nvim',
             'rcarriga/nvim-notify',
-            'mini.nvim',
+            'echasnovski/mini.nvim',
         },
         config = source('plugin.noice'),
         cond = not in_console(),
-    },
-    {
-        'lukas-reineke/headlines.nvim',
-        version = false,
-        dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        config = true,
     },
 }
 

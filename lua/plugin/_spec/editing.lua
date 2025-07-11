@@ -4,7 +4,6 @@ local CfgUtil = require('config.util')
 local Check = require('user_api.check')
 
 local source = CfgUtil.source
-local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local in_console = Check.in_console
@@ -29,6 +28,7 @@ local Editing = {
         lazy = true,
         version = false,
         config = source('plugin.twilight'),
+        cond = not in_console(),
     },
     {
         'numToStr/Comment.nvim',
@@ -56,9 +56,9 @@ local Editing = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-lua/plenary.nvim',
         },
-        init = set_tgc(),
+        init = CfgUtil.set_tgc(),
         config = source('plugin.todo_comments'),
-        cond = executable('rg'),
+        cond = executable('rg') and not in_console(),
     },
     {
         'windwp/nvim-autopairs',
@@ -69,6 +69,7 @@ local Editing = {
     },
     {
         'vim-scripts/a.vim',
+        event = 'VeryLazy',
         version = false,
         init = flag_installed('a_vim'),
         config = source('plugin.a_vim'),
@@ -78,6 +79,7 @@ local Editing = {
         event = 'VeryLazy',
         version = false,
         config = source('plugin.zen_mode'),
+        cond = not in_console(),
     },
     {
         'julienvincent/nvim-paredit',
@@ -86,8 +88,18 @@ local Editing = {
     },
     {
         '3rd/image.nvim',
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.image'),
+        cond = not in_console(),
+    },
+    -- TODO: Configure this plugin
+    {
+        'lukas-reineke/headlines.nvim',
+        version = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        config = true,
+        cond = not in_console(),
     },
 }
 

@@ -55,6 +55,7 @@ local Telescope = {
             'akinsho/toggleterm.nvim',
         },
         config = function()
+            -- TODO: Separate this into its own submodule
             require('telescope-makefile').setup({})
 
             require('telescope').load_extension('make')

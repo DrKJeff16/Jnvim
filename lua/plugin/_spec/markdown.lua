@@ -22,7 +22,7 @@ local MD = {
             vim.g.mkdp_filetypes = { 'markdown' }
         end,
         config = source('plugin.markdown.md_preview'),
-        enabled = not (in_console() or is_root()),
+        cond = not (in_console() or is_root()),
     },
     {
         'tadmccorkle/markdown.nvim',
