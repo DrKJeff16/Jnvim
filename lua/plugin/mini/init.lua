@@ -322,10 +322,7 @@ if not exists('todo-comments') then
 end
 
 ---@type AllModeMaps
-local Keys = {
-    n = {},
-    v = {},
-}
+local Keys = {}
 
 for mod, opts in next, Mods do
     src(mod, opts)
@@ -335,37 +332,37 @@ for mod, opts in next, Mods do
     end
 
     if mod == 'map' then
-        Keys.n['<leader>m'] = { group = '+Mini Map' }
-        Keys.n['<leader>mt'] = { group = '+Toggles' }
+        Keys['<leader>m'] = { group = '+Mini Map' }
+        Keys['<leader>mt'] = { group = '+Toggles' }
 
-        Keys.n['<leader>mtt'] = {
+        Keys['<leader>mtt'] = {
             require('mini.map').toggle,
             desc('Toggle Mini Map'),
         }
-        Keys.n['<leader>mts'] = {
+        Keys['<leader>mts'] = {
             require('mini.map').toggle_side,
             desc('Toggle Side'),
         }
-        Keys.n['<leader>mtf'] = {
+        Keys['<leader>mtf'] = {
             require('mini.map').toggle_focus,
             desc('Toggle Focus'),
         }
-        Keys.n['<leader>mo'] = {
+        Keys['<leader>mo'] = {
             require('mini.map').open,
             desc('Open Mini Map'),
         }
-        Keys.n['<leader>md'] = {
+        Keys['<leader>md'] = {
             require('mini.map').close,
             desc('Close Mini Map'),
         }
-        Keys.n['<leader>mr'] = {
+        Keys['<leader>mr'] = {
             require('mini.map').refresh,
             desc('Refresh Mini Map'),
         }
     end
 end
 
-Keymaps:setup(Keys)
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.mini')
 
