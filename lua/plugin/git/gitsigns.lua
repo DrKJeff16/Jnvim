@@ -2,137 +2,126 @@
 
 local User = require('user_api')
 local Check = User.check
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_int = Check.value.is_int
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not executable('git') or not exists('gitsigns') then
     return
 end
-
-User:register_plugin('plugin.git.gitsigns')
 
 local GS = require('gitsigns')
 
 GS.setup({
     ---@param bufnr? integer
     on_attach = function(bufnr)
+        local Keymaps = require('config.keymaps')
+
         bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 
-        ---@type table<MapModes, KeyMapDict>
+        ---@type AllModeMaps
         local Keys = {
             n = {
+                ['<leader>G'] = { group = '+Git' },
+                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
+                ['<leader>Gt'] = { group = '+GitSigns Toggles' },
+
                 -- Navigation
                 ['<leader>Gh]'] = {
                     function()
                         if vim.wo.diff then
                             vim.cmd.normal({ ']c', bang = true })
                         else
-                            GS.nav_hunk('next')
+                            GS.nav_hunk('next') ---@diagnostic disable-line
                         end
                     end,
-                    desc('Next Hunk', true, bufnr, true, true, true),
+                    desc('Next Hunk'),
                 },
                 ['<leader>Gh['] = {
                     function()
                         if vim.wo.diff then
                             vim.cmd.normal({ '[c', bang = true })
                         else
-                            GS.nav_hunk('prev')
+                            GS.nav_hunk('prev') ---@diagnostic disable-line
                         end
                     end,
-                    desc('Previous Hunk', true, bufnr, true, true, true),
+                    desc('Previous Hunk'),
                 },
 
                 -- Actions
                 ['<leader>Ghs'] = {
                     GS.stage_hunk,
-                    desc('Stage Current Hunk', true, bufnr),
+                    desc('Stage Current Hunk'),
                 },
                 ['<leader>Ghr'] = {
                     GS.reset_hunk,
-                    desc('Reset Current Hunk', true, bufnr),
+                    desc('Reset Current Hunk'),
                 },
                 ['<leader>Ghu'] = {
                     GS.stage_hunk,
-                    desc('Undo Hunk Stage', true, bufnr),
+                    desc('Undo Hunk Stage'),
                 },
                 ['<leader>Ghp'] = {
                     GS.preview_hunk,
-                    desc('Preview Current Hunk', true, bufnr),
+                    desc('Preview Current Hunk'),
                 },
                 ['<leader>GhS'] = {
                     GS.stage_buffer,
-                    desc('Stage The Whole Buffer', true, bufnr),
+                    desc('Stage The Whole Buffer'),
                 },
                 ['<leader>GhR'] = {
                     GS.reset_buffer,
-                    desc('Reset The Whole Buffer', true, bufnr),
+                    desc('Reset The Whole Buffer'),
                 },
                 ['<leader>Ghb'] = {
                     function()
                         GS.blame_line({ full = true })
                     end,
-                    desc('Blame Current Line', true, bufnr),
+                    desc('Blame Current Line'),
                 },
                 ['<leader>Ghd'] = {
                     GS.diffthis,
-                    desc('Diff Against Index', true, bufnr),
+                    desc('Diff Against Index'),
                 },
                 ['<leader>GhD'] = {
                     function()
                         GS.diffthis('~')
                     end,
-                    desc('Diff This', true, bufnr),
+                    desc('Diff This'),
                 },
                 ['<leader>Gtb'] = {
                     GS.toggle_current_line_blame,
-                    desc('Toggle Line Blame', true, bufnr),
+                    desc('Toggle Line Blame'),
                 },
                 ['<leader>Gtd'] = {
                     GS.preview_hunk_inline,
-                    desc('Toggle Deleted', true, bufnr),
+                    desc('Toggle Deleted'),
                 },
             },
             v = {
+                ['<leader>G'] = { group = '+Git' },
+                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
+
                 ['<leader>Ghs'] = {
                     function()
                         GS.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
                     end,
-                    desc('Stage Selected Hunks', true, bufnr),
+                    desc('Stage Selected Hunks'),
                 },
                 ['<leader>Ghr'] = {
                     function()
                         GS.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
                     end,
-                    desc('Reset Selected Hunks', true, bufnr),
+                    desc('Reset Selected Hunks'),
                 },
             },
             o = { ['ih'] = { ':<C-U>Gitsigns select_hunk<CR>' } },
             x = { ['ih'] = { ':<C-U>Gitsigns select_hunk<CR>' } },
         }
-        ---@type table<MapModes, RegKeysNamed>
-        local Names = {
-            n = {
-                ['<leader>G'] = { group = '+Git' },
-                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
-                ['<leader>Gt'] = { group = '+GitSigns Toggles' },
-            },
-            v = {
-                ['<leader>G'] = { group = '+Git' },
-                ['<leader>Gh'] = { group = '+GitSigns Hunks' },
-            },
-        }
 
-        if WK.available() then
-            map_dict(Names, 'wk.register', true, nil, bufnr)
-        end
-
-        map_dict(Keys, 'wk.register', true, nil, bufnr)
+        Keymaps(Keys, bufnr)
     end,
 
     ---@type GitSigns
@@ -144,6 +133,8 @@ GS.setup({
         changedelete = { text = '~' },
         untracked = { text = '┆' },
     },
+
+    ---@type GitSigns
     signs_staged = {
         add = { text = '+' },
         change = { text = '┃' },
@@ -162,11 +153,14 @@ GS.setup({
     watch_gitdir = { follow_files = true },
     auto_attach = true,
     attach_to_untracked = true,
-    current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
     current_line_blame_opts = {
         virt_text = true,
-        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 1500,
+
+        ---@type 'eol'|'overlay'|'right_align'
+        virt_text_pos = 'overlay',
+
+        delay = 1250,
         ignore_whitespace = false,
         virt_text_priority = 3,
     },
@@ -183,5 +177,7 @@ GS.setup({
         col = 1,
     },
 })
+
+User:register_plugin('plugin.git.gitsigns')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -1,20 +1,17 @@
+local Keymaps = require('config.keymaps')
 local User = require('user_api')
 local Check = User.check
-local WK = User.maps.wk
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
     return
 end
 
 local au = vim.api.nvim_create_autocmd
-
-local LG_Utils = require('lazygit.utils')
-local LG_Win = require('lazygit.window')
+local augroup = vim.api.nvim_create_augroup
 
 local g_vars = {
     floating_window_winblend = 0,
@@ -40,8 +37,11 @@ for k, v in next, g_vars do
     vim.g['lazygit_' .. k] = v
 end
 
----@type KeyMapDict
+---@type AllMaps
 local Keys = {
+    ['<leader>G'] = { group = '+Git' },
+    ['<leader>Gl'] = { group = '+LazyGit' },
+
     ['<leader>GlC'] = {
         function()
             vim.cmd('LazyGitConfig')
@@ -74,37 +74,35 @@ local Keys = {
     },
 }
 
----@type RegKeysNamed
-local Names = {
-    ['<leader>G'] = { group = '+Git' },
-    ['<leader>Gl'] = { group = '+LazyGit' },
-}
+Keymaps({ n = Keys })
 
-if WK.available() then
-    map_dict(Names, 'wk.register', false, 'n', 0)
-end
-map_dict(Keys, 'wk.register', false, 'n', 0)
+local group = augroup('User.LazyGit', { clear = true })
 
 au({ 'BufEnter', 'WinEnter' }, {
     pattern = '*',
+    group = group,
     callback = function()
         require('lazygit.utils').project_root_dir()
     end,
 })
---[[ au('TermClose', {
+
+au('TermClose', {
     pattern = '*',
-    function()
-        if require('user_api.util').ft_get() ~= 'lazygit' and not vim.v.event['status'] then
+    group = group,
+    callback = function()
+        local ft = require('user_api.util').ft_get()
+
+        if ft ~= 'lazygit' and not vim.v.event['status'] then
             vim.fn.execute('bdelete! ' .. vim.fn.expand('<abuf>'), 'silent!')
         end
     end,
-}) ]]
+})
 
-vim.cmd([[
-" NOTE: added lazygit check to avoid lua error
-" NOTE: added "silent!" to avoid error when FZF terminal window is closed
-au TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
-]])
+-- NOTE: Left this in case of emergency
+---
+-- vim.cmd([[
+-- au TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
+-- ]])
 
 User:register_plugin('plugin.git.lazygit')
 
