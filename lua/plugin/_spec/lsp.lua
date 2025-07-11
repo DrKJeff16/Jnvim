@@ -48,13 +48,6 @@ local LSP = {
         config = source('plugin.lsp.inc_rename'),
         enabled = false,
     },
-    {
-        'lewis6991/hover.nvim',
-        lazy = false,
-        priority = 1000,
-        version = false,
-        config = source('plugin.hover'),
-    },
 }
 
 return LSP

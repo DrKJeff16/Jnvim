@@ -8,6 +8,7 @@ local Check = User.check
 local Au = User.util.au
 local Notify = User.util.notify
 
+local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
@@ -95,14 +96,15 @@ Autocmd.autocommands = {
                     client.server_capabilities.completionProvider.triggerCharacters = chars
                 end
 
-                -- vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                -- vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
-                vim.bo[args.buf].omnifunc = nil
-                vim.bo[args.buf].tagfunc = nil
+                vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+                -- vim.bo[args.buf].omnifunc = nil
+                -- vim.bo[args.buf].tagfunc = nil
 
                 vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
 
-                Keymaps:setup(Autocmd.AUKeys)
+                local AUKeys = Autocmd.AUKeys
+                Keymaps:setup(AUKeys)
 
                 if client.name == 'lua_ls' then
                     require('plugin.lazydev')
@@ -124,11 +126,8 @@ Autocmd.autocommands = {
                     },
                     ['<leader>lSr'] = {
                         function()
-                            local ClientCfg = vim.tbl_deep_extend(
-                                'keep',
-                                _G.CLIENT_CONFS[client.name],
-                                client.config
-                            )
+                            local ClientCfg =
+                                vim.tbl_deep_extend('keep', _G.CLIENTS[client.name], client.config)
 
                             vim.lsp.stop_client(client.id, false)
                             vim.lsp.start(ClientCfg, { bufnr = args.buf })
@@ -138,11 +137,8 @@ Autocmd.autocommands = {
                     },
                     ['<leader>lSS'] = {
                         function()
-                            local ClientCfg = vim.tbl_deep_extend(
-                                'keep',
-                                _G.CLIENT_CONFS[client.name],
-                                client.config
-                            )
+                            local ClientCfg =
+                                vim.tbl_deep_extend('keep', _G.CLIENTS[client.name], client.config)
 
                             vim.lsp.stop_client(client.id, true)
                             vim.lsp.start(ClientCfg, { bufnr = args.buf })
@@ -193,6 +189,7 @@ end
 ---@return table|Lsp.SubMods.Autocmd
 function Autocmd.new(O)
     O = is_nil(O) and O or {}
+
     return setmetatable(O, { __index = Autocmd })
 end
 
