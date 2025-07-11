@@ -7,32 +7,27 @@ local Check = User.check
 local source = CfgUtil.source
 local tel_fzf_build = CfgUtil.tel_fzf_build
 local executable = Check.exists.executable
-local in_console = Check.in_console
 
 ---@type LazySpecs
 local Telescope = {
     {
         'nvim-telescope/telescope.nvim',
-        event = 'VeryLazy',
         version = false,
         dependencies = { 'plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
         config = source('plugin.telescope'),
     },
     {
         'OliverChao/telescope-picker-list.nvim',
-        lazy = true,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
     },
     {
         'nvim-telescope/telescope-file-browser.nvim',
-        lazy = true,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
     },
     {
         'nvim-telescope/telescope-fzf-native.nvim',
-        lazy = true,
         version = false,
         build = tel_fzf_build(),
         dependencies = { 'nvim-telescope/telescope.nvim' },
@@ -41,7 +36,6 @@ local Telescope = {
     -- TODO: Split into its file
     {
         'LukasPietzschmann/telescope-tabs',
-        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
         config = source('plugin.telescope.tabs'),
@@ -67,15 +61,7 @@ local Telescope = {
         ft = 'gitcommit',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-    },
-    --- Project Manager
-    {
-        'DrKJeff16/project.nvim',
-        dev = true,
-        main = 'project_nvim',
-        lazy = false,
-        version = false,
-        config = source('plugin.project'),
+        cond = executable('git'),
     },
 }
 

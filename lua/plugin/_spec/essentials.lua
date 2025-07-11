@@ -95,6 +95,16 @@ local Essentials = {
         config = source('plugin.notify'),
         cond = not in_console(),
     },
+    -- Project Manager
+    {
+        'DrKJeff16/project.nvim',
+        dev = true,
+        main = 'project_nvim',
+        lazy = false,
+        version = false,
+        dependencies = { 'nvim-telescope/telescope.nvim' },
+        config = source('plugin.project'),
+    },
     {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
