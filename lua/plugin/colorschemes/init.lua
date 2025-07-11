@@ -80,11 +80,7 @@ function Colorschemes.new(O)
         __index = Colorschemes,
 
         __newindex = function(self, key, value)
-            if is_int(value) then
-                rawset(self, key, value * value)
-            else
-                rawset(self, key, value)
-            end
+            rawset(self, key, value)
         end,
 
         ---@type fun(self: CscMod, color: string?, ...)
@@ -161,14 +157,34 @@ function Colorschemes.new(O)
             end
 
             assert(type_not_empty('table', valid), 'No valid colorschemes!')
-            Keymaps:setup({ n = CscKeys })
+            Keymaps({ n = CscKeys })
 
-            color = (is_str(color) and vim.tbl_contains(valid, color)) and color or valid[1]
+            if not (is_str(color) and vim.tbl_contains(valid, color)) then
+                color = valid[1]
+            end
 
-            ---@type AllColorSubMods
-            local Selected = self[color]
+            ---@type AllColorSubMods|nil
+            local Selected = nil
 
-            Selected:setup(...)
+            if self[color] ~= nil and self[color].valid() then
+                ---@type AllColorSubMods
+                Selected = self[color]
+
+                Selected:setup(...)
+                return
+            end
+
+            for _, csc in next, valid do
+                if self[csc].valid() then
+                    ---@type AllColorSubMods
+                    Selected = self[csc]
+
+                    Selected:setup()
+                    return
+                end
+            end
+
+            vim.cmd('silent! colorscheme default')
         end,
     })
 end

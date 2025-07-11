@@ -3,12 +3,12 @@
 error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
----@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
----@alias NFoxSubMod.Variant ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
----@alias VSCodeSubMod.Variant ('dark'|'light')
 ---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')
----@alias TNSubMod.Variant ('night'|'moon'|'day')
 ---@alias KanagawaSubMod.Variant ('dragon'|'wave'|'lotus')
+---@alias NFoxSubMod.Variant ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
+---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
+---@alias TNSubMod.Variant ('night'|'moon'|'day')
+---@alias VSCodeSubMod.Variant ('dark'|'light')
 
 ---@class NFoxSubMod.Variants
 ---@field [1] 'carbonfox'
@@ -56,8 +56,9 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 ---@field diagnostics? OD.Diagnostics
 
 --- A loadable color schemes table
----
+--- ---
 --- ## Fields
+---
 --- - `variants`: An optional string array displaying the variants of said colorscheme.
 ---             **NOTE: Need to check if it exists**
 --- - `mod_cmd`: A **protected** string to pass to `vim.cmd`. It **MUST** look like `'colorscheme ...'`
@@ -66,6 +67,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 ---          Otherwise it defaults to `nil`
 ---
 --- If the colorscheme is not a lua plugin, use `vim.g` as a check instead
+--- ---
 ---@class CscSubMod
 ---@field setup fun(self: CscSubMod, variant: string?, transparent: boolean?, override: table?)
 ---@field valid fun(): boolean
@@ -73,6 +75,9 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 ---@field mod_cmd string
 ---@field new fun(O: table?): CscSubMod|table
 
+---@see CscSubMod
+--- A `CscSubMod` variant but for the `tokyonight.nvim` colorscheme
+--- ---
 ---@class TNSubMod: CscSubMod
 ---@field setup fun(self: TNSubMod, variant: TNSubMod.Variant?, transparent: boolean?, override: table?)
 ---@field variants? TNSubMod.Variants
@@ -80,6 +85,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
+--- ---
 ---@class KanagawaSubMod: CscSubMod
 ---@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variant?, transparent: boolean?, override: table|KanagawaConfig?)|nil
 ---@field variants KanagawaSubMod.Variants
@@ -87,6 +93,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `onedark.nvim` colorscheme
+--- ---
 ---@class ODSubMod: CscSubMod
 ---@field setup fun(self: ODSubMod, variant: OD.Variant?, transparent: boolean?, override: table|OD?)
 ---@field new fun(O: table?): ODSubMod|table
@@ -94,6 +101,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `dracula` colorscheme
+--- ---
 ---@class DraculaSubMod: CscSubMod
 ---@field variants DraculaSubMod.Variants
 ---@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variant?, transparent: boolean?, override: table?)
@@ -103,6 +111,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `catppuccin.nvim` colorscheme
+--- ---
 ---@class CpcSubMod: CscSubMod
 ---@field variants CpcSubMod.Variants
 ---@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variant?, transparent: boolean?, override: table|CatppuccinOptions?)
@@ -110,6 +119,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `nightfox.nvim` colorscheme
+--- ---
 ---@class NFoxSubMod: CscSubMod
 ---@field variants NFoxSubMod.Variants
 ---@field setup fun(self: NFoxSubMod, variant: NFoxSubMod.Variant?, transparent: boolean?, override: table?)
@@ -117,6 +127,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 
 ---@see CscSubMod
 --- A `CscSubMod` variant but for the `vscode` colorscheme
+--- ---
 ---@class VSCodeSubMod: CscSubMod
 ---@field variants (VSCodeSubMod.Variant)[]
 ---@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variant?, transparent: boolean?, override: table?)
@@ -129,6 +140,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 ---|DraculaSubMod
 ---|ODSubMod
 ---|NFoxSubMod
+---|TNSubMod
 ---|VSCodeSubMod
 
 ---@alias AllCsc
@@ -166,7 +178,7 @@ error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log
 ---@field space_vim_dark CscSubMod
 ---@field spaceduck CscSubMod
 ---@field spacemacs CscSubMod
----@field tokyonight CscSubMod
+---@field tokyonight TNSubMod
 ---@field vscode CscSubMod
 ---@field new fun(O: table?): CscMod|table|fun(color: string?, ...)
 
