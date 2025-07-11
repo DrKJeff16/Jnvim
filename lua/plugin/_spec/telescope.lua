@@ -33,7 +33,6 @@ local Telescope = {
         dependencies = { 'nvim-telescope/telescope.nvim' },
         cond = executable('fzf'),
     },
-    -- TODO: Split into its file
     {
         'LukasPietzschmann/telescope-tabs',
         version = false,
@@ -48,13 +47,9 @@ local Telescope = {
             'nvim-telescope/telescope.nvim',
             'akinsho/toggleterm.nvim',
         },
-        config = function()
-            -- TODO: Separate this into its own submodule
-            require('telescope-makefile').setup({})
-
-            require('telescope').load_extension('make')
-        end,
-        cond = (executable('make') or executable('mingw32-make')) and not in_console(),
+        -- TODO: Separate this into its own submodule
+        config = source('plugin.telescope.makefile'),
+        cond = executable('make') or executable('mingw32-make'),
     },
     {
         'olacin/telescope-cc.nvim',
