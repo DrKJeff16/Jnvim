@@ -9,11 +9,6 @@ local in_console = Check.in_console
 
 ---@type LazySpecs
 local UI = {
-    {
-        'MunifTanjim/nui.nvim',
-        lazy = true,
-        version = false,
-    },
     --- Statusline
     {
         'nvim-lualine/lualine.nvim',
@@ -34,8 +29,8 @@ local UI = {
         event = 'VeryLazy',
         version = false,
         dependencies = {
-            'nvim-web-devicons',
-            'scope.nvim',
+            'nvim-tree/nvim-web-devicons',
+            'tiagovla/scope.nvim',
         },
         init = function()
             vim.opt.stal = 2

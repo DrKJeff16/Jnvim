@@ -16,14 +16,6 @@ local luarocks_check = CfgUtil.luarocks_check
 ---@type LazySpecs
 local Essentials = {
     {
-        'folke/snacks.nvim',
-        lazy = false,
-        priority = 1000,
-        config = source('plugin.snacks'),
-        cond = not in_console(),
-        enabled = false,
-    },
-    {
         'folke/which-key.nvim',
         main = 'which-key',
         event = 'VeryLazy',
@@ -56,12 +48,12 @@ local Essentials = {
         cond = luarocks_check() and not Termux:validate(),
     },
     {
-        'echasnovski/mini.nvim',
-        lazy = false,
+        'MunifTanjim/nui.nvim',
         version = false,
-        init = function()
-            set_tgc()
-        end,
+    },
+    {
+        'echasnovski/mini.nvim',
+        version = false,
         config = source('plugin.mini'),
         cond = vim_has('nvim-0.9'),
     },
@@ -107,15 +99,8 @@ local Essentials = {
     },
     {
         'nvim-tree/nvim-web-devicons',
-        lazy = true,
         version = false,
         config = source('plugin.web_devicons'),
-        cond = not in_console(),
-    },
-    {
-        'equalsraf/neovim-gui-shim',
-        lazy = true,
-        version = false,
         cond = not in_console(),
     },
     {
