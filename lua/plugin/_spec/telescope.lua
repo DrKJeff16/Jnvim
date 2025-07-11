@@ -47,7 +47,6 @@ local Telescope = {
             'nvim-telescope/telescope.nvim',
             'akinsho/toggleterm.nvim',
         },
-        -- TODO: Separate this into its own submodule
         config = source('plugin.telescope.makefile'),
         cond = executable('make') or executable('mingw32-make'),
     },

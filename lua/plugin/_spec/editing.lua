@@ -98,7 +98,7 @@ local Editing = {
         'lukas-reineke/headlines.nvim',
         version = false,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        config = true,
+        config = source('plugin.headlines'),
         cond = not in_console(),
     },
 }
