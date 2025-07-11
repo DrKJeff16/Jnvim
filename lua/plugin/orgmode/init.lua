@@ -7,9 +7,9 @@ if not exists('orgmode') then
     return
 end
 
-local ORG_PFX = vim.fn.expand('~/.org')
-
 local Orgmode = require('orgmode')
+
+local ORG_PFX = vim.fn.expand('~/.org')
 
 Orgmode.setup({
     org_startup_indented = true,
