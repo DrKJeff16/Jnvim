@@ -47,11 +47,7 @@ end
 
 ---@return boolean
 function Check.is_root()
-    local is_nil = Check.value.is_nil
-    ---@type table<string, any>
-    local env = vim.fn.environ()
-
-    return (not is_nil(env['USER']) and env['USER'] == 'root')
+    return (vim.uv or vim.loop).getuid() == 0
 end
 
 _G.in_console = Check.in_console()
