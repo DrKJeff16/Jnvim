@@ -2,6 +2,8 @@
 
 ---@module 'user_api.types.user.update'
 
+local WARN = vim.log.levels.WARN
+
 ---@type User.Update
 local Update = {}
 
@@ -30,8 +32,10 @@ function Update:update(verbose)
 
     local res = vim.fn.system(cmd)
 
+    vim.api.nvim_set_current_dir(og_cwd)
+
     if vim.v.shell_error ~= 0 then
-        error('Failed to update Jnvim, try to do it manually...', vim.log.levels.ERROR)
+        error('Failed to update Jnvim, try to do it manually', WARN)
     end
 
     if res:match('Already up to date') then
@@ -39,15 +43,15 @@ function Update:update(verbose)
             animate = true,
             hide_from_history = true,
             timeout = 2000,
-            title = 'User API',
+            title = 'User API - Update',
         })
     elseif not res:match('error') then
         if verbose then
-            notify(res, 'debug', {
+            notify(res, 'info', {
                 animate = true,
                 hide_from_history = true,
                 timeout = 2250,
-                title = 'User API',
+                title = 'User API - Update',
             })
         end
 
@@ -55,11 +59,9 @@ function Update:update(verbose)
             animate = true,
             hide_from_history = false,
             timeout = 5000,
-            title = 'User API',
+            title = 'User API - Update',
         })
     end
-
-    vim.api.nvim_set_current_dir(og_cwd)
 
     return res
 end
@@ -67,10 +69,9 @@ end
 ---@param self User.Update
 function Update:setup_maps()
     local Keymaps = require('config.keymaps')
-
     local desc = require('user_api.maps.kmap').desc
 
-    Keymaps:setup({
+    Keymaps({
         n = {
             ['<leader>U'] = { group = '+User API' },
 
