@@ -182,6 +182,8 @@ vim.g.markdown_minlines = 500
 --- Call runtimepath optimizations for Arch Linux (WIP)
 Distro:setup()
 
+vim.cmd.packadd('nohlsearch')
+
 -- Define any custom commands
 Commands:setup()
 
