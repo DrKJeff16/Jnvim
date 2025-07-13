@@ -67,6 +67,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     confirm = true,
     equalalways = true,
     et = true, -- `expandtab`
+    ff = 'unix', -- `fileformat`
     fo = { -- `formatoptions`
         b = true,
         c = false,
