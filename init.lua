@@ -8,6 +8,7 @@ _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
 local INFO = vim.log.levels.INFO
+local ERROR = vim.log.levels.ERROR
 
 local Keymaps = require('config.keymaps') ---@see Config.Keymaps
 local Neovide = require('config.neovide') ---@see Config.Neovide
@@ -123,7 +124,7 @@ Keymaps({
                 local buf = curr_buf()
 
                 if not opt_get('modifiable', { buf = buf }) then
-                    notify('Unable to indent. File is not modifiable!', 'error', {
+                    notify('Unable to indent. File is not modifiable!', ERROR, {
                         title = 'Vim - Indent',
                         animate = true,
                         timeout = 2500,
