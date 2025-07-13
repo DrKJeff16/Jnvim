@@ -1,10 +1,10 @@
 ---@meta
 
-error('(user_api.types.lazy): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.lazy): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@module 'lazy'
 ---@module 'config._types'
----@module 'user_api.types.colorschemes'
+---@module 'plugin._types.colorschemes'
 
 ---@alias LazySpecs (LazySpec)[]
 

@@ -1,4 +1,4 @@
----@module 'user_api.types.lazy'
+---@module 'plugin._types.lazy'
 
 local CfgUtil = require('config.util')
 local Termux = require('user_api.distro.termux')

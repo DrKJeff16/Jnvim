@@ -1,4 +1,4 @@
----@module 'user_api.types.lspconfig'
+---@module 'plugin._types.lsp'
 
 local User = require('user_api')
 local Check = User.check
@@ -24,7 +24,7 @@ LazyDev.setup({
 
     library = library,
 
-    ---@type boolean|(fun(root_dir): boolean?)
+    ---@type boolean|(fun(root_dir: string): boolean?)
     enabled = function(root_dir)
         return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
     end,

@@ -1,8 +1,8 @@
 ---@meta
 
-error('(user_api.types.user.util): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.util): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
----@module 'user_api.types.user.autocmd'
+---@module 'user_api.types.autocmd'
 
 ---@alias VimNotifyLvl
 ---|0

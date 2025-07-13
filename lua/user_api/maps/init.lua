@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.maps'
+---@module 'user_api.types.maps'
 
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')

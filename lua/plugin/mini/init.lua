@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.mini'
+---@module 'plugin._types.mini'
 
 local Keymaps = require('config.keymaps')
 local User = require('user_api')

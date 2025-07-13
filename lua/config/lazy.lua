@@ -1,5 +1,5 @@
 ---@module 'lazy'
----@module 'user_api.types.lazy'
+---@module 'plugin._types.lazy'
 ---@module 'config._types'
 
 local User = require('user_api')

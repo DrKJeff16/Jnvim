@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.commands): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.commands): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias CtxFun fun(ctx: table)
 ---@alias User.Commands.Mappings AllModeMaps

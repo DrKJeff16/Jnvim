@@ -1,5 +1,5 @@
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
@@ -8,8 +8,6 @@ local desc = User.maps.kmap.desc
 if not exists('persistence') then
     return
 end
-
-User:register_plugin('plugin.persistence')
 
 local Pst = require('persistence')
 
@@ -37,5 +35,7 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
+
+User:register_plugin('plugin.persistence')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

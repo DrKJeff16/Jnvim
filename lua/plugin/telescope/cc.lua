@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.telescope'
+---@module 'plugin._types.telescope'
 
 local User = require('user_api')
 local Keymaps = require('config.keymaps')

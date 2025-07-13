@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.util'
+---@module 'user_api.types.util'
 
 local au = vim.api.nvim_create_autocmd
 

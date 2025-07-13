@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.check'
+---@module 'user_api.types.check'
 
 ---@return User.Check.Value
 local function get_value()

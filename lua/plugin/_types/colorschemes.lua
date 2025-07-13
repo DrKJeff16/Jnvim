@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.colorschemes): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
 ---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')

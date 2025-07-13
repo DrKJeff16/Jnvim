@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 ---@diagnostic disable:missing-parameter
 
----@module 'user_api.types.user.util'
+---@module 'user_api.types.util'
 
 local TRACE = vim.log.levels.TRACE -- `0`
 local DEBUG = vim.log.levels.DEBUG -- `1`

@@ -1,4 +1,4 @@
----@module 'user_api.types.user.highlight'
+---@module 'user_api.types.highlight'
 
 local User = require('user_api')
 local Check = User.check

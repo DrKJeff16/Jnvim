@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.highlight): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.highlight): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias HlOpts vim.api.keyset.highlight
 

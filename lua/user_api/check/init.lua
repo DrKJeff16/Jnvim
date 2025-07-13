@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.check'
+---@module 'user_api.types.check'
 
 --- Checking Utilities
 --- ---

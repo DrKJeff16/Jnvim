@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.opts): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.opts): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias User.Opts.Spec table|vim.bo|vim.wo
 

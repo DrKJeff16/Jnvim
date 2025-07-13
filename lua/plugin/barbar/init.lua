@@ -1,7 +1,7 @@
 ---@diagnostic disable:unused-local
 ---@diagnostic disable:unused-function
 
----@module 'user_api.types.user.maps'
+---@module 'user_api.types.maps'
 
 local User = require('user_api')
 local Keymaps = require('config.keymaps')

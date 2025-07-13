@@ -1,14 +1,14 @@
 ---@meta
 
-error('(user_api.types.lsp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.lsp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 -- HACK: Call builtin annotations manually
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'
 
 ---@module 'trouble'
----@module 'user_api.types.user.autocmd'
----@module 'user_api.types.user.highlight'
+---@module 'user_api.types.autocmd'
+---@module 'user_api.types.highlight'
 
 ---@class EvBuf
 ---@field buf integer

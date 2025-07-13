@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.update'
+---@module 'user_api.types.update'
 
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO

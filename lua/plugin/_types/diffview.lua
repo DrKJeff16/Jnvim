@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.diffview): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.diffview): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@alias DiffView.Views
 ---|'diff1_plain'

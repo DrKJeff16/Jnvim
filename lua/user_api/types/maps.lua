@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.maps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.maps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@module 'user_api.types.which_key'
 

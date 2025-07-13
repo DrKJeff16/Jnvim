@@ -3,7 +3,7 @@
 
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.distro'
+---@module 'user_api.types.distro'
 
 local WARN = vim.log.levels.WARN
 

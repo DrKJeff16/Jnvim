@@ -4,7 +4,7 @@
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'
 ---@module 'lua.vim.lsp.diagnostic'
----@module 'user_api.types.lsp'
+---@module 'plugin._types.lsp'
 
 local User = require('user_api')
 local Check = User.check

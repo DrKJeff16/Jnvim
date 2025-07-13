@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.opts'
+---@module 'user_api.types.opts'
 
 local Exists = require('user_api.check.exists')
 

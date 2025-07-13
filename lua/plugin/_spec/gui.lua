@@ -1,4 +1,4 @@
----@module 'user_api.types.lazy'
+---@module 'plugin._types.lazy'
 
 local in_console = require('user_api.check').in_console
 

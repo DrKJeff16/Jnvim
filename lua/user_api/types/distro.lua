@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.distro): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.distro): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@class User.Distro.Spec
 ---@field rtpaths string[]

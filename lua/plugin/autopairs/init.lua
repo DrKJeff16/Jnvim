@@ -1,4 +1,4 @@
----@module 'user.types.autopairs'
+---@module 'plugin._types.autopairs'
 
 local User = require('user_api')
 local Check = User.check

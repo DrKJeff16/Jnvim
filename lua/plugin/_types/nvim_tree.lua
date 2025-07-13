@@ -1,10 +1,10 @@
 ---@meta
 
-error('(user_api.types.nvim_tree): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.nvim_tree): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
----@module 'user_api.types.user.maps'
----@module 'user_api.types.user.highlight'
----@module 'user_api.types.user.autocmd'
+---@module 'user_api.types.maps'
+---@module 'user_api.types.highlight'
+---@module 'user_api.types.autocmd'
 
 ---@alias AnyFunc fun(...)
 ---@alias TreeApi table<string, string|AnyFunc|table>

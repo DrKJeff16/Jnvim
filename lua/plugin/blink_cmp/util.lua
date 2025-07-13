@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'blink.cmp'
----@module 'user_api.types.blink_cmp'
+---@module 'plugin._types.blink_cmp'
 
 local User = require('user_api')
 local Check = User.check
@@ -9,7 +9,6 @@ local Check = User.check
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local is_bool = Check.value.is_bool
-local empty = Check.value.empty
 local type_not_empty = Check.value.type_not_empty
 
 local in_tbl = vim.tbl_contains

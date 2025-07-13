@@ -1,6 +1,6 @@
 ---@diagnostic disable:need-check-nil
 
----@module 'user_api.types.telescope'
+---@module 'plugin._types.telescope'
 
 local Keymaps = require('config.keymaps')
 local User = require('user_api')

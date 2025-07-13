@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'usee_api.types.mini'
+---@module 'plugin._types.mini'
 
 local User = require('user_api')
 local Check = User.check

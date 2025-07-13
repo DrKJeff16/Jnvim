@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.maps'
+---@module 'user_api.types.maps'
 
 ---@type KeyMapOpts
 local O = {}

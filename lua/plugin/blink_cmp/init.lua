@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.blink_cmp'
+---@module 'plugin._types.blink_cmp'
 
 local User = require('user_api')
 

@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.distro'
+---@module 'user_api.types.distro'
 
 ---@type User.Distro
 local Distro = {}

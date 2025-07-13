@@ -1,9 +1,9 @@
 ---@meta
 
-error('(user_api.types.telescope): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.telescope): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
----@module 'user_api.types.user.maps'
----@module 'user_api.types.user.autocmd'
+---@module 'user_api.types.maps'
+---@module 'user_api.types.autocmd'
 
 ---@class TelCC.Opts
 ---@field theme? 'ivy'|'dropdown'|'cursor'

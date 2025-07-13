@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user.opts'
+---@module 'user_api.types.opts'
 
 local Value = require('user_api.check.value')
 

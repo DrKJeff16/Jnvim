@@ -1,4 +1,4 @@
----@module 'user_api.types.lualine'
+---@module 'plugin._types.lualine'
 
 local User = require('user_api')
 

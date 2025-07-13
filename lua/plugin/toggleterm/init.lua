@@ -1,7 +1,7 @@
----@module 'user_api.types.toggleterm'
+---@module 'plugin._types.toggleterm'
 
-local User = require('user_api')
 local Keymaps = require('config.keymaps')
+local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module

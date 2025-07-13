@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.user): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.user): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 --- Table of mappings for each mode `(normal|insert|visual|terminal|...)`.
 --- Each mode contains its respective mappings.

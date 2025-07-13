@@ -1,6 +1,6 @@
 ---@diagnostic disable:need-check-nil
 
----@module 'user_api.types.user.util'
+---@module 'user_api.types.util'
 
 local Keymaps = require('config.keymaps')
 local User = require('user_api')

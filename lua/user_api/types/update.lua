@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.user.update): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.update): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@class User.Update
 ---@field update fun(verbose: boolean?): string?

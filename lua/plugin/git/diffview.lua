@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.diffview'
+---@module 'plugin._types.diffview'
 
 local Keymaps = require('config.keymaps')
 local User = require('user_api')

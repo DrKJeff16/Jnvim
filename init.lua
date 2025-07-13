@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.colorschemes'
----@module 'user_api.types.lsp'
+---@module 'plugin._types.colorschemes'
+---@module 'plugin._types.lsp'
 
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)

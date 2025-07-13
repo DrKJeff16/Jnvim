@@ -1,6 +1,6 @@
 ---@meta
 
-error('(user_api.types.blink_cmp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(plugin._types.blink_cmp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@module 'blink.cmp'
 

@@ -1,5 +1,5 @@
----@module 'user_api.types.colorschemes'
----@module 'user_api.types.lazy'
+---@module 'plugin._types.colorschemes'
+---@module 'plugin._types.lazy'
 
 local CfgUtil = require('config.util')
 

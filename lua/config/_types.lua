@@ -2,8 +2,8 @@
 
 error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
----@module 'user_api.types.user.maps'
----@module 'user_api.types.lsp'
+---@module 'user_api.types.maps'
+---@module 'plugin._types.lsp'
 
 ---@class Keymaps.PreExec
 ---@field ft string[]

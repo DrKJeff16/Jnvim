@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.colorschemes'
+---@module 'plugin._types.colorschemes'
 
 local User = require('user_api')
 
