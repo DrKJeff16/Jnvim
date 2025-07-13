@@ -195,6 +195,7 @@ error('(user_api.types.user.util): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.le
 ---@field au_from_arr fun(T: AuList)
 ---@field au_from_dict fun(T: AuDict)
 ---@field au_repeated_events fun(T: AuRepeatEvents)
+---@field created? table|AuRepeatEvents[]
 
 ---@alias DirectionFun fun(t: table<string|integer, any>): res: table<string|integer, any>
 
@@ -214,9 +215,8 @@ error('(user_api.types.user.util): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.le
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
----@field opt_get fun(self: User.Util, s: string[]|string, bufnr: integer?): table<string, any>|table
----@field opt_set fun(s: string, val: any, bufnr: integer?)
----@field assoc fun(self: User.Util)
+---@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): table<string, any>|table
+---@field setup_autocmd fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 ---@field mv_tbl_values fun(T: table<string|integer, any>|table, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
 ---@field reverse_tbl fun(T: table): table

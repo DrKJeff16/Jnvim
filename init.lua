@@ -172,7 +172,7 @@ local Lsp = L.lsp()
 Lsp()
 
 -- Call the User API file associations and other autocmds
-Util:assoc()
+Util:setup_autocmd()
 
 -- NOTE: See `:h g:markdown_minlines`
 vim.g.markdown_minlines = 500

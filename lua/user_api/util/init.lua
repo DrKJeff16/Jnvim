@@ -14,8 +14,13 @@ local augroup = vim.api.nvim_create_augroup
 ---@type User.Util
 local Util = {}
 
+---@type User.Util.Notify
 Util.notify = require('user_api.util.notify')
+
+---@type User.Util.Autocmd
 Util.au = require('user_api.util.autocmd')
+
+---@type User.Util.String
 Util.string = require('user_api.util.string')
 
 ---@return boolean
@@ -25,20 +30,19 @@ function Util.has_words_before()
     local curr_win = vim.api.nvim_get_current_win
 
     unpack = unpack or table.unpack
+
     local line, col = unpack(win_cursor(curr_win()))
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
----@param self User.Util
 ---@param s string|string[]
 ---@param bufnr? integer
 ---@return table<string, any>|table
-function Util:opt_get(s, bufnr)
+function Util.get_opts_tbl(s, bufnr)
     local Value = require('user_api.check.value')
 
     local is_int = Value.is_int
     local type_not_empty = Value.type_not_empty
-    local single_type_tbl = Value.single_type_tbl
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
@@ -49,24 +53,13 @@ function Util:opt_get(s, bufnr)
         res[s] = optget(s, { buf = bufnr })
     end
 
-    if type_not_empty('table', s) and single_type_tbl('string', s) then
+    if type_not_empty('table', s) then
         for _, opt in next, s do
-            res[opt] = self:opt_get(opt, bufnr)
+            res[opt] = Util.get_opts_tbl(opt, bufnr)
         end
     end
 
     return res
-end
-
----@param s string
----@param val any
----@param bufnr? integer
-function Util.opt_set(s, val, bufnr)
-    local is_int = require('user_api.check.value').is_int
-
-    bufnr = is_int(bufnr) and bufnr or curr_buf()
-
-    optset(s, val, { buf = bufnr })
 end
 
 ---@param T table<string|integer, any>
@@ -96,14 +89,14 @@ function Util.mv_tbl_values(T, steps, direction)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
-            local n_keys = #keys
+            local len = #keys
 
             ---@type table<string|integer, any>
             local res = {}
 
             for i, v in next, keys do
                 if i == 1 then
-                    res[v] = t[keys[n_keys]]
+                    res[v] = t[keys[len]]
                 else
                     res[v] = t[keys[i - 1]]
                 end
@@ -117,15 +110,15 @@ function Util.mv_tbl_values(T, steps, direction)
             ---@type (string|integer)[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
-            local n_keys = #keys
+            local len = #keys
 
             ---@type table<string|integer, any>
             local res = {}
 
             for i, v in next, keys do
-                if i == n_keys then
+                if i == len then
                     res[v] = t[keys[1]]
-                elseif i < n_keys and i > 0 then
+                elseif i < len and i > 0 then
                     res[v] = t[keys[i + 1]]
                 end
             end
@@ -154,13 +147,14 @@ function Util.xor(x, y)
     local Value = require('user_api.check.value')
 
     local is_bool = Value.is_bool
+    local notify = Util.notify.notify
 
     if not is_bool({ x, y }, true) then
-        Util.notify.notify('An argument is not of boolean type', 'error', {
-            hide_from_history = false,
-            timeout = 2250,
+        notify('An argument is not of boolean type', 'error', {
             title = '(user_api.util.xor)',
             animate = true,
+            timeout = 2250,
+            hide_from_history = false,
         })
         return false
     end
@@ -271,7 +265,7 @@ function Util.ft_set(s, bufnr)
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
     return function()
-        Util.opt_set('ft', s, bufnr)
+        optset('ft', s, { buf = bufnr })
     end
 end
 
@@ -317,16 +311,17 @@ function Util.pop_values(T, V)
     return T, val
 end
 
-function Util:assoc()
+---@param self User.Util
+function Util:setup_autocmd()
     local au_repeated_events = self.au.au_repeated_events
     local ft_set = self.ft_set
 
-    local group = augroup('UserAssocs', { clear = true })
+    local group = augroup('User.AU', { clear = true })
 
     ---@type AuRepeatEvents[]
     local AUS = {
         { -- NOTE: Keep this as first element for `orgmode` addition
-            events = { 'BufNewFile', 'BufReadPre', 'BufWinEnter', 'BufEnter', 'WinEnter' },
+            events = { 'BufNewFile', 'BufWinEnter', 'BufEnter' },
             opts_tbl = {
                 {
                     group = group,
@@ -373,13 +368,18 @@ function Util:assoc()
                         local bt = self.bt_get(buf)
                         local ft = self.ft_get(buf)
 
+                        if ft == 'lazy' then
+                            vim.schedule(function()
+                                optset('signcolumn', 'no', { scope = 'local' })
+                                optset('number', false, { scope = 'local' })
+                            end)
+
+                            return
+                        end
+
                         if bt == 'help' or ft == 'help' then
                             vim.schedule(function()
-                                vim.api.nvim_set_option_value(
-                                    'signcolumn',
-                                    'no',
-                                    { scope = 'local' }
-                                )
+                                optset('signcolumn', 'no', { scope = 'local' })
                                 vim.cmd.wincmd('=')
                                 vim.cmd.noh()
                             end)
@@ -402,7 +402,7 @@ function Util:assoc()
                                 n = {
                                     ['<leader><C-l>'] = {
                                         ':silent !stylua %<CR>',
-                                        desc('Format With `stylua`', true, buf),
+                                        desc('Format With `stylua`'),
                                     },
                                 },
                             }, buf)
@@ -422,7 +422,7 @@ function Util:assoc()
                                 n = {
                                     ['<leader><C-l>'] = {
                                         ':silent !isort %<CR>',
-                                        desc('Format With `isort`', true, buf),
+                                        desc('Format With `isort`'),
                                     },
                                 },
                             }, buf)
@@ -447,8 +447,10 @@ function Util:assoc()
         })
     end
 
-    for _, T in next, AUS do
-        au_repeated_events(T)
+    self.au.created = vim.tbl_deep_extend('keep', self.au.created or {}, AUS)
+
+    for _, t in next, self.au.created do
+        au_repeated_events(t)
     end
 end
 
@@ -537,7 +539,7 @@ function Util.discard_dups(data)
     res = {}
 
     for k, v in next, data do
-        if not vim.tbl_contains(res, v) then
+        if not in_tbl(res, v) then
             res[k] = v
         end
     end
