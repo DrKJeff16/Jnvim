@@ -55,9 +55,7 @@ function Update.update(verbose)
             timeout = 1750,
             title = 'User API - Update',
         })
-    end
-
-    if not res:match('error') then
+    elseif not res:match('error') then
         notify('You need to restart Nvim!', 'warn', {
             animate = true,
             hide_from_history = false,
