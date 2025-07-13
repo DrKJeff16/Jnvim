@@ -31,11 +31,10 @@ function Update.update(verbose)
     vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
 
     local res = vim.fn.system(cmd)
-    local lvl = res:match('error') and WARN or INFO
 
-    vim.schedule(function()
-        vim.api.nvim_set_current_dir(og_cwd)
-    end)
+    vim.api.nvim_set_current_dir(og_cwd)
+
+    local lvl = res:match('error') and WARN or INFO
 
     if verbose then
         notify(res, lvl, {
