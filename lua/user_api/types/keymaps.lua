@@ -1,6 +1,6 @@
 ---@meta
 
-error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
+error('(user_api.types.keymaps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@module 'user_api.types.maps'
 
