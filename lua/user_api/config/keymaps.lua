@@ -88,7 +88,7 @@ local function buf_del(force)
     end
 end
 
----@type Config.Keymaps|KeymapsFun
+---@type User.Config.Keymaps|KeymapsFun
 local Keymaps = {}
 
 Keymaps.NOP = {
@@ -638,7 +638,7 @@ Keymaps.Keys = {
 --- a different key if you want.
 ---
 --- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
----@param self Config.Keymaps
+---@param self User.Config.Keymaps
 ---@param leader string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
@@ -692,13 +692,13 @@ function Keymaps:set_leader(leader, local_leader, force)
 end
 
 ---@param O? table
----@return table|Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+---@return table|User.Config.Keymaps|KeymapsFun
 function Keymaps.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {
         __index = Keymaps,
 
-        ---@type fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+        ---@type fun(self: User.Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
         __call = function(self, keys, bufnr, load_defaults)
             local MODES = Maps.modes
             local insp = inspect or vim.inspect

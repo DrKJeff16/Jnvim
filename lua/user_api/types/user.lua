@@ -7,10 +7,14 @@ error('(user_api.types.user): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.
 --- `map_tbl.[n|i|v|t|o|x]['<YOUR_KEY>'].opts` a `vim.keymap.set.Opts` table
 ---@alias Maps table<MapModes, table<string, KeyMapRhsOptsArr>>
 
+---@class User.Config
+---@field keymaps User.Config.Keymaps
+
 ---@class UserAPI
 ---@field paths string[]|table
 ---@field FAILED string[]|table
 ---@field check User.Check
+---@field config User.Config
 ---@field commands User.Commands
 ---@field distro User.Distro
 ---@field highlight User.Hl

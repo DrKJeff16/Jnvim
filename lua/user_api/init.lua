@@ -10,6 +10,10 @@ local User = {}
 User.paths = {}
 User.FAILED = {}
 
+User.config = {}
+
+User.config.keymaps = require('user_api.config.keymaps')
+
 ---@type User.Check
 User.check = require('user_api.check')
 
