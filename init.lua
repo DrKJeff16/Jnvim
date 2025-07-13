@@ -7,6 +7,8 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect
 
+local INFO = vim.log.levels.INFO
+
 local Keymaps = require('config.keymaps') ---@see Config.Keymaps
 local Neovide = require('config.neovide') ---@see Config.Neovide
 local User = require('user_api') ---@see UserAPI User API
@@ -34,12 +36,7 @@ end
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
 ---@type fun(...)
 function _G.notify_inspect(...)
-    require('user_api.util.notify').notify(inspect(...), 'info', {
-        title = 'Message',
-        timeout = 2500,
-        animate = true,
-        hide_from_history = true,
-    })
+    vim.notify(inspect(...), INFO)
 end
 
 ---@see User.Opts.setup
@@ -108,10 +105,11 @@ vim.g.loaded_netrwPlugin = 1
 --- Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
---- List of manually-callable plugin
+-- List of manually-callable plugins
 local L = require('config.lazy')
 
---- Setup keymaps
+-- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
+-- Setup keymaps
 Keymaps:setup({
     n = {
         ['<leader>fii'] = {

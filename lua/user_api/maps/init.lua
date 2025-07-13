@@ -16,6 +16,7 @@ local strip_fields = Util.strip_fields
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
 
 ---@type User.Maps
 local Maps = {}
@@ -34,6 +35,14 @@ function Maps.nop(T, opts, mode, prefix)
     end
 
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
+
+    if mode == 'i' then
+        vim.notify(
+            '(user_api.maps.nop): Refusing to `<Nop>` the following keys in Insert mode: '
+                .. inspect(T),
+            WARN
+        )
+    end
 
     opts = is_tbl(opts) and opts or {}
 

@@ -23,7 +23,7 @@ local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
 
 ---@param vertical? boolean
----@return false|fun()
+---@return fun()
 local function gen_fun_blank(vertical)
     vertical = is_bool(vertical) and vertical or false
 
@@ -50,7 +50,6 @@ end
 local function buf_del(force)
     force = is_bool(force) and force or false
 
-    local cmd = force and 'bdel!' or 'bdel'
     local ft_triggers = {
         'NvimTree',
         'noice',
@@ -75,9 +74,9 @@ local function buf_del(force)
 
         -- # HACK: Special workaround for `terminal` buffers
         if prev_bt == 'terminal' then
-            vim.cmd('bdel!')
+            vim.cmd.bdelete({ bang = true })
         else
-            vim.cmd(cmd)
+            vim.cmd.bdelete()
         end
 
         if in_tbl(pre_exc.ft, prev_ft) or in_tbl(pre_exc.bt, prev_bt) then
@@ -85,7 +84,7 @@ local function buf_del(force)
         end
 
         if in_tbl(ft_triggers, ft_get(curr_buf())) then
-            vim.cmd('bprevious')
+            vim.cmd.bprevious()
         end
     end
 end
@@ -231,7 +230,7 @@ Keymaps.Keys = {
         ['<leader>Fo'] = { ':%foldopen<CR>', desc('Open All Folds') },
 
         ['<leader>fFx'] = {
-            gen_fun_blank(false),
+            gen_fun_blank(),
             desc('New Horizontal Blank File'),
         },
         ['<leader>fFv'] = {
@@ -644,7 +643,7 @@ function Keymaps:setup(keys, bufnr, load_defaults)
     local notify = require('user_api.util.notify').notify
 
     if not leader_set then
-        notify('`set_leader()` not called!', 'warn', {
+        notify('`keymaps:set_leader()` not called!', 'warn', {
             hide_from_history = false,
             timeout = 3250,
             title = '[WARNING] (config.keymaps.setup)',
@@ -776,7 +775,7 @@ function Keymaps.new(O)
             local notify = require('user_api.util.notify').notify
 
             if not leader_set then
-                notify('`set_leader()` not called!', 'warn', {
+                notify('`keymaps:set_leader()` not called!', 'warn', {
                     hide_from_history = false,
                     timeout = 3250,
                     title = '[WARNING] (config.keymaps.setup)',
