@@ -14,8 +14,9 @@ error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 ---@field no_oped? boolean
 ---@field Keys AllModeMaps
 ---@field set_leader fun(self: Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field setup fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 ---@field new fun(O: table?): table|Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+
+---@alias KeymapsFun fun(self: Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)

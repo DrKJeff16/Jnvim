@@ -89,7 +89,7 @@ local function buf_del(force)
     end
 end
 
----@type Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+---@type Config.Keymaps|KeymapsFun
 local Keymaps = {}
 
 Keymaps.NOP = {
@@ -631,74 +631,6 @@ Keymaps.Keys = {
         ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
     },
 }
-
----@param self Config.Keymaps
----@param keys? AllModeMaps
----@param bufnr? integer
----@param load_defaults? boolean
-function Keymaps:setup(keys, bufnr, load_defaults)
-    local MODES = Maps.modes
-    local insp = inspect or vim.inspect
-
-    local notify = require('user_api.util.notify').notify
-
-    if not leader_set then
-        notify('`keymaps:set_leader()` not called!', 'warn', {
-            hide_from_history = false,
-            timeout = 3250,
-            title = '[WARNING] (config.keymaps.setup)',
-        })
-    end
-
-    keys = is_tbl(keys) and keys or {}
-    bufnr = is_int(bufnr) and bufnr or nil
-    load_defaults = is_bool(load_defaults) and load_defaults or false
-
-    ---@type AllModeMaps
-    local parsed_keys = {}
-
-    for k, v in next, keys do
-        if not in_tbl(MODES, k) then
-            notify(
-                string.format('Table not formatted correctly. Ignoring\n\n%s', insp(keys)),
-                'warn',
-                {
-                    animate = true,
-                    title = '(config.keymaps:setup())',
-                    hide_from_history = false,
-                    timeout = 1250,
-                }
-            )
-        else
-            parsed_keys[k] = v
-        end
-    end
-
-    self.no_oped = is_bool(self.no_oped) and self.no_oped or false
-
-    --- Noop keys after `<leader>` to avoid accidents
-    for _, mode in next, MODES do
-        if self.no_oped then
-            break
-        end
-
-        if in_tbl({ 'n', 'v' }, mode) then
-            nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
-        end
-    end
-
-    self.no_oped = true
-
-    ---@type AllModeMaps
-    local res = load_defaults and vim.tbl_deep_extend('keep', parsed_keys, self.Keys) or parsed_keys
-
-    --- Set keymaps
-    if is_nil(bufnr) then
-        map_dict(res, 'wk.register', true)
-    else
-        map_dict(res, 'wk.register', true, nil, bufnr)
-    end
-end
 
 --- Set the `<leader>` key and, if desired, the `<localleader>` aswell
 --- ---
