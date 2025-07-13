@@ -40,6 +40,21 @@ function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
 
+-- Set `<Leader>` key
+Keymaps:set_leader('<Space>')
+
+vim.g.markdown_minlines = 500
+
+--- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+--- Uncomment to use system clipboard
+-- vim.o.clipboard = 'unnamedplus'
+
+-- List of manually-callable plugins
+local L = require('config.lazy')
+
 ---@see User.Opts.setup
 Opts:setup({ ---@see User.Opts.Spec For more info
     autoread = true,
@@ -93,21 +108,6 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     termguicolors = not in_console(),
     wrap = Distro.termux:validate(),
 })
-
--- Set `<Leader>` key
-Keymaps:set_leader('<Space>')
-
-vim.g.markdown_minlines = 500
-
---- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
---- Uncomment to use system clipboard
--- vim.o.clipboard = 'unnamedplus'
-
--- List of manually-callable plugins
-local L = require('config.lazy')
 
 -- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
 -- Setup keymaps
@@ -187,7 +187,7 @@ Commands:setup()
 -- Mappings related specifically to `user_api`
 User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 
-Neovide:setup({}, false)
+Neovide:setup()
 
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
