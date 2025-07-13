@@ -220,7 +220,7 @@ vim.schedule(function()
     local curr_bt = bt_get(curr_buf())
 
     -- HACK: In case we're on specific buffer (file|buf)types
-    if not (in_tbl(DISABLE_ON.ft, curr_ft) and in_tbl(DISABLE_ON.bt, curr_bt)) then
+    if not (in_tbl(DISABLE_ON.ft, curr_ft) or in_tbl(DISABLE_ON.bt, curr_bt)) then
         return
     end
 

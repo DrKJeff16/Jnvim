@@ -369,11 +369,8 @@ function Util:setup_autocmd()
                         local ft = self.ft_get(buf)
 
                         if ft == 'lazy' then
-                            vim.schedule(function()
-                                optset('signcolumn', 'no', { scope = 'local' })
-                                optset('number', false, { scope = 'local' })
-                            end)
-
+                            optset('signcolumn', 'no', { scope = 'local' })
+                            optset('number', false, { scope = 'local' })
                             return
                         end
 
