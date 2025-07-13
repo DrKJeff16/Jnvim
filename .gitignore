@@ -1,22 +1,33 @@
+# Lazy Lock File
 /lazy-lock.json
-/src
+
+# FALLBACK INIT (for bug reporting)
+/fallback.lua
 /repro.lua
 /rtp.lua
 
-/patches
+# Patching
+/patches/
+/.patches/
 *.patch
 *.diff
 
-*.rar
-*.cpio
-*.zip
+# Compressed Data
 *.7z
-*.bz2
-*.gz
-*.xz
-*.tar
 *.Z
+*.bz2
+*.cpio
+*.gz
+*.rar
+*.tar
+*.tbz2
+*.tgz
+*.txz
+*.xz
+*.zip
+*.zst
 
+# Compilation Artifacts
 *.o
 *.so
 *.obj
@@ -26,20 +37,25 @@
 *.a
 *.as
 
+# Environment
 .env
 
+# Python LSP Server
 .mypy_cache/
 .ropeproject/
 
-*.list
-*.log
+# Useless Files
 *.bak
-*.old
+*.list
+*.lock
+*.log
 *.new
+*.old
+*.pacnew
+*.pacsave
 
+# Dropped Files
 .luarc.json
 .luarc.jsonc
 luarc.json
 luarc.jsonc
-
-*.lock
