@@ -2,7 +2,7 @@
 
 ---@module 'user_api.types.util'
 
-local Keymaps = require('config.keymaps')
+local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 

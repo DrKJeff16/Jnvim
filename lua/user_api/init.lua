@@ -156,7 +156,7 @@ end
 
 ---@param self UserAPI
 function User:plugin_maps()
-    local Keymaps = require('config.keymaps')
+    local Keymaps = require('user_api.config.keymaps')
 
     local desc = self.maps.kmap.desc
     local type_not_empty = self.check.value.type_not_empty
@@ -268,7 +268,7 @@ function User:setup_keys()
         },
     }
 
-    local Keymaps = require('config.keymaps')
+    local Keymaps = require('user_api.config.keymaps')
     Keymaps({ n = Keys })
 
     self:plugin_maps()

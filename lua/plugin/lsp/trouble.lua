@@ -277,7 +277,7 @@ function Trouble:setup(O)
     trouble.setup(O)
 
     vim.schedule(function()
-        local Keymaps = require('config.keymaps')
+        local Keymaps = require('user_api.config.keymaps')
 
         Keymaps(self.Keys)
     end)

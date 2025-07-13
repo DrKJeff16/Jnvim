@@ -17,7 +17,7 @@ local GS = require('gitsigns')
 GS.setup({
     ---@param bufnr? integer
     on_attach = function(bufnr)
-        local Keymaps = require('config.keymaps')
+        local Keymaps = require('user_api.config.keymaps')
 
         bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
 

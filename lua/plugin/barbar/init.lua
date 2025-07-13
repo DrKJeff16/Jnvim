@@ -4,7 +4,7 @@
 ---@module 'user_api.types.maps'
 
 local User = require('user_api')
-local Keymaps = require('config.keymaps')
+local Keymaps = require('user_api.config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module

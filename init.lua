@@ -10,7 +10,7 @@ _G.inspect = vim.inspect
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
-local Keymaps = require('config.keymaps') ---@see Config.Keymaps
+local Keymaps = require('user_api.config.keymaps') ---@see Config.Keymaps
 local Neovide = require('config.neovide') ---@see Config.Neovide
 local User = require('user_api') ---@see UserAPI User API
 local Check = require('user_api.check') ---@see User.Check Checking utilities

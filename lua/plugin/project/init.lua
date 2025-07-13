@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
-local Keymaps = require('config.keymaps')
+local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 local Util = User.util

@@ -146,7 +146,7 @@ function Server.new(O)
                 v = { ['<leader>l'] = { group = '+LSP' } },
             }
 
-            local Keymaps = require('config.keymaps')
+            local Keymaps = require('user_api.config.keymaps')
             Keymaps(Keys)
 
             ---@type Lsp.SubMods.Autocmd

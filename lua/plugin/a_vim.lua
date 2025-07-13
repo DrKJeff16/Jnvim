@@ -1,4 +1,4 @@
-local Keymaps = require('config.keymaps')
+local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 
 local desc = require('user_api.maps.kmap').desc

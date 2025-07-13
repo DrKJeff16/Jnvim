@@ -200,7 +200,7 @@ function Neovide:setup_keys()
         return
     end
 
-    local Keymaps = require('config.keymaps')
+    local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps.kmap').desc
 
     ---@type AllMaps

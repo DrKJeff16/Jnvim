@@ -359,7 +359,7 @@ function Util:setup_autocmd()
                 {
                     group = group,
                     callback = function(args)
-                        local Keymaps = require('config.keymaps')
+                        local Keymaps = require('user_api.config.keymaps')
                         local executable = require('user_api.check.exists').executable
                         local desc = require('user_api.maps.kmap').desc
 

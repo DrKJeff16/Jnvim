@@ -85,7 +85,7 @@ function Commands:setup_keys()
         return
     end
 
-    local Keymaps = require('config.keymaps')
+    local Keymaps = require('user_api.config.keymaps')
 
     for _, cmd in next, self.commands do
         if is_nil(cmd.mappings) or not is_tbl(cmd.mappings) or empty(cmd.mappings) then

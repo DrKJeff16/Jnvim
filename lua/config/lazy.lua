@@ -4,7 +4,7 @@
 
 local User = require('user_api')
 local CfgUtil = require('config.util')
-local Keymaps = require('config.keymaps')
+local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
 local Termux = require('user_api.distro.termux')
 

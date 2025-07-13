@@ -71,7 +71,7 @@ end
 
 ---@param self User.Update
 function Update:setup_maps()
-    local Keymaps = require('config.keymaps')
+    local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps.kmap').desc
 
     Keymaps({

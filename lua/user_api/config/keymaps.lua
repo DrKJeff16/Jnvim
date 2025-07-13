@@ -1,8 +1,7 @@
 ---@diagnostic disable:missing-fields
 
----@module 'config._types'
+---@module 'user_api.types.keymaps'
 
-local User = require('user_api') ---@see UserAPI
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities
 local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping Utilities (`vim.keymap` version)
@@ -710,7 +709,7 @@ function Keymaps.new(O)
                 notify('`keymaps:set_leader()` not called!', 'warn', {
                     hide_from_history = false,
                     timeout = 3250,
-                    title = '[WARNING] (config.keymaps.setup)',
+                    title = '[WARNING] (user_api.config.keymaps.setup)',
                 })
             end
 
@@ -728,7 +727,7 @@ function Keymaps.new(O)
                         'warn',
                         {
                             animate = true,
-                            title = '(config.keymaps:setup())',
+                            title = '(user_api.config.keymaps:setup())',
                             hide_from_history = false,
                             timeout = 1250,
                         }
@@ -768,8 +767,6 @@ function Keymaps.new(O)
 end
 
 local K = Keymaps.new()
-
-User:register_plugin('config.keymaps')
 
 return K
 
