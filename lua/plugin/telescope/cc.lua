@@ -56,7 +56,7 @@ function CC.loadkeys()
         },
     }
 
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 end
 
 User:register_plugin('plugin.telescope.cc')

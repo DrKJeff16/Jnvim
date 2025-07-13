@@ -71,7 +71,7 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
             },
         }
 
-        Keymaps:setup({ n = Keys }, bufnr)
+        Keymaps({ n = Keys }, bufnr)
     end,
 })
 

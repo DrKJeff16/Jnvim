@@ -398,7 +398,7 @@ function Util:setup_autocmd()
                                 return
                             end
 
-                            Keymaps:setup({
+                            Keymaps({
                                 n = {
                                     ['<leader><C-l>'] = {
                                         ':silent !stylua %<CR>',
@@ -418,7 +418,7 @@ function Util:setup_autocmd()
                                 return
                             end
 
-                            Keymaps:setup({
+                            Keymaps({
                                 n = {
                                     ['<leader><C-l>'] = {
                                         ':silent !isort %<CR>',

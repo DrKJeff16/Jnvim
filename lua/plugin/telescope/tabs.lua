@@ -51,7 +51,7 @@ function TelescopeTabs.loadkeys()
         ['<leader>tt'] = { Tabs.list_tabs, desc('Telescope Tabs') },
     }
 
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 end
 
 User:register_plugin('plugin.telescope.tabs')

@@ -168,7 +168,7 @@ local Keys = {
     },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.project')
 

@@ -215,7 +215,7 @@ function User:plugin_maps()
         i = i + 1
     end
 
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 end
 
 ---@param self UserAPI
@@ -269,7 +269,7 @@ function User:setup_keys()
     }
 
     local Keymaps = require('config.keymaps')
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 
     self:plugin_maps()
     self.update:setup_maps()

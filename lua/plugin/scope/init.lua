@@ -78,7 +78,7 @@ au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
                 i = i + 1
             end
 
-            Keymaps:setup({ n = Keys })
+            Keymaps({ n = Keys })
         else
             if User.maps.wk.available() then
                 WK.add({

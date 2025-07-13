@@ -175,7 +175,7 @@ function Opts:setup_keys()
 
     local desc = require('user_api.maps.kmap').desc
 
-    Keymaps:setup({
+    Keymaps({
         n = {
             ['<leader>UO'] = { group = '+Options' },
             ['<leader>UOl'] = {

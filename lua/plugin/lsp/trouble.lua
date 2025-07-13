@@ -279,7 +279,7 @@ function Trouble:setup(O)
     vim.schedule(function()
         local Keymaps = require('config.keymaps')
 
-        Keymaps:setup(self.Keys)
+        Keymaps(self.Keys)
     end)
 end
 

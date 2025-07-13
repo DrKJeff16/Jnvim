@@ -93,7 +93,7 @@ function FileBrowser.loadkeys()
         },
     }
 
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 end
 
 User:register_plugin('plugin.telescope.file_browser')

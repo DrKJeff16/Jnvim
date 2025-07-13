@@ -126,7 +126,7 @@ local my_maps = {
     },
 }
 
-Keymaps:setup({ n = my_maps })
+Keymaps({ n = my_maps })
 
 ---@param nwin? integer
 local function tab_win_close(nwin)

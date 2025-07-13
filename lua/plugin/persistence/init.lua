@@ -36,6 +36,6 @@ local Keys = {
     ['<leader>Sq'] = { Pst.stop, desc('Stop Persistence') },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

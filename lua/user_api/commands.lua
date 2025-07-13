@@ -92,7 +92,7 @@ function Commands:setup_keys()
             goto continue
         end
 
-        Keymaps:setup(cmd.mappings)
+        Keymaps(cmd.mappings)
 
         ::continue::
     end

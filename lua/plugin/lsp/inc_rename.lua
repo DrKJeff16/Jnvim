@@ -48,7 +48,7 @@ local Keys = {
 vim.schedule(function()
     local Keymaps = require('config.keymaps')
 
-    Keymaps:setup({ n = Keys })
+    Keymaps({ n = Keys })
 end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

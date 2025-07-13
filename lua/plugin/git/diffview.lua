@@ -800,7 +800,7 @@ local Keys = {
     ['<leader>Gvc'] = { DVW.close, desc('Close DiffView') },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.git.diffview')
 

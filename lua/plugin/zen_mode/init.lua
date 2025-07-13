@@ -95,7 +95,7 @@ local Keys = {
     ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.zen_mode')
 

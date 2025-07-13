@@ -172,7 +172,7 @@ local Keys = {
     ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 ---@type Config.Lazy
 local M = {}

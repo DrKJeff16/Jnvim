@@ -135,7 +135,7 @@ function _G.set_terminal_keymaps(bufnr)
         },
     }
 
-    Keymaps:setup({ t = Keys }, bufnr)
+    Keymaps({ t = Keys }, bufnr)
 end
 
 local cmd_str = '<CMD>exe v:count1 . "ToggleTerm"<CR>'
@@ -162,7 +162,7 @@ local Keys = {
     },
 }
 
-Keymaps:setup(Keys)
+Keymaps(Keys)
 
 local group = augroup('ToggleTerm.Hooks', { clear = true })
 

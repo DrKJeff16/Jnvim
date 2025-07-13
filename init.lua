@@ -110,7 +110,7 @@ local L = require('config.lazy')
 
 -- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
 -- Setup keymaps
-Keymaps:setup({
+Keymaps({
     n = {
         ['<leader>fii'] = {
             function()

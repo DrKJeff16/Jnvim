@@ -43,7 +43,7 @@ local Keys = {
     },
 }
 
-Keymaps:setup({ n = Keys })
+Keymaps({ n = Keys })
 
 hi('StartupTimeSourcingEvent', { link = 'Title' })
 

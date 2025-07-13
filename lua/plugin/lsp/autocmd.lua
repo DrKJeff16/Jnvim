@@ -104,7 +104,7 @@ Autocmd.autocommands = {
                 vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
 
                 local AUKeys = Autocmd.AUKeys
-                Keymaps:setup(AUKeys)
+                Keymaps(AUKeys)
 
                 if client.name == 'lua_ls' then
                     require('plugin.lazydev')
@@ -160,7 +160,7 @@ Autocmd.autocommands = {
                     },
                 }
 
-                Keymaps:setup({ n = Keys })
+                Keymaps({ n = Keys })
             end,
         },
     },
