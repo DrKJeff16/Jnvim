@@ -9,7 +9,32 @@ local in_console = Check.in_console
 
 ---@type LazySpecs
 local UI = {
-    --- Statusline
+    {
+        'folke/noice.nvim',
+        event = 'VeryLazy',
+        version = false,
+        dependencies = {
+            'MunifTanjim/nui.nvim',
+            'rcarriga/nvim-notify',
+            'echasnovski/mini.nvim',
+        },
+        config = source('plugin.noice'),
+        cond = not in_console(),
+    },
+
+    -- Start Greeter
+    {
+        'goolord/alpha-nvim',
+        lazy = false,
+        version = false,
+        dependencies = {
+            'nvim-tree/nvim-web-devicons',
+            'nvim-lua/plenary.nvim',
+        },
+        config = source('plugin.alpha'),
+    },
+
+    -- Statusline
     {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
@@ -23,7 +48,8 @@ local UI = {
         config = source('plugin.lualine'),
         cond = not in_console(),
     },
-    --- Tabline
+
+    -- Tabline
     {
         'akinsho/bufferline.nvim',
         event = 'VeryLazy',
@@ -38,7 +64,8 @@ local UI = {
         config = source('plugin.bufferline'),
         cond = not in_console(),
     },
-    --- Indent Scope
+
+    -- Indent Scope
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
@@ -53,7 +80,8 @@ local UI = {
         cond = not in_console(),
         enabled = false,
     },
-    --- File Tree
+
+    -- File Tree
     {
         'nvim-tree/nvim-tree.lua',
         main = 'nvim-tree',
@@ -67,6 +95,7 @@ local UI = {
         end,
         config = source('plugin.nvim_tree'),
     },
+
     {
         'nvim-neo-tree/neo-tree.nvim',
         version = false,
@@ -85,6 +114,7 @@ local UI = {
         cond = not in_console(),
         enabled = false,
     },
+
     {
         'nvim-zh/colorful-winsep.nvim',
         version = false,
@@ -92,23 +122,12 @@ local UI = {
         cond = not in_console(),
         enabled = false,
     },
+
     {
         'akinsho/toggleterm.nvim',
         event = 'VeryLazy',
         version = false,
         config = source('plugin.toggleterm'),
-        cond = not in_console(),
-    },
-    {
-        'folke/noice.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'MunifTanjim/nui.nvim',
-            'rcarriga/nvim-notify',
-            'echasnovski/mini.nvim',
-        },
-        config = source('plugin.noice'),
         cond = not in_console(),
     },
 }

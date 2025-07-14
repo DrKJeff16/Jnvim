@@ -22,6 +22,7 @@ local Distro = require('user_api.distro') ---@see User.Distro Platform-specific 
 local desc = require('user_api.maps.kmap').desc ---@see User.Maps.Keymap.desc
 local in_console = Check.in_console ---@see User.Check.in_console
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
+local exists = Check.exists.module ---@see User.Check.Existance.module
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 _G.in_console = require('user_api.check').in_console
@@ -167,11 +168,16 @@ Keymaps({
 
 ---@type table|CscMod|fun(color?: string, ...)
 local Color = L.colorschemes()
-
 Color('tokyonight', 'moon')
 
 local Lsp = L.lsp()
 Lsp()
+
+local Alpha = L.alpha()
+
+if Alpha ~= nil then
+    Alpha('theta')
+end
 
 -- Call the User API file associations and other autocmds
 Util:setup_autocmd()

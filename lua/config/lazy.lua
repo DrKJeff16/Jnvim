@@ -1,4 +1,5 @@
 ---@module 'lazy'
+---@module 'plugin._types.alpha'
 ---@module 'plugin._types.lazy'
 ---@module 'config._types'
 
@@ -187,7 +188,10 @@ function M.lsp()
     return require('plugin.lsp')
 end
 
-User:register_plugin('config.lazy', 1) -- Always put it on first place
+---@return nil|table|AlphaCaller|AlphaFun
+function M.alpha()
+    return require('plugin.alpha') or nil
+end
 
 return M
 

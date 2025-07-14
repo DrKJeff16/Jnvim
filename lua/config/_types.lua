@@ -3,6 +3,7 @@
 error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
 ---@module 'plugin._types.lsp'
+---@module 'plugin._types.alpha'
 
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)
@@ -17,5 +18,6 @@ error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 ---@class Config.Lazy
 ---@field colorschemes fun(): table|CscMod|fun(color: string?, ...)
 ---@field lsp fun(): table|Lsp.Server|fun()
+---@field alpha? fun(): nil|table|AlphaCaller|AlphaFun
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
