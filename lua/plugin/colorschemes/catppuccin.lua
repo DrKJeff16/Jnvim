@@ -84,6 +84,9 @@ function Catppuccin:setup(variant, transparent, override)
         default_integrations = true,
         integrations = {
             barbar = exists('barbar'),
+            blink_cmp = {
+                style = 'bordered',
+            },
             colorful_winsep = {
                 enabled = exists('colorful-winsep'),
                 color = 'teal',
@@ -92,6 +95,7 @@ function Catppuccin:setup(variant, transparent, override)
             dashboard = exists('dashboard'),
             diffview = exists('diffview'),
             gitsigns = exists('gitsigns'),
+            headlines = exists('headlines'),
             indent_blankline = {
                 enabled = exists('ibl'),
                 scope_color = 'teal',

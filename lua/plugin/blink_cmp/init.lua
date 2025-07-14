@@ -14,8 +14,6 @@ local Config = require('plugin.blink_cmp.config')
 
 local Cfg = Config.new()
 
-User:register_plugin('plugin.blink_cmp')
-
 local Blink = require('blink.cmp')
 
 if exists('luasnip.loaders.from_vscode') then
@@ -23,5 +21,7 @@ if exists('luasnip.loaders.from_vscode') then
 end
 
 Blink.setup(Cfg.Config)
+
+User:register_plugin('plugin.blink_cmp')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

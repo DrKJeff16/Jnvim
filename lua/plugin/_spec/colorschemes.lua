@@ -20,15 +20,6 @@ local ColorSchemes = {
         cond = not in_console(),
     },
     {
-        'navarasu/onedark.nvim',
-        main = 'onedark',
-        lazy = false,
-        priority = 1000,
-        version = false,
-        init = CfgUtil:colorscheme_init('installed_onedark'),
-        cond = not in_console(),
-    },
-    {
         'catppuccin/nvim',
         name = 'catppuccin',
         main = 'catppuccin',
@@ -36,6 +27,15 @@ local ColorSchemes = {
         priority = 1000,
         version = false,
         init = CfgUtil:colorscheme_init('installed_catppuccin'),
+        cond = not in_console(),
+    },
+    {
+        'navarasu/onedark.nvim',
+        main = 'onedark',
+        lazy = false,
+        priority = 1000,
+        version = false,
+        init = CfgUtil:colorscheme_init('installed_onedark'),
         cond = not in_console(),
     },
     {

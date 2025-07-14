@@ -8,12 +8,13 @@ local Check = User.check
 
 local is_fun = Check.value.is_fun
 local is_tbl = Check.value.is_tbl
-local is_int = Check.value.is_int
 local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local capitalize = User.util.string.capitalize
 local displace_letter = User.util.displace_letter
 local desc = User.maps.kmap.desc
+
+local ERROR = vim.log.levels.ERROR
 
 ---@type CscMod|fun(color: string?, ...)
 local Colorschemes = {}
@@ -156,7 +157,9 @@ function Colorschemes.new(O)
                 ::continue::
             end
 
-            assert(type_not_empty('table', valid), 'No valid colorschemes!')
+            if not type_not_empty('table', valid) then
+                error('No valid colorschemes!', ERROR)
+            end
             Keymaps({ n = CscKeys })
 
             if not (is_str(color) and vim.tbl_contains(valid, color)) then

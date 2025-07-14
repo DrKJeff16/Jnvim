@@ -6,7 +6,6 @@ local exists = Check.exists.module
 if not exists('dooku') then
     return
 end
-User:register_plugin('plugin.dooku')
 
 local Dooku = require('dooku')
 
@@ -33,5 +32,7 @@ Dooku.setup({
     on_generate_notification = true,
     on_open_notification = true,
 })
+
+User:register_plugin('plugin.dooku')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

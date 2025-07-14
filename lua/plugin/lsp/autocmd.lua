@@ -8,7 +8,6 @@ local Check = User.check
 local Au = User.util.au
 local Notify = User.util.notify
 
-local exists = Check.exists.module
 local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
