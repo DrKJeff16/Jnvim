@@ -11,8 +11,6 @@ if not (exists('lazydev') and executable('lua-language-server') and not exists('
     return
 end
 
-User:register_plugin('plugin.lazydev')
-
 local LazyDev = require('lazydev')
 
 ---@type lazydev.Library.spec[]
@@ -35,5 +33,7 @@ LazyDev.setup({
         coq = false,
     },
 })
+
+User:register_plugin('plugin.lazydev')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

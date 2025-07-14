@@ -9,8 +9,6 @@ if not exists('nvim-treesitter') then
     return
 end
 
-User:register_plugin('plugin.treesitter')
-
 local fs_stat = (vim.uv or vim.loop).fs_stat
 local buf_name = vim.api.nvim_buf_get_name
 
@@ -111,5 +109,7 @@ if exists('ts_context_commentstring') then
         enable_autocmd = not exists('Comment'),
     })
 end
+
+User:register_plugin('plugin.treesitter')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

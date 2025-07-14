@@ -74,8 +74,10 @@ TT.setup({
 
     float_opts = {
         border = 'curved',
+
         ---@type 'left'|'center'|'right'
         title_pos = 'center',
+
         zindex = 100,
         winblend = 3,
     },
@@ -145,7 +147,7 @@ local Keys = {
     n = {
         ['<leader>T'] = { group = '+Toggleterm' },
 
-        ['<c-t>'] = {
+        ['<C-t>'] = {
             cmd_str,
             desc('Toggle', true, 0),
         },
@@ -155,7 +157,7 @@ local Keys = {
         },
     },
     i = {
-        ['<c-t>'] = {
+        ['<C-t>'] = {
             '<Esc>' .. cmd_str,
             desc('Toggle', true, 0),
         },

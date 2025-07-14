@@ -10,7 +10,7 @@ local au = vim.api.nvim_create_autocmd
 
 local Fields = {
     mkdp_auto_start = 0,
-    mkdp_browser = executable('firefox') and '/usr/bin/firefox' or 'xdg-open',
+    mkdp_browser = 'xdg-open',
     mkdp_echo_preview_url = 1,
     mkdp_open_to_the_world = 0,
     mkdp_auto_close = 1,
@@ -36,7 +36,7 @@ for key, value in next, Fields do
     vim.g[key] = value
 end
 
-local group = augroup('MarkdownPreviewInitHook', { clear = false })
+local group = augroup('MarkdownPreviewInitHook', { clear = true })
 
 au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
     pattern = { '*.md', '*.markdown', '*.MD' },
@@ -51,21 +51,21 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
             ['<leader>f<C-M>t'] = {
                 ---@diagnostic disable-next-line
                 function()
-                    pcall(vim.cmd, 'MarkdownPreviewToggle')
+                    pcall(vim.cmd, 'MarkdownPreviewToggle') ---@diagnostic disable-line
                 end,
                 desc('Toggle Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>p'] = {
                 ---@diagnostic disable-next-line
                 function()
-                    pcall(vim.cmd, 'MarkdownPreview')
+                    pcall(vim.cmd, 'MarkdownPreview') ---@diagnostic disable-line
                 end,
                 desc('Run Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>s'] = {
                 ---@diagnostic disable-next-line
                 function()
-                    pcall(vim.cmd, 'MarkdownPreviewStop')
+                    pcall(vim.cmd, 'MarkdownPreviewStop') ---@diagnostic disable-line
                 end,
                 desc('Stop Markdown Preview', true, bufnr),
             },

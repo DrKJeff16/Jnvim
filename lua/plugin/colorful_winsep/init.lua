@@ -7,8 +7,6 @@ if not exists('colorful-winsep') then
     return
 end
 
-User:register_plugin('plugin.colorful_winsep')
-
 local CW = require('colorful-winsep')
 
 CW.setup({
@@ -39,5 +37,7 @@ CW.setup({
         bottom = { width = 0, x = 1, y = 0 },
     },
 })
+
+User:register_plugin('plugin.colorful_winsep')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

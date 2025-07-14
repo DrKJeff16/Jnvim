@@ -5,7 +5,6 @@ local Check = User.check
 
 local in_console = Check.in_console
 local exists = Check.exists.module
-local desc = User.maps.kmap.desc
 
 if not exists('which-key') then
     return
@@ -20,7 +19,7 @@ WK.setup({
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
     delay = function(ctx)
-        return ctx.plugin and 0 or 200
+        return ctx.plugin and 0 or 100
     end,
 
     --- You can add any mappings here, or use `require('which-key').add()` later
@@ -56,8 +55,7 @@ WK.setup({
     ---@param mapping wk.Mapping
     filter = function(mapping)
         -- example to exclude mappings without a description
-        -- return mapping.desc and mapping.desc ~= ""
-        return true
+        return mapping.desc and mapping.desc ~= ''
     end,
 
     -- show a warning when issues were detected with your mappings

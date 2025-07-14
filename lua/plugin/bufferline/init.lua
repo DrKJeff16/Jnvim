@@ -7,7 +7,12 @@ if not exists('bufferline') or exists('barbar') then
     return
 end
 
-User:register_plugin('plugin.bufferline')
+---@class Bufferline.Buf
+---@field name string @the basename of the active file
+---@field path string @the full path of the active file
+---@field bufnr integer @the number of the active buffer
+---@field buffers integer[] @the numbers of the buffers in the tab
+---@field tabnr integer @the "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
 
 local BLine = require('bufferline')
 local Groups = require('bufferline.groups')
@@ -33,13 +38,6 @@ local function diagnostics_indicator(count, lvl, diags, context)
 
     return s
 end
-
----@class Bufferline.Buf
----@field name string @the basename of the active file
----@field path string @the full path of the active file
----@field bufnr integer @the number of the active buffer
----@field buffers integer[] @the numbers of the buffers in the tab
----@field tabnr integer @the "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
 
 ---@param buf Bufferline.Buf
 ---@return string?
@@ -103,13 +101,17 @@ BLine.setup({
     options = {
         mode = 'tabs',
 
-        --[[ style_preset = {
-            SP.minimal,
-            SP.no_bold,
-            SP.no_italic,
-        }, ]]
+        -- style_preset = {
+        --     SP.minimal,
+        --     SP.no_bold,
+        --     SP.no_italic,
+        -- },
 
-        style_preset = SP.default,
+        style_preset = {
+            SP.no_italic,
+            SP.default,
+        },
+
         themable = true,
 
         numbers = 'both',
@@ -144,7 +146,7 @@ BLine.setup({
         show_buffer_close_icons = false,
         show_tab_indicators = true,
 
-        show_duplicate_prefix = false,
+        show_duplicate_prefix = true,
         duplicates_across_groups = true,
 
         persist_buffer_sort = true,
@@ -171,7 +173,7 @@ BLine.setup({
         auto_toggle_bufferline = true,
 
         groups = {
-            options = { toggle_hidden_on_enter = false },
+            options = { toggle_hidden_on_enter = true },
             items = { Groups.builtin.pinned:with({ icon = '' }) },
         },
 
@@ -203,5 +205,7 @@ BLine.setup({
         },
     },
 })
+
+User:register_plugin('plugin.bufferline')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

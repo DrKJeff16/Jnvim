@@ -16,6 +16,8 @@ local desc = User.maps.kmap.desc
 
 local mk_caps = vim.lsp.protocol.make_client_capabilities
 
+local INFO = vim.log.levels.INFO
+
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds:setup()
@@ -123,7 +125,6 @@ function Server.new(O)
                     ['<leader>l'] = { group = '+LSP' },
 
                     ['<leader>li'] = {
-                        ---@diagnostic disable-next-line
                         function()
                             pcall(vim.cmd, 'LspInfo') ---@diagnostic disable-line
                         end,
@@ -137,7 +138,7 @@ function Server.new(O)
                     },
                     ['<leader>lC'] = {
                         function()
-                            vim.print((inspect or vim.inspect)(self.client_names))
+                            vim.notify((inspect or vim.inspect)(self.client_names), INFO)
                         end,
                         desc('List Clients'),
                     },

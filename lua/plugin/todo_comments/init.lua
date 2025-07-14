@@ -211,7 +211,7 @@ local Keys = {
     },
 }
 
-Keymaps({ n = Keys, v = Keys })
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.todo_comments')
 

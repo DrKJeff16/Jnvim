@@ -7,7 +7,7 @@ if not exists('persisted') then
     return
 end
 
-User:register_plugin('plugin.persisted')
+local ERROR = vim.log.levels.ERROR
 
 local Pstd = require('persisted')
 
@@ -39,12 +39,9 @@ Pstd.setup({
     autoload = false, -- automatically load the session for the cwd on Neovim startup
 
     on_autoload_no_session = function()
-        require('user_api.util.notify').notify(
-            '(persisted): No session found',
-            'error',
-            { title = 'Persisted', hide_from_history = true, timeout = 500 }
-        )
+        vim.notify('(persisted): No session found', ERROR)
     end, -- function to run when `autoload = true` but there is no session to load
+
     follow_cwd = true, -- change session file name to match current working directory if it changes
     allowed_dirs = nil, -- table of dirs that the plugin will auto-save and auto-load from
     ignored_dirs = nil, -- table of dirs that are ignored when auto-saving and auto-loading
@@ -63,5 +60,7 @@ Pstd.setup({
         },
     },
 })
+
+User:register_plugin('plugin.persisted')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

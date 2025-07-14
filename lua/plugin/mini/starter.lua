@@ -11,8 +11,6 @@ if not exists('mini.starter') then
     return
 end
 
-User:register_plugin('plugin.mini.starter')
-
 local MS = require('mini.starter')
 local Sections = MS.sections
 local gen_hook = MS.gen_hook
@@ -61,6 +59,8 @@ Starter.telescope = {
     header = 'TELESCOPE',
     query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
 }
+
+User:register_plugin('plugin.mini.starter')
 
 return Starter
 

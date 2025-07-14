@@ -11,66 +11,80 @@ end
 
 local Comment = require('Comment')
 
+---@param ctx CommentCtx
+---@return string
 local function pre_hook(ctx)
     return vim.bo.commentstring
+end
+
+---@param ctx CommentCtx
+local function post_hook(ctx)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local win = vim.api.nvim_get_current_win()
+
+    local r = unpack(vim.api.nvim_win_get_cursor(win))
+
+    if vim.api.nvim_buf_line_count(bufnr) > r then
+        vim.api.nvim_win_set_cursor(win, { r + 1, 0 })
+    end
 end
 
 if exists('ts_context_commentstring') then
     pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
 end
 
----@type CommentConfig
-local Opts = {
+Comment.setup({
     ---Function to call before (un)comment
     ---@return string
     pre_hook = pre_hook,
 
-    post_hook = function(ctx)
-        local r = unpack(vim.api.nvim_win_get_cursor(0))
-        local rcnt = vim.api.nvim_buf_line_count(0)
-        if rcnt > r then
-            vim.api.nvim_win_set_cursor(0, { r + 1, 0 })
-        end
-    end,
+    post_hook = post_hook,
 
-    ---Add a space b/w comment and the line
+    -- Add a space b/w comment and the line
     padding = true,
-    ---Whether the cursor should stay at its position
+
+    -- Whether the cursor should stay at its position
     sticky = true,
-    ---LHS of toggle mappings in NORMAL mode
+
+    -- LHS of toggle mappings in NORMAL mode
     toggler = {
-        ---Line-comment toggle keymap
+        -- Line-comment toggle keymap
         line = 'gcc',
-        ---Block-comment toggle keymap
+        -- Block-comment toggle keymap
         block = 'gbc',
     },
-    ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+
+    -- LHS of operator-pending mappings in NORMAL and VISUAL mode
     opleader = {
-        ---Line-comment keymap
+        -- Line-comment keymap
         line = 'gc',
-        ---Block-comment keymap
+
+        -- Block-comment keymap
         block = 'gb',
     },
-    ---LHS of extra mappings
+
+    -- LHS of extra mappings
     extra = {
-        ---Add comment on the line above
+        -- Add comment on the line above
         above = 'gcO',
-        ---Add comment on the line below
+
+        -- Add comment on the line below
         below = 'gco',
-        ---Add comment at the end of line
+
+        -- Add comment at the end of line
         eol = 'gcA',
     },
+
     ---Enable keybindings
     ---NOTE: If given `false` then the plugin won't create any mappings
     mappings = {
-        ---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
+        -- Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
         basic = true,
-        ---Extra mapping; `gco`, `gcO`, `gcA`
+
+        -- Extra mapping; `gco`, `gcO`, `gcA`
         extra = true,
     },
-}
-
-Comment.setup(Opts)
+})
 
 User:register_plugin('plugin.Comment')
 

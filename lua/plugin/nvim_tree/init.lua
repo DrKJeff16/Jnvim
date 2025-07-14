@@ -14,7 +14,6 @@ local empty = Check.value.empty
 local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 local desc = User.maps.kmap.desc
-local map_dict = User.maps.map_dict
 
 if not exists('nvim-tree') then
     return
@@ -98,7 +97,7 @@ local function map_keys(keys, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or nil
 
-    map_dict(keys, 'wk.register', true, nil, bufnr)
+    Keymaps({ n = keys }, bufnr)
 end
 
 ---@type AllMaps

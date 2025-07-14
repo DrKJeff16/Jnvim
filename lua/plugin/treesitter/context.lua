@@ -12,8 +12,6 @@ end
 
 local Context = require('treesitter-context')
 
----@type integer
-
 Context.setup({
     enable = true,
 
@@ -48,8 +46,6 @@ local hls = {
     ['TreesitterContext'] = { link = 'NormalFloat' },
 }
 
-hi(hls)
-
 ---@type AllMaps
 local Keys = {
     ['<leader>C'] = { group = '+Context' },
@@ -65,6 +61,10 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
+
+vim.schedule(function()
+    hi(hls)
+end)
 
 User:register_plugin('plugin.treesitter.context')
 

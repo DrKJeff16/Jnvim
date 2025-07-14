@@ -7,8 +7,6 @@ if not exists('neorg') then
     return
 end
 
-User:register_plugin('plugin.neorg')
-
 local Neorg = require('neorg')
 
 Neorg.setup({
@@ -161,5 +159,7 @@ Neorg.setup({
 
     lazy_loading = false,
 })
+
+User:register_plugin('plugin.neorg')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

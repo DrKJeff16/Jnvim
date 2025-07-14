@@ -45,7 +45,9 @@ local Keys = {
 
 Keymaps({ n = Keys })
 
-hi('StartupTimeSourcingEvent', { link = 'Title' })
+vim.schedule(function()
+    hi('StartupTimeSourcingEvent', { link = 'Title' })
+end)
 
 User:register_plugin('plugin.startuptime')
 

@@ -145,7 +145,7 @@ Ibl.setup({
         show_end = true,
         show_start = true,
         show_exact_scope = true,
-        injected_languages = exists('nvim-treesitter'),
+        injected_languages = true,
         priority = 1024,
         include = {
             node_type = {

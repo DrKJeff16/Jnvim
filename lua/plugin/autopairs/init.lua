@@ -4,8 +4,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local is_fun = Check.value.is_fun
 
 if not exists('nvim-autopairs') then
     return
@@ -73,24 +71,13 @@ Ap.setup({
 })
 
 ---@type APMods
-local M = {
-    cmp = function()
-        return exists('plugin.autopairs.cmp', true)
-    end,
+local AP = {
     rules = function()
-        return exists('plugin.autopairs.rules', true)
+        return require('plugin.autopairs.rules')
     end,
 }
 
-M.rules()
-
-if exists('cmp') then
-    local ap_cmp = M.cmp()
-
-    if is_tbl(ap_cmp) and is_fun(ap_cmp.on) then
-        ap_cmp.on()
-    end
-end
+AP.rules()
 
 User:register_plugin('plugin.autopairs')
 
