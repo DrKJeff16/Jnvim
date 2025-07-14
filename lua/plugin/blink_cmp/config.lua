@@ -8,6 +8,7 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
+local executable = Check.exists.executable
 local is_tbl = Check.value.is_tbl
 local has_words_before = Util.has_words_before
 
@@ -285,8 +286,8 @@ Cfg.Config.sources = {
 }
 
 Cfg.Config.fuzzy = {
-    -- implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
-    implementation = 'lua',
+    -- implementation = 'lua',
+    implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
 
     sorts = {
         'exact',
