@@ -129,6 +129,20 @@ function BUtil:reset_providers()
         end,
     }
 
+    self.Providers.path = {
+        module = 'blink.cmp.sources.path',
+        score_offset = 10,
+
+        fallbacks = { 'buffer' },
+
+        ---@type blink.cmp.PathOpts
+        opts = {
+            label_trailing_slash = true,
+            show_hidden_files_by_default = true,
+            trailing_slash = false,
+        },
+    }
+
     self.Providers.snippets = {
         name = 'Snip',
         score_offset = -80,
