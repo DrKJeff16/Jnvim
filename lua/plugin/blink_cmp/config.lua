@@ -12,13 +12,102 @@ local executable = Check.exists.executable
 local is_tbl = Check.value.is_tbl
 local has_words_before = Util.has_words_before
 
-local replace_termcodes = vim.api.nvim_replace_termcodes
-local feedkeys = vim.api.nvim_feedkeys
-
 local BUtil = require('plugin.blink_cmp.util')
 
-local Devicons = require('nvim-web-devicons')
-local lspkind = require('lspkind')
+---@type table<string, blink.cmp.DrawComponent>
+local mini_kinds = {
+    kind_icon = {
+        ---@type blink.cmp.DrawItemContext
+        text = function(ctx)
+            local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+            return kind_icon
+        end,
+
+        -- (optional) use highlights from mini.icons
+        ---@type blink.cmp.DrawItemContext
+        highlight = function(ctx)
+            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+            return hl
+        end,
+    },
+    kind = {
+        -- (optional) use highlights from mini.icons
+        ---@type blink.cmp.DrawItemContext
+        highlight = function(ctx)
+            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+            return hl
+        end,
+    },
+}
+
+---@type table<string, blink.cmp.DrawComponent>
+local devicon_kinds = {
+    kind_icon = {
+        ---@type blink.cmp.DrawItemContext
+        text = function(ctx)
+            local Devicons = require('nvim-web-devicons')
+            local lspkind = require('lspkind')
+
+            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
+                local dev_icon, _ = Devicons.get_icon(ctx.label)
+                if dev_icon then
+                    ctx.kind_icon = dev_icon
+                end
+            else
+                ctx.kind_icon = lspkind.symbolic(ctx.kind, {
+                    mode = 'symbol',
+                })
+            end
+
+            return ctx.kind_icon .. ctx.icon_gap
+        end,
+
+        -- Optionally, use the highlight groups from nvim-web-devicons
+        -- You can also add the same function for `kind.highlight` if you want to
+        -- keep the highlight groups in sync with the icons.
+        ---@type blink.cmp.DrawItemContext
+        highlight = function(ctx)
+            local Devicons = require('nvim-web-devicons')
+
+            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
+                local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
+                if dev_icon then
+                    ctx.kind_hl = dev_hl
+                end
+            end
+
+            return ctx.kind_hl
+        end,
+    },
+
+    kind = {
+        -- Optionally, use the highlight groups from nvim-web-devicons
+        -- You can also add the same function for `kind.highlight` if you want to
+        -- keep the highlight groups in sync with the icons.
+        ---@type blink.cmp.DrawItemContext
+        highlight = function(ctx)
+            local Devicons = require('nvim-web-devicons')
+
+            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
+                local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
+                if dev_icon then
+                    ctx.kind_hl = dev_hl
+                end
+            end
+
+            return ctx.kind_hl
+        end,
+    },
+}
+
+---@param key string
+---@return fun()
+local function gen_termcode(key)
+    return function()
+        local termcode = vim.api.nvim_replace_termcodes(key, true, false, true)
+        vim.api.nvim_feedkeys(termcode, 'i', false)
+    end
+end
 
 ---@type BlinkCmp.Cfg
 local Cfg = {}
@@ -37,7 +126,7 @@ Cfg.Config.keymap = {
                 cmp.show_documentation()
             end
 
-            return cmp.show({ providers = BUtil:gen_sources(false, true) })
+            return cmp.show({ providers = BUtil:gen_sources(true, true) })
         end,
         'fallback',
     },
@@ -106,10 +195,7 @@ Cfg.Config.keymap = {
         function(cmp)
             if cmp.is_active() or cmp.is_visible() then
                 return cmp.cancel({
-                    callback = function()
-                        local termcode = replace_termcodes('<Up>', true, false, true)
-                        feedkeys(termcode, 'i', false)
-                    end,
+                    callback = gen_termcode('<Up>'),
                 })
             end
         end,
@@ -119,10 +205,7 @@ Cfg.Config.keymap = {
         function(cmp)
             if cmp.is_visible() or cmp.is_active() then
                 return cmp.cancel({
-                    callback = function()
-                        local termcode = replace_termcodes('<Down>', true, false, true)
-                        feedkeys(termcode, 'i', false)
-                    end,
+                    callback = gen_termcode('<Down>'),
                 })
             end
         end,
@@ -177,14 +260,35 @@ Cfg.Config.completion = {
     documentation = {
         auto_show = true,
         auto_show_delay_ms = 1000,
-        window = { border = 'rounded' },
+        update_delay_ms = 100,
+
+        treesitter_highlighting = true,
+
+        window = {
+            border = 'rounded',
+            winblend = 0,
+
+            winhighlight = 'Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,EndOfBuffer:BlinkCmpDoc',
+
+            -- Note that the gutter will be disabled when border ~= 'none'
+            scrollbar = false,
+
+            -- Which directions to show the documentation window,
+            -- for each of the possible menu window directions,
+            -- falling back to the next direction when there's not enough space
+            direction_priority = {
+                menu_north = { 'e', 'w', 'n', 's' },
+                menu_south = { 'e', 'w', 's', 'n' },
+            },
+        },
     },
 
-    keyword = { range = 'prefix' },
+    keyword = { range = 'full' },
 
     accept = {
         auto_brackets = { enabled = false },
         create_undo_point = true,
+        dot_repeat = true,
     },
 
     list = {
@@ -208,6 +312,7 @@ Cfg.Config.completion = {
     menu = {
         -- Don't automatically show the completion menu
         auto_show = true,
+
         border = 'single',
 
         -- nvim-cmp style menu
@@ -215,40 +320,7 @@ Cfg.Config.completion = {
             padding = { 0, 1 },
             treesitter = { 'lsp' },
 
-            components = {
-                kind_icon = {
-                    text = function(ctx)
-                        local icon = ctx.kind_icon
-
-                        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                            local dev_icon, _ = Devicons.get_icon(ctx.label)
-                            if dev_icon then
-                                icon = dev_icon
-                            end
-                        else
-                            icon = lspkind.symbolic(ctx.kind, {
-                                mode = 'symbol',
-                            })
-                        end
-
-                        return icon .. ctx.icon_gap
-                    end,
-
-                    -- Optionally, use the highlight groups from nvim-web-devicons
-                    -- You can also add the same function for `kind.highlight` if you want to
-                    -- keep the highlight groups in sync with the icons.
-                    highlight = function(ctx)
-                        local hl = ctx.kind_hl
-                        if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                            local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
-                            if dev_icon then
-                                hl = dev_hl
-                            end
-                        end
-                        return hl
-                    end,
-                },
-            },
+            components = exists('nvim-web-devicons') and devicon_kinds or mini_kinds,
 
             columns = {
                 { 'label', 'label_description', gap = 1 },
@@ -262,24 +334,44 @@ Cfg.Config.completion = {
 
 Cfg.Config.cmdline = {
     enabled = true,
+
     keymap = {
-        preset = 'inherit',
+        preset = 'cmdline',
 
         ['<Right>'] = { 'fallback' },
         ['<Left>'] = { 'fallback' },
         ['<C-p>'] = { 'fallback' },
         ['<C-n>'] = { 'fallback' },
     },
+
+    -- OR explicitly configure per cmd type
+    -- This ends up being equivalent to above since the sources disable themselves automatically
+    -- when not available. You may override their `enabled` functions via
+    -- `sources.providers.cmdline.override.enabled = function() return your_logic end`
+
+    sources = function()
+        local type = vim.fn.getcmdtype()
+        -- Search forward and backward
+        if type == '/' or type == '?' then
+            return { 'buffer' }
+        end
+        -- Commands
+        if type == ':' or type == '@' then
+            return { 'cmdline', 'buffer' }
+        end
+
+        return {}
+    end,
 }
 
 Cfg.Config.sources = {
     default = function()
-        return BUtil:gen_sources(false, true)
+        return BUtil:gen_sources(true, true)
     end,
 
     per_filetype = {
         lua = { inherit_defaults = true, 'lazydev' },
-        org = { 'orgmode' },
+        org = { 'orgmode', 'buffer', 'path', 'snippets' },
     },
 
     providers = BUtil:gen_providers(),
@@ -312,9 +404,8 @@ Cfg.Config.snippets = {
     end,
 
     -- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
-    ---@diagnostic disable-next-line
     jump = function(direction)
-        vim.snippet.jump(direction)
+        vim.snippet.jump(direction) ---@diagnostic disable-line
     end,
 }
 

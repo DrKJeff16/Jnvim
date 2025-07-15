@@ -78,95 +78,117 @@ end
 
 ---@param self BlinkCmp.Util
 function BUtil:reset_providers()
-    self.Providers = {}
+    self.Providers = {
+        buffer = {
+            score_offset = -20,
 
-    self.Providers.buffer = {
-        score_offset = -40,
+            max_items = 8,
 
-        max_items = 7,
+            -- keep case of first char
+            ---@param ctx blink.cmp.Context
+            ---@param items blink.cmp.CompletionItem[]
+            ---@return blink.cmp.CompletionItem[]
+            transform_items = function(ctx, items)
+                local keyword = ctx.get_keyword()
+                local correct = ''
 
-        -- keep case of first char
-        ---@param a blink.cmp.Context
-        ---@param items blink.cmp.CompletionItem[]
-        ---@return blink.cmp.CompletionItem[]
-        transform_items = function(a, items)
-            local keyword = a.get_keyword()
-            local correct = ''
+                ---@type fun(s: string|number): string
+                local case
 
-            ---@type fun(s: string|number): string
-            local case
-
-            if keyword:match('^%l') then
-                correct = '^%u%l+$'
-                case = string.lower
-            elseif keyword:match('^%u') then
-                correct = '^%l+$'
-                case = string.upper
-            else
-                return items
-            end
-
-            -- avoid duplicates from the corrections
-            local seen = {}
-            local out = {}
-
-            for _, item in next, items do
-                ---@type string
-                local raw = item.insertText
-
-                if raw:match(correct) then
-                    local text = case(raw:sub(1, 1)) .. raw:sub(2)
-                    item.insertText = text
-                    item.label = text
+                if keyword:match('^%l') then
+                    correct = '^%u%l+$'
+                    case = string.lower
+                elseif keyword:match('^%u') then
+                    correct = '^%l+$'
+                    case = string.upper
+                else
+                    return items
                 end
-                if not seen[item.insertText] then
-                    seen[item.insertText] = true
-                    table.insert(out, item)
+
+                -- avoid duplicates from the corrections
+                local seen = {}
+                local out = {}
+
+                for _, item in next, items do
+                    ---@type string
+                    local raw = item.insertText
+
+                    if raw:match(correct) then
+                        local text = case(raw:sub(1, 1)) .. raw:sub(2)
+                        item.insertText = text
+                        item.label = text
+                    end
+                    if not seen[item.insertText] then
+                        seen[item.insertText] = true
+                        table.insert(out, item)
+                    end
                 end
-            end
 
-            return out
-        end,
-    }
-
-    self.Providers.path = {
-        module = 'blink.cmp.sources.path',
-        score_offset = 10,
-
-        fallbacks = { 'buffer' },
-
-        ---@type blink.cmp.PathOpts
-        opts = {
-            label_trailing_slash = true,
-            show_hidden_files_by_default = true,
-            trailing_slash = false,
+                return out
+            end,
         },
-    }
 
-    self.Providers.snippets = {
-        name = 'Snip',
-        score_offset = -80,
-        max_items = 5,
-        should_show_items = function(ctx)
-            return ctx.trigger.initial_kind ~= 'trigger_character'
-        end,
-    }
+        path = {
+            name = 'Path',
+            module = 'blink.cmp.sources.path',
+            score_offset = 30,
 
-    self.Providers.lsp = {
-        name = 'LSP',
-        module = 'blink.cmp.sources.lsp',
-        score_offset = 80,
-        transform_items = function(_, items)
-            return vim.tbl_filter(function(item)
-                return item.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword
-            end, items)
-        end,
+            fallbacks = { 'buffer' },
+
+            ---@type blink.cmp.PathOpts
+            opts = {
+                label_trailing_slash = true,
+                show_hidden_files_by_default = true,
+                trailing_slash = false,
+            },
+        },
+
+        snippets = {
+            name = 'Snippet',
+            score_offset = -50,
+            max_items = 7,
+
+            ---@param ctx blink.cmp.Context
+            should_show_items = function(ctx)
+                return ctx.trigger.initial_kind ~= 'trigger_character'
+            end,
+        },
+
+        lazydev = {
+            name = 'LazyDev',
+            module = 'lazydev.integrations.blink',
+            score_offset = 100,
+            fallbacks = { 'lsp' },
+        },
+
+        lsp = {
+            name = 'LSP',
+            module = 'blink.cmp.sources.lsp',
+            score_offset = 60,
+
+            ---@param _ blink.cmp.Context
+            ---@param items blink.cmp.CompletionItem[]
+            ---@return blink.cmp.CompletionItem[]
+            transform_items = function(_, items)
+                return vim.tbl_filter(
+                    ---@param value blink.cmp.CompletionItem
+                    ---@return boolean
+                    function(value)
+                        return value.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword
+                    end,
+                    items
+                )
+            end,
+
+            fallbacks = {},
+        },
     }
 
     if exists('blink-cmp-git') then
         self.Providers.git = {
             name = 'Git',
             module = 'blink-cmp-git',
+
             enabled = function()
                 local git_fts = {
                     'git',
@@ -192,15 +214,6 @@ function BUtil:reset_providers()
             ---@module 'blink-cmp-conventional-commits'
             ---@type blink-cmp-conventional-commits.Options
             opts = {}, -- none so far
-        }
-    end
-
-    if exists('lazydev') then
-        self.Providers.lazydev = {
-            name = 'LazyDev',
-            module = 'lazydev.integrations.blink',
-            score_offset = 100,
-            fallbacks = { 'lsp' },
         }
     end
 
