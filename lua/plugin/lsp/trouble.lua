@@ -16,7 +16,7 @@ end
 
 local trouble = require('trouble')
 
----@type Lsp.SubMods.Trouble
+---@type Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
 local Trouble = {}
 
 ---@type trouble.Config
@@ -230,27 +230,31 @@ Trouble.Keys = {
     },
 }
 
----@param self Lsp.SubMods.Trouble
----@param O table|trouble.Config?
-function Trouble:setup(O)
-    O = is_tbl(O) and O or {}
-
-    O = vim.tbl_deep_extend('keep', vim.deepcopy(O), self.Opts)
-
-    trouble.setup(O)
-
-    Keymaps({ n = self.Keys })
-end
-
 ---@param O? table
----@return table|Lsp.SubMods.Trouble
+---@return table|Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
 function Trouble.new(O)
     O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Trouble })
+    return setmetatable(O, {
+        __index = Trouble,
+
+        ---@param self Lsp.SubMods.Trouble
+        ---@param override table|trouble.Config?
+        __call = function(self, override)
+            override = is_tbl(override) and override or {}
+
+            self.Opts = vim.tbl_deep_extend('keep', override, vim.deepcopy(self.Opts))
+
+            trouble.setup(self.Opts)
+
+            Keymaps({ n = self.Keys })
+
+            User:register_plugin('plugin.lsp.trouble')
+        end,
+    })
 end
 
-User:register_plugin('plugin.lsp.trouble')
+local T = Trouble.new()
 
-return Trouble
+return T
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

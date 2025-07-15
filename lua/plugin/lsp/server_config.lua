@@ -118,21 +118,21 @@ Clients.lua_ls = {
                 -- (see `:h lua-module-load`)
                 path = {
                     'lua/?.lua',
-                    'lua/?/?.lua',
                     'lua/?/init.lua',
                 },
             },
             -- Make the server aware of Neovim runtime files
             workspace = {
                 checkThirdParty = false,
-                library = {
-                    -- vim.env.VIMRUNTIME,
-                    vim.api.nvim_get_runtime_file('', true),
-                    -- Depending on the usage, you might want to add additional paths
-                    -- here.
-                    '${3rd}/luv/library',
-                    '${3rd}/busted/library',
-                },
+                library = vim.api.nvim_get_runtime_file('', true),
+                -- library = {
+                --     vim.env.VIMRUNTIME,
+                --
+                --     -- Depending on the usage, you might want to add additional paths
+                --     -- here.
+                --     -- '${3rd}/luv/library',
+                --     -- '${3rd}/busted/library',
+                -- },
             },
         })
     end,
@@ -188,7 +188,6 @@ Clients.lua_ls = {
                 -- (see `:h lua-module-load`)
                 path = {
                     'lua/?.lua',
-                    'lua/?/?.lua',
                     'lua/?/init.lua',
                 },
             },
@@ -212,14 +211,15 @@ Clients.lua_ls = {
             workspace = {
                 checkThirdParty = false,
                 useGitIgnore = true,
-                library = {
-                    -- vim.env.VIMRUNTIME,
-                    vim.api.nvim_get_runtime_file('', true),
-                    -- Depending on the usage, you might want to add additional paths
-                    -- here.
-                    '${3rd}/luv/library',
-                    '${3rd}/busted/library',
-                },
+                library = vim.api.nvim_get_runtime_file('', true),
+                -- library = {
+                --     vim.env.VIMRUNTIME,
+                --
+                --     -- Depending on the usage, you might want to add additional paths
+                --     -- here.
+                --     -- '${3rd}/luv/library',
+                --     -- '${3rd}/busted/library',
+                -- },
             },
         },
     },

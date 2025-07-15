@@ -16,22 +16,24 @@ local notify = Notify.notify
 
 local augroup = vim.api.nvim_create_augroup
 
+local INFO = vim.log.levels.INFO
+
 local function print_workspace_folders()
     local msg = ''
 
     for _, v in next, vim.lsp.buf.list_workspace_folders() do
-        msg = msg .. '\n - ' .. v
+        msg = string.format('%s\n - %s', msg, v)
     end
 
-    notify(msg, 'debug', {
+    notify(msg, INFO, {
         title = 'LSP',
         animate = true,
-        hide_from_history = true,
+        hide_from_history = false,
         timeout = 5000,
     })
 end
 
----@type Lsp.SubMods.Autocmd
+---@type Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
 local Autocmd = {}
 
 ---@type AllModeMaps
@@ -41,8 +43,8 @@ Autocmd.AUKeys = {
         ['<leader>lw'] = { group = '+Workspace' },
 
         ['K'] = { vim.lsp.buf.hover, desc('Hover') },
+        -- ['<leader>lK'] = { vim.lsp.buf.hover, desc('Hover') },
 
-        ['<leader>lK'] = { vim.lsp.buf.hover, desc('Hover') },
         ['<leader>lfD'] = { vim.lsp.buf.declaration, desc('Declaration') },
         ['<leader>lfd'] = { vim.lsp.buf.definition, desc('Definition') },
         ['<leader>lfi'] = { vim.lsp.buf.implementation, desc('Implementation') },
@@ -81,9 +83,15 @@ Autocmd.AUKeys = {
 Autocmd.autocommands = {
     ['LspAttach'] = {
         {
-            group = augroup('UserLsp', { clear = false }),
+            group = augroup('UserLsp', { clear = true }),
+
+            ---@param args vim.api.keyset.create_autocmd.callback_args
             callback = function(args)
-                local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+                if client == nil then
+                    return
+                end
 
                 -- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
                 if client:supports_method('textDocument/completion') then
@@ -95,10 +103,10 @@ Autocmd.autocommands = {
                     client.server_capabilities.completionProvider.triggerCharacters = chars
                 end
 
-                vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
-                -- vim.bo[args.buf].omnifunc = nil
-                -- vim.bo[args.buf].tagfunc = nil
+                -- vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                -- vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+                vim.bo[args.buf].omnifunc = nil
+                vim.bo[args.buf].tagfunc = nil
 
                 vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
 
@@ -115,85 +123,93 @@ Autocmd.autocommands = {
 
                     ['<leader>lSR'] = {
                         function()
-                            local ClientCfg = vim.deepcopy(client.config)
+                            _G.LAST_LSP = vim.deepcopy(client)
 
                             vim.lsp.stop_client(client.id, true)
-                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
+
+                            vim.schedule(function()
+                                vim.lsp.start(LAST_LSP.config, { bufnr = args.buf })
+                            end)
                         end,
-                        desc('Force Server Restart', true, args.buf),
-                        buffer = args.buf,
+                        desc('Force Server Restart'),
                     },
                     ['<leader>lSr'] = {
                         function()
-                            local ClientCfg =
-                                vim.tbl_deep_extend('keep', _G.CLIENTS[client.name], client.config)
+                            _G.LAST_LSP = vim.deepcopy(client)
 
-                            vim.lsp.stop_client(client.id, false)
-                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
+                            vim.lsp.stop_client(client.id)
+
+                            vim.schedule(function()
+                                vim.lsp.start(LAST_LSP.config, { bufnr = args.buf })
+                            end)
                         end,
-                        desc('Server Restart', true, args.buf),
-                        buffer = args.buf,
+                        desc('Server Restart'),
                     },
                     ['<leader>lSS'] = {
                         function()
-                            local ClientCfg =
-                                vim.tbl_deep_extend('keep', _G.CLIENTS[client.name], client.config)
+                            _G.LAST_LSP = vim.deepcopy(client)
 
                             vim.lsp.stop_client(client.id, true)
-                            vim.lsp.start(ClientCfg, { bufnr = args.buf })
                         end,
-                        desc('Force Server Stop', true, args.buf),
-                        buffer = args.buf,
+                        desc('Force Server Stop'),
                     },
                     ['<leader>lSs'] = {
                         function()
-                            vim.lsp.stop_client(client.id, false)
+                            vim.lsp.stop_client(client.id)
+
+                            ---@type vim.lsp.Client
+                            _G.LAST_LSP = vim.deepcopy(client)
                         end,
-                        desc('Server Stop', true, args.buf),
-                        buffer = args.buf,
+                        desc('Server Stop'),
                     },
                     ['<leader>lSi'] = {
                         '<CMD>LspInfo<CR>',
-                        desc('Show LSP Info', true, args.buf),
-                        buffer = args.buf,
+                        desc('Show LSP Info'),
                     },
                 }
 
-                Keymaps({ n = Keys })
+                Keymaps({ n = Keys }, args.buf)
             end,
         },
     },
     ['LspProgress'] = {
         {
             group = augroup('UserLsp', { clear = false }),
-            pattern = '*',
-            callback = function()
+
+            ---@param args vim.api.keyset.create_autocmd.callback_args
+            ---@diagnostic disable-next-line:unused-local
+            callback = function(args)
                 vim.cmd.redrawstatus()
             end,
         },
     },
 }
 
----@param self Lsp.SubMods.Autocmd
----@param override? AuRepeat
-function Autocmd:setup(override)
-    override = is_tbl(override) and override or {}
-
-    self.autocommands = vim.tbl_deep_extend('keep', override, vim.deepcopy(self.autocommands))
-
-    au(self.autocommands)
-end
-
 ---@param O? table
----@return table|Lsp.SubMods.Autocmd
+---@return table|Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
 function Autocmd.new(O)
     O = is_nil(O) and O or {}
 
-    return setmetatable(O, { __index = Autocmd })
+    return setmetatable(O, {
+        __index = Autocmd,
+
+        ---@param self Lsp.SubMods.Autocmd
+        ---@param override? AuRepeat
+        __call = function(self, override)
+            override = is_tbl(override) and override or {}
+
+            self.autocommands =
+                vim.tbl_deep_extend('keep', override, vim.deepcopy(self.autocommands))
+
+            au(self.autocommands)
+        end,
+    })
 end
+
+local A = Autocmd.new()
 
 User:register_plugin('plugin.lsp.autocmd')
 
-return Autocmd
+return A
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

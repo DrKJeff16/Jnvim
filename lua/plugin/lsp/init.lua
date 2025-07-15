@@ -19,7 +19,7 @@ local INFO = vim.log.levels.INFO
 
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
-Kinds:setup()
+Kinds()
 
 ---@type Lsp.Server|fun()
 local Server = {}
@@ -149,13 +149,11 @@ function Server.new(O)
             local Keymaps = require('user_api.config.keymaps')
             Keymaps(Keys)
 
-            ---@type Lsp.SubMods.Autocmd
             local Autocmd = require('plugin.lsp.autocmd')
-            Autocmd:setup()
+            Autocmd()
 
-            ---@type Lsp.SubMods.Trouble
             local Trouble = require('plugin.lsp.trouble')
-            Trouble:setup()
+            Trouble()
         end,
     })
 end

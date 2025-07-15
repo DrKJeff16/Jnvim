@@ -36,22 +36,21 @@ error('(plugin._types.lsp): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ER
 ---@field Value? string
 ---@field Variable? string
 
+---@alias Lsp.SubMods.KindsFun fun()
+
 ---@class Lsp.SubMods.Kinds
 ---@field icons Lsp.SubMods.Kinds.Icons
----@field setup fun(self: Lsp.SubMods.Kinds)
----@field new fun(O: table?): table|Lsp.SubMods.Kinds
+---@field new fun(O: table?): table|Lsp.SubMods.Kinds|Lsp.SubMods.KindsFun
 
 ---@class Lsp.SubMods.Trouble
 ---@field Opts trouble.Config
 ---@field Keys AllModeMaps
----@field setup fun(self: Lsp.SubMods.Trouble, O: table|trouble.Config?)
----@field new fun(O: table?): table|Lsp.SubMods.Trouble
+---@field new fun(O: table?): table|Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
 
 ---@class Lsp.SubMods.Autocmd
 ---@field AUKeys AllModeMaps
 ---@field autocommands AuRepeat
----@field setup fun(self: Lsp.SubMods.Autocmd, override: AuRepeat?)
----@field new fun(O: table?): table|Lsp.SubMods.Autocmd
+---@field new fun(O: table?): table|Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
 
 ---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
 
