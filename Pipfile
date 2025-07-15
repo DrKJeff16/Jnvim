@@ -4,13 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pynvim = "*"
 typing = "*"
 typing-extensions = "*"
 argparse = "*"
 argcomplete = "*"
+argh = "*"
 setuptools = "*"
-pre-commit = "*"
 
 [dev-packages]
 pynvim = "*"
