@@ -28,14 +28,11 @@ local Completion = {
         'L3MON4D3/LuaSnip',
         lazy = true,
         version = false,
-        dependencies = {
-            'rafamadriz/friendly-snippets',
-        },
+        dependencies = { 'rafamadriz/friendly-snippets' },
         build = executable('make') and 'make -j $(nproc) install_jsregexp' or false,
     },
     {
         'onsails/lspkind.nvim',
-        lazy = true,
         version = false,
     },
 }

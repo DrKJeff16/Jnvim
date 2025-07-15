@@ -73,13 +73,6 @@ local UI = {
         config = source('plugin.ibl'),
         cond = not in_console(),
     },
-    {
-        'HiPhish/rainbow-delimiters.nvim',
-        version = false,
-        config = source('plugin.rainbow_delimiters'),
-        cond = not in_console(),
-        enabled = false,
-    },
 
     -- File Tree
     {
@@ -94,33 +87,6 @@ local UI = {
             vim.g.loaded_netrwPlugin = 1
         end,
         config = source('plugin.nvim_tree'),
-    },
-
-    {
-        'nvim-neo-tree/neo-tree.nvim',
-        version = false,
-        dependencies = {
-            'plenary.nvim',
-            'nvim-web-devicons',
-            'MunifTanjim/nui.nvim',
-            '3rd/image.nvim',
-        },
-        init = function()
-            --- Disable `netrw`
-            vim.g.loaded_netrw = 1
-            vim.g.loaded_netrwPlugin = 1
-        end,
-        config = source('plugin.neo_tree'),
-        cond = not in_console(),
-        enabled = false,
-    },
-
-    {
-        'nvim-zh/colorful-winsep.nvim',
-        version = false,
-        config = source('plugin.colorful_winsep'),
-        cond = not in_console(),
-        enabled = false,
     },
 
     {

@@ -11,13 +11,6 @@ local in_console = Check.in_console
 ---@type LazySpecs
 local Editing = {
     {
-        'folke/persistence.nvim',
-        lazy = false,
-        version = false,
-        config = source('plugin.persistence'),
-        enabled = false,
-    },
-    {
         'olimorris/persisted.nvim',
         lazy = false,
         version = false,
@@ -25,7 +18,7 @@ local Editing = {
     },
     {
         'folke/twilight.nvim',
-        lazy = true,
+        event = 'VeryLazy',
         version = false,
         config = source('plugin.twilight'),
         cond = not in_console(),
@@ -45,6 +38,7 @@ local Editing = {
         'tpope/vim-endwise',
         lazy = false,
         version = false,
+        init = flag_installed('endwise'),
     },
 
     --- TODO COMMENTS
@@ -56,7 +50,6 @@ local Editing = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-lua/plenary.nvim',
         },
-        init = CfgUtil.set_tgc(),
         config = source('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },
@@ -91,9 +84,8 @@ local Editing = {
         event = 'VeryLazy',
         version = false,
         config = source('plugin.image'),
-        cond = not in_console(),
+        cond = (executable('ueberzugpp') or executable('kitty')) and not in_console(),
     },
-    -- TODO: Configure this plugin
     {
         'lukas-reineke/headlines.nvim',
         version = false,

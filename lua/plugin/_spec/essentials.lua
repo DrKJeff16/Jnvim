@@ -55,7 +55,7 @@ local Essentials = {
         'echasnovski/mini.nvim',
         version = false,
         config = source('plugin.mini'),
-        cond = vim_has('nvim-0.9'),
+        cond = vim_has('nvim-0.10'),
     },
     {
         'tiagovla/scope.nvim',
@@ -81,9 +81,6 @@ local Essentials = {
         lazy = false,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
-        init = function()
-            set_tgc()
-        end,
         config = source('plugin.notify'),
         cond = not in_console(),
     },

@@ -32,6 +32,7 @@ local LSP = {
     },
     {
         'folke/trouble.nvim',
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
     },
@@ -41,12 +42,6 @@ local LSP = {
         version = false,
         config = source('plugin.lsp.clangd'),
         cond = executable('clangd') and not in_console(),
-    },
-    {
-        'smjonas/inc-rename.nvim',
-        version = false,
-        config = source('plugin.lsp.inc_rename'),
-        enabled = false,
     },
 }
 

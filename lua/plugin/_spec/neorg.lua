@@ -10,7 +10,6 @@ local in_console = require('user_api.check').in_console
 local Neorg = {
     {
         'nvim-neorg/neorg',
-        ft = 'norg',
         version = false,
         config = source('plugin.neorg'),
         cond = not (Termux:validate() or in_console()),
