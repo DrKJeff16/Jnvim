@@ -1,7 +1,9 @@
+local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
+local desc = User.maps.kmap.desc
 
 if not exists('twilight') then
     return
@@ -29,6 +31,26 @@ Twilight.setup({
     },
     exclude = {}, -- exclude these filetypes
 })
+
+---@type AllMaps
+local Keys = {
+    ['<leader>ut'] = { group = '+Twilight' },
+
+    ['<leader>utt'] = {
+        Twilight.toggle,
+        desc('Toggle Twilight'),
+    },
+    ['<leader>ute'] = {
+        Twilight.enable,
+        desc('Enable Twilight'),
+    },
+    ['<leader>utd'] = {
+        Twilight.disable,
+        desc('Disable Twilight'),
+    },
+}
+
+Keymaps({ n = Keys })
 
 User:register_plugin('plugin.twilight')
 

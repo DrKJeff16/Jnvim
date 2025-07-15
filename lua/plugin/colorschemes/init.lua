@@ -88,7 +88,8 @@ function Colorschemes.new(O)
         __call = function(self, color, ...)
             ---@type AllMaps
             local CscKeys = {
-                ['<leader>vc'] = { group = '+Colorschemes' },
+                ['<leader>u'] = { group = '+UI' },
+                ['<leader>uc'] = { group = '+Colorschemes' },
             }
 
             local csc_group = 'A'
@@ -100,7 +101,7 @@ function Colorschemes.new(O)
             -- NOTE: This was also a pain in the ass
             --
             -- Generate keybinds for each colorscheme that is found
-            -- Try checking them by typing `<leader>vc` IN NORMAL MODE
+            -- Try checking them by typing `<leader>uc` IN NORMAL MODE
             for _, name in next, self.OPTIONS do
                 ---@type AllColorSubMods
                 local TColor = self[name]
@@ -111,17 +112,17 @@ function Colorschemes.new(O)
 
                 table.insert(valid, name)
 
-                CscKeys['<leader>vc' .. csc_group] = {
+                CscKeys['<leader>uc' .. csc_group] = {
                     group = '+Group ' .. csc_group,
                 }
 
                 if type_not_empty('table', TColor.variants) then
                     local v = 'a'
                     for _, variant in next, TColor.variants do
-                        CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
-                            group = '+' .. capitalize(name),
+                        CscKeys['<leader>uc' .. csc_group .. tostring(i)] = {
+                            group = string.format('+%s', capitalize(name)),
                         }
-                        CscKeys['<leader>vc' .. csc_group .. tostring(i) .. v] = {
+                        CscKeys['<leader>uc' .. csc_group .. tostring(i) .. v] = {
                             function()
                                 TColor:setup(variant)
                             end,
@@ -137,7 +138,7 @@ function Colorschemes.new(O)
                         v = displace_letter(v, 'next', false)
                     end
                 else
-                    CscKeys['<leader>vc' .. csc_group .. tostring(i)] = {
+                    CscKeys['<leader>uc' .. csc_group .. tostring(i)] = {
                         function()
                             TColor:setup()
                         end,

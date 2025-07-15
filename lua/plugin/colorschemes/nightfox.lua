@@ -42,7 +42,9 @@ function Nightfox:setup(variant, transparent, override)
 
     local compile_path = vim.fn.stdpath('state') .. '/nightfox'
 
-    require('nightfox').setup(vim.tbl_deep_extend('keep', override, {
+    local NF = require('nightfox')
+
+    NF.setup(vim.tbl_deep_extend('keep', override, {
         options = {
             -- Compiled file's destination location
             compile_path = compile_path,
@@ -74,6 +76,7 @@ function Nightfox:setup(variant, transparent, override)
 
             modules = { -- List of various plugins and additional options
                 barbar = exists('barbar'),
+                blink = true,
                 coc = { enable = false, background = true },
                 cmp = exists('cmp'),
                 dashboard = exists('dashboard'),
@@ -91,19 +94,19 @@ function Nightfox:setup(variant, transparent, override)
                 lsp_semantic_tokens = true,
                 mini = true,
                 native_lsp = { enable = true, background = true },
-                notify = exists('notify'),
+                notify = true,
                 nvimtree = exists('nvim-tree'),
+                pounce = true,
                 telescope = exists('telescope'),
-                treesitter = exists('treesitter'),
-                whichkey = exists('which-key'),
+                treesitter = true,
+                whichkey = true,
             },
         },
     }))
 
     vim.cmd(self.mod_cmd .. variant)
-    self.mod_cmd = self.mod_cmd .. variant
 
-    require('nightfox').compile()
+    NF.compile()
 end
 
 ---@param O? table

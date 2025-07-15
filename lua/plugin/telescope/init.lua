@@ -220,10 +220,9 @@ local Keys = {
         desc('Telescope Dynamic Workspace Symbols'),
     },
     ['<leader>lwd'] = { Builtin.lsp_workspace_symbols, desc('Telescope Workspace Symbols') },
-    ['<leader>vC'] = { Builtin.highlights, desc('Telescope Highlights') },
     ['<leader>vK'] = { Builtin.keymaps, desc('Telescope Keymaps') },
     ['<leader>vO'] = { Builtin.vim_options, desc('Telescope Vim Options') },
-    ['<leader>vcC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
+    ['<leader>uC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
 
     ['<leader><C-t>b/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
     ['<leader><C-t>bA'] = { Builtin.autocommands, desc('Autocommands') },
