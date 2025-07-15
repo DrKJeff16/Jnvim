@@ -433,7 +433,7 @@ for mod, ext in next, known_exts do
     ::continue::
 end
 
-local group = augroup('UserTelescope', { clear = false })
+local group = augroup('UserTelescope', { clear = true })
 
 ---@type AuRepeat
 local au_tbl = {
