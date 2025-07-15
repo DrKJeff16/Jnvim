@@ -72,6 +72,12 @@ function Opts:optset(O)
 
     O = is_tbl(O) and O or {}
 
+    if
+        not vim.api.nvim_get_option_value('modifiable', { buf = vim.api.nvim_get_current_buf() })
+    then
+        return
+    end
+
     local opts = long_opts_convert(O)
     local msg = ''
 
