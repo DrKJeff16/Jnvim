@@ -1,5 +1,4 @@
 ---@diagnostic disable:missing-fields
----@diagnostic disable:need-check-nil
 
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'
