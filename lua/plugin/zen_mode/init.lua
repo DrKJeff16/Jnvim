@@ -28,8 +28,6 @@ ZM.setup({
         options = {
             signcolumn = 'no', -- disable signcolumn
             number = false, -- disable number column
-            numberwidth = 4,
-            relativenumber = false, -- disable relative numbers
             cursorline = true, -- disable cursorline
             cursorcolumn = false, -- disable cursor column
             foldcolumn = '0', -- disable fold column
@@ -69,7 +67,6 @@ ZM.setup({
         -- uses `alacritty msg` subcommand to change font size
         alacritty = {
             enabled = executable('alacritty'),
-            font = '22', -- font size
         },
         -- this will change the font size on wezterm when in zen mode
         -- See alse also the Plugins/Wezterm section in this projects README
