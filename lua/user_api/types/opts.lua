@@ -4,6 +4,8 @@ error('(user_api.types.opts): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.
 
 ---@alias User.Opts.Spec table|vim.bo|vim.wo
 
+---@alias User.Opts.CallerFun fun(override: table|User.Opts.Spec?, verbose: boolean?)
+
 ---@class User.Opts
 ---@field optset fun(self: User.Opts, opts: User.Opts.Spec, verbose: boolean?)
 ---@field toggleable string[]

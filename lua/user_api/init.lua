@@ -29,7 +29,7 @@ User.highlight = require('user_api.highlight')
 ---@type User.Maps
 User.maps = require('user_api.maps')
 
----@type User.Opts
+---@type User.Opts|User.Opts.CallerFun
 User.opts = require('user_api.opts')
 
 ---@type User.Update
