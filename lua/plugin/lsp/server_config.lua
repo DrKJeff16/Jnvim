@@ -6,6 +6,9 @@ local User = require('user_api')
 
 local uv = vim.uv or vim.loop
 
+local copy = vim.deepcopy
+local deep_extend = vim.tbl_deep_extend
+
 ---@type Lsp.Server.Clients
 local Clients = {}
 
@@ -51,7 +54,9 @@ Clients.lua_ls = {
             end
         end
 
-        client.config.settings.Lua = vim.tbl_deep_extend('keep', client.config.settings.Lua, {
+        local lua_settings = copy(client.config.settings.Lua)
+
+        local overrides = {
             addonManager = { enable = true },
             codeLens = { enable = true },
             completion = {
@@ -124,17 +129,19 @@ Clients.lua_ls = {
             -- Make the server aware of Neovim runtime files
             workspace = {
                 checkThirdParty = false,
-                library = vim.api.nvim_get_runtime_file('', true),
-                -- library = {
-                --     vim.env.VIMRUNTIME,
-                --
-                --     -- Depending on the usage, you might want to add additional paths
-                --     -- here.
-                --     -- '${3rd}/luv/library',
-                --     -- '${3rd}/busted/library',
-                -- },
+                useGitIgnore = true,
+                library = {
+                    vim.env.VIMRUNTIME,
+                    -- vim.api.nvim_get_runtime_file('', true),
+                    -- Depending on the usage, you might want to add additional paths
+                    -- here.
+                    '${3rd}/luv/library',
+                    '${3rd}/busted/library',
+                },
             },
-        })
+        }
+
+        client.config.settings.Lua = deep_extend('force', lua_settings, overrides)
     end,
 
     settings = {
@@ -156,7 +163,6 @@ Clients.lua_ls = {
             diagnostics = {
                 disable = { 'inject-field', 'missing-fields' },
                 enable = true,
-                globals = { 'vim' },
             },
             format = { enable = true },
             hint = {
@@ -211,15 +217,14 @@ Clients.lua_ls = {
             workspace = {
                 checkThirdParty = false,
                 useGitIgnore = true,
-                library = vim.api.nvim_get_runtime_file('', true),
-                -- library = {
-                --     vim.env.VIMRUNTIME,
-                --
-                --     -- Depending on the usage, you might want to add additional paths
-                --     -- here.
-                --     -- '${3rd}/luv/library',
-                --     -- '${3rd}/busted/library',
-                -- },
+                library = {
+                    -- vim.env.VIMRUNTIME,
+                    -- vim.api.nvim_get_runtime_file('', true),
+                    -- Depending on the usage, you might want to add additional paths
+                    -- here.
+                    '${3rd}/luv/library',
+                    '${3rd}/busted/library',
+                },
             },
         },
     },
