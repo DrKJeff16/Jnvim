@@ -3,6 +3,7 @@
 local CfgUtil = require('config.util')
 
 local flag_installed = CfgUtil.flag_installed
+local source = CfgUtil.source
 
 ---@type LazySpecs
 local Utils = {
@@ -10,6 +11,13 @@ local Utils = {
         'vim-scripts/UTL.vim',
         version = false,
         init = flag_installed('utl'),
+    },
+
+    {
+        'aspeddro/pandoc.nvim',
+        lazy = true,
+        version = false,
+        config = source('plugin.pandoc'),
     },
 }
 
