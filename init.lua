@@ -20,9 +20,7 @@ local Commands = require('user_api.commands') ---@see User.Commands User command
 local Distro = require('user_api.distro') ---@see User.Distro Platform-specific optimizations (**WIP**)
 
 local desc = require('user_api.maps.kmap').desc ---@see User.Maps.Keymap.desc
-local in_console = Check.in_console ---@see User.Check.in_console
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
-local exists = Check.exists.module ---@see User.Check.Existance.module
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 _G.in_console = require('user_api.check').in_console
@@ -41,23 +39,8 @@ function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
 
--- Set `<Leader>` key
-Keymaps:set_leader('<Space>')
-
-vim.g.markdown_minlines = 500
-
---- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
---- Uncomment to use system clipboard
--- vim.o.clipboard = 'unnamedplus'
-
--- List of manually-callable plugins
-local L = require('config.lazy')
-
 ---@see User.Opts.setup
-Opts:setup({ ---@see User.Opts.Spec For more info
+Opts({ ---@see User.Opts.Spec For more info
     autoread = true,
     backup = false,
     bg = 'dark', -- `background`
@@ -80,6 +63,7 @@ Opts:setup({ ---@see User.Opts.Spec For more info
         q = true,
         w = true,
     },
+    foldmethod = 'manual',
     hidden = true,
     hlg = {
         'en',
@@ -107,9 +91,23 @@ Opts:setup({ ---@see User.Opts.Spec For more info
     sts = 4, -- `softtabstop`
     ts = 4, -- `tabstop`
     title = true,
-    termguicolors = not in_console(),
     wrap = Distro.termux:validate(),
 })
+
+-- Set `<Leader>` key
+Keymaps:set_leader('<Space>')
+
+vim.g.markdown_minlines = 500
+
+--- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+--- Uncomment to use system clipboard
+-- vim.o.clipboard = 'unnamedplus'
+
+-- List of manually-callable plugins
+local L = require('config.lazy')
 
 -- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
 -- Setup keymaps
@@ -201,8 +199,11 @@ Neovide:setup()
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
     local opt_set = vim.api.nvim_set_option_value
+    local opt_get = vim.api.nvim_get_option_value
     local ft_get = Util.ft_get
     local bt_get = Util.bt_get
+
+    local buf = curr_buf()
 
     vim.cmd.noh() -- HACK: Disable highlights when reloading
 
@@ -224,8 +225,8 @@ vim.schedule(function()
         },
     }
 
-    local curr_ft = ft_get(curr_buf())
-    local curr_bt = bt_get(curr_buf())
+    local curr_ft = ft_get(buf)
+    local curr_bt = bt_get(buf)
 
     -- HACK: In case we're on specific buffer (file|buf)types
     if not (in_tbl(DISABLE_ON.ft, curr_ft) or in_tbl(DISABLE_ON.bt, curr_bt)) then
@@ -234,6 +235,10 @@ vim.schedule(function()
 
     opt_set('number', false, { scope = 'local' })
     opt_set('signcolumn', 'no', { scope = 'local' })
+
+    if opt_get('modifiable', { buf = buf }) then
+        opt_set('foldmethod', 'manual', { buf = buf })
+    end
 end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

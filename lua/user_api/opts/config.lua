@@ -2,11 +2,7 @@
 
 ---@module 'user_api.types.opts'
 
-local Exists = require('user_api.check.exists')
-
-local executable = Exists.executable
-local vim_exists = Exists.vim_exists
-local in_console = require('user_api.check').in_console
+local executable = require('user_api.check.exists').executable
 
 ---@type User.Opts.Spec
 local Defaults = {
@@ -19,8 +15,8 @@ local Defaults = {
     encoding = 'utf-8',
     errorbells = false,
     et = true, -- `expandtab`
-    fileignorecase = is_windows,
-    fo = {
+    foldmethod = 'manual',
+    formatoptions = {
         b = true,
         c = false,
         j = true,
@@ -30,11 +26,10 @@ local Defaults = {
         p = true,
         q = true,
         w = true,
-    }, -- `formatoptions`
-    foldmethod = 'manual',
+    },
+    hidden = true,
     hlg = { 'en' }, -- `helplang`
     hlsearch = true,
-    hid = true, -- `hidden`
     incsearch = true,
     ls = 2, -- `laststatus`
     makeprg = 'make',
@@ -50,9 +45,8 @@ local Defaults = {
     nu = true, -- `number`
     nuw = 4, -- `numberwidth`
     pi = false, -- `preserveindent`
-    rnu = true, -- `relativenumber`
-    ru = true, -- `ruler`
-    sw = 4, -- `shiftwidth`
+    relativenumber = false,
+    ruler = true,
     showcmd = true,
     showmatch = true,
     showmode = false,
@@ -64,8 +58,10 @@ local Defaults = {
     spell = false,
     splitbelow = true,
     splitright = true,
+    stal = 2, -- `showtabline`
+    sw = 4, -- `shiftwidth`
+    tgc = true, -- `termguicolors`
     ts = 4, -- `tabstop`
-    tgc = vim_exists('+termguicolors') and not require('user_api.check').in_console() or false, -- `termguicolors`
     updatecount = 100,
     updatetime = 1000,
     visualbell = false,
