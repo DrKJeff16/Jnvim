@@ -235,10 +235,6 @@ vim.schedule(function()
 
     opt_set('number', false, { scope = 'local' })
     opt_set('signcolumn', 'no', { scope = 'local' })
-
-    if opt_get('modifiable', { buf = buf }) then
-        opt_set('foldmethod', 'manual', { buf = buf })
-    end
 end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
