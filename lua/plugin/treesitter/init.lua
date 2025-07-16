@@ -3,7 +3,6 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 
 if not exists('nvim-treesitter') then
     return
@@ -11,6 +10,8 @@ end
 
 local fs_stat = (vim.uv or vim.loop).fs_stat
 local buf_name = vim.api.nvim_buf_get_name
+local in_tbl = vim.tbl_contains
+local curr_buf = vim.api.nvim_get_current_buf
 
 local Cfg = require('nvim-treesitter.configs')
 
@@ -68,22 +69,21 @@ local Opts = {
         disable = function(lang, buf)
             local max_fs = 1024 * 1024
             local ok, stats = pcall(fs_stat, buf_name(buf))
+            local ft_get = Util.ft_get
 
             local disable_ft = {
                 'text',
             }
 
-            local res = false
+            local res = in_tbl(disable_ft, ft_get(buf or curr_buf()))
 
-            res = vim.tbl_contains(disable_ft, Util.ft_get(buf or 0))
-
-            return res or ok and not is_nil(stats) and stats.size > max_fs ---@diagnostic disable-line
+            return res or ok and not stats == nil and stats.size > max_fs ---@diagnostic disable-line
         end,
         additional_vim_regex_highlighting = false,
     },
 
     indent = { enable = true },
-    incremental_selection = { enable = false },
+    incremental_selection = { enable = true },
 
     textobjects = { enable = true },
 }
@@ -105,9 +105,7 @@ Cfg.setup(Opts)
 require('plugin.treesitter.context')
 
 if exists('ts_context_commentstring') then
-    require('ts_context_commentstring').setup({
-        enable_autocmd = not exists('Comment'),
-    })
+    require('ts_context_commentstring').setup()
 end
 
 User:register_plugin('plugin.treesitter')
