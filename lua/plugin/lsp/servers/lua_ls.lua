@@ -3,6 +3,69 @@ local User = require('user_api')
 User:register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
+    cmd = { 'lua-language-server' },
+    filetypes = { 'lua' },
+    root_markers = {
+        '.luarc.json',
+        '.luarc.jsonc',
+        '.luacheckrc',
+        '.stylua.toml',
+        'stylua.toml',
+        'selene.toml',
+        'selene.yml',
+        '.git',
+    },
+
+    on_init = function(client)
+        if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if
+                path ~= vim.fn.stdpath('config')
+                and (
+                    vim.uv.fs_stat(path .. '/.luarc.json')
+                    or vim.uv.fs_stat(path .. '/.luarc.jsonc')
+                )
+            then
+                return
+            end
+        end
+
+        local library = { unpack(vim.api.nvim_get_runtime_file('', true)) }
+
+        for i, lib in next, library do
+            if lib == vim.env.VIMRUNTIME then
+                table.remove(library, i)
+            end
+        end
+
+        table.insert(library, 1, vim.env.VIMRUNTIME)
+        table.insert(library, '${3rd}/luv/library')
+        table.insert(library, '${3rd}/busted/library')
+
+        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+            diagnostics = {
+                enable = true,
+                globals = { 'vim' },
+            },
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most
+                -- likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+                -- Tell the language server how to find Lua modules same way as Neovim
+                -- (see `:h lua-module-load`)
+                path = {
+                    'lua/?.lua',
+                    'lua/?/init.lua',
+                },
+            },
+            workspace = {
+                checkThirdParty = false,
+                useGitIgnore = true,
+                library = library,
+            },
+        })
+    end,
+
     settings = {
         Lua = {
             addonManager = { enable = true },
@@ -22,7 +85,13 @@ return {
             diagnostics = {
                 enable = true,
             },
-            format = { enable = true },
+            format = {
+                enable = true,
+                defaultConfig = {
+                    indent_style = 'space',
+                    indent_size = 4,
+                },
+            },
             hint = {
                 arrayIndex = 'Auto',
                 await = true,
@@ -45,11 +114,6 @@ return {
                 fileEncoding = 'utf8',
                 pathStrict = false,
                 unicodeName = false,
-                -- Tell the language server which version of Lua you're using (most
-                -- likely LuaJIT in the case of Neovim)
-                version = 'LuaJIT',
-                -- Tell the language server how to find Lua modules same way as Neovim
-                -- (see `:h lua-module-load`)
                 path = {
                     'lua/?.lua',
                     'lua/?/init.lua',
