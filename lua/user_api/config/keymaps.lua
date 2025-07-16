@@ -88,7 +88,7 @@ local function buf_del(force)
     end
 end
 
----@type User.Config.Keymaps|KeymapsFun
+---@type User.Config.Keymaps|User.Config.Keymaps.CallerFun
 local Keymaps = {}
 
 Keymaps.NOP = {
@@ -692,7 +692,7 @@ function Keymaps:set_leader(leader, local_leader, force)
 end
 
 ---@param O? table
----@return table|User.Config.Keymaps|KeymapsFun
+---@return table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 function Keymaps.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {

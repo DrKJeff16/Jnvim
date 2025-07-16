@@ -4,6 +4,8 @@ error('(user_api.types.keymaps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.leve
 
 ---@module 'user_api.types.maps'
 
+---@alias User.Config.Keymaps.CallerFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+
 ---@class Keymaps.PreExec
 ---@field ft string[]
 ---@field bt string[]
@@ -13,6 +15,4 @@ error('(user_api.types.keymaps): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.leve
 ---@field no_oped? boolean
 ---@field Keys AllModeMaps
 ---@field set_leader fun(self: User.Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field new fun(O: table?): table|User.Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
-
----@alias KeymapsFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+---@field new fun(O: table?): table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
