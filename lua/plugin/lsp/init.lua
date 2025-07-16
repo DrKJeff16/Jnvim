@@ -112,7 +112,7 @@ function Server.new(O)
             for client, v in next, self.Clients do
                 local new_client = self.populate(client, v)
 
-                vim.lsp.config(client, new_client)
+                vim.lsp.config[client] = new_client
                 vim.lsp.enable(client)
 
                 table.insert(self.client_names, client)

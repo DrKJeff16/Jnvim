@@ -15,6 +15,8 @@ local au = Au.au_repeated
 local notify = Notify.notify
 
 local augroup = vim.api.nvim_create_augroup
+local copy = vim.deepcopy
+local d_extend = vim.tbl_deep_extend
 
 local INFO = vim.log.levels.INFO
 
@@ -123,31 +125,21 @@ Autocmd.autocommands = {
 
                     ['<leader>lSR'] = {
                         function()
-                            _G.LAST_LSP = vim.deepcopy(client)
-
-                            vim.lsp.stop_client(client.id, true)
-
-                            vim.schedule(function()
-                                vim.lsp.start(LAST_LSP.config, { bufnr = args.buf })
-                            end)
+                            vim.lsp.enable(client.name, false)
+                            vim.lsp.enable(client.name, true)
                         end,
                         desc('Force Server Restart'),
                     },
                     ['<leader>lSr'] = {
                         function()
-                            _G.LAST_LSP = vim.deepcopy(client)
-
-                            vim.lsp.stop_client(client.id)
-
-                            vim.schedule(function()
-                                vim.lsp.start(LAST_LSP.config, { bufnr = args.buf })
-                            end)
+                            vim.lsp.enable(client.name, false)
+                            vim.lsp.enable(client.name, true)
                         end,
                         desc('Server Restart'),
                     },
                     ['<leader>lSS'] = {
                         function()
-                            _G.LAST_LSP = vim.deepcopy(client)
+                            _G.LAST_LSP = copy(client.config)
 
                             vim.lsp.stop_client(client.id, true)
                         end,
@@ -155,15 +147,20 @@ Autocmd.autocommands = {
                     },
                     ['<leader>lSs'] = {
                         function()
-                            vim.lsp.stop_client(client.id)
+                            _G.LAST_LSP = copy(client.config)
 
-                            ---@type vim.lsp.Client
-                            _G.LAST_LSP = vim.deepcopy(client)
+                            vim.lsp.stop_client(client.id)
                         end,
                         desc('Server Stop'),
                     },
                     ['<leader>lSi'] = {
-                        '<CMD>LspInfo<CR>',
+                        function()
+                            local config = copy(client.config)
+
+                            table.sort(config)
+
+                            vim.notify(string.format('%s: %s', client.name, inspect(config)), INFO)
+                        end,
                         desc('Show LSP Info'),
                     },
                 }
@@ -198,8 +195,7 @@ function Autocmd.new(O)
         __call = function(self, override)
             override = is_tbl(override) and override or {}
 
-            self.autocommands =
-                vim.tbl_deep_extend('keep', override, vim.deepcopy(self.autocommands))
+            self.autocommands = d_extend('keep', override, copy(self.autocommands))
 
             au(self.autocommands)
         end,
