@@ -29,9 +29,7 @@ function Util.has_words_before()
     local win_cursor = vim.api.nvim_win_get_cursor
     local curr_win = vim.api.nvim_get_current_win
 
-    unpack = unpack or table.unpack
-
-    local line, col = unpack(win_cursor(curr_win()))
+    local line, col = (unpack or table.unpack)(win_cursor(curr_win()))
     return col ~= 0 and buf_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
@@ -385,20 +383,34 @@ function Util:setup_autocmd()
                         end
 
                         if ft == 'lua' then
-                            -- Make sure the buffer is modifiable
-                            if not executable('stylua') then
-                                self.notify.notify('No stylua???', 'warn')
+                            if not optget('modifiable', { scope = 'local' }) then
                                 return
                             end
 
-                            if not optget('modifiable', { scope = 'local' }) then
+                            if not executable('stylua') then
                                 return
                             end
 
                             Keymaps({
                                 n = {
                                     ['<leader><C-l>'] = {
-                                        ':silent !stylua %<CR>',
+                                        function()
+                                            ---@diagnostic disable-next-line:param-type-mismatch
+                                            local ok, _ = pcall(vim.cmd, 'silent! !stylua %')
+
+                                            if ok then
+                                                self.notify.notify(
+                                                    'Formatted successfully!',
+                                                    'info',
+                                                    {
+                                                        title = 'StyLua',
+                                                        animate = true,
+                                                        timeout = 750,
+                                                        hide_from_history = true,
+                                                    }
+                                                )
+                                            end
+                                        end,
                                         desc('Format With `stylua`'),
                                     },
                                 },
@@ -418,7 +430,23 @@ function Util:setup_autocmd()
                             Keymaps({
                                 n = {
                                     ['<leader><C-l>'] = {
-                                        ':silent !isort %<CR>',
+                                        function()
+                                            ---@diagnostic disable-next-line:param-type-mismatch
+                                            local ok, _ = pcall(vim.cmd, 'silent! !isort %')
+
+                                            if ok then
+                                                self.notify.notify(
+                                                    'Formatted successfully!',
+                                                    'info',
+                                                    {
+                                                        title = 'isort',
+                                                        animate = true,
+                                                        timeout = 750,
+                                                        hide_from_history = true,
+                                                    }
+                                                )
+                                            end
+                                        end,
                                         desc('Format With `isort`'),
                                     },
                                 },
