@@ -572,7 +572,19 @@ Keymaps.Keys = {
         },
 
         ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
-        ['<leader>qq'] = { vim.cmd.qa, desc('Quit Nvim') },
+        ['<leader>qq'] = {
+            function()
+                if require('user_api.check.exists').module('toggleterm') then
+                    local T = require('toggleterm.terminal').get_all(true)
+
+                    for _, term in next, T do
+                        term:close()
+                    end
+                end
+                vim.cmd.qa()
+            end,
+            desc('Quit Nvim'),
+        },
 
         ['<leader>tA'] = { vim.cmd.tabnew, desc('New Tab') },
         ['<leader>tD'] = { ':tabclose!<CR>', desc('Close Tab Forcefully') },

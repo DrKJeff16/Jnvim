@@ -1,5 +1,3 @@
----@module 'plugin._types.toggleterm'
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
@@ -33,7 +31,7 @@ TT.setup({
         return FACTOR
     end,
 
-    open_mapping = [[<c-t>]],
+    open_mapping = [[<C-t>]],
 
     autochdir = true,
     hide_numbers = true,
@@ -94,8 +92,8 @@ TT.setup({
 })
 
 ---@param bufnr? integer
-function _G.set_terminal_keymaps(bufnr)
-    bufnr = is_int(bufnr) and bufnr or 0
+local function set_terminal_keymaps(bufnr)
+    bufnr = is_int(bufnr) and bufnr or nil
 
     ---@type AllMaps
     local Keys = {
@@ -149,17 +147,23 @@ local Keys = {
 
         ['<C-t>'] = {
             cmd_str,
-            desc('Toggle', true, 0),
+            desc('Toggle Terminal'),
         },
         ['<leader>Tt'] = {
             cmd_str,
-            desc('Toggle', true, 0),
+            desc('Toggle Terminal'),
         },
     },
     i = {
         ['<C-t>'] = {
             '<Esc>' .. cmd_str,
-            desc('Toggle', true, 0),
+            desc('Toggle Terminal'),
+        },
+    },
+    t = {
+        ['<C-t>'] = {
+            cmd_str,
+            desc('Toggle Terminal'),
         },
     },
 }
