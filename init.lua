@@ -38,8 +38,8 @@ function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
 
---- Call runtimepath optimizations for Arch Linux (WIP)
-Distro:setup()
+--- Call runtimepath optimizations for specific platforms
+Distro()
 
 ---@see User.Opts.setup
 Opts({ ---@see User.Opts.Spec For more info

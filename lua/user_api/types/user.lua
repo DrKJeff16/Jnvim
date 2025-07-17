@@ -16,7 +16,7 @@ error('(user_api.types.user): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.
 ---@field check User.Check
 ---@field config User.Config
 ---@field commands User.Commands
----@field distro User.Distro
+---@field distro User.Distro|fun()
 ---@field highlight User.Hl
 ---@field maps User.Maps
 ---@field opts User.Opts

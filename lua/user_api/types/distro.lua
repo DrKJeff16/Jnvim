@@ -22,6 +22,6 @@ error('(user_api.types.distro): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.level
 ---@class User.Distro
 ---@field archlinux User.Distro.Archlinux
 ---@field termux User.Distro.Termux
----@field setup fun(self: User.Distro)
+---@field new fun(O: table?): table|User.Distro|fun(verbose: boolean?)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
