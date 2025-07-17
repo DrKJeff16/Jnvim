@@ -54,13 +54,6 @@ local Editing = {
         cond = executable('rg') and not in_console(),
     },
     {
-        'windwp/nvim-autopairs',
-        main = 'nvim-autopairs',
-        event = 'VeryLazy',
-        version = false,
-        config = source('plugin.autopairs'),
-    },
-    {
         'vim-scripts/a.vim',
         event = 'VeryLazy',
         version = false,
