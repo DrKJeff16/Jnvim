@@ -1,7 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
----@module 'plugin._types.lsp'
+---@module 'plugin._types.lazy'
 
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
@@ -38,6 +37,9 @@ end
 function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
+
+--- Call runtimepath optimizations for Arch Linux (WIP)
+Distro:setup()
 
 ---@see User.Opts.setup
 Opts({ ---@see User.Opts.Spec For more info
@@ -145,9 +147,7 @@ Keymaps({
             desc('Indent Whole File'),
         },
         ['<leader>vM'] = {
-            function()
-                vim.cmd.messages()
-            end,
+            vim.cmd.messages,
             desc('Run `:messages`'),
         },
         ['<leader>vN'] = {
@@ -168,13 +168,10 @@ Keymaps({
 local Color = L.colorschemes()
 Color('tokyonight', 'moon')
 
-local Lsp = L.lsp()
-Lsp()
-
 local Alpha = L.alpha()
 
 if Alpha ~= nil then
-    Alpha('theta')
+    Alpha('startify')
 end
 
 -- Call the User API file associations and other autocmds
@@ -182,9 +179,6 @@ Util:setup_autocmd()
 
 -- NOTE: See `:h g:markdown_minlines`
 vim.g.markdown_minlines = 500
-
---- Call runtimepath optimizations for Arch Linux (WIP)
-Distro:setup()
 
 vim.cmd.packadd('nohlsearch')
 
@@ -196,10 +190,13 @@ User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it wo
 
 Neovide:setup()
 
+---@type Config.Lazy.LSP
+local Lsp = L.lsp()
+Lsp()
+
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
     local opt_set = vim.api.nvim_set_option_value
-    local opt_get = vim.api.nvim_get_option_value
     local ft_get = Util.ft_get
     local bt_get = Util.bt_get
 
