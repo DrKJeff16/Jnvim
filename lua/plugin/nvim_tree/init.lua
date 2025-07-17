@@ -44,9 +44,10 @@ local floor = math.floor
 local Tree = require('nvim-tree')
 local Api = require('nvim-tree.api')
 
-local FsApi = require('nvim-tree.api').fs
-local Tapi = require('nvim-tree.api').tree
-local Tnode = require('nvim-tree.api').node
+local FsApi = Api.fs
+local TMarks = Api.marks
+local Tapi = Api.tree
+local Tnode = Api.node
 
 ---@class Tree.CfgAPI.Mappings
 ---@field default_on_attach fun(bufnr: integer)
@@ -73,10 +74,6 @@ local reload = Tapi.reload
 local get_node = Tapi.get_node_under_cursor
 ---@type AnyFunc
 local collapse_all = Tapi.collapse_all
--- ---@type AnyFunc
--- local change_root = Tapi.change_root
--- ---@type AnyFunc
--- local change_root_to_parent = Tapi.change_root_to_parent
 
 local function open_tab_silent(node)
     Tnode.open.tab(node)
@@ -269,14 +266,14 @@ local function swap_then_open_tab()
     local node = get_node()
 
     if is_tbl(node) and not empty(node) then
-        vim.cmd('wincmd l')
+        vim.cmd.wincmd('l')
         tab(node)
     end
 end
 
----@param bufn integer
-local on_attach = function(bufn)
-    CfgApi.mappings.default_on_attach(bufn)
+---@param bufnr integer
+local on_attach = function(bufnr)
+    CfgApi.mappings.default_on_attach(bufnr)
 
     -- custom mappings
     local function change_root_to_node(node)
@@ -308,105 +305,75 @@ local on_attach = function(bufn)
 
     ---@type AllMaps
     local Keys = {
-        ['<C-c>'] = {
-            change_root_to_global_cwd,
-            desc('Change Root To Global CWD', true, bufn),
-        },
-        ['<C-U>'] = {
-            change_root_to_parent,
-            desc('Set Root To Upper Dir', true, bufn),
-        },
-        ['?'] = {
-            toggle_help,
-            desc('Help', true, bufn),
-        },
-        ['<C-f>'] = {
-            edit_or_open,
-            desc('Edit Or Open', true, bufn),
-        },
-        ['P'] = {
-            vsplit_preview,
-            desc('Vsplit Preview', true, bufn),
-        },
-        ['d'] = {
-            close,
-            desc('Close', true, bufn),
-        },
-        ['HA'] = {
-            collapse_all,
-            desc('Collapse All', true, bufn),
-        },
-        ['ga'] = {
-            git_add,
-            desc('Git Add...', true, bufn),
-        },
-        ['t'] = {
-            swap_then_open_tab,
-            desc('Open Tab', true, bufn),
-        },
-        ['T'] = {
-            open_tab_silent,
-            desc('Open Tab Silently', true, bufn),
-        },
-
         -- BEGIN_DEFAULT_ON_ATTACH
-        ['-'] = { Tapi.change_root_to_parent, desc('Up', true, bufn) },
-        ['.'] = { Tnode.run.cmd, desc('Run Command', true, bufn) },
-        ['<'] = { Tnode.navigate.sibling.prev, desc('Previous Sibling', true, bufn) },
-        ['<BS>'] = { Tnode.navigate.parent_close, desc('Close Directory', true, bufn) },
-        ['<C-]>'] = { Tapi.change_root_to_node, desc('CD', true, bufn) },
-        ['<C-d>'] = { FsApi.remove, desc('Delete', true, bufn) },
-        ['<C-e>'] = { Tnode.open.replace_tree_buffer, desc('Open: In Place', true, bufn) },
-        ['<C-k>'] = { Tnode.show_info_popup, desc('Info', true, bufn) },
-        ['<C-r>'] = { FsApi.rename_sub, desc('Rename: Omit Filename', true, bufn) },
-        ['<C-t>'] = { Tapi.change_root_to_parent, desc('Change Root To Parent', true, bufn) },
-        ['<C-v>'] = { Tnode.open.vertical, desc('Open: Vertical Split', true, bufn) },
-        ['<C-x>'] = { Tnode.open.horizontal, desc('Open: Horizontal Split', true, bufn) },
-        ['<CR>'] = { Tnode.open.edit, desc('Open', true, bufn) },
-        ['<Tab>'] = { Tnode.open.preview, desc('Open Preview', true, bufn) },
-        ['>'] = { Tnode.navigate.sibling.next, desc('Next Sibling', true, bufn) },
-        ['B'] = { Tapi.toggle_no_buffer_filter, desc('Toggle No Buffer', true, bufn) },
-        ['C'] = { Tapi.toggle_git_clean_filter, desc('Toggle Git Clean', true, bufn) },
-        ['D'] = { FsApi.trash, desc('Trash', true, bufn) },
-        ['E'] = { Tapi.expand_all, desc('Expand All', true, bufn) },
-        ['F'] = { Api.live_filter.clear, desc('Clean Filter', true, bufn) },
-        ['H'] = { Tapi.toggle_hidden_filter, desc('Toggle Dotfiles', true, bufn) },
-        ['I'] = { Tapi.toggle_gitignore_filter, desc('Toggle Git Ignore', true, bufn) },
-        ['J'] = { Tnode.navigate.sibling.last, desc('Last Sibling', true, bufn) },
-        ['K'] = { Tnode.navigate.sibling.first, desc('First Sibling', true, bufn) },
-        ['O'] = { Tnode.open.no_window_picker, desc('Open: No Window Picker', true, bufn) },
-        ['R'] = { Tapi.reload, desc('Refresh', true, bufn) },
-        ['S'] = { Tapi.search_node, desc('Search', true, bufn) },
-        ['U'] = { Tapi.toggle_custom_filter, desc('Toggle Hidden', true, bufn) },
-        ['W'] = { Tapi.collapse_all, desc('Collapse', true, bufn) },
-        ['Y'] = { FsApi.copy.relative_path, desc('Copy Relative Path', true, bufn) },
-        ['[c'] = { Tnode.navigate.git.prev, desc('Prev Git', true, bufn) },
-        ['[e'] = { Tnode.navigate.diagnostics.prev, desc('Prev Diagnostic', true, bufn) },
-        [']c'] = { Tnode.navigate.git.next, desc('Next Git', true, bufn) },
-        [']e'] = { Tnode.navigate.diagnostics.next, desc('Next Diagnostic', true, bufn) },
-        ['a'] = { FsApi.create, desc('Create', true, bufn) },
-        ['bmv'] = { Api.marks.bulk.move, desc('Move Bookmarked', true, bufn) },
-        ['c'] = { FsApi.copy.node, desc('Copy', true, bufn) },
-        ['e'] = { FsApi.rename_basename, desc('Rename: Basename', true, bufn) },
-        ['f'] = { Api.live_filter.start, desc('Filter', true, bufn) },
-        ['g?'] = { Tapi.toggle_help, desc('Help', true, bufn) },
-        ['gy'] = { FsApi.copy.absolute_path, desc('Copy Absolute Path', true, bufn) },
-        ['m'] = { Api.marks.toggle, desc('Toggle Bookmark', true, bufn) },
-        ['o'] = { Tnode.open.edit, desc('Open', true, bufn) },
-        ['p'] = { FsApi.paste, desc('Paste', true, bufn) },
-        ['q'] = { Tapi.close, desc('Close', true, bufn) },
-        ['r'] = { FsApi.rename, desc('Rename', true, bufn) },
-        ['s'] = { Tnode.run.system, desc('Run System', true, bufn) },
-        ['x'] = { FsApi.cut, desc('Cut', true, bufn) },
-        ['y'] = { FsApi.copy.filename, desc('Copy Name', true, bufn) },
+        ['-'] = { change_root_to_parent, desc('Up', true, bufnr) },
+        ['.'] = { Tnode.run.cmd, desc('Run Command', true, bufnr) },
+        ['<'] = { Tnode.navigate.sibling.prev, desc('Previous Sibling', true, bufnr) },
+        ['<BS>'] = { Tnode.navigate.parent_close, desc('Close Directory', true, bufnr) },
+        ['<C-U>'] = { change_root_to_parent, desc('Set Root To Upper Dir', true, bufnr) },
+        ['<C-]>'] = { change_root_to_node, desc('CD', true, bufnr) },
+        ['<C-c>'] = { change_root_to_global_cwd, desc('Change Root To Global CWD', true, bufnr) },
+        ['<C-e>'] = { Tnode.open.replace_tree_buffer, desc('Open: In Place', true, bufnr) },
+        ['<C-f>'] = { edit_or_open, desc('Edit Or Open', true, bufnr) },
+        ['<C-k>'] = { Tnode.show_info_popup, desc('Info', true, bufnr) },
+        ['<C-r>'] = { FsApi.rename_sub, desc('Rename: Omit Filename', true, bufnr) },
+        ['<C-t>'] = { change_root_to_parent, desc('Change Root To Parent', true, bufnr) },
+        ['<C-v>'] = { Tnode.open.vertical, desc('Open: Vertical Split', true, bufnr) },
+        ['<C-x>'] = { Tnode.open.horizontal, desc('Open: Horizontal Split', true, bufnr) },
+        ['<CR>'] = { Tnode.open.edit, desc('Open', true, bufnr) },
+        ['<Tab>'] = { Tnode.open.preview, desc('Open Preview', true, bufnr) },
+        ['>'] = { Tnode.navigate.sibling.next, desc('Next Sibling', true, bufnr) },
+        ['?'] = { toggle_help, desc('Help', true, bufnr) },
+        ['B'] = { Tapi.toggle_no_buffer_filter, desc('Toggle No Buffer', true, bufnr) },
+        ['C'] = { Tapi.toggle_git_clean_filter, desc('Toggle Git Clean', true, bufnr) },
+        ['D'] = { FsApi.trash, desc('Trash', true, bufnr) },
+        ['E'] = { Tapi.expand_all, desc('Expand All', true, bufnr) },
+        ['F'] = { Api.live_filter.clear, desc('Clean Filter', true, bufnr) },
+        ['H'] = { Tapi.toggle_hidden_filter, desc('Toggle Dotfiles', true, bufnr) },
+        ['HA'] = { collapse_all, desc('Collapse All', true, bufnr) },
+        ['I'] = { Tapi.toggle_gitignore_filter, desc('Toggle Git Ignore', true, bufnr) },
+        ['J'] = { Tnode.navigate.sibling.last, desc('Last Sibling', true, bufnr) },
+        ['K'] = { Tnode.navigate.sibling.first, desc('First Sibling', true, bufnr) },
+        ['O'] = { Tnode.open.no_window_picker, desc('Open: No Window Picker', true, bufnr) },
+        ['P'] = { vsplit_preview, desc('Vsplit Preview', true, bufnr) },
+        ['R'] = { Tapi.reload, desc('Refresh', true, bufnr) },
+        ['S'] = { Tapi.search_node, desc('Search', true, bufnr) },
+        ['T'] = { open_tab_silent, desc('Open Tab Silently', true, bufnr) },
+        ['U'] = { Tapi.toggle_custom_filter, desc('Toggle Hidden', true, bufnr) },
+        ['W'] = { Tapi.collapse_all, desc('Collapse', true, bufnr) },
+        ['Y'] = { FsApi.copy.relative_path, desc('Copy Relative Path', true, bufnr) },
+        ['[c'] = { Tnode.navigate.git.prev, desc('Prev Git', true, bufnr) },
+        ['[e'] = { Tnode.navigate.diagnostics.prev, desc('Prev Diagnostic', true, bufnr) },
+        [']c'] = { Tnode.navigate.git.next, desc('Next Git', true, bufnr) },
+        [']e'] = { Tnode.navigate.diagnostics.next, desc('Next Diagnostic', true, bufnr) },
+        ['a'] = { FsApi.create, desc('Create', true, bufnr) },
+        ['bd'] = { TMarks.bulk.delete, desc('Delete Bookmarked', true, bufnr) },
+        ['bmv'] = { TMarks.bulk.move, desc('Move Bookmarked', true, bufnr) },
+        ['bt'] = { TMarks.bulk.trash, desc('Trash Bookmarked', true, bufnr) },
+        ['c'] = { FsApi.copy.node, desc('Copy', true, bufnr) },
+        ['d'] = { FsApi.remove, desc('Delete', true, bufnr) },
+        ['e'] = { FsApi.rename_basename, desc('Rename: Basename', true, bufnr) },
+        ['f'] = { Api.live_filter.start, desc('Filter', true, bufnr) },
+        ['g?'] = { Tapi.toggle_help, desc('Help', true, bufnr) },
+        ['ga'] = { git_add, desc('Git Add...', true, bufnr) },
+        ['gy'] = { FsApi.copy.absolute_path, desc('Copy Absolute Path', true, bufnr) },
+        ['m'] = { TMarks.toggle, desc('Toggle Bookmark', true, bufnr) },
+        ['o'] = { Tnode.open.edit, desc('Open', true, bufnr) },
+        ['p'] = { FsApi.paste, desc('Paste', true, bufnr) },
+        ['q'] = { Tapi.close, desc('Close', true, bufnr) },
+        ['r'] = { FsApi.rename, desc('Rename', true, bufnr) },
+        ['s'] = { Tnode.run.system, desc('Run System', true, bufnr) },
+        ['t'] = { swap_then_open_tab, desc('Open Tab', true, bufnr) },
+        ['x'] = { FsApi.cut, desc('Cut', true, bufnr) },
+        ['y'] = { FsApi.copy.filename, desc('Copy Name', true, bufnr) },
     }
 
     if vim.o.mouse ~= '' then
-        Keys['<2-LeftMouse>'] = { Tnode.open.edit, desc('Open', true, bufn) }
-        Keys['<2-RightMouse>'] = { Tapi.change_root_to_node, desc('CD', true, bufn) }
+        Keys['<2-LeftMouse>'] = { Tnode.open.edit, desc('Open', true, bufnr) }
+        Keys['<2-RightMouse>'] = { change_root_to_node, desc('CD', true, bufnr) }
     end
 
-    map_keys(Keys, bufn)
+    map_keys(Keys, bufnr)
 end
 
 local HEIGHT_RATIO = USE_FLOAT and 6 / 7 or 1
