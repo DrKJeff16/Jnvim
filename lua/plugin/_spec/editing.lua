@@ -15,7 +15,16 @@ local Editing = {
         lazy = false,
         version = false,
         config = source('plugin.persisted'),
+        enabled = false,
     },
+
+    {
+        'folke/persistence.nvim',
+        event = 'BufReadPre',
+        version = false,
+        config = source('plugin.persistence'),
+    },
+
     {
         'folke/twilight.nvim',
         event = 'VeryLazy',
