@@ -77,9 +77,13 @@ error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 ---@field has_tgc fun(): boolean
 
+---@alias Config.Lazy.LSP table|Lsp.Server|fun()
+---@alias Config.Lazy.Alpha nil|table|AlphaCaller|AlphaFun
+---@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...))
+
 ---@class Config.Lazy
----@field colorschemes fun(): table|CscMod|fun(color: string?, ...)
----@field lsp fun(): table|Lsp.Server|fun()
----@field alpha? fun(): nil|table|AlphaCaller|AlphaFun
+---@field colorschemes Config.Lazy.Colorschemes
+---@field lsp fun(): Config.Lazy.LSP
+---@field alpha? fun(): Config.Lazy.Alpha
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

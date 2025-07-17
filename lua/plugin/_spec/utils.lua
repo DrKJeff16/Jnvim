@@ -2,6 +2,7 @@
 
 local CfgUtil = require('config.util')
 
+local executable = require('user_api.check.exists').executable
 local flag_installed = CfgUtil.flag_installed
 local source = CfgUtil.source
 
@@ -18,6 +19,7 @@ local Utils = {
         lazy = true,
         version = false,
         config = source('plugin.pandoc'),
+        cond = executable('pandoc'),
     },
 }
 

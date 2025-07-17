@@ -1,9 +1,10 @@
+---@diagnostic disable:missing-fields
+
 ---@module 'lazy'
 ---@module 'plugin._types.alpha'
 ---@module 'plugin._types.lazy'
 ---@module 'config._types'
 
-local User = require('user_api')
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
@@ -178,17 +179,17 @@ Keymaps({ n = Keys })
 ---@type Config.Lazy
 local M = {}
 
----@return table|CscMod|fun(color?: string, ...)
+---@return Config.Lazy.Colorschemes
 function M.colorschemes()
     return require('plugin.colorschemes')
 end
 
----@return table|Lsp.Server|fun()
+---@return Config.Lazy.LSP
 function M.lsp()
     return require('plugin.lsp')
 end
 
----@return nil|table|AlphaCaller|AlphaFun
+---@return Config.Lazy.Alpha
 function M.alpha()
     return require('plugin.alpha') or nil
 end
