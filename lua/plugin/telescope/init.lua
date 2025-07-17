@@ -208,9 +208,7 @@ local Keys = {
     ['<leader><C-t>e'] = { group = '+Extensions' },
 
     ['<leader><leader>'] = {
-        function()
-            vim.cmd('Telescope')
-        end,
+        ':Telescope<CR>',
         desc('Default Telescope Picker'),
     },
 
@@ -257,10 +255,11 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.conventional_commits
-
             return {
-                ['<leader><C-t>eC'] = { pfx.conventional_commits, desc('Scope Buffers Picker') },
+                ['<leader><C-t>eC'] = {
+                    ':Telescope conventional_commits<CR>',
+                    desc('Scope Buffers Picker'),
+                },
             }
         end,
     },
@@ -275,10 +274,8 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.scope
-
             return {
-                ['<leader><C-t>eS'] = { pfx.buffers, desc('Scope Buffers Picker') },
+                ['<leader><C-t>eS'] = { ':Telescope buffers<CR>', desc('Scope Buffers Picker') },
             }
         end,
     },
@@ -311,10 +308,8 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.make
-
             return {
-                ['<leader><C-t>eM'] = { pfx.make, desc('Makefile Picker') },
+                ['<leader><C-t>eM'] = { ':Telescope make<CR>', desc('Makefile Picker') },
             }
         end,
     },
@@ -329,11 +324,9 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.projects
-
             return {
-                ['<leader><C-t>ep'] = { pfx.projects, desc('Project Picker') },
-                ['<leader>pT'] = { pfx.projects, desc('Project Picker') },
+                ['<leader><C-t>ep'] = { ':Telescope projects<CR>', desc('Project Picker') },
+                ['<leader>pT'] = { ':Telescope projects<CR>', desc('Project Picker') },
             }
         end,
     },
@@ -348,10 +341,8 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.notify
-
             return {
-                ['<leader><C-t>eN'] = { pfx.notify, desc('Notify Picker') },
+                ['<leader><C-t>eN'] = { ':Telescope notify<CR>', desc('Notify Picker') },
             }
         end,
     },
@@ -392,11 +383,9 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.lazygit
-
             ---@type AllMaps
             local res = {
-                ['<leader><C-t>eG'] = { pfx.lazygit, desc('LazyGit Picker') },
+                ['<leader><C-t>eG'] = { ':Telescope lazygit<CR>', desc('LazyGit Picker') },
             }
 
             return res
@@ -415,12 +404,16 @@ local known_exts = {
                 return {}
             end
 
-            local pfx = Extensions.picker_list
-
             return {
-                ['<leader><C-t>eP'] = { pfx.picker_list, desc('Picker List') },
-                ['<leader><C-t>bp'] = { pfx.picker_list, desc('Picker List (Extension)') },
-                ['<leader><leader>'] = { pfx.picker_list, desc('Telescope Picker List') },
+                ['<leader><C-t>eP'] = { ':Telescope picker_list<CR>', desc('Picker List') },
+                ['<leader><C-t>bp'] = {
+                    ':Telescope picker_list<CR>',
+                    desc('Picker List (Extension)'),
+                },
+                ['<leader><leader>'] = {
+                    ':Telescope picker_list<CR>',
+                    desc('Telescope Picker List'),
+                },
             }
         end,
     },
