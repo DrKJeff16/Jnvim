@@ -19,7 +19,7 @@ error('(user_api.types.user): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.
 ---@field distro User.Distro|fun()
 ---@field highlight User.Hl
 ---@field maps User.Maps
----@field opts User.Opts
+---@field opts User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
 ---@field update User.Update
 ---@field util User.Util
 ---@field registered_plugins string[]

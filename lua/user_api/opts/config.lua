@@ -39,8 +39,6 @@ local Defaults = {
         '{:}',
         '<:>',
     },
-    matchtime = 30,
-    menuitems = 40,
     mouse = { a = false }, -- NOTE: Get that mouse out of my sight!
     nu = true, -- `number`
     nuw = 4, -- `numberwidth`
@@ -60,7 +58,7 @@ local Defaults = {
     splitright = true,
     stal = 2, -- `showtabline`
     sw = 4, -- `shiftwidth`
-    tgc = true, -- `termguicolors`
+    termguicolors = true,
     ts = 4, -- `tabstop`
     updatecount = 100,
     updatetime = 1000,

@@ -16,7 +16,7 @@ local copy = vim.deepcopy
 local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
----@type User.Opts
+---@type User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
 local Opts = {}
 
 ---@return table<string, string>
@@ -60,8 +60,10 @@ end
 
 Opts.toggleable = gen_toggleable()
 
----@type User.Opts.Spec
-Opts.DEFAULT_OPTIONS = require('user_api.opts.config')
+---@return User.Opts.Spec
+function Opts.get_defaults()
+    return require('user_api.opts.config')
+end
 
 ---@type User.Opts.Spec
 Opts.options = {}
@@ -236,8 +238,10 @@ function Opts.new(O)
             override = is_tbl(override) and override or {}
             verbose = is_bool(verbose) and verbose or false
 
+            local defaults = self.get_defaults()
+
             if not type_not_empty('table', self.options) then
-                self.options = self.long_opts_convert(self.DEFAULT_OPTIONS, verbose)
+                self.options = self.long_opts_convert(defaults, verbose)
             end
 
             local parsed_opts = self.long_opts_convert(override, verbose)
@@ -250,8 +254,6 @@ function Opts.new(O)
     })
 end
 
-local O = Opts.new()
-
-return O
+return Opts.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
