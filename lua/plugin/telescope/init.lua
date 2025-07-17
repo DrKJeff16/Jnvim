@@ -82,7 +82,18 @@ local Opts = {
         },
     },
 
-    extensions = {},
+    extensions = {
+        projects = {
+            layout_strategy = 'horizontal',
+            layout_config = {
+                anchor = 'N',
+                height = 0.25,
+                width = 0.6,
+                prompt_position = 'bottom',
+            },
+            prompt_prefix = '󱎸  ',
+        },
+    },
 
     pickers = {
         autocommands = { theme = 'ivy' },
