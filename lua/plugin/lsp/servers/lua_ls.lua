@@ -1,5 +1,12 @@
 local User = require('user_api')
 
+local fs_stat = (vim.uv or vim.loop).fs_stat
+
+local library = { vim.api.nvim_get_runtime_file('', true) }
+
+table.insert(library, '${3rd}/luv/library')
+table.insert(library, '${3rd}/busted/library')
+
 User:register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
@@ -16,31 +23,14 @@ return {
         '.git',
     },
 
+    ---@param client vim.lsp.Client
     on_init = function(client)
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
-            if
-                path ~= vim.fn.stdpath('config')
-                and (
-                    vim.uv.fs_stat(path .. '/.luarc.json')
-                    or vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                )
-            then
+            if fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc') then
                 return
             end
         end
-
-        local library = { unpack(vim.api.nvim_get_runtime_file('', true)) }
-
-        for i, lib in next, library do
-            if lib == vim.env.VIMRUNTIME then
-                table.remove(library, i)
-            end
-        end
-
-        table.insert(library, 1, vim.env.VIMRUNTIME)
-        table.insert(library, '${3rd}/luv/library')
-        table.insert(library, '${3rd}/busted/library')
 
         client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
             diagnostics = {
@@ -139,10 +129,7 @@ return {
             workspace = {
                 checkThirdParty = false,
                 useGitIgnore = true,
-                library = {
-                    vim.env.VIMRUNTIME,
-                    unpack(vim.api.nvim_get_runtime_file('', true)),
-                },
+                library = library,
             },
         },
     },
