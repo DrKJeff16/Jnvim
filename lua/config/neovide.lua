@@ -7,9 +7,9 @@
 ---@field linespace? integer
 
 ---@class Config.Neovide.Opts
----@field o? Config.Neovide.Opts.O
----@field opt? Config.Neovide.Opts.Opt
----@field g? table
+---@field o table|Config.Neovide.Opts.O
+---@field opt table|Config.Neovide.Opts.Opt
+---@field g table
 
 ---@class Config.Neovide
 
@@ -98,7 +98,7 @@ Neovide.default_opts = {
 
         scroll = {
             animation = {
-                length = 0.00,
+                length = 0.07,
                 far_lines = vim.opt.scrolloff:get(),
             },
         },
@@ -126,12 +126,10 @@ Neovide.default_opts = {
         },
     },
 
-    ---@type Config.Neovide.Opts.O
     o = {
         guifont = 'FiraCode Nerd Font Mono:h19',
     },
 
-    ---@type Config.Neovide.Opts.Opt
     opt = {
         linespace = 0,
     },
