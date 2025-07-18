@@ -10,7 +10,6 @@ return {
         'objc',
         'objcpp',
         'cuda',
-        'proto',
     },
 
     root_markers = {
