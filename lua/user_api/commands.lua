@@ -23,7 +23,7 @@ Commands.commands.Redir = {
     function(ctx)
         local lines = vim.split(
             exec2(ctx.args, { output = true })['output'],
-            newline or string.char(10), -- `'\n'`
+            string.char(10), -- `'\n'`
             { plain = true }
         )
 
