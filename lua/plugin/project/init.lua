@@ -135,13 +135,13 @@ local Keys = {
 
             if type_not_empty('table', recent_proj) then
                 for k, v in next, recent_proj do
-                    msg = msg .. string.format(' %s. "%s"', tostring(k), v)
+                    msg = string.format('%s %s. "%s"', msg, tostring(k), v)
 
                     if k < len then
-                        msg = msg .. newline or string.char(10)
+                        msg = string.format('%s\n', msg)
                     end
                 end
-                notify(string.format('%s', msg), 'info', {
+                notify(msg, 'info', {
                     title = 'Project | Recent Projects',
                     animate = true,
                     timeout = 3000,
