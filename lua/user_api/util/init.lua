@@ -319,7 +319,7 @@ function Util:setup_autocmd()
     ---@type AuRepeatEvents[]
     local AUS = {
         { -- NOTE: Keep this as first element for `orgmode` addition
-            events = { 'BufNewFile', 'BufWinEnter', 'BufEnter' },
+            events = { 'BufCreate', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter', 'BufEnter' },
             opts_tbl = {
                 {
                     group = group,
@@ -347,6 +347,57 @@ function Util:setup_autocmd()
                     pattern = '*.norg',
                     callback = function(ev)
                         ft_set('norg', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = { '*.c', '*.h' },
+                    callback = function(ev)
+                        ---@type vim.api.keyset.option
+                        local setopt_opts = { buf = ev.buf }
+                        local opt_dict = {
+                            tabstop = 2,
+                            shiftwidth = 2,
+                            softtabstop = 2,
+                            expandtab = true,
+                            autoindent = true,
+                            filetype = 'c',
+                        }
+
+                        for opt, val in next, opt_dict do
+                            optset(opt, val, setopt_opts)
+                        end
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = {
+                        '*.C',
+                        '*.H',
+                        '*.c++',
+                        '*.cc',
+                        '*.cpp',
+                        '*.cxx',
+                        '*.h++',
+                        '*.hh',
+                        '*.hpp',
+                        '*.hxx',
+                    },
+                    callback = function(ev)
+                        ---@type vim.api.keyset.option
+                        local setopt_opts = { buf = ev.buf }
+                        local opt_dict = {
+                            tabstop = 2,
+                            shiftwidth = 2,
+                            softtabstop = 2,
+                            expandtab = true,
+                            autoindent = true,
+                            filetype = 'cpp',
+                        }
+
+                        for opt, val in next, opt_dict do
+                            optset(opt, val, setopt_opts)
+                        end
                     end,
                 },
             },
@@ -601,6 +652,6 @@ function Util.new(O)
     return setmetatable(O, { __index = Util })
 end
 
-return Util
+return Util.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
