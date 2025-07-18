@@ -67,9 +67,7 @@ Opts({ ---@see User.Opts.Spec For more info
     },
     foldmethod = 'manual',
     hidden = true,
-    hlg = {
-        'en',
-    }, -- `helplang`
+    hlg = { 'en' }, -- `helplang`
     hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
@@ -79,6 +77,7 @@ Opts({ ---@see User.Opts.Spec For more info
     nu = true, -- `number`
     pi = false, -- `preserveindent`
     relativenumber = false,
+    rl = false, -- `rightleft`
     ruler = true,
     scrolloff = 2,
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
