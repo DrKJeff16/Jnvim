@@ -11,13 +11,11 @@ local in_console = Check.in_console
 ---@type LazySpecs
 local Editing = {
     {
-        'olimorris/persisted.nvim',
-        lazy = false,
+        'windwp/nvim-autopairs',
+        event = 'InsertEnter',
         version = false,
-        config = source('plugin.persisted'),
-        enabled = false,
+        config = source('plugin.autopairs'),
     },
-
     {
         'folke/persistence.nvim',
         event = 'BufReadPre',
