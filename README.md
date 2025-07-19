@@ -164,18 +164,18 @@ code structures and to simplify configuration.
 
 This submodule can be found at [`here`](lua/user_api/opts.lua).
 The options are defined in a default table to be processed
-by the funtion `Opts:setup()`.
+by calling `Opts()`.
 
 To call the options:
 
 ```lua
 local Opts1 = require('user_api.opts')
-Opts1:setup()
+Opts1()
 Opts1:setup_keys() -- Setup keymaps
 
 --- Or by using the entry point:
 local Opts2 = require('user_api').opts
-Opts2:setup()
+Opts2()
 Opts2:setup_keys() -- Setup keymaps
 ```
 
@@ -189,7 +189,7 @@ As an example:
 local User = require('user_api')
 local Opts = User.opts
 
-Opts:setup({
+Opts({
     completeopt = { 'menu', 'menuone', 'noselect', 'noinsert', 'preview' },
     nu = false, -- `:set nonumber`
 
@@ -217,7 +217,7 @@ _These are the following:_
     It can be found in [`user_api/check/value.lua`](lua/user_api/check/value.lua).
 
     |       function      |                                                                                               description                                                                                               |                          parameter types                          | return type |
-    |:----------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
+    |:-------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
     |       `is_nil`      | Checks whether the input values are `nil`<br>(AKA whether they even exist).<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`. | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
     |       `is_str`      |            Checks whether the input values are of `string` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`_.                        |  `boolean`  |
     |       `is_num`      |            Checks whether the input values are of `number` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`_.                        |  `boolean`  |
@@ -226,7 +226,7 @@ _These are the following:_
     |       `is_tbl`      |             Checks whether the input values are of `table` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            |                        _Same as `is_nil`._                        |  `boolean`  |
     |       `is_int`      |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              |                        _Same as `is_nil`._                        |  `boolean`  |
     |        `empty`      |              If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.<br>If other type return `true`.            |                    `v`: `string\|number\|table`                   |  `boolean`  |
-    |  `type_not_empty`   |                      <b><ins>It essentially combines  `is_<type>()` with `empty()` as<br>both statements get used un conjuction a lot</ins></b>                    |                    <ol><li> `type_str`: `'string'\|'number'\|'table'`</li><li> `data`: `string\|number\|table`</li></ol>                  |  `boolean`  |
+    |   `type_not_empty`  |                   It essentially combines  `is_<type>()` with `empty()` as<br>both statements get used un conjuction a lot                                                                              |   <ol><li> `type_str`: `'string'\|'number'\|'table'`</li><li> `data`: `string\|number\|table`</li></ol> | `boolean` |
 
 - **`user_api.check.exists`**
     Used for data existance checks, conditional module loading and fallback operations.
@@ -292,8 +292,8 @@ The function returns this table:
     expr = false or true, -- First option is the default
 
     -- If buffer is passed as an argument:
-    ---@type integer
-    buffer = bufnr or 0,
+    ---@type integer|nil
+    buffer = bufnr or nil,
 }
 ```
 
@@ -352,7 +352,12 @@ If you want to convert a keymap table, you must first structure it as follows:
 ---@type KeyMapDict
 local Keys1 = {
     ['lhs1'] = { 'rhs1', { desc = 'Keymap 1' } },
-    ['lhs2'] = { function() print('this is rhs2') end, { desc = 'Keymap 1', noremap = true } }
+    ['lhs2'] = {
+    function()
+      vim.print('this is rhs2')
+    end,
+    { desc = 'Keymap 1', noremap = true },
+  },
 }
 
 -- With modes
@@ -361,7 +366,11 @@ local Keys2 = {
     -- Normal Mode Keys
     n = {
         ['n_lhs1'] = { 'n_rhs1', { desc = 'Keymap 1' } },
-        ['n_lhs2'] = { function() print('this is n_rhs2') end, { desc = 'Keymap 1', noremap = true } },
+        ['n_lhs2'] = {
+          function()
+            vim.print('this is n_rhs2')
+          end,
+          { desc = 'Keymap 1', noremap = true } },
     },
     v = {
         ['v_lhs1'] = { 'v_rhs1', { desc = 'Keymap 1 (Visual Mode)' } },
