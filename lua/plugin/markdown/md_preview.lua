@@ -9,17 +9,25 @@ local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
 local Fields = {
-    mkdp_auto_start = 0,
-    mkdp_browser = 'xdg-open',
-    mkdp_echo_preview_url = 1,
-    mkdp_open_to_the_world = 0,
-    mkdp_auto_close = 1,
-    mkdp_preview_options = {
+    browser = executable('firefox') and 'firefox'
+        or (executable('xdg-open') and 'xdg-open' or 'open'),
+
+    echo_preview_url = 1,
+
+    auto_start = 1,
+    auto_close = 0,
+
+    open_to_the_world = 0,
+
+    combine_preview = 1,
+    combine_preview_auto_refresh = 1,
+
+    preview_options = {
         mkit = {},
         katex = {},
         uml = {},
         maid = {},
-        disable_sync_scroll = 0,
+        disable_sync_scroll = 1,
         sync_scroll_type = 'relative',
         hide_yaml_meta = 0,
         sequence_diagrams = {},
@@ -28,12 +36,15 @@ local Fields = {
         disable_filename = 0,
         toc = {},
     },
-    mkdp_filetypes = { 'markdown' },
-    mkdp_theme = 'dark',
+
+    page_title = '「${name}」',
+
+    filetypes = { 'markdown' },
+    theme = 'dark',
 }
 
 for key, value in next, Fields do
-    vim.g[key] = value
+    vim.g['mkdp_' .. key] = value
 end
 
 local group = augroup('MarkdownPreviewInitHook', { clear = true })
@@ -48,25 +59,21 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
         local Keys = {
             ['<leader>f<C-M>'] = { group = '+MarkdownPreview', buffer = bufnr },
 
+            ['<leader><C-p>'] = {
+                ':MarkdownPreview<CR>',
+                desc('Run Markdown Preview', true, bufnr),
+            },
+
             ['<leader>f<C-M>t'] = {
-                ---@diagnostic disable-next-line
-                function()
-                    pcall(vim.cmd, 'MarkdownPreviewToggle') ---@diagnostic disable-line
-                end,
+                ':MarkdownPreviewToggle<CR>',
                 desc('Toggle Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>p'] = {
-                ---@diagnostic disable-next-line
-                function()
-                    pcall(vim.cmd, 'MarkdownPreview') ---@diagnostic disable-line
-                end,
+                ':MarkdownPreview<CR>',
                 desc('Run Markdown Preview', true, bufnr),
             },
             ['<leader>f<C-M>s'] = {
-                ---@diagnostic disable-next-line
-                function()
-                    pcall(vim.cmd, 'MarkdownPreviewStop') ---@diagnostic disable-line
-                end,
+                ':MarkdownPreviewStop<CR>',
                 desc('Stop Markdown Preview', true, bufnr),
             },
         }
