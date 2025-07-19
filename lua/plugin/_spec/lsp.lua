@@ -41,7 +41,7 @@ local LSP = {
         ft = { 'c', 'cpp' },
         version = false,
         config = source('plugin.lsp.clangd'),
-        cond = executable('clangd') and not in_console(),
+        cond = executable('clangd'),
     },
 }
 
