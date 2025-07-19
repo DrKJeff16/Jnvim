@@ -23,6 +23,7 @@ jobs:
       # uses: joutvhu/get-release@9a8271732adc3299a22f8ad09b0a67eb3aa836ac
       uses: joutvhu/get-release@v1.0.3
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         # The name of the owner of the repo. Used to identify the owner of the repository.
         owner: DrKJeff16
         # The name of the repository. Used to identify the repository on which to release.
