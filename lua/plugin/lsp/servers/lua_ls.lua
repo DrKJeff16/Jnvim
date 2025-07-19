@@ -1,6 +1,7 @@
 local User = require('user_api')
 
 local fs_stat = (vim.uv or vim.loop).fs_stat
+local extend = vim.tbl_deep_extend
 
 local library = { vim.api.nvim_get_runtime_file('', true) }
 
@@ -27,12 +28,33 @@ return {
     on_init = function(client)
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
-            if fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc') then
+            if path:sub(-5) ~= '/nvim' then
+                client.config.settings.Lua = extend('force', client.config.settings.Lua, {
+                    runtime = {
+                        path = {
+                            'lua/?.lua',
+                            'lua/?/init.lua',
+                            '?.lua',
+                            '?/?.lua',
+                            '?/?/init.lua',
+                            'init.lua',
+                        },
+                    },
+                    workspace = {
+                        checkThirdParty = false,
+                        library = {
+                            path,
+                            path .. '/lua',
+                            path .. '/types',
+                        },
+                    },
+                })
+
                 return
             end
         end
 
-        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        client.config.settings.Lua = extend('force', client.config.settings.Lua, {
             diagnostics = {
                 enable = true,
                 globals = { 'vim' },
@@ -46,6 +68,10 @@ return {
                 path = {
                     'lua/?.lua',
                     'lua/?/init.lua',
+                    '?.lua',
+                    '?/?.lua',
+                    '?/?/init.lua',
+                    'init.lua',
                 },
             },
             workspace = {
@@ -107,6 +133,10 @@ return {
                 path = {
                     'lua/?.lua',
                     'lua/?/init.lua',
+                    '?.lua',
+                    '?/?.lua',
+                    '?/?/init.lua',
+                    'init.lua',
                 },
             },
             semantic = {
@@ -129,7 +159,6 @@ return {
             workspace = {
                 checkThirdParty = false,
                 useGitIgnore = true,
-                library = library,
             },
         },
     },
