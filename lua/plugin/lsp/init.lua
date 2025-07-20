@@ -1,9 +1,35 @@
 ---@diagnostic disable:missing-fields
+---@diagnostic disable:inject-field
 
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'
 ---@module 'lua.vim.lsp.diagnostic'
----@module 'plugin._types.lsp'
+
+---@alias Lsp.Server.Key
+---|'lua_ls'
+---|'bashls'
+---|'clangd'
+---|'cmake'
+---|'css_variables'
+---|'cssls'
+---|'html'
+---|'jdtls'
+---|'jsonls'
+---|'julials'
+---|'marksman'
+---|'pylsp'
+---|'taplo'
+---|'texlab'
+---|'vimls'
+---|'yamlls'
+---|string
+
+---@class Lsp.Server
+---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
+---@field client_names (string|Lsp.Server.Key)[]|table
+---@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities|table
+---@field populate fun(name: string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
+---@field new fun(O: table?): table|Lsp.Server|fun()
 
 local User = require('user_api')
 local Check = User.check

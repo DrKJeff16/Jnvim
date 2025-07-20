@@ -2,8 +2,8 @@
 
 error('(config._types): DO NOT SOURCE THIS FILE DIRECTLY', vim.log.levels.ERROR)
 
----@module 'plugin._types.lsp'
----@module 'plugin._types.alpha'
+---@module 'plugin.lsp'
+---@module 'plugin.alpha'
 
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)

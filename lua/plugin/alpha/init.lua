@@ -1,6 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.alpha'
+---@alias AlphaFun fun(variant: ('dashboard'|'theta'|'startify')?)
+
+---@class AlphaCaller
+---@field startify fun()
+---@field theta fun()
+---@field dashboard fun()
 
 local User = require('user_api')
 local Check = User.check

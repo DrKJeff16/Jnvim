@@ -1,6 +1,34 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.lsp'
+---@alias Lsp.SubMods.Kinds.CallerFun fun()
+
+---@class Lsp.SubMods.Kinds.Icons
+---@field Class? string
+---@field Color? string
+---@field Constant? string
+---@field Constructor? string
+---@field Enum? string
+---@field EnumMember? string
+---@field Field? string
+---@field File? string
+---@field Folder? string
+---@field Function? string
+---@field Interface? string
+---@field Keyword? string
+---@field Method? string
+---@field Module? string
+---@field Property? string
+---@field Snippet? string
+---@field Struct? string
+---@field Text? string
+---@field Unit? string
+---@field Value? string
+---@field Variable? string
+
+---@class Lsp.SubMods.Kinds
+---@field icons Lsp.SubMods.Kinds.Icons
+---@field setup fun(self: Lsp.SubMods.Kinds)
+---@field new fun(O: table?): table|Lsp.SubMods.Kinds|Lsp.SubMods.Kinds.CallerFun
 
 local User = require('user_api')
 local Check = User.check
@@ -8,7 +36,7 @@ local Check = User.check
 local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 
----@type Lsp.SubMods.Kinds|Lsp.SubMods.KindsFun
+---@type Lsp.SubMods.Kinds|Lsp.SubMods.Kinds.CallerFun
 local Kinds = {}
 
 ---@type Lsp.SubMods.Kinds.Icons
@@ -46,8 +74,8 @@ function Kinds:setup()
     end
 end
 
----@param O table
----@return table|Lsp.SubMods.Kinds|Lsp.SubMods.KindsFun
+---@param O? table
+---@return table|Lsp.SubMods.Kinds|Lsp.SubMods.Kinds.CallerFun
 function Kinds.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {

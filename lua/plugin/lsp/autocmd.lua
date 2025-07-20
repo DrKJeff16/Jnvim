@@ -1,6 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.lsp'
+---@alias Lsp.SubMods.Autocmd.CallerFun fun(override: AuRepeat?)
+
+---@class Lsp.SubMods.Autocmd
+---@field AUKeys AllModeMaps
+---@field autocommands AuRepeat
+---@field new fun(O: table?): table|Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
@@ -35,7 +40,7 @@ local function print_workspace_folders()
     })
 end
 
----@type Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
+---@type Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
 local Autocmd = {}
 
 ---@type AllModeMaps
@@ -183,7 +188,7 @@ Autocmd.autocommands = {
 }
 
 ---@param O? table
----@return table|Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
+---@return table|Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
 function Autocmd.new(O)
     O = is_nil(O) and O or {}
 

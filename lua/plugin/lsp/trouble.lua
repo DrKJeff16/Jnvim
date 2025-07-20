@@ -1,6 +1,9 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.lsp'
+---@class Lsp.SubMods.Trouble
+---@field Opts trouble.Config
+---@field Keys AllModeMaps
+---@field new fun(O: table?): table|Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')

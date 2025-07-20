@@ -1,6 +1,24 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.lsp'
+---@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
+
+---@class Lsp.Server.Clients
+---@field lua_ls? Lsp.Server.Clients.Spec
+---@field bashls? Lsp.Server.Clients.Spec
+---@field clangd? Lsp.Server.Clients.Spec
+---@field cmake? Lsp.Server.Clients.Spec
+---@field css_variables? Lsp.Server.Clients.Spec
+---@field cssls? Lsp.Server.Clients.Spec
+---@field html? Lsp.Server.Clients.Spec
+---@field jdtls? Lsp.Server.Clients.Spec
+---@field jsonls? Lsp.Server.Clients.Spec
+---@field julials? Lsp.Server.Clients.Spec
+---@field marksman? Lsp.Server.Clients.Spec
+---@field pylsp? Lsp.Server.Clients.Spec
+---@field taplo? Lsp.Server.Clients.Spec
+---@field texlab? Lsp.Server.Clients.Spec
+---@field vimls? Lsp.Server.Clients.Spec
+---@field yamlls? Lsp.Server.Clients.Spec
 
 local User = require('user_api')
 
