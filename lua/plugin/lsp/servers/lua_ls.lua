@@ -28,7 +28,7 @@ return {
     on_init = function(client)
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
-            if path:sub(-5) ~= '/nvim' then
+            if path:sub(-5) ~= '/nvim' and path:sub(-5) ~= '.nvim' then
                 client.config.settings.Lua = extend('force', client.config.settings.Lua, {
                     runtime = {
                         path = {
