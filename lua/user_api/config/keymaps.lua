@@ -5,18 +5,17 @@
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities
 local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping Utilities (`vim.keymap` version)
-local Util = require('user_api.util') ---@see User.Util Utilities
 
 local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_int = Value.is_int ---@see User.Check.Value.is_int
 local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
 local type_not_empty = Value.type_not_empty ---@see User.Check.Value.type_not_empty
-local ft_get = Util.ft_get ---@see User.Util.ft_get
-local bt_get = Util.bt_get ---@see User.Util.bt_get
 local nop = Maps.nop ---@see User.Maps.nop
 local map_dict = Maps.map_dict ---@see User.Maps.map_dict
 local desc = Kmap.desc ---@see User.Maps.Keymap.desc
+local ft_get = require('user_api.util').ft_get ---@see User.Util.ft_get
+local bt_get = require('user_api.util').bt_get ---@see User.Util.bt_get
 
 local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
@@ -228,18 +227,13 @@ Keymaps.Keys = {
         ['<leader>Fc'] = { ':%foldclose<CR>', desc('Close All Folds') },
         ['<leader>Fo'] = { ':%foldopen<CR>', desc('Open All Folds') },
 
-        ['<leader>fFx'] = {
-            gen_fun_blank(),
-            desc('New Horizontal Blank File'),
-        },
-        ['<leader>fFv'] = {
-            gen_fun_blank(true),
-            desc('New Vertical Blank File'),
-        },
+        ['<leader>fFx'] = { gen_fun_blank(), desc('New Horizontal Blank File') },
+        ['<leader>fFv'] = { gen_fun_blank(true), desc('New Vertical Blank File') },
 
         ['<leader>fs'] = {
             function()
                 local notify = require('user_api.util.notify').notify
+                local optget = vim.api.nvim_get_option_value
 
                 local buf = curr_buf()
 
@@ -248,11 +242,11 @@ Keymaps.Keys = {
                 ---@type unknown
                 local err = nil
 
-                if vim.api.nvim_get_option_value('modifiable', { buf = buf }) then
+                if optget('modifiable', { buf = buf }) then
                     ok, err = pcall(vim.cmd.write)
 
                     if ok then
-                        notify('File Written: ' .. vim.fn.expand('%:~'), 'info', {
+                        notify(string.format('File Written: `%s`', vim.fn.expand('%')), 'info', {
                             animate = true,
                             title = 'Vim Write',
                             timeout = 1000,
@@ -274,30 +268,7 @@ Keymaps.Keys = {
         },
         ['<leader>fS'] = { ':w ', desc('Prompt Save File', false) },
 
-        ['<leader>fir'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
-
-                ---@diagnostic disable-next-line
-                local ok, err = pcall(vim.cmd, '%retab')
-
-                if ok then
-                    ok, err = pcall(vim.cmd.write)
-
-                    if ok then
-                        return
-                    end
-                end
-
-                notify(err or 'Error attempting to retab', 'error', {
-                    animate = true,
-                    title = 'Retab',
-                    timeout = 2500,
-                    hide_from_history = false,
-                })
-            end,
-            desc('Retab File'),
-        },
+        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
 
         ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
         ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
@@ -314,7 +285,7 @@ Keymaps.Keys = {
                 local err = nil
 
                 if ft == 'lua' then
-                    ---@diagnostic disable-next-line
+                    ---@diagnostic disable-next-line:param-type-mismatch
                     ok, err = pcall(vim.cmd.luafile, '%')
 
                     if ok then
@@ -351,8 +322,8 @@ Keymaps.Keys = {
                 local err = nil
 
                 if ft == 'vim' then
-                    ---@diagnostic disable-next-line
-                    ok, err = pcall(vim.cmd, 'so %')
+                    ---@diagnostic disable-next-line:param-type-mismatch
+                    ok, err = pcall(vim.cmd.source, '%')
 
                     if ok then
                         notify('Sourced current Vim file', 'info', {
@@ -407,27 +378,27 @@ Keymaps.Keys = {
             function()
                 vim.cmd.checkhealth('vim.health')
             end,
-            desc('Run `vim.health` Checkhealth', false),
+            desc('Run `vim.health` Checkhealth'),
         },
         ['<leader>vhD'] = {
             function()
                 vim.cmd.checkhealth('vim.deprecated')
             end,
-            desc('Run `vim.deprecated` Checkhealth', false),
+            desc('Run `vim.deprecated` Checkhealth'),
         },
         ['<leader>vhl'] = {
             function()
                 vim.cmd.checkhealth('vim.lsp')
             end,
-            desc('Run `vim.lsp` Checkhealth', false),
+            desc('Run `vim.lsp` Checkhealth'),
         },
 
         ['<leader>vs'] = {
             function()
                 local notify = require('user_api.util.notify').notify
 
-                ---@diagnostic disable-next-line
-                local ok, err = pcall(vim.cmd.luafile, _G.MYVIMRC)
+                ---@diagnostic disable-next-line:param-type-mismatch
+                local ok, err = pcall(vim.cmd.luafile, MYVIMRC)
 
                 if ok then
                     notify('Sourced `init.lua`', 'info', {
