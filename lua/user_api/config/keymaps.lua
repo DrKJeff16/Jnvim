@@ -1,6 +1,17 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.keymaps'
+---@alias User.Config.Keymaps.CallerFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+
+---@class Keymaps.PreExec
+---@field ft string[]
+---@field bt string[]
+
+---@class User.Config.Keymaps
+---@field NOP string[] Table of keys to no-op after `<leader>` is pressed
+---@field no_oped? boolean
+---@field Keys AllModeMaps
+---@field set_leader fun(self: User.Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
+---@field new fun(O: table?): table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 
 local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
 local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities

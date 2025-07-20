@@ -3,7 +3,11 @@
 
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.distro'
+---@class User.Distro.Archlinux
+---@field rtpaths string[]
+---@field validate fun(self: User.Distro.Archlinux): boolean
+---@field setup fun(self: User.Distro.Archlinux)
+---@field new fun(self: User.Distro.Archlinux?): table|User.Distro.Archlinux
 
 local WARN = vim.log.levels.WARN
 

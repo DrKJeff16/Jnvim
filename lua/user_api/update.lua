@@ -1,6 +1,8 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.update'
+---@class User.Update
+---@field update fun(verbose: boolean?): string?
+---@field setup_maps fun(self: User.Update)
 
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO

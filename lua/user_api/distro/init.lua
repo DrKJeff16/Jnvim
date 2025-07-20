@@ -1,6 +1,9 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.distro'
+---@class User.Distro
+---@field archlinux User.Distro.Archlinux
+---@field termux User.Distro.Termux
+---@field new fun(O: table?): table|User.Distro|fun(verbose: boolean?)
 
 local INFO = vim.log.levels.INFO
 

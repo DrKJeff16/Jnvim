@@ -1,6 +1,30 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.util'
+---@alias DirectionFun fun(t: table<string|integer, any>): res: table<string|integer, any>
+
+---@class DirectionFuns
+---@field r DirectionFun
+---@field l DirectionFun
+
+---@class User.Util
+---@field notify User.Util.Notify
+---@field au User.Util.Autocmd
+---@field string User.Util.String
+---@field has_words_before fun(): boolean
+---@field pop_values fun(T: table, V: any): table,...
+---@field xor fun(x: boolean, y: boolean): boolean
+---@field strip_fields fun(T: table<string|integer, any>, values: string[]|string): table<string|integer, any>
+---@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
+---@field ft_set fun(s: string?, bufnr: integer?): fun()
+---@field bt_get fun(bufnr: integer?): string
+---@field ft_get fun(bufnr: integer?): string
+---@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): table<string, any>|table
+---@field setup_autocmd fun(self: User.Util)
+---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
+---@field mv_tbl_values fun(T: table<string|integer, any>|table, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
+---@field reverse_tbl fun(T: table): table
+---@field discard_dups fun(data: string|table): (string|table)
+---@field new fun(O: table?): table|User.Util
 
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value

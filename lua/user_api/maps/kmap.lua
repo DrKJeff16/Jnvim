@@ -1,6 +1,69 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.maps'
+---@alias User.Maps.Keymap.Opts vim.keymap.set.Opts
+
+--- `Rhs` for use in `vim.keymap.set`
+---@alias User.Maps.Keymap.Rhs string|fun()
+
+--- Available modes
+---@alias MapModes ('n'|'i'|'v'|'t'|'o'|'x')
+
+--- Array for available modes
+---@alias Modes (MapModes)[]
+
+---@class KeyMapRhsOptsArr
+---@field [1] User.Maps.Keymap.Rhs
+---@field [2]? User.Maps.Keymap.Opts
+
+---@class KeyMapRhsOptsDict
+---@field rhs User.Maps.Keymap.Rhs
+---@field opts? User.Maps.Keymap.Opts
+
+--- Array for `vim.keymap.set` arguments
+---@class KeyMapArr
+---@field [1] string
+---@field [2] string|fun()
+---@field [3]? User.Maps.Keymap.Opts
+
+---@alias KeyMapDict table<string, KeyMapRhsOptsArr>
+---@alias KeyMapDicts table<string, KeyMapRhsOptsDict>
+
+---@alias AllMaps table<string, KeyMapRhsOptsArr|RegKey|RegPfx>
+
+---@class AllModeMaps
+---@field n? AllMaps
+---@field i? AllMaps
+---@field v? AllMaps
+---@field t? AllMaps
+---@field o? AllMaps
+---@field x? AllMaps
+
+---@class KeyMapTbl
+---@field lhs string
+---@field rhs string|fun()
+---@field opts? User.Maps.Keymap.Opts
+
+---@class KeyMapOpts: vim.keymap.set.Opts
+---@field new fun(T: (User.Maps.Keymap.Opts|table)?): KeyMapOpts
+---@field add fun(self: KeyMapOpts, T: User.Maps.Keymap.Opts|table)
+
+---@alias KeyMapFunction fun(lhs: string, rhs: User.Maps.Keymap.Rhs, opts: User.Maps.Keymap.Opts?)
+
+---@alias KeyMapModeDict table<MapModes, KeyMapDict>
+---@alias KeyMapModeDicts table<MapModes, KeyMapTbl[]>
+
+---@alias MapFuncs KeyMapFunction
+
+---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): User.Maps.Keymap.Opts
+
+---@class User.Maps.Keymap
+---@field n KeyMapFunction
+---@field i KeyMapFunction
+---@field v KeyMapFunction
+---@field t KeyMapFunction
+---@field o KeyMapFunction
+---@field x KeyMapFunction
+---@field desc KeyDescFun
 
 ---@type KeyMapOpts
 local O = {}

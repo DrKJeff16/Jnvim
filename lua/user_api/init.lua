@@ -1,6 +1,28 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.user'
+---@class User.Config
+---@field keymaps User.Config.Keymaps
+
+---@class UserAPI
+---@field paths string[]|table
+---@field FAILED string[]|table
+---@field check User.Check
+---@field config User.Config
+---@field commands User.Commands
+---@field distro User.Distro|fun()
+---@field highlight User.Hl
+---@field maps User.Maps
+---@field opts User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
+---@field update User.Update
+---@field util User.Util
+---@field registered_plugins string[]
+---@field register_plugin fun(self: UserAPI, pathstr: string, index: integer?)
+---@field reload_plugins fun(self: UserAPI): boolean,(string[]|table)
+---@field setup_keys fun(self: UserAPI)
+---@field plugin_maps fun(self: UserAPI)
+---@field new fun(O: table?): table|UserAPI
+---@field print_loaded_plugins fun(self: UserAPI)
+---@field sleep fun(t: number)
 
 local ERROR = vim.log.levels.ERROR
 

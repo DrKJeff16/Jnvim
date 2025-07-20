@@ -2,6 +2,29 @@
 
 ---@module 'user_api.types.util'
 
+---@alias AuOpts vim.api.keyset.create_autocmd
+---@alias AuGroupOpts vim.api.keyset.create_augroup
+
+---@class AuPair
+---@field event string[]|string
+---@field opts AuOpts
+
+---@class AuRepeatEvents
+---@field events string[]
+---@field opts_tbl AuOpts[]
+
+---@alias AuDict table<string, AuOpts>
+---@alias AuRepeat table<string, AuOpts[]>
+---@alias AuList AuPair[]
+
+---@class User.Util.Autocmd
+---@field au_pair fun(T: AuPair)
+---@field au_repeated fun(T: AuRepeat)
+---@field au_from_arr fun(T: AuList)
+---@field au_from_dict fun(T: AuDict)
+---@field au_repeated_events fun(T: AuRepeatEvents)
+---@field created? table|AuRepeatEvents[]
+
 local au = vim.api.nvim_create_autocmd
 
 local ERROR = vim.log.levels.ERROR

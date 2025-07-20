@@ -1,6 +1,18 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.opts'
+---@alias User.Opts.CallerFun fun(override: table|User.Opts.Spec?, verbose: boolean?)
+
+---@class User.Opts
+---@field optset fun(self: User.Opts, opts: User.Opts.Spec, verbose: boolean?)
+---@field toggleable string[]
+---@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
+---@field get_all_opts fun(): table<string, string>
+---@field get_defaults fun(): User.Opts.Spec
+---@field options User.Opts.Spec
+---@field print_set_opts fun()
+---@field setup_keys fun(self: User.Opts)
+---@field toggle fun(self: User.Opts, O: string[]|string)
+---@field new fun(O: table?):table|User.Opts|fun(override: table|User.Opts.Spec?, verbose: boolean?)
 
 local Value = require('user_api.check.value')
 

@@ -1,6 +1,19 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.check'
+--- Exitstance checks
+--- ---
+--- ## Description
+---
+--- This contains many checkers for environment, modules, namespaces, etc.
+--- Also, simplified Vim functions can be found here
+---@class User.Check.Existance
+---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
+---@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>
+---@field executable fun(exe: string[]|string, fallback: fun()?): boolean
+---@field env_vars fun(vars: string[]|string, fallback: fun()?): boolean
+---@field vim_exists fun(expr: string[]|string): boolean
+---@field vim_has fun(expr: string[]|string): boolean
+---@field vim_isdir fun(path: string): boolean
 
 ---@return User.Check.Value
 local function get_value()

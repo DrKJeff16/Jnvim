@@ -1,6 +1,28 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.check'
+---@class User.Check
+---@field exists User.Check.Existance
+---@field value User.Check.Value
+--- Check whether Nvim is running in a Linux Console rather than a `pty`
+--- ---
+--- ## Description
+---
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
+--- ---
+--- ## Return
+---
+--- A boolean that confirms whether the environment is a Linux Console
+---@field in_console fun(): boolean
+--- Check whether Nvim is running in a Linux Console rather than a `pty`
+--- ---
+--- ## Description
+---
+--- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
+--- ---
+--- ## Return
+---
+--- A boolean that confirms whether the environment is a Linux Console
+---@field is_root fun(): boolean
 
 --- Checking Utilities
 --- ---
@@ -13,7 +35,6 @@ local Check = {}
 ---
 --- Pretty much reserved for data checking, type checking and conditional operations
 --- ---
----@type User.Check.Value
 Check.value = require('user_api.check.value')
 
 --- Exitstance checks
@@ -22,7 +43,6 @@ Check.value = require('user_api.check.value')
 ---
 --- This contains many checkers for environment, modules, namespaces, etc.
 --- Also, simplified Vim functions can be found here
----@type User.Check.Existance
 Check.exists = require('user_api.check.exists')
 
 --- Check whether Nvim is running in a Linux Console rather than a `pty`

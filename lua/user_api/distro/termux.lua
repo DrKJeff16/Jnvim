@@ -3,7 +3,12 @@
 
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.distro'
+---@class User.Distro.Termux
+---@field PREFIX string|''
+---@field rtpaths string[]
+---@field validate fun(self: User.Distro.Termux): boolean
+---@field setup fun(self: User.Distro.Termux)
+---@field new fun(self: User.Distro.Termux?): table|User.Distro.Termux
 
 local is_dir = require('user_api.check.exists').vim_isdir
 

@@ -1,6 +1,142 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.util'
+---@class User.Util.String.Alphabet.Vowels
+---@field upper_list { [1]: 'A', [2]: 'E', [3]: 'I', [4]: 'O', [5]: 'U' }
+---@field lower_list { [1]: 'a', [2]: 'e', [3]: 'i', [4]: 'o', [5]: 'u' }
+---@field upper_map { ['A']: 'A', ['E']: 'E', ['I']: 'I', ['O']: 'O', ['U']: 'U' }
+---@field lower_map { ['a']: 'a', ['e']: 'e', ['i']: 'i', ['o']: 'o', ['u']: 'u' }
+
+---@class User.Util.String.Alphabet.UpperMap
+---@field A 'A'
+---@field B 'B'
+---@field C 'C'
+---@field D 'D'
+---@field E 'E'
+---@field F 'F'
+---@field G 'G'
+---@field H 'H'
+---@field I 'I'
+---@field J 'J'
+---@field K 'K'
+---@field L 'L'
+---@field M 'M'
+---@field N 'N'
+---@field O 'O'
+---@field P 'P'
+---@field Q 'Q'
+---@field R 'R'
+---@field S 'S'
+---@field T 'T'
+---@field U 'U'
+---@field V 'V'
+---@field W 'W'
+---@field X 'X'
+---@field Y 'Y'
+---@field Z 'Z'
+
+---@class User.Util.String.Alphabet.UpperList
+---@field [1] 'A'
+---@field [2] 'B'
+---@field [3] 'C'
+---@field [4] 'D'
+---@field [5] 'E'
+---@field [6] 'F'
+---@field [7] 'G'
+---@field [8] 'H'
+---@field [9] 'I'
+---@field [10] 'J'
+---@field [11] 'K'
+---@field [12] 'L'
+---@field [13] 'M'
+---@field [14] 'N'
+---@field [15] 'O'
+---@field [16] 'P'
+---@field [17] 'Q'
+---@field [18] 'R'
+---@field [19] 'S'
+---@field [20] 'T'
+---@field [21] 'U'
+---@field [22] 'V'
+---@field [23] 'W'
+---@field [24] 'X'
+---@field [25] 'Y'
+---@field [26] 'Z'
+
+---@class User.Util.String.Alphabet.LowerList
+---@field [1] 'a'
+---@field [2] 'b'
+---@field [3] 'c'
+---@field [4] 'd'
+---@field [5] 'e'
+---@field [6] 'f'
+---@field [7] 'g'
+---@field [8] 'h'
+---@field [9] 'i'
+---@field [10] 'j'
+---@field [11] 'k'
+---@field [12] 'l'
+---@field [13] 'm'
+---@field [14] 'n'
+---@field [15] 'o'
+---@field [16] 'p'
+---@field [17] 'q'
+---@field [18] 'r'
+---@field [19] 's'
+---@field [20] 't'
+---@field [21] 'u'
+---@field [22] 'v'
+---@field [23] 'w'
+---@field [24] 'x'
+---@field [25] 'y'
+---@field [26] 'z'
+
+---@class User.Util.String.Alphabet.LowerMap
+---@field a 'a'
+---@field b 'b'
+---@field c 'c'
+---@field d 'd'
+---@field e 'e'
+---@field f 'f'
+---@field g 'g'
+---@field h 'h'
+---@field i 'i'
+---@field j 'j'
+---@field k 'k'
+---@field l 'l'
+---@field m 'm'
+---@field n 'n'
+---@field o 'o'
+---@field p 'p'
+---@field q 'q'
+---@field r 'r'
+---@field s 's'
+---@field t 't'
+---@field u 'u'
+---@field v 'v'
+---@field w 'w'
+---@field x 'x'
+---@field y 'y'
+---@field z 'z'
+
+---@class User.Util.String.Alphabet
+---@field upper_list User.Util.String.Alphabet.UpperList
+---@field lower_list User.Util.String.Alphabet.LowerList
+---@field upper_map User.Util.String.Alphabet.UpperMap
+---@field lower_map User.Util.String.Alphabet.LowerMap
+---@field vowels User.Util.String.Alphabet.Vowels
+
+---@class User.Util.String.Digits
+---@field all { ['0']: '0', ['1']: '1', ['2']: '2', ['3']: '3', ['4']: '4', ['5']: '5', ['6']: '6', ['7']: '7', ['8']: '8', ['9']: '9' }
+---@field odd_list { [1]: '1', [2]: '3', [3]: '5', [4]: '7', [5]: '9' }
+---@field even_list { [1]: '0', [2]: '2', [3]: '4', [4]: '6', [5]: '8' }
+---@field odd_map { ['1']: '1', ['3']: '3', ['5']: '5', ['7']: '7', ['9']: '9' }
+---@field even_map { ['0']: '0', ['2']: '2', ['4']: '4', ['6']: '6', ['8']: '8' }
+
+---@class User.Util.String
+---@field alphabet User.Util.String.Alphabet
+---@field digits User.Util.String.Digits
+---@field capitalize fun(s: string, use_dot: boolean?, triggers: string[]?): (new_str: string)
+---@field replace fun(str: string, target: string, new: string): string
 
 ---@type User.Util.String
 local String = {

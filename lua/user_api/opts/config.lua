@@ -1,6 +1,6 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.opts'
+---@alias User.Opts.Spec table|vim.bo|vim.wo
 
 local executable = require('user_api.check.exists').executable
 

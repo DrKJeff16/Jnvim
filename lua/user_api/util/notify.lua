@@ -1,7 +1,52 @@
 ---@diagnostic disable:missing-fields
 ---@diagnostic disable:missing-parameter
 
----@module 'user_api.types.util'
+---@alias VimNotifyLvl
+---|0
+---|1
+---|2
+---|3
+---|4
+---|5
+
+---@alias NotifyLvl
+---|'debug'
+---|'error'
+---|'info'
+---|'off'
+---|'trace'
+---|'warn'
+
+---@class NotifyOpts
+---@field title? string Defaults to `'Message'`
+---@field icon? string
+---@field timeout? integer|boolean Defaults to `700`
+---@field on_open? fun(...)
+---@field on_close? fun(...)
+---@field keep? fun(...)
+---@field render? string|fun(...)
+---@field replace? integer
+---@field hide_from_history? boolean Defaults to `false`
+---@field animate? boolean Defaults to `true`
+
+---@class User.Util.Notify.Levels
+---@field [0] 'trace'
+---@field [1] 'debug'
+---@field [2] 'info'
+---@field [3] 'warn'
+---@field [4] 'error'
+---@field [5] 'off'
+---@field TRACE 0
+---@field DEBUG 1
+---@field INFO 2
+---@field WARN 3
+---@field ERROR 4
+---@field OFF 5
+
+---@class User.Util.Notify
+---@field Opts notify.Options
+---@field Levels User.Util.Notify.Levels
+---@field notify fun(msg: string, lvl: (NotifyLvl|VimNotifyLvl)?, opts: table|notify.Options?)
 
 local TRACE = vim.log.levels.TRACE -- `0`
 local DEBUG = vim.log.levels.DEBUG -- `1`

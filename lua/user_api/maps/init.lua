@@ -1,6 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.types.maps'
+---@class User.Maps
+---@field kmap User.Maps.Keymap
+---@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
+---@field wk User.Maps.WK
+---@field modes Modes
+---@field map_dict fun(T: AllModeMaps|AllMaps, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
@@ -88,8 +93,6 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
         end
     end
 
-    -- NOTE: Quite redundant the type definition below, isn't it?
-    ---@type { [1]: 'kmap', [2]: 'wk.register' }
     local map_choices = { 'kmap', 'wk.register' }
 
     map_func = (is_str(map_func) and vim.tbl_contains(map_choices)) and map_func or 'wk.register'
@@ -100,7 +103,6 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
 
-    ---@see User.Maps.Keymap
     ---@type KeyMapFunction
     local func
 
