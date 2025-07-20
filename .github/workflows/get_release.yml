@@ -4,6 +4,9 @@ name: Upload Asset To Current Release
 
 # Controls when the workflow will run
 on:
+  merge_group:
+    branches:
+      - main
   # Triggers the workflow on push or pull request events but only for the "main" branch
   release:
     types: [created]
@@ -14,15 +17,13 @@ jobs:
   test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
       - name: Build project
         run: |
-          zip -r -9 Jnvim/{lua,README.md,LICENSE,init.lua,ginit.vim,requirements.txt}
-        with:
-          # My Token
-          token: ${{ secrets.GITHUB_TOKEN }}
+          zip -r -9 Jnvim.zip lua README.md LICENSE init.lua ginit.vim requirements.txt
 
       - name: Get Release
         # You may pin to the exact commit or the version.
@@ -30,10 +31,6 @@ jobs:
         id: get_current_release
         uses: joutvhu/get-release@v1.0.3
         with:
-          # The name of the owner of the repo. Used to identify the owner of the repository.
-          owner: DrKJeff16
-          # The name of the repository. Used to identify the repository on which to release.
-          repo: Jnvim
           # Should get latest release?
           latest: true
           # Find the latest release including the pre-releases
@@ -43,9 +40,10 @@ jobs:
           # Show ouputs
           debug: true
           # Fail when no release was found
-          throwing: false
+          throwing: true
+        env:
           # My Token
-          token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -54,4 +52,5 @@ jobs:
           asset_path: ./Jnvim.zip
           asset_name: Jnvim.zip
           asset_content_type: application/zip
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
