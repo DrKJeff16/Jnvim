@@ -19,7 +19,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build project
         run: |
-          zip -r -9 Jnvim lua README.md LICENSE init.lua ginit.vim requirements.txt
+          zip -r -9 Jnvim/{lua,README.md,LICENSE,init.lua,ginit.vim,requirements.txt}
+        with:
+          # My Token
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get Release
         # You may pin to the exact commit or the version.
@@ -41,15 +44,14 @@ jobs:
           debug: true
           # Fail when no release was found
           throwing: false
-        env:
+          # My Token
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
           asset_path: ./Jnvim.zip
           asset_name: Jnvim.zip
           asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
