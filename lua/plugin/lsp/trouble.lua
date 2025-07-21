@@ -1,9 +1,11 @@
 ---@diagnostic disable:missing-fields
 
+---@alias Lsp.SubMods.Trouble.CallerFun fun(override: table|trouble.Config?)
+
 ---@class Lsp.SubMods.Trouble
 ---@field Opts trouble.Config
 ---@field Keys AllModeMaps
----@field new fun(O: table?): table|Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
+---@field new fun(O: table?): table|Lsp.SubMods.Trouble|Lsp.SubMods.Trouble.CallerFun
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
@@ -24,12 +26,12 @@ local Trouble = {}
 
 ---@type trouble.Config
 Trouble.Opts = {
-    auto_close = false, -- auto close when there are no items
+    auto_close = true, -- auto close when there are no items
     auto_open = false, -- auto open when there are items
     auto_preview = true, -- automatically open preview when on an item
     auto_refresh = true, -- auto refresh when open
-    auto_jump = false, -- auto jump to the item when there's only one
-    focus = false, -- Focus the window when opened
+    auto_jump = true, -- auto jump to the item when there's only one
+    focus = true, -- Focus the window when opened
     restore = true, -- restores the last location in the list when opening
     follow = true, -- Follow the current item
     indent_guides = true, -- show indent guides
@@ -51,7 +53,7 @@ Trouble.Opts = {
         scratch = true,
     },
     --- Throttle/Debounce settings. Should usually not be changed
-    ---@type table<string, number|{ms:number, debounce?:boolean}>
+    ---@type table<string, number|{ ms:number, debounce?:boolean }>
     throttle = {
         refresh = 20, -- fetches new data when needed
         update = 10, -- updates the window
@@ -68,11 +70,11 @@ Trouble.Opts = {
         R = 'toggle_refresh',
         q = 'close',
         o = 'jump_close',
-        ['<esc>'] = 'cancel',
-        ['<cr>'] = 'jump',
+        ['<Esc>'] = 'cancel',
+        ['<CR>'] = 'jump',
         ['<2-leftmouse>'] = 'jump',
-        ['<c-s>'] = 'jump_split',
-        ['<c-v>'] = 'jump_vsplit',
+        ['<C-s>'] = 'jump_split',
+        ['<C-v>'] = 'jump_vsplit',
         -- go down to next item (accepts count)
         -- j = "next",
         ['}'] = 'next',
@@ -101,7 +103,7 @@ Trouble.Opts = {
         zi = 'fold_toggle_enable',
         gb = { -- example of a custom action that toggles the active view filter
             action = function(view)
-                view:filter({ buf = 0 }, { toggle = true })
+                view:filter({ buf = vim.api.nvim_get_current_buf() }, { toggle = true })
             end,
             desc = 'Toggle Current Buffer Filter',
         },
@@ -202,39 +204,29 @@ Trouble.Keys = {
     ['<leader>lx'] = { group = '+Trouble' },
 
     ['<leader>lxx'] = {
-        function()
-            vim.cmd('Trouble diagnostics toggle filter.buf=0')
-        end,
+        ':Trouble diagnostics toggle filter.buf=0<CR>',
         desc('Toggle Diagnostics'),
     },
     ['<leader>lxs'] = {
-        function()
-            vim.cmd('Trouble symbols toggle focus=false')
-        end,
+        ':Trouble symbols toggle focus=false<CR>',
         desc('Toggle Symbols'),
     },
     ['<leader>lxl'] = {
-        function()
-            vim.cmd('Trouble lsp toggle focus=false')
-        end,
+        ':Trouble lsp toggle focus=false<CR>',
         desc('Toggle LSP'),
     },
     ['<leader>lxL'] = {
-        function()
-            vim.cmd('Trouble loclist toggle')
-        end,
+        ':Trouble loclist toggle<CR>',
         desc('Toggle Loclist'),
     },
     ['<leader>lxr'] = {
-        function()
-            vim.cmd('Trouble lsp_references')
-        end,
+        ':Trouble lsp_references<CR>',
         desc('Toggle LSP References'),
     },
 }
 
 ---@param O? table
----@return table|Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
+---@return table|Lsp.SubMods.Trouble|Lsp.SubMods.Trouble.CallerFun
 function Trouble.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, {
@@ -256,8 +248,6 @@ function Trouble.new(O)
     })
 end
 
-local T = Trouble.new()
-
-return T
+return Trouble.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
