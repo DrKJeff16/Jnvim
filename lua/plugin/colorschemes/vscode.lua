@@ -1,6 +1,19 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias VSCodeSubMod.Variant ('dark'|'light')
+
+---@class VSCodeSubMod.Variants
+---@field [1] 'dark'
+---@field [2] 'light'
+
+--- A colorscheme table for the `vscode` colorscheme
+--- ---
+---@class VSCodeSubMod
+---@field variants VSCodeSubMod.Variants
+---@field mod_cmd string
+---@field valid fun(): boolean
+---@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variant?, transparent: boolean?, override: table?)
+---@field new fun(O: table?): table|VSCodeSubMod
 
 local User = require('user_api')
 local Check = User.check
@@ -12,7 +25,6 @@ local is_tbl = Check.value.is_tbl
 
 ---@type VSCodeSubMod
 local VSCode = {
-    ---@type VSCodeSubMod.Variants[]
     variants = {
         'dark',
         'light',

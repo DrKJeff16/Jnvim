@@ -1,27 +1,26 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
-
 local User = require('user_api')
 
 local is_tbl = User.check.value.is_tbl
 
----@type CscSubMod
-local SpaceDuck = {
-    mod_cmd = 'silent! colorscheme spaceduck',
-}
+---@class SpaceDuckSubMod
+local SpaceDuck = {}
+
+SpaceDuck.mod_cmd = 'silent! colorscheme spaceduck'
 
 ---@return boolean
 function SpaceDuck.valid()
     return vim.g.installed_spaceduck == 1
 end
 
+---@param self SpaceDuckSubMod
 function SpaceDuck:setup()
     vim.cmd(self.mod_cmd)
 end
 
 ---@param O? table
----@return table|CscSubMod
+---@return table|SpaceDuckSubMod
 function SpaceDuck.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = SpaceDuck })

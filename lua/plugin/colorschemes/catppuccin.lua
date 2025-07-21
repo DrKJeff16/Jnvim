@@ -1,6 +1,21 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
+
+---@class CpcSubMod.Variants
+---@field [1] 'frappe'
+---@field [2] 'macchiato'
+---@field [3] 'mocha'
+---@field [4] 'latte'
+
+--- A submodule class for the `catppuccin.nvim` colorscheme
+--- ---
+---@class CpcSubMod
+---@field variants CpcSubMod.Variants
+---@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variant?, transparent: boolean?, override: table|CatppuccinOptions?)
+---@field valid fun(): boolean
+---@field mod_cmd string
+---@field new fun(O: table?): table|CpcSubMod
 
 local User = require('user_api')
 local Check = User.check

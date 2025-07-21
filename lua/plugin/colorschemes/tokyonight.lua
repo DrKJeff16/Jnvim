@@ -1,6 +1,20 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias TNSubMod.Variant ('night'|'moon'|'day')
+
+---@class TNSubMod.Variants
+---@field [1] 'night'
+---@field [2] 'moon'
+---@field [3] 'day'
+
+--- A colorscheme class for the `tokyonight.nvim` colorscheme
+--- ---
+---@class TNSubMod
+---@field setup fun(self: TNSubMod, variant: TNSubMod.Variant?, transparent: boolean?, override: table?)
+---@field variants TNSubMod.Variants
+---@field valid fun(): boolean
+---@field mod_cmd string
+---@field new fun(O: table?): TNSubMod|table
 
 local User = require('user_api')
 local Check = User.check

@@ -2,6 +2,56 @@
 
 ---@module 'plugin._types.colorschemes'
 
+---@alias AllCsc
+---|'catppuccin'
+---|'dracula'
+---|'gloombuddy'
+---|'gruvbox'
+---|'kanagawa'
+---|'molokai'
+---|'nightfox'
+---|'oak'
+---|'onedark'
+---|'space_vim_dark'
+---|'spaceduck'
+---|'spacemacs'
+---|'tokyonight'
+---|'vscode'
+
+---@alias AllColorSubMods
+---|CpcSubMod
+---|DraculaSubMod
+---|ODSubMod
+---|NFoxSubMod
+---|TNSubMod
+---|VSCodeSubMod
+---|GloombuddySubMod
+---|GruvboxSubMod
+---|MolokaiSubMod
+---|OakSubMod
+---|SpaceVimSubMod
+---|SpaceVimSubMod
+---|SpaceDuckSubMod
+---|SpacemacsSubMod
+
+---@class CscMod
+---@field OPTIONS (AllCsc)[]
+---@field catppuccin CpcSubMod
+---@field dracula DraculaSubMod
+---@field gloombuddy GloombuddySubMod
+---@field gruvbox GruvboxSubMod
+---@field kanagawa KanagawaSubMod
+---@field molokai MolokaiSubMod
+---@field nightfox NFoxSubMod
+---@field oak OakSubMod
+---@field onedark ODSubMod
+---@field space_vim_dark SpaceVimSubMod
+---@field spaceduck SpaceDuckSubMod
+---@field spacemacs SpacemacsSubMod
+---@field tokyonight TNSubMod
+---@field vscode VSCodeSubMod
+---@field new fun(O: table?): CscMod|table|fun(color: string?, ...)
+
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check

@@ -1,29 +1,27 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
-
 local User = require('user_api')
 local Check = User.check
 
 local is_tbl = Check.value.is_tbl
 
----@type CscSubMod
-local Oak = {
-    mod_cmd = 'silent! colorscheme oak',
-}
+---@class OakSubMod
+local Oak = {}
+
+Oak.mod_cmd = 'silent! colorscheme oak'
 
 ---@return boolean
 function Oak.valid()
     return vim.g.installed_oak == 1
 end
 
----@param self CscSubMod
+---@param self OakSubMod
 function Oak:setup()
     vim.cmd(self.mod_cmd)
 end
 
 ---@param O? table
----@return table|CscSubMod
+---@return table|OakSubMod
 function Oak.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = Oak })

@@ -1,6 +1,19 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')
+
+---@class DraculaSubMod.Variants
+---@field [1] 'dracula'
+---@field [2] 'dracula-soft'
+
+--- A colorscheme table for the `dracula.nvim` colorscheme
+--- ---
+---@class DraculaSubMod
+---@field variants DraculaSubMod.Variants
+---@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variant?, transparent: boolean?, override: table?)
+---@field valid fun(): boolean
+---@field new fun(O: table?): table|DraculaSubMod
+---@field mod_cmd string
 
 local User = require('user_api')
 local Check = User.check

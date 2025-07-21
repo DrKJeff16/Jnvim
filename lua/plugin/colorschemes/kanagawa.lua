@@ -1,6 +1,22 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@module 'kanagawa'
+
+---@alias KanagawaSubMod.Variant ('dragon'|'wave'|'lotus')
+
+---@class KanagawaSubMod.Variants
+---@field [1] 'dragon'
+---@field [2] 'wave'
+---@field [3] 'lotus'
+
+--- A `CscSubMod` variant but for the `kanagawa` colorscheme
+--- ---
+---@class KanagawaSubMod: CscSubMod
+---@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variant?, transparent: boolean?, override: table|KanagawaConfig?)|nil
+---@field variants KanagawaSubMod.Variants
+---@field valid fun(): boolean
+---@field mod_cmd string
+---@field new fun(O: table?): KanagawaSubMod|table
 
 local User = require('user_api')
 local Check = User.check

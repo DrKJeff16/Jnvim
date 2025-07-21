@@ -1,6 +1,24 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias NFoxSubMod.Variant ('nightfox'|'carbonfox'|'dayfox'|'dawnfox'|'duskfox'|'nordfox'|'terafox')
+
+---@class NFoxSubMod.Variants
+---@field [1] 'carbonfox'
+---@field [2] 'nightfox'
+---@field [3] 'dawnfox'
+---@field [4] 'dayfox'
+---@field [5] 'duskfox'
+---@field [6] 'nordfox'
+---@field [7] 'terafox'
+
+--- A colorscheme class for the `nightfox.nvim` colorscheme
+--- ---
+---@class NFoxSubMod
+---@field variants NFoxSubMod.Variants
+---@field setup fun(self: NFoxSubMod, variant: NFoxSubMod.Variant?, transparent: boolean?, override: table?)
+---@field valid fun(): boolean
+---@field mod_cmd string
+---@field new fun(O: table?): table|NFoxSubMod
 
 local User = require('user_api')
 local Check = User.check
@@ -12,7 +30,6 @@ local is_tbl = Check.value.is_tbl
 
 ---@type NFoxSubMod
 local Nightfox = {
-    ---@type NFoxSubMod.Variants
     variants = {
         'carbonfox',
         'nightfox',

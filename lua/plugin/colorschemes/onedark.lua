@@ -1,6 +1,31 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
+---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
+
+---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
+
+---@class OD
+---@field style? OD.Variant
+---@field transparent? boolean
+---@field term_colors? boolean
+---@field ending_tildes? boolean
+---@field cmp_itemkind_reverse? boolean
+---@field toggle_style_key? nil|string
+---@field toggle_style_list? string[]
+---@field code_style? table<string, string>
+---@field lualine? table
+---@field colors? table
+---@field highlights? table
+---@field diagnostics? OD.Diagnostics
+
+--- A colorscheme class for the `onedark.nvim` colorscheme
+--- ---
+---@class ODSubMod
+---@field setup fun(self: ODSubMod, variant: OD.Variant?, transparent: boolean?, override: table|OD?)
+---@field new fun(O: table?): ODSubMod|table
+---@field valid fun(): boolean
+---@field mod_cmd string
+---@field variants OD.Variant[]
 
 local User = require('user_api')
 local Check = User.check
