@@ -1,4 +1,9 @@
----@module 'user_api.types.gitsigns'
+---@class GitSignOpts
+---@field text string
+
+---@alias GitSigns table<'add'|'change'|'delete'|'topdelete'|'changedelete'|'untracked', GitSignOpts>
+
+---@alias GitSignsArr GitSigns[]
 
 local User = require('user_api')
 local Check = User.check

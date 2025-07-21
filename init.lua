@@ -1,7 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.lazy'
-
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.newline = string.char(10)
 _G.inspect = vim.inspect

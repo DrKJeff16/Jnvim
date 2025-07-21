@@ -1,5 +1,3 @@
----@module 'plugin._types.telescope'
-
 local User = require('user_api')
 local Check = User.check
 
@@ -10,7 +8,6 @@ if not exists('telescope') or not exists('telescope._extensions.file_browser') t
     return nil
 end
 
-local Telescope = require('telescope')
 local Actions = require('telescope._extensions.file_browser.actions')
 local Finders = require('telescope._extensions.file_browser.finders')
 

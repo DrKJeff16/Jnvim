@@ -1,7 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
-
 ---@alias AllCsc
 ---|'catppuccin'
 ---|'dracula'
@@ -87,27 +85,22 @@ Colorschemes.OPTIONS = {
     'spacemacs',
 }
 
----@type CpcSubMod
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 
----@type DraculaSubMod
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
 
 Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
 
 Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
 
----@type KanagawaSubMod
 Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
 
 Colorschemes.molokai = require('plugin.colorschemes.molokai')
 
----@type NFoxSubMod
 Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
 
 Colorschemes.oak = require('plugin.colorschemes.oak')
 
----@type ODSubMod
 Colorschemes.onedark = require('plugin.colorschemes.onedark')
 
 Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
@@ -116,10 +109,8 @@ Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
 
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
 
----@type TNSubMod
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 
----@type VSCodeSubMod
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@param O? table
@@ -243,10 +234,8 @@ function Colorschemes.new(O)
     })
 end
 
-local ColorMod = Colorschemes.new()
-
 User:register_plugin('plugin.colorschemes')
 
-return ColorMod
+return Colorschemes.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

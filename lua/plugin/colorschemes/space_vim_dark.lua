@@ -1,7 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.colorschemes'
-
 local User = require('user_api')
 
 local is_tbl = User.check.value.is_tbl

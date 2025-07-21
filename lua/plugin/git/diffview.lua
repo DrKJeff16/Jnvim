@@ -1,6 +1,19 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.diffview'
+---@alias DiffView.Views
+---|'diff1_plain'
+---|'diff2_horizontal'
+---|'diff2_vertical'
+---|'diff3_horizontal'
+---|'diff3_vertical'
+---|'diff3_mixed'
+---|'diff4_mixed'
+---|-1
+
+---@alias DiffView.ListStyle 'list'|'tree'
+---@alias DiffView.WinConfig.Type 'float'|'split'
+---@alias DiffView.WinConfig.Positon 'left'|'top'|'right'|'bottom'
+---@alias DiffView.WinConfig.Relative 'editor'|'win'
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')

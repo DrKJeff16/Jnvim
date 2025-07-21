@@ -1,4 +1,4 @@
----@module 'plugin._types.lazy'
+---@module 'config.lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')

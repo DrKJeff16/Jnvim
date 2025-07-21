@@ -1,5 +1,3 @@
----@module 'plugin._types.lsp'
-
 local User = require('user_api')
 local Check = User.check
 

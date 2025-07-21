@@ -1,4 +1,4 @@
----@module 'plugin._types.lazy'
+---@module 'config.lazy'
 
 local User = require('user_api')
 local Check = User.check

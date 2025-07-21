@@ -1,12 +1,10 @@
----@module 'plugin._types.colorschemes'
----@module 'plugin._types.lazy'
+---@module 'config.lazy'
 
 local CfgUtil = require('config.util')
 
 local in_console = require('user_api.check').in_console
 
 -- WARN: Colorschemes are called from `lua/plugin/colorschemes/init.lua`
----@see CscMod
 
 ---@type LazySpecs
 local ColorSchemes = {

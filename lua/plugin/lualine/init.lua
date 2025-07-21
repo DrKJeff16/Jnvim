@@ -1,5 +1,3 @@
----@module 'plugin._types.lualine'
-
 local User = require('user_api')
 local Check = User.check
 local Distro = User.distro

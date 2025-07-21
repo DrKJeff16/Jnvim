@@ -1,6 +1,21 @@
 ---@diagnostic disable:need-check-nil
 
----@module 'plugin._types.telescope'
+---@class KeyMapArgs
+---@field lhs string
+---@field rhs string|fun()
+---@field opts? User.Maps.Keymap.Opts
+
+---@class TelAuData
+---@field title string
+---@field filetype string
+---@field bufname string
+
+---@class TelAuArgs
+---@field data? TelAuData
+
+---@class TelExtension
+---@field [1] string
+---@field keys? fun(): (table|AllMaps)
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')

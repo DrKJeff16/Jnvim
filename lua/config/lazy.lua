@@ -1,9 +1,14 @@
 ---@diagnostic disable:missing-fields
 
----@module 'lazy'
----@module 'plugin._types.alpha'
----@module 'plugin._types.lazy'
----@module 'config._types'
+---@alias LazySpecs (LazySpec)[]
+
+---@class LazySources
+---@field [1] 'lazy'
+---@field [2]? 'rockspec'|'packspec'
+---@field [3]? 'rockspec'|'packspec'
+
+---@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
+---@alias LazyPlugs (LazyPlug)[]
 
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')

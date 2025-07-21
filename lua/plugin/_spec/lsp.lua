@@ -1,4 +1,4 @@
----@module 'plugin._types.lazy'
+---@module 'config.lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -7,7 +7,6 @@ local Check = User.check
 local source = CfgUtil.source
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
-local in_console = Check.in_console
 
 ---@type LazySpecs
 local LSP = {

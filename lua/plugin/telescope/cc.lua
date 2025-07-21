@@ -1,6 +1,13 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.telescope'
+---@class TelCC.Opts
+---@field theme? 'ivy'|'dropdown'|'cursor'
+---@field action? fun(entry: table)
+---@field include_body_and_footer? boolean
+
+---@class TelCC
+---@field cc TelCC.Opts
+---@field loadkeys fun()
 
 local User = require('user_api')
 local Keymaps = require('user_api.config.keymaps')
@@ -9,7 +16,7 @@ local Check = User.check
 local exists = Check.exists.module
 local desc = User.maps.kmap.desc
 
-if not exists('telescope') or not exists('telescope._extensions.conventional_commits.actions') then
+if not exists('telescope._extensions.conventional_commits.actions') then
     return nil
 end
 
