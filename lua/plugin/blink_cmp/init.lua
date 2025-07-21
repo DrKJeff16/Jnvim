@@ -1,7 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@module 'plugin._types.blink_cmp'
-
 local User = require('user_api')
 
 local exists = User.check.exists.module

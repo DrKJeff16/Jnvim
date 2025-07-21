@@ -1,7 +1,12 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'blink.cmp'
----@module 'plugin._types.blink_cmp'
+
+---@alias BlinkCmp.Cfg.Config blink.cmp.Config
+
+---@class BlinkCmp.Cfg
+---@field Config BlinkCmp.Cfg.Config
+---@field new fun(O: table?): table|BlinkCmp.Cfg
 
 local User = require('user_api')
 local Check = User.check
@@ -320,7 +325,7 @@ Cfg.Config.completion = {
             padding = { 0, 1 },
             treesitter = { 'lsp' },
 
-            components = exists('nvim-web-devicons') and devicon_kinds or mini_kinds,
+            components = mini_kinds,
 
             columns = {
                 { 'label', 'label_description', gap = 1 },

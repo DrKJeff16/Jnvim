@@ -1,7 +1,19 @@
 ---@diagnostic disable:missing-fields
 
 ---@module 'blink.cmp'
----@module 'plugin._types.blink_cmp'
+
+---@alias BlinkCmp.Util.Sources ('lsp'|'path'|'snippets'|'buffer'|string)[]
+---@alias BlinkCmp.Util.Providers table<string, blink.cmp.SourceProviderConfigPartial>
+
+---@class BlinkCmp.Util
+---@field curr_ft string
+---@field Sources BlinkCmp.Util.Sources
+---@field Providers BlinkCmp.Util.Providers
+---@field reset_sources fun(self: BlinkCmp.Util, snipps: boolean?, buf: boolean?)
+---@field reset_providers fun(self: BlinkCmp.Util)
+---@field gen_sources fun(self: BlinkCmp.Util, snipps: boolean?, buf: boolean?): BlinkCmp.Util.Sources
+---@field gen_providers fun(self: BlinkCmp.Util, P: BlinkCmp.Util.Providers?): BlinkCmp.Util.Providers
+---@field new fun(O: table?): table|BlinkCmp.Util
 
 local User = require('user_api')
 local Check = User.check
