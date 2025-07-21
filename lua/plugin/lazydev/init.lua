@@ -15,22 +15,22 @@ end
 
 local LazyDev = require('lazydev')
 
----@type lazydev.Library.spec[]
+---@type (lazydev.Library.spec)[]
 local library = { path = '${3rd}/luv/library', words = { 'vim%.uv' } }
 
 LazyDev.setup({
-    runtime = vim.env.VIMRUNTIME --[[@as string]],
+    runtime = vim.env.VIMRUNTIME,
 
     library = library,
 
-    ---@type boolean|(fun(root_dir: string): boolean?)
+    ---@type boolean|(fun(root_dir: string): boolean)
     enabled = function(root_dir)
         return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
     end,
 
     integrations = {
         lspconfig = true,
-        cmp = exists('cmp'),
+        cmp = true,
         coq = false,
     },
 })
