@@ -8,7 +8,7 @@ local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
 local Keymaps = require('user_api.config.keymaps') ---@see Config.Keymaps
-local Neovide = require('config.neovide') ---@see Config.Neovide
+local Neovide = require('user_api.config.neovide') ---@see User.Config.Neovide
 local User = require('user_api') ---@see UserAPI User API
 local Check = require('user_api.check') ---@see User.Check Checking utilities
 local Util = require('user_api.util') ---@see User.Util General utilities

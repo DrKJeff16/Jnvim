@@ -2,6 +2,7 @@
 
 ---@class User.Config
 ---@field keymaps User.Config.Keymaps
+---@field neovide User.Config.Neovide
 
 ---@class UserAPI
 ---@field paths string[]|table

@@ -1,14 +1,11 @@
 ---@diagnostic disable:missing-fields
 
-local User = require('user_api')
-local Check = require('user_api.check')
-
-local executable = Check.exists.executable
-local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
-local is_num = Check.value.is_num
-local is_bool = Check.value.is_bool
-local num_range = Check.value.num_range
+local executable = require('user_api.check.exists').executable
+local is_str = require('user_api.check.value').is_str
+local is_tbl = require('user_api.check.value').is_tbl
+local is_num = require('user_api.check.value').is_num
+local is_bool = require('user_api.check.value').is_bool
+local num_range = require('user_api.check.value').num_range
 
 local INFO = vim.log.levels.INFO
 
@@ -18,7 +15,7 @@ local function alpha()
     return string.format('%x', math.floor(255 * (vim.g.transparency or 1.0)))
 end
 
----@class Config.Neovide
+---@class User.Config.Neovide
 local Neovide = {}
 
 Neovide.g_opts = {}
@@ -256,8 +253,6 @@ function Neovide:setup(T, transparent, verbose)
     end
 
     self:setup_keys()
-
-    User:register_plugin('config.neovide')
 end
 
 return Neovide
