@@ -6,6 +6,7 @@ local Check = User.check
 local Termux = User.distro.termux
 
 local vim_has = Check.exists.vim_has
+local executable = Check.exists.executable
 local in_console = Check.in_console
 
 local source = CfgUtil.source
@@ -106,6 +107,14 @@ local Essentials = {
         version = false,
         dependencies = { 'ibhagwan/fzf-lua' },
         config = source('plugin.possession'),
+    },
+    {
+        'ibhagwan/fzf-lua',
+        lazy = true,
+        version = false,
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = source('plugin.fzf.fzf_lua'),
+        cond = executable('fzf'),
     },
 }
 
