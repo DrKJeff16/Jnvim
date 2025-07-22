@@ -33,6 +33,7 @@ local Completion = {
     {
         'onsails/lspkind.nvim',
         version = false,
+        config = source('plugin.lspkind'),
     },
 }
 
