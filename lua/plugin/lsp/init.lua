@@ -122,6 +122,9 @@ function Server.new(O)
 
         ---@param self Lsp.Server
         __call = function(self)
+            vim.lsp.protocol.TextDocumentSyncKind.Full = 1
+            vim.lsp.protocol.TextDocumentSyncKind[1] = 'Full'
+
             vim.lsp.config('*', {
                 capabilities = self.make_capabilities(),
             })
