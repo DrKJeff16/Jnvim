@@ -1,18 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@class Config.Neovide.Opts.O
----@field guifont? string
-
----@class Config.Neovide.Opts.Opt
----@field linespace? integer
-
----@class Config.Neovide.Opts
----@field o table|Config.Neovide.Opts.O
----@field opt table|Config.Neovide.Opts.Opt
----@field g table
-
----@class Config.Neovide
-
 local User = require('user_api')
 local Check = require('user_api.check')
 
@@ -31,15 +18,16 @@ local function alpha()
     return string.format('%x', math.floor(255 * (vim.g.transparency or 1.0)))
 end
 
+---@class Config.Neovide
 local Neovide = {}
 
----@type table<string, any>
 Neovide.g_opts = {}
 
 Neovide.active = false
 
----@type Config.Neovide.Opts
+---@class Config.Neovide.Opts
 Neovide.default_opts = {
+    ---@class Config.Neovide.Opts.G
     g = {
         theme = 'auto',
 
@@ -48,6 +36,7 @@ Neovide.default_opts = {
 
         no_idle = true,
 
+        ---@type boolean
         confirm_quit = vim.opt.confirm:get(),
 
         fullscreen = false,
@@ -86,7 +75,7 @@ Neovide.default_opts = {
 
         scale_factor = 1.0,
 
-        show_border = false,
+        show_border = true,
 
         hide_mouse_when_typing = false,
 
@@ -99,6 +88,8 @@ Neovide.default_opts = {
         scroll = {
             animation = {
                 length = 0.07,
+
+                ---@type integer
                 far_lines = vim.opt.scrolloff:get(),
             },
         },
@@ -126,10 +117,12 @@ Neovide.default_opts = {
         },
     },
 
+    ---@class Config.Neovide.Opts.O
     o = {
         guifont = 'FiraCode Nerd Font Mono:h19',
     },
 
+    ---@class Config.Neovide.Opts.Opt
     opt = {
         linespace = 0,
     },
@@ -137,9 +130,7 @@ Neovide.default_opts = {
 
 ---@return boolean
 function Neovide:check()
-    if executable('neovide') and vim.g.neovide then
-        self.active = true
-    end
+    self.active = executable('neovide') and vim.g.neovide ~= nil
 
     return self.active
 end
@@ -159,11 +150,11 @@ function Neovide:set_transparency(opacity, transparency, bg)
         transparency = 1.0
     end
 
-    if not is_str(bg) then
+    if bg == nil or bg:len() ~= 7 then
         bg = '#0f1117'
     end
 
-    if bg:sub(1, 1) == '#' then ---@diagnostic disable-line:need-check-nil
+    if bg:sub(1, 1) == '#' then
         local len = string.len(bg)
 
         if len ~= 7 and len ~= 9 then
@@ -200,14 +191,20 @@ function Neovide:setup_keys()
 
     local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps.kmap').desc
+    local notify = require('user_api.util.notify').notify
 
     ---@type AllMaps
     local Keys = {
-        ['<leader><M-n>'] = { group = '+Neovide' },
+        ['<leader><CR>'] = { group = '+Neovide' },
 
-        ['<leader><M-n>V'] = {
+        ['<leader><CR>V'] = {
             function()
-                vim.notify(string.format('Neovide v%s', vim.g.neovide_version), INFO)
+                notify(string.format('Neovide v%s', vim.g.neovide_version), INFO, {
+                    title = 'Neovide',
+                    animate = true,
+                    timeout = 1500,
+                    hide_from_history = false,
+                })
             end,
             desc('Show Neovide Version'),
         },
