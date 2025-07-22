@@ -11,9 +11,12 @@ local WDI = require('nvim-web-devicons')
 
 WDI.setup({
     override = {},
+
     color_icons = true,
     default_icons = true,
     strict = true,
+
+    variant = 'dark',
 
     override_by_filename = {
         ['.gitignore'] = {
@@ -22,6 +25,8 @@ WDI.setup({
             name = 'Gitignore',
         },
     },
+
+    override_by_extension = {},
 
     override_by_operating_system = {
         ['apple'] = {
@@ -32,6 +37,8 @@ WDI.setup({
         },
     },
 })
+
+WDI.set_up_highlights()
 
 User:register_plugin('plugin.web_devicons')
 
