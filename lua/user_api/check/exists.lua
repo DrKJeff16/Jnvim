@@ -9,7 +9,7 @@
 ---@class User.Check.Existance
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>
----@field executable fun(exe: string[]|string, fallback: fun()?): boolean
+---@field executable fun(exe: string[]|string): boolean
 ---@field env_vars fun(vars: string[]|string, fallback: fun()?): boolean
 ---@field vim_exists fun(expr: string[]|string): boolean
 ---@field vim_has fun(expr: string[]|string): boolean
@@ -194,14 +194,12 @@ function Exists.env_vars(vars, fallback)
     return res
 end
 
----@param exe string|string[]
----@param fallback? fun()
+---@param exe string[]|string
 ---@return boolean
-function Exists.executable(exe, fallback)
+function Exists.executable(exe)
     local Value = get_value()
 
     local is_str = Value.is_str
-    local is_fun = Value.is_fun
     local is_tbl = Value.is_tbl
 
     if not (is_str(exe) or is_tbl(exe)) then
@@ -211,8 +209,6 @@ function Exists.executable(exe, fallback)
         )
         return false
     end
-
-    fallback = is_fun(fallback) and fallback or nil
 
     local res = false
 
@@ -226,10 +222,6 @@ function Exists.executable(exe, fallback)
                 break
             end
         end
-    end
-
-    if not res and is_fun(fallback) then
-        pcall(fallback)
     end
 
     return res
