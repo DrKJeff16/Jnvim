@@ -5,6 +5,7 @@
 /fallback.lua
 /repro.lua
 /rtp.lua
+/.repro/
 
 # Patching
 /patches/
