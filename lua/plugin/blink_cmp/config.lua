@@ -19,95 +19,9 @@ local has_words_before = Util.has_words_before
 
 local BUtil = require('plugin.blink_cmp.util')
 
----@type table<string, blink.cmp.DrawComponent>
-local mini_kinds = {
-    kind_icon = {
-        ---@type blink.cmp.DrawItemContext
-        text = function(ctx)
-            local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
-            return kind_icon
-        end,
-
-        -- (optional) use highlights from mini.icons
-        ---@type blink.cmp.DrawItemContext
-        highlight = function(ctx)
-            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-            return hl
-        end,
-    },
-    kind = {
-        -- (optional) use highlights from mini.icons
-        ---@type blink.cmp.DrawItemContext
-        highlight = function(ctx)
-            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-            return hl
-        end,
-    },
-}
-
----@type table<string, blink.cmp.DrawComponent>
-local devicon_kinds = {
-    kind_icon = {
-        ---@type blink.cmp.DrawItemContext
-        text = function(ctx)
-            local Devicons = require('nvim-web-devicons')
-            local lspkind = require('lspkind')
-
-            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
-                local dev_icon, _ = Devicons.get_icon(ctx.label)
-                if dev_icon then
-                    ctx.kind_icon = dev_icon
-                end
-            else
-                ctx.kind_icon = lspkind.symbolic(ctx.kind, {
-                    mode = 'symbol',
-                })
-            end
-
-            return ctx.kind_icon .. ctx.icon_gap
-        end,
-
-        -- Optionally, use the highlight groups from nvim-web-devicons
-        -- You can also add the same function for `kind.highlight` if you want to
-        -- keep the highlight groups in sync with the icons.
-        ---@type blink.cmp.DrawItemContext
-        highlight = function(ctx)
-            local Devicons = require('nvim-web-devicons')
-
-            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
-                local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
-                if dev_icon then
-                    ctx.kind_hl = dev_hl
-                end
-            end
-
-            return ctx.kind_hl
-        end,
-    },
-
-    kind = {
-        -- Optionally, use the highlight groups from nvim-web-devicons
-        -- You can also add the same function for `kind.highlight` if you want to
-        -- keep the highlight groups in sync with the icons.
-        ---@type blink.cmp.DrawItemContext
-        highlight = function(ctx)
-            local Devicons = require('nvim-web-devicons')
-
-            if vim.tbl_contains({ 'Path', 'LSP' }, ctx.source_name) then
-                local dev_icon, dev_hl = Devicons.get_icon(ctx.label)
-                if dev_icon then
-                    ctx.kind_hl = dev_hl
-                end
-            end
-
-            return ctx.kind_hl
-        end,
-    },
-}
-
 ---@param key string
 ---@return fun()
-local function gen_termcode(key)
+local function gen_termcode_fun(key)
     return function()
         local termcode = vim.api.nvim_replace_termcodes(key, true, false, true)
         vim.api.nvim_feedkeys(termcode, 'i', false)
@@ -136,7 +50,7 @@ Cfg.Config.keymap = {
         'fallback',
     },
 
-    --- Also known as `<Esc>`
+    -- Also known as `<Esc>`
     ['<C-e>'] = {
         function(cmp)
             if cmp.is_documentation_visible() then
@@ -156,17 +70,15 @@ Cfg.Config.keymap = {
 
     ['<Tab>'] = {
         function(cmp)
-            if cmp.snippet_active({ direction = 1 }) then
-                return cmp.snippet_forward()
-            end
+            return cmp.snippet_active({ direction = 1 }) and cmp.snippet_forward() or nil
         end,
 
         function(cmp)
             local visible = cmp.is_menu_visible
 
-            if not visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources(true, true) })
-            end
+            return (not visible() and has_words_before())
+                    and cmp.show({ providers = BUtil:gen_sources(true, true) })
+                or nil
         end,
 
         function(cmp)
@@ -176,17 +88,15 @@ Cfg.Config.keymap = {
     },
     ['<S-Tab>'] = {
         function(cmp)
-            if cmp.snippet_active({ direction = -1 }) then
-                return cmp.snippet_backward()
-            end
+            return cmp.snippet_active({ direction = -1 }) and cmp.snippet_backward() or nil
         end,
 
         function(cmp)
             local visible = cmp.is_menu_visible
 
-            if not visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources(true, true) })
-            end
+            return (not visible() and has_words_before())
+                    and cmp.show({ providers = BUtil:gen_sources(true, true) })
+                or nil
         end,
 
         function(cmp)
@@ -198,21 +108,21 @@ Cfg.Config.keymap = {
 
     ['<Up>'] = {
         function(cmp)
-            if cmp.is_active() or cmp.is_visible() then
-                return cmp.cancel({
-                    callback = gen_termcode('<Up>'),
-                })
-            end
+            return (cmp.is_active() or cmp.is_visible())
+                    and cmp.cancel({
+                        callback = gen_termcode_fun('<Up>'),
+                    })
+                or nil
         end,
         'fallback',
     },
     ['<Down>'] = {
         function(cmp)
-            if cmp.is_visible() or cmp.is_active() then
-                return cmp.cancel({
-                    callback = gen_termcode('<Down>'),
-                })
-            end
+            return (cmp.is_active() or cmp.is_visible())
+                    and cmp.cancel({
+                        callback = gen_termcode_fun('<Down>'),
+                    })
+                or nil
         end,
         'fallback',
     },
@@ -222,38 +132,35 @@ Cfg.Config.keymap = {
 
     ['<C-b>'] = {
         function(cmp)
-            if cmp.is_documentation_visible() then
-                return cmp.scroll_documentation_up(4)
-            end
+            return cmp.is_documentation_visible() and cmp.scroll_documentation_up(4) or nil
         end,
         'fallback',
     },
     ['<C-f>'] = {
         function(cmp)
-            if cmp.is_documentation_visible() then
-                return cmp.scroll_documentation_down(4)
-            end
+            return cmp.is_documentation_visible() and cmp.scroll_documentation_down(4) or nil
         end,
         'fallback',
     },
     ['<C-k>'] = {
         function(cmp)
-            if not cmp.is_active() then
-                return
-            end
-
-            if not cmp.is_signature_visible() then
-                return cmp.show_signature()
-            end
-
-            return cmp.hide_signature()
+            return not cmp.is_signature_visible() and cmp.show_signature() or cmp.hide_signature()
         end,
         'fallback',
     },
 }
 
-Cfg.Config.appearance = {}
-Cfg.Config.appearance.nerd_font_variant = 'mono'
+Cfg.Config.appearance = {
+    nerd_font_variant = 'mono',
+
+    highlight_ns = vim.api.nvim_create_namespace('blink_cmp'),
+    -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+    -- Useful for when your theme doesn't support blink.cmp
+    -- Will be removed in a future release
+    use_nvim_cmp_as_default = true,
+
+    kind_icons = require('lspkind').symbol_map,
+}
 
 Cfg.Config.completion = {
     trigger = {
@@ -298,12 +205,11 @@ Cfg.Config.completion = {
 
     list = {
         selection = {
-            -- preselect = function(ctx)
-            --     ctx = is_tbl(ctx) and ctx or {}
-            --
-            --     return not require('blink.cmp').snippet_active({ direction = 1 })
-            -- end,
-            preselect = false,
+            preselect = function(ctx)
+                ctx = is_tbl(ctx) and ctx or {}
+
+                return require('blink.cmp').snippet_active({ direction = 1 })
+            end,
 
             auto_insert = true,
         },
@@ -325,11 +231,10 @@ Cfg.Config.completion = {
             padding = { 0, 1 },
             treesitter = { 'lsp' },
 
-            components = mini_kinds,
-
             columns = {
                 { 'label', 'label_description', gap = 1 },
                 { 'kind_icon', 'kind' },
+                { 'source_name', gap = 1 },
             },
         },
     },
@@ -338,7 +243,7 @@ Cfg.Config.completion = {
 }
 
 Cfg.Config.cmdline = {
-    enabled = true,
+    enabled = false,
 
     keymap = {
         preset = 'cmdline',
@@ -356,16 +261,18 @@ Cfg.Config.cmdline = {
 
     sources = function()
         local type = vim.fn.getcmdtype()
+        local res = {}
         -- Search forward and backward
         if type == '/' or type == '?' then
-            return { 'buffer' }
-        end
-        -- Commands
-        if type == ':' or type == '@' then
-            return { 'cmdline', 'buffer' }
+            res = { 'buffer' }
         end
 
-        return {}
+        -- Commands
+        if type == ':' or type == '@' then
+            res = { 'cmdline', 'buffer' }
+        end
+
+        return res
     end,
 }
 
@@ -374,17 +281,22 @@ Cfg.Config.sources = {
         return BUtil:gen_sources(true, true)
     end,
 
-    per_filetype = {
-        lua = { inherit_defaults = true, 'lazydev' },
-        org = { 'orgmode', 'buffer', 'path', 'snippets' },
-    },
+    -- Function to use when transforming the items before they're returned for all providers
+    -- The default will lower the score for snippets to sort them lower in the list
+    transform_items = function(_, items)
+        return items
+    end,
 
     providers = BUtil:gen_providers(),
 }
 
 Cfg.Config.fuzzy = {
     -- implementation = 'lua',
-    implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust' or 'lua',
+    implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust_with_warning' or 'lua',
+
+    max_typos = function(keyword)
+        return math.floor(#keyword / 3)
+    end,
 
     sorts = {
         'exact',
@@ -410,25 +322,46 @@ Cfg.Config.snippets = {
 
     -- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
     jump = function(direction)
-        vim.snippet.jump(direction) ---@diagnostic disable-line
+        ---@diagnostic disable-next-line:param-type-mismatch
+        vim.snippet.jump(direction)
     end,
 }
 
 Cfg.Config.signature = {
     enabled = true,
 
+    trigger = {
+        -- Show the signature help automatically
+        enabled = true,
+
+        -- Show the signature help window after typing any of alphanumerics, `-` or `_`
+        show_on_keyword = false,
+
+        blocked_trigger_characters = {},
+        blocked_retrigger_characters = {},
+
+        -- Show the signature help window after typing a trigger character
+        show_on_trigger_character = true,
+
+        -- Show the signature help window when entering insert mode
+        show_on_insert = false,
+
+        -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
+        show_on_insert_on_trigger_character = true,
+    },
+
     window = {
+        treesitter_highlighting = true,
         show_documentation = true,
         border = 'single',
-        scrollbar = true,
-        treesitter_highlighting = true,
+        scrollbar = false,
         direction_priority = { 'n', 's' },
         -- direction_priority = { 's', 'n' },
     },
 }
 
 Cfg.Config.cmdline = {
-    enabled = false,
+    enabled = true,
 
     -- use 'inherit' to inherit mappings from top level `keymap` config
     keymap = { preset = 'cmdline' },
@@ -439,10 +372,12 @@ Cfg.Config.cmdline = {
         if type == '/' or type == '?' then
             return { 'buffer' }
         end
+
         -- Commands
         if type == ':' or type == '@' then
             return { 'cmdline' }
         end
+
         return {}
     end,
 
@@ -466,7 +401,7 @@ Cfg.Config.cmdline = {
         menu = { auto_show = true },
 
         -- Displays a preview of the selected item on the current line
-        ghost_text = { enabled = true },
+        ghost_text = { enabled = false },
     },
 }
 
