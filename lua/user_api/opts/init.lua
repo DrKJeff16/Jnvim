@@ -6,13 +6,13 @@
 ---@field optset fun(self: User.Opts, opts: User.Opts.Spec, verbose: boolean?)
 ---@field toggleable string[]
 ---@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
----@field get_all_opts fun(): table<string, string>
+---@field get_all_opts fun(): User.Opts.AllOpts
 ---@field get_defaults fun(): User.Opts.Spec
 ---@field options User.Opts.Spec
----@field print_set_opts fun()
+---@field print_set_opts fun(self: User.Opts)
 ---@field setup_keys fun(self: User.Opts)
 ---@field toggle fun(self: User.Opts, O: string[]|string)
----@field new fun(O: table?):table|User.Opts|fun(override: table|User.Opts.Spec?, verbose: boolean?)
+---@field new fun(O: table?):table|User.Opts|User.Opts.CallerFun
 
 local Value = require('user_api.check.value')
 
@@ -31,7 +31,7 @@ local INFO = vim.log.levels.INFO
 ---@type User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
 local Opts = {}
 
----@return table<string, string>
+---@return User.Opts.AllOpts
 function Opts.get_all_opts()
     return require('user_api.opts.all_opts')
 end
@@ -179,8 +179,9 @@ function Opts:optset(O, verbose)
     end
 end
 
-function Opts.print_set_opts()
-    local T = copy(Opts.options)
+---@param self User.Opts
+function Opts:print_set_opts()
+    local T = copy(self.options)
     table.sort(T)
     vim.notify((inspect or vim.inspect)(T), INFO)
 end
@@ -228,7 +229,9 @@ function Opts:setup_keys()
         n = {
             ['<leader>UO'] = { group = '+Options' },
             ['<leader>UOl'] = {
-                Opts.print_set_opts,
+                function()
+                    self:print_set_opts()
+                end,
                 desc('Print options set by `user.opts`'),
             },
         },
@@ -262,6 +265,9 @@ function Opts.new(O)
             self.options = deep_extend('force', parsed_opts, copy(self.options))
 
             self:optset(self.options, verbose)
+
+            -- NOTE: Set to global `Opts` table aswell
+            Opts.options = self.options
         end,
     })
 end

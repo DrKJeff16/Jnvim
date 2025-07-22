@@ -1,5 +1,16 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.check'
+---@module 'user_api.commands'
+---@module 'user_api.config.keymaps'
+---@module 'user_api.config.neovide'
+---@module 'user_api.distro'
+---@module 'user_api.highlight'
+---@module 'user_api.maps'
+---@module 'user_api.opts'
+---@module 'user_api.update'
+---@module 'user_api.util'
+
 ---@class User.Config
 ---@field keymaps User.Config.Keymaps
 ---@field neovide User.Config.Neovide

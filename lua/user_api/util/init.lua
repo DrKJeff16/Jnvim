@@ -1,5 +1,9 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.util.autocmd'
+---@module 'user_api.util.notify'
+---@module 'user_api.util.string'
+
 ---@alias DirectionFun fun(t: table<string|integer, any>): res: table<string|integer, any>
 
 ---@class DirectionFuns
