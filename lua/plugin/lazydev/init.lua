@@ -25,7 +25,8 @@ LazyDev.setup({
 
     ---@type boolean|(fun(root_dir: string): boolean)
     enabled = function(root_dir)
-        return not is_nil(vim.g.lazydev_enabled) and vim.g.lazydev_enabled or true
+        local fs_stat = (vim.uv or vim.loop).fs_stat
+        return not (fs_stat(root_dir .. '/.luarc.json') or fs_stat(root_dir .. '/luarc.json'))
     end,
 
     integrations = {
