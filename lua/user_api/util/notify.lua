@@ -1,6 +1,8 @@
 ---@diagnostic disable:missing-fields
 ---@diagnostic disable:missing-parameter
 
+---@module 'notify'
+
 ---@alias VimNotifyLvl
 ---|0
 ---|1
