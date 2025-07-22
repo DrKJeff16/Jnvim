@@ -1,5 +1,7 @@
 ---@diagnostic disable:missing-fields
 
+---@alias CompFun fun(): boolean
+
 ---@alias Types
 ---|'nil'
 ---|'string'
@@ -496,48 +498,60 @@ end
 ---@param eq? EqTbl
 ---@return boolean
 function Value.num_range(num, low, high, eq)
-    if not Value.is_num({ num, low, high }) then
+    local is_num = Value.is_num
+    local type_not_empty = Value.type_not_empty
+    local is_bool = Value.is_bool
+
+    if not is_num({ num, low, high }) then
         error('(user_api.check.value.num_range): One argument is not a number', ERROR)
     end
 
-    if eq == nil or tbl_isempty(eq) then
-        eq = { low = true, high = true }
-    elseif not Value.is_bool(eq.high) then
-        eq.high = true
-    elseif not Value.is_bool(eq.low) then
-        eq.low = true
-    end
+    eq = type_not_empty('table', eq) and eq or { low = true, high = true }
+    eq.high = Value.is_bool(eq.high) and eq.high or true
+    eq.low = Value.is_bool(eq.low) and eq.low or true
 
     if low > high then
         low, high = high, low
     end
 
-    local COMPS = {
+    ---@class Comparators
+    ---@field low_no_high CompFun
+    ---@field high_no_low CompFun
+    ---@field high_low CompFun
+    ---@field none CompFun
+    local Comps = {
+        ---@return boolean
         low_no_high = function()
             return num >= low and num < high
         end,
+
+        ---@return boolean
         high_no_low = function()
             return num > low and num <= high
         end,
+
+        ---@return boolean
         high_low = function()
             return num >= low and num <= high
         end,
+
+        ---@return boolean
         none = function()
             return num > low and num < high
         end,
     }
 
-    ---@type fun(): boolean
+    ---@type CompFun
     local func
 
     if eq.high and eq.low then
-        func = COMPS.high_low
+        func = Comps.high_low
     elseif eq.high and not eq.low then
-        func = COMPS.high_no_low
+        func = Comps.high_no_low
     elseif not eq.high and eq.low then
-        func = COMPS.low_no_high
+        func = Comps.low_no_high
     else
-        func = COMPS.none
+        func = Comps.none
     end
 
     return func()
