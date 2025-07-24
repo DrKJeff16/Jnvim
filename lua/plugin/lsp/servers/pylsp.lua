@@ -11,7 +11,6 @@ return {
         'setup.cfg',
         'requirements.txt',
         'Pipfile',
-        'Pipfile.lock',
         '.git',
     },
 
@@ -19,7 +18,7 @@ return {
         pylsp = {
             configurationSources = { 'flake8' },
             plugins = {
-                autopep8 = { enabled = true },
+                autopep8 = { enabled = false },
                 flake8 = {
                     enabled = true,
                     executable = 'flake8',
@@ -47,24 +46,11 @@ return {
                 },
                 pyflakes = { enabled = false },
                 pylint = { enabled = false },
-                jedi = {
-                    auto_import_modules = { 'sys', 'argparse', 'typing' },
-                },
                 jedi_completion = {
                     enabled = true,
                     eager = true,
                     fuzzy = true,
                     resolve_at_most = 30,
-
-                    cache_for = {
-                        'argparse',
-                        'numpy',
-                        'os',
-                        're',
-                        'sys',
-                        'tensorflow',
-                        'typing',
-                    },
                 },
                 jedi_definition = {
                     enabled = true,
@@ -77,27 +63,23 @@ return {
                 jedi_signature_help = { enabled = true },
                 jedi_symbols = {
                     enabled = true,
-                    all_scopes = false,
-                    include_import_symbols = false,
+                    all_scopes = true,
+                    include_import_symbols = true,
                 },
                 pycodestyle = {
                     enabled = false,
-                    ignore = { 'W391' },
-                    maxLineLength = 100,
                 },
                 preload = { enabled = false },
                 mccabe = { enabled = true, threshold = 15 },
                 rope_autoimport = {
-                    completions = { enabled = false },
+                    completions = { enabled = true },
                 },
                 rope_completion = {
                     enabled = true,
                     eager = true,
                 },
-                yapf = { enabled = false },
+                yapf = { enabled = true },
             },
-
-            rope = { ropeFolder = nil },
         },
     },
 }

@@ -17,7 +17,6 @@ local Value = require('user_api.check.value') ---@see User.Check.Value Checking 
 local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities
 local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping Utilities (`vim.keymap` version)
 
-local is_nil = Value.is_nil ---@see User.Check.Value.is_nil
 local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
 local is_int = Value.is_int ---@see User.Check.Value.is_int
 local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
@@ -82,11 +81,7 @@ local function buf_del(force)
         local prev_bt = bt_get(curr_buf())
 
         -- # HACK: Special workaround for `terminal` buffers
-        if prev_bt == 'terminal' then
-            vim.cmd.bdelete({ bang = true })
-        else
-            vim.cmd.bdelete()
-        end
+        vim.cmd.bdelete({ bang = prev_bt == 'terminal' })
 
         if in_tbl(pre_exc.ft, prev_ft) or in_tbl(pre_exc.bt, prev_bt) then
             return
@@ -692,7 +687,10 @@ function Keymaps.new(O)
     return setmetatable(O, {
         __index = Keymaps,
 
-        ---@type fun(self: User.Config.Keymaps, keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+        ---@param self User.Config.Keymaps
+        ---@param keys AllModeMaps
+        ---@param bufnr? integer
+        ---@param load_defaults? boolean
         __call = function(self, keys, bufnr, load_defaults)
             local MODES = Maps.modes
             local insp = inspect or vim.inspect
@@ -717,13 +715,13 @@ function Keymaps.new(O)
             for k, v in next, keys do
                 if not in_tbl(MODES, k) then
                     notify(
-                        string.format('Table not formatted correctly. Ignoring\n\n%s', insp(keys)),
+                        string.format('Ignoring badly formatted table\n`%s`', insp(keys)),
                         'warn',
                         {
+                            title = '(user_api.config.keymaps())',
                             animate = true,
-                            title = '(user_api.config.keymaps:setup())',
+                            timeout = 1750,
                             hide_from_history = false,
-                            timeout = 1250,
                         }
                     )
                 else
@@ -751,17 +749,13 @@ function Keymaps.new(O)
                 or parsed_keys
 
             --- Set keymaps
-            if is_nil(bufnr) then
-                map_dict(res, 'wk.register', true)
-            else
-                map_dict(res, 'wk.register', true, nil, bufnr)
-            end
+            map_dict(res, 'wk.register', true, nil, bufnr or nil)
+
+            self.Keys = vim.tbl_deep_extend('keep', vim.deepcopy(self.Keys), parsed_keys)
         end,
     })
 end
 
-local K = Keymaps.new()
-
-return K
+return Keymaps.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

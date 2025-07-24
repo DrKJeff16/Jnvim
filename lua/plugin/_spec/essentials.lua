@@ -3,16 +3,13 @@
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local Termux = User.distro.termux
 
 local vim_has = Check.exists.vim_has
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
 local source = CfgUtil.source
-local set_tgc = CfgUtil.set_tgc
 local flag_installed = CfgUtil.flag_installed
-local luarocks_check = CfgUtil.luarocks_check
 
 ---@type LazySpecs
 local Essentials = {
@@ -32,21 +29,10 @@ local Essentials = {
     },
     {
         'dstein64/vim-startuptime',
-        lazy = false,
         priority = 1000,
         version = false,
         init = flag_installed('startuptime'),
         config = source('plugin.startuptime'),
-    },
-    {
-        'vhyrro/luarocks.nvim',
-        lazy = false,
-        version = false,
-        init = function()
-            set_tgc(true)
-        end,
-        config = source('plugin.luarocks'),
-        cond = luarocks_check() and not Termux:validate(),
     },
     {
         'MunifTanjim/nui.nvim',
@@ -60,7 +46,6 @@ local Essentials = {
     },
     {
         'tiagovla/scope.nvim',
-        lazy = false,
         version = false,
         init = function()
             -- NOTE: Required for `scope`
@@ -79,7 +64,6 @@ local Essentials = {
     },
     {
         'rcarriga/nvim-notify',
-        lazy = false,
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
         config = source('plugin.notify'),
@@ -90,7 +74,6 @@ local Essentials = {
         'DrKJeff16/project.nvim',
         dev = true,
         main = 'project_nvim',
-        lazy = false,
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
         config = source('plugin.project'),
@@ -103,18 +86,18 @@ local Essentials = {
     },
     {
         'gennaro-tedesco/nvim-possession',
-        lazy = false,
         version = false,
-        dependencies = { 'ibhagwan/fzf-lua' },
+        dependencies = {
+            {
+                'ibhagwan/fzf-lua',
+                lazy = true,
+                version = false,
+                dependencies = { 'nvim-tree/nvim-web-devicons' },
+                config = source('plugin.fzf.fzf_lua'),
+                cond = executable('fzf'),
+            },
+        },
         config = source('plugin.possession'),
-    },
-    {
-        'ibhagwan/fzf-lua',
-        lazy = true,
-        version = false,
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
-        config = source('plugin.fzf.fzf_lua'),
-        cond = executable('fzf'),
     },
 }
 

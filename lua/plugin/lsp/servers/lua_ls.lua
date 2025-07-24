@@ -23,10 +23,12 @@ local function on_init(client)
     end
 
     local library = {
-        (unpack or table.unpack)(vim.api.nvim_get_runtime_file('', true)),
+        -- vim.env.VIMRUNTIME,
+        vim.api.nvim_get_runtime_file('', true),
+
+        '${3rd}/luv/library',
+        '${3rd}/busted/library',
     }
-    table.insert(library, '${3rd}/luv/library')
-    table.insert(library, '${3rd}/busted/library')
 
     client.config.settings.Lua = extend('force', copy(client.config.settings.Lua), {
         diagnostics = {
@@ -34,6 +36,7 @@ local function on_init(client)
             globals = { 'vim' },
         },
         runtime = {
+            pathStrict = false,
             -- Tell the language server which version of Lua you're using (most
             -- likely LuaJIT in the case of Neovim)
             version = 'LuaJIT',

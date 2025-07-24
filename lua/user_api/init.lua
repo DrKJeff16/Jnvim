@@ -33,7 +33,7 @@
 ---@field setup fun()
 ---@field plugin_maps fun(self: UserAPI)
 ---@field new fun(O: table?): table|UserAPI
----@field print_loaded_plugins fun(self: UserAPI)
+---@field print_loaded_plugins fun()
 ---@field sleep fun(t: number)
 
 local ERROR = vim.log.levels.ERROR
@@ -181,11 +181,18 @@ function User:reload_plugins()
     return noerr, self.FAILED
 end
 
----@param self UserAPI
-function User:print_loaded_plugins()
-    local notify = self.util.notify.notify
+function User.print_loaded_plugins()
+    local notify = User.util.notify.notify
 
-    notify(inspect(self.registered_plugins), 'info', {
+    local msg = '{'
+
+    for k, v in next, User.registered_plugins do
+        msg = string.format('%s\n  [%s]: %s', msg, tostring(k), v)
+    end
+
+    msg = msg .. '\n}'
+
+    notify(msg, 'info', {
         animate = true,
         hide_from_history = true,
         timeout = 2250,
@@ -300,7 +307,7 @@ function User.setup()
         },
         ['<leader>UPl'] = {
             function()
-                User:print_loaded_plugins()
+                User.print_loaded_plugins()
             end,
             desc('Print Loaded Plugins'),
         },

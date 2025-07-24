@@ -41,8 +41,6 @@ local desc = User.maps.kmap.desc
 
 local mk_caps = vim.lsp.protocol.make_client_capabilities
 
-local INFO = vim.log.levels.INFO
-
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds()
@@ -63,16 +61,13 @@ function Server.make_capabilities(T)
 
     local caps = vim.tbl_deep_extend('keep', T, mk_caps())
 
-    local ok, _ = pcall(require, 'blink.cmp')
-    if not ok then
+    if not exists('blink.cmp') then
         return caps
     end
 
-    caps = vim.tbl_deep_extend(
-        'keep',
-        vim.deepcopy(caps),
-        require('blink.cmp').get_lsp_capabilities({}, true)
-    )
+    local blink_caps = require('blink.cmp').get_lsp_capabilities
+
+    caps = vim.tbl_deep_extend('keep', vim.deepcopy(caps), blink_caps({}, true))
 
     return caps
 end
@@ -132,10 +127,10 @@ function Server.new(O)
             vim.diagnostic.config({
                 signs = true,
                 float = true,
-                underline = false,
+                underline = true,
                 virtual_lines = false,
                 virtual_text = true,
-                severity_sort = true,
+                severity_sort = false,
             })
 
             for client, v in next, self.Clients do
@@ -154,19 +149,15 @@ function Server.new(O)
 
                     ['<leader>li'] = {
                         function()
-                            pcall(vim.cmd, 'LspInfo') ---@diagnostic disable-line
+                            if exists('lspconfig') then
+                                vim.cmd.LspInfo()
+                            end
                         end,
                         desc('Get LSP Config Info'),
                     },
-                    ['<leader>lH'] = {
-                        function()
-                            vim.lsp.stop_client(vim.lsp.get_clients(), true)
-                        end,
-                        desc('Stop LSP Servers'),
-                    },
                     ['<leader>lC'] = {
                         function()
-                            vim.notify((inspect or vim.inspect)(self.client_names), INFO)
+                            vim.print(self.client_names)
                         end,
                         desc('List Clients'),
                     },
@@ -187,10 +178,8 @@ function Server.new(O)
     })
 end
 
-local S = Server.new()
-
 User.register_plugin('plugin.lsp')
 
-return S
+return Server.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

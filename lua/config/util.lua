@@ -20,7 +20,7 @@
 -- and initializes the `vim.g.<field>` variable(s)
 --
 -- ---
----@field colorscheme_init fun(self: Config.Util, fields: string|table<string, any>, force_tgc: boolean?): fun()
+---@field colorscheme_init fun(fields: string|table<string, any>, force_tgc: boolean?): fun()
 -- A `config` function to call your plugin from a `lazy` spec
 -- ---
 --
@@ -49,7 +49,7 @@
 --
 -- ### Unix
 --
--- **The return string could be empty** or something akin to
+-- For UNIX systems, it'll be something akin to
 --
 -- ```sh
 -- $ make
@@ -64,17 +64,17 @@
 -- ### Windows
 --
 -- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
--- If unsuccessful, **it'll return an empty string**
+-- If unsuccessful, **it'll return `false`**
 --
 -- ---
----@field tel_fzf_build fun(): string
+---@field tel_fzf_build fun(): cmd: (string|false)
 ---@field luarocks_check fun(): boolean
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 ---@field has_tgc fun(): boolean
 
 ---@alias Config.Lazy.LSP table|Lsp.Server|fun()
 ---@alias Config.Lazy.Alpha nil|table|AlphaCaller|AlphaFun
----@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...))
+---@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...: any))
 
 ---@class Config.Lazy
 ---@field colorschemes Config.Lazy.Colorschemes
@@ -139,7 +139,7 @@ end
 -- source('plugin.<plugin_name>[.<...>]')
 -- ```
 --
--- as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
+-- All the plugin configs MUST BE IN the repo's `lua/plugin/` directory.
 -- **_That being said_**, you can use any module path if you wish to do so.
 --
 -- ---
@@ -148,20 +148,17 @@ end
 --
 -- A function that attempts to import the given module from `mod_str`
 -- ---
----@param self Config.Util
 ---@param fields string|table<string, any>
 ---@param force_tgc? boolean
 ---@return fun()
-function CfgUtil:colorscheme_init(fields, force_tgc)
+function CfgUtil.colorscheme_init(fields, force_tgc)
     force_tgc = is_bool(force_tgc) and force_tgc or false
 
     return function()
-        if force_tgc then
-            self.set_tgc(true)
-        end
+        CfgUtil.set_tgc(force_tgc)
 
         if is_str(fields) then
-            self.flag_installed(fields)()
+            CfgUtil.flag_installed(fields)()
             return
         end
 
@@ -184,7 +181,7 @@ end
 -- source('plugin.<plugin_name>[.<...>]')
 -- ```
 --
--- as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
+-- All the plugin configs MUST BE IN the repo's `lua/plugin/` directory.
 -- **_That being said_**, you can use any module path if you wish to do so.
 -- ---
 --
@@ -207,7 +204,7 @@ end
 --
 -- ### Unix
 --
--- **The return string could be empty** or something akin to
+-- For UNIX systems, it'll be something akin to
 --
 -- ```sh
 -- $ make
@@ -222,17 +219,18 @@ end
 -- ### Windows
 --
 -- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
--- If unsuccessful, **it'll return an empty string**
+-- If unsuccessful, **it'll return `false`**
 --
 -- ---
----@return string
+---@return string|false cmd
 function CfgUtil.tel_fzf_build()
+    ---@type string|false
     local cmd = executable('nproc') and 'make -j"$(nproc)"' or 'make'
 
     if is_windows and executable('mingw32-make') then
         cmd = 'mingw32-' .. cmd
     elseif not executable('make') then
-        cmd = ''
+        cmd = false
     end
 
     return cmd
