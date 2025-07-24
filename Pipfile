@@ -4,25 +4,25 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pynvim = "*"
 typing = "*"
 typing-extensions = "*"
 argparse = "*"
 argcomplete = "*"
 argh = "*"
 setuptools = "*"
-
-[dev-packages]
-pynvim = "*"
-typing = "*"
-typing-extensions = "*"
+python-lsp-server = {extras = ["all"], version = "*"}
 mypy = "*"
 mypy-extensions = "*"
-python-lsp-server = {extras = ["all"], version = "*"}
 pylsp-mypy = "*"
 pylsp-rope = "*"
 python-lsp-isort = "*"
 isort = "*"
 pre-commit = "*"
+
+[dev-packages]
+typing = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.13"
