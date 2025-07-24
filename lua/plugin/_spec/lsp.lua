@@ -26,6 +26,9 @@ local LSP = {
         dev = true,
         ft = 'lua',
         version = false,
+        dependencies = {
+            { 'justinsgithub/wezterm-types', lazy = true, dev = true, version = false },
+        },
         config = source('plugin.lazydev'),
         cond = executable('lua-language-server'),
     },

@@ -3,7 +3,6 @@ local Check = User.check
 
 local executable = Check.exists.executable
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 
 if exists('neodev') then
     return
@@ -16,7 +15,22 @@ end
 local LazyDev = require('lazydev')
 
 ---@type (lazydev.Library.spec)[]
-local library = { path = '${3rd}/luv/library', words = { 'vim%.uv' } }
+local library = {
+    { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+    {
+        path = vim.fn.environ()['HOME'] .. '/Projects/nvim/wezterm-types',
+        mods = {
+            'wezterm',
+
+            'types',
+            'types.config',
+            'types.enum',
+            'types.events',
+            'types.objects',
+            'types.wezterm',
+        },
+    },
+}
 
 LazyDev.setup({
     runtime = vim.env.VIMRUNTIME,
