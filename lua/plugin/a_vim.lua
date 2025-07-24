@@ -81,6 +81,6 @@ vim.keymap.del({ 'n', 'i' }, '<leader>ihn')
 vim.keymap.del({ 'n', 'i' }, '<leader>ih')
 vim.keymap.del({ 'n', 'i' }, '<leader>is')
 
-User:register_plugin('plugin.a_vim')
+User.register_plugin('plugin.a_vim')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

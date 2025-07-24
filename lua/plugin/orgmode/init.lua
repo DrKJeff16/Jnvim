@@ -65,6 +65,6 @@ Orgmode.setup({
     calendar_week_start_day = 0,
 })
 
-User:register_plugin('plugin.orgmode')
+User.register_plugin('plugin.orgmode')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

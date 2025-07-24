@@ -528,7 +528,7 @@ Presets.default_inactive = {
     },
 }
 
-User:register_plugin('plugin.lualine.presets')
+User.register_plugin('plugin.lualine.presets')
 
 return Presets
 

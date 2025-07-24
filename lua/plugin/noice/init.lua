@@ -279,6 +279,6 @@ Noice.setup({
     format = {}, ---@see section on formatting
 })
 
-User:register_plugin('plugin.noice')
+User.register_plugin('plugin.noice')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

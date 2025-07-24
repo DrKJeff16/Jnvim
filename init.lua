@@ -7,14 +7,14 @@ _G.inspect = vim.inspect
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
-local Keymaps = require('user_api.config.keymaps') ---@see Config.Keymaps
-local Neovide = require('user_api.config.neovide') ---@see User.Config.Neovide
+local Keymaps = require('user_api.config.keymaps') ---@see User.Config.keymaps
+local Neovide = require('user_api.config.neovide') ---@see User.Config.neovide
 local User = require('user_api') ---@see UserAPI User API
-local Check = require('user_api.check') ---@see User.Check Checking utilities
-local Util = require('user_api.util') ---@see User.Util General utilities
-local Opts = require('user_api.opts') ---@see User.Opts Option setting
-local Commands = require('user_api.commands') ---@see User.Commands User command generation (**WIP**)
-local Distro = require('user_api.distro') ---@see User.Distro Platform-specific optimizations (**WIP**)
+local Check = require('user_api.check') ---@see UserAPI.check Checking utilities
+local Util = require('user_api.util') ---@see UserAPI.util General utilities
+local Opts = require('user_api.opts') ---@see UserAPI.Opts Option setting
+local Commands = require('user_api.commands') ---@see UserAPI.commands User command generation (**WIP**)
+local Distro = require('user_api.distro') ---@see UserAPI.distro Platform-specific optimizations (**WIP**)
 
 local desc = require('user_api.maps.kmap').desc ---@see User.Maps.Keymap.desc
 local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
@@ -183,7 +183,7 @@ vim.cmd.packadd('nohlsearch')
 Commands:setup()
 
 -- Mappings related specifically to `user_api`
-User:setup_keys() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
+User.setup() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 
 Neovide:setup()
 

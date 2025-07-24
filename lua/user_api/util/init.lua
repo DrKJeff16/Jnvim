@@ -4,7 +4,9 @@
 ---@module 'user_api.util.notify'
 ---@module 'user_api.util.string'
 
----@alias DirectionFun fun(t: table<string|integer, any>): res: table<string|integer, any>
+---@alias AnyDict table<string|integer, any>
+
+---@alias DirectionFun fun(t: AnyDict): res: AnyDict
 
 ---@class DirectionFuns
 ---@field r DirectionFun
@@ -17,17 +19,17 @@
 ---@field has_words_before fun(): boolean
 ---@field pop_values fun(T: table, V: any): table,...
 ---@field xor fun(x: boolean, y: boolean): boolean
----@field strip_fields fun(T: table<string|integer, any>, values: string[]|string): table<string|integer, any>
----@field strip_values fun(T: table<string|integer, any>, values: any[], max_instances: integer?): table
+---@field strip_fields fun(T: AnyDict, values: string[]|string): res: AnyDict
+---@field strip_values fun(T: AnyDict, values: any[], max_instances: integer?): table
 ---@field ft_set fun(s: string?, bufnr: integer?): fun()
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
----@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): table<string, any>|table
+---@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): res: AnyDict
 ---@field setup_autocmd fun(self: User.Util)
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
----@field mv_tbl_values fun(T: table<string|integer, any>|table, steps: integer?, direction: ('r'|'l')?): res: table<string|integer, any>
+---@field mv_tbl_values fun(T: AnyDict, steps: integer?, direction: ('r'|'l')?): res: AnyDict
 ---@field reverse_tbl fun(T: table): table
----@field discard_dups fun(data: string|table): (string|table)
+---@field discard_dups fun(data: string|table): res: string|table
 ---@field new fun(O: table?): table|User.Util
 
 local curr_buf = vim.api.nvim_get_current_buf
@@ -63,7 +65,7 @@ end
 
 ---@param s string|string[]
 ---@param bufnr? integer
----@return table<string, any>|table
+---@return AnyDict res
 function Util.get_opts_tbl(s, bufnr)
     local Value = require('user_api.check.value')
 
@@ -72,7 +74,7 @@ function Util.get_opts_tbl(s, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    ---@type table<string, any>|table
+    ---@type AnyDict
     local res = {}
 
     if type_not_empty('string', s) then
@@ -88,10 +90,10 @@ function Util.get_opts_tbl(s, bufnr)
     return res
 end
 
----@param T table<string|integer, any>
+---@param T AnyDict
 ---@param steps? integer
 ---@param direction? 'l'|'r'
----@return table<string|integer, any> res
+---@return AnyDict res
 function Util.mv_tbl_values(T, steps, direction)
     local notify = Util.notify.notify
 
@@ -117,7 +119,7 @@ function Util.mv_tbl_values(T, steps, direction)
             table.sort(keys)
             local len = #keys
 
-            ---@type table<string|integer, any>
+            ---@type AnyDict
             local res = {}
 
             for i, v in next, keys do
@@ -138,7 +140,7 @@ function Util.mv_tbl_values(T, steps, direction)
             table.sort(keys)
             local len = #keys
 
-            ---@type table<string|integer, any>
+            ---@type AnyDict
             local res = {}
 
             for i, v in next, keys do
@@ -153,7 +155,7 @@ function Util.mv_tbl_values(T, steps, direction)
         end,
     }
 
-    ---@type table<string|integer, any>
+    ---@type AnyDict
     local res = T
 
     local func = direction_funcs[direction]
@@ -188,9 +190,9 @@ function Util.xor(x, y)
     return (x and not y) or (not x and y)
 end
 
----@param T table<string|integer, any>
+---@param T AnyDict
 ---@param fields string|integer|(string|integer)[]
----@return table<string|integer, any>
+---@return AnyDict res
 function Util.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -206,7 +208,7 @@ function Util.strip_fields(T, fields)
         return T
     end
 
-    ---@type table<string|integer, any>
+    ---@type AnyDict
     local res = {}
 
     if is_str(fields) then
@@ -232,10 +234,10 @@ function Util.strip_fields(T, fields)
     return res
 end
 
----@param T table<string|integer, any>
+---@param T AnyDict
 ---@param values any[]
 ---@param max_instances? integer
----@return table<string|integer, any> res
+---@return AnyDict res
 function Util.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
@@ -254,7 +256,7 @@ function Util.strip_values(T, values, max_instances)
 
     max_instances = is_int(max_instances) and max_instances or 0
 
-    ---@type table<string|integer, any>
+    ---@type AnyDict
     local res = {}
     local count = 0
 
@@ -317,7 +319,8 @@ end
 
 ---@param T table
 ---@param V any
----@return table, ...
+---@return table
+---@return ...
 function Util.pop_values(T, V)
     local idx = 0
 
@@ -453,7 +456,11 @@ function Util:setup_autocmd()
 
                         if bt == 'help' or ft == 'help' then
                             vim.schedule(function()
-                                optset('signcolumn', 'no', { scope = 'local' })
+                                local O = { scope = 'local' }
+                                optset('signcolumn', 'no', O)
+                                optset('number', false, O)
+                                optset('wrap', true, O)
+
                                 vim.cmd.wincmd('=')
                                 vim.cmd.noh()
                             end)
@@ -601,7 +608,7 @@ function Util.displace_letter(c, direction, cycle)
 end
 
 ---@param data string|table
----@return string|table
+---@return string|table res
 function Util.discard_dups(data)
     local Value = require('user_api.check.value')
 

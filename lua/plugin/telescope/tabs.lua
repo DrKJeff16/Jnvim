@@ -52,7 +52,7 @@ function TelescopeTabs.loadkeys()
     Keymaps({ n = Keys })
 end
 
-User:register_plugin('plugin.telescope.tabs')
+User.register_plugin('plugin.telescope.tabs')
 
 return TelescopeTabs
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

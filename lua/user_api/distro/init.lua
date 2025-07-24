@@ -1,5 +1,7 @@
 ---@diagnostic disable:missing-fields
 
+---@alias User.Distro.CallerFun fun(verbose: boolean?)
+
 ---@class User.Distro
 ---@field archlinux User.Distro.Archlinux
 ---@field termux User.Distro.Termux
@@ -7,7 +9,7 @@
 
 local INFO = vim.log.levels.INFO
 
----@type User.Distro|fun()
+---@type User.Distro|User.Distro.CallerFun
 local Distro = {}
 
 ---@type User.Distro.Archlinux
@@ -17,7 +19,7 @@ Distro.archlinux = require('user_api.distro.archlinux')
 Distro.termux = require('user_api.distro.termux')
 
 ---@param O? table
----@return table|User.Distro|fun(verbose: boolean?)
+---@return table|User.Distro|User.Distro.CallerFun
 function Distro.new(O)
     local Value = require('user_api.check.value')
 

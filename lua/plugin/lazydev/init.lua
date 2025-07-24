@@ -36,6 +36,6 @@ LazyDev.setup({
     },
 })
 
-User:register_plugin('plugin.lazydev')
+User.register_plugin('plugin.lazydev')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

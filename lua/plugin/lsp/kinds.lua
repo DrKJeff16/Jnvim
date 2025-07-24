@@ -95,7 +95,7 @@ end
 
 local K = Kinds.new()
 
-User:register_plugin('plugin.lsp.kinds')
+User.register_plugin('plugin.lsp.kinds')
 
 return K
 

@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.marksman')
+User.register_plugin('plugin.lsp.servers.marksman')
 
 return {
     cmd = { 'marksman', 'server' },

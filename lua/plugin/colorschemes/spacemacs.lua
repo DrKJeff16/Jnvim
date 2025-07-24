@@ -26,7 +26,7 @@ function Spacemacs.new(O)
     return setmetatable(O, { __index = Spacemacs })
 end
 
-User:register_plugin('plugin.colorschemes.spacemacs')
+User.register_plugin('plugin.colorschemes.spacemacs')
 
 return Spacemacs
 

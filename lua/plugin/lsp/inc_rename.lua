@@ -33,6 +33,6 @@ local Keys = {
 
 Keymaps({ n = Keys })
 
-User:register_plugin('plugin.lsp.inc_rename')
+User.register_plugin('plugin.lsp.inc_rename')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

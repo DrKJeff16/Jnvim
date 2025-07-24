@@ -209,7 +209,7 @@ end
 
 local A = Autocmd.new()
 
-User:register_plugin('plugin.lsp.autocmd')
+User.register_plugin('plugin.lsp.autocmd')
 
 return A
 

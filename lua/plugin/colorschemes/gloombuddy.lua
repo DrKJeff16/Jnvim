@@ -32,7 +32,7 @@ function Gloombuddy.new(O)
     return setmetatable(O, { __index = Gloombuddy })
 end
 
-User:register_plugin('plugin.colorschemes.gloombuddy')
+User.register_plugin('plugin.colorschemes.gloombuddy')
 
 return Gloombuddy
 

@@ -116,6 +116,6 @@ if exists('ts_context_commentstring') then
     require('ts_context_commentstring').setup()
 end
 
-User:register_plugin('plugin.treesitter')
+User.register_plugin('plugin.treesitter')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

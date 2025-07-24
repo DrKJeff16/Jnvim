@@ -414,7 +414,7 @@ function Cfg.new(O)
     return setmetatable(O, { __index = Cfg })
 end
 
-User:register_plugin('plugin.blink_cmp.config')
+User.register_plugin('plugin.blink_cmp.config')
 
 return Cfg
 

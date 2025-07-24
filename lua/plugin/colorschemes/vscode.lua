@@ -74,7 +74,7 @@ function VSCode.new(O)
     return setmetatable(O, { __index = VSCode })
 end
 
-User:register_plugin('plugin.colorschemes.vscode')
+User.register_plugin('plugin.colorschemes.vscode')
 
 return VSCode
 

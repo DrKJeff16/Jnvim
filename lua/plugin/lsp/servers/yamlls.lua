@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.yamlls')
+User.register_plugin('plugin.lsp.servers.yamlls')
 
 return {
     cmd = { 'yaml-language-server', '--stdio' },

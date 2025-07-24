@@ -234,7 +234,7 @@ function Colorschemes.new(O)
     })
 end
 
-User:register_plugin('plugin.colorschemes')
+User.register_plugin('plugin.colorschemes')
 
 return Colorschemes.new()
 

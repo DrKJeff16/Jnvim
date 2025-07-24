@@ -86,6 +86,6 @@ local Keys = {
 
 Keymaps({ n = Keys })
 
-User:register_plugin('plugin.image')
+User.register_plugin('plugin.image')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

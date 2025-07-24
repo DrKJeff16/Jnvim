@@ -49,6 +49,6 @@ vim.schedule(function()
     hi('StartupTimeSourcingEvent', { link = 'Title' })
 end)
 
-User:register_plugin('plugin.startuptime')
+User.register_plugin('plugin.startuptime')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

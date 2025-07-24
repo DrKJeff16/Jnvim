@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.vimls')
+User.register_plugin('plugin.lsp.servers.vimls')
 
 return {
     cmd = { 'vim-language-server', '--stdio' },

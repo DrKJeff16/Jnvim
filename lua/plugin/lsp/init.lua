@@ -189,7 +189,7 @@ end
 
 local S = Server.new()
 
-User:register_plugin('plugin.lsp')
+User.register_plugin('plugin.lsp')
 
 return S
 

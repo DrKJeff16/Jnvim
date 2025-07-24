@@ -22,6 +22,6 @@ TMK.setup({
 
 Telescope.load_extension('make')
 
-User:register_plugin('plugin.telescope.makefile')
+User.register_plugin('plugin.telescope.makefile')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

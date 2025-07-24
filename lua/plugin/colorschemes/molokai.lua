@@ -26,7 +26,7 @@ function Molokai.new(O)
     return setmetatable(O, { __index = Molokai })
 end
 
-User:register_plugin('plugin.colorschemes.molokai')
+User.register_plugin('plugin.colorschemes.molokai')
 
 return Molokai
 

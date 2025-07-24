@@ -62,7 +62,7 @@ local function on_init(client)
     })
 end
 
-User:register_plugin('plugin.lsp.servers.lua_ls')
+User.register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
     cmd = { 'lua-language-server' },

@@ -169,7 +169,7 @@ function Catppuccin.new(O)
     return setmetatable(O, { __index = Catppuccin })
 end
 
-User:register_plugin('plugin.colorschemes.catppuccin')
+User.register_plugin('plugin.colorschemes.catppuccin')
 
 return Catppuccin
 

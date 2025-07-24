@@ -144,7 +144,7 @@ function TokyoNight.new(O)
     return setmetatable(O, { __index = TokyoNight })
 end
 
-User:register_plugin('plugin.colorschemes.tokyonight')
+User.register_plugin('plugin.colorschemes.tokyonight')
 
 return TokyoNight
 

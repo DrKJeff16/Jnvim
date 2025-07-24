@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.jsonls')
+User.register_plugin('plugin.lsp.servers.jsonls')
 
 return {
     cmd = { 'vscode-json-language-server', '--stdio' },

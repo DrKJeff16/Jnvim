@@ -89,7 +89,7 @@ function Dracula.new(O)
     return setmetatable(O, { __index = Dracula })
 end
 
-User:register_plugin('plugin.colorschemes.dracula')
+User.register_plugin('plugin.colorschemes.dracula')
 
 return Dracula
 

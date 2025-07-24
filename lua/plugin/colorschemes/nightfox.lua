@@ -133,7 +133,7 @@ function Nightfox.new(O)
     return setmetatable(O, { __index = Nightfox })
 end
 
-User:register_plugin('plugin.colorschemes.nightfox')
+User.register_plugin('plugin.colorschemes.nightfox')
 
 return Nightfox
 

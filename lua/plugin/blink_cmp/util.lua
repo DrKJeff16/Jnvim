@@ -327,7 +327,7 @@ function BUtil.new(O)
     return setmetatable(O, { __index = BUtil })
 end
 
-User:register_plugin('plugin.blink_cmp.util')
+User.register_plugin('plugin.blink_cmp.util')
 
 return BUtil
 

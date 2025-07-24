@@ -27,7 +27,7 @@ function Oak.new(O)
     return setmetatable(O, { __index = Oak })
 end
 
-User:register_plugin('plugin.colorschemes.oak')
+User.register_plugin('plugin.colorschemes.oak')
 
 return Oak
 

@@ -62,7 +62,7 @@ function Gruvbox.new(O)
     return setmetatable(O, { __index = Gruvbox })
 end
 
-User:register_plugin('plugin.colorschemes.gruvbox')
+User.register_plugin('plugin.colorschemes.gruvbox')
 
 return Gruvbox
 

@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.cssls')
+User.register_plugin('plugin.lsp.servers.cssls')
 
 return {
     cmd = { 'vscode-css-language-server', '--stdio' },

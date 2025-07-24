@@ -82,7 +82,7 @@ Starter.telescope = {
     query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
 }
 
-User:register_plugin('plugin.mini.starter')
+User.register_plugin('plugin.mini.starter')
 
 return Starter
 

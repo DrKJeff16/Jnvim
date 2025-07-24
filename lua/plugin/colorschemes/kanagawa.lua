@@ -123,7 +123,7 @@ function Kanagawa.new(O)
     return setmetatable(O, { __index = Kanagawa })
 end
 
-User:register_plugin('plugin.colorschemes.kanagawa')
+User.register_plugin('plugin.colorschemes.kanagawa')
 
 return Kanagawa
 

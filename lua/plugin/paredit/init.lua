@@ -160,6 +160,6 @@ Paredit.setup({
     },
 })
 
-User:register_plugin('plugin.paredit')
+User.register_plugin('plugin.paredit')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

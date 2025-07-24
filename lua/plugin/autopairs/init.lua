@@ -152,6 +152,6 @@ end
 
 AP.add_rules(Rules)
 
-User:register_plugin('plugin.autopairs')
+User.register_plugin('plugin.autopairs')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -94,6 +94,6 @@ local Keys = {
 
 Keymaps({ n = Keys })
 
-User:register_plugin('plugin.zen_mode')
+User.register_plugin('plugin.zen_mode')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

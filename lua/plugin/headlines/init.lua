@@ -213,6 +213,6 @@ local H = {
 
 hl(H)
 
-User:register_plugin('plugin.headlines')
+User.register_plugin('plugin.headlines')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

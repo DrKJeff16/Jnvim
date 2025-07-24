@@ -112,7 +112,7 @@ function OneDark.new(O)
     return setmetatable(O, { __index = OneDark })
 end
 
-User:register_plugin('plugin.colorschemes.onedark')
+User.register_plugin('plugin.colorschemes.onedark')
 
 return OneDark
 

@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.clangd')
+User.register_plugin('plugin.lsp.servers.clangd')
 
 return {
     cmd = { 'clangd' },

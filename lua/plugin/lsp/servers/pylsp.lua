@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.pylsp')
+User.register_plugin('plugin.lsp.servers.pylsp')
 
 return {
     cmd = { 'pylsp' },

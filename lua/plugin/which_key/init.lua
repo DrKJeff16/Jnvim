@@ -234,6 +234,6 @@ WK.setup({
     debug = false,
 })
 
-User:register_plugin('plugin.which_key')
+User.register_plugin('plugin.which_key')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

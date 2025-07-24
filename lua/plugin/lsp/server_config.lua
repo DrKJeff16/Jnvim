@@ -52,7 +52,7 @@ Clients.yamlls = server_load('yamlls')
 
 _G.CLIENTS = Clients
 
-User:register_plugin('plugin.lsp.server_config')
+User.register_plugin('plugin.lsp.server_config')
 
 return Clients
 

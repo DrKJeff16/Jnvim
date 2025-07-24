@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.html')
+User.register_plugin('plugin.lsp.servers.html')
 
 return {
     cmd = { 'vscode-html-language-server', '--stdio' },

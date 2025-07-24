@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.bashls')
+User.register_plugin('plugin.lsp.servers.bashls')
 
 return {
     cmd = { 'bash-language-server', 'start' },

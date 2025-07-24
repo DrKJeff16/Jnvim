@@ -82,6 +82,6 @@ au({ 'BufNew', 'BufWinEnter', 'BufEnter', 'BufRead', 'WinEnter' }, {
     end,
 })
 
-User:register_plugin('plugin.markdown.md_preview')
+User.register_plugin('plugin.markdown.md_preview')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

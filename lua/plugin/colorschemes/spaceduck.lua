@@ -26,7 +26,7 @@ function SpaceDuck.new(O)
     return setmetatable(O, { __index = SpaceDuck })
 end
 
-User:register_plugin('plugin.colorschemes.spaceduck')
+User.register_plugin('plugin.colorschemes.spaceduck')
 
 return SpaceDuck
 

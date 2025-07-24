@@ -274,7 +274,7 @@ function CfgUtil.has_tgc()
     return (not in_console()) and (vim_exists('+termguicolors') and vim.o.termguicolors) or false
 end
 
-User:register_plugin('config.util')
+User.register_plugin('config.util')
 
 return CfgUtil
 

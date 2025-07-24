@@ -18,6 +18,6 @@ Rocks.setup({
     luarocks_buird_args = { '--local' },
 })
 
-User:register_plugin('plugin.luarocks')
+User.register_plugin('plugin.luarocks')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

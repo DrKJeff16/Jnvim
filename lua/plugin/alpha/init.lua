@@ -74,7 +74,7 @@ end
 
 local Caller = M.new()
 
-User:register_plugin('plugin.alpha')
+User.register_plugin('plugin.alpha')
 
 return Caller
 

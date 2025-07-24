@@ -26,7 +26,7 @@ function SpaceVimDark.new(O)
     return setmetatable(O, { __index = SpaceVimDark })
 end
 
-User:register_plugin('plugin.colorschemes.space_vim_dark')
+User.register_plugin('plugin.colorschemes.space_vim_dark')
 
 return SpaceVimDark
 

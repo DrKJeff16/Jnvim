@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.css_variables')
+User.register_plugin('plugin.lsp.servers.css_variables')
 
 return {
     cmd = { 'css-variables-language-server', '--stdio' },

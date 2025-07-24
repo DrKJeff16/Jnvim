@@ -243,7 +243,7 @@ function Trouble.new(O)
 
             Keymaps({ n = self.Keys })
 
-            User:register_plugin('plugin.lsp.trouble')
+            User.register_plugin('plugin.lsp.trouble')
         end,
     })
 end

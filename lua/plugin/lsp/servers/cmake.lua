@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-User:register_plugin('plugin.lsp.servers.cmake')
+User.register_plugin('plugin.lsp.servers.cmake')
 
 return {
     cmd = { 'cmake-language-server' },

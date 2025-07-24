@@ -119,6 +119,6 @@ vim.schedule(function()
     hl_from_dict(NotifyHl)
 end)
 
-User:register_plugin('plugin.notify')
+User.register_plugin('plugin.notify')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

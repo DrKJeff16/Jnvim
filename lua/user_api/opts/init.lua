@@ -1,5 +1,8 @@
 ---@diagnostic disable:missing-fields
 
+---@module 'user_api.opts.config'
+---@module 'user_api.opts.all_opts'
+
 ---@alias User.Opts.CallerFun fun(override: table|User.Opts.Spec?, verbose: boolean?)
 
 ---@class User.Opts
@@ -36,10 +39,13 @@ function Opts.get_all_opts()
     return require('user_api.opts.all_opts')
 end
 
+---@param T User.Opts.AllOpts
 ---@return string[]
-local function gen_toggleable()
-    local long = vim.tbl_keys(Opts.get_all_opts())
-    local short = vim.tbl_values(Opts.get_all_opts())
+local function gen_toggleable(T)
+    T = type_not_empty('table', T) and T or Opts.get_all_opts()
+
+    local long = vim.tbl_keys(T)
+    local short = vim.tbl_values(T)
 
     ---@type string[]|table
     local valid = {}
@@ -70,7 +76,7 @@ local function gen_toggleable()
     return valid
 end
 
-Opts.toggleable = gen_toggleable()
+Opts.toggleable = gen_toggleable(Opts.get_all_opts())
 
 ---@return User.Opts.Spec
 function Opts.get_defaults()

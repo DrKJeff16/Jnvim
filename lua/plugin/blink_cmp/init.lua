@@ -20,6 +20,6 @@ end
 
 Blink.setup(Cfg.Config)
 
-User:register_plugin('plugin.blink_cmp')
+User.register_plugin('plugin.blink_cmp')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

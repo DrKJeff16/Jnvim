@@ -104,6 +104,6 @@ au('TermClose', {
 -- au TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
 -- ]])
 
-User:register_plugin('plugin.git.lazygit')
+User.register_plugin('plugin.git.lazygit')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
