@@ -25,13 +25,13 @@ _G.in_console = require('user_api.check').in_console
 local curr_buf = vim.api.nvim_get_current_buf
 
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
----@type fun(...)
+---@type fun(...: any)
 function _G.print_inspect(...)
     vim.print(inspect(...))
 end
 
 -- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
----@type fun(...)
+---@type fun(...: any)
 function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
