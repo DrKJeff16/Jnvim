@@ -16,6 +16,7 @@ function Update.update(verbose)
 
     local curr_win = vim.api.nvim_get_current_win
     local curr_tab = vim.api.nvim_get_current_tabpage
+    local cd = vim.api.nvim_set_current_dir
 
     verbose = is_bool(verbose) and verbose or false
 
@@ -28,11 +29,11 @@ function Update.update(verbose)
         '--recurse-submodules',
     }
 
-    vim.api.nvim_set_current_dir(vim.fn.stdpath('config'))
+    cd(vim.fn.stdpath('config'))
 
     local res = vim.fn.system(cmd)
 
-    vim.api.nvim_set_current_dir(og_cwd)
+    cd(og_cwd)
 
     local lvl = res:match('error') and WARN or INFO
 
@@ -50,14 +51,14 @@ function Update.update(verbose)
     end
 
     if res:match('Already up to date') then
-        notify('Jnvim is up to date!', 'info', {
+        notify('Jnvim is up to date!', INFO, {
             animate = true,
             hide_from_history = true,
             timeout = 1750,
             title = 'User API - Update',
         })
     elseif not res:match('error') then
-        notify('You need to restart Nvim!', 'warn', {
+        notify('You need to restart Nvim!', WARN, {
             animate = true,
             hide_from_history = false,
             timeout = 5000,

@@ -1,12 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@class User.Maps
----@field kmap User.Maps.Keymap
----@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
----@field wk User.Maps.WK
----@field modes Modes
----@field map_dict fun(T: AllModeMaps|AllMaps, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
-
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
 
@@ -23,7 +16,12 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
----@type User.Maps
+---@class User.Maps
+---@field kmap User.Maps.Keymap
+---@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
+---@field wk User.Maps.WK
+---@field modes Modes
+---@field map_dict fun(T: AllModeMaps|AllMaps, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 local Maps = {}
 
 Maps.kmap = require('user_api.maps.kmap')
@@ -39,12 +37,13 @@ function Maps.nop(T, opts, mode, prefix)
         error('(user_api.maps.nop): Argument is neither a string nor a table')
     end
 
+    local insp = inspect or vim.inspect
+
     mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
 
     if mode == 'i' then
         vim.notify(
-            '(user_api.maps.nop): Refusing to `<Nop>` the following keys in Insert mode: '
-                .. inspect(T),
+            '(user_api.maps.nop): Refusing to NO-OP these keys in Insert mode: ' .. insp(T),
             WARN
         )
     end
@@ -60,7 +59,7 @@ function Maps.nop(T, opts, mode, prefix)
 
     prefix = is_str(prefix) and prefix or ''
 
-    ---@type KeyMapFunction
+    ---@type KeyMapFun
     local func = Maps.kmap[mode]
 
     if is_str(T) then
@@ -103,7 +102,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
     dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
 
-    ---@type KeyMapFunction
+    ---@type KeyMapFun
     local func
 
     if dict_has_modes then
@@ -113,7 +112,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
             end
 
             if map_func == 'kmap' then
-                ---@type KeyMapFunction
+                ---@type KeyMapFun
                 func = Maps.kmap[mode_choice]
 
                 for lhs, v in next, t do
@@ -174,7 +173,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
             ::continue::
         end
     elseif map_func == 'kmap' then
-        ---@type KeyMapFunction
+        ---@type KeyMapFun
         func = Maps.kmap[mode]
 
         for lhs, v in next, T do

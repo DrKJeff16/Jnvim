@@ -11,20 +11,17 @@
 ---|'o'
 ---|'x'
 
---- This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Kmap`), with few extensions
---- ---
---- ## Description
----
---- This table defines a keymap that is used for grouping keymaps with an extra sequence,
---- e.g.
----
---- This class type is reserved for either direct usage with `which-key`, or most regularly
---- for `User.maps.map_dict()` and anything in the `User.maps.wk` module
----
---- ---
----@see vim.keymap.set.Opts
----@see User.Maps.WK
----@see RegModes
+-- This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Kmap`), with few extensions
+-- ---
+-- ## Description
+--
+-- This table defines a keymap that is used for grouping keymaps with an extra sequence,
+-- e.g.
+--
+-- This class type is reserved for either direct usage with `which-key`, or most regularly
+-- for `User.maps.map_dict()` and anything in the `User.maps.wk` module
+--
+-- ---
 ---@class RegKey: vim.keymap.set.Opts
 --- AKA `lhs` of a Vim Keymap
 ---@field [1] string
@@ -136,24 +133,24 @@
 ---@field notify? boolean
 ---@field version? number
 
----@class User.Maps.WK
----@field available fun(): boolean
----@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|RegKey|RegPfx, opts: (User.Maps.Keymap.Opts|RegKeyOpts)?): RegKey|RegPfx
----@field convert_dict fun(T: KeyMapDict|RegKeys|RegKeysNamed): RegKeys|RegKeysNamed
----@field register fun(T: RegKeys|RegKeysNamed, opts: RegOpts|RegKeyOpts?): false?
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
 
 local Value = require('user_api.check.value')
 
 local is_tbl = Value.is_tbl
 local is_str = Value.is_str
 local is_bool = Value.is_bool
-local empty = Value.empty
+local type_not_empty = Value.type_not_empty
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
 --- `which_key` API entrypoints
----@type User.Maps.WK
----@diagnostic disable-next-line:missing-fields
+---@class User.Maps.WK
+---@field available fun(): boolean
+---@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|RegKey|RegPfx, opts: (User.Maps.Keymap.Opts|RegKeyOpts)?): RegKey|RegPfx
+---@field convert_dict fun(T: AllMaps): AllMaps
+---@field register fun(T: AllMaps, opts: RegOpts|RegKeyOpts?): false?
 local WK = {}
 
 function WK.available()
@@ -162,7 +159,7 @@ end
 
 function WK.convert(lhs, rhs, opts)
     if not WK.available() then
-        error('(user.maps.wk.convert): `which_key` not available')
+        error('(user.maps.wk.convert): `which_key` not available', WARN)
     end
 
     opts = is_tbl(opts) and opts or {}
@@ -174,12 +171,12 @@ function WK.convert(lhs, rhs, opts)
         res.hidden = opts.hidden
     end
 
-    if is_str(opts.group) and not empty(opts.group) then
+    if type_not_empty('string', opts.group) then
         res.group = opts.group
         return res
     end
 
-    if is_str(opts.desc) and not empty(opts.desc) then
+    if type_not_empty('string', opts.desc) then
         res.desc = opts.desc
     end
 
@@ -201,7 +198,7 @@ end
 
 function WK.register(T, opts)
     if not WK.available() then
-        require('user_api.util.notify').notify('(user.maps.wk.register): `which_key` unavailable')
+        vim.notify('(user.maps.wk.register): `which_key` unavailable', ERROR)
         return false
     end
 

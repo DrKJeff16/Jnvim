@@ -69,15 +69,6 @@
 
 ---@alias KeyDescFun fun(msg: string, silent: boolean?, bufnr: integer?, noremap: boolean?, nowait: boolean?, expr: boolean?): res: User.Maps.Keymap.Opts
 
----@class User.Maps.Keymap
----@field n KeyMapFun
----@field i KeyMapFun
----@field v KeyMapFun
----@field t KeyMapFun
----@field o KeyMapFun
----@field x KeyMapFun
----@field desc KeyDescFun
-
 ---@type KeyMapOpts
 local O = {}
 
@@ -143,7 +134,14 @@ local function variant(mode)
     end
 end
 
----@type User.Maps.Keymap
+---@class User.Maps.Keymap
+---@field n KeyMapFun
+---@field i KeyMapFun
+---@field v KeyMapFun
+---@field t KeyMapFun
+---@field o KeyMapFun
+---@field x KeyMapFun
+---@field desc KeyDescFun
 local Kmap = {}
 
 ---@param msg? string|'Unnamed Key'
