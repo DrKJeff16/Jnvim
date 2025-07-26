@@ -1,31 +1,26 @@
 ---@diagnostic disable:missing-fields
 
+-- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
+-- Setup keymaps
 ---@alias User.Config.Keymaps.CallerFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Keymaps.PreExec
 ---@field ft string[]
 ---@field bt string[]
 
----@class User.Config.Keymaps
----@field NOP string[] Table of keys to no-op after `<leader>` is pressed
----@field no_oped? boolean
----@field Keys AllModeMaps
----@field set_leader fun(self: User.Config.Keymaps, leader: string, local_leader: string?, force: boolean?)
----@field new fun(O: table?): table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
+local Value = require('user_api.check.value')
+local Maps = require('user_api.maps')
+local Kmap = require('user_api.maps.kmap')
 
-local Value = require('user_api.check.value') ---@see User.Check.Value Checking utilities
-local Maps = require('user_api.maps') ---@see User.Maps Mapping Utilities
-local Kmap = require('user_api.maps.kmap') ---@see User.Maps.Keymap Mapping Utilities (`vim.keymap` version)
-
-local is_tbl = Value.is_tbl ---@see User.Check.Value.is_tbl
-local is_int = Value.is_int ---@see User.Check.Value.is_int
-local is_bool = Value.is_bool ---@see User.Check.Value.is_bool
-local type_not_empty = Value.type_not_empty ---@see User.Check.Value.type_not_empty
-local nop = Maps.nop ---@see User.Maps.nop
-local map_dict = Maps.map_dict ---@see User.Maps.map_dict
-local desc = Kmap.desc ---@see User.Maps.Keymap.desc
-local ft_get = require('user_api.util').ft_get ---@see User.Util.ft_get
-local bt_get = require('user_api.util').bt_get ---@see User.Util.bt_get
+local is_tbl = Value.is_tbl
+local is_int = Value.is_int
+local is_bool = Value.is_bool
+local type_not_empty = Value.type_not_empty
+local nop = Maps.nop
+local map_dict = Maps.map_dict
+local desc = Kmap.desc
+local ft_get = require('user_api.util').ft_get
+local bt_get = require('user_api.util').bt_get
 
 local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
@@ -93,7 +88,13 @@ local function buf_del(force)
     end
 end
 
----@type User.Config.Keymaps|User.Config.Keymaps.CallerFun
+---@class User.Config.Keymaps
+-- Table of keys to no-op after `<leader>` is pressed
+---@field NOP string[]
+---@field no_oped? boolean
+---@field Keys AllModeMaps
+---@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
+---@field new fun(O: table?): table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 local Keymaps = {}
 
 Keymaps.NOP = {
@@ -620,18 +621,18 @@ Keymaps.Keys = {
     },
 }
 
---- Set the `<leader>` key and, if desired, the `<localleader>` aswell
---- ---
---- ## Description
---- Setup a key as `<leader>` and `<localleader>`, but you can also set `<localleader>` to
---- a different key if you want.
----
---- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
----@param self User.Config.Keymaps
+-- Set the `<leader>` key and, if desired, the `<localleader>` aswell
+-- ---
+-- ## Description
+-- Setup a key as `<leader>` and `<localleader>`, but you can also set `<localleader>` to
+-- a different key if you want.
+--
+-- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
+-- ---
 ---@param leader string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
-function Keymaps:set_leader(leader, local_leader, force)
+function Keymaps.set_leader(leader, local_leader, force)
     leader = type_not_empty('string', leader) and leader or '<Space>'
     local_leader = type_not_empty('string', local_leader) and local_leader or leader
     force = is_bool(force) and force or false
@@ -698,7 +699,7 @@ function Keymaps.new(O)
             local notify = require('user_api.util.notify').notify
 
             if not leader_set then
-                notify('`keymaps:set_leader()` not called!', 'warn', {
+                notify('`keymaps.set_leader()` not called!', 'warn', {
                     hide_from_history = false,
                     timeout = 3250,
                     title = '[WARNING] (user_api.config.keymaps.setup)',

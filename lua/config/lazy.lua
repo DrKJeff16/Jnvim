@@ -10,6 +10,10 @@
 ---@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
 ---@alias LazyPlugs (LazyPlug)[]
 
+---@alias Config.Lazy.LSP table|Lsp.Server|fun()
+---@alias Config.Lazy.Alpha nil|table|AlphaCaller|AlphaFun
+---@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...: any))
+
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
@@ -23,12 +27,13 @@ local is_root = require('user_api.check').is_root
 
 local uv = vim.uv or vim.loop
 
-_G.LAZY_DATA = vim.fn.stdpath('data') .. '/lazy'
-_G.LAZY_STATE = vim.fn.stdpath('state') .. '/lazy'
+local stdpath = vim.fn.stdpath
+
+_G.LAZY_DATA = stdpath('data') .. '/lazy'
+_G.LAZY_STATE = stdpath('state') .. '/lazy'
 
 --- Set installation dir for `Lazy`
 _G.LAZYPATH = LAZY_DATA .. '/lazy.nvim'
-
 _G.README_PATH = LAZY_STATE .. '/readme'
 
 --- Install `Lazy` automatically
@@ -88,8 +93,8 @@ local Config = {
     },
 
     rocks = {
-        enabled = not is_root() and CfgUtil.luarocks_check() or false,
-        root = vim.fn.stdpath('data') .. '/lazy-rocks',
+        enabled = CfgUtil.luarocks_check(),
+        root = stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
 
@@ -118,12 +123,12 @@ local Config = {
 
     change_detection = {
         enabled = true,
-        notify = Archlinux:validate(),
+        notify = Archlinux.validate(),
     },
 
     checker = {
-        enabled = not Termux:validate(),
-        notify = Archlinux:validate(),
+        enabled = not Termux.validate(),
+        notify = Archlinux.validate(),
         frequency = 900,
         check_pinned = false,
     },
@@ -174,14 +179,17 @@ local Keys = {
     ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
     ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
     ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
-    -- ['<leader>Lr'] = { Lazy.reload, desc('Reload Lazy Plugins') },
 
     ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
 }
 
 Keymaps({ n = Keys })
 
----@type Config.Lazy
+-- List of manually-callable plugins
+---@class Config.Lazy
+---@field colorschemes Config.Lazy.Colorschemes
+---@field lsp fun(): Config.Lazy.LSP
+---@field alpha fun(): Config.Lazy.Alpha|nil
 local M = {}
 
 ---@return Config.Lazy.Colorschemes

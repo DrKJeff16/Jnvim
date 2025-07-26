@@ -57,7 +57,7 @@ local Opts = {
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         ignore_focus = {},
-        always_divide_middle = Distro.termux:validate(),
+        always_divide_middle = Distro.termux.validate(),
         globalstatus = false,
         refresh = {
             statusline = 1000,

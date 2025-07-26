@@ -1,5 +1,19 @@
 ---@diagnostic disable:missing-fields
 
+local User = require('user_api')
+local Check = User.check
+local Exists = Check.exists
+local Value = Check.value
+
+local in_console = Check.in_console
+local exists = Exists.module
+local executable = Exists.executable
+local env_vars = Exists.env_vars
+local vim_exists = Exists.vim_exists
+local is_bool = Value.is_bool
+local is_str = Value.is_str
+local type_not_empty = Value.type_not_empty
+
 ---@class Config.Util
 ---@field set_tgc fun(force: boolean?)
 ---@field flag_installed fun(name: string): fun()
@@ -71,31 +85,6 @@
 ---@field luarocks_check fun(): boolean
 ---@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
 ---@field has_tgc fun(): boolean
-
----@alias Config.Lazy.LSP table|Lsp.Server|fun()
----@alias Config.Lazy.Alpha nil|table|AlphaCaller|AlphaFun
----@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...: any))
-
----@class Config.Lazy
----@field colorschemes Config.Lazy.Colorschemes
----@field lsp fun(): Config.Lazy.LSP
----@field alpha? fun(): Config.Lazy.Alpha
-
-local User = require('user_api')
-local Check = User.check
-local Exists = Check.exists
-local Value = Check.value
-
-local in_console = Check.in_console
-local exists = Exists.module
-local executable = Exists.executable
-local env_vars = Exists.env_vars
-local vim_exists = Exists.vim_exists
-local is_bool = Value.is_bool
-local is_str = Value.is_str
-local type_not_empty = Value.type_not_empty
-
----@type Config.Util
 local CfgUtil = {}
 
 ---@param force? boolean

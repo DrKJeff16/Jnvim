@@ -3,19 +3,8 @@
 ---@module 'user_api.opts.config'
 ---@module 'user_api.opts.all_opts'
 
+-- Set the following options (keys are `vim.opt[k]`-like)
 ---@alias User.Opts.CallerFun fun(override: table|User.Opts.Spec?, verbose: boolean?)
-
----@class User.Opts
----@field optset fun(self: User.Opts, opts: User.Opts.Spec, verbose: boolean?)
----@field toggleable string[]
----@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
----@field get_all_opts fun(): User.Opts.AllOpts
----@field get_defaults fun(): User.Opts.Spec
----@field options User.Opts.Spec
----@field print_set_opts fun(self: User.Opts)
----@field setup_keys fun(self: User.Opts)
----@field toggle fun(self: User.Opts, O: string[]|string)
----@field new fun(O: table?):table|User.Opts|User.Opts.CallerFun
 
 local Value = require('user_api.check.value')
 
@@ -31,7 +20,17 @@ local copy = vim.deepcopy
 local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
----@type User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
+---@class User.Opts
+---@field optset fun(opts: User.Opts.Spec, verbose: boolean?)
+---@field toggleable string[]
+---@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
+---@field get_all_opts fun(): User.Opts.AllOpts
+---@field get_defaults fun(): User.Opts.Spec
+---@field options User.Opts.Spec
+---@field print_set_opts fun()
+---@field setup_keys fun()
+---@field toggle fun(O: string[]|string)
+---@field new fun(O: table?):table|User.Opts|User.Opts.CallerFun
 local Opts = {}
 
 ---@return User.Opts.AllOpts
@@ -145,11 +144,10 @@ function Opts.long_opts_convert(T, verbose)
 end
 
 --- Option setter for the aforementioned options dictionary
---- @param self User.Opts
 --- @param O User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
 --- @param verbose? boolean
 --- for each option respectively
-function Opts:optset(O, verbose)
+function Opts.optset(O, verbose)
     local insp = inspect or vim.inspect
     local curr_buf = vim.api.nvim_get_current_buf
 
@@ -160,15 +158,15 @@ function Opts:optset(O, verbose)
         return
     end
 
-    local opts = self.long_opts_convert(O, verbose)
+    local opts = Opts.long_opts_convert(O, verbose)
 
     local msg = ''
     local verb_msg = ''
 
     for k, v in next, opts do
         if type(vim.opt[k]:get()) == type(v) then
-            self.options[k] = v
-            vim.opt[k] = self.options[k]
+            Opts.options[k] = v
+            vim.opt[k] = Opts.options[k]
             verb_msg = string.format('%s- %s: %s\n', verb_msg, k, insp(v))
         else
             msg = string.format('%sOption `%s` is not a valid field for `vim.opt`\n', msg, k)
@@ -185,16 +183,14 @@ function Opts:optset(O, verbose)
     end
 end
 
----@param self User.Opts
-function Opts:print_set_opts()
-    local T = copy(self.options)
+function Opts.print_set_opts()
+    local T = copy(Opts.options)
     table.sort(T)
     vim.notify((inspect or vim.inspect)(T), INFO)
 end
 
----@param self User.Opts
 ---@param O string[]|string
-function Opts:toggle(O)
+function Opts.toggle(O)
     if is_str(O) then
         O = { O }
     end
@@ -203,7 +199,7 @@ function Opts:toggle(O)
         return
     end
 
-    local toggleables = self.toggleable
+    local toggleables = Opts.toggleable
 
     for _, opt in next, O do
         if not in_tbl(toggleables, opt) then
@@ -219,25 +215,22 @@ function Opts:toggle(O)
             value = value == 'yes' and 'no' or 'yes'
         end
 
-        self:optset({ [opt] = value })
+        Opts.optset({ [opt] = value })
 
         ::continue::
     end
 end
 
----@param self User.Opts
-function Opts:setup_keys()
+function Opts.setup_keys()
     local Keymaps = require('user_api.config.keymaps')
-
     local desc = require('user_api.maps.kmap').desc
 
     Keymaps({
         n = {
             ['<leader>UO'] = { group = '+Options' },
+
             ['<leader>UOl'] = {
-                function()
-                    self:print_set_opts()
-                end,
+                Opts.print_set_opts,
                 desc('Print options set by `user.opts`'),
             },
         },
@@ -268,9 +261,9 @@ function Opts.new(O)
             local parsed_opts = self.long_opts_convert(override, verbose)
 
             ---@type table|vim.bo|vim.wo
-            self.options = deep_extend('force', parsed_opts, copy(self.options))
+            self.options = deep_extend('keep', parsed_opts, copy(self.options))
 
-            self:optset(self.options, verbose)
+            self.optset(self.options, verbose)
 
             -- NOTE: Set to global `Opts` table aswell
             Opts.options = self.options

@@ -12,6 +12,15 @@
 ---@field r DirectionFun
 ---@field l DirectionFun
 
+local curr_buf = vim.api.nvim_get_current_buf
+local optset = vim.api.nvim_set_option_value
+local optget = vim.api.nvim_get_option_value
+local in_tbl = vim.tbl_contains
+
+local ERROR = vim.log.levels.ERROR
+
+local augroup = vim.api.nvim_create_augroup
+
 ---@class User.Util
 ---@field notify User.Util.Notify
 ---@field au User.Util.Autocmd
@@ -25,32 +34,16 @@
 ---@field bt_get fun(bufnr: integer?): string
 ---@field ft_get fun(bufnr: integer?): string
 ---@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): res: AnyDict
----@field setup_autocmd fun(self: User.Util)
+---@field setup_autocmd fun()
 ---@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
 ---@field mv_tbl_values fun(T: AnyDict, steps: integer?, direction: ('r'|'l')?): res: AnyDict
 ---@field reverse_tbl fun(T: table): table
 ---@field discard_dups fun(data: string|table): res: string|table
 ---@field new fun(O: table?): table|User.Util
-
-local curr_buf = vim.api.nvim_get_current_buf
-local optset = vim.api.nvim_set_option_value
-local optget = vim.api.nvim_get_option_value
-local in_tbl = vim.tbl_contains
-
-local ERROR = vim.log.levels.ERROR
-
-local augroup = vim.api.nvim_create_augroup
-
----@type User.Util
 local Util = {}
 
----@type User.Util.Notify
 Util.notify = require('user_api.util.notify')
-
----@type User.Util.Autocmd
 Util.au = require('user_api.util.autocmd')
-
----@type User.Util.String
 Util.string = require('user_api.util.string')
 
 ---@return boolean
@@ -340,10 +333,9 @@ function Util.pop_values(T, V)
     return T, val
 end
 
----@param self User.Util
-function Util:setup_autocmd()
-    local au_repeated_events = self.au.au_repeated_events
-    local ft_set = self.ft_set
+function Util.setup_autocmd()
+    local au_repeated_events = Util.au.au_repeated_events
+    local ft_set = Util.ft_set
 
     local group = augroup('User.AU', { clear = true })
 
@@ -445,8 +437,8 @@ function Util:setup_autocmd()
 
                         local buf = args.buf
 
-                        local bt = self.bt_get(buf)
-                        local ft = self.ft_get(buf)
+                        local bt = Util.bt_get(buf)
+                        local ft = Util.ft_get(buf)
 
                         if ft == 'lazy' then
                             optset('signcolumn', 'no', { scope = 'local' })
@@ -485,7 +477,7 @@ function Util:setup_autocmd()
                                             local ok, _ = pcall(vim.cmd, 'silent! !stylua %')
 
                                             if ok then
-                                                self.notify.notify(
+                                                Util.notify.notify(
                                                     'Formatted successfully!',
                                                     'info',
                                                     {
@@ -521,7 +513,7 @@ function Util:setup_autocmd()
                                             local ok, _ = pcall(vim.cmd, 'silent! !isort %')
 
                                             if ok then
-                                                self.notify.notify(
+                                                Util.notify.notify(
                                                     'Formatted successfully!',
                                                     'info',
                                                     {
@@ -553,14 +545,14 @@ function Util:setup_autocmd()
             group = group,
             pattern = '*.org',
             callback = function(ev)
-                self.ft_set('org', ev.buf)()
+                Util.ft_set('org', ev.buf)()
             end,
         })
     end
 
-    self.au.created = vim.tbl_deep_extend('keep', self.au.created or {}, AUS)
+    Util.au.created = vim.tbl_deep_extend('keep', Util.au.created or {}, AUS)
 
-    for _, t in next, self.au.created do
+    for _, t in next, Util.au.created do
         au_repeated_events(t)
     end
 end

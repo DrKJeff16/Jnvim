@@ -14,7 +14,7 @@
 ---@field commands User.Commands.Spec
 ---@field new_command fun(self: User.Commands, name: string, C: table|User.Commands.CtxSpec)
 ---@field setup fun(self: User.Commands)
----@field setup_keys fun(self: User.Commands)
+---@field setup_keys fun()
 
 local Value = require('user_api.check.value')
 
@@ -88,10 +88,9 @@ function Commands:setup()
     vim.g.user_api_commans_setup = 1
 end
 
----@param self User.Commands
-function Commands:setup_keys()
+function Commands.setup_keys()
     local is_int = Value.is_int
-    local is_tbl = Value.is_tbl
+    local type_not_empty = Value.type_not_empty
 
     local abort = not (is_int(vim.g.user_api_commans_setup) and vim.g.user_api_commans_setup == 1)
 
@@ -101,8 +100,8 @@ function Commands:setup_keys()
 
     local Keymaps = require('user_api.config.keymaps')
 
-    for _, cmd in next, self.commands do
-        if is_nil(cmd.mappings) or not is_tbl(cmd.mappings) or empty(cmd.mappings) then
+    for _, cmd in next, Commands.commands do
+        if not type_not_empty('table', cmd.mappings) then
             goto continue
         end
 

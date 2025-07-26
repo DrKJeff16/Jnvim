@@ -2,20 +2,15 @@
 
 ---@alias User.Distro.CallerFun fun(verbose: boolean?)
 
----@class User.Distro
----@field archlinux User.Distro.Archlinux
----@field termux User.Distro.Termux
----@field new fun(O: table?): table|User.Distro|fun(verbose: boolean?)
-
 local INFO = vim.log.levels.INFO
 
----@type User.Distro|User.Distro.CallerFun
+---@class User.Distro
+---@field archlinux table|User.Distro.Archlinux|User.Distro.Archlinux.CallerFun
+---@field termux table|User.Distro.Termux|User.Distro.Termux.CallerFun
+---@field new fun(O: table?): table|User.Distro|User.Distro.CallerFun
 local Distro = {}
 
----@type User.Distro.Archlinux
 Distro.archlinux = require('user_api.distro.archlinux')
-
----@type User.Distro.Termux
 Distro.termux = require('user_api.distro.termux')
 
 ---@param O? table
@@ -38,11 +33,11 @@ function Distro.new(O)
 
             local msg = ''
 
-            if self.termux:validate() then
-                self.termux:setup()
+            if self.termux.validate() then
+                self.termux()
                 msg = 'Termux distribution detected...'
-            elseif self.archlinux:validate() then
-                self.archlinux:setup()
+            elseif self.archlinux.validate() then
+                self.archlinux()
                 msg = 'Arch Linux distribution detected...'
             end
 

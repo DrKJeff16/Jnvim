@@ -7,17 +7,17 @@ _G.inspect = vim.inspect
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
-local Keymaps = require('user_api.config.keymaps') ---@see User.Config.keymaps
-local Neovide = require('user_api.config.neovide') ---@see User.Config.neovide
-local User = require('user_api') ---@see UserAPI User API
-local Check = require('user_api.check') ---@see UserAPI.check Checking utilities
-local Util = require('user_api.util') ---@see UserAPI.util General utilities
-local Opts = require('user_api.opts') ---@see UserAPI.Opts Option setting
-local Commands = require('user_api.commands') ---@see UserAPI.commands User command generation (**WIP**)
-local Distro = require('user_api.distro') ---@see UserAPI.distro Platform-specific optimizations (**WIP**)
+local Keymaps = require('user_api.config.keymaps')
+local Neovide = require('user_api.config.neovide')
+local User = require('user_api')
+local Check = require('user_api.check')
+local Util = require('user_api.util')
+local Opts = require('user_api.opts')
+local Commands = require('user_api.commands')
+local Distro = require('user_api.distro')
 
-local desc = require('user_api.maps.kmap').desc ---@see User.Maps.Keymap.desc
-local is_nil = Check.value.is_nil ---@see User.Check.Value.is_nil
+local desc = require('user_api.maps.kmap').desc
+local is_nil = Check.value.is_nil
 
 _G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
 _G.in_console = require('user_api.check').in_console
@@ -36,11 +36,7 @@ function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
 end
 
---- Call runtimepath optimizations for specific platforms
-Distro()
-
----@see User.Opts.setup
-Opts({ ---@see User.Opts.Spec For more info
+Opts({
     autoread = true,
     backup = false,
     bg = 'dark', -- `background`
@@ -90,11 +86,14 @@ Opts({ ---@see User.Opts.Spec For more info
     sts = 4, -- `softtabstop`
     ts = 4, -- `tabstop`
     title = true,
-    wrap = Distro.termux:validate(),
+    wrap = Distro.termux.validate(),
 })
 
+-- Call runtimepath optimizations for specific platforms
+Distro()
+
 -- Set `<Leader>` key
-Keymaps:set_leader('<Space>')
+Keymaps.set_leader('<Space>')
 
 vim.g.markdown_minlines = 500
 
@@ -105,11 +104,8 @@ vim.g.loaded_netrwPlugin = 1
 --- Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
--- List of manually-callable plugins
 local L = require('config.lazy')
 
--- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
--- Setup keymaps
 Keymaps({
     n = {
         ['<leader>fii'] = {
@@ -148,10 +144,7 @@ Keymaps({
             desc('Run `:messages`'),
         },
         ['<leader>vN'] = {
-            function()
-                ---@diagnostic disable-next-line
-                pcall(vim.cmd, 'Notifications')
-            end,
+            vim.cmd.Notifications,
             desc('Run `:Notifications`'),
         },
     },

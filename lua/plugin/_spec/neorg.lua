@@ -18,11 +18,11 @@ local Neorg = {
                 'vhyrro/luarocks.nvim',
                 version = false,
                 config = source('plugin.luarocks'),
-                cond = luarocks_check() and not Termux:validate(),
+                cond = luarocks_check() and not Termux.validate(),
             },
         },
         config = source('plugin.neorg'),
-        cond = not (Termux:validate() or in_console()),
+        cond = not (Termux.validate() or in_console()),
         enabled = false,
     },
 }

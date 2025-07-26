@@ -59,7 +59,7 @@ local aucmds = {
                     return
                 end
 
-                optset('wrap', Termux:validate(), { scope = 'local' })
+                optset('wrap', Termux.validate(), { scope = 'local' })
             end,
         },
     },

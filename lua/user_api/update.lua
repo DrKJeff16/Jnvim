@@ -1,13 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@class User.Update
----@field update fun(verbose: boolean?): string?
----@field setup_maps fun(self: User.Update)
-
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
----@type User.Update
+---@class User.Update
+---@field update fun(verbose: boolean?): string?
+---@field setup_maps fun()
 local Update = {}
 
 ---@param verbose? boolean
@@ -70,8 +68,7 @@ function Update.update(verbose)
     return res
 end
 
----@param self User.Update
-function Update:setup_maps()
+function Update.setup_maps()
     local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps.kmap').desc
 
@@ -80,12 +77,12 @@ function Update:setup_maps()
             ['<leader>U'] = { group = '+User API' },
 
             ['<leader>Uu'] = {
-                self.update,
+                Update.update,
                 desc('Update User Config'),
             },
             ['<leader>UU'] = {
                 function()
-                    self.update(true)
+                    Update.update(true)
                 end,
                 desc('Update User Config (Verbose)'),
             },
