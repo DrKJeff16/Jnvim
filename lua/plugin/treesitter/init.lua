@@ -84,7 +84,7 @@ local Opts = {
 
     indent = { enable = true },
     incremental_selection = {
-        enable = true,
+        enable = false,
         keymaps = {
             init_selection = 'gnn', -- set to `false` to disable one of the mappings
             node_incremental = 'grn',
