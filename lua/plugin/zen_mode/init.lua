@@ -53,7 +53,7 @@ ZM.setup({
         twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
         gitsigns = { enabled = false },
         tmux = { enabled = false }, -- disables the tmux statusline
-        todo = { enabled = false }, -- disables todo comments
+        todo = { enabled = true }, -- disables todo comments
         -- this will change the font size on kitty when in zen mode
         -- to make this work, you need to set the following kitty options:
         -- - allow_remote_control socket-only
@@ -71,7 +71,7 @@ ZM.setup({
         -- this will change the font size on wezterm when in zen mode
         -- See alse also the Plugins/Wezterm section in this projects README
         wezterm = {
-            enabled = false,
+            enabled = executable('wezterm'),
             -- can be either an absolute font size or the number of incremental steps
             font = '+4', -- (10% increase per step)
         },
@@ -83,16 +83,15 @@ ZM.setup({
     -- on_close = function() end,
 })
 
----@type AllMaps
-local Keys = {
-    ['<leader>Z'] = { group = '+Zen Mode' },
+Keymaps({
+    n = {
+        ['<leader>Z'] = { group = '+Zen Mode' },
 
-    ['<leader>Zo'] = { ZM.open, desc('Open Zen Mode') },
-    ['<leader>Zd'] = { ZM.close, desc('Close Zen Mode') },
-    ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
-}
-
-Keymaps({ n = Keys })
+        ['<leader>Zo'] = { ZM.open, desc('Open Zen Mode') },
+        ['<leader>Zd'] = { ZM.close, desc('Close Zen Mode') },
+        ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
+    },
+})
 
 User.register_plugin('plugin.zen_mode')
 

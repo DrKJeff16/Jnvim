@@ -202,16 +202,13 @@ HDL.setup({
     },
 })
 
----@type HlPairs
-local H = {
+hl({
     { name = 'Headline', opts = { link = 'ColorColumn' } },
     { name = 'CodeBlock', opts = { link = 'ColorColumn' } },
     { name = 'Dash', opts = { link = 'LineNr' } },
     { name = 'DoubleDash', opts = { link = 'LineNr' } },
     { name = 'Quote', opts = { link = 'LineNr' } },
-}
-
-hl(H)
+})
 
 User.register_plugin('plugin.headlines')
 
