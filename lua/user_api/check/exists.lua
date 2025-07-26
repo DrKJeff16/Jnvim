@@ -1,11 +1,17 @@
 ---@diagnostic disable:missing-fields
 
---- Exitstance checks
---- ---
---- ## Description
----
---- This contains many checkers for environment, modules, namespaces, etc.
---- Also, simplified Vim functions can be found here
+local ERROR = vim.log.levels.ERROR
+
+---@return User.Check.Value
+local function get_value()
+    return require('user_api.check.value')
+end
+
+-- Exitstance checks
+-- ---
+--
+-- This contains many checkers for environment, modules, namespaces, etc.
+-- Also, simplified Vim functions can be found here
 ---@class User.Check.Existance
 ---@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
 ---@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>
@@ -14,15 +20,6 @@
 ---@field vim_exists fun(expr: string[]|string): boolean
 ---@field vim_has fun(expr: string[]|string): boolean
 ---@field vim_isdir fun(path: string): boolean
-
----@return User.Check.Value
-local function get_value()
-    return require('user_api.check.value')
-end
-
-local ERROR = vim.log.levels.ERROR
-
----@type User.Check.Existance
 local Exists = {}
 
 ---@param mod string
@@ -32,14 +29,11 @@ function Exists.module(mod, return_mod)
     local Value = get_value()
 
     local is_nil = Value.is_nil
-    local is_str = Value.is_str
     local is_bool = Value.is_bool
+    local type_not_empty = Value.type_not_empty
 
-    if not is_str(mod) then
-        error('`(user_api.check.exists.module)`: Input is not a string', ERROR)
-    end
-    if mod == '' then
-        error("`(user_api.check.exists.module)`: Input can't be an empty string", ERROR)
+    if not type_not_empty('string', mod) then
+        error('`(user_api.check.exists.module)`: Input is not valid', ERROR)
     end
 
     return_mod = is_bool(return_mod) and return_mod or false
@@ -53,7 +47,7 @@ function Exists.module(mod, return_mod)
     return res
 end
 
----@param mod string|string[]
+---@param mod string[]|string
 ---@param need_all? boolean
 ---@return boolean|table<string, boolean>
 function Exists.modules(mod, need_all)
@@ -86,19 +80,19 @@ function Exists.modules(mod, need_all)
         if need_all then
             res[v] = r
         else
-            res = r
-
             -- Break when a module is not found
-            if not res then
+            if not r then
                 break
             end
+
+            res = r
         end
     end
 
     return res
 end
 
----@param expr string|string[]
+---@param expr string[]|string
 ---@return boolean
 function Exists.vim_has(expr)
     local Value = get_value()
@@ -122,13 +116,13 @@ function Exists.vim_has(expr)
     return true
 end
 
----@param expr string|string[]
+---@param expr string[]|string
 ---@return boolean
 function Exists.vim_exists(expr)
     local Value = get_value()
-    local exists = vim.fn.exists
 
     local type_not_empty = Value.type_not_empty
+    local exists = vim.fn.exists
 
     if not (type_not_empty('string', expr) or type_not_empty('table', expr)) then
         return false
@@ -151,7 +145,7 @@ function Exists.vim_exists(expr)
     return res
 end
 
----@param vars string|string[]
+---@param vars string[]|string
 ---@param fallback? fun()
 ---@return boolean
 function Exists.env_vars(vars, fallback)
@@ -230,9 +224,7 @@ end
 ---@param path string
 ---@return boolean
 function Exists.vim_isdir(path)
-    local Value = get_value()
-
-    local type_not_empty = Value.type_not_empty
+    local type_not_empty = get_value().type_not_empty
 
     return type_not_empty('string', path) and (vim.fn.isdirectory(path) == 1) or false
 end
