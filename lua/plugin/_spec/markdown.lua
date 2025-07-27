@@ -12,23 +12,19 @@ _G.in_console = in_console or Check.in_console
 ---@type LazySpecs
 local MD = {
     {
-        'iamcco/markdown-preview.nvim',
-        ft = 'markdown',
-        version = false,
-        build = executable('yarn') and 'cd app && yarn install' or function()
-            vim.fn['mkdp#util#install']()
-        end,
-        init = function()
-            vim.g.mkdp_filetypes = { 'markdown' }
-        end,
-        config = source('plugin.markdown.md_preview'),
-        cond = not (in_console() or is_root()),
-    },
-    {
         'tadmccorkle/markdown.nvim',
         ft = 'markdown',
         version = false,
         config = source('plugin.markdown'),
+    },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'echasnovski/mini.nvim',
+            'nvim-tree/nvim-web-devicons',
+        },
+        config = source('plugin.markdown.render'),
     },
 }
 
