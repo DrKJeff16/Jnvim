@@ -1,5 +1,7 @@
 <div align="center">
-<h1 id="jnvim">Jnvim</h1>
+
+# Jnvim
+
 </div>
 
 ## Table Of Contents
@@ -30,7 +32,7 @@ as the default plugin manager.
 Please read the [Plugins section](#plugins) to get an understanding of how this works.
 
 This configuration has its core entirely dependant on the
-[`user_api`](lua/user_api) module, which provides a customized
+[`user_api`](./lua/user_api) module, which provides a customized
 **_API_** which includes **_module checking_**,
 **_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
@@ -45,7 +47,7 @@ of how it works.
 For these to work, the following executables must be installed and in your `$PATH`:
 
 - `git`
-- `rust` (for [`blink.cmp`](https://github.com/saghen/blink.cmp))
+- `rust`, **NIGHTLY** (for [`blink.cmp`](https://github.com/saghen/blink.cmp))
 - [`ripgrep`](https://github.com/BurntSushi/ripgrep)
 - [`lua-language-server`](https://github.com/LuaLS/lua-language-server) (for [`lazydev.nvim`](https://github.com/folke/lazydev.nvim))
 - [`vscode-json-languageserver`](https://www.npmjs.com/package/vscode-json-languageserver)
@@ -60,82 +62,71 @@ For these to work, the following executables must be installed and in your `$PAT
 
 ```
 /lua
-├── config/  <== Folder containing all Lua plugin configurations
-│   ├── keymaps.lua  <== Setup default, non-plugin keymaps here
-│   ├── lazy.lua  <== Plugin Installation. `plugin._spec` entry points are called here
-│   ├── types.lua  <== Annotations. Mostly for `config.keymaps`
-│   └── util.lua  <== Utilities used in the file above (env checks, etc.)
-├── plugin/  <==  Plugins are configured in this directory
-│   ├── _spec/  <== Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
-│   │   ├── essentials.lua  <== Essential plugins. TREAT THIS ONE WITH CARE
-│   │   ├── colorschemes.lua  <== Colorscheme plugins
-│   │   ├── completion.lua  <== Completion plugins
-│   │   ├── editing.lua  <== Editing enhancement plugins
-│   │   ├── lsp.lua  <== LSP-related plugins
-│   │   ├── neorg.lua  <== Neorg-related plugins
-│   │   ├── syntax.lua  <== Syntax plugins
-│   │   ├── telescope.lua  <== Telescope-related plugins
-│   │   ├── treesitter.lua  <== Treesitter plugins
-│   │   ├── ui.lua  <== UI-enhancement plugins
-│   │   ├── utils.lua  <== Utilitary plugins
-│   │   └── vcs.lua  <== Version Control plugins
-│   ├── plugin1/  <== Arbitrary plugin #1
-│   │   └── init.lua  <== Entry points + setup
-│   ├── plugin2/  <== Arbitrary plugin #2
-│   │   ├── init.lua  <== Entry points + setup
-│   │   └── submoule.lua  <== Arbitrary submodule
-│   └── ...  <==  More plugin configs...
-├── user_api/  <== User API module
-│   ├── init.lua  <== API entry points
-│   ├── check/  <== Checker Functions
-│   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── exists.lua  <== Existance checkers
-│   │   └── value.lua  <== Value checkers
-│   ├── commands.lua  <== User-defined commands
-│   ├── distro/  <== OS Utilities
-│   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── archlinux.lua  <== Arch Linux utilities
-│   │   └── termux.lua <== Termux (Android) utilities
-│   ├── highlight.lua  <== Highlight Functions
-│   ├── maps/  <== Mapping Utilities
-│   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── kmap.lua  <== `vim.keymap.set` utilities
-│   │   └── wk.lua  <== `which_key` utilities (regardless if installed or not)
-│   ├── opts/  <== Vim Option Utilities
-│   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── all_opts.lua  <== Internal checking utility [DO NOT TOUCH]
-│   │   └── config.lua  <== Default options set here
-│   ├── update.lua  <== Update utilities
-│   ├── util/  <== Misc Utils
-│   │   ├── init.lua  <== Entry points are defined here
-│   │   ├── autocmd.lua  <== Autocommand utilities
-│   │   ├── notify.lua  <== Notification utilities
-│   │   └── string.lua  <== String operators/pre-defined lists
-│   └── types/  <== Lua Type Annotations and Documentation
-│       ├── user/  <== User API Documentation
-│       │   ├── user.lua  <== User API module annotations (WIP)
-│       │   ├── autocmd.lua  <== Autocommand annotations
-│       │   ├── check.lua  <== `check` module annotations
-│       │   ├── commands.lua  <== `commands` module annotations
-│       │   ├── highlight.lua  <== `highlight` module annotations
-│       │   ├── maps.lua  <== `maps` module annotations
-│       │   ├── opts.lua  <== `opts` module annotations
-│       │   ├── update.lua  <== `update` module annotations (WIP)
-│       │   └── util.lua  <== `util` module annotations
-└───────└── ...  <== Other annotations
+├── config/  <==  Folder containing all Lua plugin configurations
+│   ├── lazy.lua  <==  Plugin Installation. `plugin._spec` entry points are called here
+│   └── util.lua  <==  Utilities used in the file above (env checks, etc.)
+├── plugin/  <==   Plugins are configured in this directory
+│   ├── _spec/  <==  Plugin categories are stored here in files serving as categories. `config.lazy` calls this  directory
+│   │   ├── essentials.lua  <==  Essential plugins. TREAT THIS ONE WITH CARE
+│   │   ├── colorschemes.lua  <==  Colorscheme plugins
+│   │   ├── completion.lua  <==  Completion plugins
+│   │   ├── editing.lua  <==  Editing enhancement plugins
+│   │   ├── gui.lua  <==  GUI-related plugins
+│   │   ├── lsp.lua  <==  LSP-related plugins
+│   │   ├── neorg.lua  <==  Neorg-related plugins
+│   │   ├── syntax.lua  <==  Syntax plugins
+│   │   ├── telescope.lua  <==  Telescope-related plugins
+│   │   ├── treesitter.lua  <==  Treesitter plugins
+│   │   ├── ui.lua  <==  UI-related plugins
+│   │   ├── utils.lua  <==  Utilities and other helpful plugins
+│   │   └── vcs.lua  <==  Version Control plugins
+│   ├── plugin1/  <==  Arbitrary plugin #1
+│   │   └── init.lua  <==  Entry points + setup
+│   ├── plugin2/  <==  Arbitrary plugin #2
+│   │   ├── init.lua  <==  Entry points + setup
+│   │   └── submoule.lua  <==  Arbitrary submodule
+│   └── ...  <==   More plugin configs...
+├── user_api/  <==  User API module
+│   ├── init.lua  <==  API entry points
+│   ├── check/  <==  Checker Functions
+│   │   ├── init.lua  <==  Entry points are defined here
+│   │   ├── exists.lua  <==  Existance checkers
+│   │   └── value.lua  <==  Value checkers
+│   ├── commands.lua  <==  User-defined commands
+│   ├── config/  <==  Configuration-related tools
+│   │   ├── keymaps.lua  <==  `Keymap()` call
+│   │   └── neovide.lua  <==  Neovide activation tools
+│   ├── distro/  <==  OS Utilities
+│   │   ├── init.lua  <==  Entry points are defined here
+│   │   ├── archlinux.lua  <==  Arch Linux utilities
+│   │   └── termux.lua <==  Termux (Android) utilities
+│   ├── highlight.lua  <==  Highlight Functions
+│   ├── maps/  <==  Mapping Utilities
+│   │   ├── init.lua  <==  Entry points are defined here
+│   │   ├── kmap.lua  <==  `vim.keymap.set` utilities
+│   │   └── wk.lua  <==  `which_key` utilities (regardless if installed or not)
+│   ├── opts/  <==  Vim Option Utilities
+│   │   ├── init.lua  <==  Entry points are defined here
+│   │   ├── all_opts.lua  <==  Internal checking utility [DO NOT TOUCH]
+│   │   └── config.lua  <==  Default options set here
+│   ├── update.lua  <==  Update utilities
+│   ├── util/  <==  Misc Utils
+│   │   ├── init.lua  <==  Entry points are defined here
+│   │   ├── autocmd.lua  <==  Autocommand utilities
+│   │   ├── notify.lua  <==  Notification utilities
+└───└───└── string.lua  <==  String operators/pre-defined lists
 ```
 
 ### Plugins
 
 There's a lot of plugins included...
 
-The plugins are installed based on the files in the [`lua/plugin/_spec`](lua/plugin/_spec) directory.
+The plugins are installed based on the files in the [`lua/plugin/_spec`](./lua/plugin/_spec) directory.
 _You can create your own category file or expand from the existant files in said directory._
 Just make sure to read the
 [`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins.
 
-<ins>Some of the included plugins</ins>
-<!-- - [`nvim-cmp`](https://github.com/hrsh7th/nvim-cmp) -->
+Some of the most important plugins used:
 
 - [`blink.cmp`](https://github.com/Saghen/blink.cmp)
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
@@ -153,16 +144,16 @@ Just make sure to read the
 
 ---
 
-## The `user` API
+## The User API
 
-The `user` API can be found in [`lua/user_api`](lua/user_api).
+The `user` API can be found in [`lua/user_api`](./lua/user_api).
 It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
-**_It's still at an experimental phase, but it works as-is_**.
+**It's still at an experimental phase, but it works as-is**.
 
 ### `user_api.opts`
 
-This submodule can be found at [`here`](lua/user_api/opts.lua).
+This submodule can be found at [`here`](./lua/user_api/opts.lua).
 The options are defined in a default table to be processed
 by calling `Opts()`.
 
@@ -180,7 +171,7 @@ Opts2:setup_keys() -- Setup keymaps
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
-It overwrites some of the default options as defined in [`opts.lua`](lua/user_api/opts.lua).
+It overwrites some of the default options as defined in [`opts.lua`](./lua/user_api/opts.lua).
 **MAKE SURE THEY CAN BE ACCEPTED BY `vim.opt`**.
 
 As an example:
@@ -214,7 +205,7 @@ _These are the following:_
 - **`user_api.check.value`**
     Used for value checking, differentiation and conditional code, aswell as
     for optional parameters in functions.
-    It can be found in [`user_api/check/value.lua`](lua/user_api/check/value.lua).
+    It can be found in [`user_api/check/value.lua`](./lua/user_api/check/value.lua).
 
     |       function      |                                                                                               description                                                                                               |                          parameter types                          | return type |
     |:-------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
@@ -230,7 +221,7 @@ _These are the following:_
 
 - **`user_api.check.exists`**
     Used for data existance checks, conditional module loading and fallback operations.
-    It can be found in [`user_api/check/exists.lua`](lua/user_api/check/exists.lua).
+    It can be found in [`user_api/check/exists.lua`](./lua/user_api/check/exists.lua).
     |   function   |                                                                                                                                                                                              description                                                                                                                              |                       parameter types                           |            return type            |
     |:------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------:|
     | `module`     |                                                                                           Checks whether a `require(...)` statement is valid, given the input string.<br>If 2nd parameter is `true`, attempt to return said statement if the module can be found.                                                                     |   `mod`: `string`, `return_mod`: `boolean` (default: `false`)   |         `boolean\|unknown`        |
@@ -265,7 +256,7 @@ and other fields corresponding to each parameter.
 
 ```lua
 --- Returns a `vim.keymap.set.Opts` table
----@param msg: string Defaults to `'Unnamed Key'`
+---@param msg? string|'Unnamed Key' Defaults to `'Unnamed Key'`
 ---@param silent? boolean Defaults to `true`
 ---@param bufnr? integer|nil Not included in output table unless explicitly set
 ---@param noremap? boolean Defaults to `true`
@@ -281,7 +272,7 @@ The function returns this table:
 -- DO NOT COPY THIS DIRECTLY
 {
     ---@type string|'Unnamed Key'
-    desc = 'Unnamed Key' or msg, -- First option is the default
+    desc = msg or 'Unnamed Key', -- `'Unnamed Key'` is the fallback
     ---@type boolean
     silent = true or false, -- First option is the default
     ---@type boolean
@@ -293,7 +284,7 @@ The function returns this table:
 
     -- If buffer is passed as an argument:
     ---@type integer|nil
-    buffer = bufnr or nil,
+    buffer = nil or bufnr, -- First option is the default
 }
 ```
 
@@ -301,7 +292,7 @@ The function returns this table:
 
 The `maps` API also includes integration with
 [`which_key.nvim`](https://github.com/folke/which-key.nvim) as `user_api.maps.wk`.
-It can be found found in [`user_api/maps.lua`](lua/user_api/maps.lua)
+It can be found found in [`user_api/maps.lua`](./lua/user_api/maps.lua)
 
 This module creates mappings using custom-made functions that convert
 a specific type of mapping dictionary to a format compatible with `which_key`.
@@ -378,7 +369,7 @@ local Keys2 = {
 }
 ```
 
-You can then pass this dictionary to [`user_api.maps.map_dict()`](lua/user_api/maps/init.lua):
+You can then pass this dictionary to [`user_api.maps.map_dict()`](./lua/user_api/maps/init.lua):
 
 - **Example**
     ```lua
@@ -425,7 +416,7 @@ complete in the future._**
 ### `user_api.highlight`
 
 This module provides utilities for setting highlights in an easier way.
-It can be found in [`user_api/highlight.lua`](lua/user_api/highlight.lua).
+It can be found in [`user_api/highlight.lua`](./lua/user_api/highlight.lua).
 
 **_A description will be pending until further notice, i.e. when the module is
 structured in a satisfactory manner._**
