@@ -10,7 +10,7 @@
     1. [Requirements](#requirements)
     2. [Structure](#structure)
     3. [Plugins](#plugins)
-2. [User API](#the-user-api)
+2. [The User API](#the-user-api)
     1. [`user_api.util`](#user_apiutil)
     2. [`user_api.opts`](#user_apiutil)
     3. [`user_api.check`](#user_apicheck)
