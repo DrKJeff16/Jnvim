@@ -20,9 +20,7 @@ local Essentials = {
         version = false,
         init = function()
             vim.opt.timeout = true
-            vim.opt.ttimeout = true
             vim.opt.timeoutlen = 500
-            vim.opt.ttimeoutlen = -1
         end,
         config = source('plugin.which_key'),
         cond = vim_has('nvim-0.10'),
