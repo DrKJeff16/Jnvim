@@ -41,7 +41,7 @@ Opts({
     backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
-    cmdwinheight = 15,
+    cmdwinheight = Distro.termux.validate() and 15 or 25,
     ci = false, -- `copyindent`
     completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' },
     confirm = true,
@@ -84,6 +84,7 @@ Opts({
     signcolumn = 'yes',
     sts = 4, -- `softtabstop`
     sw = 4, -- `shiftwidth`
+    swb = { 'usetab' }, -- `switchbuf`
     ts = 4, -- `tabstop`
     title = true,
     wrap = Distro.termux.validate(),
