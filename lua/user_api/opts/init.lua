@@ -21,9 +21,10 @@ local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
 ---@class User.Opts
----@field optset fun(opts: User.Opts.Spec, verbose: boolean?)
 ---@field toggleable string[]
+---@field optset fun(opts: User.Opts.Spec, verbose: boolean?)
 ---@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
+---@field set_cursor_blink fun()
 ---@field get_all_opts fun(): User.Opts.AllOpts
 ---@field get_defaults fun(): User.Opts.Spec
 ---@field options User.Opts.Spec
@@ -181,6 +182,19 @@ function Opts.optset(O, verbose)
     if verbose then
         vim.notify(verb_msg, INFO)
     end
+end
+
+function Opts.set_cursor_blink()
+    Opts.optset({
+        guicursor = {
+            'n-v-c:block',
+            'i-ci-ve:ver25',
+            'r-cr:hor20',
+            'o:hor50',
+            'a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor',
+            'sm:block-blinkwait175-blinkoff150-blinkon175',
+        },
+    })
 end
 
 function Opts.print_set_opts()

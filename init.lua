@@ -89,6 +89,11 @@ Opts({
     wrap = Distro.termux.validate(),
 })
 
+-- HACK: Set up `guicursor` so that cursor blinks
+if not in_console() then
+    Opts.set_cursor_blink()
+end
+
 -- Call runtimepath optimizations for specific platforms
 Distro()
 
