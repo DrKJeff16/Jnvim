@@ -3,6 +3,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
+local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
 
 if not exists('image') then
@@ -13,7 +14,7 @@ local Image = require('image')
 
 Image.setup({
     ---@type 'kitty'|'ueberzug'
-    backend = 'ueberzug',
+    backend = executable('kitty') and 'kitty' or 'ueberzug',
 
     ---@type 'magick_cli'|'magick_rock'
     processor = 'magick_cli', -- or "magick_rock"
@@ -23,7 +24,7 @@ Image.setup({
             enabled = true,
             clear_in_insert_mode = true,
             download_remote_images = true,
-            only_render_image_at_cursor = false,
+            only_render_image_at_cursor = true,
             only_render_image_at_cursor_mode = 'popup',
             floating_windows = true, -- if true, images will be rendered in floating markdown windows
             filetypes = { 'markdown', 'vimwiki' }, -- markdown extensions (ie. quarto) can go here
@@ -36,18 +37,16 @@ Image.setup({
             enabled = true,
             filetypes = { 'typst' },
         },
-        html = {
-            enabled = false,
-        },
-        css = {
-            enabled = false,
-        },
+        html = { enabled = false },
+        css = { enabled = false },
     },
+
     max_width = nil,
     max_height = nil,
     max_width_window_percentage = nil,
     max_height_window_percentage = 50,
     window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+
     window_overlap_clear_ft_ignore = {
         'cmp_menu',
         'cmp_docs',
@@ -55,9 +54,19 @@ Image.setup({
         'scrollview',
         'scrollview_sign',
     },
+
+    kitty_method = 'normal',
+
     editor_only_render_when_focused = true, -- auto show/hide images when the editor gains/looses focus
     tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
-    hijack_file_patterns = { '*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.avif' }, -- render image files as images when opened
+    hijack_file_patterns = {
+        '*.png',
+        '*.jpg',
+        '*.jpeg',
+        '*.gif',
+        '*.webp',
+        '*.avif',
+    }, -- render image files as images when opened
 })
 
 ---@type AllMaps

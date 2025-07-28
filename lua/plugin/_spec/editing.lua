@@ -81,7 +81,6 @@ local Editing = {
     },
     {
         '3rd/image.nvim',
-        event = 'VeryLazy',
         version = false,
         config = source('plugin.image'),
         cond = (executable('ueberzugpp') or executable('kitty')) and not in_console(),
