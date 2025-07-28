@@ -71,7 +71,6 @@ function User.register_plugin(pathstr, index)
     local Value = User.check.value
 
     local notify = User.util.notify.notify
-    local is_nil = Value.is_nil
     local is_int = Value.is_int
     local type_not_empty = Value.type_not_empty
     local tbl_contains = vim.tbl_contains
@@ -127,7 +126,7 @@ function User.register_plugin(pathstr, index)
         table.insert(User.registered_plugins, pathstr)
     end
 
-    if is_nil(warning) then
+    if warning == nil then
         return
     end
 
