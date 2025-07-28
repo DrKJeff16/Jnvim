@@ -24,6 +24,7 @@ local bt_get = require('user_api.util').bt_get
 
 local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
+local d_extend = vim.tbl_deep_extend
 
 ---@param vertical? boolean
 ---@return fun()
@@ -89,14 +90,10 @@ local function buf_del(force)
 end
 
 ---@class User.Config.Keymaps
--- Table of keys to no-op after `<leader>` is pressed
----@field NOP string[]
 ---@field no_oped? boolean
----@field Keys AllModeMaps
----@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
----@field new fun(O: table?): table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 local Keymaps = {}
 
+-- Table of keys to no-op after `<leader>` is pressed
 Keymaps.NOP = {
     "'",
     '!',
@@ -208,6 +205,8 @@ Keymaps.Keys = {
         ['<leader>vh'] = { group = '+Checkhealth' }, --- `init.lua` Editing
         ['<leader>w'] = { group = '+Window' }, --- Window Handling
         ['<leader>ws'] = { group = '+Split' }, --- Window Splitting
+        ['<leader>U'] = { group = '+User API' },
+        ['<leader>UK'] = { group = '+Keymaps' },
 
         ['<Esc><Esc>'] = {
             function()
@@ -572,7 +571,16 @@ Keymaps.Keys = {
         ['<leader>tl'] = { vim.cmd.tablast, desc('Goto Last Tab') },
         ['<leader>tn'] = { vim.cmd.tabnext, desc('Next Tab') },
         ['<leader>tp'] = { vim.cmd.tabprevious, desc('Previous Tab') },
+
+        ['<leader>UKp'] = {
+            function()
+                vim.notify(inspect(Keymaps.Keys))
+            end,
+            desc('Print all custom keymaps in their respective modes'),
+        },
     },
+
+    -- VISUAL
     v = {
         ['<leader>f'] = { group = '+File' }, --- File Handling
         ['<leader>fF'] = { group = '+Folding' }, --- Folding
@@ -613,8 +621,8 @@ Keymaps.Keys = {
 
         ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
 
-        ['<leader>qQ'] = { '<CMD>qa!<CR>', desc('Quit Nvim Forcefully') },
-        ['<leader>qq'] = { vim.cmd.qa, desc('Quit Nvim') },
+        ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
+        ['<leader>qq'] = { vim.cmd.quitall, desc('Quit Nvim') },
     },
     t = {
         ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
@@ -746,13 +754,12 @@ function Keymaps.new(O)
             self.no_oped = true
 
             ---@type AllModeMaps
-            local res = load_defaults and vim.tbl_deep_extend('keep', parsed_keys, self.Keys)
-                or parsed_keys
+            local res = load_defaults and d_extend('keep', parsed_keys, self.Keys) or parsed_keys
 
             --- Set keymaps
             map_dict(res, 'wk.register', true, nil, bufnr or nil)
 
-            self.Keys = vim.tbl_deep_extend('keep', vim.deepcopy(self.Keys), parsed_keys)
+            self.Keys = d_extend('keep', vim.deepcopy(self.Keys), parsed_keys)
         end,
     })
 end

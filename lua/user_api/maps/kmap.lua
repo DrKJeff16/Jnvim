@@ -4,7 +4,7 @@
 
 ---@class KeyMapOpts: vim.keymap.set.Opts
 ---@field new fun(O: table?): table|KeyMapOpts
----@field add fun(self: KeyMapOpts, T: table)
+---@field add fun(self: KeyMapOpts, T: table|User.Maps.Keymap.Opts)
 
 ---@alias User.Maps.Keymap.Opts (vim.keymap.set.Opts|KeyMapOpts)
 
@@ -84,9 +84,7 @@ function O:add(T)
     end
 
     for k, v in next, T do
-        if type_not_empty('string', k) then
-            self[k] = v
-        end
+        self[k] = v
     end
 end
 
@@ -98,14 +96,6 @@ function O.new(T)
 
     return setmetatable(T, {
         __index = O,
-
-        __newindex = function(self, k, v)
-            rawset(self, k, v)
-        end,
-
-        __tostring = function(self)
-            return vim.inspect(self)
-        end,
     })
 end
 
@@ -115,20 +105,14 @@ local function variant(mode)
     local Value = require('user_api.check.value')
 
     local is_tbl = Value.is_tbl
-    local is_bool = Value.is_bool
 
     ---@param lhs string
     ---@param rhs User.Maps.Keymap.Rhs
     ---@param opts? User.Maps.Keymap.Opts
     return function(lhs, rhs, opts)
-        local DEFAULTS = { 'noremap', 'silent' }
         opts = is_tbl(opts) and opts or {}
 
         opts = O.new(vim.deepcopy(opts))
-
-        for _, v in next, DEFAULTS do
-            opts[v] = is_bool(opts[v]) and opts[v] or true
-        end
 
         vim.keymap.set(mode, lhs, rhs, opts)
     end
@@ -156,17 +140,32 @@ function Kmap.desc(msg, silent, bufnr, noremap, nowait, expr)
 
     local type_not_empty = Value.type_not_empty
     local is_int = Value.is_int
-    local is_bool = Value.is_bool
+
+    if not type_not_empty('string', msg) then
+        msg = 'Unnamed Key'
+    end
+    if silent == nil then
+        silent = true
+    end
+    if noremap == nil then
+        noremap = true
+    end
+    if nowait == nil then
+        nowait = true
+    end
+    if expr == nil then
+        expr = false
+    end
 
     ---@type table|KeyMapOpts
     local res = O.new()
 
     res:add({
-        desc = type_not_empty('string', msg) and msg or 'Unnamed Key',
-        silent = is_bool(silent) and silent or true,
-        noremap = is_bool(noremap) and noremap or true,
-        nowait = is_bool(nowait) and nowait or true,
-        expr = is_bool(expr) and expr or false,
+        desc = msg,
+        silent = silent,
+        noremap = noremap,
+        nowait = nowait,
+        expr = expr,
     })
 
     if is_int(bufnr) then
