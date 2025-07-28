@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 
--- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
 -- Setup keymaps
+-- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
 ---@alias User.Config.Keymaps.CallerFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Keymaps.PreExec

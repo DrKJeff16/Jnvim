@@ -24,13 +24,13 @@ _G.in_console = require('user_api.check').in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
 
--- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
+-- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
 ---@type fun(...: any)
 function _G.print_inspect(...)
     vim.print(inspect(...))
 end
 
--- Thanks to `https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil`
+-- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
 ---@type fun(...: any)
 function _G.notify_inspect(...)
     vim.notify(inspect(...), INFO)
@@ -75,7 +75,6 @@ Opts({
     ruler = true,
     scrolloff = 2,
     sessionoptions = { 'buffers', 'tabpages', 'globals' },
-    sw = 4, -- `shiftwidth`
     showmatch = true,
     showmode = false,
     spell = false,
@@ -84,6 +83,7 @@ Opts({
     stal = 2, -- `showtabline`
     signcolumn = 'yes',
     sts = 4, -- `softtabstop`
+    sw = 4, -- `shiftwidth`
     ts = 4, -- `tabstop`
     title = true,
     wrap = Distro.termux.validate(),
