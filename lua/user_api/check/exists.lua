@@ -28,7 +28,6 @@ local Exists = {}
 function Exists.module(mod, return_mod)
     local Value = get_value()
 
-    local is_nil = Value.is_nil
     local is_bool = Value.is_bool
     local type_not_empty = Value.type_not_empty
 
@@ -41,7 +40,7 @@ function Exists.module(mod, return_mod)
     local res, m = pcall(require, mod)
 
     if return_mod then
-        return (res and not is_nil(m)) and m or nil
+        return (res and m ~= nil) and m or nil
     end
 
     return res

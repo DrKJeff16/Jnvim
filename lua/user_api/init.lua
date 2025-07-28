@@ -16,6 +16,8 @@
 ---@field neovide User.Config.Neovide
 
 local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
+local INFO = vim.log.levels.INFO
 
 ---@class UserAPI
 ---@field paths string[]|table
@@ -100,7 +102,7 @@ function User.register_plugin(pathstr, index)
 
             notify(
                 string.format('Moved `%s` from index `%d` to `%d`', pathstr, old_idx, index),
-                'info',
+                INFO,
                 {
                     title = 'User API - register_plugin()',
                     animate = true,
@@ -130,7 +132,7 @@ function User.register_plugin(pathstr, index)
         return
     end
 
-    notify(warning, 'warn', {
+    notify(warning, WARN, {
         hide_from_history = false,
         animate = false,
         timeout = 1000,
@@ -170,7 +172,7 @@ function User.print_loaded_plugins()
 
     msg = msg .. '\n}'
 
-    notify(msg, 'info', {
+    notify(msg, INFO, {
         animate = true,
         hide_from_history = true,
         timeout = 2250,
@@ -253,7 +255,7 @@ function User.setup()
 
         ['<leader>UPr'] = {
             function()
-                notify('Reloading...', 'info', {
+                notify('Reloading...', INFO, {
                     hide_from_history = true,
                     title = 'User API',
                     timeout = 1000,
@@ -273,7 +275,7 @@ function User.setup()
                     return
                 end
 
-                notify('Success!', 'info', {
+                notify('Success!', INFO, {
                     hide_from_history = false,
                     timeout = 1500,
                     title = '[User API]: PLUGINS SUCCESSFULLY RELOADED',
