@@ -13,6 +13,7 @@ local ts_conds = require('nvim-autopairs.ts-conds')
 local Cond = require('nvim-autopairs.conds')
 
 AP.setup({
+    ---@param bufnr integer
     enabled = function(bufnr)
         return true
     end, -- control if auto-pairs should be enabled when attaching to a buffer
@@ -52,8 +53,24 @@ local Rules = {
     -- press u1234 => u1234number
     Rule('u%d%d%d%d$', 'number', 'lua'):use_regex(true),
 
-    Rule('%', '%', 'lua'):with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
-    Rule('$', '$', 'lua'):with_pair(ts_conds.is_not_ts_node({ 'function' })),
+    -- Rule('%', '%', 'lua'):with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
+    -- Rule('$', '$', 'lua'):with_pair(ts_conds.is_not_ts_node({ 'function' })),
+
+    Rule('$', '$', { 'tex', 'latex' })
+        -- don't add a pair if the next character is %
+        :with_pair(
+            Cond.not_after_regex('%%')
+        )
+        -- don't add a pair if  the previous character is xxx
+        :with_pair(
+            Cond.not_before_regex('xxx', 3)
+        )
+        -- don't move right when repeat character
+        :with_move(Cond.none())
+        -- don't delete if the next character is xx
+        :with_del(Cond.not_after_regex('xx'))
+        -- disable adding a newline when you press <cr>
+        :with_cr(Cond.none()),
 
     Rule(' ', ' ')
         -- Pair will only occur if the conditional function returns true
@@ -121,12 +138,6 @@ for _, bracket in next, brackets do
                     return '<C-c>2xi<CR><C-c>O'
                 end
             )
-    )
-    table.insert(
-        Rules,
-        Rule(bracket[1], bracket[2]):end_wise(function()
-            return true
-        end)
     )
 end
 
