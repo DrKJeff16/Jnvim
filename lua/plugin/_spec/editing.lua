@@ -14,6 +14,9 @@ local Editing = {
         'windwp/nvim-autopairs',
         event = 'InsertEnter',
         version = false,
+        dependencies = {
+            { 'RRethy/nvim-treesitter-endwise', version = false },
+        },
         config = source('plugin.autopairs'),
     },
     {

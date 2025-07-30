@@ -72,6 +72,19 @@ local Rules = {
         -- disable adding a newline when you press <cr>
         :with_cr(Cond.none()),
 
+    Rule('$$', '$$', { 'tex', 'latex' }):with_pair(function(opts)
+        print(vim.inspect(opts))
+        if opts.line == 'aa $$' then
+            -- don't add pair on that line
+            return false
+        end
+    end),
+
+    Rule('x%d%d%d%d$', 'number', 'lua'):use_regex(true, '<Tab>'):replace_endpair(function(opts)
+        -- print(vim.inspect(opts))
+        return opts.prev_char:sub(#opts.prev_char - 3, #opts.prev_char)
+    end),
+
     Rule(' ', ' ')
         -- Pair will only occur if the conditional function returns true
         :with_pair(
