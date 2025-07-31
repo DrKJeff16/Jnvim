@@ -98,10 +98,10 @@ local Keys = {
 
             if type_not_empty('table', cfg) then
                 for k, v in next, cfg do
-                    k = is_str(k) and k or inspect(k)
+                    k = is_str(k) and k or tostring(k)
                     v = is_str(v) and v or inspect(v)
 
-                    msg = msg .. ' ' .. k .. ' = ' .. v .. '\n'
+                    msg = string.format('%s %s = %s\n', msg, k, v)
                 end
                 notify(string.format('{\n%s\n}', msg), 'info', {
                     title = 'Project | Config',
@@ -120,7 +120,7 @@ local Keys = {
                 hide_from_history = false,
             })
         end,
-        desc('Print Recent Projects'),
+        desc('Print Project Config'),
     },
     ['<leader>pr'] = {
         function()
@@ -162,7 +162,7 @@ local Keys = {
     },
     ['<leader>ph'] = {
         function()
-            pcall(vim.cmd.checkhealth, 'project_nvim')
+            vim.cmd.checkhealth('project_nvim')
         end,
         desc('Attempt to run `:checkhealth project_nvim`'),
     },
