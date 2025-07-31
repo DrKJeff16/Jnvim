@@ -43,6 +43,7 @@ local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
+local in_tbl = vim.tbl_contains
 local mk_caps = vim.lsp.protocol.make_client_capabilities
 
 ---@type Lsp.SubMods.Kinds
@@ -89,7 +90,9 @@ function Server.populate(name, client)
         client.capabilities = Server.make_capabilities()
     end
 
-    client.capabilities.textDocument.completion.completionItem.snippetSupport = true
+    if in_tbl({ 'html', 'jsonls' }, name) then
+        client.capabilities.textDocument.completion.completionItem.snippetSupport = true
+    end
 
     if name == 'rust_analyzer' then
         client.capabilities.experimental = {
