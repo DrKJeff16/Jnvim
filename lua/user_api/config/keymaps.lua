@@ -8,6 +8,8 @@
 ---@field ft string[]
 ---@field bt string[]
 
+_G.MYVIMRC = MYVIMRC or vim.fn.stdpath('config') .. '/init.lua'
+
 local Value = require('user_api.check.value')
 
 local is_tbl = Value.is_tbl
@@ -27,6 +29,44 @@ local INFO = vim.log.levels.INFO
 local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
 local d_extend = vim.tbl_deep_extend
+local optget = vim.api.nvim_get_option_value
+local optset = vim.api.nvim_set_option_value
+
+---@return fun()
+local function rcfile_ed()
+    return function()
+        vim.cmd.edit(MYVIMRC)
+    end
+end
+
+---@return fun()
+local function rcfile_split()
+    return function()
+        vim.cmd.split(MYVIMRC)
+    end
+end
+
+---@return fun()
+local function rcfile_vsplit()
+    return function()
+        vim.cmd.vsplit(MYVIMRC)
+    end
+end
+
+---@return fun()
+local function rcfile_tab()
+    return function()
+        vim.cmd.tabnew(MYVIMRC)
+    end
+end
+
+---@param check string
+---@return fun()
+local function gen_checkhealth(check)
+    return function()
+        vim.cmd.checkhealth(check)
+    end
+end
 
 ---@param vertical? boolean
 ---@return fun()
@@ -34,8 +74,6 @@ local function gen_fun_blank(vertical)
     vertical = is_bool(vertical) and vertical or false
 
     return function()
-        local optset = vim.api.nvim_set_option_value
-
         local buf = vim.api.nvim_create_buf(true, false)
         local win = vim.api.nvim_open_win(buf, true, { vertical = vertical })
 
@@ -99,8 +137,7 @@ end
 ---@field no_oped? boolean
 local Keymaps = {}
 
--- Table of keys to no-op after `<leader>` is pressed
-Keymaps.NOP = {
+local NOP = {
     "'",
     '!',
     '"',
@@ -126,6 +163,7 @@ Keymaps.NOP = {
     '7',
     '8',
     '9',
+    '<CR>',
     '=',
     '?',
     '@',
@@ -193,8 +231,12 @@ Keymaps.NOP = {
     '~',
 }
 
+Keymaps.NOP = NOP
+
 setmetatable(Keymaps.NOP, {
     __index = Keymaps.NOP,
+
+    ---@diagnostic disable-next-line:unused-local
     __newindex = function(self, k)
         error('(user_api.config.keymaps.NOP): Read-only table!', ERROR)
     end,
@@ -205,25 +247,24 @@ Keymaps.Keys = {
     -- NORMAL
     n = {
         ['<leader>'] = { group = '+Open `which-key`' },
-        ['<leader>F'] = { group = '+Folding' }, -- Folding Control
-        ['<leader>H'] = { group = '+Help' }, -- Help
-        ['<leader>HM'] = { group = '+Man Pages' }, -- Help
-        ['<leader>b'] = { group = '+Buffer' }, -- Buffer Handling
-        ['<leader>f'] = { group = '+File' }, -- File Handling
-        ['<leader>fF'] = { group = '+New File' }, -- New File Creation
-        ['<leader>fi'] = { group = '+Indent' }, -- Indent Control
-        ['<leader>fv'] = { group = '+Script Files' }, -- Script File Handling
-        ['<leader>q'] = { group = '+Quit Nvim' }, -- Exiting
-        ['<leader>t'] = { group = '+Tabs' }, -- Tabs Handling
-        ['<leader>v'] = { group = '+Vim' }, -- Vim
-        ['<leader>ve'] = { group = '+Edit Nvim Config File' }, -- `init.lua` Editing
-        ['<leader>vh'] = { group = '+Checkhealth' }, -- `init.lua` Editing
-        ['<leader>w'] = { group = '+Window' }, -- Window Handling
-        ['<leader>ws'] = { group = '+Split' }, -- Window Splitting
+        ['<leader>F'] = { group = '+Folding' },
+        ['<leader>H'] = { group = '+Help' },
+        ['<leader>HM'] = { group = '+Man Pages' },
+        ['<leader>b'] = { group = '+Buffer' },
+        ['<leader>f'] = { group = '+File' },
+        ['<leader>fF'] = { group = '+New File' },
+        ['<leader>fi'] = { group = '+Indent' },
+        ['<leader>fv'] = { group = '+Script Files' },
+        ['<leader>q'] = { group = '+Quit Nvim' },
+        ['<leader>t'] = { group = '+Tabs' },
+        ['<leader>v'] = { group = '+Vim' },
+        ['<leader>ve'] = { group = '+Edit Nvim Config File' },
+        ['<leader>vh'] = { group = '+Checkhealth' },
+        ['<leader>w'] = { group = '+Window' },
+        ['<leader>ws'] = { group = '+Split' },
         ['<leader>U'] = { group = '+User API' },
         ['<leader>UK'] = { group = '+Keymaps' },
 
-        -- Kill `hlsearch`
         ['<Esc><Esc>'] = { vim.cmd.noh, desc('Remove Highlighted Search') },
 
         ['<leader>bd'] = { buf_del(), desc('Close Buffer') },
@@ -244,23 +285,19 @@ Keymaps.Keys = {
         ['<leader>fs'] = {
             function()
                 local notify = require('user_api.util.notify').notify
-                local optget = vim.api.nvim_get_option_value
 
                 local buf = curr_buf()
 
-                ---@type boolean
-                local ok = true
-                ---@type unknown
-                local err = nil
+                local ok, err = true, ''
 
                 if optget('modifiable', { buf = buf }) then
                     ok, err = pcall(vim.cmd.write)
 
                     if ok then
-                        notify(string.format('File Written: `%s`', vim.fn.expand('%')), INFO, {
+                        notify('File Written', INFO, {
+                            title = vim.fn.expand('%'),
                             animate = true,
-                            title = 'Vim Write',
-                            timeout = 1000,
+                            timeout = 500,
                             hide_from_history = true,
                         })
 
@@ -269,9 +306,9 @@ Keymaps.Keys = {
                 end
 
                 notify(err or 'Unable to write', ERROR, {
-                    animate = true,
                     title = 'Vim Write',
-                    timeout = 2250,
+                    animate = true,
+                    timeout = 1500,
                     hide_from_history = false,
                 })
             end,
@@ -287,13 +324,9 @@ Keymaps.Keys = {
             function()
                 local notify = require('user_api.util.notify').notify
 
-                local ft = ft_get()
+                local ft = ft_get(curr_buf())
 
-                ---@type boolean
-                local ok = true
-
-                ---@type unknown
-                local err = nil
+                local ok, err = true, ''
 
                 if ft == 'lua' then
                     ---@diagnostic disable-next-line:param-type-mismatch
@@ -301,8 +334,8 @@ Keymaps.Keys = {
 
                     if ok then
                         notify('Sourced current Lua file', INFO, {
-                            animate = true,
                             title = 'Lua',
+                            animate = true,
                             timeout = 1500,
                             hide_from_history = true,
                         })
@@ -312,8 +345,8 @@ Keymaps.Keys = {
                 end
 
                 notify(err, ERROR, {
-                    animate = true,
                     title = 'Lua',
+                    animate = true,
                     timeout = 2000,
                     hide_from_history = false,
                 })
@@ -324,13 +357,9 @@ Keymaps.Keys = {
             function()
                 local notify = require('user_api.util.notify').notify
 
-                local ft = ft_get()
+                local ft = ft_get(curr_buf())
 
-                ---@type boolean
-                local ok = true
-
-                ---@type unknown
-                local err = nil
+                local ok, err = true, ''
 
                 if ft == 'vim' then
                     ---@diagnostic disable-next-line:param-type-mismatch
@@ -338,8 +367,8 @@ Keymaps.Keys = {
 
                     if ok then
                         notify('Sourced current Vim file', INFO, {
-                            animate = true,
                             title = 'Vim',
+                            animate = true,
                             timeout = 1000,
                             hide_from_history = true,
                         })
@@ -349,8 +378,8 @@ Keymaps.Keys = {
                 end
 
                 notify(err, ERROR, {
-                    animate = true,
                     title = 'Vim',
+                    animate = true,
                     timeout = 2000,
                     hide_from_history = false,
                 })
@@ -359,49 +388,43 @@ Keymaps.Keys = {
         },
 
         ['<leader>vee'] = {
-            function()
-                vim.cmd.edit(MYVIMRC)
-            end,
+            rcfile_ed(),
             desc('Open In Current Window'),
         },
-        ['<leader>ves'] = {
-            function()
-                vim.cmd.split(MYVIMRC)
-            end,
+        ['<leader>vex'] = {
+            rcfile_split(),
             desc('Open In Horizontal Split'),
         },
         ['<leader>vet'] = {
-            function()
-                vim.cmd.tabnew(MYVIMRC)
-            end,
+            rcfile_tab(),
             desc('Open In New Tab'),
         },
         ['<leader>vev'] = {
-            function()
-                vim.cmd.vsplit(MYVIMRC)
-            end,
+            rcfile_vsplit(),
             desc('Open In Vertical Split'),
         },
 
         ['<leader>vhh'] = { vim.cmd.checkhealth, desc('Run Checkhealth') },
         ['<leader>vhH'] = { ':checkhealth ', desc('Prompt Checkhealth', false) },
         ['<leader>vhd'] = {
-            function()
-                vim.cmd.checkhealth('vim.health')
-            end,
+            gen_checkhealth('vim.health'),
             desc('Run `vim.health` Checkhealth'),
         },
         ['<leader>vhD'] = {
-            function()
-                vim.cmd.checkhealth('vim.deprecated')
-            end,
+            gen_checkhealth('vim.deprecated'),
             desc('Run `vim.deprecated` Checkhealth'),
         },
         ['<leader>vhl'] = {
-            function()
-                vim.cmd.checkhealth('vim.lsp')
-            end,
+            gen_checkhealth('vim.lsp'),
             desc('Run `vim.lsp` Checkhealth'),
+        },
+        ['<leader>vhp'] = {
+            gen_checkhealth('vim.provider'),
+            desc('Run `vim.provider` Checkhealth'),
+        },
+        ['<leader>vht'] = {
+            gen_checkhealth('vim.treesitter'),
+            desc('Run `vim.treesitter` Checkhealth'),
         },
 
         ['<leader>vs'] = {
@@ -415,7 +438,7 @@ Keymaps.Keys = {
                     notify('Sourced `init.lua`', INFO, {
                         animate = true,
                         title = 'luafile',
-                        timeout = 1000,
+                        timeout = 500,
                         hide_from_history = true,
                     })
 
@@ -446,23 +469,25 @@ Keymaps.Keys = {
             ':horizontal Man ',
             desc('Prompt For Arbitrary Man Page (Horizontal)'),
         },
-        ['<leader>HMm'] = { '<CMD>Man<CR>', desc('Open Manpage For Word Under Cursor') },
-        ['<leader>HMt'] = { '<CMD>tab Man<CR>', desc('Open Arbitrary Man Page (Tab)') },
-        ['<leader>HMv'] = { '<CMD>vert Man<CR>', desc('Open Arbitrary Man Page (Vertical)') },
+        ['<leader>HMm'] = { ':Man<CR>', desc('Open Manpage For Word Under Cursor') },
+        ['<leader>HMt'] = { ':tab Man<CR>', desc('Open Arbitrary Man Page (Tab)') },
+        ['<leader>HMv'] = { ':vert Man<CR>', desc('Open Arbitrary Man Page (Vertical)') },
         ['<leader>HMx'] = {
-            '<CMD>horizontal Man<CR>',
+            ':horizontal Man<CR>',
             desc('Open Arbitrary Man Page (Horizontal)'),
         },
 
         ['<leader>wN'] = {
             function()
-                local ft = require('user_api.util').ft_get()
+                local buf = curr_buf()
+                local ft = ft_get(buf)
+
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 
-                vim.api.nvim_set_option_value('ft', ft, { buf = curr_buf() })
-                vim.api.nvim_set_option_value('modifiable', true, { buf = curr_buf() })
-                vim.api.nvim_set_option_value('modified', false, { buf = curr_buf() })
+                vim.api.nvim_set_option_value('ft', ft, { buf = buf })
+                vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
+                vim.api.nvim_set_option_value('modified', false, { buf = buf })
             end,
             desc('New Blank File'),
         },
@@ -538,8 +563,6 @@ Keymaps.Keys = {
             end,
             desc('Previous Window'),
         },
-        ['<leader>wsX'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
-        ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
         ['<leader>wsx'] = {
             function()
                 vim.cmd.wincmd('s')
@@ -552,8 +575,15 @@ Keymaps.Keys = {
             end,
             desc('Vertical Split'),
         },
+        ['<leader>wsX'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
+        ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
 
-        ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
+        ['<leader>qQ'] = {
+            function()
+                vim.cmd.quitall({ bang = true })
+            end,
+            desc('Quit Nvim Forcefully'),
+        },
         ['<leader>qq'] = {
             function()
                 if require('user_api.check.exists').module('toggleterm') then
