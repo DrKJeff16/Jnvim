@@ -2,11 +2,6 @@
 
 ---@alias AlphaFun fun(variant: ('dashboard'|'theta'|'startify')?)
 
----@class AlphaCaller
----@field startify fun()
----@field theta fun()
----@field dashboard fun()
-
 local User = require('user_api')
 local Check = User.check
 
@@ -22,7 +17,7 @@ end
 
 local Alpha = require('alpha')
 
----@type AlphaCaller
+---@class AlphaCaller
 local M = {}
 
 function M.theta()
@@ -49,6 +44,7 @@ end
 
 function M.dashboard()
     local Dashboard = require('alpha.themes.dashboard')
+
     Alpha.setup(Dashboard.config)
 end
 
@@ -67,15 +63,16 @@ function M.new(O)
                 variant = 'startify'
             end
 
-            self[variant]()
+            ---@type fun(...: any)
+            local fun = self[variant]
+
+            fun()
         end,
     })
 end
 
-local Caller = M.new()
-
 User.register_plugin('plugin.alpha')
 
-return Caller
+return M.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
