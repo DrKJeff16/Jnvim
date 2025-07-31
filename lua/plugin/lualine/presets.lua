@@ -1,5 +1,10 @@
 ---@diagnostic disable:missing-fields
----@diagnostic disable:inject-field
+
+local User = require('user_api')
+
+local exists = User.check.exists.module
+
+local floor = math.floor
 
 ---@alias SectionComponentStr
 ---|'branch'
@@ -253,26 +258,20 @@
 ---@field tabs LuaLine.Components.Tabs
 ---@field windows LuaLine.Components.Windows
 
+---@alias LuaLineSection (LuaLine.Components|SectionComponentStr|fun())[]|table
+
 ---@class LuaLine.Sections
----@field lualine_a (LuaLine.Components|SectionComponentStr|fun())[]|table
----@field lualine_b (LuaLine.Components|SectionComponentStr|fun())[]|table
----@field lualine_c (LuaLine.Components|SectionComponentStr|fun())[]|table
----@field lualine_x (LuaLine.Components|SectionComponentStr|fun())[]|table
----@field lualine_y (LuaLine.Components|SectionComponentStr|fun())[]|table
----@field lualine_z (LuaLine.Components|SectionComponentStr|fun())[]|table
+---@field lualine_a LuaLineSection
+---@field lualine_b LuaLineSection
+---@field lualine_c LuaLineSection
+---@field lualine_x LuaLineSection
+---@field lualine_y LuaLineSection
+---@field lualine_z LuaLineSection
 
 ---@class LuaLine.Presets
 ---@field components LuaLine.ComponentsDict
 ---@field default LuaLine.Sections
 ---@field default_inactive LuaLine.Sections
-
-local User = require('user_api')
-
-local exists = User.check.exists.module
-
-local floor = math.floor
-
----@type LuaLine.Presets
 local Presets = {}
 
 ---@type LuaLine.ComponentsDict
@@ -488,16 +487,28 @@ Presets.default = {
         -- Presets.components.datetime,
         Presets.components.mode,
     },
-    lualine_b = {
-        Presets.components.possession,
-        -- Presets.components.branch,
-        Presets.components.filename,
-        -- Presets.components.filesize,
-    },
-    lualine_c = {
-        -- Presets.components.diff,
-        Presets.components.diagnostics,
-    },
+    lualine_b = User.distro.termux.validate()
+            and {
+                -- Presets.components.branch,
+                -- Presets.components.possession,
+                Presets.components.filename,
+                -- Presets.components.filesize,
+            }
+        or {
+            Presets.components.branch,
+            -- Presets.components.possession,
+            Presets.components.filename,
+            -- Presets.components.filesize,
+        },
+    lualine_c = User.distro.termux.validate()
+            and {
+                Presets.components.diagnostics,
+                -- Presets.components.diff,
+            }
+        or {
+            Presets.components.diagnostics,
+            Presets.components.diff,
+        },
     lualine_x = {
         -- Presets.components.encoding,
         Presets.components.fileformat,
