@@ -12,12 +12,15 @@
 ---|'cmake'
 ---|'css_variables'
 ---|'cssls'
+---|'docker_compose_language_service'
+---|'dockerls'
 ---|'html'
 ---|'jdtls'
 ---|'jsonls'
 ---|'julials'
 ---|'marksman'
 ---|'pylsp'
+---|'rust_analyzer'
 ---|'taplo'
 ---|'texlab'
 ---|'vimls'
@@ -28,7 +31,7 @@
 ---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
 ---@field client_names (string|Lsp.Server.Key)[]|table
 ---@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities|table
----@field populate fun(name: string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
+---@field populate fun(name: Lsp.Server.Key|string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
 ---@field new fun(O: table?): table|Lsp.Server|fun()
 
 local User = require('user_api')
@@ -72,7 +75,7 @@ function Server.make_capabilities(T)
     return caps
 end
 
----@param name string
+---@param name Lsp.Server.Key|string
 ---@param client table|vim.lsp.ClientConfig
 ---@return table|vim.lsp.ClientConfig client
 function Server.populate(name, client)
@@ -86,6 +89,12 @@ function Server.populate(name, client)
     end
 
     client.capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+    if name == 'rust_analyzer' then
+        client.capabilities.experimental = {
+            serverStatusNotification = true,
+        }
+    end
 
     if exists('schemastore') then
         local ss = require('schemastore')
