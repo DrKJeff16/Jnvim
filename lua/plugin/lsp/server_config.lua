@@ -23,6 +23,7 @@ end
 ---@field cssls? Lsp.Server.Clients.Spec
 ---@field docker_compose_language_service? Lsp.Server.Clients.Spec
 ---@field dockerls? Lsp.Server.Clients.Spec
+---@field gh_actions_ls? Lsp.Server.Clients.Spec
 ---@field html? Lsp.Server.Clients.Spec
 ---@field jdtls? Lsp.Server.Clients.Spec
 ---@field jsonls? Lsp.Server.Clients.Spec
@@ -51,6 +52,7 @@ Clients.rust_analyzer = server_load('rust_analyzer')
 Clients.cssls = server_load('cssls')
 Clients.css_variables = server_load('css_variables')
 Clients.taplo = server_load('taplo')
+Clients.gh_actions_ls = server_load('gh_actions_ls')
 Clients.yamlls = server_load('yamlls')
 
 _G.CLIENTS = Clients

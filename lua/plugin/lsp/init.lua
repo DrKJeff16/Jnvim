@@ -14,6 +14,7 @@
 ---|'cssls'
 ---|'docker_compose_language_service'
 ---|'dockerls'
+---|'gh_actions_ls'
 ---|'html'
 ---|'jdtls'
 ---|'jsonls'
@@ -93,6 +94,17 @@ function Server.populate(name, client)
     if name == 'rust_analyzer' then
         client.capabilities.experimental = {
             serverStatusNotification = true,
+        }
+    end
+
+    if name == 'clangd' then
+        client.capabilities.offsetEncoding = { 'utf-8', 'utf-16' }
+        client.capabilities.textDocument.completion.editsNearCursor = true
+    end
+
+    if name == 'gh_actions_ls' then
+        client.capabilities.workspace.didChangeWorkspaceFolders = {
+            dynamicRegistration = true,
         }
     end
 
