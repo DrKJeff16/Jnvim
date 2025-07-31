@@ -4,10 +4,6 @@
 
 ---@alias BlinkCmp.Cfg.Config blink.cmp.Config
 
----@class BlinkCmp.Cfg
----@field Config BlinkCmp.Cfg.Config
----@field new fun(O: table?): table|BlinkCmp.Cfg
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
@@ -28,10 +24,11 @@ local function gen_termcode_fun(key)
     end
 end
 
----@type BlinkCmp.Cfg
+---@class BlinkCmp.Cfg
+---@field Config BlinkCmp.Cfg.Config
+---@field new fun(O: table?): table|BlinkCmp.Cfg
 local Cfg = {}
 
----@type BlinkCmp.Cfg.Config
 Cfg.Config = {}
 
 Cfg.Config.keymap = {
@@ -70,81 +67,90 @@ Cfg.Config.keymap = {
 
     ['<Tab>'] = {
         function(cmp)
-            return cmp.snippet_active({ direction = 1 }) and cmp.snippet_forward() or nil
-        end,
+            if cmp.snippet_active({ direction = 1 }) then
+                return cmp.snippet_forward()
+            end
 
-        function(cmp)
             local visible = cmp.is_menu_visible
 
-            return (not visible() and has_words_before())
-                    and cmp.show({ providers = BUtil:gen_sources(true, true) })
-                or nil
-        end,
+            if not visible() and has_words_before() then
+                return cmp.show({ providers = BUtil:gen_sources(true, true) })
+            end
 
-        function(cmp)
-            return cmp.select_next({ auto_insert = true, preselect = false })
+            if visible() then
+                return cmp.select_next({ auto_insert = true, preselect = false })
+            end
         end,
         'fallback',
     },
     ['<S-Tab>'] = {
         function(cmp)
-            return cmp.snippet_active({ direction = -1 }) and cmp.snippet_backward() or nil
-        end,
+            if cmp.snippet_active({ direction = -1 }) then
+                return cmp.snippet_backward()
+            end
 
-        function(cmp)
             local visible = cmp.is_menu_visible
 
-            return (not visible() and has_words_before())
-                    and cmp.show({ providers = BUtil:gen_sources(true, true) })
-                or nil
-        end,
+            if not visible() and has_words_before() then
+                return cmp.show({ providers = BUtil:gen_sources(true, true) })
+            end
 
-        function(cmp)
-            return cmp.select_prev({ auto_insert = true, preselect = false })
+            if visible() then
+                return cmp.select_prev({ auto_insert = true, preselect = false })
+            end
         end,
-
         'fallback',
     },
 
     ['<Up>'] = {
         function(cmp)
-            return (cmp.is_active() or cmp.is_visible())
-                    and cmp.cancel({
-                        callback = gen_termcode_fun('<Up>'),
-                    })
-                or nil
+            if cmp.is_active() or cmp.is_visible() then
+                return cmp.cancel({
+                    callback = gen_termcode_fun('<Up>'),
+                })
+            end
         end,
         'fallback',
     },
     ['<Down>'] = {
         function(cmp)
-            return (cmp.is_active() or cmp.is_visible())
-                    and cmp.cancel({
-                        callback = gen_termcode_fun('<Down>'),
-                    })
-                or nil
+            if cmp.is_active() or cmp.is_visible() then
+                return cmp.cancel({
+                    callback = gen_termcode_fun('<Down>'),
+                })
+            end
         end,
         'fallback',
     },
+    ['<Left>'] = { 'fallback' },
+    ['<Right>'] = { 'fallback' },
 
     ['<C-p>'] = { 'fallback' },
     ['<C-n>'] = { 'fallback' },
 
     ['<C-b>'] = {
         function(cmp)
-            return cmp.is_documentation_visible() and cmp.scroll_documentation_up(4) or nil
+            if cmp.is_documentation_visible() then
+                return cmp.scroll_documentation_up(4)
+            end
         end,
         'fallback',
     },
     ['<C-f>'] = {
         function(cmp)
-            return cmp.is_documentation_visible() and cmp.scroll_documentation_down(4) or nil
+            if cmp.is_documentation_visible() then
+                return cmp.scroll_documentation_down(4)
+            end
         end,
         'fallback',
     },
     ['<C-k>'] = {
         function(cmp)
-            return not cmp.is_signature_visible() and cmp.show_signature() or cmp.hide_signature()
+            if not cmp.is_signature_visible() then
+                return cmp.show_signature()
+            end
+
+            return cmp.hide_signature()
         end,
         'fallback',
     },
