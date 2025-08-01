@@ -12,6 +12,7 @@ local is_tbl = Check.value.is_tbl
 local in_tbl = vim.tbl_contains
 
 if not exists('alpha') then
+    User.deregister_plugin('plugin.alpha')
     return nil
 end
 

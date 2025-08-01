@@ -33,6 +33,7 @@ local INFO = vim.log.levels.INFO
 ---@field util User.Util
 ---@field registered_plugins string[]
 ---@field register_plugin fun(pathstr: string, index: integer?)
+---@field deregister_plugin fun(pathstr: string)
 ---@field reload_plugins fun(): boolean,(string[]|table)
 ---@field setup fun()
 ---@field plugin_maps fun()
@@ -81,7 +82,7 @@ function User.register_plugin(pathstr, index)
     index = (is_int(index) and in_tbl_range(index, User.registered_plugins)) and index or 0
 
     if not type_not_empty('string', pathstr) then
-        error('(user_api.register_plugin): Plugin must be a non-empty string', ERROR)
+        return
     end
 
     if tbl_contains(User.registered_plugins, pathstr) then
@@ -138,6 +139,32 @@ function User.register_plugin(pathstr, index)
         timeout = 1000,
         title = '(user_api.register_plugin)',
     })
+end
+
+---@param pathstr string
+function User.deregister_plugin(pathstr)
+    local Value = User.check.value
+
+    local type_not_empty = Value.type_not_empty
+    local in_tbl = vim.tbl_contains
+
+    if not type_not_empty('string', pathstr) then
+        return
+    end
+
+    if not in_tbl(User.registered_plugins, pathstr) then
+        return
+    end
+
+    local idx = 0
+    for i, v in next, User.registered_plugins do
+        if v == pathstr then
+            idx = i
+            break
+        end
+    end
+
+    table.remove(User.registered_plugins, idx)
 end
 
 ---@return boolean
