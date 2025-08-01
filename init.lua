@@ -1,7 +1,6 @@
 ---@diagnostic disable:missing-fields
 
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
-_G.newline = string.char(10)
 _G.inspect = vim.inspect
 
 local INFO = vim.log.levels.INFO

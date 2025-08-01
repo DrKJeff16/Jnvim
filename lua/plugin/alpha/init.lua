@@ -64,7 +64,7 @@ function M.new(O)
                 variant = 'startify'
             end
 
-            ---@type fun(...: any)
+            ---@type fun()
             local fun = self[variant]
 
             fun()
