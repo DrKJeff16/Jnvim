@@ -13,7 +13,7 @@ end
 -- This contains many checkers for environment, modules, namespaces, etc.
 -- Also, simplified Vim functions can be found here
 ---@class User.Check.Existance
----@field module fun(mod: string, return_mod: boolean?): boolean|unknown|nil
+---@field module fun(mod: string): boolean
 ---@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>
 ---@field executable fun(exe: string[]|string): boolean
 ---@field env_vars fun(vars: string[]|string, fallback: fun()?): boolean
@@ -23,25 +23,17 @@ end
 local Exists = {}
 
 ---@param mod string
----@param return_mod? boolean
----@return boolean|unknown|nil
-function Exists.module(mod, return_mod)
+---@return boolean
+function Exists.module(mod)
     local Value = get_value()
 
-    local is_bool = Value.is_bool
     local type_not_empty = Value.type_not_empty
 
     if not type_not_empty('string', mod) then
         error('`(user_api.check.exists.module)`: Input is not valid', ERROR)
     end
 
-    return_mod = is_bool(return_mod) and return_mod or false
-
-    local res, m = pcall(require, mod)
-
-    if return_mod then
-        return (res and m ~= nil) and m or nil
-    end
+    local res, _ = pcall(require, mod)
 
     return res
 end

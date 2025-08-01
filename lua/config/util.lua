@@ -182,7 +182,9 @@ end
 ---@return fun()
 function CfgUtil.source(mod_str)
     return function()
-        exists(mod_str, true)
+        if exists(mod_str) then
+            require(mod_str)
+        end
     end
 end
 
