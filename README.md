@@ -121,14 +121,15 @@ For these to work, the following executables must be installed and in your `$PAT
 
 There's a lot of plugins included...
 
-The plugins are installed based on the files in the [`lua/plugin/_spec`](./lua/plugin/_spec) directory.
+The plugins are installed based on the files in the [`lua/plugin/_spec/`](./lua/plugin/_spec/) directory.
 _You can create your own category file or expand from the existant files in said directory._
-Just make sure to read the
-[`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info on how to install plugins.
+Just make sure to read the [`lazy.nvim`](https://github.com/folke/lazy.nvim) documentation for more info
+on how to install plugins.
 
 Some of the most important plugins used:
 
 - [`blink.cmp`](https://github.com/Saghen/blink.cmp)
+- [`project.nvim`](https://github.com/DrKJeff16/project.nvim)
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
 - [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
@@ -171,7 +172,7 @@ Opts2:setup_keys() -- Setup keymaps
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
-It overwrites some of the default options as defined in [`opts.lua`](./lua/user_api/opts.lua).
+It overwrites some of the default options as defined in [`user_api.opts`](./lua/user_api/opts/init.lua).
 **MAKE SURE THEY CAN BE ACCEPTED BY `vim.opt`**.
 
 As an example:
@@ -381,8 +382,7 @@ You can then pass this dictionary to [`user_api.maps.map_dict()`](./lua/user_api
     map_dict(Keys1, 'wk.register', false, 'n')
 
     -- NOTE: Third parameter is `true` because the `Keys2` table tells us what modes to use,
-    -- so fourth param can be `nil`
-    map_dict(Keys2, 'wk.register', true, nil)
+    map_dict(Keys2, 'wk.register', true)
     ```
 
 - You can also process **keymap groups** the following way:
@@ -390,9 +390,9 @@ You can then pass this dictionary to [`user_api.maps.map_dict()`](./lua/user_api
     ---@class RegPfx
     ---@field group string The map group name. Should look like `'+Group'`
     ---@field hidden? boolean Whether to show the map in `which-key`
-    ---@field mode? MapModes @see user_api.types.user.maps
+    ---@field mode? MapModes
 
-    ---@alias RegKeysNamed table<string, RegKeysNamed>
+    ---@alias RegKeysNamed table<string, RegPfx>
 
     ---@type RegKeysNamed
     local Names = {
