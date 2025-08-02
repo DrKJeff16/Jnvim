@@ -36,11 +36,12 @@ local LSP = {
         'folke/trouble.nvim',
         event = 'VeryLazy',
         version = false,
-        dependencies = { 'nvim-web-devicons' },
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
     },
     {
         'p00f/clangd_extensions.nvim',
         ft = { 'c', 'cpp' },
+        dev = true,
         version = false,
         config = source('plugin.lsp.clangd'),
         cond = executable('clangd'),
