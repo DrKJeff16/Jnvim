@@ -24,9 +24,15 @@ local function gen_termcode_fun(key)
     end
 end
 
+---@type blink.cmp.CompletionListSelectionConfig
+local select_opts = {
+    auto_insert = true,
+    preselect = false,
+}
+
 ---@class BlinkCmp.Cfg
 ---@field Config BlinkCmp.Cfg.Config
----@field new fun(O: table?): table|BlinkCmp.Cfg
+---@field new fun(): table|BlinkCmp.Cfg
 local Cfg = {}
 
 Cfg.Config = {}
@@ -42,7 +48,7 @@ Cfg.Config.keymap = {
                 cmp.show_documentation()
             end
 
-            return cmp.show({ providers = BUtil:gen_sources(true, true) })
+            return cmp.show({ providers = BUtil.gen_sources(true, true) })
         end,
         'fallback',
     },
@@ -70,15 +76,19 @@ Cfg.Config.keymap = {
             if cmp.snippet_active({ direction = 1 }) then
                 return cmp.snippet_forward()
             end
+        end,
 
+        function(cmp)
+            if cmp.is_menu_visible() then
+                return cmp.select_next(select_opts)
+            end
+        end,
+
+        function(cmp)
             local visible = cmp.is_menu_visible
 
             if not visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources(true, true) })
-            end
-
-            if visible() then
-                return cmp.select_next({ auto_insert = true, preselect = false })
+                return cmp.show({ providers = BUtil.gen_sources(true, true) })
             end
         end,
         'fallback',
@@ -88,15 +98,19 @@ Cfg.Config.keymap = {
             if cmp.snippet_active({ direction = -1 }) then
                 return cmp.snippet_backward()
             end
+        end,
 
+        function(cmp)
+            if cmp.is_menu_visible() then
+                return cmp.select_prev(select_opts)
+            end
+        end,
+
+        function(cmp)
             local visible = cmp.is_menu_visible
 
             if not visible() and has_words_before() then
-                return cmp.show({ providers = BUtil:gen_sources(true, true) })
-            end
-
-            if visible() then
-                return cmp.select_prev({ auto_insert = true, preselect = false })
+                return cmp.show({ providers = BUtil.gen_sources(true, true) })
             end
         end,
         'fallback',
@@ -284,7 +298,7 @@ Cfg.Config.cmdline = {
 
 Cfg.Config.sources = {
     default = function()
-        return BUtil:gen_sources(true, true)
+        return BUtil.gen_sources(true, true)
     end,
 
     -- Function to use when transforming the items before they're returned for all providers
@@ -293,7 +307,7 @@ Cfg.Config.sources = {
         return items
     end,
 
-    providers = BUtil:gen_providers(),
+    providers = BUtil.gen_providers(),
 }
 
 Cfg.Config.fuzzy = {
@@ -413,15 +427,13 @@ Cfg.Config.cmdline = {
 
 Cfg.Config.term = { enabled = false }
 
----@param O? table
 ---@return BlinkCmp.Cfg|table
-function Cfg.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Cfg })
+function Cfg.new()
+    return setmetatable({}, { __index = Cfg })
 end
 
 User.register_plugin('plugin.blink_cmp.config')
 
-return Cfg
+return Cfg.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

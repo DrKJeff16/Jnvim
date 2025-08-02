@@ -10,15 +10,13 @@ end
 
 local Config = require('plugin.blink_cmp.config')
 
-local Cfg = Config.new()
-
 local Blink = require('blink.cmp')
 
 if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()
 end
 
-Blink.setup(Cfg.Config)
+Blink.setup(Config.Config)
 
 User.register_plugin('plugin.blink_cmp')
 

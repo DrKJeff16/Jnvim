@@ -5,16 +5,6 @@
 ---@alias BlinkCmp.Util.Sources ('lsp'|'path'|'snippets'|'buffer'|string)[]
 ---@alias BlinkCmp.Util.Providers table<string, blink.cmp.SourceProviderConfigPartial>
 
----@class BlinkCmp.Util
----@field curr_ft string
----@field Sources BlinkCmp.Util.Sources
----@field Providers BlinkCmp.Util.Providers
----@field reset_sources fun(self: BlinkCmp.Util, snipps: boolean?, buf: boolean?)
----@field reset_providers fun(self: BlinkCmp.Util)
----@field gen_sources fun(self: BlinkCmp.Util, snipps: boolean?, buf: boolean?): BlinkCmp.Util.Sources
----@field gen_providers fun(self: BlinkCmp.Util, P: BlinkCmp.Util.Providers?): BlinkCmp.Util.Providers
----@field new fun(O: table?): table|BlinkCmp.Util
-
 local User = require('user_api')
 local Check = User.check
 
@@ -25,38 +15,43 @@ local type_not_empty = Check.value.type_not_empty
 
 local in_tbl = vim.tbl_contains
 
----@type BlinkCmp.Util
+---@class BlinkCmp.Util
+---@field curr_ft string
+---@field Sources BlinkCmp.Util.Sources
+---@field Providers BlinkCmp.Util.Providers
+---@field reset_sources fun(snipps: boolean?, buf: boolean?)
+---@field reset_providers fun()
+---@field gen_sources fun(snipps: boolean?, buf: boolean?): BlinkCmp.Util.Sources
+---@field gen_providers fun(P: BlinkCmp.Util.Providers?): BlinkCmp.Util.Providers
+---@field new fun(): table|BlinkCmp.Util
 local BUtil = {}
 
----@type BlinkCmp.Util.Sources
 BUtil.Sources = {}
 
----@type BlinkCmp.Util.Providers
 BUtil.Providers = {}
 
 BUtil.curr_ft = ''
 
----@param self BlinkCmp.Util
 ---@param snipps? boolean
 ---@param buf? boolean
-function BUtil:reset_sources(snipps, buf)
+function BUtil.reset_sources(snipps, buf)
     snipps = is_bool(snipps) and snipps or false
     buf = is_bool(buf) and buf or true
 
-    self.Sources = {
+    BUtil.Sources = {
         'lsp',
         'path',
     }
 
     if snipps then
-        table.insert(self.Sources, 'snippets')
+        table.insert(BUtil.Sources, 'snippets')
     end
     if buf then
-        table.insert(self.Sources, 'buffer')
+        table.insert(BUtil.Sources, 'buffer')
     end
 
     if vim.bo.filetype == 'lua' then
-        table.insert(self.Sources, 1, 'lazydev')
+        table.insert(BUtil.Sources, 1, 'lazydev')
     end
 
     local git_fts = {
@@ -67,30 +62,28 @@ function BUtil:reset_sources(snipps, buf)
     }
 
     if in_tbl(git_fts, vim.bo.filetype) then
-        table.insert(self.Sources, 1, 'git')
+        table.insert(BUtil.Sources, 1, 'git')
     end
 
     if vim.bo.filetype == 'gitcommit' then
-        table.insert(self.Sources, 1, 'conventional_commits')
+        table.insert(BUtil.Sources, 1, 'conventional_commits')
     end
 end
 
----@param self BlinkCmp.Util
 ---@param snipps? boolean
 ---@param buf? boolean
 ---@return BlinkCmp.Util.Sources
-function BUtil:gen_sources(snipps, buf)
+function BUtil.gen_sources(snipps, buf)
     snipps = is_bool(snipps) and snipps or false
     buf = is_bool(buf) and buf or true
 
-    self:reset_sources(snipps, buf)
+    BUtil.reset_sources(snipps, buf)
 
-    return self.Sources
+    return BUtil.Sources
 end
 
----@param self BlinkCmp.Util
-function BUtil:reset_providers()
-    self.Providers = {
+function BUtil.reset_providers()
+    BUtil.Providers = {
         cmdline = {
             module = 'blink.cmp.sources.cmdline',
         },
@@ -266,7 +259,7 @@ function BUtil:reset_providers()
     }
 
     if exists('blink-cmp-git') then
-        self.Providers.git = {
+        BUtil.Providers.git = {
             name = 'Git',
             module = 'blink-cmp-git',
 
@@ -284,7 +277,7 @@ function BUtil:reset_providers()
     end
 
     if exists('blink-cmp-conventional-commits') then
-        self.Providers.conventional_commits = {
+        BUtil.Providers.conventional_commits = {
             name = 'CC',
             module = 'blink-cmp-conventional-commits',
             score_offset = 100,
@@ -299,7 +292,7 @@ function BUtil:reset_providers()
     end
 
     if exists('orgmode') then
-        self.Providers.orgmode = {
+        BUtil.Providers.orgmode = {
             name = 'Orgmode',
             module = 'orgmode.org.autocompletion.blink',
             fallbacks = { 'buffer' },
@@ -307,24 +300,21 @@ function BUtil:reset_providers()
     end
 end
 
----@param self BlinkCmp.Util
 ---@param P? BlinkCmp.Util.Providers
 ---@return BlinkCmp.Util.Providers
-function BUtil:gen_providers(P)
-    self:reset_providers()
+function BUtil.gen_providers(P)
+    BUtil.reset_providers()
 
     if type_not_empty('table', P) then
-        self.Providers = vim.tbl_deep_extend('keep', P, self.Providers)
+        BUtil.Providers = vim.tbl_deep_extend('keep', P, BUtil.Providers)
     end
 
-    return self.Providers
+    return BUtil.Providers
 end
 
----@param O? table
 ---@return BlinkCmp.Util|table
-function BUtil.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = BUtil })
+function BUtil.new()
+    return setmetatable({}, { __index = BUtil })
 end
 
 User.register_plugin('plugin.blink_cmp.util')
