@@ -1,7 +1,7 @@
 ---@diagnostic disable:missing-fields
 
 -- Setup keymaps
--- WARN: You must call `Keymaps:set_leader()` beforehand or this will complain
+-- WARNING: You must call `Keymaps:set_leader()` beforehand or this will complain
 ---@alias User.Config.Keymaps.CallerFun fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
 
 ---@class Keymaps.PreExec
@@ -26,6 +26,7 @@ local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
+local copy = vim.deepcopy
 local curr_buf = vim.api.nvim_get_current_buf
 local in_tbl = vim.tbl_contains
 local d_extend = vim.tbl_deep_extend
@@ -135,6 +136,17 @@ end
 
 ---@class User.Config.Keymaps
 ---@field no_oped? boolean
+-- Global keymaps, plugin-agnostic
+---@field Keys AllModeMaps
+-- Set both the `<leader>` and `<localleader>` keys
+-- ---
+-- ## Description
+-- Setup a key as `<leader>` and `<localleader>`, but you can also set `<localleader>` to
+-- a different key if you want.
+--
+-- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
+-- ---
+---@field set_leader fun(leader: string, local_leader: string?, force: boolean?)
 local Keymaps = {}
 
 local NOP = {
@@ -243,446 +255,582 @@ setmetatable(Keymaps.NOP, {
 })
 
 -- Global keymaps, plugin-agnostic
-Keymaps.Keys = {
-    -- NORMAL
-    n = {
-        ['<leader>'] = { group = '+Open `which-key`' },
-        ['<leader>F'] = { group = '+Folding' },
-        ['<leader>H'] = { group = '+Help' },
-        ['<leader>HM'] = { group = '+Man Pages' },
-        ['<leader>b'] = { group = '+Buffer' },
-        ['<leader>f'] = { group = '+File' },
-        ['<leader>fF'] = { group = '+New File' },
-        ['<leader>fi'] = { group = '+Indent' },
-        ['<leader>fv'] = { group = '+Script Files' },
-        ['<leader>q'] = { group = '+Quit Nvim' },
-        ['<leader>t'] = { group = '+Tabs' },
-        ['<leader>v'] = { group = '+Vim' },
-        ['<leader>ve'] = { group = '+Edit Nvim Config File' },
-        ['<leader>vh'] = { group = '+Checkhealth' },
-        ['<leader>w'] = { group = '+Window' },
-        ['<leader>ws'] = { group = '+Split' },
-        ['<leader>U'] = { group = '+User API' },
-        ['<leader>UK'] = { group = '+Keymaps' },
+Keymaps.Keys = {}
 
-        ['<Esc><Esc>'] = { vim.cmd.noh, desc('Remove Highlighted Search') },
+-- Normal Mode Keys
+Keymaps.Keys.n = {
+    ['<leader>'] = { group = '+Open `which-key`' },
+    ['<leader>F'] = { group = '+Folding' },
+    ['<leader>H'] = { group = '+Help' },
+    ['<leader>HM'] = { group = '+Man Pages' },
+    ['<leader>b'] = { group = '+Buffer' },
+    ['<leader>f'] = { group = '+File' },
+    ['<leader>fF'] = { group = '+New File' },
+    ['<leader>fi'] = { group = '+Indent' },
+    ['<leader>fv'] = { group = '+Script Files' },
+    ['<leader>q'] = { group = '+Quit Nvim' },
+    ['<leader>t'] = { group = '+Tabs' },
+    ['<leader>v'] = { group = '+Vim' },
+    ['<leader>ve'] = { group = '+Edit Nvim Config File' },
+    ['<leader>vh'] = { group = '+Checkhealth' },
+    ['<leader>w'] = { group = '+Window' },
+    ['<leader>ws'] = { group = '+Split' },
+    ['<leader>U'] = { group = '+User API' },
+    ['<leader>UK'] = { group = '+Keymaps' },
 
-        ['<leader>bd'] = { buf_del(), desc('Close Buffer') },
-        ['<leader>bD'] = { buf_del(true), desc('Close Buffer Forcefully') },
-        ['<leader>bf'] = { vim.cmd.bfirst, desc('Goto First Buffer') },
-        ['<leader>bl'] = { vim.cmd.blast, desc('Goto Last Buffer') },
-        ['<leader>bn'] = { vim.cmd.bnext, desc('Next Buffer') },
-        ['<leader>bp'] = { vim.cmd.bprevious, desc('Previous Buffer') },
+    ['<Esc><Esc>'] = {
+        vim.cmd.noh,
+        desc('Remove Highlighted Search'),
+    },
 
-        ['<leader>/'] = { ':%s/', desc('Run Search-Replace Prompt For Whole File', false) },
+    ['<leader>bd'] = {
+        buf_del(),
+        desc('Close Buffer'),
+    },
+    ['<leader>bD'] = {
+        buf_del(true),
+        desc('Close Buffer Forcefully'),
+    },
+    ['<leader>bf'] = {
+        vim.cmd.bfirst,
+        desc('Goto First Buffer'),
+    },
+    ['<leader>bl'] = {
+        vim.cmd.blast,
+        desc('Goto Last Buffer'),
+    },
+    ['<leader>bn'] = {
+        vim.cmd.bnext,
+        desc('Next Buffer'),
+    },
+    ['<leader>bp'] = {
+        vim.cmd.bprevious,
+        desc('Previous Buffer'),
+    },
 
-        ['<leader>Fc'] = { ':%foldclose<CR>', desc('Close All Folds') },
-        ['<leader>Fo'] = { ':%foldopen<CR>', desc('Open All Folds') },
+    ['<leader>/'] = {
+        ':%s/',
+        desc('Run Search-Replace Prompt For Whole File', false),
+    },
 
-        ['<leader>fFx'] = { gen_fun_blank(), desc('New Horizontal Blank File') },
-        ['<leader>fFv'] = { gen_fun_blank(true), desc('New Vertical Blank File') },
+    ['<leader>Fc'] = {
+        ':%foldclose<CR>',
+        desc('Close All Folds'),
+    },
+    ['<leader>Fo'] = {
+        ':%foldopen<CR>',
+        desc('Open All Folds'),
+    },
 
-        ['<leader>fs'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
+    ['<leader>fFx'] = {
+        gen_fun_blank(),
+        desc('New Horizontal Blank File'),
+    },
+    ['<leader>fFv'] = { gen_fun_blank(true), desc('New Vertical Blank File') },
 
-                local buf = curr_buf()
+    ['<leader>fs'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
 
-                local ok, err = true, ''
+            local buf = curr_buf()
 
-                if optget('modifiable', { buf = buf }) then
-                    ok, err = pcall(vim.cmd.write)
+            local ok, err = true, nil
 
-                    if ok then
-                        notify('File Written', INFO, {
-                            title = vim.fn.expand('%'),
-                            animate = true,
-                            timeout = 500,
-                            hide_from_history = true,
-                        })
-
-                        return
-                    end
-                end
-
-                notify(err or 'Unable to write', ERROR, {
-                    title = 'Vim Write',
-                    animate = true,
-                    timeout = 1500,
-                    hide_from_history = false,
-                })
-            end,
-            desc('Save File'),
-        },
-        ['<leader>fS'] = { ':w ', desc('Prompt Save File', false) },
-
-        ['<leader>fir'] = { ':%retab<CR>', desc('Retab File') },
-
-        ['<leader>fvL'] = { ':luafile ', desc('Source Lua File (Prompt)', false) },
-        ['<leader>fvV'] = { ':so ', desc('Source VimScript File (Prompt)', false) },
-        ['<leader>fvl'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
-
-                local ft = ft_get(curr_buf())
-
-                local ok, err = true, ''
-
-                if ft == 'lua' then
-                    ---@diagnostic disable-next-line:param-type-mismatch
-                    ok, err = pcall(vim.cmd.luafile, '%')
-
-                    if ok then
-                        notify('Sourced current Lua file', INFO, {
-                            title = 'Lua',
-                            animate = true,
-                            timeout = 1500,
-                            hide_from_history = true,
-                        })
-
-                        return
-                    end
-                end
-
-                notify(err, ERROR, {
-                    title = 'Lua',
-                    animate = true,
-                    timeout = 2000,
-                    hide_from_history = false,
-                })
-            end,
-            desc('Source Current File As Lua File'),
-        },
-        ['<leader>fvv'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
-
-                local ft = ft_get(curr_buf())
-
-                local ok, err = true, ''
-
-                if ft == 'vim' then
-                    ---@diagnostic disable-next-line:param-type-mismatch
-                    ok, err = pcall(vim.cmd.source, '%')
-
-                    if ok then
-                        notify('Sourced current Vim file', INFO, {
-                            title = 'Vim',
-                            animate = true,
-                            timeout = 1000,
-                            hide_from_history = true,
-                        })
-
-                        return
-                    end
-                end
-
-                notify(err, ERROR, {
-                    title = 'Vim',
-                    animate = true,
-                    timeout = 2000,
-                    hide_from_history = false,
-                })
-            end,
-            desc('Source Current File As VimScript File'),
-        },
-
-        ['<leader>vee'] = {
-            rcfile_ed(),
-            desc('Open In Current Window'),
-        },
-        ['<leader>vex'] = {
-            rcfile_split(),
-            desc('Open In Horizontal Split'),
-        },
-        ['<leader>vet'] = {
-            rcfile_tab(),
-            desc('Open In New Tab'),
-        },
-        ['<leader>vev'] = {
-            rcfile_vsplit(),
-            desc('Open In Vertical Split'),
-        },
-
-        ['<leader>vhh'] = { vim.cmd.checkhealth, desc('Run Checkhealth') },
-        ['<leader>vhH'] = { ':checkhealth ', desc('Prompt Checkhealth', false) },
-        ['<leader>vhd'] = {
-            gen_checkhealth('vim.health'),
-            desc('Run `vim.health` Checkhealth'),
-        },
-        ['<leader>vhD'] = {
-            gen_checkhealth('vim.deprecated'),
-            desc('Run `vim.deprecated` Checkhealth'),
-        },
-        ['<leader>vhl'] = {
-            gen_checkhealth('vim.lsp'),
-            desc('Run `vim.lsp` Checkhealth'),
-        },
-        ['<leader>vhp'] = {
-            gen_checkhealth('vim.provider'),
-            desc('Run `vim.provider` Checkhealth'),
-        },
-        ['<leader>vht'] = {
-            gen_checkhealth('vim.treesitter'),
-            desc('Run `vim.treesitter` Checkhealth'),
-        },
-
-        ['<leader>vs'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
-
-                ---@diagnostic disable-next-line:param-type-mismatch
-                local ok, err = pcall(vim.cmd.luafile, MYVIMRC)
+            if optget('modifiable', { buf = buf }) then
+                ok, err = pcall(vim.cmd.write)
 
                 if ok then
-                    notify('Sourced `init.lua`', INFO, {
+                    notify('File Written', INFO, {
+                        title = vim.fn.expand('%'),
                         animate = true,
-                        title = 'luafile',
                         timeout = 500,
                         hide_from_history = true,
                     })
 
                     return
                 end
+            end
 
-                notify(err, ERROR, {
+            notify(err or 'Unable to write', ERROR, {
+                title = 'Vim Write',
+                animate = true,
+                timeout = 1500,
+                hide_from_history = false,
+            })
+        end,
+        desc('Save File'),
+    },
+    ['<leader>fS'] = {
+        ':w ',
+        desc('Prompt Save File', false),
+    },
+
+    ['<leader>fir'] = {
+        ':%retab<CR>',
+        desc('Retab File'),
+    },
+
+    ['<leader>fvL'] = {
+        ':luafile ',
+        desc('Source Lua File (Prompt)', false),
+    },
+    ['<leader>fvV'] = {
+        ':so ',
+        desc('Source VimScript File (Prompt)', false),
+    },
+    ['<leader>fvl'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+
+            local ft = ft_get(curr_buf())
+            local ok, err = true, ''
+
+            if ft == 'lua' then
+                ---@diagnostic disable-next-line:param-type-mismatch
+                ok, err = pcall(vim.cmd.luafile, '%')
+
+                if ok then
+                    notify('Sourced current Lua file', INFO, {
+                        title = 'Lua',
+                        animate = true,
+                        timeout = 1500,
+                        hide_from_history = true,
+                    })
+
+                    return
+                end
+            end
+
+            notify(err, ERROR, {
+                title = 'Lua',
+                animate = true,
+                timeout = 2000,
+                hide_from_history = false,
+            })
+        end,
+        desc('Source Current File As Lua File'),
+    },
+    ['<leader>fvv'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+
+            local ft = ft_get(curr_buf())
+            local ok, err = true, ''
+
+            if ft == 'vim' then
+                ---@diagnostic disable-next-line:param-type-mismatch
+                ok, err = pcall(vim.cmd.source, '%')
+
+                if ok then
+                    notify('Sourced current Vim file', INFO, {
+                        title = 'Vim',
+                        animate = true,
+                        timeout = 1000,
+                        hide_from_history = true,
+                    })
+
+                    return
+                end
+            end
+
+            notify(err, ERROR, {
+                title = 'Vim',
+                animate = true,
+                timeout = 2000,
+                hide_from_history = false,
+            })
+        end,
+        desc('Source Current File As VimScript File'),
+    },
+
+    ['<leader>vee'] = {
+        rcfile_ed(),
+        desc('Open In Current Window'),
+    },
+    ['<leader>vex'] = {
+        rcfile_split(),
+        desc('Open In Horizontal Split'),
+    },
+    ['<leader>vet'] = {
+        rcfile_tab(),
+        desc('Open In New Tab'),
+    },
+    ['<leader>vev'] = {
+        rcfile_vsplit(),
+        desc('Open In Vertical Split'),
+    },
+
+    ['<leader>vhh'] = {
+        vim.cmd.checkhealth,
+        desc('Run Checkhealth'),
+    },
+    ['<leader>vhH'] = {
+        ':checkhealth ',
+        desc('Prompt Checkhealth', false),
+    },
+    ['<leader>vhd'] = {
+        gen_checkhealth('vim.health'),
+        desc('Run `vim.health` Checkhealth'),
+    },
+    ['<leader>vhD'] = {
+        gen_checkhealth('vim.deprecated'),
+        desc('Run `vim.deprecated` Checkhealth'),
+    },
+    ['<leader>vhl'] = {
+        gen_checkhealth('vim.lsp'),
+        desc('Run `vim.lsp` Checkhealth'),
+    },
+    ['<leader>vhp'] = {
+        gen_checkhealth('vim.provider'),
+        desc('Run `vim.provider` Checkhealth'),
+    },
+    ['<leader>vht'] = {
+        gen_checkhealth('vim.treesitter'),
+        desc('Run `vim.treesitter` Checkhealth'),
+    },
+
+    ['<leader>vs'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+
+            ---@diagnostic disable-next-line:param-type-mismatch
+            local ok, err = pcall(vim.cmd.luafile, MYVIMRC)
+
+            if ok then
+                notify('Sourced `init.lua`', INFO, {
                     animate = true,
                     title = 'luafile',
-                    timeout = 2500,
+                    timeout = 500,
                     hide_from_history = true,
                 })
-            end,
-            desc('Source $MYVIMRC'),
-        },
 
-        ['<leader>HT'] = { ':tab h<CR>', desc('Open Help On New Tab') },
-        ['<leader>HV'] = { ':vertical h<CR>', desc('Open Help On Vertical Split') },
-        ['<leader>HX'] = { ':horizontal h<CR>', desc('Open Help On Horizontal Split') },
-        ['<leader>Hh'] = { ':h ', desc('Prompt For Help') },
-        ['<leader>Ht'] = { ':tab h ', desc('Prompt For Help On New Tab') },
-        ['<leader>Hv'] = { ':vertical h ', desc('Prompt For Help On Vertical Split') },
-        ['<leader>Hx'] = { ':horizontal h ', desc('Prompt For Help On Horizontal Split') },
-        ['<leader>HMM'] = { ':Man ', desc('Prompt For Man') },
-        ['<leader>HMT'] = { ':tab Man ', desc('Prompt For Arbitrary Man Page (Tab)') },
-        ['<leader>HMV'] = { ':vert Man ', desc('Prompt For Arbitrary Man Page (Vertical)') },
-        ['<leader>HMX'] = {
-            ':horizontal Man ',
-            desc('Prompt For Arbitrary Man Page (Horizontal)'),
-        },
-        ['<leader>HMm'] = { ':Man<CR>', desc('Open Manpage For Word Under Cursor') },
-        ['<leader>HMt'] = { ':tab Man<CR>', desc('Open Arbitrary Man Page (Tab)') },
-        ['<leader>HMv'] = { ':vert Man<CR>', desc('Open Arbitrary Man Page (Vertical)') },
-        ['<leader>HMx'] = {
-            ':horizontal Man<CR>',
-            desc('Open Arbitrary Man Page (Horizontal)'),
-        },
+                return
+            end
 
-        ['<leader>wN'] = {
-            function()
-                local buf = curr_buf()
-                local ft = ft_get(buf)
+            notify(err, ERROR, {
+                animate = true,
+                title = 'luafile',
+                timeout = 2500,
+                hide_from_history = true,
+            })
+        end,
+        desc('Source $MYVIMRC'),
+    },
 
-                vim.cmd.wincmd('n')
-                vim.cmd.wincmd('o')
-
-                vim.api.nvim_set_option_value('ft', ft, { buf = buf })
-                vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
-                vim.api.nvim_set_option_value('modified', false, { buf = buf })
-            end,
-            desc('New Blank File'),
-        },
-        ['<leader>w='] = {
-            function()
-                vim.cmd.wincmd('=')
-            end,
-            desc('Resize all windows equally'),
-        },
-        ['<leader>w<Left>'] = {
-            function()
-                vim.cmd.wincmd('h')
-            end,
-            desc('Go To Window On The Left'),
-        },
-        ['<leader>w<Right>'] = {
-            function()
-                vim.cmd.wincmd('l')
-            end,
-            desc('Go To Window On The Right'),
-        },
-        ['<leader>w<Up>'] = {
-            function()
-                vim.cmd.wincmd('k')
-            end,
-            desc('Go To Window Above'),
-        },
-        ['<leader>w<Down>'] = {
-            function()
-                vim.cmd.wincmd('j')
-            end,
-            desc('Go To Window Below'),
-        },
-        ['<leader>wd'] = {
-            function()
-                vim.cmd.wincmd('q')
-            end,
-            desc('Close Window'),
-        },
-        ['<leader>wn'] = {
-            function()
-                vim.cmd.wincmd('w')
-            end,
-            desc('Next Window'),
-        },
-        ['<leader>ww'] = {
-            function()
-                vim.cmd.wincmd('w')
-            end,
-            desc('Next Window'),
-        },
-        ['<leader>wc'] = {
-            function()
-                vim.cmd.wincmd('o')
-            end,
-            desc('Close All Other Windows'),
-        },
-        ['<leader>wS'] = {
-            function()
-                vim.cmd.wincmd('x')
-            end,
-            desc('Swap Current WithNext'),
-        },
-        ['<leader>wt'] = {
-            function()
+    ['<leader>HT'] = {
+        function()
+            vim.cmd.help()
+            vim.schedule(function()
                 vim.cmd.wincmd('T')
-            end,
-            desc('Break Current Window Into Tab'),
-        },
-        ['<leader>wp'] = {
-            function()
-                vim.cmd.wincmd('W')
-            end,
-            desc('Previous Window'),
-        },
-        ['<leader>wsx'] = {
-            function()
-                vim.cmd.wincmd('s')
-            end,
-            desc('Horizontal Split'),
-        },
-        ['<leader>wsv'] = {
-            function()
-                vim.cmd.wincmd('v')
-            end,
-            desc('Vertical Split'),
-        },
-        ['<leader>wsX'] = { ':split ', desc('Horizontal Split (Prompt)', false) },
-        ['<leader>wsV'] = { ':vsplit ', desc('Vertical Split (Prompt)', false) },
-
-        ['<leader>qQ'] = {
-            function()
-                vim.cmd.quitall({ bang = true })
-            end,
-            desc('Quit Nvim Forcefully'),
-        },
-        ['<leader>qq'] = {
-            function()
-                if require('user_api.check.exists').module('toggleterm') then
-                    local T = require('toggleterm.terminal').get_all(true)
-
-                    for _, term in next, T do
-                        term:close()
-                    end
-                end
-                vim.cmd.qa()
-            end,
-            desc('Quit Nvim'),
-        },
-
-        ['<leader>tA'] = { vim.cmd.tabnew, desc('New Tab') },
-        ['<leader>tD'] = {
-            function()
-                vim.cmd.tabclose({ bang = true })
-            end,
-            desc('Close Tab Forcefully'),
-        },
-        ['<leader>ta'] = { ':tabnew ', desc('New Tab (Prompt)', false) },
-        ['<leader>td'] = {
-            function()
-                pcall(vim.cmd.tabclose)
-            end,
-            desc('Close Tab'),
-        },
-        ['<leader>tf'] = { vim.cmd.tabfirst, desc('Goto First Tab') },
-        ['<leader>tl'] = { vim.cmd.tablast, desc('Goto Last Tab') },
-        ['<leader>tn'] = { vim.cmd.tabnext, desc('Next Tab') },
-        ['<leader>tp'] = { vim.cmd.tabprevious, desc('Previous Tab') },
-
-        ['<leader>UKp'] = {
-            function()
-                vim.notify(inspect(Keymaps.Keys))
-            end,
-            desc('Print all custom keymaps in their respective modes'),
-        },
+            end)
+        end,
+        desc('Open Help On New Tab'),
+    },
+    ['<leader>HV'] = {
+        function()
+            vim.cmd.help({ mods = { vertical = true } })
+        end,
+        desc('Open Help On Vertical Split'),
+    },
+    ['<leader>HX'] = {
+        function()
+            vim.cmd.help({ mods = { horizontal = true } })
+        end,
+        desc('Open Help On Horizontal Split'),
+    },
+    ['<leader>Hh'] = {
+        ':h ',
+        desc('Prompt For Help'),
+    },
+    ['<leader>Ht'] = {
+        ':tab h ',
+        desc('Prompt For Help On New Tab'),
+    },
+    ['<leader>Hv'] = {
+        ':vertical h ',
+        desc('Prompt For Help On Vertical Split'),
+    },
+    ['<leader>Hx'] = {
+        ':horizontal h ',
+        desc('Prompt For Help On Horizontal Split'),
+    },
+    ['<leader>HMM'] = {
+        ':Man ',
+        desc('Prompt For Man'),
+    },
+    ['<leader>HMT'] = {
+        ':tab Man ',
+        desc('Prompt For Arbitrary Man Page (Tab)'),
+    },
+    ['<leader>HMV'] = {
+        ':vert Man ',
+        desc('Prompt For Arbitrary Man Page (Vertical)'),
+    },
+    ['<leader>HMX'] = {
+        ':horizontal Man ',
+        desc('Prompt For Arbitrary Man Page (Horizontal)'),
+    },
+    ['<leader>HMm'] = {
+        ':Man<CR>',
+        desc('Open Manpage For Word Under Cursor'),
+    },
+    ['<leader>HMt'] = {
+        ':tab Man<CR>',
+        desc('Open Arbitrary Man Page (Tab)'),
+    },
+    ['<leader>HMv'] = {
+        ':vert Man<CR>',
+        desc('Open Arbitrary Man Page (Vertical)'),
+    },
+    ['<leader>HMx'] = {
+        ':horizontal Man<CR>',
+        desc('Open Arbitrary Man Page (Horizontal)'),
     },
 
-    -- VISUAL
-    v = {
-        ['<leader>'] = { group = '+Open `which-key`' },
-        ['<leader>f'] = { group = '+File' }, --- File Handling
-        ['<leader>fF'] = { group = '+Folding' }, --- Folding
-        ['<leader>h'] = { group = '+Help' }, --- Help
-        ['<leader>i'] = { group = '+Indent' }, --- Indent Control
-        ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
-        ['<leader>v'] = { group = '+Vim' }, --- Vim
+    ['<leader>wN'] = {
+        function()
+            local buf = curr_buf()
+            local ft = ft_get(buf)
 
-        ['<leader>fFc'] = { ':foldopen<CR>', desc('Open Fold') },
-        ['<leader>fFo'] = { ':foldclose<CR>', desc('Close Fold') },
-        ['<leader>fr'] = { ':s/', desc('Search/Replace Prompt For Selection', false) },
-        ['<leader>fs'] = {
-            function()
-                local notify = require('user_api.util.notify').notify
+            vim.cmd.wincmd('n')
+            vim.cmd.wincmd('o')
 
-                ---@type boolean
-                local ok = true
-                ---@type unknown
-                local err = nil
-
-                if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
-                    ok, err = pcall(vim.cmd.write)
-
-                    if ok then
-                        return
-                    end
-                end
-
-                notify(err or 'Unable to write', ERROR, {
-                    animate = true,
-                    title = 'Vim Write',
-                    timeout = 2250,
-                    hide_from_history = false,
-                })
-            end,
-            desc('Save File'),
-        },
-
-        ['<leader>ir'] = { ':retab<CR>', desc('Retab Selection') },
-
-        ['<leader>qQ'] = { ':qa!<CR>', desc('Quit Nvim Forcefully') },
-        ['<leader>qq'] = { vim.cmd.quitall, desc('Quit Nvim') },
+            optset('ft', ft, { buf = buf })
+            optset('modifiable', true, { buf = buf })
+            optset('modified', false, { buf = buf })
+        end,
+        desc('New Blank File'),
     },
-    t = {
-        ['<Esc>'] = { '<C-\\><C-n>', desc('Escape Terminal') },
+    ['<leader>w='] = {
+        function()
+            vim.cmd.wincmd('=')
+        end,
+        desc('Resize all windows equally'),
+    },
+    ['<leader>w<Left>'] = {
+        function()
+            vim.cmd.wincmd('h')
+        end,
+        desc('Go To Window On The Left'),
+    },
+    ['<leader>w<Right>'] = {
+        function()
+            vim.cmd.wincmd('l')
+        end,
+        desc('Go To Window On The Right'),
+    },
+    ['<leader>w<Up>'] = {
+        function()
+            vim.cmd.wincmd('k')
+        end,
+        desc('Go To Window Above'),
+    },
+    ['<leader>w<Down>'] = {
+        function()
+            vim.cmd.wincmd('j')
+        end,
+        desc('Go To Window Below'),
+    },
+    ['<leader>wd'] = {
+        function()
+            vim.cmd.wincmd('q')
+        end,
+        desc('Close Window'),
+    },
+    ['<leader>wn'] = {
+        function()
+            vim.cmd.wincmd('w')
+        end,
+        desc('Next Window'),
+    },
+    ['<leader>ww'] = {
+        function()
+            vim.cmd.wincmd('w')
+        end,
+        desc('Next Window'),
+    },
+    ['<leader>wc'] = {
+        function()
+            vim.cmd.wincmd('o')
+        end,
+        desc('Close All Other Windows'),
+    },
+    ['<leader>wS'] = {
+        function()
+            vim.cmd.wincmd('x')
+        end,
+        desc('Swap Current With Next'),
+    },
+    ['<leader>wt'] = {
+        function()
+            vim.cmd.wincmd('T')
+        end,
+        desc('Break Current Window Into Tab'),
+    },
+    ['<leader>wp'] = {
+        function()
+            vim.cmd.wincmd('W')
+        end,
+        desc('Previous Window'),
+    },
+    ['<leader>wsx'] = {
+        function()
+            vim.cmd.wincmd('s')
+        end,
+        desc('Horizontal Split'),
+    },
+    ['<leader>wsv'] = {
+        function()
+            vim.cmd.wincmd('v')
+        end,
+        desc('Vertical Split'),
+    },
+    ['<leader>wsX'] = {
+        ':split ',
+        desc('Horizontal Split (Prompt)', false),
+    },
+    ['<leader>wsV'] = {
+        ':vsplit ',
+        desc('Vertical Split (Prompt)', false),
+    },
+
+    ['<leader>qQ'] = {
+        function()
+            vim.cmd.quitall({ bang = true })
+        end,
+        desc('Quit Nvim Forcefully'),
+    },
+    ['<leader>qq'] = {
+        function()
+            if require('user_api.check.exists').module('toggleterm') then
+                local T = require('toggleterm.terminal').get_all(true)
+
+                for _, term in next, T do
+                    term:close()
+                end
+            end
+            vim.cmd.quitall()
+        end,
+        desc('Quit Nvim'),
+    },
+
+    ['<leader>tA'] = {
+        vim.cmd.tabnew,
+        desc('New Tab'),
+    },
+    ['<leader>tD'] = {
+        function()
+            vim.cmd.tabclose({ bang = true })
+        end,
+        desc('Close Tab Forcefully'),
+    },
+    ['<leader>ta'] = {
+        ':tabnew ',
+        desc('New Tab (Prompt)', false),
+    },
+    ['<leader>td'] = {
+        function()
+            pcall(vim.cmd.tabclose)
+        end,
+        desc('Close Tab'),
+    },
+    ['<leader>tf'] = {
+        vim.cmd.tabfirst,
+        desc('Goto First Tab'),
+    },
+    ['<leader>tl'] = {
+        vim.cmd.tablast,
+        desc('Goto Last Tab'),
+    },
+    ['<leader>tn'] = {
+        vim.cmd.tabnext,
+        desc('Next Tab'),
+    },
+    ['<leader>tp'] = {
+        vim.cmd.tabprevious,
+        desc('Previous Tab'),
+    },
+
+    ['<leader>UKp'] = {
+        function()
+            vim.notify(inspect(Keymaps.Keys))
+        end,
+        desc('Print all custom keymaps in their respective modes'),
     },
 }
 
--- Set the `<leader>` key and, if desired, the `<localleader>` aswell
--- ---
--- ## Description
--- Setup a key as `<leader>` and `<localleader>`, but you can also set `<localleader>` to
--- a different key if you want.
---
--- If `<localleader>` is not explicitly set, then it'll be set as `<leader>`
--- ---
+-- Visual Mode Keys
+Keymaps.Keys.v = {
+    ['<leader>'] = { group = '+Open `which-key`' },
+    ['<leader>f'] = { group = '+File' }, --- File Handling
+    ['<leader>fF'] = { group = '+Folding' }, --- Folding
+    ['<leader>h'] = { group = '+Help' }, --- Help
+    ['<leader>i'] = { group = '+Indent' }, --- Indent Control
+    ['<leader>q'] = { group = '+Quit Nvim' }, --- Exiting
+    ['<leader>v'] = { group = '+Vim' }, --- Vim
+
+    ['<leader>fFc'] = {
+        ':foldopen<CR>',
+        desc('Open Fold'),
+    },
+    ['<leader>fFo'] = {
+        ':foldclose<CR>',
+        desc('Close Fold'),
+    },
+    ['<leader>fr'] = {
+        ':s/',
+        desc('Search/Replace Prompt For Selection', false),
+    },
+    ['<leader>fs'] = {
+        function()
+            local notify = require('user_api.util.notify').notify
+
+            ---@type boolean
+            local ok = true
+            ---@type unknown
+            local err = nil
+
+            if vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
+                ok, err = pcall(vim.cmd.write)
+
+                if ok then
+                    return
+                end
+            end
+
+            notify(err or 'Unable to write', ERROR, {
+                animate = true,
+                title = 'Vim Write',
+                timeout = 2250,
+                hide_from_history = false,
+            })
+        end,
+        desc('Save File'),
+    },
+
+    ['<leader>ir'] = {
+        ':retab<CR>',
+        desc('Retab Selection'),
+    },
+
+    ['<leader>qQ'] = {
+        ':qa!<CR>',
+        desc('Quit Nvim Forcefully'),
+    },
+    ['<leader>qq'] = {
+        vim.cmd.quitall,
+        desc('Quit Nvim'),
+    },
+}
+
+-- Terminal Mode Keys
+Keymaps.Keys.t = {
+    ['<Esc>'] = {
+        '<C-\\><C-n>',
+        desc('Escape Terminal'),
+    },
+}
+
 ---@param leader string _`<leader>`_ key string (defaults to `<Space>`)
 ---@param local_leader? string _`<localleader>`_ string (defaults to `<Space>`)
 ---@param force? boolean Force leader switch (defaults to `false`)
@@ -739,6 +887,8 @@ end
 ---@return table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 function Keymaps.new(O)
     O = is_tbl(O) and O or {}
+
+    ---@operator call: fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
     return setmetatable(O, {
         __index = Keymaps,
 
@@ -786,7 +936,7 @@ function Keymaps.new(O)
 
             self.no_oped = is_bool(self.no_oped) and self.no_oped or false
 
-            --- Noop keys after `<leader>` to avoid accidents
+            -- Noop keys after `<leader>` to avoid accidents
             for _, mode in next, MODES do
                 if self.no_oped then
                     break
@@ -802,10 +952,9 @@ function Keymaps.new(O)
             ---@type AllModeMaps
             local res = load_defaults and d_extend('keep', parsed_keys, self.Keys) or parsed_keys
 
-            --- Set keymaps
             map_dict(res, 'wk.register', true, nil, bufnr or nil)
 
-            self.Keys = d_extend('keep', vim.deepcopy(self.Keys), parsed_keys)
+            self.Keys = d_extend('keep', copy(self.Keys), parsed_keys)
         end,
     })
 end
