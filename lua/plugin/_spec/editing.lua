@@ -15,7 +15,7 @@ local Editing = {
         event = 'InsertEnter',
         version = false,
         dependencies = {
-            { 'RRethy/nvim-treesitter-endwise', version = false },
+            { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter', version = false },
         },
         config = source('plugin.autopairs'),
     },
@@ -81,12 +81,6 @@ local Editing = {
         'julienvincent/nvim-paredit',
         version = false,
         config = source('plugin.paredit'),
-    },
-    {
-        '3rd/image.nvim',
-        version = false,
-        config = source('plugin.image'),
-        cond = (executable('ueberzugpp') or executable('kitty')) and not in_console(),
     },
     {
         'lukas-reineke/headlines.nvim',
