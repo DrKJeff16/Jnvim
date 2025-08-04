@@ -1,5 +1,3 @@
-local User = require('user_api')
-
 local extend = vim.tbl_deep_extend
 local copy = vim.deepcopy
 local fs_stat = (vim.uv or vim.loop).fs_stat
@@ -56,7 +54,7 @@ local function on_init(client)
     })
 end
 
-User.register_plugin('plugin.lsp.servers.lua_ls')
+require('user_api').register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
     cmd = { 'lua-language-server' },

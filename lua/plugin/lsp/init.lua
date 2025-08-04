@@ -31,7 +31,7 @@
 ---@class Lsp.Server
 ---@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
 ---@field client_names (string|Lsp.Server.Key)[]|table
----@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities|table
+---@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities
 ---@field populate fun(name: Lsp.Server.Key|string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
 ---@field new fun(O: table?): table|Lsp.Server|fun()
 

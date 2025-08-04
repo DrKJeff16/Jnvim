@@ -43,7 +43,6 @@ end
 ---@type Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
 local Autocmd = {}
 
----@type AllModeMaps
 Autocmd.AUKeys = {
     n = {
         ['<leader>lf'] = { group = '+File Operations' },
@@ -86,7 +85,6 @@ Autocmd.AUKeys = {
     },
 }
 
----@type AuRepeat
 Autocmd.autocommands = {
     ['LspAttach'] = {
         {
