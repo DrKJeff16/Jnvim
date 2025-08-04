@@ -7,6 +7,9 @@
 /rtp.lua
 /.repro/
 
+# Deprecated / Dropped stuff
+/.deprecated/
+
 # Patching
 /patches/
 /.patches/
@@ -54,9 +57,3 @@
 *.old
 *.pacnew
 *.pacsave
-
-# Dropped Files
-.luarc.json
-.luarc.jsonc
-luarc.json
-luarc.jsonc
