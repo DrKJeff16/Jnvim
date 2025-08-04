@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('render-markdown') then
+    User.deregister_plugin('plugin.markdown.render')
     return
 end
 
@@ -302,14 +303,6 @@ Render.setup({
         },
     },
 
-    markdown = {
-        disable = true,
-        directives = {
-            { id = 17, name = 'conceal_lines' },
-            { id = 18, name = 'conceal_lines' },
-        },
-    },
-
     completions = {
         lsp = { enabled = true },
         blink = { enabled = exists('blink.cmp') },
@@ -331,7 +324,7 @@ Render.setup({
     },
 
     latex = {
-        enabled = true,
+        enabled = false,
         render_modes = false,
         converter = 'latex2text',
         highlight = 'RenderMarkdownMath',

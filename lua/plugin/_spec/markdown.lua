@@ -1,13 +1,8 @@
 ---@module 'config.lazy'
 
 local CfgUtil = require('config.util')
-local Check = require('user_api.check')
 
 local source = CfgUtil.source
-local executable = Check.exists.executable
-local is_root = Check.is_root
-
-_G.in_console = in_console or Check.in_console
 
 ---@type LazySpecs
 local MD = {

@@ -82,13 +82,6 @@ local Editing = {
         version = false,
         config = source('plugin.paredit'),
     },
-    {
-        'lukas-reineke/headlines.nvim',
-        version = false,
-        dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        config = source('plugin.headlines'),
-        cond = not in_console(),
-    },
 }
 
 return Editing
