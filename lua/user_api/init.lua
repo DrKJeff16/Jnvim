@@ -15,7 +15,6 @@
 ---@field keymaps table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
 ---@field neovide User.Config.Neovide
 
-local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
