@@ -1,6 +1,4 @@
----@diagnostic disable:need-check-nil
-
----@alias AnyFunc fun(...)
+---@alias AnyFunc fun(...: any)
 ---@alias TreeApi table<string, string|AnyFunc|table>
 ---@alias OptSetterFun fun(desc: string, bufn: integer?): KeyMapOpts
 
@@ -50,17 +48,19 @@ local is_int = Check.value.is_int
 local empty = Check.value.empty
 local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
+local au = User.util.au.au_from_dict
 local desc = User.maps.kmap.desc
 
 if not exists('nvim-tree') then
+    User.deregister_plugin('plugin.nvim_tree')
     return
 end
 
 --- NOTE: Use floating Tree? You decide
 local USE_FLOAT = false
 
-local dERROR = vim.diagnostic.severity.ERROR
-local dWARN = vim.diagnostic.severity.WARN
+local D_ERR = vim.diagnostic.severity.ERROR
+local D_WARN = vim.diagnostic.severity.WARN
 local fn = vim.fn
 
 local sched = vim.schedule
@@ -424,17 +424,6 @@ end
 local VIEW_WIDTH_FIXED = 30
 local view_width_max = VIEW_WIDTH_FIXED -- fixed to start
 
--- toggle the width and redraw
-local function toggle_width_adaptive()
-    if view_width_max == -1 then
-        view_width_max = VIEW_WIDTH_FIXED
-    else
-        view_width_max = -1
-    end
-
-    require('nvim-tree.api').tree.reload()
-end
-
 -- get current view width
 local function get_view_width_max()
     return view_width_max
@@ -449,7 +438,7 @@ Tree.setup({
     prefer_startup_root = false,
 
     sort = {
-        sorter = 'name',
+        sorter = 'case_sensitive',
         folders_first = false,
         files_first = false,
     },
@@ -462,14 +451,17 @@ Tree.setup({
 
     update_focused_file = {
         enable = true,
+
         update_root = {
             enable = true,
         },
+
         exclude = false,
     },
 
     actions = {
-        use_system_clipboard = true,
+        use_system_clipboard = false,
+
         change_dir = {
             enable = true,
             global = false,
@@ -479,17 +471,30 @@ Tree.setup({
         open_file = {
             quit_on_open = true,
             resize_window = true,
-        },
-    },
 
-    system_open = {
-        cmd = 'xdg-open',
-        args = {},
+            window_picker = {
+                exclude = {
+                    filetype = {
+                        'notify',
+                        'packer',
+                        'qf',
+                        'diff',
+                        'fugitive',
+                        'fugitiveblame',
+                    },
+                    buftype = {
+                        'nofile',
+                        'terminal',
+                        'help',
+                    },
+                },
+            },
+        },
     },
 
     disable_netrw = true,
     hijack_netrw = true,
-    hijack_cursor = true,
+    hijack_cursor = false,
     hijack_unnamed_buffer_when_opening = false,
     hijack_directories = {
         enable = true,
@@ -499,13 +504,14 @@ Tree.setup({
     reload_on_bufenter = true,
 
     view = {
+        centralize_selection = true,
         float = {
             enable = USE_FLOAT,
             quit_on_focus_loss = true,
             open_win_config = function()
-                local cols = vim.opt.columns:get()
-                local rows = vim.opt.lines:get()
-                local cmdh = vim.opt.cmdheight:get()
+                local cols = vim.o.columns
+                local rows = vim.o.lines
+                local cmdh = vim.o.cmdheight
 
                 local screen_w = cols
                 local screen_h = rows - cmdh
@@ -515,6 +521,7 @@ Tree.setup({
                 local window_h_int = floor(window_h)
                 local center_x = (screen_w - window_w) / 2
                 local center_y = ((rows - window_h) / 2) - cmdh
+
                 return {
                     border = 'rounded',
                     relative = 'editor',
@@ -529,23 +536,20 @@ Tree.setup({
         width = get_view_width_max,
 
         cursorline = true,
-        preserve_window_proportions = true,
+        preserve_window_proportions = false,
         number = false,
-        relativenumber = false,
         signcolumn = 'yes',
     },
 
     diagnostics = {
         enable = true,
+
+        show_on_dirs = true,
+        show_on_open_dirs = true,
+
         severity = {
-            min = dWARN,
-            max = dERROR,
-        },
-        icons = {
-            hint = '',
-            info = '',
-            warning = '',
-            error = '',
+            min = D_WARN,
+            max = D_ERR,
         },
     },
 
@@ -558,6 +562,37 @@ Tree.setup({
     renderer = {
         add_trailing = false,
         full_name = true,
+
+        special_files = {
+            '.clang-tidy',
+            '.clangd',
+            '.editorconfig',
+            '.gitignore',
+            '.luarc.json',
+            '.pre-commit-config.yaml',
+            '.pre-commit-config.yml',
+            '.stylua.toml',
+            '.vscode',
+            'Cargo.toml',
+            'LICENSE',
+            'Makefile',
+            'Pipfile',
+            'README.md',
+            'package.json',
+            'requirements.txt',
+            'stylua.toml',
+        },
+
+        highlight_git = 'icon',
+        highlight_diagnostics = 'all',
+        highlight_opened_files = 'name',
+        highlight_modified = 'all',
+        highlight_hidden = 'icon',
+        highlight_bookmarks = 'name',
+
+        hidden_display = 'all',
+
+        symlink_destination = true,
 
         decorators = {
             'Git',
@@ -587,8 +622,6 @@ Tree.setup({
             },
         },
 
-        symlink_destination = true,
-
         icons = {
             web_devicons = {
                 file = { enable = true, color = true },
@@ -596,19 +629,21 @@ Tree.setup({
             },
 
             git_placement = 'signcolumn',
-            modified_placement = 'before',
+            hidden_placement = 'before',
+            modified_placement = 'right_align',
             diagnostics_placement = 'after',
             bookmarks_placement = 'before',
 
             symlink_arrow = ' ➛ ',
             show = {
+                bookmarks = true,
+                diagnostics = true,
                 file = true,
                 folder = true,
                 folder_arrow = true,
                 git = true,
+                hidden = false,
                 modified = true,
-                diagnostics = true,
-                bookmarks = true,
             },
 
             glyphs = {
@@ -643,6 +678,14 @@ Tree.setup({
         git_ignored = false,
         no_buffer = false,
     },
+
+    tab = {
+        sync = {
+            open = true,
+            close = false,
+        },
+    },
+
     live_filter = {
         prefix = '[FILTER]: ',
         always_show_folders = true,
@@ -655,6 +698,18 @@ Tree.setup({
         show_on_dirs = true,
         show_on_open_dirs = true,
     },
+
+    help = {
+        sort_by = 'desc',
+    },
+
+    ui = {
+        confirm = {
+            remove = true,
+            trash = false,
+            default_yes = true,
+        },
+    },
 })
 
 -- Auto-open file after creation
@@ -662,14 +717,16 @@ Api.events.subscribe(Api.events.Event.FileCreated, function(file)
     vim.cmd.edit(vim.fn.fnameescape(file.fname))
 end)
 
+local group = augroup('NvimTree.Au', { clear = true })
+
 ---@type AuDict
 local au_cmds = {
     ['VimEnter'] = {
-        group = augroup('NvimTree.Au', { clear = false }),
+        group = group,
         callback = tree_open,
     },
     ['WinClosed'] = {
-        group = augroup('NvimTree.Au', { clear = false }),
+        group = group,
         nested = true,
         callback = function()
             local nwin = floor(tonumber(fn.expand('<amatch>')))
@@ -682,13 +739,13 @@ local au_cmds = {
         end,
     },
     ['BufEnter'] = {
-        group = augroup('NvimTree.Au', { clear = false }),
+        group = group,
         pattern = 'NvimTree*',
         callback = tree_open,
     },
 }
 
-User.util.au.au_from_dict(au_cmds)
+au(au_cmds)
 
 ---@type HlDict
 local hl_groups = {
