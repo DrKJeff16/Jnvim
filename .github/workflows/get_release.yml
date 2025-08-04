@@ -62,8 +62,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./Jnvim.tar.xz
-          asset_name: Jnvim.tar.xz
+          asset_path: ./Jnvim.tar.gz
+          asset_name: Jnvim.tar.gz
           asset_content_type: application/gzip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
