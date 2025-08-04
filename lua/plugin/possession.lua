@@ -3,7 +3,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 local desc = User.maps.kmap.desc
 
 if not exists('nvim-possession') then
@@ -42,7 +41,7 @@ PSSN.setup({
         end
 
         for _, bufnr in next, vim.api.nvim_list_bufs() do
-            if is_nil(visible_buffers[bufnr]) then -- Delete buffer if not visible
+            if visible_buffers[bufnr] == nil then -- Delete buffer if not visible
                 pcall(vim.cmd.bdel, bufnr)
             end
         end

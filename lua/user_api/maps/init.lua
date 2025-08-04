@@ -3,7 +3,6 @@
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
 
-local is_nil = Value.is_nil
 local is_tbl = Value.is_tbl
 local is_str = Value.is_str
 local is_int = Value.is_int
@@ -131,7 +130,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
                     goto continue
                 end
 
-                if not is_nil(v[1]) then
+                if v[1] ~= nil then
                     table.insert(tbl, v[1])
                 end
 
@@ -190,13 +189,13 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
                 goto continue
             end
 
-            if not is_nil(v[1]) then
+            if v[1] ~= nil then
                 table.insert(tbl, v[1])
             end
 
             tbl.mode = mode
 
-            if not is_nil(bufnr) then
+            if bufnr ~= nil then
                 tbl.buffer = bufnr
             end
 

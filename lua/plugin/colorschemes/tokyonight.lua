@@ -20,7 +20,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
@@ -127,7 +126,7 @@ function TokyoNight:setup(variant, transparent, override)
         },
 
         plugins = {
-            all = not is_nil(package.loaded.lazy),
+            all = package.loaded.lazy ~= nil,
             auto = true,
         },
     }

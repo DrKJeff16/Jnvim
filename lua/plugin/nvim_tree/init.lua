@@ -42,7 +42,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_int = Check.value.is_int
 local empty = Check.value.empty
@@ -239,7 +238,7 @@ local function edit_or_open()
 
     edit()
 
-    if not is_nil(nodes) then
+    if nodes ~= nil then
         close()
     end
 end
@@ -254,7 +253,7 @@ local function vsplit_preview()
     ---@type AnyFunc
     local vert = Tnode.open.vertical
 
-    if not is_nil(nodes) then
+    if nodes ~= nil then
         edit()
     else
         vert()

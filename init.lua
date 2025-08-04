@@ -16,10 +16,9 @@ local Commands = require('user_api.commands')
 local Distro = require('user_api.distro')
 
 local desc = require('user_api.maps.kmap').desc
-local is_nil = Check.value.is_nil
 
-_G.is_windows = not is_nil((vim.uv or vim.loop).os_uname().version:match('Windows'))
-_G.in_console = require('user_api.check').in_console
+_G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
+_G.in_console = Check.in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
 

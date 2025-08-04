@@ -8,7 +8,6 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local type_not_empty = Check.value.type_not_empty
@@ -51,7 +50,7 @@ local function src(mini_mod, opts)
         local ok
         local _
 
-        if is_nil(opts) then
+        if opts == nil then
             ok, _ = pcall(M.setup)
         else
             ok, _ = pcall(M.setup, opts)

@@ -9,9 +9,11 @@ end
 
 -- Exitstance checks
 -- ---
+-- ## Description
 --
 -- This contains many checkers for environment, modules, namespaces, etc.
 -- Also, simplified Vim functions can be found here
+-- ---
 ---@class User.Check.Existance
 ---@field module fun(mod: string): boolean
 ---@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>

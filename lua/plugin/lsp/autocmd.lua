@@ -13,8 +13,8 @@ local Check = User.check
 local Au = User.util.au
 local Notify = User.util.notify
 
-local is_nil = Check.value.is_nil
 local is_tbl = Check.value.is_tbl
+local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 local au = Au.au_repeated
 local notify = Notify.notify
@@ -188,7 +188,7 @@ Autocmd.autocommands = {
 ---@param O? table
 ---@return table|Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
 function Autocmd.new(O)
-    O = is_nil(O) and O or {}
+    O = type_not_empty('table', O) and O or {}
 
     return setmetatable(O, {
         __index = Autocmd,

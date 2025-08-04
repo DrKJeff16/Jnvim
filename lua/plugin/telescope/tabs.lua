@@ -1,5 +1,3 @@
----@diagnostic disable:need-check-nil
-
 local User = require('user_api')
 local Check = User.check
 
@@ -11,6 +9,7 @@ end
 
 local Tabs = require('telescope-tabs')
 
+---@class TelescopeTabs
 local TelescopeTabs = {}
 
 function TelescopeTabs.create()

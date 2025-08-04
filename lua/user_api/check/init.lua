@@ -29,32 +29,10 @@
 ---@type User.Check
 local Check = {}
 
---- Value checking utilities
---- ---
---- ## Description
----
---- Pretty much reserved for data checking, type checking and conditional operations
---- ---
 Check.value = require('user_api.check.value')
 
---- Exitstance checks
---- ---
---- ## Description
----
---- This contains many checkers for environment, modules, namespaces, etc.
---- Also, simplified Vim functions can be found here
 Check.exists = require('user_api.check.exists')
 
---- Check whether Nvim is running in a Linux Console rather than a `pty`
---- ---
---- ## Description
----
---- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
---- ---
---- ## Return
----
---- A boolean that confirms whether the environment is a Linux Console
---- ---
 ---@return boolean
 function Check.in_console()
     local fields = Check.value.fields

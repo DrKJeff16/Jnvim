@@ -1,5 +1,3 @@
----@diagnostic disable:need-check-nil
-
 ---@class KeyMapArgs
 ---@field lhs string
 ---@field rhs string|fun()
@@ -21,7 +19,6 @@ local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
-local is_nil = Check.value.is_nil
 local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
@@ -168,7 +165,7 @@ end
 if exists('plugin.telescope.file_browser') then
     local pfx = require('plugin.telescope.file_browser')
 
-    if not is_nil(pfx) then
+    if pfx ~= nil then
         Opts.extensions.file_browser = pfx.file_browser
         pfx.loadkeys()
     end
@@ -183,7 +180,7 @@ end
 if exists('plugin.telescope.cc') then
     local pfx = require('plugin.telescope.cc')
 
-    if not is_nil(pfx) then
+    if pfx ~= nil then
         Opts.extensions.conventional_commits = pfx.cc
         pfx.loadkeys()
     end
@@ -192,7 +189,7 @@ end
 if exists('plugin.telescope.tabs') then
     local pfx = require('plugin.telescope.tabs')
 
-    if not is_nil(pfx) then
+    if pfx ~= nil then
         pfx.create()
         pfx.loadkeys()
     end

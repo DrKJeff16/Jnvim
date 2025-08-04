@@ -29,25 +29,13 @@ local WARN = vim.log.levels.WARN
 
 local tbl_isempty = vim.tbl_isempty
 
--- Value Checking utilities
--- ---
+--- Value checking utilities
+--- ---
+--- ## Description
+---
+--- Pretty much reserved for data checking, type checking and conditional operations
+--- ---
 ---@class User.Check.Value
--- Checks whether a value is `nil`, i.e. non existant or explicitly set as `nil`
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's nil.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as non-existant and the function will return `true`
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element doesn't exist or is `nil`, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is `nil` or doesn't exist
--- ---
----@field is_nil ValueFunc
 -- Checks whether a value is a string
 -- ---
 -- ## Parameters
@@ -197,34 +185,6 @@ local tbl_isempty = vim.tbl_isempty
 ---@field num_range fun(num: number, low: number, high: number, eq: EqTbl?): boolean
 local Value = {}
 
----@param var any
----@param multiple? boolean
----@return boolean
-function Value.is_nil(var, multiple)
-    multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
-
-    if not multiple then
-        return var == nil
-    end
-
-    -- Treat `var` as a table from here on
-    if type(var) ~= 'table' or tbl_isempty(var) then
-        return false
-    end
-
-    for _, v in next, var do
-        if v ~= nil then
-            vim.notify(
-                '(user_api.check.value.is_nil): Input is not a table (`multiple` is true)',
-                WARN
-            )
-            return false
-        end
-    end
-
-    return true
-end
-
 ---@param t Types `'thread'|'userdata'` are not parsed
 ---@return ValueFunc
 local function type_fun(t)
@@ -252,20 +212,19 @@ local function type_fun(t)
     end
 
     return function(var, multiple)
-        multiple = (not Value.is_nil(multiple) and type(multiple) == 'boolean') and multiple
-            or false
+        multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
 
         if not multiple then
-            return not Value.is_nil(var) and type(var) == t
+            return var ~= nil and type(var) == t
         end
 
         -- Treat `var` as a table from here on
-        if Value.is_nil(var) or type(var) ~= 'table' then
+        if var == nil or type(var) ~= 'table' then
             return false
         end
 
         for _, v in next, var do
-            if Value.is_nil(t) or type(v) ~= t then
+            if t == nil or type(v) ~= t then
                 vim.notify(
                     '(user_api.check.value.'
                         .. name
@@ -458,7 +417,7 @@ function Value.fields(field, T)
     end
 
     if not is_tbl(field) then
-        return not Value.is_nil(T[field])
+        return T[field] ~= nil
     end
 
     for _, v in next, field do
@@ -568,7 +527,7 @@ function Value.single_type_tbl(type_str, T)
     end
 
     for _, v in next, T do
-        if type_str == 'nil' and not Value.is_nil(v) then
+        if type_str == 'nil' and v ~= nil then
             return false
         end
         if type(v) ~= type_str then
@@ -583,10 +542,9 @@ end
 ---@param data string|number|table
 ---@return boolean
 function Value.type_not_empty(type_str, data)
-    local is_nil = Value.is_nil
     local empty = Value.empty
 
-    if is_nil(data) then
+    if data == nil then
         return false
     end
 
