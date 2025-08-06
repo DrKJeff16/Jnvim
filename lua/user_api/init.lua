@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@module 'user_api.check'
 ---@module 'user_api.commands'
 ---@module 'user_api.config.keymaps'
@@ -11,34 +9,10 @@
 ---@module 'user_api.update'
 ---@module 'user_api.util'
 
----@class User.Config
----@field keymaps table|User.Config.Keymaps|User.Config.Keymaps.CallerFun
----@field neovide User.Config.Neovide
-
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
 ---@class UserAPI
----@field paths string[]|table
----@field FAILED string[]|table
----@field check User.Check
----@field config User.Config
----@field commands User.Commands
----@field distro User.Distro|User.Distro.CallerFun
----@field highlight User.Hl
----@field maps User.Maps
----@field opts User.Opts|User.Opts.CallerFun
----@field update User.Update
----@field util User.Util
----@field registered_plugins string[]
----@field register_plugin fun(pathstr: string, index: integer?)
----@field deregister_plugin fun(pathstr: string)
----@field reload_plugins fun(): boolean,(string[]|table)
----@field setup fun()
----@field plugin_maps fun()
----@field new fun(O: table?): table|UserAPI
----@field print_loaded_plugins fun()
----@field sleep fun(t: number)
 local User = {}
 
 User.check = require('user_api.check')
@@ -50,26 +24,27 @@ User.commands = require('user_api.commands')
 User.update = require('user_api.update')
 User.highlight = require('user_api.highlight')
 
+---@class User.Config
 User.config = {}
+
 User.config.keymaps = require('user_api.config.keymaps')
+
+---@type User.Config.Neovide
 User.config.neovide = require('user_api.config.neovide')
 
+---@type string[]|table
 User.paths = {}
+
+---@type string[]|table
 User.FAILED = {}
+
+---@type string[]|table
 User.registered_plugins = {}
-
--- TODO: This needs to be fixed
----@param t number
-function User.sleep(t)
-    local sec = tonumber(os.clock() + t)
-
-    while os.clock() < sec do
-    end
-end
 
 ---@param pathstr string
 ---@param index? integer
 function User.register_plugin(pathstr, index)
+    local _NAME = 'user_api.register_plugin'
     local Value = User.check.value
 
     local notify = User.util.notify.notify
@@ -101,7 +76,13 @@ function User.register_plugin(pathstr, index)
             table.insert(User.registered_plugins, index, pathstr)
 
             notify(
-                string.format('Moved `%s` from index `%d` to `%d`', pathstr, old_idx, index),
+                string.format(
+                    '(%s): Moved `%s` from index `%d` to `%d`',
+                    _NAME,
+                    pathstr,
+                    old_idx,
+                    index
+                ),
                 INFO,
                 {
                     title = 'User API - register_plugin()',
@@ -133,10 +114,10 @@ function User.register_plugin(pathstr, index)
     end
 
     notify(warning, WARN, {
-        hide_from_history = false,
+        title = string.format('(%s)', _NAME),
         animate = false,
-        timeout = 1000,
-        title = '(user_api.register_plugin)',
+        timeout = 1500,
+        hide_from_history = false,
     })
 end
 
@@ -156,6 +137,7 @@ function User.deregister_plugin(pathstr)
     end
 
     local idx = 0
+
     for i, v in next, User.registered_plugins do
         if v == pathstr then
             idx = i
@@ -199,16 +181,15 @@ function User.print_loaded_plugins()
     msg = msg .. '\n}'
 
     notify(msg, INFO, {
-        animate = true,
-        hide_from_history = true,
-        timeout = 2250,
         title = 'Loaded Plugins',
+        animate = true,
+        timeout = 2250,
+        hide_from_history = true,
     })
 end
 
-function User.plugin_maps()
+function User.setup_maps()
     local Keymaps = User.config.keymaps
-
     local desc = User.maps.kmap.desc
     local type_not_empty = User.check.value.type_not_empty
     local displace_letter = User.util.displace_letter
@@ -282,30 +263,30 @@ function User.setup()
         ['<leader>UPr'] = {
             function()
                 notify('Reloading...', INFO, {
-                    hide_from_history = true,
                     title = 'User API',
-                    timeout = 1000,
                     animate = true,
+                    timeout = 1000,
+                    hide_from_history = true,
                 })
 
                 local res, failed = User.reload_plugins()
 
                 if not res then
                     notify(insp(failed), 'error', {
-                        hide_from_history = false,
-                        timeout = 2250,
                         title = '[User API]: PLUGINS FAILED TO RELOAD',
                         animate = true,
+                        timeout = 2250,
+                        hide_from_history = false,
                     })
 
                     return
                 end
 
                 notify('Success!', INFO, {
-                    hide_from_history = false,
-                    timeout = 1500,
                     title = '[User API]: PLUGINS SUCCESSFULLY RELOADED',
                     animate = true,
+                    timeout = 1500,
+                    hide_from_history = false,
                 })
             end,
             desc('Reload All Plugins'),
@@ -319,19 +300,15 @@ function User.setup()
     local Keymaps = User.config.keymaps
     Keymaps({ n = Keys })
 
-    User.plugin_maps()
+    User.setup_maps()
     User.update.setup_maps()
     User.commands.setup_keys()
     User.opts.setup_keys()
 end
 
----@param O? table
 ---@return table|UserAPI
-function User.new(O)
-    local is_tbl = User.check.value.is_tbl
-
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = User })
+function User.new()
+    return setmetatable({}, { __index = User })
 end
 
 return User

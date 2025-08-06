@@ -8,10 +8,6 @@
 
 ---@alias DirectionFun fun(t: AnyDict): res: AnyDict
 
----@class DirectionFuns
----@field r DirectionFun
----@field l DirectionFun
-
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
 local optget = vim.api.nvim_get_option_value
@@ -102,7 +98,7 @@ function Util.mv_tbl_values(T, steps, direction)
     steps = steps > 0 and steps or 1
     direction = (direction ~= nil and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
 
-    ---@type DirectionFuns
+    ---@class DirectionFuns
     local direction_funcs = {
 
         ---@type DirectionFun
@@ -416,6 +412,28 @@ function Util.setup_autocmd()
                             expandtab = true,
                             autoindent = true,
                             filetype = 'cpp',
+                        }
+
+                        for opt, val in next, opt_dict do
+                            optset(opt, val, setopt_opts)
+                        end
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = {
+                        '*.md',
+                        '*.mdx',
+                    },
+                    callback = function(ev)
+                        ---@type vim.api.keyset.option
+                        local setopt_opts = { buf = ev.buf }
+                        local opt_dict = {
+                            tabstop = 2,
+                            shiftwidth = 2,
+                            softtabstop = 2,
+                            expandtab = true,
+                            autoindent = true,
                         }
 
                         for opt, val in next, opt_dict do
