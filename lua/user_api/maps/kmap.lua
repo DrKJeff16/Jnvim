@@ -36,7 +36,7 @@
 
 ---@alias AllMaps table<string, KeyMapRhsOptsArr|RegKey|RegPfx>
 
----@class AllModeMaps
+---@class (exact) AllModeMaps
 ---@field n? AllMaps
 ---@field i? AllMaps
 ---@field v? AllMaps

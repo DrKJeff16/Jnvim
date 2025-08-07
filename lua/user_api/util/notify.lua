@@ -1,6 +1,3 @@
----@diagnostic disable:missing-fields
----@diagnostic disable:missing-parameter
-
 ---@module 'notify'
 
 ---@alias VimNotifyLvl
@@ -31,25 +28,6 @@
 ---@field hide_from_history? boolean Defaults to `false`
 ---@field animate? boolean Defaults to `true`
 
----@class User.Util.Notify.Levels
----@field [0] 'trace'
----@field [1] 'debug'
----@field [2] 'info'
----@field [3] 'warn'
----@field [4] 'error'
----@field [5] 'off'
----@field TRACE 0
----@field DEBUG 1
----@field INFO 2
----@field WARN 3
----@field ERROR 4
----@field OFF 5
-
----@class User.Util.Notify
----@field Opts notify.Options
----@field Levels User.Util.Notify.Levels
----@field notify fun(msg: string, lvl: (NotifyLvl|VimNotifyLvl)?, opts: table|notify.Options?)
-
 local TRACE = vim.log.levels.TRACE -- `0`
 local DEBUG = vim.log.levels.DEBUG -- `1`
 local INFO = vim.log.levels.INFO -- `2`
@@ -67,10 +45,11 @@ local function exists(mod)
     return ok
 end
 
----@type User.Util.Notify
+---@class User.Util.Notify
 local Notify = {}
 
 ---@type notify.Options
+---@diagnostic disable-next-line:missing-fields
 Notify.Opts = {
     animate = false,
     hide_from_history = false,
@@ -84,7 +63,7 @@ Notify.Opts = {
     -- keep = function() end,
 }
 
----@type User.Util.Notify.Levels
+---@class User.Util.Notify.Levels
 Notify.Levels = {
     [TRACE] = 'trace',
     [DEBUG] = 'debug',
@@ -145,31 +124,9 @@ function Notify.notify(msg, lvl, opts)
     end
 end
 
----@param msg string
----@param lvl? NotifyLvl|VimNotifyLvl
----@param opts? table|notify.Options
-function _G.anotify(msg, lvl, opts)
-    local func = function()
-        Notify.notify(msg, lvl or 'info', opts or {})
-    end
-    require('plenary.async').run(func)
-end
-
----@param msg string
----@param lvl? NotifyLvl|VimNotifyLvl
----@param opts? table|notify.Options
-function _G.insp_anotify(msg, lvl, opts)
-    local func = function()
-        Notify.notify((inspect or vim.inspect)(msg), lvl or 'info', opts or {})
-    end
-
-    require('plenary.async').run(func)
-end
-
 ---@param lvl VimNotifyLvl
 ---@return fun(args: vim.api.keyset.create_user_command.command_args)
 local function gen_cmd_lvl(lvl)
-    ---@param args vim.api.keyset.create_user_command.command_args)
     return function(args)
         local notify = Notify.notify
         local data = args.args

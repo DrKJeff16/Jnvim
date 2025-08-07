@@ -117,17 +117,10 @@ Keymaps({
                 local cursor_set = vim.api.nvim_win_set_cursor
                 local cursor_get = vim.api.nvim_win_get_cursor
 
-                local notify = require('user_api.util.notify').notify
-
                 local buf = curr_buf()
 
                 if not opt_get('modifiable', { buf = buf }) then
-                    notify('Unable to indent. File is not modifiable!', ERROR, {
-                        title = 'Vim - Indent',
-                        animate = true,
-                        timeout = 2500,
-                        hide_from_history = false,
-                    })
+                    vim.notify('Unable to indent. File is not modifiable!', ERROR)
                 end
 
                 local win = vim.api.nvim_get_current_win()
@@ -151,10 +144,6 @@ Keymaps({
             desc('Run `:Notifications`'),
         },
     },
-    v = {
-        ['<leader>S'] = { ':sort!<CR>', desc('Sort Selection (Reverse)') },
-        ['<leader>s'] = { ':sort<CR>', desc('Sort Selection') },
-    },
 }, nil, true)
 
 ---@type table|CscMod|fun(color?: string, ...)
@@ -168,7 +157,7 @@ if Alpha ~= nil then
 end
 
 -- Call the User API file associations and other autocmds
-Util:setup_autocmd()
+Util.setup_autocmd()
 
 -- NOTE: See `:h g:markdown_minlines`
 vim.g.markdown_minlines = 500
@@ -176,14 +165,13 @@ vim.g.markdown_minlines = 500
 vim.cmd.packadd('nohlsearch')
 
 -- Define any custom commands
-Commands:setup()
+Commands.setup()
 
 -- Mappings related specifically to `user_api`
 User.setup() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
 
 Neovide:setup()
 
----@type Config.Lazy.LSP
 local Lsp = L.lsp()
 Lsp()
 

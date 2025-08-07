@@ -1,21 +1,14 @@
 --- Modify runtimepath to also search the system-wide Vim directory
 -- (eg. for Vim runtime files from Termux packages)
 
----@diagnostic disable:missing-fields
-
----@alias User.Distro.Termux.CallerFun fun()
-
 local is_dir = require('user_api.check.exists').vim_isdir
 
 local environ = vim.fn.environ
 
 ---@class User.Distro.Termux
----@field PREFIX string|''
----@field rtpaths string[]
----@field validate fun(): boolean
----@field new fun(self: User.Distro.Termux?): table|User.Distro.Termux|User.Distro.Termux.CallerFun
 local Termux = {}
 
+---@type string|''
 Termux.PREFIX = vim.fn.has_key(environ(), 'PREFIX') and environ()['PREFIX'] or ''
 
 _G.PREFIX = Termux.PREFIX
@@ -54,13 +47,9 @@ function Termux.validate()
     return true
 end
 
----@param O? table
----@return table|User.Distro.Termux|User.Distro.Termux.CallerFun
-function Termux.new(O)
-    local is_tbl = require('user_api.check.value').is_tbl
-
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, {
+---@return table|User.Distro.Termux|fun()
+function Termux.new()
+    return setmetatable({}, {
         __index = Termux,
 
         ---@param self User.Distro.Termux
@@ -74,7 +63,8 @@ function Termux.new(O)
             end
 
             for _, path in next, vim.deepcopy(self.rtpaths) do
-                if is_dir(path) and not vim.tbl_contains(vim.opt.rtp:get(), path) then ---@diagnostic disable-line
+                ---@diagnostic disable-next-line:param-type-mismatch
+                if is_dir(path) and not vim.tbl_contains(vim.opt.rtp:get(), path) then
                     vim.opt.rtp:append(path)
                 end
             end

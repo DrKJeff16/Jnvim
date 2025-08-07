@@ -5,12 +5,7 @@
 
 local WARN = vim.log.levels.WARN
 
----@alias User.Distro.Archlinux.CallerFun fun()
-
 ---@class User.Distro.Archlinux
----@field rtpaths string[]
----@field validate fun(): boolean
----@field new fun(self: User.Distro.Archlinux?): table|User.Distro.Archlinux|User.Distro.Archlinux.CallerFun
 local Archlinux = {}
 
 Archlinux.rtpaths = {
@@ -46,13 +41,9 @@ function Archlinux.validate()
     return true
 end
 
----@param O? table
----@return table|User.Distro.Archlinux|User.Distro.Archlinux.CallerFun
-function Archlinux.new(O)
-    local is_tbl = require('user_api.check.value').is_tbl
-
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, {
+---@return table|User.Distro.Archlinux|fun()
+function Archlinux.new()
+    return setmetatable({}, {
         __index = Archlinux,
 
         ---@param self User.Distro.Archlinux
@@ -74,11 +65,9 @@ function Archlinux.new(O)
             local ok, _ = pcall(vim.cmd, 'runtime! archlinux.vim')
 
             if not ok then
-                vim.notify('BAD SETUP FOR Archlinux!', WARN)
+                vim.notify('BAD SETUP FOR Arch Linux!', WARN)
                 return
             end
-
-            _G.I_USE_ARCH = 'BTW'
         end,
     })
 end

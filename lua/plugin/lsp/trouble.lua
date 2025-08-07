@@ -1,12 +1,3 @@
----@diagnostic disable:missing-fields
-
----@alias Lsp.SubMods.Trouble.CallerFun fun(override: table|trouble.Config?)
-
----@class Lsp.SubMods.Trouble
----@field Opts trouble.Config
----@field Keys AllModeMaps
----@field new fun(O: table?): table|Lsp.SubMods.Trouble|Lsp.SubMods.Trouble.CallerFun
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
@@ -21,7 +12,7 @@ end
 
 local trouble = require('trouble')
 
----@type Lsp.SubMods.Trouble|fun(override: table|trouble.Config?)
+---@class Lsp.SubMods.Trouble
 local Trouble = {}
 
 ---@type trouble.Config
@@ -122,6 +113,7 @@ Trouble.Opts = {
     },
     ---@type table<string, trouble.Mode>
     modes = {
+        ---@diagnostic disable-next-line:missing-fields
         symbols = {
             desc = 'document symbols',
             mode = 'lsp_document_symbols',
@@ -204,36 +196,46 @@ Trouble.Keys = {
     ['<leader>lx'] = { group = '+Trouble' },
 
     ['<leader>lxx'] = {
-        ':Trouble diagnostics toggle filter.buf=0<CR>',
+        function()
+            vim.cmd.Trouble(
+                'diagnostics toggle filter.buf=' .. tostring(vim.api.nvim_get_current_buf())
+            )
+        end,
         desc('Toggle Diagnostics'),
     },
     ['<leader>lxs'] = {
-        ':Trouble symbols toggle focus=false<CR>',
+        function()
+            vim.cmd.Trouble('symbols toggle focus=false')
+        end,
         desc('Toggle Symbols'),
     },
     ['<leader>lxl'] = {
-        ':Trouble lsp toggle focus=false<CR>',
+        function()
+            vim.cmd.Trouble('lsp toggle focus=false')
+        end,
         desc('Toggle LSP'),
     },
     ['<leader>lxL'] = {
-        ':Trouble loclist toggle<CR>',
+        function()
+            vim.cmd.Trouble('loclist toggle')
+        end,
         desc('Toggle Loclist'),
     },
     ['<leader>lxr'] = {
-        ':Trouble lsp_references<CR>',
+        function()
+            vim.cmd.Trouble('lsp_references')
+        end,
         desc('Toggle LSP References'),
     },
 }
 
----@param O? table
----@return table|Lsp.SubMods.Trouble|Lsp.SubMods.Trouble.CallerFun
-function Trouble.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, {
+---@return table|Lsp.SubMods.Trouble|fun(override: trouble.Config?)
+function Trouble.new()
+    return setmetatable({}, {
         __index = Trouble,
 
         ---@param self Lsp.SubMods.Trouble
-        ---@param override table|trouble.Config?
+        ---@param override? trouble.Config
         __call = function(self, override)
             override = is_tbl(override) and override or {}
 

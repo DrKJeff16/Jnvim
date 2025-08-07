@@ -10,10 +10,6 @@
 ---@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
 ---@alias LazyPlugs (LazyPlug)[]
 
----@alias Config.Lazy.LSP table|Lsp.Server|fun()
----@alias Config.Lazy.Alpha nil|table|AlphaCaller|AlphaFun
----@alias Config.Lazy.Colorschemes fun(): (table|CscMod|fun(color: string?, ...: any))
-
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
@@ -169,40 +165,65 @@ local Keys = {
     ['<leader>L'] = { group = '+Lazy' },
     ['<leader>Le'] = { group = '+Edit Lazy File' },
 
-    ['<leader>Lee'] = { key_variant('ed'), desc('Open `Lazy` File') },
-    ['<leader>Les'] = { key_variant('split'), desc('Open `Lazy` File Horizontal Window') },
-    ['<leader>Let'] = { key_variant('tabnew'), desc('Open `Lazy` File Tab') },
-    ['<leader>Lev'] = { key_variant('vsplit'), desc('Open `Lazy`File Vertical Window') },
+    ['<leader>Lee'] = {
+        key_variant('ed'),
+        desc('Open `Lazy` File'),
+    },
+    ['<leader>Les'] = {
+        key_variant('split'),
+        desc('Open `Lazy` File Horizontal Window'),
+    },
+    ['<leader>Let'] = {
+        key_variant('tabnew'),
+        desc('Open `Lazy` File Tab'),
+    },
+    ['<leader>Lev'] = {
+        key_variant('vsplit'),
+        desc('Open `Lazy`File Vertical Window'),
+    },
 
-    ['<leader>Ll'] = { Lazy.show, desc('Show Lazy Home') },
-    ['<leader>Ls'] = { Lazy.sync, desc('Sync Lazy Plugins') },
-    ['<leader>Lx'] = { Lazy.clear, desc('Clear Lazy Plugins') },
-    ['<leader>Lc'] = { Lazy.check, desc('Check Lazy Plugins') },
-    ['<leader>Li'] = { Lazy.install, desc('Install Lazy Plugins') },
+    ['<leader>Ll'] = {
+        Lazy.show,
+        desc('Show Lazy Home'),
+    },
+    ['<leader>Ls'] = {
+        Lazy.sync,
+        desc('Sync Lazy Plugins'),
+    },
+    ['<leader>Lx'] = {
+        Lazy.clear,
+        desc('Clear Lazy Plugins'),
+    },
+    ['<leader>Lc'] = {
+        Lazy.check,
+        desc('Check Lazy Plugins'),
+    },
+    ['<leader>Li'] = {
+        Lazy.install,
+        desc('Install Lazy Plugins'),
+    },
 
-    ['<leader>LL'] = { ':Lazy ', desc('Select `Lazy` Operation (Interactively)', false) },
+    ['<leader>LL'] = {
+        ':Lazy ',
+        desc('Select `Lazy` Operation (Interactively)', false),
+    },
 }
 
 Keymaps({ n = Keys })
 
--- List of manually-callable plugins
+---List of manually-callable plugins.
+--- ---
 ---@class Config.Lazy
----@field colorschemes Config.Lazy.Colorschemes
----@field lsp fun(): Config.Lazy.LSP
----@field alpha fun(): Config.Lazy.Alpha|nil
 local M = {}
 
----@return Config.Lazy.Colorschemes
 function M.colorschemes()
     return require('plugin.colorschemes')
 end
 
----@return Config.Lazy.LSP
 function M.lsp()
     return require('plugin.lsp')
 end
 
----@return Config.Lazy.Alpha
 function M.alpha()
     return require('plugin.alpha') or nil
 end

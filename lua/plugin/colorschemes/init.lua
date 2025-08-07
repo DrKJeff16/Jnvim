@@ -1,21 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@alias AllCsc
----|'catppuccin'
----|'dracula'
----|'gloombuddy'
----|'gruvbox'
----|'kanagawa'
----|'molokai'
----|'nightfox'
----|'oak'
----|'onedark'
----|'space_vim_dark'
----|'spaceduck'
----|'spacemacs'
----|'tokyonight'
----|'vscode'
-
 ---@alias AllColorSubMods
 ---|CpcSubMod
 ---|DraculaSubMod
@@ -32,30 +16,11 @@
 ---|SpaceDuckSubMod
 ---|SpacemacsSubMod
 
----@class CscMod
----@field OPTIONS (AllCsc)[]
----@field catppuccin CpcSubMod
----@field dracula DraculaSubMod
----@field gloombuddy GloombuddySubMod
----@field gruvbox GruvboxSubMod
----@field kanagawa KanagawaSubMod
----@field molokai MolokaiSubMod
----@field nightfox NFoxSubMod
----@field oak OakSubMod
----@field onedark ODSubMod
----@field space_vim_dark SpaceVimSubMod
----@field spaceduck SpaceDuckSubMod
----@field spacemacs SpacemacsSubMod
----@field tokyonight TNSubMod
----@field vscode VSCodeSubMod
----@field new fun(O: table?): CscMod|table|fun(color: string?, ...)
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
 local is_fun = Check.value.is_fun
-local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local capitalize = User.util.string.capitalize
@@ -64,10 +29,10 @@ local desc = User.maps.kmap.desc
 
 local ERROR = vim.log.levels.ERROR
 
----@type CscMod|fun(color: string?, ...)
+---@class CscMod
 local Colorschemes = {}
 
----@type (AllCsc)[]
+---@class AllCsc
 Colorschemes.OPTIONS = {
     'catppuccin',
     'tokyonight',
@@ -113,12 +78,9 @@ Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
----@param O? table
 ---@return CscMod|table|fun(color: string?, ...)
-function Colorschemes.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, {
-        ---@diagnostic disable-next-line:unused-local
+function Colorschemes.new()
+    return setmetatable({}, {
         __index = Colorschemes,
 
         __newindex = function(self, key, value)

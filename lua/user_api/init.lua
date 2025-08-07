@@ -48,7 +48,6 @@ function User.register_plugin(pathstr, index)
     local _NAME = 'user_api.register_plugin'
     local Value = User.check.value
 
-    local notify = User.util.notify.notify
     local is_int = Value.is_int
     local type_not_empty = Value.type_not_empty
     local tbl_contains = vim.tbl_contains
@@ -76,7 +75,7 @@ function User.register_plugin(pathstr, index)
         else
             table.insert(User.registered_plugins, index, pathstr)
 
-            notify(
+            vim.notify(
                 string.format(
                     '(%s): Moved `%s` from index `%d` to `%d`',
                     _NAME,
@@ -114,12 +113,7 @@ function User.register_plugin(pathstr, index)
         return
     end
 
-    notify(warning, WARN, {
-        title = string.format('(%s)', _NAME),
-        animate = false,
-        timeout = 1500,
-        hide_from_history = false,
-    })
+    vim.notify(warning, WARN)
 end
 
 ---@param pathstr string
@@ -169,8 +163,6 @@ function User.reload_plugins()
 end
 
 function User.print_loaded_plugins()
-    local notify = User.util.notify.notify
-
     local msg = '{'
 
     for _, v in next, User.registered_plugins do
@@ -179,12 +171,7 @@ function User.print_loaded_plugins()
 
     msg = msg .. '\n}'
 
-    notify(msg, INFO, {
-        title = 'Loaded Plugins',
-        animate = true,
-        timeout = 2250,
-        hide_from_history = true,
-    })
+    vim.notify(msg, INFO)
 end
 
 function User.setup_maps()
@@ -251,7 +238,6 @@ end
 
 function User.setup()
     local desc = User.maps.kmap.desc
-    local notify = User.util.notify.notify
     local insp = inspect or vim.inspect
 
     ---@type AllMaps
@@ -261,32 +247,17 @@ function User.setup()
 
         ['<leader>UPr'] = {
             function()
-                notify('Reloading...', INFO, {
-                    title = 'User API',
-                    animate = true,
-                    timeout = 1000,
-                    hide_from_history = true,
-                })
+                vim.notify('Reloading...', INFO)
 
                 local res, failed = User.reload_plugins()
 
                 if not res then
-                    notify(insp(failed), ERROR, {
-                        title = '[User API]: PLUGINS FAILED TO RELOAD',
-                        animate = true,
-                        timeout = 2250,
-                        hide_from_history = false,
-                    })
+                    vim.notify(insp(failed), ERROR)
 
                     return
                 end
 
-                notify('Success!', INFO, {
-                    title = '[User API]: PLUGINS SUCCESSFULLY RELOADED',
-                    animate = true,
-                    timeout = 1500,
-                    hide_from_history = false,
-                })
+                vim.notify('Success!', INFO)
             end,
             desc('Reload All Plugins'),
         },

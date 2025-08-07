@@ -1,39 +1,6 @@
----@diagnostic disable:missing-fields
----@diagnostic disable:inject-field
-
 ---@module 'lua.vim.lsp'
 ---@module 'lua.vim.diagnostic'
 ---@module 'lua.vim.lsp.diagnostic'
-
----@alias Lsp.Server.Key
----|'lua_ls'
----|'bashls'
----|'clangd'
----|'cmake'
----|'css_variables'
----|'cssls'
----|'docker_compose_language_service'
----|'dockerls'
----|'gh_actions_ls'
----|'html'
----|'jdtls'
----|'jsonls'
----|'julials'
----|'marksman'
----|'pylsp'
----|'rust_analyzer'
----|'taplo'
----|'texlab'
----|'vimls'
----|'yamlls'
----|string
-
----@class Lsp.Server
----@field Clients table<Lsp.Server.Key, vim.lsp.ClientConfig>
----@field client_names (string|Lsp.Server.Key)[]|table
----@field make_capabilities fun(T: table|lsp.ClientCapabilities?): lsp.ClientCapabilities
----@field populate fun(name: Lsp.Server.Key|string, client: table|vim.lsp.ClientConfig): (client: table|vim.lsp.ClientConfig)
----@field new fun(O: table?): table|Lsp.Server|fun()
 
 local User = require('user_api')
 local Check = User.check
@@ -45,26 +12,27 @@ local desc = User.maps.kmap.desc
 
 local in_tbl = vim.tbl_contains
 local mk_caps = vim.lsp.protocol.make_client_capabilities
+local d_extend = vim.tbl_deep_extend
+local copy = vim.deepcopy
 
 ---@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds()
 
----@type Lsp.Server|fun()
+---@class Lsp.Server
 local Server = {}
 
----@type (string|Lsp.Server.Key)[]|table
+---@type string[]|table
 Server.client_names = {}
 
----@type Lsp.Server.Clients
 Server.Clients = require('plugin.lsp.server_config')
 
----@param T? table|lsp.ClientCapabilities
----@return lsp.ClientCapabilities
+---@param T? lsp.ClientCapabilities
+---@return lsp.ClientCapabilities caps
 function Server.make_capabilities(T)
     T = is_tbl(T) and T or {}
 
-    local caps = vim.tbl_deep_extend('keep', T, mk_caps())
+    local caps = d_extend('keep', T, mk_caps())
 
     if not exists('blink.cmp') then
         return caps
@@ -72,71 +40,105 @@ function Server.make_capabilities(T)
 
     local blink_caps = require('blink.cmp').get_lsp_capabilities
 
-    caps = vim.tbl_deep_extend('keep', vim.deepcopy(caps), blink_caps({}, true))
+    caps = d_extend('keep', copy(caps), blink_caps({}, true))
 
     return caps
 end
 
----@param name Lsp.Server.Key|string
----@param client table|vim.lsp.ClientConfig
----@return table|vim.lsp.ClientConfig client
+---@param name string
+---@param client vim.lsp.ClientConfig
+---@return vim.lsp.ClientConfig client
 function Server.populate(name, client)
     if type_not_empty('table', client.capabilities) then
-        local old_caps = vim.deepcopy(client.capabilities)
+        local old_caps = copy(client.capabilities)
         local caps = Server.make_capabilities(old_caps)
 
-        client.capabilities = vim.tbl_deep_extend('keep', old_caps, caps)
+        client.capabilities = d_extend('keep', old_caps, caps)
     else
         client.capabilities = Server.make_capabilities()
     end
 
     if in_tbl({ 'html', 'jsonls' }, name) then
-        client.capabilities.textDocument.completion.completionItem.snippetSupport = true
+        client.capabilities = d_extend('force', copy(client.capabilities), {
+            textDocument = {
+                completion = {
+                    completionItem = {
+                        snippetSupport = true,
+                    },
+                },
+            },
+        })
     end
 
     if name == 'rust_analyzer' then
-        client.capabilities.experimental = {
-            serverStatusNotification = true,
-        }
+        client.capabilities = d_extend('force', copy(client.capabilities), {
+            experimental = {
+                serverStatusNotification = true,
+            },
+        })
     end
 
     if name == 'clangd' then
-        client.capabilities.offsetEncoding = { 'utf-8', 'utf-16' }
-        client.capabilities.textDocument.completion.editsNearCursor = true
+        client.capabilities = d_extend('force', copy(client.capabilities), {
+            offsetEncoding = { 'utf-8', 'utf-16' },
+            textDocument = {
+                completion = {
+                    editsNearCursor = true,
+                },
+            },
+        })
     end
 
     if name == 'gh_actions_ls' then
-        client.capabilities.workspace.didChangeWorkspaceFolders = {
-            dynamicRegistration = true,
-        }
+        client.capabilities = d_extend('force', copy(client.capabilities), {
+            workspace = {
+                didChangeWorkspaceFolders = {
+                    dynamicRegistration = true,
+                },
+            },
+        })
     end
 
     if exists('schemastore') then
         local ss = require('schemastore')
 
         if name == 'jsonls' then
-            client.settings = is_tbl(client.settings) and client.settings or { json = {} }
-            client.settings.json = is_tbl(client.settings.json) and client.settings.json or {}
-            client.settings.json.schemas = ss.json.schemas()
-            client.settings.json.validate = { enable = true }
+            if client.settings == nil then
+                client.settings = { json = {} }
+            elseif client.settings.json == nil then
+                client.settings.json = {}
+            end
+
+            client.settings = d_extend('force', copy(client.settings), {
+                json = {
+                    schemas = ss.json.schemas(),
+                    validate = { enable = true },
+                },
+            })
         end
 
         if name == 'yamlls' then
-            client.settings = is_tbl(client.settings) and client.settings or { yaml = {} }
-            client.settings.yaml = is_tbl(client.settings.yaml) and client.settings.yaml or {}
-            client.settings.yaml.schemaStore = { enable = false, url = '' }
-            client.settings.yaml.schemas = ss.yaml.schemas()
+            if client.settings == nil then
+                client.settings = { yaml = {} }
+            elseif client.settings.yaml == nil then
+                client.settings.yaml = {}
+            end
+
+            client.settings = d_extend('force', copy(client.settings), {
+                yaml = {
+                    schemaStore = { enable = false, url = '' },
+                    schemas = ss.yaml.schemas(),
+                },
+            })
         end
     end
 
     return client
 end
 
----@param O? table
 ---@return table|Lsp.Server|fun()
-function Server.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, {
+function Server.new()
+    return setmetatable({}, {
         __index = Server,
 
         ---@param self Lsp.Server

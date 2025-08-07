@@ -1,12 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@alias Lsp.SubMods.Autocmd.CallerFun fun(override: AuRepeat?)
-
----@class Lsp.SubMods.Autocmd
----@field AUKeys AllModeMaps
----@field autocommands AuRepeat
----@field new fun(O: table?): table|Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
@@ -14,11 +7,11 @@ local Au = User.util.au
 local Notify = User.util.notify
 
 local is_tbl = Check.value.is_tbl
-local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 local au = Au.au_repeated
 local notify = Notify.notify
 
+local curr_buf = vim.api.nvim_get_current_buf
 local augroup = vim.api.nvim_create_augroup
 local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend
@@ -40,21 +33,36 @@ local function print_workspace_folders()
     })
 end
 
----@type Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
+---@class Lsp.SubMods.Autocmd
 local Autocmd = {}
 
+---@type AllModeMaps
 Autocmd.AUKeys = {
     n = {
         ['<leader>lf'] = { group = '+File Operations' },
         ['<leader>lw'] = { group = '+Workspace' },
 
-        ['K'] = { vim.lsp.buf.hover, desc('Hover') },
-        -- ['<leader>lK'] = { vim.lsp.buf.hover, desc('Hover') },
+        ['K'] = {
+            vim.lsp.buf.hover,
+            desc('Hover'),
+        },
 
-        ['<leader>lfD'] = { vim.lsp.buf.declaration, desc('Declaration') },
-        ['<leader>lfd'] = { vim.lsp.buf.definition, desc('Definition') },
-        ['<leader>lfi'] = { vim.lsp.buf.implementation, desc('Implementation') },
-        ['<leader>lfS'] = { vim.lsp.buf.signature_help, desc('Signature Help') },
+        ['<leader>lfD'] = {
+            vim.lsp.buf.declaration,
+            desc('Declaration'),
+        },
+        ['<leader>lfd'] = {
+            vim.lsp.buf.definition,
+            desc('Definition'),
+        },
+        ['<leader>lfi'] = {
+            vim.lsp.buf.implementation,
+            desc('Implementation'),
+        },
+        ['<leader>lfS'] = {
+            vim.lsp.buf.signature_help,
+            desc('Signature Help'),
+        },
         ['<leader>lwa'] = {
             vim.lsp.buf.add_workspace_folder,
             desc('Add Workspace Folder'),
@@ -67,24 +75,43 @@ Autocmd.AUKeys = {
             print_workspace_folders,
             desc('List Workspace Folders'),
         },
-        ['<leader>lfT'] = { vim.lsp.buf.type_definition, desc('Type Definition') },
-        ['<leader>lfR'] = { vim.lsp.buf.rename, desc('Rename...') },
-        ['<leader>lfr'] = { vim.lsp.buf.references, desc('References') },
+        ['<leader>lfT'] = {
+            vim.lsp.buf.type_definition,
+            desc('Type Definition'),
+        },
+        ['<leader>lfR'] = {
+            vim.lsp.buf.rename,
+            desc('Rename...'),
+        },
+        ['<leader>lfr'] = {
+            vim.lsp.buf.references,
+            desc('References'),
+        },
         ['<leader>lff'] = {
             function()
                 vim.lsp.buf.format({ async = true })
             end,
             desc('Format File'),
         },
-        ['<leader>lc'] = { vim.lsp.buf.code_action, desc('Code Action') },
-        ['<leader>le'] = { vim.diagnostic.open_float, desc('Open Diagnostics Float') },
-        ['<leader>lq'] = { vim.diagnostic.setloclist, desc('Set Loclist') },
+        ['<leader>lc'] = {
+            vim.lsp.buf.code_action,
+            desc('Code Action'),
+        },
+        ['<leader>le'] = {
+            vim.diagnostic.open_float,
+            desc('Open Diagnostics Float'),
+        },
+        ['<leader>lq'] = {
+            vim.diagnostic.setloclist,
+            desc('Set Loclist'),
+        },
     },
     v = {
         ['<leader>lc'] = { vim.lsp.buf.code_action, desc('LSP Code Action') },
     },
 }
 
+---@type AuRepeat
 Autocmd.autocommands = {
     ['LspAttach'] = {
         {
@@ -128,15 +155,25 @@ Autocmd.autocommands = {
 
                     ['<leader>lSR'] = {
                         function()
-                            vim.lsp.enable(client.name, false)
-                            vim.lsp.enable(client.name, true)
+                            _G.LAST_LSP = copy(client.config)
+
+                            vim.lsp.stop_client(client.id, true)
+
+                            vim.schedule(function()
+                                vim.lsp.start(LAST_LSP, { bufnr = curr_buf() })
+                            end)
                         end,
                         desc('Force Server Restart'),
                     },
                     ['<leader>lSr'] = {
                         function()
-                            vim.lsp.enable(client.name, false)
-                            vim.lsp.enable(client.name, true)
+                            _G.LAST_LSP = copy(client.config)
+
+                            vim.lsp.stop_client(client.id)
+
+                            vim.schedule(function()
+                                vim.lsp.start(LAST_LSP, { bufnr = curr_buf() })
+                            end)
                         end,
                         desc('Server Restart'),
                     },
@@ -175,22 +212,16 @@ Autocmd.autocommands = {
     ['LspProgress'] = {
         {
             group = augroup('UserLsp', { clear = false }),
-
-            ---@param args vim.api.keyset.create_autocmd.callback_args
-            ---@diagnostic disable-next-line:unused-local
-            callback = function(args)
+            callback = function()
                 vim.cmd.redrawstatus()
             end,
         },
     },
 }
 
----@param O? table
----@return table|Lsp.SubMods.Autocmd|Lsp.SubMods.Autocmd.CallerFun
-function Autocmd.new(O)
-    O = type_not_empty('table', O) and O or {}
-
-    return setmetatable(O, {
+---@return table|Lsp.SubMods.Autocmd|fun(override: AuRepeat?)
+function Autocmd.new()
+    return setmetatable({}, {
         __index = Autocmd,
 
         ---@param self Lsp.SubMods.Autocmd
@@ -205,10 +236,8 @@ function Autocmd.new(O)
     })
 end
 
-local A = Autocmd.new()
-
 User.register_plugin('plugin.lsp.autocmd')
 
-return A
+return Autocmd.new()
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

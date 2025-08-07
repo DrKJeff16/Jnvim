@@ -1,21 +1,9 @@
----@diagnostic disable:missing-fields
-
----@alias CtxFun fun(ctx: table)
----@alias User.Commands.Mappings AllModeMaps
-
 ---@class User.Commands.CtxSpec
----@field [1] CtxFun
+---@field [1] fun(ctx: vim.api.keyset.create_user_command.command_args)
 ---@field [2] vim.api.keyset.user_command
----@field mappings? User.Commands.Mappings
+---@field mappings? AllModeMaps
 
 ---@alias User.Commands.Spec table<string, User.Commands.CtxSpec>
-
----@class User.Commands
----@field commands User.Commands.Spec
----@field new_command fun(self: User.Commands, name: string, C: table|User.Commands.CtxSpec)
----@field setup fun(self: User.Commands)
----@field setup_keys fun()
----@field new fun(O: table?): table|User.Commands
 
 local Value = require('user_api.check.value')
 
@@ -28,7 +16,7 @@ local new_cmd = vim.api.nvim_create_user_command
 local exec2 = vim.api.nvim_exec2
 local set_lines = vim.api.nvim_buf_set_lines
 
----@type User.Commands
+---@class User.Commands
 local Commands = {}
 
 ---@type User.Commands.Spec
@@ -54,27 +42,29 @@ Commands.commands.Redir = {
     mappings = {
         n = {
             ['<Leader>UC'] = { group = '+Commands' },
-            ['<Leader>UCR'] = { ':Redir ', desc('Prompt to `Redir` command', false, nil, true) },
+
+            ['<Leader>UCR'] = {
+                ':Redir ',
+                desc('Prompt to `Redir` command', false),
+            },
         },
     },
 }
 
----@param self User.Commands
 ---@param name string
----@param C User.Commands.CtxSpec|table
-function Commands:new_command(name, C)
+---@param C User.Commands.CtxSpec
+function Commands.new_command(name, C)
     if not (type_not_empty('string', name) or type_not_empty('table', C)) then
         error('(user_api.commands:new_command): nil/empty argument(s)')
     end
 
-    self.commands[name] = C
+    Commands.commands[name] = C
 
-    self:setup()
+    Commands.setup()
 end
 
----@param self User.Commands
-function Commands:setup()
-    for cmd, T in next, self.commands do
+function Commands.setup()
+    for cmd, T in next, Commands.commands do
         local ok, _ = pcall(new_cmd, cmd, T[1], T[2] or {})
 
         if not ok then
@@ -108,13 +98,9 @@ function Commands.setup_keys()
     end
 end
 
----@param O? table
 ---@return table|User.Commands
-function Commands.new(O)
-    local is_tbl = Value.is_tbl
-    O = is_tbl(O) and O or {}
-
-    return setmetatable(O, {
+function Commands.new()
+    return setmetatable({}, {
         __index = Commands,
     })
 end

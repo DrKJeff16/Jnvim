@@ -19,24 +19,6 @@ local ERROR = vim.log.levels.ERROR
 local augroup = vim.api.nvim_create_augroup
 
 ---@class User.Util
----@field notify User.Util.Notify
----@field au User.Util.Autocmd
----@field string User.Util.String
----@field has_words_before fun(): boolean
----@field pop_values fun(T: table, V: any): table,...
----@field xor fun(x: boolean, y: boolean): boolean
----@field strip_fields fun(T: AnyDict, values: string[]|string): res: AnyDict
----@field strip_values fun(T: AnyDict, values: any[], max_instances: integer?): table
----@field ft_set fun(s: string?, bufnr: integer?): fun()
----@field bt_get fun(bufnr: integer?): string
----@field ft_get fun(bufnr: integer?): string
----@field get_opts_tbl fun(s: string[]|string, bufnr: integer?): res: AnyDict
----@field setup_autocmd fun()
----@field displace_letter fun(c: string, direction: ('next'|'prev')?, cycle: boolean?): string
----@field mv_tbl_values fun(T: AnyDict, steps: integer?, direction: ('r'|'l')?): res: AnyDict
----@field reverse_tbl fun(T: table): table
----@field discard_dups fun(data: string|table): res: string|table
----@field new fun(O: table?): table|User.Util
 local Util = {}
 
 Util.notify = require('user_api.util.notify')

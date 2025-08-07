@@ -15,76 +15,6 @@ local is_str = Value.is_str
 local type_not_empty = Value.type_not_empty
 
 ---@class Config.Util
----@field set_tgc fun(force: boolean?)
----@field flag_installed fun(name: string): fun()
--- Set the global condition for a later submodule call
--- ---
---
--- ## Parameters
---
--- - `field`: Either a `string` that will be the name of a vim `g:...` variable, or
---            a `dictionary` with the keys as the vim `g:...` variable names, and the value
---            as whatever said variables are set to respectively.
---
--- ---
---
--- ## Return
---
--- A function that sets the pre-loading for the colorscheme
--- and initializes the `vim.g.<field>` variable(s)
---
--- ---
----@field colorscheme_init fun(fields: string|table<string, any>, force_tgc: boolean?): fun()
--- A `config` function to call your plugin from a `lazy` spec
--- ---
---
--- ## Parameters
---
--- - `mod_str` This parameter must comply with the following format:
---
--- ```lua
--- source('plugin.<plugin_name>[.<...>]')
--- ```
---
--- as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
--- **_That being said_**, you can use any module path if you wish to do so.
---
--- ---
---
--- ## Return
---
--- A function that attempts to import the given module from `mod_str`
--- ---
----@field source fun(mod_str: string): fun()
--- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
--- ---
---
--- ## Return
---
--- ### Unix
---
--- For UNIX systems, it'll be something akin to
---
--- ```sh
--- $ make
--- ```
---
--- If `nproc` is found in `PATH` or a valid executable then the string could look like
---
--- ```sh
--- $ make -j"$(nproc)"
--- ```
---
--- ### Windows
---
--- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
--- If unsuccessful, **it'll return `false`**
---
--- ---
----@field tel_fzf_build fun(): cmd: (string|false)
----@field luarocks_check fun(): boolean
----@field key_variant fun(cmd: ('ed'|'tabnew'|'split'|'vsplit')?): fun()
----@field has_tgc fun(): boolean
 local CfgUtil = {}
 
 ---@param force? boolean
@@ -117,26 +47,21 @@ function CfgUtil.flag_installed(name)
     end
 end
 
--- A `config` function to call your plugin from a `lazy` spec
--- ---
---
--- ## Parameters
---
--- - `mod_str` This parameter must comply with the following format:
---
--- ```lua
--- source('plugin.<plugin_name>[.<...>]')
--- ```
---
--- All the plugin configs MUST BE IN the repo's `lua/plugin/` directory.
--- **_That being said_**, you can use any module path if you wish to do so.
---
--- ---
---
--- ## Return
---
--- A function that attempts to import the given module from `mod_str`
--- ---
+---Set the global condition for a later submodule call.
+--- ---
+---
+---## Parameters
+---
+--- - `fields`: Either a `string` that will be the name of a vim `g:...` variable, or
+---           a `dictionary` with the keys as the vim `g:...` variable names, and the value
+---           as whatever said variables are set to respectively.
+--- - `force_tgc`: An optional boolean that, if `true`, will force `termguicolors` regardless.
+--- ---
+---## Return
+---
+---A function that sets the pre-loading for the colorscheme
+---and initializes the `vim.g.<field>` variable(s)
+--- ---
 ---@param fields string|table<string, any>
 ---@param force_tgc? boolean
 ---@return fun()
@@ -159,25 +84,20 @@ function CfgUtil.colorscheme_init(fields, force_tgc)
     end
 end
 
--- A `config` function to call your plugin from a `lazy` spec
--- ---
---
--- ## Parameters
---
--- - `mod_str` This parameter must comply with the following format:
---
--- ```lua
--- source('plugin.<plugin_name>[.<...>]')
--- ```
---
--- All the plugin configs MUST BE IN the repo's `lua/plugin/` directory.
--- **_That being said_**, you can use any module path if you wish to do so.
--- ---
---
--- ## Return
---
--- A function that attempts to import the given module from `mod_str`
--- ---
+---A `config` function to call your plugin from a `lazy` spec.
+--- ---
+---## Parameters
+--- - `mod_str`: This parameter must comply with the format below,
+---            as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
+---            **_That being said_**, you can use any module path if you wish to do so:
+---   ```lua
+---   --- Lua
+---   source('plugin.<plugin_name>[.<...>]')
+---   ```
+--- ---
+---## Return
+---A function that attempts to import the given module from `mod_str`.
+--- ---
 ---@param mod_str string
 ---@return fun()
 function CfgUtil.source(mod_str)
@@ -188,31 +108,25 @@ function CfgUtil.source(mod_str)
     end
 end
 
--- Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions
--- ---
---
--- ## Return
---
--- ### Unix
---
--- For UNIX systems, it'll be something akin to
---
--- ```sh
--- $ make
--- ```
---
--- If `nproc` is found in `PATH` or a valid executable then the string could look like
---
--- ```sh
--- $ make -j"$(nproc)"
--- ```
---
--- ### Windows
---
--- If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`
--- If unsuccessful, **it'll return `false`**
---
--- ---
+---Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
+--- ---
+---
+---For UNIX systems, it'll be something akin to:
+---
+---```sh
+---make
+---```
+---
+---If `nproc` is found in `PATH` or a valid executable then the string could look like:
+---
+---```sh
+---make -j"$(nproc)"
+---```
+---
+---If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
+---If unsuccessful, **it'll return `false`**.
+---
+--- ---
 ---@return string|false cmd
 function CfgUtil.tel_fzf_build()
     ---@type string|false
