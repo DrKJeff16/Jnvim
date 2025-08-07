@@ -11,14 +11,9 @@
 ---@alias HlPairs HlPair[]
 ---@alias HlDicts HlDict[]
 
----@class User.Hl
----@field hl fun(name: string, opts: HlOpts, bufnr: integer?)
----@field hl_from_arr fun(A: HlPairs)
----@field hl_from_dict fun(D: HlDict)
-
 local ERROR = vim.log.levels.ERROR
 
----@type User.Hl
+---@class User.Hl
 local Hl = {}
 
 ---@param name string
@@ -82,21 +77,16 @@ function Hl.hl_from_arr(A)
     end
 end
 
---- Set hl groups based on a dict input
+--- Set hl groups based on a dict input.
 ---
 --- Example of a valid table:
 --- ```lua
+--- --- Lua
 --- local T = { ['HlGroup'] = { fg = '...', ... }, ['HlGroupAlt'] = { ... } }
 --- ```
 ---
---- Which translates into VimScript as:
----
---- ```vim
---- hi HlGroup ctermfg=... ...
---- hi HlGroupAlt ...
---- ```
+--- See more at `:h nvim_set_hl`.
 --- ---
---- See more at `:h nvim_set_hl`
 ---@param D HlDict
 function Hl.hl_from_dict(D)
     local Value = require('user_api.check.value')

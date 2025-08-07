@@ -1,9 +1,5 @@
 ---@diagnostic disable:missing-fields
 
----@module 'user_api.util.autocmd'
----@module 'user_api.util.notify'
----@module 'user_api.util.string'
-
 ---@alias AnyDict table<string|integer, any>
 
 ---@alias DirectionFun fun(t: AnyDict): res: AnyDict

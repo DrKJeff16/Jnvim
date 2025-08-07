@@ -1,11 +1,12 @@
----@diagnostic disable:missing-fields
-
 local executable = require('user_api.check.exists').executable
 local is_str = require('user_api.check.value').is_str
 local is_tbl = require('user_api.check.value').is_tbl
 local is_num = require('user_api.check.value').is_num
 local is_bool = require('user_api.check.value').is_bool
 local num_range = require('user_api.check.value').num_range
+
+local augroup = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
 
 local INFO = vim.log.levels.INFO
 
@@ -269,15 +270,15 @@ function Neovide.setup(T, transparent, verbose)
         end
     end
 
-    local ime_input = vim.api.nvim_create_augroup('ime_input', { clear = true })
+    local ime_input = augroup('ime_input', { clear = true })
 
-    vim.api.nvim_create_autocmd({ 'InsertEnter', 'InsertLeave' }, {
+    au({ 'InsertEnter', 'InsertLeave' }, {
         group = ime_input,
         pattern = '*',
         callback = set_ime,
     })
 
-    vim.api.nvim_create_autocmd({ 'CmdlineEnter', 'CmdlineLeave' }, {
+    au({ 'CmdlineEnter', 'CmdlineLeave' }, {
         group = ime_input,
         pattern = '[/\\?]',
         callback = set_ime,

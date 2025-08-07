@@ -4,8 +4,6 @@ local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
 ---@class User.Update
----@field update fun(verbose: boolean?): string?
----@field setup_maps fun()
 local Update = {}
 
 ---@param verbose? boolean

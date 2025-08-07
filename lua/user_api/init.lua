@@ -1,14 +1,3 @@
----@module 'user_api.check'
----@module 'user_api.commands'
----@module 'user_api.config.keymaps'
----@module 'user_api.config.neovide'
----@module 'user_api.distro'
----@module 'user_api.highlight'
----@module 'user_api.maps'
----@module 'user_api.opts'
----@module 'user_api.update'
----@module 'user_api.util'
-
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
@@ -26,10 +15,10 @@ User.update = require('user_api.update')
 User.highlight = require('user_api.highlight')
 
 ---@class User.Config
-User.config = {}
-
-User.config.keymaps = require('user_api.config.keymaps')
-User.config.neovide = require('user_api.config.neovide')
+User.config = {
+    keymaps = require('user_api.config.keymaps'),
+    neovide = require('user_api.config.neovide'),
+}
 
 ---@type string[]|table
 User.paths = {}
@@ -40,10 +29,10 @@ User.FAILED = {}
 ---@type string[]|table
 User.registered_plugins = {}
 
----Register a plugin in the User API for possible reloading later.
+---Registers a plugin in the User API for possible reloading later.
 --- ---
----@param pathstr string
----@param index? integer
+---@param pathstr string The path of the plugin to be registered
+---@param index? integer An optional integer to insert the plugin in a given position
 function User.register_plugin(pathstr, index)
     local _NAME = 'user_api.register_plugin'
     local Value = User.check.value
@@ -116,7 +105,7 @@ function User.register_plugin(pathstr, index)
     vim.notify(warning, WARN)
 end
 
----@param pathstr string
+---@param pathstr string The path of the plugin to be de-registered
 function User.deregister_plugin(pathstr)
     local Value = User.check.value
 
@@ -151,9 +140,7 @@ function User.reload_plugins()
     local noerr = true
 
     for _, plugin in next, User.registered_plugins do
-        local ok, _ = pcall(require, plugin)
-
-        if not ok then
+        if not User.check.exists.module(plugin) then
             table.insert(User.FAILED, plugin)
             noerr = false
         end
@@ -163,13 +150,11 @@ function User.reload_plugins()
 end
 
 function User.print_loaded_plugins()
-    local msg = '{'
+    local msg = ''
 
     for _, v in next, User.registered_plugins do
         msg = string.format('%s\n%s', msg, v)
     end
-
-    msg = msg .. '\n}'
 
     vim.notify(msg, INFO)
 end
