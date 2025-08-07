@@ -1,38 +1,16 @@
----@diagnostic disable:missing-fields
-
----@class User.Check
----@field exists User.Check.Existance
----@field value User.Check.Value
---- Check whether Nvim is running in a Linux Console rather than a `pty`
---- ---
---- ## Description
----
---- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
---- ---
---- ## Return
----
---- A boolean that confirms whether the environment is a Linux Console
----@field in_console fun(): boolean
---- Check whether Nvim is running in a Linux Console rather than a `pty`
---- ---
---- ## Description
----
---- This function can be useful for (un)loading certain elements that conflict with the Linux console, for example
---- ---
---- ## Return
----
---- A boolean that confirms whether the environment is a Linux Console
----@field is_root fun(): boolean
-
 --- Checking Utilities
 --- ---
----@type User.Check
+---@class User.Check
 local Check = {}
 
 Check.value = require('user_api.check.value')
-
 Check.exists = require('user_api.check.exists')
 
+---Check whether Nvim is running in a Linux Console rather than a `pty`.
+---
+---This function can be useful for (un)loading certain elements
+---that conflict with the Linux console, for example.
+--- ---
 ---@return boolean
 function Check.in_console()
     local fields = Check.value.fields
@@ -43,6 +21,9 @@ function Check.in_console()
     return (vim.tbl_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
 end
 
+--- Check whether Nvim is running as root (`PID` == `0`).
+---
+--- ---
 ---@return boolean
 function Check.is_root()
     return (vim.uv or vim.loop).getuid() == 0

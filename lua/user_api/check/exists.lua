@@ -7,21 +7,12 @@ local function get_value()
     return require('user_api.check.value')
 end
 
--- Exitstance checks
--- ---
--- ## Description
+-- Exitstance checks.
 --
 -- This contains many checkers for environment, modules, namespaces, etc.
--- Also, simplified Vim functions can be found here
+-- Also, simplified Vim functions can be found here.
 -- ---
 ---@class User.Check.Existance
----@field module fun(mod: string): boolean
----@field modules fun(mod: string[]|string, need_all: boolean?): boolean|table<string, boolean>
----@field executable fun(exe: string[]|string): boolean
----@field env_vars fun(vars: string[]|string, fallback: fun()?): boolean
----@field vim_exists fun(expr: string[]|string): boolean
----@field vim_has fun(expr: string[]|string): boolean
----@field vim_isdir fun(path: string): boolean
 local Exists = {}
 
 ---@param mod string

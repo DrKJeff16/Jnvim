@@ -1,16 +1,11 @@
 ---@diagnostic disable:missing-fields
 
----@alias CompFun fun(): boolean
-
 ---@alias Types
----|'nil'
 ---|'string'
 ---|'number'
 ---|'function'
 ---|'boolean'
 ---|'table'
----|'thread'
----|'userdata'
 
 ---@alias EmptyTypes
 ---|'string'
@@ -18,175 +13,13 @@
 ---|'integer'
 ---|'table'
 
----@class EqTbl
----@field low boolean
----@field high boolean
-
----@alias ValueFunc fun(var: any, multiple: boolean?): boolean
-
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
 local tbl_isempty = vim.tbl_isempty
 
---- Value checking utilities
---- ---
---- ## Description
----
---- Pretty much reserved for data checking, type checking and conditional operations
---- ---
----@class User.Check.Value
--- Checks whether a value is a string
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's a string.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-string and the function will return `false`
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not a string, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is a string or not
--- ---
----@field is_str ValueFunc
--- Checks whether a value is a table
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's a table.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-table and the function will return `false`
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not a table, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is a table or not
--- ---
----@field is_tbl ValueFunc
--- Checks whether a value is a number
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's a number.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-number and the function will return `false`
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not a number, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is a number or not
--- ---
----@field is_num ValueFunc
--- Checks whether a value is a function
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's a function.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-function and the function will return `false`
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not a function, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is a function or not
--- ---
----@field is_fun ValueFunc
--- Checks whether a value is a boolean
--- ---
--- ## Parameters
---
--- - `var`: Any data type to be checked if it's a boolean.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-boolean and the function will return `false`
---
--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not a boolean, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is a boolean or not.
--- ---
----@field is_bool ValueFunc
--- Checks whether a value is an integer i.e. _greater than or equal to `0` and a **whole number**_
--- ---
--- ## Parameters
---
--- * `var`: Any data type to be checked if it's an integer.
---          **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
---          Otherwise it will be flagged as a non-integer and the function will return `false`
--- - `multiple`: Tell the integer you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not an integer, the function automatically returns false
--- ---
--- ## Return
---
--- A boolean value indicating whether the data is an integer or not
--- ---
----@field is_int fun(var: any, multiple: boolean?): boolean
--- Returns whether one or more given string/number/table are **empty**
--- ---
---
--- Scenarios included if `multiple` is `false`:
---
---  - Is an empty string (`x == ''`)
---  - Is an integer equal to zero (`x == 0`)
---  - Is an empty table (`{}`)
---
--- If `multiple` is `true` apply the above to a table of allowed values
--- NOTE: **THE FUNCTION IS NOT RECURSIVE**
--- ---
--- ## Parameters
---
--- - `v`: Must be either a string, number or a table.
---        Otherwise you'll get complaints and the function will return `true`
--- - `multiple`: Tell the integer you're checking for multiple values. (Default: `false`).
---               If set to `true`, every element of the table will be checked.
---               If **any** element is not _empty_, the function automatically returns `false`
--- ---
--- ## Returns
---
--- A boolean indicating whether the input data is _empty_ or not
--- ---
----@field empty fun(v: string|table|number|(string|table|number)[], multiple: boolean?): boolean
----@field fields fun(fields: string|integer|(string|integer)[], T: table<string|integer, any>): boolean
----@field tbl_values fun(values: any[], T: table, return_keys: boolean?):((string|integer)[]|boolean|string|integer)
----@field single_type_tbl fun(type_str: Types, T: table): boolean
--- Check if given data is a string/table/integer/number and whether it's empty or not
--- ---
--- ## Description
---
--- Specify what data type should the given value be
--- and this function will check both if it's that type
--- and if so, whether it's empty (for numbers this means a value of `0`)
--- ---
--- ## Parameters
---
--- - `type_str`: The type string (only `'integer'`, `'number'`, `'string'` or `'table'`)
--- - `data`: The input data
--- ---
----@field type_not_empty fun(type_str: EmptyTypes, data: table|string|number): boolean
--- Checks whether a certain `num` does not exceed table index range
--- i.e. `num >= 1 and num <= #T`
---
--- If the table is empty, then it'll return `false`
--- ---
----@field in_tbl_range fun(num: integer, T: table): boolean
--- Checks whether a certain number `num` is within a specified range
----@field num_range fun(num: number, low: number, high: number, eq: EqTbl?): boolean
-local Value = {}
-
----@param t Types `'thread'|'userdata'` are not parsed
----@return ValueFunc
+---@param t Types
+---@return fun(var: any, multiple: boolean?): boolean
 local function type_fun(t)
     local ALLOWED_TYPES = {
         is_bool = 'boolean',
@@ -239,14 +72,110 @@ local function type_fun(t)
     end
 end
 
+--- Value checking utilities.
+---
+--- Pretty much reserved for data checking, type checking and conditional operations.
+--- ---
+---@class User.Check.Value
+local Value = {}
+
+---Checks whether a value is a string.
+--- ---
+---## Parameters
+---
+--- - `var`: Any data type to be checked if it's a string.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        Otherwise it will be flagged as a non-string and the function will return `false`
+--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not a string, the function automatically returns false
+--- ---
+---## Return
+---
+---A boolean value indicating whether the data is a string or not.
+--- ---
+---@type fun(var: any, multiple: boolean?): boolean
 Value.is_str = type_fun('string')
+
+---Checks whether a value is a boolean.
+--- ---
+---## Parameters
+---
+--- - `var`: Any data type to be checked if it's a boolean.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        Otherwise it will be flagged as a non-boolean and the function will return `false`
+---
+--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not a boolean, the function automatically returns false
+--- ---
+---## Return
+---
+---A boolean value indicating whether the data is a boolean or not.
+--- ---
+---@type fun(var: any, multiple: boolean?): boolean
 Value.is_bool = type_fun('boolean')
+
+---Checks whether a value is a function.
+--- ---
+---## Parameters
+---
+--- - `var`: Any data type to be checked if it's a function.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        Otherwise it will be flagged as a non-function and the function will return `false`
+--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not a function, the function automatically returns false
+--- ---
+---## Return
+---
+---A boolean value indicating whether the data is a function or not.
+--- ---
+---@type fun(var: any, multiple: boolean?): boolean
 Value.is_fun = type_fun('function')
+
+---Checks whether a value is a number.
+--- ---
+---## Parameters
+---
+--- - `var`: Any data type to be checked if it's a number.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        Otherwise it will be flagged as a non-number and the function will return `false`
+--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not a number, the function automatically returns false
+--- ---
+---## Return
+---
+---A boolean value indicating whether the data is a number or not.
+--- ---
+---@type fun(var: any, multiple: boolean?): boolean
 Value.is_num = type_fun('number')
+
+---Checks whether a value is a table.
+--- ---
+---## Parameters
+---
+--- - `var`: Any data type to be checked if it's a table.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        Otherwise it will be flagged as a non-table and the function will return `false`
+--- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not a table, the function automatically returns false
+--- ---
+---## Return
+---
+---A boolean value indicating whether the data is a table or not.
+--- ---
+---@type fun(var: any, multiple: boolean?): boolean
 Value.is_tbl = type_fun('table')
 
----@param var any
----@param multiple? boolean
+---Checks whether a value is an integer i.e. _greater than or equal to `0` and a **whole number**_.
+---
+---Returns a boolean value indicating whether the data is an integer or not.
+--- ---
+---@param var any Any data type to be checked if it's an integer
+---@param multiple? boolean Tell the integer you're checking for multiple values. (Default: `false`)
 ---@return boolean
 function Value.is_int(var, multiple)
     local is_tbl = Value.is_tbl
@@ -276,6 +205,31 @@ function Value.is_int(var, multiple)
     return true
 end
 
+---Returns whether one or more given string/number/table are **empty**
+--- ---
+---
+---Scenarios included if `multiple` is `false`:
+---
+--- - Is an empty string (`x == ''`)
+--- - Is an integer equal to zero (`x == 0`)
+--- - Is an empty table (`{}`)
+---
+---If `multiple` is `true` apply the above to a table of allowed values.
+---
+---**THIS FUNCTION IS NOT RECURSIVE**
+--- ---
+---## Parameters
+---
+--- - `v`: Must be either a string, number or a table.
+---      Otherwise you'll get complaints and the function will return `true`
+--- - `multiple`: Tell the integer you're checking for multiple values. (Default: `false`).
+---             If set to `true`, every element of the table will be checked.
+---             If **any** element is not _empty_, the function automatically returns `false`
+--- ---
+---## Returns
+---
+---A boolean indicating whether the input data is _empty_ or not
+--- ---
 ---@param v string|table|number|integer|(string|table|number|integer)[]
 ---@param multiple? boolean
 ---@return boolean
@@ -325,10 +279,12 @@ function Value.empty(v, multiple)
     return true
 end
 
----@param num number
----@param low number
----@param high number
----@param eq? EqTbl
+---Checks whether a certain number `num` is within a specified range
+--- ---
+---@param num number The number to be checked
+---@param low number The low limit
+---@param high number The high limit
+---@param eq? { low: boolean, high: boolean } A table that defines how equalities will be made
 ---@return boolean
 function Value.num_range(num, low, high, eq)
     local is_num = Value.is_num
@@ -347,10 +303,6 @@ function Value.num_range(num, low, high, eq)
     end
 
     ---@class Comparators
-    ---@field low_no_high CompFun
-    ---@field high_no_low CompFun
-    ---@field high_low CompFun
-    ---@field none CompFun
     local Comps = {
         ---@return boolean
         low_no_high = function()
@@ -373,7 +325,6 @@ function Value.num_range(num, low, high, eq)
         end,
     }
 
-    ---@type CompFun
     local func
 
     if eq.high and eq.low then
@@ -538,6 +489,19 @@ function Value.single_type_tbl(type_str, T)
     return true
 end
 
+---Check if given data is a string/table/integer/number and whether it's empty or not
+--- ---
+---## Description
+---
+---Specify what data type should the given value be
+---and this function will check both if it's that type
+---and if so, whether it's empty (for numbers this means a value of `0`)
+--- ---
+---## Parameters
+---
+--- - `type_str`: The type string (only `'integer'`, `'number'`, `'string'` or `'table'`)
+--- - `data`: The input data
+--- ---
 ---@param type_str EmptyTypes
 ---@param data string|number|table
 ---@return boolean
@@ -548,12 +512,12 @@ function Value.type_not_empty(type_str, data)
         return false
     end
 
-    ---@type table<EmptyTypes, ValueFunc>
+    ---@class ValidTypes
     local valid_types = {
-        ['string'] = Value.is_str,
-        ['integer'] = Value.is_int,
-        ['number'] = Value.is_num,
-        ['table'] = Value.is_tbl,
+        string = Value.is_str,
+        integer = Value.is_int,
+        number = Value.is_num,
+        table = Value.is_tbl,
     }
 
     if not vim.tbl_contains(vim.tbl_keys(valid_types), type_str) then
@@ -565,6 +529,11 @@ function Value.type_not_empty(type_str, data)
     return checker(data) and not empty(data)
 end
 
+---Checks whether a certain `num` does not exceed table index range
+---_i.e._ `num >= 1 and num <= #T`.
+---
+---If the table is empty, then it'll return `false`.
+--- ---
 ---@param num integer
 ---@param T table
 ---@return boolean

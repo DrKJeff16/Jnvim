@@ -11,6 +11,7 @@
 
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
+local ERROR = vim.log.levels.ERROR
 
 ---@class UserAPI
 local User = {}
@@ -28,8 +29,6 @@ User.highlight = require('user_api.highlight')
 User.config = {}
 
 User.config.keymaps = require('user_api.config.keymaps')
-
----@type User.Config.Neovide
 User.config.neovide = require('user_api.config.neovide')
 
 ---@type string[]|table
@@ -41,6 +40,8 @@ User.FAILED = {}
 ---@type string[]|table
 User.registered_plugins = {}
 
+---Register a plugin in the User API for possible reloading later.
+--- ---
 ---@param pathstr string
 ---@param index? integer
 function User.register_plugin(pathstr, index)
@@ -151,16 +152,14 @@ end
 ---@return boolean
 ---@return string[]|table
 function User.reload_plugins()
-    local exists = User.check.exists.module
-
     User.FAILED = {}
 
     local noerr = true
 
     for _, plugin in next, User.registered_plugins do
-        if exists(plugin) then
-            require(plugin)
-        else
+        local ok, _ = pcall(require, plugin)
+
+        if not ok then
             table.insert(User.FAILED, plugin)
             noerr = false
         end
@@ -174,8 +173,8 @@ function User.print_loaded_plugins()
 
     local msg = '{'
 
-    for k, v in next, User.registered_plugins do
-        msg = string.format('%s\n  [%s]: %s', msg, tostring(k), v)
+    for _, v in next, User.registered_plugins do
+        msg = string.format('%s\n%s', msg, v)
     end
 
     msg = msg .. '\n}'
@@ -272,7 +271,7 @@ function User.setup()
                 local res, failed = User.reload_plugins()
 
                 if not res then
-                    notify(insp(failed), 'error', {
+                    notify(insp(failed), ERROR, {
                         title = '[User API]: PLUGINS FAILED TO RELOAD',
                         animate = true,
                         timeout = 2250,

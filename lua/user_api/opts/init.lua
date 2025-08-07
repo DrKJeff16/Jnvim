@@ -1,11 +1,3 @@
----@diagnostic disable:missing-fields
-
----@module 'user_api.opts.config'
----@module 'user_api.opts.all_opts'
-
--- Set the following options (keys are `vim.opt[k]`-like)
----@alias User.Opts.CallerFun fun(override: table|User.Opts.Spec?, verbose: boolean?)
-
 local Value = require('user_api.check.value')
 
 local is_str = Value.is_str
@@ -21,17 +13,6 @@ local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
 ---@class User.Opts
----@field toggleable string[]
----@field optset fun(opts: User.Opts.Spec, verbose: boolean?)
----@field long_opts_convert fun(T: User.Opts.Spec, verbose: boolean?): parsed_opts: User.Opts.Spec
----@field set_cursor_blink fun()
----@field get_all_opts fun(): User.Opts.AllOpts
----@field get_defaults fun(): User.Opts.Spec
----@field options User.Opts.Spec
----@field print_set_opts fun()
----@field setup_keys fun()
----@field toggle fun(O: string[]|string)
----@field new fun(O: table?):table|User.Opts|User.Opts.CallerFun
 local Opts = {}
 
 ---@return User.Opts.AllOpts
@@ -144,10 +125,10 @@ function Opts.long_opts_convert(T, verbose)
     return parsed_opts
 end
 
---- Option setter for the aforementioned options dictionary
+--- Option setter for the aforementioned options dictionary.
+--- ---
 --- @param O User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
---- @param verbose? boolean
---- for each option respectively
+--- @param verbose? boolean Enable verbose printing if `true`
 function Opts.optset(O, verbose)
     local insp = inspect or vim.inspect
     local curr_buf = vim.api.nvim_get_current_buf
@@ -251,12 +232,9 @@ function Opts.setup_keys()
     })
 end
 
----@param O? table
----@return table|User.Opts|fun(override: table|vim.bo|vim.wo?, verbose: boolean?)
-function Opts.new(O)
-    O = is_tbl(O) and O or {}
-
-    return setmetatable(O, {
+---@return table|User.Opts|fun(override: User.Opts.Spec?, verbose: boolean?)
+function Opts.new()
+    return setmetatable({}, {
         __index = Opts,
 
         ---@param self User.Opts

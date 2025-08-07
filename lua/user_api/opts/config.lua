@@ -1,10 +1,6 @@
----@diagnostic disable:missing-fields
-
----@alias User.Opts.Spec table|vim.bo|vim.wo
-
 local executable = require('user_api.check.exists').executable
 
----@type User.Opts.Spec
+---@class User.Opts.Spec: vim.wo,vim.bo,vim.Option
 local Defaults = {
     ai = true, -- `autoindent`
     ar = true, -- `autoread`
@@ -39,7 +35,7 @@ local Defaults = {
         '{:}',
         '<:>',
     },
-    mouse = { a = false }, -- NOTE: Get that mouse out of my sight!
+    mouse = { a = false }, -- Disable the mouse by default
     nu = true, -- `number`
     nuw = 4, -- `numberwidth`
     pi = false, -- `preserveindent`

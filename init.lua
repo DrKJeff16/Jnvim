@@ -1,15 +1,14 @@
----@diagnostic disable:missing-fields
-
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.inspect = vim.inspect
 
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
+local User = require('user_api')
+
+local Check = require('user_api.check')
 local Keymaps = require('user_api.config.keymaps')
 local Neovide = require('user_api.config.neovide')
-local User = require('user_api')
-local Check = require('user_api.check')
 local Util = require('user_api.util')
 local Opts = require('user_api.opts')
 local Commands = require('user_api.commands')
