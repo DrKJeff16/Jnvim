@@ -1,7 +1,3 @@
----@diagnostic disable:missing-fields
-
----@module 'which-key'
-
 -- The Vim modes used for `which-key` as a `string`
 ---@alias RegModes
 ---|'n'
@@ -77,8 +73,6 @@
 --- **See `:h vim.keymap.set()` to find the other fields**
 ---
 --- ---
----@see vim.keymap.set.Opts
----@see User.Maps.WK
 ---@class RegPfx: vim.keymap.set.Opts
 ---@field group string
 
@@ -103,10 +97,8 @@
 ---     },
 --- }
 --- ```
---- @see RegKey
 ---@alias RegKeys table<string, RegKey>
 
---- @see RegPfx
 --- A dictionary of string ==> `RegPfx` class
 --- ---
 --- ## Description
@@ -125,9 +117,8 @@
 ---@field hidden? boolean
 ---@field group? string
 
---- Configuration table to be passed to `require('which-key').add()`
+---Configuration table to be passed to `require('which-key').add()`
 --- ---
----@see wk.Opts
 ---@class RegOpts: wk.Opts
 ---@field create? boolean
 ---@field notify? boolean
@@ -145,18 +136,19 @@ local type_not_empty = Value.type_not_empty
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 
---- `which_key` API entrypoints
+---`which_key` API entrypoints.
 ---@class User.Maps.WK
----@field available fun(): boolean
----@field convert fun(lhs: string, rhs: User.Maps.Keymap.Rhs|RegKey|RegPfx, opts: (User.Maps.Keymap.Opts|RegKeyOpts)?): RegKey|RegPfx
----@field convert_dict fun(T: AllMaps): AllMaps
----@field register fun(T: AllMaps, opts: RegOpts|RegKeyOpts?): false?
 local WK = {}
 
+---@return boolean
 function WK.available()
     return require('user_api.check.exists').module('which-key')
 end
 
+---@param lhs string
+---@param rhs User.Maps.Keymap.Rhs|RegKey|RegPfx
+---@param opts? User.Maps.Keymap.Opts|RegKeyOpts
+---@return RegKey|RegPfx
 function WK.convert(lhs, rhs, opts)
     if not WK.available() then
         error('(user.maps.wk.convert): `which_key` not available', WARN)
@@ -183,6 +175,8 @@ function WK.convert(lhs, rhs, opts)
     return res
 end
 
+---@param T AllMaps
+---@return AllMaps res
 function WK.convert_dict(T)
     ---@type RegKeys
     local res = {}
@@ -196,6 +190,9 @@ function WK.convert_dict(T)
     return res
 end
 
+---@param T AllMaps
+---@param opts? RegKeyOpts|User.Maps.Keymap.Opts
+---@return false?
 function WK.register(T, opts)
     if not WK.available() then
         vim.notify('(user.maps.wk.register): `which_key` unavailable', ERROR)
@@ -206,7 +203,7 @@ function WK.register(T, opts)
 
     opts = is_tbl(opts) and opts or {}
 
-    opts.mode = is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode) and opts.mode or 'n'
+    opts.mode = (is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode)) and opts.mode or 'n'
 
     ---@type RegKeys
     local filtered = {}
