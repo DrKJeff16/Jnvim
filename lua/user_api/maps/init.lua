@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
 
@@ -11,20 +9,18 @@ local empty = Value.empty
 local type_not_empty = Value.type_not_empty
 local strip_fields = Util.strip_fields
 
+local in_tbl = vim.tbl_contains
+
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
 ---@class User.Maps
----@field kmap User.Maps.Keymap
----@field nop fun(T: string|string[], opts: User.Maps.Keymap.Opts?, mode: MapModes?, prefix: string?)
----@field wk User.Maps.WK
----@field modes Modes
----@field map_dict fun(T: AllModeMaps|AllMaps, map_func: 'wk.register'|'kmap', dict_has_modes: boolean?, mode: (MapModes|nil)?, bufnr: (integer|nil)?)
 local Maps = {}
 
 Maps.kmap = require('user_api.maps.kmap')
 Maps.wk = require('user_api.maps.wk')
+
 Maps.modes = MODES
 
 ---@param T string|string[]
@@ -38,7 +34,7 @@ function Maps.nop(T, opts, mode, prefix)
 
     local insp = inspect or vim.inspect
 
-    mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
+    mode = (is_str(mode) and in_tbl(MODES, mode)) and mode or 'n'
 
     if mode == 'i' then
         vim.notify(
@@ -81,11 +77,11 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
         error("(user_api.maps.map_dict): Keys either aren't table or table is empty", ERROR)
     end
 
-    if (is_str(mode) and not vim.tbl_contains(MODES, mode)) or (is_tbl(mode) and empty(mode)) then
+    if (is_str(mode) and not in_tbl(MODES, mode)) or (is_tbl(mode) and empty(mode)) then
         mode = 'n'
     elseif type_not_empty('table', mode) then
         for _, v in next, mode do
-            if not vim.tbl_contains(MODES, v) then
+            if not in_tbl(MODES, v) then
                 error('(user_api.maps.map_dict): Bad modes table', ERROR)
             end
         end
@@ -93,11 +89,14 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
 
     local map_choices = { 'kmap', 'wk.register' }
 
-    map_func = (is_str(map_func) and vim.tbl_contains(map_choices)) and map_func or 'wk.register'
-
     -- Choose `which-key` by default
-    map_func = Maps.wk.available() and map_func or 'kmap'
-    mode = (is_str(mode) and vim.tbl_contains(MODES, mode)) and mode or 'n'
+    map_func = (is_str(map_func) and in_tbl(map_choices)) and map_func or 'wk.register'
+
+    if not Maps.wk.available() then
+        map_func = 'kmap'
+    end
+
+    mode = (is_str(mode) and in_tbl(MODES, mode)) and mode or 'n'
     dict_has_modes = is_bool(dict_has_modes) and dict_has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
 
@@ -106,7 +105,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
 
     if dict_has_modes then
         for mode_choice, t in next, T do
-            if not vim.tbl_contains(MODES, mode_choice) then
+            if not in_tbl(MODES, mode_choice) then
                 goto continue
             end
 
@@ -136,7 +135,7 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
 
                 tbl.mode = mode_choice
 
-                if is_int(bufnr) then
+                if bufnr ~= nil then
                     tbl.buffer = bufnr
                 end
 
@@ -144,24 +143,26 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
                     tbl.group = v.group
                 end
 
-                if is_tbl(v[2]) and is_str(v[2].desc) then
-                    tbl.desc = v[2].desc
-                end
-                if is_tbl(v[2]) and is_bool(v[2].expr) then
-                    tbl.expr = v[2].expr
-                end
-                if is_tbl(v[2]) and is_bool(v[2].noremap) then
-                    tbl.noremap = v[2].noremap
-                end
-                if is_tbl(v[2]) and is_bool(v[2].nowait) then
-                    tbl.nowait = v[2].nowait
-                end
-                if is_tbl(v[2]) and is_bool(v[2].silent) then
-                    tbl.silent = v[2].silent
-                end
-
                 if is_bool(v.hidden) then
                     tbl.hidden = v.hidden
+                end
+
+                if is_tbl(v[2]) then
+                    if is_str(v[2].desc) then
+                        tbl.desc = v[2].desc
+                    end
+                    if is_bool(v[2].expr) then
+                        tbl.expr = v[2].expr
+                    end
+                    if is_bool(v[2].noremap) then
+                        tbl.noremap = v[2].noremap
+                    end
+                    if is_bool(v[2].nowait) then
+                        tbl.nowait = v[2].nowait
+                    end
+                    if is_bool(v[2].silent) then
+                        tbl.silent = v[2].silent
+                    end
                 end
 
                 require('which-key').add(tbl)
@@ -203,24 +204,26 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
                 tbl.group = v.group
             end
 
-            if is_tbl(v[2]) and is_str(v[2].desc) then
-                tbl.desc = v[2].desc
-            end
-            if is_tbl(v[2]) and is_bool(v[2].expr) then
-                tbl.expr = v[2].expr
-            end
-            if is_tbl(v[2]) and is_bool(v[2].noremap) then
-                tbl.noremap = v[2].noremap
-            end
-            if is_tbl(v[2]) and is_bool(v[2].nowait) then
-                tbl.nowait = v[2].nowait
-            end
-            if is_tbl(v[2]) and is_bool(v[2].silent) then
-                tbl.silent = v[2].silent
-            end
-
             if is_bool(v.hidden) then
                 tbl.hidden = v.hidden
+            end
+
+            if is_tbl(v[2]) then
+                if is_str(v[2].desc) then
+                    tbl.desc = v[2].desc
+                end
+                if is_bool(v[2].expr) then
+                    tbl.expr = v[2].expr
+                end
+                if is_bool(v[2].noremap) then
+                    tbl.noremap = v[2].noremap
+                end
+                if is_bool(v[2].nowait) then
+                    tbl.nowait = v[2].nowait
+                end
+                if is_bool(v[2].silent) then
+                    tbl.silent = v[2].silent
+                end
             end
 
             require('which-key').add(tbl)
