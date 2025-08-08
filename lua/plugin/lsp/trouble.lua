@@ -6,6 +6,9 @@ local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 
+local copy = vim.deepcopy
+local d_extend = vim.tbl_deep_extend
+
 if not exists('trouble') then
     return
 end
@@ -237,9 +240,7 @@ function Trouble.new()
         ---@param self Lsp.SubMods.Trouble
         ---@param override? trouble.Config
         __call = function(self, override)
-            override = is_tbl(override) and override or {}
-
-            self.Opts = vim.tbl_deep_extend('keep', override, vim.deepcopy(self.Opts))
+            self.Opts = d_extend('force', copy(self.Opts), override or {})
 
             trouble.setup(self.Opts)
 

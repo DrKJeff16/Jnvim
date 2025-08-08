@@ -6,7 +6,6 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
@@ -15,9 +14,15 @@ local mk_caps = vim.lsp.protocol.make_client_capabilities
 local d_extend = vim.tbl_deep_extend
 local copy = vim.deepcopy
 
----@type Lsp.SubMods.Kinds
 local Kinds = require('plugin.lsp.kinds')
 Kinds()
+
+---@param original lsp.ClientCapabilities|vim.lsp.ClientConfig
+---@param inserts lsp.ClientCapabilities|vim.lsp.ClientConfig|table
+---@return lsp.ClientCapabilities|table
+local function insert_client(original, inserts)
+    return d_extend('keep', inserts or {}, original)
+end
 
 ---@class Lsp.Server
 local Server = {}
@@ -30,9 +35,7 @@ Server.Clients = require('plugin.lsp.server_config')
 ---@param T? lsp.ClientCapabilities
 ---@return lsp.ClientCapabilities caps
 function Server.make_capabilities(T)
-    T = is_tbl(T) and T or {}
-
-    local caps = d_extend('keep', T, mk_caps())
+    local caps = d_extend('keep', T or {}, mk_caps())
 
     if not exists('blink.cmp') then
         return caps
@@ -53,13 +56,13 @@ function Server.populate(name, client)
         local old_caps = copy(client.capabilities)
         local caps = Server.make_capabilities(old_caps)
 
-        client.capabilities = d_extend('keep', old_caps, caps)
+        client.capabilities = insert_client(copy(client.capabilities), caps)
     else
         client.capabilities = Server.make_capabilities()
     end
 
     if in_tbl({ 'html', 'jsonls' }, name) then
-        client.capabilities = d_extend('force', copy(client.capabilities), {
+        client.capabilities = insert_client(copy(client.capabilities), {
             textDocument = {
                 completion = {
                     completionItem = {
@@ -71,7 +74,7 @@ function Server.populate(name, client)
     end
 
     if name == 'rust_analyzer' then
-        client.capabilities = d_extend('force', copy(client.capabilities), {
+        client.capabilities = insert_client(copy(client.capabilities), {
             experimental = {
                 serverStatusNotification = true,
             },
@@ -79,7 +82,7 @@ function Server.populate(name, client)
     end
 
     if name == 'clangd' then
-        client.capabilities = d_extend('force', copy(client.capabilities), {
+        client.capabilities = insert_client(copy(client.capabilities), {
             offsetEncoding = { 'utf-8', 'utf-16' },
             textDocument = {
                 completion = {
@@ -90,7 +93,7 @@ function Server.populate(name, client)
     end
 
     if name == 'gh_actions_ls' then
-        client.capabilities = d_extend('force', copy(client.capabilities), {
+        client.capabilities = insert_client(copy(client.capabilities), {
             workspace = {
                 didChangeWorkspaceFolders = {
                     dynamicRegistration = true,
@@ -109,7 +112,7 @@ function Server.populate(name, client)
                 client.settings.json = {}
             end
 
-            client.settings = d_extend('force', copy(client.settings), {
+            client.settings = insert_client(copy(client.settings), {
                 json = {
                     schemas = ss.json.schemas(),
                     validate = { enable = true },
@@ -124,7 +127,7 @@ function Server.populate(name, client)
                 client.settings.yaml = {}
             end
 
-            client.settings = d_extend('force', copy(client.settings), {
+            client.settings = insert_client(copy(client.settings), {
                 yaml = {
                     schemaStore = { enable = false, url = '' },
                     schemas = ss.yaml.schemas(),
@@ -200,11 +203,11 @@ function Server.new()
 
             local Trouble = require('plugin.lsp.trouble')
             Trouble()
+
+            User.register_plugin('plugin.lsp')
         end,
     })
 end
-
-User.register_plugin('plugin.lsp')
 
 return Server.new()
 

@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
@@ -125,22 +123,22 @@ Autocmd.autocommands = {
                     return
                 end
 
-                -- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
-                if client:supports_method('textDocument/completion') then
-                    -- Optional: trigger autocompletion on EVERY keypress. May be slow!
-                    local chars = {}
-                    for i = 32, 126 do
-                        table.insert(chars, string.char(i))
-                    end
-                    client.server_capabilities.completionProvider.triggerCharacters = chars
-                end
+                -- -- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
+                -- if client:supports_method('textDocument/completion') then
+                --     -- Optional: trigger autocompletion on EVERY keypress. May be slow!
+                --     local chars = {}
+                --     for i = 32, 126 do
+                --         table.insert(chars, string.char(i))
+                --     end
+                --     client.server_capabilities.completionProvider.triggerCharacters = chars
+                -- end
 
                 -- vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
                 -- vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
                 vim.bo[args.buf].omnifunc = nil
                 vim.bo[args.buf].tagfunc = nil
 
-                vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+                -- vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
 
                 local AUKeys = Autocmd.AUKeys
                 Keymaps(AUKeys)
