@@ -36,17 +36,6 @@ Project.setup({
         '.hg',
         '.bzr',
         '.svn',
-        'package.json',
-        'package.lock',
-        'pyproject.toml',
-        '.neoconf.json',
-        'neoconf.json',
-        'Pipfile',
-        'Pipfile.lock',
-        'requirements.txt',
-        'tox.ini',
-        'stylua.toml',
-        '.stylua.toml',
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
     },
@@ -54,13 +43,14 @@ Project.setup({
     -- Don't calculate root dir on specific directories
     -- Ex: { "~/.cargo/*", ... }
     exclude_dirs = {
-        '~/Templates/*',
-        '~/.local/*',
+        '~/.build/*',
         '~/.cargo/*',
-        '~/.luarocks/*',
         '~/.conda/*',
-        '~/Public/*',
+        '~/.local/*',
+        '~/.luarocks/*',
         '~/Desktop/*',
+        '~/Public/*',
+        '~/Templates/*',
     },
 
     -- Show hidden files in telescope
@@ -78,7 +68,11 @@ Project.setup({
 
     allow_different_owners = true,
 
-    telescope = { sort = 'newest' },
+    telescope = {
+        enabled = false,
+
+        sort = 'newest',
+    },
 
     -- Path where project.nvim will store the project history for use in
     -- telescope
