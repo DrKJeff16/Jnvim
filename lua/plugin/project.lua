@@ -38,6 +38,7 @@ Project.setup({
         '.svn',
         '.pre-commit-config.yaml',
         '.pre-commit-config.yml',
+        'Pipfile',
     },
 
     -- Don't calculate root dir on specific directories
