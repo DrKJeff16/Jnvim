@@ -370,10 +370,6 @@ function Util.setup_autocmd()
                 {
                     group = group,
                     pattern = {
-                        '*.yaml',
-                        '*.yml',
-                        '*.md',
-                        '*.mdx',
                         '*.C',
                         '*.H',
                         '*.c++',
@@ -383,7 +379,12 @@ function Util.setup_autocmd()
                         '*.h++',
                         '*.hh',
                         '*.hpp',
+                        '*.html',
                         '*.hxx',
+                        '*.md',
+                        '*.mdx',
+                        '*.yaml',
+                        '*.yml',
                     },
                     callback = function(ev)
                         ---@type vim.api.keyset.option
