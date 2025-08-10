@@ -1,5 +1,3 @@
----@module 'config.lazy'
-
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
@@ -40,11 +38,6 @@ local UI = {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
-        init = function()
-            vim.opt.ls = 2
-            vim.opt.stal = 2
-            vim.opt.showmode = false
-        end,
         config = source('plugin.lualine'),
         cond = not in_console(),
     },
@@ -58,9 +51,6 @@ local UI = {
             'nvim-tree/nvim-web-devicons',
             'tiagovla/scope.nvim',
         },
-        init = function()
-            vim.opt.stal = 2
-        end,
         config = source('plugin.bufferline'),
         cond = not in_console(),
     },
@@ -81,12 +71,16 @@ local UI = {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
-        init = function()
-            --- Disable `netrw`
-            vim.g.loaded_netrw = 1
-            vim.g.loaded_netrwPlugin = 1
-        end,
         config = source('plugin.nvim_tree'),
+    },
+
+    {
+        'folke/edgy.nvim',
+        event = 'VeryLazy',
+        version = false,
+        config = source('plugin.edgy'),
+        cond = not in_console(),
+        enabled = false,
     },
 
     {
