@@ -14,11 +14,9 @@
 ---|SpaceDuckSubMod
 ---|SpacemacsSubMod
 
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
-local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local capitalize = User.util.string.capitalize
@@ -27,13 +25,34 @@ local desc = User.maps.kmap.desc
 
 local ERROR = vim.log.levels.ERROR
 
+local fmt = string.format
+
 ---@class CscMod
 local Colorschemes = {}
 
----@enum AllCsc
+---@enum (key) AllCsc
+---@diagnostic disable-next-line:unused-local
+local Colors = {
+    tokyonight = 1,
+    nightfox = 2,
+    catppuccin = 3,
+    onedark = 4,
+    gruvbox = 5,
+    kanagawa = 6,
+    vscode = 7,
+    dracula = 8,
+    gloombuddy = 9,
+    molokai = 10,
+    oak = 11,
+    space_vim_dark = 12,
+    spaceduck = 13,
+    spacemacs = 14,
+}
+
+---@type AllCsc[]
 Colorschemes.OPTIONS = {
-    'tokyonight',
     'nightfox',
+    'tokyonight',
     'catppuccin',
     'onedark',
     'gruvbox',
@@ -49,35 +68,23 @@ Colorschemes.OPTIONS = {
 }
 
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
-
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
-
 Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
-
 Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
-
 Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
-
 Colorschemes.molokai = require('plugin.colorschemes.molokai')
-
 Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
-
 Colorschemes.oak = require('plugin.colorschemes.oak')
-
 Colorschemes.onedark = require('plugin.colorschemes.onedark')
-
 Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
-
 Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
-
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
-
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
-
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@return CscMod|table|fun(color?: string|AllCsc, ...: any)
 function Colorschemes.new()
+    ---@operator call: fun(color?: string|AllCsc, ...: any)
     return setmetatable({}, {
         __index = Colorschemes,
 
@@ -87,8 +94,10 @@ function Colorschemes.new()
 
         ---@type fun(self: CscMod, color?: string|AllCsc, ...: any)
         __call = function(self, color, ...)
+            local Keymaps = require('user_api.config.keymaps')
+
             ---@type AllMaps
-            local CscKeys = {
+            local Keys = {
                 ['<leader>u'] = { group = '+UI' },
                 ['<leader>uc'] = { group = '+Colorschemes' },
             }
@@ -107,49 +116,46 @@ function Colorschemes.new()
                 ---@type AllColorSubMods
                 local TColor = self[name]
 
-                if not (is_fun(TColor.valid) or TColor.valid()) then
+                if TColor.valid == nil or not TColor.valid() then
                     goto continue
                 end
 
                 table.insert(valid, name)
 
-                CscKeys['<leader>uc' .. csc_group] = {
+                Keys['<leader>uc' .. csc_group] = {
                     group = '+Group ' .. csc_group,
                 }
+
+                local i_str = tostring(i)
 
                 if type_not_empty('table', TColor.variants) then
                     local v = 'a'
                     for _, variant in next, TColor.variants do
-                        CscKeys['<leader>uc' .. csc_group .. tostring(i)] = {
-                            group = string.format('+%s', capitalize(name)),
+                        Keys['<leader>uc' .. csc_group .. i_str] = {
+                            group = fmt('+%s', capitalize(name)),
                         }
-                        CscKeys['<leader>uc' .. csc_group .. tostring(i) .. v] = {
+                        Keys['<leader>uc' .. csc_group .. i_str .. v] = {
                             function()
                                 TColor:setup(variant)
                             end,
-                            desc(
-                                string.format(
-                                    'Set Colorscheme `%s` (%s)',
-                                    capitalize(name),
-                                    variant
-                                )
-                            ),
+                            desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
                         }
 
                         v = displace_letter(v, 'next', false)
                     end
                 else
-                    CscKeys['<leader>uc' .. csc_group .. tostring(i)] = {
+                    Keys['<leader>uc' .. csc_group .. i_str] = {
                         function()
                             TColor:setup()
                         end,
-                        desc(string.format('Set Colorscheme `%s`', capitalize(name))),
+                        desc(fmt('Set Colorscheme `%s`', capitalize(name))),
                     }
                 end
 
                 -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
                 if i == 9 then
-                    -- If last  keymap set ended on 9, reset back to 1, and go to next letter alphabetically
+                    -- If last  keymap set ended on 9, reset back to 1,
+                    -- and go to next letter alphabetically
                     i = 1
                     csc_group = displace_letter(csc_group, 'next', false)
                 elseif i < 9 then
@@ -162,34 +168,31 @@ function Colorschemes.new()
             if not type_not_empty('table', valid) then
                 error('No valid colorschemes!', ERROR)
             end
-            Keymaps({ n = CscKeys })
+            Keymaps({ n = Keys })
 
             if not (is_str(color) and vim.tbl_contains(valid, color)) then
                 color = valid[1]
             end
 
-            ---@type AllColorSubMods|nil
-            local Selected = nil
+            ---@type AllColorSubMods
+            local Color = self[color]
 
-            if self[color] ~= nil and self[color].valid() then
-                ---@type AllColorSubMods
-                Selected = self[color]
-
-                Selected:setup(...)
+            if Color ~= nil and Color.valid() then
+                Color:setup(...)
                 return
             end
 
             for _, csc in next, valid do
-                if self[csc].valid() then
-                    ---@type AllColorSubMods
-                    Selected = self[csc]
+                ---@type AllColorSubMods
+                Color = self[csc]
 
-                    Selected:setup()
+                if Color.valid ~= nil and Color.valid() then
+                    Color:setup()
                     return
                 end
             end
 
-            vim.cmd('silent! colorscheme default')
+            vim.cmd.colorscheme('default')
         end,
     })
 end
