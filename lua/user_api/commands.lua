@@ -1,17 +1,19 @@
----@class User.Commands.CtxSpec
----@field [1] fun(ctx: vim.api.keyset.create_user_command.command_args)
----@field [2] vim.api.keyset.user_command
+---@class User.Commands.CmdSpec
+---@field [1] fun(ctx?: vim.api.keyset.create_user_command.command_args)
+---@field [2]? vim.api.keyset.user_command
 ---@field mappings? AllModeMaps
 
----@alias User.Commands.Spec table<string, User.Commands.CtxSpec>
+---@alias User.Commands.Spec table<string, User.Commands.CmdSpec>
 
 local Value = require('user_api.check.value')
 
 local desc = require('user_api.maps.kmap').desc
 local type_not_empty = Value.type_not_empty
 
+local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
+local copy = vim.deepcopy
 local new_cmd = vim.api.nvim_create_user_command
 local exec2 = vim.api.nvim_exec2
 local set_lines = vim.api.nvim_buf_set_lines
@@ -52,50 +54,53 @@ Commands.commands.Redir = {
 }
 
 ---@param name string
----@param C User.Commands.CtxSpec
-function Commands.new_command(name, C)
-    if not (type_not_empty('string', name) or type_not_empty('table', C)) then
-        error('(user_api.commands:new_command): nil/empty argument(s)')
+---@param cmd fun(ctx?: vim.api.keyset.create_user_command.command_args)
+---@param opts? vim.api.keyset.user_command|table
+---@param mappings? AllModeMaps
+function Commands.add_command(name, cmd, opts, mappings)
+    if not type_not_empty('string', name) or cmd == nil then
+        error('(user_api.commands:new_command): bad argument(s)', ERROR)
     end
 
-    Commands.commands[name] = C
+    opts = opts ~= nil and opts or {}
 
-    Commands.setup()
-end
+    local cmnd = { cmd, opts }
 
-function Commands.setup()
-    for cmd, T in next, Commands.commands do
-        local ok, _ = pcall(new_cmd, cmd, T[1], T[2] or {})
-
-        if not ok then
-            vim.notify(string.format('Bad command: `%s`', cmd), WARN)
-        end
+    if type_not_empty('table', mappings) then
+        cmnd.mappings = mappings
     end
 
-    vim.g.user_api_commans_setup = 1
+    Commands.setup({ [name] = cmnd })
 end
 
 function Commands.setup_keys()
-    local is_int = Value.is_int
-
-    -- HACK: Had to force this to be casted as a boolean
-    local abort = not (is_int(vim.g.user_api_commans_setup) and vim.g.user_api_commans_setup == 1)
-
-    if abort then
+    if not type_not_empty('table', Commands.commands) then
         return
     end
 
     local Keymaps = require('user_api.config.keymaps')
 
     for _, cmd in next, Commands.commands do
-        if not type_not_empty('table', cmd.mappings) then
-            goto continue
+        if type_not_empty('table', cmd.mappings) then
+            Keymaps(cmd.mappings)
         end
-
-        Keymaps(cmd.mappings)
-
-        ::continue::
     end
+end
+
+---@param cmds? User.Commands.Spec
+function Commands.setup(cmds)
+    local is_tbl = Value.is_tbl
+
+    cmds = is_tbl(cmds) and cmds or {}
+
+    Commands.commands = vim.tbl_deep_extend('keep', cmds, copy(Commands.commands))
+
+    for cmd, T in next, Commands.commands do
+        local exec, opts = T[1], T[2] or {}
+        new_cmd(cmd, exec, opts)
+    end
+
+    Commands.setup_keys()
 end
 
 ---@return table|User.Commands

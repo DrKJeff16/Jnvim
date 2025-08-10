@@ -345,6 +345,31 @@ Keymaps.Keys = {
             desc('Prompt Save File', false),
         },
 
+        ['<leader>fii'] = {
+            function()
+                local opt_get = vim.api.nvim_get_option_value
+                local cursor_set = vim.api.nvim_win_set_cursor
+                local cursor_get = vim.api.nvim_win_get_cursor
+
+                local buf = curr_buf()
+
+                if not opt_get('modifiable', { buf = buf }) then
+                    vim.notify('Unable to indent. File is not modifiable!', ERROR)
+                end
+
+                local win = vim.api.nvim_get_current_win()
+                local saved_pos = cursor_get(win)
+
+                vim.api.nvim_feedkeys('gg=G', 'n', false)
+
+                -- HACK: Wait for `feedkeys` to end, then reset to position
+                -- vim.schedule(function()
+                cursor_set(win, saved_pos)
+                -- end)
+            end,
+            desc('Indent Whole File'),
+        },
+
         ['<leader>fir'] = {
             ':%retab<CR>',
             desc('Retab File'),

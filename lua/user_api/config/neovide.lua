@@ -197,7 +197,7 @@ function Neovide.parse_g_opts(O, pfx)
     end
 end
 
-function Neovide.setup_keys()
+function Neovide.setup_maps()
     if not Neovide.check() then
         return
     end
@@ -292,7 +292,7 @@ function Neovide.setup(T, transparent, verbose)
         vim.notify((inspect or vim.inspect)(Neovide.g_opts), INFO)
     end
 
-    Neovide.setup_keys()
+    Neovide.setup_maps()
 end
 
 return Neovide

@@ -256,9 +256,16 @@ function User.setup()
     Keymaps({ n = Keys })
 
     User.setup_maps()
+    User.commands.setup()
     User.update.setup_maps()
-    User.commands.setup_keys()
-    User.opts.setup_keys()
+    User.opts.setup_maps()
+    User.config.neovide.setup()
+
+    -- Call the User API file associations and other autocmds
+    User.util.setup_autocmd()
+
+    -- Call runtimepath optimizations for specific platforms
+    User.distro()
 end
 
 ---@return table|UserAPI

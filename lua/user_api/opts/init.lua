@@ -216,7 +216,7 @@ function Opts.toggle(O)
     end
 end
 
-function Opts.setup_keys()
+function Opts.setup_maps()
     local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps.kmap').desc
 

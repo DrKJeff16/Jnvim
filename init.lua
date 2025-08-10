@@ -2,16 +2,13 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.inspect = vim.inspect
 
 local INFO = vim.log.levels.INFO
-local ERROR = vim.log.levels.ERROR
 
 local User = require('user_api')
 
 local Check = require('user_api.check')
 local Keymaps = require('user_api.config.keymaps')
-local Neovide = require('user_api.config.neovide')
 local Util = require('user_api.util')
 local Opts = require('user_api.opts')
-local Commands = require('user_api.commands')
 local Distro = require('user_api.distro')
 
 local desc = require('user_api.maps.kmap').desc
@@ -20,12 +17,6 @@ _G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
 _G.in_console = Check.in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
-
--- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
----@type fun(...: any)
-function _G.print_inspect(...)
-    vim.print(inspect(...))
-end
 
 -- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
 ---@type fun(...: any)
@@ -79,6 +70,7 @@ Opts({
     splitright = true,
     stal = 2, -- `showtabline`
     signcolumn = 'yes',
+    splitkeep = 'screen',
     sts = 4, -- `softtabstop`
     sw = 4, -- `shiftwidth`
     swb = { 'usetab' }, -- `switchbuf`
@@ -91,9 +83,6 @@ Opts({
 if not in_console() then
     Opts.set_cursor_blink()
 end
-
--- Call runtimepath optimizations for specific platforms
-Distro()
 
 -- Set `<Leader>` key
 Keymaps.set_leader('<Space>')
@@ -111,30 +100,6 @@ local L = require('config.lazy')
 
 Keymaps({
     n = {
-        ['<leader>fii'] = {
-            function()
-                local opt_get = vim.api.nvim_get_option_value
-                local cursor_set = vim.api.nvim_win_set_cursor
-                local cursor_get = vim.api.nvim_win_get_cursor
-
-                local buf = curr_buf()
-
-                if not opt_get('modifiable', { buf = buf }) then
-                    vim.notify('Unable to indent. File is not modifiable!', ERROR)
-                end
-
-                local win = vim.api.nvim_get_current_win()
-                local saved_pos = cursor_get(win)
-
-                vim.api.nvim_feedkeys('gg=G', 'n', false)
-
-                -- HACK: Wait for `feedkeys` to end, then reset to position
-                vim.schedule(function()
-                    cursor_set(win, saved_pos)
-                end)
-            end,
-            desc('Indent Whole File'),
-        },
         ['<leader>vM'] = {
             vim.cmd.messages,
             desc('Run `:messages`'),
@@ -148,7 +113,8 @@ Keymaps({
 
 ---@type table|CscMod|fun(color?: string, ...)
 local Color = L.colorschemes()
-Color('tokyonight', 'moon')
+-- Color('tokyonight', 'moon')
+Color('catppuccin', 'mocha')
 
 local Alpha = L.alpha()
 
@@ -156,21 +122,13 @@ if Alpha ~= nil then
     Alpha('startify')
 end
 
--- Call the User API file associations and other autocmds
-Util.setup_autocmd()
-
--- NOTE: See `:h g:markdown_minlines`
-vim.g.markdown_minlines = 500
+-- Initialize the User API
+User.setup()
 
 vim.cmd.packadd('nohlsearch')
 
--- Define any custom commands
-Commands.setup()
-
--- Mappings related specifically to `user_api`
-User.setup() -- NOTE: This MUST be called after `Commands:setup()` or it won't work
-
-Neovide:setup()
+-- NOTE: See `:h g:markdown_minlines`
+vim.g.markdown_minlines = 500
 
 local Lsp = L.lsp()
 Lsp()
@@ -182,8 +140,6 @@ vim.schedule(function()
     local bt_get = Util.bt_get
 
     local buf = curr_buf()
-
-    vim.cmd.noh() -- HACK: Disable highlights when reloading
 
     local DISABLE_ON = {
         ft = {
