@@ -32,16 +32,16 @@ local ERROR = vim.log.levels.ERROR
 ---@class CscMod
 local Colorschemes = {}
 
----@class AllCsc
+---@enum AllCsc
 Colorschemes.OPTIONS = {
-    'catppuccin',
     'tokyonight',
-    'vscode',
-    'kanagawa',
-    'gruvbox',
     'nightfox',
-    'dracula',
+    'catppuccin',
     'onedark',
+    'gruvbox',
+    'kanagawa',
+    'vscode',
+    'dracula',
     'gloombuddy',
     'molokai',
     'oak',
@@ -78,7 +78,7 @@ Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
----@return CscMod|table|fun(color: string?, ...)
+---@return CscMod|table|fun(color?: string|AllCsc, ...: any)
 function Colorschemes.new()
     return setmetatable({}, {
         __index = Colorschemes,
@@ -87,7 +87,7 @@ function Colorschemes.new()
             rawset(self, key, value)
         end,
 
-        ---@type fun(self: CscMod, color: string?, ...)
+        ---@type fun(self: CscMod, color?: string|AllCsc, ...: any)
         __call = function(self, color, ...)
             ---@type AllMaps
             local CscKeys = {

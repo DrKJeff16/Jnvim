@@ -111,11 +111,6 @@ Keymaps({
     },
 }, nil, true)
 
----@type table|CscMod|fun(color?: string, ...)
-local Color = L.colorschemes()
--- Color('tokyonight', 'moon')
-Color('catppuccin', 'mocha')
-
 local Alpha = L.alpha()
 
 if Alpha ~= nil then
@@ -124,6 +119,10 @@ end
 
 -- Initialize the User API
 User.setup()
+
+local Color = L.colorschemes()
+Color('tokyonight', 'moon')
+-- Color('catppuccin', 'mocha')
 
 vim.cmd.packadd('nohlsearch')
 
