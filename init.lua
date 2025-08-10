@@ -10,6 +10,7 @@ local Keymaps = require('user_api.config.keymaps')
 local Util = require('user_api.util')
 local Opts = require('user_api.opts')
 local Distro = require('user_api.distro')
+local Termux = Distro.termux
 
 local desc = require('user_api.maps.kmap').desc
 
@@ -29,9 +30,8 @@ Opts({
     backup = false,
     bg = 'dark', -- `background`
     bs = { 'indent', 'eol', 'start' }, -- `backspace`
-    cmdwinheight = Distro.termux.validate() and 15 or 25,
+    cmdwinheight = Termux.validate() and 15 or 25,
     ci = false, -- `copyindent`
-    completeopt = { 'menu', 'menuone', 'noinsert', 'noselect', 'preview' },
     confirm = true,
     equalalways = true,
     et = true, -- `expandtab`
@@ -76,24 +76,24 @@ Opts({
     swb = { 'usetab' }, -- `switchbuf`
     ts = 4, -- `tabstop`
     title = true,
-    wrap = Distro.termux.validate(),
+    wrap = Termux.validate(),
 })
 
--- HACK: Set up `guicursor` so that cursor blinks
+---HACK: Set up `guicursor` so that cursor blinks
 if not in_console() then
     Opts.set_cursor_blink()
 end
 
--- Set `<Leader>` key
+---Set `<Leader>` key.
 Keymaps.set_leader('<Space>')
 
 vim.g.markdown_minlines = 500
 
---- Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not
+---Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not.
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
---- Uncomment to use system clipboard
+---Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
 local L = require('config.lazy')
@@ -121,7 +121,10 @@ end
 User.setup()
 
 local Color = L.colorschemes()
-Color('tokyonight', 'moon')
+
+Color('nightfox', 'nightfox')
+-- Color('nightfox', 'carbonfox')
+-- Color('tokyonight', 'moon')
 -- Color('catppuccin', 'mocha')
 
 vim.cmd.packadd('nohlsearch')
@@ -134,40 +137,40 @@ Lsp()
 
 vim.schedule(function()
     local in_tbl = vim.tbl_contains
-    local opt_set = vim.api.nvim_set_option_value
+    local optset = vim.api.nvim_set_option_value
     local ft_get = Util.ft_get
     local bt_get = Util.bt_get
 
     local buf = curr_buf()
 
-    local DISABLE_ON = {
-        ft = {
-            'help',
-            'lazy',
-            'notify',
-            'qf',
-            'TelescopePrompt',
-            'TelescopeResults',
-        },
-
-        bt = {
-            'help',
-            'prompt',
-            'quickfix',
-            'terminal',
-        },
+    DISABLE_FT = {
+        'help',
+        'lazy',
+        'notify',
+        'qf',
+        'TelescopePrompt',
+        'TelescopeResults',
     }
 
-    local curr_ft = ft_get(buf)
-    local curr_bt = bt_get(buf)
+    DISABLE_BT = {
+        'help',
+        'prompt',
+        'quickfix',
+        'terminal',
+    }
+
+    local ft, bt = ft_get(buf), bt_get(buf)
 
     -- HACK: In case we're on specific buffer (file|buf)types
-    if not (in_tbl(DISABLE_ON.ft, curr_ft) or in_tbl(DISABLE_ON.bt, curr_bt)) then
+    if not (in_tbl(DISABLE_FT, ft) or in_tbl(DISABLE_BT, bt)) then
         return
     end
 
-    opt_set('number', false, { scope = 'local' })
-    opt_set('signcolumn', 'no', { scope = 'local' })
+    ---@type vim.api.keyset.option
+    local opts = { scope = 'local' }
+
+    optset('number', false, opts)
+    optset('signcolumn', 'no', opts)
 end)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

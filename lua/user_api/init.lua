@@ -132,11 +132,10 @@ function User.deregister_plugin(pathstr)
     table.remove(User.registered_plugins, idx)
 end
 
----@return boolean
----@return string[]|table
+---@return boolean noerr Whether the reloading is successful
+---@return string[]|table User.FAILED A list of failed plugins (if any)
 function User.reload_plugins()
     User.FAILED = {}
-
     local noerr = true
 
     for _, plugin in next, User.registered_plugins do
@@ -188,24 +187,22 @@ function User.setup_maps()
     end
 
     ---@type AllMaps
-    local Keys = {}
+    local Keys = {
+        ['<leader>Pe'] = { group = '+Edit Plugin Config' },
+    }
 
-    local group = 'A'
-    local i = 1
-    local cycle = 1
+    local group, i, cycle = 'a', 1, 1
 
     while i < #User.paths do
-        Keys['<leader>UP' .. group] = {
-            group = '+Group ' .. group,
-        }
+        Keys['<leader>Pe' .. group] = { group = '+Group ' .. string.upper(group) }
 
         local name = User.paths[i]
 
-        Keys['<leader>UP' .. group .. tostring(cycle)] = {
+        Keys['<leader>Pe' .. group .. tostring(cycle)] = {
             function()
                 vim.cmd.tabnew(name)
             end,
-            desc(name),
+            desc(vim.fn.fnamemodify(name, ':h:t') .. '/' .. vim.fn.fnamemodify(name, ':t')),
         }
 
         if cycle == 9 then
@@ -228,17 +225,16 @@ function User.setup()
     ---@type AllMaps
     local Keys = {
         ['<leader>U'] = { group = '+User API' },
-        ['<leader>UP'] = { group = '+Plugins' },
+        ['<leader>P'] = { group = '+Plugins' },
 
-        ['<leader>UPr'] = {
+        ['<leader>Pr'] = {
             function()
                 vim.notify('Reloading...', INFO)
 
                 local res, failed = User.reload_plugins()
 
-                if not res then
+                if not (res or vim.tbl_isempty(failed)) then
                     vim.notify(insp(failed), ERROR)
-
                     return
                 end
 
@@ -246,7 +242,7 @@ function User.setup()
             end,
             desc('Reload All Plugins'),
         },
-        ['<leader>UPl'] = {
+        ['<leader>Pl'] = {
             User.print_loaded_plugins,
             desc('Print Loaded Plugins'),
         },
@@ -259,16 +255,17 @@ function User.setup()
     User.commands.setup()
     User.update.setup_maps()
     User.opts.setup_maps()
-    User.config.neovide.setup()
 
     -- Call the User API file associations and other autocmds
     User.util.setup_autocmd()
 
     -- Call runtimepath optimizations for specific platforms
     User.distro()
+
+    User.config.neovide.setup()
 end
 
----@return table|UserAPI
+---@return UserAPI|table
 function User.new()
     return setmetatable({}, { __index = User })
 end
