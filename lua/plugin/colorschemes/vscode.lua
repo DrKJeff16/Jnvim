@@ -1,19 +1,6 @@
----@diagnostic disable:missing-fields
-
----@alias VSCodeSubMod.Variant ('dark'|'light')
-
----@class VSCodeSubMod.Variants
----@field [1] 'dark'
----@field [2] 'light'
-
---- A colorscheme table for the `vscode` colorscheme
---- ---
----@class VSCodeSubMod
----@field variants VSCodeSubMod.Variants
----@field mod_cmd string
----@field valid fun(): boolean
----@field setup fun(self: VSCodeSubMod, variant: VSCodeSubMod.Variant?, transparent: boolean?, override: table?)
----@field new fun(O: table?): table|VSCodeSubMod
+---@alias VSCodeSubMod.Variant
+---|'dark'
+---|'light'
 
 local User = require('user_api')
 local Check = User.check
@@ -23,14 +10,18 @@ local is_bool = Check.value.is_bool
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 
----@type VSCodeSubMod
-local VSCode = {
-    variants = {
-        'dark',
-        'light',
-    },
-    mod_cmd = 'silent! colorscheme vscode',
+--- A colorscheme table for the `vscode` colorscheme
+--- ---
+---@class VSCodeSubMod
+local VSCode = {}
+
+---@type (VSCodeSubMod.Variant)[]
+VSCode.variants = {
+    'dark',
+    'light',
 }
+
+VSCode.mod_cmd = 'silent! colorscheme vscode'
 
 ---@return boolean
 function VSCode.valid()
@@ -38,7 +29,7 @@ function VSCode.valid()
 end
 
 ---@param self VSCodeSubMod
----@param variant? VSCodeSubMod.Variants
+---@param variant? (VSCodeSubMod.Variant)[]
 ---@param transparent? boolean
 ---@param override? table
 function VSCode:setup(variant, transparent, override)
@@ -68,7 +59,7 @@ function VSCode:setup(variant, transparent, override)
 end
 
 ---@param O? table
----@return table|VSCodeSubMod
+---@return VSCodeSubMod|table
 function VSCode.new(O)
     O = is_tbl(O) and O or {}
     return setmetatable(O, { __index = VSCode })

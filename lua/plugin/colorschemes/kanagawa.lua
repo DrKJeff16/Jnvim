@@ -1,22 +1,9 @@
----@diagnostic disable:missing-fields
-
----@module 'kanagawa'
-
 ---@alias KanagawaSubMod.Variant ('dragon'|'wave'|'lotus')
 
 ---@class KanagawaSubMod.Variants
 ---@field [1] 'dragon'
 ---@field [2] 'wave'
 ---@field [3] 'lotus'
-
---- A `CscSubMod` variant but for the `kanagawa` colorscheme
---- ---
----@class KanagawaSubMod: CscSubMod
----@field setup fun(self: KanagawaSubMod, variant: KanagawaSubMod.Variant?, transparent: boolean?, override: table|KanagawaConfig?)|nil
----@field variants KanagawaSubMod.Variants
----@field valid fun(): boolean
----@field mod_cmd string
----@field new fun(O: table?): KanagawaSubMod|table
 
 local User = require('user_api')
 local Check = User.check
@@ -27,16 +14,19 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 local in_console = Check.in_console
 
----@type KanagawaSubMod
-local Kanagawa = {
-    ---@type KanagawaSubMod.Variants
-    variants = {
-        'dragon',
-        'wave',
-        'lotus',
-    },
-    mod_cmd = 'silent! colorscheme kanagawa',
+--- A `CscSubMod` variant but for the `kanagawa` colorscheme
+--- ---
+---@class KanagawaSubMod
+local Kanagawa = {}
+
+---@type KanagawaSubMod.Variants
+Kanagawa.variants = {
+    'dragon',
+    'wave',
+    'lotus',
 }
+
+Kanagawa.mod_cmd = 'silent! colorscheme kanagawa'
 
 ---@return boolean
 function Kanagawa.valid()
@@ -44,9 +34,9 @@ function Kanagawa.valid()
 end
 
 ---@param self KanagawaSubMod
----@param variant? 'dragon'|'wave'|'lotus'
+---@param variant? KanagawaSubMod.Variant
 ---@param transparent? boolean
----@param override? table|KanagawaConfig
+---@param override? KanagawaConfig
 function Kanagawa:setup(variant, transparent, override)
     variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'dragon'
     transparent = is_bool(transparent) and transparent or false

@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 
 local is_tbl = User.check.value.is_tbl
@@ -11,7 +9,7 @@ SpaceVimDark.mod_cmd = 'silent! colorscheme space-vim-dark'
 
 ---@return boolean
 function SpaceVimDark.valid()
-    return vim.g.installed_space_vim_dark
+    return vim.g.installed_space_vim_dark == 1
 end
 
 ---@param self SpaceVimSubMod

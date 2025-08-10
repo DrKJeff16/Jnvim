@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias AllColorSubMods
 ---|CpcSubMod
 ---|DraculaSubMod

@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 
 local is_tbl = User.check.value.is_tbl

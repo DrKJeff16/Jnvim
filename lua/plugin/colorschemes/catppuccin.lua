@@ -8,15 +8,6 @@
 ---@field [3] 'mocha'
 ---@field [4] 'latte'
 
---- A submodule class for the `catppuccin.nvim` colorscheme
---- ---
----@class CpcSubMod
----@field variants CpcSubMod.Variants
----@field setup fun(self: CpcSubMod, variant: CpcSubMod.Variant?, transparent: boolean?, override: table|CatppuccinOptions?)
----@field valid fun(): boolean
----@field mod_cmd string
----@field new fun(O: table?): table|CpcSubMod
-
 local User = require('user_api')
 local Check = User.check
 
@@ -25,17 +16,20 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
----@type CpcSubMod
-local Catppuccin = {
-    ---@type CpcSubMod.Variants
-    variants = {
-        'frappe',
-        'macchiato',
-        'mocha',
-        'latte',
-    },
-    mod_cmd = 'silent! colorscheme catppuccin',
+--- A submodule class for the `catppuccin.nvim` colorscheme.
+--- ---
+---@class CpcSubMod
+local Catppuccin = {}
+
+---@type CpcSubMod.Variants
+Catppuccin.variants = {
+    'frappe',
+    'macchiato',
+    'mocha',
+    'latte',
 }
+
+Catppuccin.mod_cmd = 'silent! colorscheme catppuccin'
 
 ---@return boolean
 function Catppuccin.valid()

@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias OD.Variant ('dark'|'darker'|'cool'|'deep'|'warm'|'warmer'|'light')
 
 ---@alias OD.Diagnostics table<'darker'|'undercurl'|'background', boolean>
@@ -18,15 +16,6 @@
 ---@field highlights? table
 ---@field diagnostics? OD.Diagnostics
 
---- A colorscheme class for the `onedark.nvim` colorscheme
---- ---
----@class ODSubMod
----@field setup fun(self: ODSubMod, variant: OD.Variant?, transparent: boolean?, override: table|OD?)
----@field new fun(O: table?): ODSubMod|table
----@field valid fun(): boolean
----@field mod_cmd string
----@field variants OD.Variant[]
-
 local User = require('user_api')
 local Check = User.check
 
@@ -35,20 +24,23 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
----@type ODSubMod
-local OneDark = {
-    ---@type OD.Variant[]
-    variants = {
-        'cool',
-        'dark',
-        'darker',
-        'deep',
-        'light',
-        'warm',
-        'warmer',
-    },
-    mod_cmd = 'silent! colorscheme onedark',
+--- A colorscheme class for the `onedark.nvim` colorscheme
+--- ---
+---@class ODSubMod
+local OneDark = {}
+
+---@type (OD.Variant)[]
+OneDark.variants = {
+    'cool',
+    'dark',
+    'darker',
+    'deep',
+    'light',
+    'warm',
+    'warmer',
 }
+
+OneDark.mod_cmd = 'silent! colorscheme onedark'
 
 function OneDark.valid()
     return exists('onedark')

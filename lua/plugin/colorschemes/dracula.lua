@@ -2,19 +2,6 @@
 
 ---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')
 
----@class DraculaSubMod.Variants
----@field [1] 'dracula'
----@field [2] 'dracula-soft'
-
---- A colorscheme table for the `dracula.nvim` colorscheme
---- ---
----@class DraculaSubMod
----@field variants DraculaSubMod.Variants
----@field setup fun(self: DraculaSubMod, variant: DraculaSubMod.Variant?, transparent: boolean?, override: table?)
----@field valid fun(): boolean
----@field new fun(O: table?): table|DraculaSubMod
----@field mod_cmd string
-
 local User = require('user_api')
 local Check = User.check
 
@@ -23,15 +10,19 @@ local is_tbl = Check.value.is_tbl
 local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 
----@type DraculaSubMod
-local Dracula = {
-    ---@type DraculaSubMod.Variants
-    variants = {
-        'dracula',
-        'dracula-soft',
-    },
-    mod_cmd = 'colorscheme ',
+---A colorscheme table for the `dracula.nvim` colorscheme
+--- ---
+---@class DraculaSubMod
+local Dracula = {}
+
+---@class DraculaSubMod.Variants
+Dracula.variants = {
+    'dracula',
+    'dracula-soft',
 }
+
+---@type string
+Dracula.mod_cmd = 'colorscheme '
 
 ---@return boolean
 function Dracula.valid()

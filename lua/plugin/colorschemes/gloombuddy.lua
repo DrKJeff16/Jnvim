@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
 
@@ -22,6 +20,7 @@ end
 ---@param self GloombuddySubMod
 function Gloombuddy:setup()
     require('colorbuddy').colorscheme('gloombuddy')
+
     vim.cmd(self.mod_cmd)
 end
 
