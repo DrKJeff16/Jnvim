@@ -382,7 +382,7 @@ end
 
 ---@param values any[]|table<string, any>
 ---@param T table
----@param return_keys boolean
+---@param return_keys? boolean
 ---@return boolean|string|integer|(string|integer)[] res
 function Value.tbl_values(values, T, return_keys)
     local is_tbl = Value.is_tbl
