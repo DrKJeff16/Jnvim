@@ -67,7 +67,7 @@ Project.setup({
     -- * win
     scope_chdir = 'tab',
 
-    allow_different_owners = true,
+    allow_different_owners = false,
 
     telescope = {
         enabled = false,
