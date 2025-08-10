@@ -1,9 +1,10 @@
+---@diagnostic disable:missing-fields
+
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
 local desc = User.maps.kmap.desc
 
 local copy = vim.deepcopy
@@ -32,10 +33,12 @@ Trouble.Opts = {
     max_items = 200, -- limit number of items that can be displayed per section
     multiline = true, -- render multi-line messages
     pinned = false, -- When pinned, the opened trouble window will be bound to the current buffer
-    warn_no_results = true, -- show a warning when there are no results
+    warn_no_results = false, -- show a warning when there are no results
     open_no_results = false, -- open the trouble window when there are no results
+
     ---@type trouble.Window.opts
     win = {}, -- window options for the results window. Can be a split or a floating window
+
     -- Window options for the preview window. Can be a split, floating window,
     -- or `main` to show the preview in the main editor window
     ---@type trouble.Window.opts
@@ -44,10 +47,10 @@ Trouble.Opts = {
         -- when a buffer is not yet loaded, the preview window will be created
         -- in a scratch buffer with only syntax highlighting enabled.
         -- Set to false, if you want the preview to always be a real loaded buffer
-        scratch = true,
+        scratch = false,
     },
     --- Throttle/Debounce settings. Should usually not be changed
-    ---@type table<string, number|{ ms:number, debounce?:boolean }>
+    ---@type table<string, number|{ ms: number, debounce?: boolean }>
     throttle = {
         refresh = 20, -- fetches new data when needed
         update = 10, -- updates the window
@@ -70,11 +73,11 @@ Trouble.Opts = {
         ['<C-s>'] = 'jump_split',
         ['<C-v>'] = 'jump_vsplit',
         -- go down to next item (accepts count)
-        -- j = "next",
+        j = 'next',
         ['}'] = 'next',
         [']]'] = 'next',
         -- go up to prev item (accepts count)
-        -- k = "prev",
+        k = 'prev',
         ['{'] = 'prev',
         ['[['] = 'prev',
         i = 'inspect',
@@ -104,7 +107,7 @@ Trouble.Opts = {
         s = { -- example of a custom action that toggles the severity
             action = function(view)
                 local f = view:get_filter('severity')
-                local severity = ((f and f.filter.severity or 0) + 1) % 5
+                local severity = (f and (f.filter.severity + 1) or 1) % 5
                 view:filter({ severity = severity }, {
                     id = 'severity',
                     template = '{hl:Title}Filter:{hl} {severity}',
@@ -116,7 +119,51 @@ Trouble.Opts = {
     },
     ---@type table<string, trouble.Mode>
     modes = {
-        ---@diagnostic disable-next-line:missing-fields
+        -- sources define their own modes, which you can use directly,
+        -- or override like in the example below
+        lsp_references = {
+            -- some modes are configurable, see the source code for more details
+            params = {
+                include_declaration = true,
+            },
+        },
+        -- The LSP base mode for:
+        -- * lsp_definitions, lsp_references, lsp_implementations
+        -- * lsp_type_definitions, lsp_declarations, lsp_command
+        lsp_base = {
+            params = {
+                -- don't include the current location in the results
+                include_current = false,
+            },
+        },
+
+        diagnostics = {
+            mode = 'diagnostics',
+            auto_preview = true,
+            auto_refresh = true,
+            auto_jump = false,
+            follow = true,
+            indent_guides = true,
+            focus = false,
+            auto_open = true,
+            auto_close = true,
+        },
+
+        test = {
+            mode = 'diagnostics',
+            preview = {
+                type = 'split',
+                relative = 'win',
+                position = 'right',
+                size = 0.3,
+            },
+        },
+
+        diagnostics_buffer = {
+            mode = 'diagnostics',
+            filter = { buf = 0 },
+        },
+
         symbols = {
             desc = 'document symbols',
             mode = 'lsp_document_symbols',
@@ -148,48 +195,48 @@ Trouble.Opts = {
             },
         },
     },
-    -- stylua: ignore
+
     icons = {
         ---@type trouble.Indent.symbols
-        indent        = {
-            top         = "│ ",
-            middle      = "├╴",
-            last        = "└╴",
+        indent = {
+            top = '│ ',
+            middle = '├╴',
+            -- last        = "└╴",
             -- last          = "-╴",
-            -- last       = "╰╴", -- rounded
-            fold_open   = " ",
-            fold_closed = " ",
-            ws          = "  ",
+            last = '╰╴', -- rounded
+            fold_open = ' ',
+            fold_closed = ' ',
+            ws = '  ',
         },
-        folder_closed = " ",
-        folder_open   = " ",
-        kinds         = {
-            Array         = " ",
-            Boolean       = "󰨙 ",
-            Class         = " ",
-            Constant      = "󰏿 ",
-            Constructor   = " ",
-            Enum          = " ",
-            EnumMember    = " ",
-            Event         = " ",
-            Field         = " ",
-            File          = " ",
-            Function      = "󰊕 ",
-            Interface     = " ",
-            Key           = " ",
-            Method        = "󰊕 ",
-            Module        = " ",
-            Namespace     = "󰦮 ",
-            Null          = " ",
-            Number        = "󰎠 ",
-            Object        = " ",
-            Operator      = " ",
-            Package       = " ",
-            Property      = " ",
-            String        = " ",
-            Struct        = "󰆼 ",
-            TypeParameter = " ",
-            Variable      = "󰀫 ",
+        folder_closed = ' ',
+        folder_open = ' ',
+        kinds = {
+            Array = ' ',
+            Boolean = '󰨙 ',
+            Class = ' ',
+            Constant = '󰏿 ',
+            Constructor = ' ',
+            Enum = ' ',
+            EnumMember = ' ',
+            Event = ' ',
+            Field = ' ',
+            File = ' ',
+            Function = '󰊕 ',
+            Interface = ' ',
+            Key = ' ',
+            Method = '󰊕 ',
+            Module = ' ',
+            Namespace = '󰦮 ',
+            Null = ' ',
+            Number = '󰎠 ',
+            Object = ' ',
+            Operator = ' ',
+            Package = ' ',
+            Property = ' ',
+            String = ' ',
+            Struct = '󰆼 ',
+            TypeParameter = ' ',
+            Variable = '󰀫 ',
         },
     },
 }
