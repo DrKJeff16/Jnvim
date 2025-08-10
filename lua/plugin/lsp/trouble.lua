@@ -145,7 +145,7 @@ Trouble.Opts = {
             follow = true,
             indent_guides = true,
             focus = false,
-            auto_open = true,
+            auto_open = false,
             auto_close = true,
         },
 
