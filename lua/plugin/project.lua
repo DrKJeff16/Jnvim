@@ -90,6 +90,8 @@ Project.setup({
         --- ---
         ---@type 'oldest'|'newest'
         sort = 'newest',
+
+        prefer_file_browser = true,
     },
 
     ---Table of lsp clients to ignore by name,
