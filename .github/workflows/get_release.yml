@@ -24,10 +24,10 @@ jobs:
       - name: Build project assets
         id: checkout
         run: |
-          zip -r -9 project.nvim.zip lua README.md LICENSE
-          tar cvJf project.nvim.tar.xz lua README.md LICENSE
-          sha512sum project.nvim.zip | cut -d ' ' -f1 > project.nvim.zip.sha512sum
-          sha512sum project.nvim.tar.xz | cut -d ' ' -f1 > project.nvim.tar.xz.sha512sum
+          zip -r -9 Jnvim.zip lua README.md LICENSE
+          tar cvJf Jnvim.tar.xz lua README.md LICENSE
+          sha512sum Jnvim.zip | cut -d ' ' -f1 > Jnvim.zip.sha512sum
+          sha512sum Jnvim.tar.xz | cut -d ' ' -f1 > Jnvim.tar.xz.sha512sum
 
       - name: Get Release
         id: get_current_release
@@ -57,10 +57,10 @@ jobs:
         with:
           files: |
             Release.txt
-            project.nvim.tar.xz
-            project.nvim.tar.xz.sha512sum
-            project.nvim.zip
-            project.nvim.zip.sha512sum
+            Jnvim.tar.xz
+            Jnvim.tar.xz.sha512sum
+            Jnvim.zip
+            Jnvim.zip.sha512sum
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Upload Release ZIP Asset
@@ -68,8 +68,8 @@ jobs:
       #   id: upload_zip
       #   with:
       #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-      #     asset_path: ./project.nvim.zip
-      #     asset_name: project.nvim.zip
+      #     asset_path: ./Jnvim.zip
+      #     asset_name: Jnvim.zip
       #     asset_content_type: application/zip
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,8 +79,8 @@ jobs:
       #   id: upload_txz
       #   with:
       #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-      #     asset_path: ./project.nvim.tar.xz
-      #     asset_name: project.nvim.tar.xz
+      #     asset_path: ./Jnvim.tar.xz
+      #     asset_name: Jnvim.tar.xz
       #     asset_content_type: application/x-xz-compressed-tar
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,8 +90,8 @@ jobs:
       #   id: upload_zip_sha512sum
       #   with:
       #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-      #     asset_path: ./project.nvim.zip.sha512sum
-      #     asset_name: project.nvim_zip.sha512sum
+      #     asset_path: ./Jnvim.zip.sha512sum
+      #     asset_name: Jnvim_zip.sha512sum
       #     asset_content_type: text/plain
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,8 +101,8 @@ jobs:
       #   id: upload_tar_xz_sha512sum
       #   with:
       #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-      #     asset_path: ./project.nvim.tar.xz.sha512sum
-      #     asset_name: project.nvim_txz.sha512sum
+      #     asset_path: ./Jnvim.tar.xz.sha512sum
+      #     asset_name: Jnvim_txz.sha512sum
       #     asset_content_type: text/plain
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
