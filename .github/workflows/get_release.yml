@@ -1,9 +1,11 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Upload Asset To Current Release
+name: Action Release
 
 # Controls when the workflow will run
 on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "v*.*.*-*"
   merge_group:
     branches:
       - main
@@ -11,28 +13,23 @@ on:
   release:
     types: [created]
 
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "run"
-  test:
-    # The type of runner that the job will run on
+  build:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2
-      - name: Build project
+      - uses: actions/checkout@v5
+      - name: Build project assets
+        id: checkout
         run: |
-          zip -r -9 Jnvim.zip lua README.md LICENSE init.lua requirements.txt
-          tar cvJf Jnvim.tar.xz lua README.md LICENSE init.lua requirements.txt
-          sha512sum Jnvim.zip | cut -d ' ' -f1 | tee Jnvim.zip.sha512sum
-          sha512sum Jnvim.tar.xz | cut -d ' ' -f1 | tee Jnvim.tar.xz.sha512sum
+          zip -r -9 project.nvim.zip lua README.md LICENSE
+          tar cvJf project.nvim.tar.xz lua README.md LICENSE
+          sha512sum project.nvim.zip | cut -d ' ' -f1 > project.nvim.zip.sha512sum
+          sha512sum project.nvim.tar.xz | cut -d ' ' -f1 > project.nvim.tar.xz.sha512sum
 
       - name: Get Release
-        # You may pin to the exact commit or the version.
-        # uses: joutvhu/get-release@9a8271732adc3299a22f8ad09b0a67eb3aa836ac
         id: get_current_release
         uses: joutvhu/get-release@v1.0.3
         with:
@@ -47,45 +44,65 @@ jobs:
           # Fail when no release was found
           throwing: true
         env:
-          # My Token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Release ZIP Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./Jnvim.zip
-          asset_name: Jnvim.zip
-          asset_content_type: application/zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Release File
+        run: echo ${{ github.sha }} > Release.txt
+      - name: Test Release
+        run: cat Release.txt
 
-      - name: Upload Release Tarball
-        uses: actions/upload-release-asset@v1
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         with:
-          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./Jnvim.tar.xz
-          asset_name: Jnvim.tar.xz
-          asset_content_type: application/x-xz-compressed-tar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            Release.txt
+            project.nvim.tar.xz
+            project.nvim.tar.xz.sha512sum
+            project.nvim.zip
+            project.nvim.zip.sha512sum
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Release ZIP Asset sha512sum
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./Jnvim.zip.sha512sum
-          asset_name: Jnvim.zip.sha512sum
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Tarball sha512sum
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.get_current_release.outputs.upload_url }}
-          asset_path: ./Jnvim.tar.xz.sha512sum
-          asset_name: Jnvim.tar.xz.sha512sum
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload Release ZIP Asset
+      #   uses: actions/upload-release-asset@v1
+      #   id: upload_zip
+      #   with:
+      #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+      #     asset_path: ./project.nvim.zip
+      #     asset_name: project.nvim.zip
+      #     asset_content_type: application/zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # - name: Upload Release Tarball
+      #   uses: actions/upload-release-asset@v1
+      #   id: upload_txz
+      #   with:
+      #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+      #     asset_path: ./project.nvim.tar.xz
+      #     asset_name: project.nvim.tar.xz
+      #     asset_content_type: application/x-xz-compressed-tar
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # - name: Upload Release ZIP Asset sha512sum
+      #   uses: actions/upload-release-asset@v1
+      #   id: upload_zip_sha512sum
+      #   with:
+      #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+      #     asset_path: ./project.nvim.zip.sha512sum
+      #     asset_name: project.nvim_zip.sha512sum
+      #     asset_content_type: text/plain
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # - name: Upload Release Tarball sha512sum
+      #   uses: actions/upload-release-asset@v1
+      #   id: upload_tar_xz_sha512sum
+      #   with:
+      #     upload_url: ${{ steps.get_current_release.outputs.upload_url }}
+      #     asset_path: ./project.nvim.tar.xz.sha512sum
+      #     asset_name: project.nvim_txz.sha512sum
+      #     asset_content_type: text/plain
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
