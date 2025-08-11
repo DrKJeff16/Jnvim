@@ -24,8 +24,8 @@ jobs:
       - name: Build project assets
         id: checkout
         run: |
-          zip -r -9 Jnvim.zip lua README.md LICENSE
-          tar cvJf Jnvim.tar.xz lua README.md LICENSE
+          zip -r -9 Jnvim.zip init.lua lua README.md
+          tar cvJf Jnvim.tar.xz init.lua lua README.md
           sha512sum Jnvim.zip | cut -d ' ' -f1 > Jnvim.zip.sha512sum
           sha512sum Jnvim.tar.xz | cut -d ' ' -f1 > Jnvim.tar.xz.sha512sum
 
@@ -61,6 +61,7 @@ jobs:
             Jnvim.tar.xz.sha512sum
             Jnvim.zip
             Jnvim.zip.sha512sum
+            LICENSE
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Upload Release ZIP Asset
