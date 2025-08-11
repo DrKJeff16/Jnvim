@@ -9,12 +9,13 @@ local Check = require('user_api.check')
 local Keymaps = require('user_api.config.keymaps')
 local Util = require('user_api.util')
 local Opts = require('user_api.opts')
-local Distro = require('user_api.distro')
-local Termux = Distro.termux
+local Termux = require('user_api.distro').termux
 
 local desc = require('user_api.maps.kmap').desc
 
-_G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
+local uv = vim.uv or vim.loop
+
+_G.is_windows = uv.os_uname().version:match('Windows') ~= nil
 _G.in_console = Check.in_console
 
 local curr_buf = vim.api.nvim_get_current_buf
