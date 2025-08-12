@@ -1,5 +1,3 @@
----@module 'config.lazy'
-
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
@@ -71,7 +69,7 @@ local Essentials = {
     {
         'DrKJeff16/project.nvim',
         dev = true,
-        main = 'project_nvim',
+        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
         config = source('plugin.project'),
