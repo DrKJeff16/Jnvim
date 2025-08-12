@@ -1,6 +1,4 @@
----@diagnostic disable:missing-fields
-
----@alias AnyDict table<string|integer, any>
+---@alias AnyDict table<string, any>
 
 ---@alias DirectionFun fun(t: AnyDict): res: AnyDict
 
@@ -82,7 +80,7 @@ function Util.mv_tbl_values(T, steps, direction)
 
         ---@type DirectionFun
         r = function(t)
-            ---@type (string|integer)[]
+            ---@type string[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
             local len = #keys
@@ -103,7 +101,7 @@ function Util.mv_tbl_values(T, steps, direction)
 
         ---@type DirectionFun
         l = function(t)
-            ---@type (string|integer)[]
+            ---@type string[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
             local len = #keys
@@ -123,13 +121,13 @@ function Util.mv_tbl_values(T, steps, direction)
         end,
     }
 
-    ---@type AnyDict
     local res = T
-
     local func = direction_funcs[direction]
 
     while steps > 0 do
         res = func(res)
+
+        ---WARN: DO NOT DELETE THE LINE BELOW
         steps = steps - 1
     end
 
@@ -316,8 +314,9 @@ function Util.setup_autocmd()
 
     ---@type AuRepeatEvents[]
     local AUS = {
-        { -- NOTE: Keep this as first element for `orgmode` addition
-            events = { 'BufCreate', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter', 'BufEnter' },
+        -- NOTE: Keep this as first element for `orgmode` addition
+        {
+            events = { 'BufCreate', 'BufAdd', 'BufNew', 'BufNewFile', 'BufRead' },
             opts_tbl = {
                 {
                     group = group,
@@ -405,17 +404,33 @@ function Util.setup_autocmd()
             },
         },
         {
+            events = { 'FileType' },
+            opts_tbl = {
+                {
+                    pattern = 'checkhealth',
+                    group = group,
+                    callback = function()
+                        ---@type vim.api.keyset.option
+                        local O = { scope = 'local' }
+                        optset('wrap', true, O)
+                        optset('number', false, O)
+                        optset('signcolumn', 'no', O)
+                    end,
+                },
+            },
+        },
+        {
             events = { 'BufEnter', 'WinEnter', 'BufWinEnter' },
             opts_tbl = {
                 {
                     group = group,
-                    callback = function(args)
+                    callback = function(ev)
                         local Keymaps = require('user_api.config.keymaps')
                         local executable = require('user_api.check.exists').executable
                         local desc = require('user_api.maps.kmap').desc
                         local notify = Util.notify.notify
 
-                        local buf = args.buf
+                        local buf = ev.buf
 
                         local bt = Util.bt_get(buf)
                         local ft = Util.ft_get(buf)
@@ -454,14 +469,16 @@ function Util.setup_autocmd()
                                             ---@diagnostic disable-next-line:param-type-mismatch
                                             local ok, _ = pcall(vim.cmd, 'silent! !stylua %')
 
-                                            if ok then
-                                                notify('Formatted successfully!', INFO, {
-                                                    title = 'StyLua',
-                                                    animate = true,
-                                                    timeout = 350,
-                                                    hide_from_history = true,
-                                                })
+                                            if not ok then
+                                                return
                                             end
+
+                                            notify('Formatted successfully!', INFO, {
+                                                title = 'StyLua',
+                                                animate = true,
+                                                timeout = 350,
+                                                hide_from_history = true,
+                                            })
                                         end,
                                         desc('Format With `stylua`'),
                                     },
@@ -477,14 +494,16 @@ function Util.setup_autocmd()
                                             ---@diagnostic disable-next-line:param-type-mismatch
                                             local ok, _ = pcall(vim.cmd, 'silent! !isort %')
 
-                                            if ok then
-                                                notify('Formatted successfully!', INFO, {
-                                                    title = 'isort',
-                                                    animate = true,
-                                                    timeout = 350,
-                                                    hide_from_history = true,
-                                                })
+                                            if not ok then
+                                                return
                                             end
+
+                                            notify('Formatted successfully!', INFO, {
+                                                title = 'isort',
+                                                animate = true,
+                                                timeout = 350,
+                                                hide_from_history = true,
+                                            })
                                         end,
                                         desc('Format With `isort`'),
                                     },
