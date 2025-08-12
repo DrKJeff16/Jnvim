@@ -49,20 +49,20 @@ function Server.make_capabilities(T)
 end
 
 ---@param name string
----@param client vim.lsp.ClientConfig
----@return vim.lsp.ClientConfig client
-function Server.populate(name, client)
-    if type_not_empty('table', client.capabilities) then
-        local old_caps = copy(client.capabilities)
+---@param config vim.lsp.Config
+---@return vim.lsp.Config config
+function Server.populate(name, config)
+    if type_not_empty('table', config.capabilities) then
+        local old_caps = copy(config.capabilities)
         local caps = Server.make_capabilities(old_caps)
 
-        client.capabilities = insert_client(copy(client.capabilities), caps)
+        config.capabilities = insert_client(copy(config.capabilities), caps)
     else
-        client.capabilities = Server.make_capabilities()
+        config.capabilities = Server.make_capabilities()
     end
 
     if in_tbl({ 'html', 'jsonls' }, name) then
-        client.capabilities = insert_client(copy(client.capabilities), {
+        config.capabilities = insert_client(copy(config.capabilities), {
             textDocument = {
                 completion = {
                     completionItem = {
@@ -74,7 +74,7 @@ function Server.populate(name, client)
     end
 
     if name == 'rust_analyzer' then
-        client.capabilities = insert_client(copy(client.capabilities), {
+        config.capabilities = insert_client(copy(config.capabilities), {
             experimental = {
                 serverStatusNotification = true,
             },
@@ -82,7 +82,7 @@ function Server.populate(name, client)
     end
 
     if name == 'clangd' then
-        client.capabilities = insert_client(copy(client.capabilities), {
+        config.capabilities = insert_client(copy(config.capabilities), {
             offsetEncoding = { 'utf-8', 'utf-16' },
             textDocument = {
                 completion = {
@@ -93,7 +93,7 @@ function Server.populate(name, client)
     end
 
     if name == 'gh_actions_ls' then
-        client.capabilities = insert_client(copy(client.capabilities), {
+        config.capabilities = insert_client(copy(config.capabilities), {
             workspace = {
                 didChangeWorkspaceFolders = {
                     dynamicRegistration = true,
@@ -106,13 +106,13 @@ function Server.populate(name, client)
         local ss = require('schemastore')
 
         if name == 'jsonls' then
-            if client.settings == nil then
-                client.settings = { json = {} }
-            elseif client.settings.json == nil then
-                client.settings.json = {}
+            if config.settings == nil then
+                config.settings = { json = {} }
+            elseif config.settings.json == nil then
+                config.settings.json = {}
             end
 
-            client.settings = insert_client(copy(client.settings), {
+            config.settings = insert_client(copy(config.settings), {
                 json = {
                     schemas = ss.json.schemas(),
                     validate = { enable = true },
@@ -121,13 +121,13 @@ function Server.populate(name, client)
         end
 
         if name == 'yamlls' then
-            if client.settings == nil then
-                client.settings = { yaml = {} }
-            elseif client.settings.yaml == nil then
-                client.settings.yaml = {}
+            if config.settings == nil then
+                config.settings = { yaml = {} }
+            elseif config.settings.yaml == nil then
+                config.settings.yaml = {}
             end
 
-            client.settings = insert_client(copy(client.settings), {
+            config.settings = insert_client(copy(config.settings), {
                 yaml = {
                     schemaStore = { enable = false, url = '' },
                     schemas = ss.yaml.schemas(),
@@ -136,7 +136,7 @@ function Server.populate(name, client)
         end
     end
 
-    return client
+    return config
 end
 
 ---@return table|Lsp.Server|fun()
@@ -163,12 +163,18 @@ function Server.new()
             })
 
             for client, v in next, self.Clients do
+                if v == nil then
+                    goto continue
+                end
+
                 local new_client = self.populate(client, v)
 
                 vim.lsp.config[client] = new_client
                 vim.lsp.enable(client)
 
                 table.insert(self.client_names, client)
+
+                ::continue::
             end
 
             ---@type AllModeMaps

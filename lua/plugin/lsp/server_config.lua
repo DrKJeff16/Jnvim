@@ -1,59 +1,63 @@
----@diagnostic disable:missing-fields
-
----@alias Lsp.Server.Clients.Spec vim.lsp.ClientConfig
-
 local User = require('user_api')
+local Check = User.check
+
+local type_not_empty = Check.value.type_not_empty
+local executable = Check.exists.executable
 
 ---@param name string
----@return vim.lsp.ClientConfig
-local function server_load(name)
-    local modstr = 'plugin.lsp.servers.' .. name
+---@param exe? string
+---@return vim.lsp.Config|nil
+local function server_load(name, exe)
+    if type_not_empty('string', exe) then
+        if not executable(exe) then
+            return nil
+        end
+    end
 
-    local ok, mod = pcall(require, modstr)
+    local ok, mod = pcall(require, 'plugin.lsp.servers.' .. name)
 
     return ok and mod or {}
 end
 
 ---@class Lsp.Server.Clients
----@field lua_ls? Lsp.Server.Clients.Spec
----@field bashls? Lsp.Server.Clients.Spec
----@field clangd? Lsp.Server.Clients.Spec
----@field cmake? Lsp.Server.Clients.Spec
----@field css_variables? Lsp.Server.Clients.Spec
----@field cssls? Lsp.Server.Clients.Spec
----@field docker_compose_language_service? Lsp.Server.Clients.Spec
----@field dockerls? Lsp.Server.Clients.Spec
----@field gh_actions_ls? Lsp.Server.Clients.Spec
----@field html? Lsp.Server.Clients.Spec
----@field jdtls? Lsp.Server.Clients.Spec
----@field jsonls? Lsp.Server.Clients.Spec
----@field julials? Lsp.Server.Clients.Spec
----@field marksman? Lsp.Server.Clients.Spec
----@field pylsp? Lsp.Server.Clients.Spec
----@field rust_analyzer? Lsp.Server.Clients.Spec
----@field taplo? Lsp.Server.Clients.Spec
----@field texlab? Lsp.Server.Clients.Spec
----@field vimls? Lsp.Server.Clients.Spec
----@field yamlls? Lsp.Server.Clients.Spec
-local Clients = {}
+local Clients = {
+    lua_ls = server_load('lua_ls', 'lua-language-server'),
 
-Clients.lua_ls = server_load('lua_ls')
-Clients.bashls = server_load('bashls')
-Clients.clangd = server_load('clangd')
-Clients.pylsp = server_load('pylsp')
-Clients.vimls = server_load('vimls')
-Clients.jsonls = server_load('jsonls')
-Clients.docker_compose_language_service = server_load('docker_compose_language_service')
-Clients.dockerls = server_load('dockerls')
-Clients.marksman = server_load('marksman')
-Clients.cmake = server_load('cmake')
-Clients.html = server_load('html')
-Clients.rust_analyzer = server_load('rust_analyzer')
-Clients.cssls = server_load('cssls')
-Clients.css_variables = server_load('css_variables')
-Clients.taplo = server_load('taplo')
-Clients.gh_actions_ls = server_load('gh_actions_ls')
-Clients.yamlls = server_load('yamlls')
+    bashls = server_load('bashls', 'bash-language-server'),
+
+    clangd = server_load('clangd', 'clangd'),
+
+    pylsp = server_load('pylsp', 'pylsp'),
+
+    vimls = server_load('vimls', 'vim-language-server'),
+
+    jsonls = server_load('jsonls', 'vscode-json-language-server'),
+
+    docker_compose_language_service = server_load(
+        'docker_compose_language_service',
+        'docker-compose-langserver'
+    ),
+
+    dockerls = server_load('dockerls', 'docker-langserver'),
+
+    marksman = server_load('marksman', 'marksman'),
+
+    cmake = server_load('cmake', 'cmake-language-server'),
+
+    cssls = server_load('cssls', 'vscode-css-language-server'),
+    css_variables = server_load('css_variables', 'css-variables-language-server'),
+    html = server_load('html', 'vscode-html-language-server'),
+
+    rust_analyzer = server_load('rust_analyzer', 'rust-analyzer'),
+
+    taplo = server_load('taplo', 'taplo'),
+
+    gh_actions_ls = server_load('gh_actions_ls', 'gh-action-language-server'),
+
+    texlab = server_load('texlab', 'texlab'),
+
+    yamlls = server_load('yamlls', 'yaml-language-server'),
+}
 
 _G.CLIENTS = Clients
 
