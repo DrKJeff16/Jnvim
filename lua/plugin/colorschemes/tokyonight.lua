@@ -2,6 +2,7 @@
 ---|'night'
 ---|'moon'
 ---|'day'
+---|'storm'
 
 local User = require('user_api')
 local Check = User.check
@@ -18,6 +19,7 @@ local TokyoNight = {}
 
 ---@type (TNSubMod.Variant)[]
 TokyoNight.variants = {
+    'storm',
     'night',
     'moon',
     'day',

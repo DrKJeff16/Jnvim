@@ -123,9 +123,10 @@ User.setup()
 
 local Color = L.colorschemes()
 
-Color('nightfox', 'nightfox')
+-- Color('nightfox', 'nightfox')
 -- Color('nightfox', 'carbonfox')
 -- Color('tokyonight', 'moon')
+Color('tokyonight', 'storm')
 -- Color('catppuccin', 'mocha')
 
 vim.cmd.packadd('nohlsearch')
