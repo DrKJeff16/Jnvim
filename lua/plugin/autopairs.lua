@@ -1,27 +1,34 @@
 local User = require('user_api')
 local Check = User.check
+local Util = User.util
 
 local exists = Check.exists.module
+local ft_get = Util.ft_get
 
 if not exists('nvim-autopairs') then
+    User.deregister_plugin('plugin.autopairs')
     return
 end
 
-local Rule = require('nvim-autopairs.rule')
 local AP = require('nvim-autopairs')
+local Rule = require('nvim-autopairs.rule')
 local ts_conds = require('nvim-autopairs.ts-conds')
 local Cond = require('nvim-autopairs.conds')
 
 AP.setup({
+    ---Control if auto-pairs should be enabled when attaching to a specific buffer
+    --- ---
     ---@param bufnr integer
     enabled = function(bufnr)
-        return true
-    end, -- control if auto-pairs should be enabled when attaching to a buffer
+        return ft_get(bufnr) ~= 'help'
+    end,
+
     disable_filetype = {
         'TelescopePrompt',
         'spectre_panel',
         'snacks_picker_input',
     },
+
     disable_in_macro = true, -- disable when recording or executing a macro
     disable_in_visualblock = false, -- disable when insert after visual block mode
     disable_in_replace_mode = true,
@@ -42,6 +49,7 @@ AP.setup({
     map_c_w = false, -- map <c-w> to delete a pair if possible
 })
 
+---@class BracketsSpec
 local brackets = {
     { '(', ')' },
     { '[', ']' },
