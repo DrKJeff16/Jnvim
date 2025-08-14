@@ -110,7 +110,6 @@ end
 
 ---Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
 --- ---
----
 ---For UNIX systems, it'll be something akin to:
 ---
 ---```sh
@@ -125,7 +124,6 @@ end
 ---
 ---If you're on Windows and use _**MSYS2**_, then it will attempt to look for `mingw32-make.exe`.
 ---If unsuccessful, **it'll return `false`**.
----
 --- ---
 ---@return string|false cmd
 function CfgUtil.tel_fzf_build()
