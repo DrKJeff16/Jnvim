@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('bufferline') or exists('barbar') then
+    User.deregister_plugin('plugin.bufferline')
     return
 end
 
@@ -20,11 +21,11 @@ local SP = BLine.style_preset
 
 ---@param count integer
 ---@param lvl 'error'|'warning'
----@param diags? table<string, any>
+---@param diags? table<string, string>
 ---@param context? table
----@return string s
+---@return string
 local function diagnostics_indicator(count, lvl, diags, context)
-    if not context.buffer:current() then
+    if context == nil or not context.buffer:current() then
         return ''
     end
 
@@ -33,7 +34,7 @@ local function diagnostics_indicator(count, lvl, diags, context)
 
     for e, n in next, diags do
         local sym = (e == 'error') and ' ' or (e == 'warning' and ' ' or '')
-        s = s .. n .. sym
+        s = string.format('%s%s%s', s, n, sym)
     end
 
     return s
@@ -114,9 +115,9 @@ BLine.setup({
 
         themable = true,
 
-        numbers = 'both',
+        numbers = 'ordinal',
 
-        close_command = 'bdelete %d',
+        close_command = 'bdelete! %d',
         right_mouse_command = nil,
         left_mouse_command = nil,
 
@@ -170,7 +171,7 @@ BLine.setup({
         separator_style = 'padded_slope',
         enforce_regular_tabs = true,
         always_show_bufferline = true,
-        auto_toggle_bufferline = true,
+        auto_toggle_bufferline = false,
 
         groups = {
             options = { toggle_hidden_on_enter = true },
@@ -199,6 +200,12 @@ BLine.setup({
             {
                 filetype = 'lazy',
                 text = 'Lazy',
+                text_align = 'center',
+                separator = true,
+            },
+            {
+                filetype = 'notify',
+                text = 'Notification',
                 text_align = 'center',
                 separator = true,
             },
