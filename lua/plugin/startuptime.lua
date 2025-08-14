@@ -1,12 +1,11 @@
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
-local Check = User.check
 
-local is_int = Check.value.is_int
 local desc = User.maps.kmap.desc
 local hi = User.highlight.hl
+local Keymaps = require('user_api.config.keymaps')
 
-if not is_int(vim.g.installed_startuptime) or vim.g.installed_startuptime ~= 1 then
+if vim.g.installed_startuptime == nil or vim.g.installed_startuptime ~= 1 then
+    User.deregister_plugin('plugin.startuptime')
     return
 end
 
@@ -36,18 +35,14 @@ end
 ---@type AllMaps
 local Keys = {
     ['<leader>vS'] = {
-        function()
-            vim.cmd('StartupTime')
-        end,
+        vim.cmd.StartupTime,
         desc('Run StartupTime'),
     },
 }
 
 Keymaps({ n = Keys })
 
-vim.schedule(function()
-    hi('StartupTimeSourcingEvent', { link = 'Title' })
-end)
+hi('StartupTimeSourcingEvent', { link = 'Title' })
 
 User.register_plugin('plugin.startuptime')
 
