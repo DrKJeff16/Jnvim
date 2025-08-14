@@ -1,19 +1,8 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
-local Termux = User.distro.termux
 
 local exists = Check.exists.module
 local hl_from_dict = User.highlight.hl_from_dict
-local au = Util.au.au_from_arr
-local ft_get = Util.ft_get
-
-local optset = vim.api.nvim_set_option_value
-local curr_buf = vim.api.nvim_get_current_buf
-
-local augroup = vim.api.nvim_create_augroup
 
 if not exists('notify') then
     return
@@ -23,6 +12,7 @@ local Notify = require('notify')
 
 Notify.setup({
     background_colour = 'NotifyBackground',
+    merge_duplicates = true,
     fps = 60,
     icons = {
         DEBUG = '',
@@ -45,42 +35,6 @@ Notify.setup({
 
 ---@type notify
 vim.notify = Notify
-
----@type AuPair[]
-local aucmds = {
-    {
-        event = 'WinEnter',
-        opts = {
-            group = augroup('User.Notify', { clear = false }),
-            callback = function()
-                local buf = curr_buf()
-
-                if ft_get(buf) ~= 'notify' then
-                    return
-                end
-
-                optset('wrap', Termux.validate(), { scope = 'local' })
-            end,
-        },
-    },
-    {
-        event = 'BufWinLeave',
-        opts = {
-            group = augroup('User.Notify', { clear = false }),
-            callback = function()
-                local buf = curr_buf()
-
-                if ft_get(buf) ~= 'notify' then
-                    return
-                end
-
-                optset('wrap', false, { scope = 'local' })
-            end,
-        },
-    },
-}
-
-au(aucmds)
 
 ---@type HlDict
 local NotifyHl = {
@@ -115,9 +69,7 @@ local NotifyHl = {
     ['NotifyWARNTitle'] = { fg = '#F79000' },
 }
 
-vim.schedule(function()
-    hl_from_dict(NotifyHl)
-end)
+hl_from_dict(NotifyHl)
 
 User.register_plugin('plugin.notify')
 
