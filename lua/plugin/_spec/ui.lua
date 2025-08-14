@@ -26,6 +26,7 @@ local UI = {
     {
         'goolord/alpha-nvim',
         lazy = false,
+        priority = 1000,
         version = false,
         dependencies = {
             'nvim-tree/nvim-web-devicons',
@@ -39,7 +40,7 @@ local UI = {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
         version = false,
-        dependencies = { 'nvim-web-devicons' },
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
         config = source('plugin.lualine'),
         cond = not in_console(),
     },
