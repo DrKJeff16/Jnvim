@@ -1,3 +1,5 @@
+---@module 'config.lazy'
+
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
@@ -60,6 +62,13 @@ local UI = {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
         version = false,
+        dependencies = {
+            {
+                'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
+                version = false,
+                config = source('plugin.rainbow_delimiters'),
+            },
+        },
         config = source('plugin.ibl'),
         cond = not in_console(),
     },
