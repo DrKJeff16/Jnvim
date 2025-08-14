@@ -115,7 +115,7 @@ Keymaps({
 local Alpha = L.alpha()
 
 if Alpha ~= nil then
-    Alpha('startify')
+    Alpha('theta')
 end
 
 -- Initialize the User API
