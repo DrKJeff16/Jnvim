@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias AlphaFun fun(variant: ('dashboard'|'theta'|'startify')?)
 
 local User = require('user_api')
@@ -7,7 +5,6 @@ local Check = User.check
 
 local exists = Check.exists.module
 local is_str = Check.value.is_str
-local is_tbl = Check.value.is_tbl
 
 local in_tbl = vim.tbl_contains
 
@@ -49,25 +46,20 @@ function M.dashboard()
     Alpha.setup(Dashboard.config)
 end
 
----@param O? table
----@return table|AlphaCaller|AlphaFun
-function M.new(O)
-    O = is_tbl(O) and O or {}
-
-    return setmetatable(O, {
+---@return table|AlphaCaller|fun(variant?: 'theta'|'dashboard'|'startify')
+function M.new()
+    return setmetatable({}, {
         __index = M,
 
         ---@param self AlphaCaller
         ---@param variant? 'theta'|'dashboard'|'startify'
         __call = function(self, variant)
             if not (is_str(variant) and in_tbl({ 'theta', 'dashboard', 'startify' }, variant)) then
-                variant = 'startify'
+                return
             end
 
             ---@type fun()
-            local fun = self[variant]
-
-            fun()
+            self[variant]()
         end,
     })
 end
