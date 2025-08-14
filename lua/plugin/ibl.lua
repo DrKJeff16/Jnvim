@@ -1,5 +1,3 @@
----@module 'user_api.types.highlight'
-
 local User = require('user_api')
 local Check = User.check
 
@@ -47,7 +45,7 @@ end
 
 ---@type string[]
 local names = {}
----@type HlOpts[]
+---@type vim.api.keyset.highlight[]
 local options = {}
 
 for k, v in next, Hilite do
