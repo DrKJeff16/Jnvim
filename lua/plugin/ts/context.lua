@@ -1,12 +1,13 @@
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
+local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local hi = User.highlight.hl_from_dict
 local desc = User.maps.kmap.desc
 
 if not exists('treesitter-context') then
+    User.deregister_plugin('plugin.ts.context')
     return
 end
 
@@ -14,22 +15,15 @@ local Context = require('treesitter-context')
 
 Context.setup({
     enable = true,
-
-    multiwindow = false,
-
-    ---@type 'topline'|'cursor'
+    multiwindow = true,
     mode = 'cursor',
-
-    ---@type 'inner'|'outer'
-    trim_scope = 'outer',
+    trim_scope = 'inner',
     line_numbers = true,
     min_window_height = 0,
-    zindex = 20,
+    zindex = 50,
     multiline_threshold = 20,
     max_lines = 0,
 
-    -- Separator between context and content. Should be a single character string, like '-'.
-    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline
     separator = nil,
 
     -- Return false to disable attaching
@@ -50,22 +44,36 @@ local hls = {
 local Keys = {
     ['<leader>C'] = { group = '+Context' },
 
+    ['<leader>Cs'] = {
+        function()
+            local msg = Context.enabled() and 'Enabled' or 'Disabled'
+            vim.notify('TS Context ==> ' .. msg)
+        end,
+        desc('Status of TS Context'),
+    },
+
     ['<leader>Cn'] = {
         function()
-            require('treesitter-context').go_to_context(vim.v.count1)
+            Context.go_to_context(vim.v.count1)
         end,
         desc('Go To Current Context'),
     },
 
-    ['<leader>Ct'] = { Context.toggle, desc('Toggle Context') },
+    ['<leader>Ct'] = {
+        function()
+            Context.toggle()
+
+            local msg = Context.enabled() and 'En' or 'Dis'
+            vim.notify(msg .. 'abled TS Context')
+        end,
+        desc('Toggle Context'),
+    },
 }
 
 Keymaps({ n = Keys })
 
-vim.schedule(function()
-    hi(hls)
-end)
+hi(hls)
 
-User.register_plugin('plugin.treesitter.context')
+User.register_plugin('plugin.ts.context')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

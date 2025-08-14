@@ -1,5 +1,3 @@
----@module 'config.lazy'
-
 local CfgUtil = require('config.util')
 
 local source = CfgUtil.source
@@ -8,6 +6,7 @@ local source = CfgUtil.source
 local TS = {
     {
         'nvim-treesitter/nvim-treesitter',
+        -- branch = 'main',
         build = ':TSUpdate',
         version = false,
         dependencies = {
@@ -15,8 +14,9 @@ local TS = {
             'JoosepAlviste/nvim-ts-context-commentstring',
             'nvim-treesitter/nvim-treesitter-textobjects',
             'nvim-treesitter/nvim-treesitter-refactor',
+            'windwp/nvim-ts-autotag',
         },
-        config = source('plugin.treesitter'),
+        config = source('plugin.ts'),
     },
 }
 
