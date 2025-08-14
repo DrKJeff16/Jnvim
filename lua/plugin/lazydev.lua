@@ -5,12 +5,16 @@ local executable = Check.exists.executable
 local exists = Check.exists.module
 
 if exists('neodev') then
+    User.deregister_plugin('plugin.lazydev')
     return
 end
 
 if not (exists('lazydev') and executable('lua-language-server')) then
+    User.deregister_plugin('plugin.lazydev')
     return
 end
+
+local fs_stat = (vim.uv or vim.loop).fs_stat
 
 local LazyDev = require('lazydev')
 
@@ -19,16 +23,7 @@ local library = {
     { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
     {
         path = vim.fn.environ()['HOME'] .. '/Projects/nvim/wezterm-types',
-        mods = {
-            'wezterm',
-
-            'types',
-            'types.config',
-            'types.enum',
-            'types.events',
-            'types.objects',
-            'types.wezterm',
-        },
+        mods = { 'wezterm' },
     },
 }
 
@@ -39,7 +34,6 @@ LazyDev.setup({
 
     ---@type boolean|(fun(root_dir: string): boolean)
     enabled = function(root_dir)
-        local fs_stat = (vim.uv or vim.loop).fs_stat
         return not (fs_stat(root_dir .. '/.luarc.json') or fs_stat(root_dir .. '/luarc.json'))
     end,
 
