@@ -88,8 +88,6 @@ end
 ---Set `<Leader>` key.
 Keymaps.set_leader('<Space>')
 
-vim.g.markdown_minlines = 500
-
 ---Disable `netrw` regardless of whether `nvim_tree/neo_tree` exist or not.
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -148,6 +146,7 @@ vim.schedule(function()
     DISABLE_FT = {
         'help',
         'lazy',
+        'checkhealth',
         'notify',
         'qf',
         'TelescopePrompt',
