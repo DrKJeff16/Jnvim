@@ -4,21 +4,22 @@ local Check = User.check
 local executable = Check.exists.executable
 
 if not executable('doxygen') or vim.g.installed_doxygen_toolkit ~= 1 then
+    User.deregister_plugin('plugin.doxygen')
     return
 end
 
 local g_vars = {
-    DoxygenToolkit_briefTag_pre = '@brief  ',
-    DoxygenToolkit_paramTag_pre = '@param ',
-    DoxygenToolkit_returnTag = '@return ',
-    DoxygenToolkit_blockHeader = '--------------------------------------------------------------------------',
-    DoxygenToolkit_blockFooter = '----------------------------------------------------------------------------',
-    DoxygenToolkit_authorName = 'Guennadi "DrKJeff16" Maximov C',
-    DoxygenToolkit_licenseTag = 'MIT',
+    authorName = 'Guennadi "DrKJeff16" Maximov C.',
+    blockFooter = '----------------------------------------------------------------------------',
+    blockHeader = '--------------------------------------------------------------------------',
+    briefTag_pre = '@brief  ',
+    licenseTag = 'MIT',
+    paramTag_pre = '@param ',
+    returnTag = '@return ',
 }
 
 for k, v in next, g_vars do
-    vim.g[k] = v
+    vim.g['DoxygenToolkit_' .. k] = v
 end
 
 User.register_plugin('plugin.doxygen')
