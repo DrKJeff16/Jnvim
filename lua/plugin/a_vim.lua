@@ -1,6 +1,6 @@
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 
+local Keymaps = require('user_api.config.keymaps')
 local desc = require('user_api.maps.kmap').desc
 
 local augroup = vim.api.nvim_create_augroup
@@ -8,7 +8,7 @@ local au = vim.api.nvim_create_autocmd
 
 local group = augroup('User.A_Vim', { clear = true })
 
-au({ 'BufEnter', 'BufWinEnter' }, {
+au({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
     group = group,
 
     pattern = {
@@ -76,7 +76,7 @@ au({ 'BufEnter', 'BufWinEnter' }, {
     end,
 })
 
--- Delete default plugin maps
+---HACK: Delete default plugin maps
 vim.keymap.del({ 'n', 'i' }, '<leader>ihn')
 vim.keymap.del({ 'n', 'i' }, '<leader>ih')
 vim.keymap.del({ 'n', 'i' }, '<leader>is')
