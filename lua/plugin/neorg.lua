@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('neorg') then
+    User.deregister_plugin('plugin.neorg')
     return
 end
 

@@ -1,12 +1,15 @@
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
+local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 
+local in_tbl = vim.tbl_contains
+
 if not exists('todo-comments') then
+    User.deregister_plugin('plugin.todo_comments')
     return
 end
 
@@ -15,7 +18,7 @@ local TODO = require('todo-comments')
 -- TODO: This is a test
 TODO.setup({
     signs = true, -- show icons in the signs column
-    sign_priority = 40, -- sign priority
+    sign_priority = 8, -- sign priority
     -- keywords recognized as todo comments
     keywords = {
         TITLE = {
@@ -94,10 +97,12 @@ TODO.setup({
             },
         },
     },
+
     gui_style = {
-        fg = 'BOLD', -- The gui style to use for the fg highlight group
-        bg = 'NONE', -- The gui style to use for the bg highlight group
+        fg = 'NONE', -- The GUI style to use for the fg highlight group
+        bg = 'BOLD', -- The GUI style to use for the bg highlight group
     },
+
     merge_keywords = true, -- when true, custom keywords will be merged with the defaults
 
     -- highlighting of the line containing the todo comment
@@ -105,7 +110,7 @@ TODO.setup({
     -- * keyword: highlights of the keyword
     -- * after: highlights after the keyword (todo text)
     highlight = {
-        multiline = false, -- enable multine todo comments
+        multiline = true, -- enable multine todo comments
         multiline_pattern = '^.', -- lua pattern to match the next multiline from the start of the matched keyword
         multiline_context = 1, -- extra lines that will be re-evaluated when changing a line
         before = '', -- 'fg' or 'bg' or empty
@@ -127,6 +132,7 @@ TODO.setup({
         default = { 'Identifier', '#7C3AED' },
         test = { 'Identifier', '#FF00FF' },
     },
+
     search = {
         command = 'rg',
         args = {
@@ -146,9 +152,7 @@ TODO.setup({
 ---@param keywords string[]
 ---@return fun()
 local function jump(direction, keywords)
-    if
-        not (type_not_empty('string', direction) or vim.tbl_contains({ 'next', 'prev' }, direction))
-    then
+    if not (type_not_empty('string', direction) or in_tbl({ 'next', 'prev' }, direction)) then
         error('(plugin.todo_comments:jump): Invalid direction')
     end
 
@@ -162,54 +166,106 @@ local function jump(direction, keywords)
     end
 end
 
+---@class TODOKeywords
+local KEYWORDS = {
+    TODO = { 'TODO', 'PENDING', 'MISSING' },
+    FIX = {
+        'FIX',
+        'FIXME',
+        'BUG',
+        'FIXIT',
+        'ISSUE',
+        'TOFIX',
+        'SOLVE',
+        'TOSOLVE',
+        'SOLVEIT',
+    },
+    HACK = { 'HACK', 'TRICK', 'SOLUTION', 'ADHOC', 'SOLVED' },
+    NOTE = { 'NOTE', 'INFO', 'MINDTHIS', 'TONOTE', 'WATCH' },
+    WARN = {
+        'WARN',
+        'ATTENTION',
+        'ISSUE',
+        'PROBLEM',
+        'WARNING',
+        'XXX',
+    },
+    TITLE = {
+        'TITLE',
+        'SECTION',
+        'BLOCK',
+        'CODESECTION',
+        'SECTIONTITLE',
+        'CODETITLE',
+    },
+    TEST = { 'TEST', 'TESTING', 'PASSED', 'FAILED' },
+    PERF = { 'PERF', 'OPTIM', 'OPTIMIZED', 'PERFORMANCE' },
+}
+
 ---@type AllMaps
 local Keys = {
     ['<leader>c'] = { group = '+Comments' },
+    ['<leader>cf'] = { group = "+'FIX'" },
     ['<leader>cw'] = { group = "+'WARNING'" },
-    ['<leader>ce'] = { group = "+'ERROR'" },
     ['<leader>ct'] = { group = "+'TODO'" },
     ['<leader>cn'] = { group = "+'NOTE'" },
 
     -- `TODO`
     ['<leader>ctn'] = {
-        jump('next', { 'TODO' }),
+        jump('next', KEYWORDS.TODO),
         desc("Next 'TODO' Comment"),
     },
     ['<leader>ctp'] = {
-        jump('prev', { 'TODO' }),
+        jump('prev', KEYWORDS.TODO),
         desc("Previous 'TODO' Comment"),
     },
 
-    -- `ERROR`
-    ['<leader>cen'] = {
-        jump('next', { 'ERROR' }),
-        desc("Next 'ERROR' Comment"),
+    -- `FIX`
+    ['<leader>cfn'] = {
+        jump('next', KEYWORDS.FIX),
+        desc("Next 'FIX' Comment"),
     },
-    ['<leader>cep'] = {
-        jump('prev', { 'ERROR' }),
-        desc("Previous 'ERROR' Comment"),
+    ['<leader>cfp'] = {
+        jump('prev', KEYWORDS.FIX),
+        desc("Previous 'FIX' Comment"),
     },
 
     -- `WARNING`
     ['<leader>cwn'] = {
-        jump('next', { 'WARNING' }),
+        jump('next', KEYWORDS.WARN),
         desc("Next 'WARNING' Comment"),
     },
     ['<leader>cwp'] = {
-        jump('prev', { 'WARNING' }),
+        jump('prev', KEYWORDS.WARN),
         desc("Previous 'WARNING' Comment"),
     },
 
     -- `NOTE`
     ['<leader>cnn'] = {
-        jump('next', { 'NOTE' }),
+        jump('next', KEYWORDS.NOTE),
         desc("Next 'NOTE' Comment"),
     },
     ['<leader>cnp'] = {
-        jump('prev', { 'NOTE' }),
+        jump('prev', KEYWORDS.NOTE),
         desc("Previous 'NOTE' Comment"),
     },
+
+    ['<leader>cl'] = {
+        vim.cmd.TodoLocList,
+        desc('Open Loclist For TODO Comments'),
+    },
 }
+
+if exists('telescope') then
+    Keys['<leader>cT'] = {
+        function()
+            local cwd = (vim.uv or vim.loop).cwd()
+
+            vim.cmd.TodoTelescope('keywords=TODO,FIX cwd=' .. cwd)
+        end,
+        desc('Open TODO Telescope'),
+    }
+end
 
 Keymaps({ n = Keys })
 
