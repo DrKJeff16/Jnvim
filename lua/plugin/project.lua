@@ -109,10 +109,12 @@ Project.setup({
     ---@type string[]|table
     exclude_dirs = {
         '~/.build/*',
+        '~/.cache/*',
         '~/.cargo/*',
         '~/.conda/*',
         '~/.local/*',
         '~/.luarocks/*',
+        '~/.tmux/*',
         '~/Desktop/*',
         '~/Public/*',
         '~/Templates/*',
@@ -153,6 +155,8 @@ Project.setup({
     --- ---
     ---@type string
     datapath = vim.fn.stdpath('data'),
+
+    enable_autochdir = false,
 })
 
 ---@type AllMaps
