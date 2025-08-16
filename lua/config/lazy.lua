@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias LazySpecs (LazySpec)[]
 
 ---@class LazySources
