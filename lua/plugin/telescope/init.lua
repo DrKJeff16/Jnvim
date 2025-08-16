@@ -318,7 +318,7 @@ local known_exts = {
             }
         end,
     },
-    project_nvim = {
+    project = {
         'projects',
 
         ---@return table|AllMaps
