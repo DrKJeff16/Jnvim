@@ -14,9 +14,6 @@ local mk_caps = vim.lsp.protocol.make_client_capabilities
 local d_extend = vim.tbl_deep_extend
 local copy = vim.deepcopy
 
-local Kinds = require('plugin.lsp.kinds')
-Kinds()
-
 ---@param original lsp.ClientCapabilities|vim.lsp.ClientConfig
 ---@param inserts lsp.ClientCapabilities|vim.lsp.ClientConfig|table
 ---@return lsp.ClientCapabilities|table
@@ -102,38 +99,44 @@ function Server.populate(name, config)
         })
     end
 
-    if exists('schemastore') then
-        local ss = require('schemastore')
+    if name == 'lua_ls' and exists('lazydev') then
+        local lazydev = require('lazydev')
 
-        if name == 'jsonls' then
-            if config.settings == nil then
-                config.settings = { json = {} }
-            elseif config.settings.json == nil then
-                config.settings.json = {}
-            end
+        config.root_dir = function(bufnr, on_dir)
+            on_dir(lazydev.find_workspace(bufnr))
+        end
+    end
 
-            config.settings = insert_client(copy(config.settings), {
-                json = {
-                    schemas = ss.json.schemas(),
-                    validate = { enable = true },
-                },
-            })
+    if not exists('schemastore') then
+        return config
+    end
+
+    local ss = require('schemastore')
+
+    if name == 'jsonls' then
+        if not config.settings then
+            config.settings = {}
         end
 
-        if name == 'yamlls' then
-            if config.settings == nil then
-                config.settings = { yaml = {} }
-            elseif config.settings.yaml == nil then
-                config.settings.yaml = {}
-            end
+        config.settings = insert_client(copy(config.settings), {
+            json = {
+                schemas = ss.json.schemas(),
+                validate = { enable = true },
+            },
+        })
+    end
 
-            config.settings = insert_client(copy(config.settings), {
-                yaml = {
-                    schemaStore = { enable = false, url = '' },
-                    schemas = ss.yaml.schemas(),
-                },
-            })
+    if name == 'yamlls' then
+        if not config.settings then
+            config.settings = {}
         end
+
+        config.settings = insert_client(copy(config.settings), {
+            yaml = {
+                schemaStore = { enable = false, url = '' },
+                schemas = ss.yaml.schemas(),
+            },
+        })
     end
 
     return config
@@ -150,7 +153,7 @@ function Server.new()
             vim.lsp.protocol.TextDocumentSyncKind[1] = 'Full'
 
             vim.lsp.config('*', {
-                capabilities = self.make_capabilities(),
+                capabilities = Server.make_capabilities(),
             })
 
             vim.diagnostic.config({
@@ -162,17 +165,19 @@ function Server.new()
                 severity_sort = false,
             })
 
-            for client, v in next, self.Clients do
-                if v == nil then
+            for name, client in next, self.Clients do
+                if not client then
                     goto continue
                 end
 
-                local new_client = self.populate(client, v)
+                local new_client = Server.populate(name, client)
 
-                vim.lsp.config[client] = new_client
-                vim.lsp.enable(client)
+                vim.lsp.config(name, new_client)
+                vim.lsp.enable(name)
 
-                table.insert(self.client_names, client)
+                if not in_tbl(Server.client_names, name) then
+                    table.insert(Server.client_names, name)
+                end
 
                 ::continue::
             end
@@ -206,6 +211,9 @@ function Server.new()
 
             local Autocmd = require('plugin.lsp.autocmd')
             Autocmd()
+
+            local Kinds = require('plugin.lsp.kinds')
+            Kinds()
 
             local Trouble = require('plugin.lsp.trouble')
             Trouble()
