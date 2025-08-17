@@ -4,6 +4,10 @@
 local is_dir = require('user_api.check.exists').vim_isdir
 
 local environ = vim.fn.environ
+local in_tbl = vim.tbl_contains
+local copy = vim.deepcopy
+
+local ERROR = vim.log.levels.ERROR
 
 ---@class User.Distro.Termux
 local Termux = {}
@@ -43,7 +47,7 @@ function Termux.validate()
         return false
     end
 
-    Termux.rtpaths = vim.deepcopy(new_rtpaths)
+    Termux.rtpaths = copy(new_rtpaths)
     return true
 end
 
@@ -53,25 +57,26 @@ function Termux.new()
         __index = Termux,
 
         ---@param self User.Distro.Termux
+        ---@param k string|integer
+        ---@param v any
+        __newindex = function(self, k, v)
+            error('This module is read-only!', ERROR)
+        end,
+
+        ---@param self User.Distro.Termux
         __call = function(self)
-            if not self.validate() then
+            if not (self.validate() and is_dir(PREFIX)) then
                 return
             end
 
-            if not is_dir(PREFIX) then
-                return
-            end
-
-            for _, path in next, vim.deepcopy(self.rtpaths) do
+            for _, path in next, copy(self.rtpaths) do
                 ---@diagnostic disable-next-line:param-type-mismatch
-                if is_dir(path) and not vim.tbl_contains(vim.opt.rtp:get(), path) then
+                if is_dir(path) and not in_tbl(vim.opt.rtp:get(), path) then
                     vim.opt.rtp:append(path)
                 end
             end
 
-            vim.schedule(function()
-                vim.api.nvim_set_option_value('wrap', true, { scope = 'global' })
-            end)
+            vim.api.nvim_set_option_value('wrap', true, { scope = 'global' })
         end,
     })
 end
