@@ -114,6 +114,10 @@ function Maps.map_dict(T, map_func, dict_has_modes, mode, bufnr)
                 func = Maps.kmap[mode_choice]
 
                 for lhs, v in next, t do
+                    if not v[1] then
+                        goto continue
+                    end
+
                     v[2] = is_tbl(v[2]) and v[2] or {}
 
                     func(lhs, v[1], v[2])
