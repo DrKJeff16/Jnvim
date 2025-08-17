@@ -6,11 +6,11 @@ local INFO = vim.log.levels.INFO
 local User = require('user_api')
 
 local Check = require('user_api.check')
-local Keymaps = require('user_api.config.keymaps')
 local Util = require('user_api.util')
-local Opts = require('user_api.opts')
-local Termux = require('user_api.distro').termux
+local Termux = require('user_api.distro.termux')
 
+local Keymaps = require('user_api.config.keymaps')
+local Opts = require('user_api.opts')
 local desc = require('user_api.maps.kmap').desc
 
 local uv = vim.uv or vim.loop
