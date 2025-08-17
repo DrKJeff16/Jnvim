@@ -7,9 +7,6 @@ local optset = vim.api.nvim_set_option_value
 local optget = vim.api.nvim_get_option_value
 local in_tbl = vim.tbl_contains
 
-local INFO = vim.log.levels.INFO
-local ERROR = vim.log.levels.ERROR
-
 local augroup = vim.api.nvim_create_augroup
 
 ---@class User.Util
@@ -18,6 +15,10 @@ local Util = {}
 Util.notify = require('user_api.util.notify')
 Util.au = require('user_api.util.autocmd')
 Util.string = require('user_api.util.string')
+Util.error = require('user_api.util.error')
+
+local ERROR = Util.error.ERROR
+local INFO = Util.error.INFO
 
 ---@return boolean
 function Util.has_words_before()
@@ -649,7 +650,7 @@ function Util.reverse_tbl(T)
 end
 
 ---@param O? table
----@return table|User.Util
+---@return table|User.Util|fun(msg: string)
 function Util.new(O)
     local is_tbl = require('user_api.check.value').is_tbl
     O = is_tbl(O) and O or {}

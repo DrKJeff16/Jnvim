@@ -1,5 +1,5 @@
 ---@class User.Opts.AllOpts
-return {
+local AllOpts = {
     allowrevins = 'ari',
     ambiwidth = 'ambw',
     arabic = 'arab',
@@ -332,3 +332,10 @@ return {
     writebackup = 'wb',
     writedelay = 'wd',
 }
+
+return setmetatable(AllOpts, {
+    __index = AllOpts,
+    __newindex = function(self, k, v)
+        error('AllOpts is read only!', vim.log.levels.ERROR)
+    end,
+})

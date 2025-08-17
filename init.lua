@@ -1,8 +1,6 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.inspect = vim.inspect
 
-local INFO = vim.log.levels.INFO
-
 local User = require('user_api')
 
 local Check = require('user_api.check')
@@ -12,6 +10,8 @@ local Termux = require('user_api.distro.termux')
 local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
 local desc = require('user_api.maps.kmap').desc
+
+local INFO = require('user_api.util.error').INFO
 
 local uv = vim.uv or vim.loop
 

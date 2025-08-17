@@ -1,12 +1,17 @@
-local WARN = vim.log.levels.WARN
-local INFO = vim.log.levels.INFO
-local ERROR = vim.log.levels.ERROR
+local Error = require('user_api.util.error')
+
+local WARN = Error.WARN
+local INFO = Error.INFO
+local ERROR = Error.ERROR
+
+local in_tbl = vim.tbl_contains
 
 ---@class UserAPI
 local User = {}
 
-User.check = require('user_api.check')
 User.util = require('user_api.util')
+
+User.check = require('user_api.check')
 User.distro = require('user_api.distro')
 User.maps = require('user_api.maps')
 User.opts = require('user_api.opts')
@@ -14,11 +19,7 @@ User.commands = require('user_api.commands')
 User.update = require('user_api.update')
 User.highlight = require('user_api.highlight')
 
----@class User.Config
-User.config = {
-    keymaps = require('user_api.config.keymaps'),
-    neovide = require('user_api.config.neovide'),
-}
+User.config = require('user_api.config')
 
 ---@type string[]|table
 User.paths = {}
@@ -110,7 +111,6 @@ function User.deregister_plugin(pathstr)
     local Value = User.check.value
 
     local type_not_empty = Value.type_not_empty
-    local in_tbl = vim.tbl_contains
 
     if not type_not_empty('string', pathstr) then
         return
@@ -266,11 +266,15 @@ function User.setup()
     User.config.neovide.setup()
 end
 
----@return UserAPI|table
-function User.new()
-    return setmetatable({}, { __index = User })
-end
+local M = setmetatable(User, {
+    __index = User,
 
-return User
+    ---@diagnostic disable-next-line:unused-local
+    __newindex = function(self, k, v)
+        Error('User API is Read-Only!')
+    end,
+})
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

@@ -61,6 +61,14 @@ end
 
 Opts.toggleable = gen_toggleable(Opts.get_all_opts())
 
+setmetatable(Opts.toggleable, {
+    __index = Opts.toggleable,
+
+    __newindex = function(self, k, v)
+        error('Toggleable options list is read only!', ERROR)
+    end,
+})
+
 ---@return User.Opts.Spec
 function Opts.get_defaults()
     return require('user_api.opts.config')
@@ -102,16 +110,16 @@ function Opts.long_opts_convert(T, verbose)
 
         -- If neither long nor short (known) option, append to warning message
         if not (in_tbl(keys, opt) or Value.tbl_values({ opt }, ALL_OPTIONS)) then
-            msg = string.format('%s- Option `%s` not valid!\n', msg, opt)
+            msg = fmt('%s- Option `%s` not valid!\n', msg, opt)
         elseif in_tbl(keys, opt) then
             parsed_opts[opt] = val
         else
             new_opt = Value.tbl_values({ opt }, ALL_OPTIONS, true)
             if is_str(new_opt) and new_opt ~= '' then
                 parsed_opts[new_opt] = val
-                verb_str = string.format('%s%s ==> %s\n', verb_str, opt, new_opt)
+                verb_str = fmt('%s%s ==> %s\n', verb_str, opt, new_opt)
             else
-                msg = string.format('%s- Option `%s` non valid!\n', msg, new_opt)
+                msg = fmt('%s- Option `%s` non valid!\n', msg, new_opt)
             end
         end
     end
@@ -151,9 +159,9 @@ function Opts.optset(O, verbose)
         if type(vim.opt[k]:get()) == type(v) then
             Opts.options[k] = v
             vim.opt[k] = Opts.options[k]
-            verb_msg = string.format('%s- %s: %s\n', verb_msg, k, insp(v))
+            verb_msg = fmt('%s- %s: %s\n', verb_msg, k, insp(v))
         else
-            msg = string.format('%sOption `%s` is not a valid field for `vim.opt`\n', msg, k)
+            msg = fmt('%sOption `%s` is not a valid field for `vim.opt`\n', msg, k)
         end
     end
 
@@ -187,7 +195,10 @@ function Opts.print_set_opts()
 end
 
 ---@param O string[]|string
-function Opts.toggle(O)
+---@param verbose? boolean
+function Opts.toggle(O, verbose)
+    verbose = is_bool(verbose) and verbose or false
+
     if is_str(O) then
         O = { O }
     end
@@ -212,7 +223,7 @@ function Opts.toggle(O)
             value = value == 'yes' and 'no' or 'yes'
         end
 
-        Opts.optset({ [opt] = value })
+        Opts.optset({ [opt] = value }, verbose)
 
         ::continue::
     end
@@ -228,18 +239,46 @@ function Opts.setup_cmds()
                 error(fmt('Cannot toggle option `%s`, aborting', v), ERROR)
             end
 
+            if not in_tbl(Opts.toggleable, v) and ctx.bang then
+                goto continue
+            end
+
             if not in_tbl(cmds, v) then
                 table.insert(cmds, v)
             end
+
+            ::continue::
         end
 
-        Opts.toggle(cmds)
+        Opts.toggle(cmds, ctx.bang)
     end, {
         nargs = '+',
+
+        ---@param ArgLead string
+        ---@param CmdLine string
+        ---@param CursorPos integer
         complete = function(ArgLead, CmdLine, CursorPos)
-            return Opts.toggleable
+            local toggleable = Opts.toggleable
+            local len = string.len(ArgLead)
+
+            local CMD_LEN = string.len('OptsToggle ') + 1
+
+            if len == 0 or CursorPos < CMD_LEN then
+                return toggleable
+            end
+
+            ---@type string[]
+            local valid = {}
+            for _, o in next, toggleable do
+                if o:match(ArgLead) ~= nil and string.find(o, '^' .. ArgLead) then
+                    table.insert(valid, o)
+                end
+            end
+
+            return valid
         end,
         bang = true,
+        desc = 'Toggle toggleable Vim Options',
     })
 end
 
@@ -255,14 +294,23 @@ function Opts.setup_maps()
                 Opts.print_set_opts,
                 desc('Print options set by `user.opts`'),
             },
+
+            ['<leader>UOT'] = {
+                ':OptsToggle ',
+                desc('Prompt To Toggle Opts', false),
+            },
         },
     })
 end
 
----@return table|User.Opts|fun(override: User.Opts.Spec?, verbose: boolean?)
+---@return table|User.Opts|fun(override?: User.Opts.Spec, verbose?: boolean)
 function Opts.new()
-    return setmetatable({}, {
+    return setmetatable(Opts, {
         __index = Opts,
+
+        __newindex = function(self, k, v)
+            error('(user_api.opts): This module is read only!', ERROR)
+        end,
 
         ---@param self User.Opts
         ---@param override? User.Opts.Spec A table with custom options

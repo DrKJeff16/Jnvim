@@ -875,84 +875,77 @@ function Keymaps.set_leader(leader, local_leader, force)
     _G.leader_set = true
 end
 
----@return table|User.Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
-function Keymaps.new()
-    ---@operator call: fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
-    return setmetatable({}, {
-        __index = Keymaps,
+---@type table|User.Config.Keymaps|fun(keys: AllModeMaps, bufnr: integer?, load_defaults: boolean?)
+local M = setmetatable({}, {
+    __index = Keymaps,
 
-        ---@param self User.Config.Keymaps
-        ---@param keys AllModeMaps
-        ---@param bufnr? integer
-        ---@param load_defaults? boolean
-        __call = function(self, keys, bufnr, load_defaults)
-            if not type_not_empty('table', keys) then
-                return
-            end
+    ---@param self User.Config.Keymaps
+    ---@param keys AllModeMaps
+    ---@param bufnr? integer
+    ---@param load_defaults? boolean
+    __call = function(self, keys, bufnr, load_defaults)
+        if not type_not_empty('table', keys) then
+            return
+        end
 
-            local MODES = require('user_api.maps').modes
-            local insp = inspect or vim.inspect
+        local MODES = require('user_api.maps').modes
+        local insp = inspect or vim.inspect
 
-            local notify = require('user_api.util.notify').notify
+        local notify = require('user_api.util.notify').notify
 
-            if not leader_set then
-                notify('`keymaps.set_leader()` not called!', WARN, {
-                    title = '[WARNING] (user_api.config.keymaps.setup)',
+        if not leader_set then
+            notify('`keymaps.set_leader()` not called!', WARN, {
+                title = '[WARNING] (user_api.config.keymaps.setup)',
+                animate = true,
+                timeout = 3250,
+                hide_from_history = false,
+            })
+        end
+
+        keys = is_tbl(keys) and keys or {}
+        bufnr = is_int(bufnr) and bufnr or nil
+        load_defaults = is_bool(load_defaults) and load_defaults or false
+
+        ---@type AllModeMaps
+        local parsed_keys = {}
+
+        for k, v in next, keys do
+            if not in_tbl(MODES, k) then
+                notify(string.format('Ignoring badly formatted table\n`%s`', insp(keys)), WARN, {
+                    title = '(user_api.config.keymaps())',
                     animate = true,
-                    timeout = 3250,
+                    timeout = 1750,
                     hide_from_history = false,
                 })
+            else
+                parsed_keys[k] = v
+            end
+        end
+
+        self.no_oped = is_bool(self.no_oped) and self.no_oped or false
+
+        -- Noop keys after `<leader>` to avoid accidents
+        for _, mode in next, MODES do
+            if self.no_oped then
+                break
             end
 
-            keys = is_tbl(keys) and keys or {}
-            bufnr = is_int(bufnr) and bufnr or nil
-            load_defaults = is_bool(load_defaults) and load_defaults or false
-
-            ---@type AllModeMaps
-            local parsed_keys = {}
-
-            for k, v in next, keys do
-                if not in_tbl(MODES, k) then
-                    notify(
-                        string.format('Ignoring badly formatted table\n`%s`', insp(keys)),
-                        WARN,
-                        {
-                            title = '(user_api.config.keymaps())',
-                            animate = true,
-                            timeout = 1750,
-                            hide_from_history = false,
-                        }
-                    )
-                else
-                    parsed_keys[k] = v
-                end
+            if in_tbl({ 'n', 'v' }, mode) then
+                nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
             end
+        end
 
-            self.no_oped = is_bool(self.no_oped) and self.no_oped or false
+        self.no_oped = true
 
-            -- Noop keys after `<leader>` to avoid accidents
-            for _, mode in next, MODES do
-                if self.no_oped then
-                    break
-                end
+        ---@type AllModeMaps
+        local res = load_defaults and d_extend('keep', parsed_keys, self.Keys) or parsed_keys
 
-                if in_tbl({ 'n', 'v' }, mode) then
-                    nop(self.NOP, { noremap = false, silent = true }, mode, '<leader>')
-                end
-            end
+        map_dict(res, 'wk.register', true, nil, bufnr or nil)
 
-            self.no_oped = true
+        self.Keys = d_extend('keep', copy(self.Keys), parsed_keys)
+    end,
+})
 
-            ---@type AllModeMaps
-            local res = load_defaults and d_extend('keep', parsed_keys, self.Keys) or parsed_keys
-
-            map_dict(res, 'wk.register', true, nil, bufnr or nil)
-
-            self.Keys = d_extend('keep', copy(self.Keys), parsed_keys)
-        end,
-    })
-end
-
-return Keymaps.new()
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
