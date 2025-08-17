@@ -91,7 +91,6 @@ local function buf_del(force)
         'trouble',
     }
 
-    ---@type Keymaps.PreExec
     local pre_exc = {
         ft = {
             'help',
@@ -129,7 +128,7 @@ end
 ---@field no_oped? boolean
 local Keymaps = {}
 
-local NOP = {
+Keymaps.NOP = {
     "'",
     '!',
     '"',
@@ -223,12 +222,9 @@ local NOP = {
     '~',
 }
 
-Keymaps.NOP = NOP
-
 setmetatable(Keymaps.NOP, {
     __index = Keymaps.NOP,
 
-    ---@diagnostic disable-next-line:unused-local
     __newindex = function(self, k)
         error('(user_api.config.keymaps.NOP): Read-only table!', ERROR)
     end,
@@ -312,11 +308,9 @@ Keymaps.Keys = {
             function()
                 local notify = require('user_api.util.notify').notify
 
-                local buf = curr_buf()
+                local bufnr, ok, err = curr_buf(), true, nil
 
-                local ok, err = true, nil
-
-                if optget('modifiable', { buf = buf }) then
+                if optget('modifiable', { buf = bufnr }) then
                     ok, err = pcall(vim.cmd.write)
 
                     if ok then
@@ -351,9 +345,9 @@ Keymaps.Keys = {
                 local cursor_set = vim.api.nvim_win_set_cursor
                 local cursor_get = vim.api.nvim_win_get_cursor
 
-                local buf = curr_buf()
+                local bufnr = curr_buf()
 
-                if not opt_get('modifiable', { buf = buf }) then
+                if not opt_get('modifiable', { buf = bufnr }) then
                     vim.notify('Unable to indent. File is not modifiable!', ERROR)
                 end
 
@@ -373,6 +367,10 @@ Keymaps.Keys = {
         ['<leader>fir'] = {
             ':%retab<CR>',
             desc('Retab File'),
+        },
+        ['<leader>fiR'] = {
+            ':%retab!<CR>',
+            desc('Retab File (Forcefully)'),
         },
 
         ['<leader>fvL'] = {
@@ -525,9 +523,7 @@ Keymaps.Keys = {
         ['<leader>HT'] = {
             function()
                 vim.cmd.help()
-                vim.schedule(function()
-                    vim.cmd.wincmd('T')
-                end)
+                vim.cmd.wincmd('T')
             end,
             desc('Open Help On New Tab'),
         },
@@ -594,15 +590,15 @@ Keymaps.Keys = {
 
         ['<leader>wN'] = {
             function()
-                local buf = curr_buf()
-                local ft = ft_get(buf)
+                local bufnr = curr_buf()
+                local ft = ft_get(bufnr)
 
                 vim.cmd.wincmd('n')
                 vim.cmd.wincmd('o')
 
-                optset('ft', ft, { buf = buf })
-                optset('modifiable', true, { buf = buf })
-                optset('modified', false, { buf = buf })
+                optset('ft', ft, { buf = bufnr })
+                optset('modifiable', true, { buf = bufnr })
+                optset('modified', false, { buf = bufnr })
             end,
             desc('New Blank File'),
         },
@@ -890,6 +886,10 @@ function Keymaps.new()
         ---@param bufnr? integer
         ---@param load_defaults? boolean
         __call = function(self, keys, bufnr, load_defaults)
+            if not type_not_empty('table', keys) then
+                return
+            end
+
             local MODES = require('user_api.maps').modes
             local insp = inspect or vim.inspect
 
