@@ -255,6 +255,7 @@ function User.setup()
     User.commands.setup()
     User.update.setup_maps()
     User.opts.setup_maps()
+    User.opts.setup_cmds()
 
     -- Call the User API file associations and other autocmds
     User.util.setup_autocmd()

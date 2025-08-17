@@ -1,3 +1,5 @@
+local fmt = string.format
+
 local Value = require('user_api.check.value')
 
 local is_str = Value.is_str
@@ -214,6 +216,31 @@ function Opts.toggle(O)
 
         ::continue::
     end
+end
+
+function Opts.setup_cmds()
+    local Commands = require('user_api.commands')
+
+    Commands.add_command('OptsToggle', function(ctx)
+        local cmds = {}
+        for _, v in next, ctx.fargs do
+            if not (in_tbl(Opts.toggleable, v) or ctx.bang) then
+                error(fmt('Cannot toggle option `%s`, aborting', v), ERROR)
+            end
+
+            if not in_tbl(cmds, v) then
+                table.insert(cmds, v)
+            end
+        end
+
+        Opts.toggle(cmds)
+    end, {
+        nargs = '+',
+        complete = function(ArgLead, CmdLine, CursorPos)
+            return Opts.toggleable
+        end,
+        bang = true,
+    })
 end
 
 function Opts.setup_maps()
