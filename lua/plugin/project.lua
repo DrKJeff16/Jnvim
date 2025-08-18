@@ -40,6 +40,7 @@ Project.setup({
     ignore_lsp = {},
 
     exclude_dirs = {
+        '/usr/*',
         '~/.build/*',
         '~/.cache/*',
         '~/.cargo/*',
