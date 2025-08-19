@@ -15,7 +15,8 @@
 ---@field [1] string
 ---@field keys? fun(): (table|AllMaps)
 
-local Keymaps = require('user_api.config.keymaps')
+local floor = math.floor
+
 local User = require('user_api')
 local Check = User.check
 
@@ -23,9 +24,11 @@ local is_fun = Check.value.is_fun
 local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local exists = Check.exists.module
+local Keymaps = require('user_api.config.keymaps')
 local desc = User.maps.kmap.desc
 
 if not exists('telescope') then
+    User.deregister_plugin('plugin.telescope')
     return
 end
 
@@ -35,16 +38,15 @@ local augroup = vim.api.nvim_create_augroup
 local Telescope = require('telescope')
 local Actions = require('telescope.actions')
 local ActionsLayout = require('telescope.actions.layout')
-local Builtin = require('telescope.builtin')
 local Config = require('telescope.config')
 local Themes = require('telescope.themes')
 
--- Clone the default Telescope configuration
+--- Clone the default Telescope configuration
 local vimgrep_arguments = { (unpack or table.unpack)(Config.values.vimgrep_arguments) }
 local extra_args = {
-    -- Search in hidden/dot files
+    --- Search in hidden/dot files
     '--hidden',
-    -- Don't search in these hidden directories
+    --- Don't search in these hidden directories
     '--glob',
     '!**/.git/*',
     '!**/.ropeproject/*',
@@ -60,12 +62,12 @@ local Opts = {
         layout_strategy = 'flex',
         layout_config = {
             vertical = {
-                width = math.floor(vim.o.columns * 3 / 4),
-                height = math.floor(vim.o.lines * 4 / 5),
+                width = floor(vim.opt.columns:get() * 3 / 4),
+                height = floor(vim.opt.lines:get() * 4 / 5),
             },
             horizontal = {
-                width = math.floor(vim.o.columns * 4 / 5),
-                height = math.floor(vim.o.lines * 3 / 4),
+                width = floor(vim.opt.columns:get() * 4 / 5),
+                height = floor(vim.opt.lines:get() * 3 / 4),
             },
         },
 
@@ -95,33 +97,10 @@ local Opts = {
     },
 
     extensions = {
-        projects = {
-            prompt_prefix = '󱎸  ',
+        persisted = {
+            layout_config = { width = 0.75, height = 0.75 },
         },
-    },
 
-    pickers = {
-        autocommands = { theme = 'ivy' },
-        buffers = { theme = 'dropdown' },
-        colorscheme = { theme = 'dropdown' },
-        commands = { theme = 'ivy' },
-        current_buffer_fuzzy_find = { theme = 'cursor' },
-        fd = { theme = 'ivy' },
-        find_files = {
-            theme = 'ivy',
-            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`'d
-            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
-        },
-        git_branches = { theme = 'ivy' },
-        git_status = { theme = 'dropdown' },
-        git_stash = { theme = 'dropdown' },
-        highlights = { theme = 'ivf' },
-        lsp_definitions = { theme = 'cursor' },
-        lsp_document_symbols = { theme = 'cursor' },
-        lsp_implementations = { theme = 'cursor' },
-        lsp_type_definitions = { theme = 'cursor' },
-        lsp_workspace_symbols = { theme = 'cursor' },
-        man_pages = { theme = 'ivy' },
         picker_list = {
             theme = 'ivy',
             opts = {
@@ -135,10 +114,70 @@ local Opts = {
             user_pickers = {
                 'todo-comments',
                 function()
-                    vim.cmd('TodoTelescope theme=cursor')
+                    vim.cmd.TodoTelescope('theme=cursor')
                 end,
             },
         },
+
+        projects = {
+            prompt_prefix = '󱎸  ',
+        },
+
+        undo = {
+            use_delta = true,
+            use_custom_command = nil, -- setting this implies `use_delta = false`. Accepted format is: { "bash", "-c", "echo '$DIFF' | delta" }
+            side_by_side = true,
+            layout_strategy = 'vertical',
+            layout_config = {
+                preview_height = 0.8,
+            },
+            vim_diff_opts = {
+                ctxlen = vim.opt.scrolloff:get(),
+            },
+            entry_format = 'state #$ID, $STAT, $TIME',
+            time_format = '',
+            saved_only = false,
+
+            mappings = {
+                i = {
+                    ['<CR>'] = require('telescope-undo.actions').yank_additions,
+                    ['<S-CR>'] = require('telescope-undo.actions').yank_deletions,
+                    ['<C-CR>'] = require('telescope-undo.actions').restore,
+                    -- alternative defaults, for users whose terminals do questionable things with modified <CR>
+                    ['<C-y>'] = require('telescope-undo.actions').yank_deletions,
+                    ['<C-r>'] = require('telescope-undo.actions').restore,
+                },
+                n = {
+                    y = require('telescope-undo.actions').yank_additions,
+                    Y = require('telescope-undo.actions').yank_deletions,
+                    u = require('telescope-undo.actions').restore,
+                },
+            },
+        },
+    },
+
+    pickers = {
+        autocommands = { theme = 'dropdown' },
+        buffers = { theme = 'dropdown' },
+        colorscheme = { theme = 'dropdown' },
+        commands = { theme = 'ivy' },
+        current_buffer_fuzzy_find = { theme = 'cursor' },
+        fd = { theme = 'ivy' },
+        find_files = {
+            theme = 'ivy',
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`'d
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+        },
+        git_branches = { theme = 'dropdown' },
+        git_status = { theme = 'dropdown' },
+        git_stash = { theme = 'dropdown' },
+        highlights = { theme = 'dropdown' },
+        lsp_definitions = { theme = 'cursor' },
+        lsp_document_symbols = { theme = 'cursor' },
+        lsp_implementations = { theme = 'cursor' },
+        lsp_type_definitions = { theme = 'cursor' },
+        lsp_workspace_symbols = { theme = 'cursor' },
+        man_pages = { theme = 'dropdown' },
         pickers = { theme = 'ivy' },
         planets = { theme = 'ivy' },
         vim_options = { theme = 'ivy' },
@@ -162,12 +201,6 @@ if exists('plugin.telescope.file_browser') then
         Opts.extensions.file_browser = pfx.file_browser
         pfx.loadkeys()
     end
-end
-
-if exists('persisted') then
-    Opts.extensions.persisted = {
-        layout_config = { width = 0.75, height = 0.75 },
-    }
 end
 
 if exists('plugin.telescope.cc') then
@@ -201,7 +234,7 @@ local function load_ext(name)
     end
 
     -- If `picker_list` is loaded, also register extension with it
-    if telescope_picker_list_loaded then
+    if exists('telescope._extensions.picker_list.main') then
         require('telescope._extensions.picker_list.main').register(name)
     end
 end
@@ -213,47 +246,141 @@ local Keys = {
     ['<leader><C-t>e'] = { group = '+Extensions' },
 
     ['<leader><leader>'] = {
-        ':Telescope<CR>',
-        desc('Default Telescope Picker'),
+        '<CMD>Telescope<CR>',
+        desc('Default Telescope Picker', true, nil, false),
     },
 
-    ['<leader>HH'] = { Builtin.help_tags, desc('Telescope Help Tags') },
-    ['<leader>HM'] = { Builtin.man_pages, desc('Telescope Man Pages') },
-    ['<leader>GB'] = { Builtin.git_branches, desc('Telescope Git Branches') },
-    ['<leader>GS'] = { Builtin.git_stash, desc('Telescope Git Stash') },
-    ['<leader>Gs'] = { Builtin.git_status, desc('Telescope Git Status') },
-    ['<leader>bB'] = { Builtin.buffers, desc('Telescope Buffers') },
-    ['<leader>fD'] = { Builtin.diagnostics, desc('Telescope Diagnostics') },
-    ['<leader>ff'] = { Builtin.find_files, desc('Telescope File Picker') },
-    ['<leader>lD'] = { Builtin.lsp_document_symbols, desc('Telescope Document Symbols') },
-    ['<leader>lT'] = { Builtin.lsp_type_definitions, desc('Telescope Definitions') },
-    ['<leader>ld'] = { Builtin.lsp_definitions, desc('Telescope Definitions') },
-    ['<leader>li'] = { Builtin.lsp_implementations, desc('Telelcope Lsp Implementations') },
+    ['<leader>HH'] = {
+        '<CMD>Telescope help_tags<CR>',
+        desc('Telescope Help Tags'),
+    },
+    ['<leader>HM'] = {
+        '<CMD>Telescope man_pages<CR>',
+        desc('Telescope Man Pages'),
+    },
+    ['<leader>GB'] = {
+        '<CMD>Telescope git_branches<CR>',
+        desc('Telescope Git Branches'),
+    },
+    ['<leader>GS'] = {
+        '<CMD>Telescope git_stash<CR>',
+        desc('Telescope Git Stash'),
+    },
+    ['<leader>Gs'] = {
+        '<CMD>Telescope git_status<CR>',
+        desc('Telescope Git Status'),
+    },
+    ['<leader>bB'] = {
+        '<CMD>Telescope buffers<CR>',
+        desc('Telescope Buffers'),
+    },
+    ['<leader>fD'] = {
+        '<CMD>Telescope diagnostics<CR>',
+        desc('Telescope Diagnostics'),
+    },
+    ['<leader>ff'] = {
+        '<CMD>Telescope find_files<CR>',
+        desc('Telescope File Picker'),
+    },
+    ['<leader>lD'] = {
+        '<CMD>Telescope lsp_document_symbols<CR>',
+        desc('Telescope Document Symbols'),
+    },
+    ['<leader>lT'] = {
+        '<CMD>Telescope lsp_type_definitions<CR>',
+        desc('Telescope Definitions'),
+    },
+    ['<leader>ld'] = {
+        '<CMD>Telescope lsp_definitions<CR>',
+        desc('Telescope Definitions'),
+    },
+    ['<leader>li'] = {
+        '<CMD>Telescope lsp_implementations<CR>',
+        desc('Telelcope Lsp Implementations'),
+    },
     ['<leader>lwD'] = {
-        Builtin.lsp_dynamic_workspace_symbols,
+        '<CMD>Telescope lsp_dynamic_workspace_symbols<CR>',
         desc('Telescope Dynamic Workspace Symbols'),
     },
-    ['<leader>lwd'] = { Builtin.lsp_workspace_symbols, desc('Telescope Workspace Symbols') },
-    ['<leader>vK'] = { Builtin.keymaps, desc('Telescope Keymaps') },
-    ['<leader>vO'] = { Builtin.vim_options, desc('Telescope Vim Options') },
-    ['<leader>uC'] = { Builtin.colorscheme, desc('Telescope Colorschemes') },
+    ['<leader>lwd'] = {
+        '<CMD>Telescope lsp_workspace_symbols<CR>',
+        desc('Telescope Workspace Symbols'),
+    },
+    ['<leader>vK'] = {
+        '<CMD>Telescope keymaps<CR>',
+        desc('Telescope Keymaps'),
+    },
+    ['<leader>vO'] = {
+        '<CMD>Telescope vim_options<CR>',
+        desc('Telescope Vim Options'),
+    },
+    ['<leader>uC'] = {
+        '<CMD>Telescope colorscheme<CR>',
+        desc('Telescope Colorschemes'),
+    },
 
-    ['<leader><C-t>b/'] = { Builtin.current_buffer_fuzzy_find, desc('Buffer Fuzzy-Find') },
-    ['<leader><C-t>bA'] = { Builtin.autocommands, desc('Autocommands') },
-    ['<leader><C-t>bC'] = { Builtin.commands, desc('Commands') },
-    ['<leader><C-t>bg'] = { Builtin.live_grep, desc('Live Grep') },
-    ['<leader><C-t>bh'] = { Builtin.highlights, desc('Highlights') },
-    ['<leader><C-t>bp'] = { Builtin.pickers, desc('Pickers') },
+    ['<leader><C-t>b/'] = {
+        '<CMD>Telescope current_buffer_fuzzy_find<CR>',
+        desc('Buffer Fuzzy-Find'),
+    },
+    ['<leader><C-t>bA'] = {
+        '<CMD>Telescope autocommands<CR>',
+        desc('Autocommands'),
+    },
+    ['<leader><C-t>bC'] = {
+        '<CMD>Telescope commands<CR>',
+        desc('Commands'),
+    },
+    ['<leader><C-t>bg'] = {
+        '<CMD>Telescope live_grep<CR>',
+        desc('Live Grep'),
+    },
+    ['<leader><C-t>bh'] = {
+        '<CMD>Telescope highlights<CR>',
+        desc('Highlights'),
+    },
+    ['<leader><C-t>bp'] = {
+        '<CMD>Telescope pickers<CR>',
+        desc('Pickers'),
+    },
 }
 
 ---@type table<string, TelExtension>
 local known_exts = {
-    ['telescope._extensions.file_browser'] = { 'file_browser' },
+    ['telescope._extensions.file_browser'] = {
+        'file_browser',
+    },
+
+    ['telescope._extensions.undo'] = {
+        'undo',
+
+        ---@return table|AllMaps
+        keys = function()
+            local Extensions = require('telescope').extensions
+
+            if not type_not_empty('table', Extensions.undo) then
+                return {}
+            end
+
+            return {
+                ['<leader><C-t>eu'] = {
+                    '<CMD>Telescope undo<CR>',
+                    desc('Undo Picker'),
+                },
+
+                ['<leader>fu'] = {
+                    '<CMD>Telescope undo<CR>',
+                    desc('Undo Telescope Picker'),
+                },
+            }
+        end,
+    },
+
     ['plugin.telescope.cc'] = {
         'conventional_commits',
 
         ---@return AllMaps
-        function()
+        keys = function()
             local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.conventional_commits) then
@@ -262,17 +389,23 @@ local known_exts = {
 
             return {
                 ['<leader><C-t>eC'] = {
-                    ':Telescope conventional_commits<CR>',
-                    desc('Scope Buffers Picker'),
+                    '<CMD>Telescope conventional_commits<CR>',
+                    desc('Conventional Commits Picker'),
+                },
+
+                ['<leader>GC'] = {
+                    '<CMD>Telescope conventional_commits<CR>',
+                    desc('Conventional Commits Telescope Picker'),
                 },
             }
         end,
     },
+
     scope = {
         'scope',
 
-        ---@return AllMaps
-        function()
+        ---@return table|AllMaps
+        keys = function()
             local Extensions = require('telescope').extensions
 
             if not type_not_empty('table', Extensions.scope) then
@@ -280,10 +413,21 @@ local known_exts = {
             end
 
             return {
-                ['<leader><C-t>eS'] = { ':Telescope buffers<CR>', desc('Scope Buffers Picker') },
+                ['<leader><C-t>eS'] = {
+                    '<CMD>Telescope buffers<CR>',
+                    desc('Scope Buffers Picker'),
+                },
+
+                ['<leader>S'] = { group = '+Scope' },
+
+                ['<leader>Sb'] = {
+                    '<CMD>Telescope buffers<CR>',
+                    desc('Scope Buffers Telescope Picker'),
+                },
             }
         end,
     },
+
     persisted = {
         'persisted',
 
@@ -298,10 +442,14 @@ local known_exts = {
             local pfx = Extensions.persisted
 
             return {
-                ['<leader><C-t>ef'] = { pfx.persisted, desc('Persisted Picker') },
+                ['<leader><C-t>ef'] = {
+                    pfx.persisted,
+                    desc('Persisted Picker'),
+                },
             }
         end,
     },
+
     ['telescope-makefile'] = {
         'make',
 
@@ -314,10 +462,21 @@ local known_exts = {
             end
 
             return {
-                ['<leader><C-t>eM'] = { ':Telescope make<CR>', desc('Makefile Picker') },
+                ['<leader><C-t>eM'] = {
+                    '<CMD>Telescope make<CR>',
+                    desc('Makefile Picker'),
+                },
+
+                ['<leader>fM'] = { group = '+Make' },
+
+                ['<leader>fMT'] = {
+                    '<CMD>Telescope make<CR>',
+                    desc('Makefile Telescope Picker'),
+                },
             }
         end,
     },
+
     project = {
         'projects',
 
@@ -330,11 +489,19 @@ local known_exts = {
             end
 
             return {
-                ['<leader><C-t>ep'] = { ':Telescope projects<CR>', desc('Project Picker') },
-                ['<leader>pT'] = { ':Telescope projects<CR>', desc('Project Picker') },
+                ['<leader><C-t>ep'] = {
+                    '<CMD>Telescope projects<CR>',
+                    desc('Project Picker'),
+                },
+
+                ['<leader>pT'] = {
+                    '<CMD>Telescope projects<CR>',
+                    desc('Project Telescope Picker'),
+                },
             }
         end,
     },
+
     notify = {
         'notify',
 
@@ -347,17 +514,26 @@ local known_exts = {
             end
 
             return {
-                ['<leader><C-t>eN'] = { ':Telescope notify<CR>', desc('Notify Picker') },
+                ['<leader><C-t>eN'] = {
+                    '<CMD>Telescope notify<CR>',
+                    desc('Notify Picker'),
+                },
+
+                ['<leader>N'] = { group = '+Notify' },
+
+                ['<leader>NT'] = {
+                    '<CMD>Telescope notify<CR>',
+                    desc('Notify Telescope Picker'),
+                },
             }
         end,
     },
     noice = {
         'noice',
 
-        ---@return table|AllMaps
+        ---@return AllMaps
         keys = function()
-            ---@type AllMaps
-            local res = {
+            return {
                 ['<leader><C-t>en'] = { group = '+Noice' },
 
                 ['<leader><C-t>enl'] = {
@@ -373,8 +549,6 @@ local known_exts = {
                     desc('NoiceHistory'),
                 },
             }
-
-            return res
         end,
     },
     ['lazygit.utils'] = {
@@ -388,16 +562,20 @@ local known_exts = {
                 return {}
             end
 
-            ---@type AllMaps
-            local res = {
-                ['<leader><C-t>eG'] = { ':Telescope lazygit<CR>', desc('LazyGit Picker') },
-            }
+            return {
+                ['<leader><C-t>eG'] = {
+                    '<CMD>Telescope lazygit<CR>',
+                    desc('LazyGit Picker'),
+                },
 
-            return res
+                ['<leader>GlT'] = {
+                    '<CMD>Telescope lazygit<CR>',
+                    desc('LazyGit Telescope Picker'),
+                },
+            }
         end,
     },
 
-    -- WARN: MUST BE LAST IN THIS LIST
     ['telescope-picker-list'] = {
         'picker_list',
 
@@ -410,13 +588,17 @@ local known_exts = {
             end
 
             return {
-                ['<leader><C-t>eP'] = { ':Telescope picker_list<CR>', desc('Picker List') },
+                ['<leader><C-t>eP'] = {
+                    '<CMD>Telescope picker_list<CR>',
+                    desc('Picker List'),
+                },
                 ['<leader><C-t>bp'] = {
-                    ':Telescope picker_list<CR>',
+                    '<CMD>Telescope picker_list<CR>',
                     desc('Picker List (Extension)'),
                 },
+
                 ['<leader><leader>'] = {
-                    ':Telescope picker_list<CR>',
+                    '<CMD>Telescope picker_list<CR>',
                     desc('Telescope Picker List'),
                 },
             }
@@ -426,7 +608,7 @@ local known_exts = {
 
 --- Load and Set Keymaps for available extensions
 for mod, ext in next, known_exts do
-    -- If extension is unavailable/invalid
+    --- If extension is unavailable/invalid
     if not (exists(mod) and is_str(ext[1])) then
         goto continue
     end
