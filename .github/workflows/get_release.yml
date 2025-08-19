@@ -21,7 +21,7 @@ jobs:
         id: checkout
         run: |
           mkdir -pv Jnvim
-          cp init.lua lua README.md LICENSE Pipfile requirements.txt Jnvim
+          cp -rv init.lua lua README.md LICENSE Pipfile requirements.txt Jnvim
           zip -r -9 Jnvim.zip Jnvim
           tar cvJf Jnvim.tar.xz Jnvim
           sha512sum Jnvim.zip >| Jnvim.zip.sha512sum
