@@ -2,7 +2,6 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.inspect = vim.inspect
 
 local User = require('user_api')
-
 local Check = require('user_api.check')
 local Util = require('user_api.util')
 local Termux = require('user_api.distro.termux')
@@ -80,10 +79,7 @@ Opts({
     wrap = Termux.validate(),
 })
 
----HACK: Set up `guicursor` so that cursor blinks
-if not in_console() then
-    Opts.set_cursor_blink()
-end
+Opts.set_cursor_blink()
 
 ---Set `<Leader>` key.
 Keymaps.set_leader('<Space>')

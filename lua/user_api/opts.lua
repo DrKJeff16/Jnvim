@@ -175,7 +175,13 @@ function Opts.optset(O, verbose)
     end
 end
 
+---Set up `guicursor` so that cursor blinks.
+---
 function Opts.set_cursor_blink()
+    if in_console() then
+        return
+    end
+
     Opts.optset({
         guicursor = {
             'n-v-c:block',
