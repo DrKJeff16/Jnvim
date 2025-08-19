@@ -1,4 +1,10 @@
 local User = require('user_api')
+local executable = require('user_api.check.exists').executable
+
+if not executable('bash-language-server') then
+    User.deregister_plugin('plugin.lsp.servers.bashls')
+    return nil
+end
 
 User.register_plugin('plugin.lsp.servers.bashls')
 

@@ -1,4 +1,10 @@
 local User = require('user_api')
+local executable = require('user_api.check.exists').executable
+
+if not executable('marksman') then
+    User.deregister_plugin('plugin.lsp.servers.marksman')
+    return nil
+end
 
 User.register_plugin('plugin.lsp.servers.marksman')
 

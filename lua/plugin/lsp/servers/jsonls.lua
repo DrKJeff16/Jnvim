@@ -1,4 +1,10 @@
 local User = require('user_api')
+local executable = require('user_api.check.exists').executable
+
+if not executable('vscode-json-language-server') then
+    User.deregister_plugin('plugin.lsp.servers.jsonls')
+    return nil
+end
 
 User.register_plugin('plugin.lsp.servers.jsonls')
 

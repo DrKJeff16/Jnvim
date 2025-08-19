@@ -1,4 +1,10 @@
 local User = require('user_api')
+local executable = require('user_api.check.exists').executable
+
+if not executable('rust-analyzer') then
+    User.deregister_plugin('plugin.lsp.servers.rust_analyzer')
+    return nil
+end
 
 User.register_plugin('plugin.lsp.servers.rust_analyzer')
 
