@@ -70,8 +70,8 @@ local Config = {
             reset = true,
             disabled_plugins = {
                 -- 'gzip',
-                -- 'matchit',
-                -- 'matchparen',
+                'matchit',
+                'matchparen',
                 'netrwPlugin',
                 -- 'tarPlugin',
                 -- 'tohtml',
@@ -100,7 +100,7 @@ local Config = {
             ---@type LazySources
             local S = { 'lazy', 'packspec' }
 
-            if not is_root() and require('config.util').luarocks_check() then
+            if CfgUtil.luarocks_check() then
                 --- If `luarocks` is available and configured
                 table.insert(S, 'rockspec')
             end
