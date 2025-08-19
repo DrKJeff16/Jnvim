@@ -14,15 +14,19 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v5
       - name: Build project assets
         id: checkout
         run: |
-          zip -r -9 Jnvim.zip init.lua lua README.md
-          tar cvJf Jnvim.tar.xz init.lua lua README.md
-          sha512sum Jnvim.zip > Jnvim.zip.sha512sum
-          sha512sum Jnvim.tar.xz > Jnvim.tar.xz.sha512sum
+          mkdir -pv Jnvim
+          cp init.lua lua README.md LICENSE Pipfile requirements.txt Jnvim
+          zip -r -9 Jnvim.zip Jnvim
+          tar cvJf Jnvim.tar.xz Jnvim
+          sha512sum Jnvim.zip >| Jnvim.zip.sha512sum
+          sha512sum Jnvim.tar.xz >| Jnvim.tar.xz.sha512sum
+          rm -rfv Jnvim
 
       - name: Get Release
         id: get_current_release
@@ -42,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Release File
-        run: echo ${{ github.sha }} > Release.txt
+        run: echo ${{ github.sha }} >| Release.txt
       - name: Test Release
         run: cat Release.txt
 
@@ -56,6 +60,5 @@ jobs:
             Jnvim.tar.xz.sha512sum
             Jnvim.zip
             Jnvim.zip.sha512sum
-            LICENSE
           token: ${{ secrets.GITHUB_TOKEN }}
 
