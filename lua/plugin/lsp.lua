@@ -14,9 +14,9 @@ local mk_caps = vim.lsp.protocol.make_client_capabilities
 local d_extend = vim.tbl_deep_extend
 local copy = vim.deepcopy
 
----@param original lsp.ClientCapabilities|vim.lsp.ClientConfig
----@param inserts lsp.ClientCapabilities|vim.lsp.ClientConfig|table
----@return lsp.ClientCapabilities|table
+---@param original lsp.ClientCapabilities|table<string, boolean|string|number|unknown[]|vim.NIL>
+---@param inserts lsp.ClientCapabilities|table<string, boolean|string|number|unknown[]|vim.NIL>
+---@return lsp.ClientCapabilities|table<string, boolean|string|number|unknown[]|vim.NIL>
 local function insert_client(original, inserts)
     return d_extend('keep', inserts or {}, original)
 end

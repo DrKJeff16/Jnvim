@@ -1,4 +1,5 @@
 local User = require('user_api')
+local executable = require('user_api.check.exists').executable
 
 User.register_plugin('plugin.lsp.servers.<YOUR_CONFIG>')
 

@@ -1,23 +1,29 @@
-local extend = vim.tbl_deep_extend
+local d_extend = vim.tbl_deep_extend
 local copy = vim.deepcopy
 local fs_stat = (vim.uv or vim.loop).fs_stat
+
+local User = require('user_api')
+local executable = require('user_api.check.exists').executable
+
+if not executable('lua-language-server') then
+    User.deregister_plugin('plugin.lsp.servers.lua_ls')
+    return nil
+end
 
 local stdpath = vim.fn.stdpath('config')
 
 ---@param client vim.lsp.Client
 local function on_init(client)
-    if not client.workspace_folders then
-        return
-    end
+    if client.workspace_folders then
+        local path = client.workspace_folders[1].name
+        local luarc = {
+            path .. '/luarc.json',
+            path .. '/.luarc.json',
+        }
 
-    local path = client.workspace_folders[1].name
-    local luarc = {
-        path .. '/luarc.json',
-        path .. '/.luarc.json',
-    }
-
-    if path ~= stdpath and (fs_stat(luarc[1]) or fs_stat(luarc[2])) then
-        return
+        if path ~= stdpath and (fs_stat(luarc[1]) or fs_stat(luarc[2])) then
+            return
+        end
     end
 
     local library = {
@@ -28,20 +34,18 @@ local function on_init(client)
         '${3rd}/busted/library',
     }
 
-    client.config.settings.Lua = extend('force', copy(client.config.settings.Lua), {
+    client.config.settings.Lua = d_extend('force', copy(client.config.settings.Lua), {
         diagnostics = {
             enable = true,
             globals = { 'vim' },
         },
         runtime = {
-            pathStrict = false,
             -- Tell the language server which version of Lua you're using (most
             -- likely LuaJIT in the case of Neovim)
             version = 'LuaJIT',
             -- Tell the language server how to find Lua modules same way as Neovim
             -- (see `:h lua-module-load`)
             path = {
-                '?.lua',
                 'lua/?.lua',
                 'lua/?/init.lua',
             },
@@ -54,7 +58,7 @@ local function on_init(client)
     })
 end
 
-require('user_api').register_plugin('plugin.lsp.servers.lua_ls')
+User.register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
     cmd = { 'lua-language-server' },

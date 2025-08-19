@@ -1,22 +1,17 @@
 local User = require('user_api')
-local Check = User.check
-
-local type_not_empty = Check.value.type_not_empty
-local executable = Check.exists.executable
+local executable = require('user_api.check.exists').executable
 
 ---@param name string
----@param exe? string
+---@param exe string
 ---@return vim.lsp.Config|nil
 local function server_load(name, exe)
-    if type_not_empty('string', exe) then
-        if not executable(exe) then
-            return nil
-        end
+    if not executable(exe) then
+        return nil
     end
 
     local ok, mod = pcall(require, 'plugin.lsp.servers.' .. name)
 
-    return ok and mod or {}
+    return ok and mod or nil
 end
 
 ---@class Lsp.Server.Clients
@@ -57,6 +52,10 @@ local Clients = {
     texlab = server_load('texlab', 'texlab'),
 
     yamlls = server_load('yamlls', 'yaml-language-server'),
+
+    hyprls = server_load('hyprls', 'hyprls'),
+
+    asm_lsp = server_load('asm_lsp', 'asm-lsp'),
 }
 
 _G.CLIENTS = Clients
