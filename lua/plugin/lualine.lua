@@ -1,14 +1,15 @@
 local User = require('user_api')
 local Check = User.check
-local Distro = User.distro
+local Termux = User.distro.termux
 
 local exists = Check.exists.module
 local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
 
-local tbl_contains = vim.tbl_contains
+local in_tbl = vim.tbl_contains
 
 if not exists('lualine') then
+    User.deregister_plugin('plugin.lualine')
     return
 end
 
@@ -21,12 +22,11 @@ local Presets = require('plugin.lualine.presets')
 ---@return string
 local function theme_select(theme, force_auto)
     theme = type_not_empty('string', theme) and theme or 'auto'
-
     force_auto = is_bool(force_auto) and force_auto or false
 
     -- If `auto` theme and permitted to select from fallbacks.
     -- Keep in mind these fallbacks are the same strings as their `require()` module strings
-    if tbl_contains({ 'auto', '' }, theme) or force_auto then
+    if in_tbl({ 'auto', '' }, theme) or force_auto then
         return 'auto'
     end
 
@@ -37,7 +37,7 @@ local function theme_select(theme, force_auto)
         'onedark',
     }
 
-    if not tbl_contains(themes, theme) then
+    if not in_tbl(themes, theme) then
         return 'auto'
     end
 
@@ -57,7 +57,7 @@ local Opts = {
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         ignore_focus = {},
-        always_divide_middle = Distro.termux.validate(),
+        always_divide_middle = Termux.validate(),
         globalstatus = false,
         refresh = {
             statusline = 1000,
@@ -71,18 +71,16 @@ local Opts = {
     inactive_winbar = {},
 
     extensions = {
+        'lazy',
         'fugitive',
         'man',
     },
 }
 
-if exists('lazy') and not tbl_contains(Opts.extensions, 'lazy') then
-    table.insert(Opts.extensions, 'lazy')
-end
-if exists('nvim-tree') and not tbl_contains(Opts.extensions, 'nvim-tree') then
+if exists('nvim-tree') and not in_tbl(Opts.extensions, 'nvim-tree') then
     table.insert(Opts.extensions, 'nvim-tree')
 end
-if exists('toggleterm') and not tbl_contains(Opts.extensions, 'toggleterm') then
+if exists('toggleterm') and not in_tbl(Opts.extensions, 'toggleterm') then
     table.insert(Opts.extensions, 'toggleterm')
 end
 
