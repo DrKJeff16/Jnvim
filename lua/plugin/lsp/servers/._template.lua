@@ -1,6 +1,11 @@
 local User = require('user_api')
 local executable = require('user_api.check.exists').executable
 
+if not executable('exe') then
+    User.deregister_plugin('plugin.lsp.servers.<YOUR_CONFIG>')
+    return
+end
+
 User.register_plugin('plugin.lsp.servers.<YOUR_CONFIG>')
 
 return {

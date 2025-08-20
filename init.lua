@@ -129,7 +129,7 @@ vim.cmd.packadd('nohlsearch')
 vim.g.markdown_minlines = 500
 
 local Lsp = L.lsp()
-Lsp()
+Lsp.setup()
 
 vim.schedule(function()
     local in_tbl = vim.tbl_contains

@@ -1,10 +1,17 @@
 local User = require('user_api')
-local executable = require('user_api.check.exists').executable
+local Check = User.check
+
+local type_not_empty = Check.value.type_not_empty
+local executable = Check.exists.executable
 
 ---@param name string
----@param exe string
+---@param exe? string
 ---@return vim.lsp.Config|nil
 local function server_load(name, exe)
+    if not type_not_empty('string', exe) then
+        exe = name
+    end
+
     if not executable(exe) then
         return nil
     end
@@ -20,47 +27,41 @@ local Clients = {
 
     bashls = server_load('bashls', 'bash-language-server'),
 
-    clangd = server_load('clangd', 'clangd'),
-
     pylsp = server_load('pylsp', 'pylsp'),
+
+    clangd = server_load('clangd', 'clangd'),
+    cmake = server_load('cmake', 'cmake-language-server'),
+    rust_analyzer = server_load('rust_analyzer', 'rust-analyzer'),
+    jdtls = server_load('jdtls', 'jdtls'),
+    asm_lsp = server_load('asm_lsp', 'asm-lsp'),
 
     vimls = server_load('vimls', 'vim-language-server'),
 
-    jsonls = server_load('jsonls', 'vscode-json-language-server'),
-
+    dockerls = server_load('dockerls', 'docker-langserver'),
     docker_compose_language_service = server_load(
         'docker_compose_language_service',
         'docker-compose-langserver'
     ),
 
-    dockerls = server_load('dockerls', 'docker-langserver'),
-
-    marksman = server_load('marksman', 'marksman'),
-
-    cmake = server_load('cmake', 'cmake-language-server'),
-
-    cssls = server_load('cssls', 'vscode-css-language-server'),
-    css_variables = server_load('css_variables', 'css-variables-language-server'),
-    html = server_load('html', 'vscode-html-language-server'),
-
-    rust_analyzer = server_load('rust_analyzer', 'rust-analyzer'),
-
-    taplo = server_load('taplo', 'taplo'),
-
-    gh_actions_ls = server_load('gh_actions_ls', 'gh-action-language-server'),
-
     texlab = server_load('texlab', 'texlab'),
 
+    marksman = server_load('marksman', 'marksman'),
+    gh_actions_ls = server_load('gh_actions_ls', 'gh-action-language-server'),
+
+    html = server_load('html', 'vscode-html-language-server'),
+    jsonls = server_load('jsonls', 'vscode-json-language-server'),
+    cssls = server_load('cssls', 'vscode-css-language-server'),
+    css_variables = server_load('css_variables', 'css-variables-language-server'),
+    cssmodules_ls = server_load('cssmodules_ls', 'cssmodules-language-server'),
+
+    taplo = server_load('taplo', 'taplo'),
     yamlls = server_load('yamlls', 'yaml-language-server'),
-
     hyprls = server_load('hyprls', 'hyprls'),
-
-    asm_lsp = server_load('asm_lsp', 'asm-lsp'),
 }
 
 _G.CLIENTS = Clients
 
-User.register_plugin('plugin.lsp.server_config')
+User.register_plugin('plugin.lsp.servers')
 
 return Clients
 

@@ -7,6 +7,7 @@ local Check = User.check
 
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
+local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
 
 local in_tbl = vim.tbl_contains
@@ -27,7 +28,7 @@ local Server = {}
 ---@type string[]|table
 Server.client_names = {}
 
-Server.Clients = require('plugin.lsp.server_config')
+Server.Clients = require('plugin.lsp.servers')
 
 ---@param T? lsp.ClientCapabilities
 ---@return lsp.ClientCapabilities caps
@@ -142,87 +143,100 @@ function Server.populate(name, config)
     return config
 end
 
----@return table|Lsp.Server|fun()
-function Server.new()
-    return setmetatable({}, {
-        __index = Server,
+function Server.setup()
+    vim.lsp.protocol.TextDocumentSyncKind.Full = 1
+    vim.lsp.protocol.TextDocumentSyncKind[1] = 'Full'
 
-        ---@param self Lsp.Server
-        __call = function(self)
-            vim.lsp.protocol.TextDocumentSyncKind.Full = 1
-            vim.lsp.protocol.TextDocumentSyncKind[1] = 'Full'
-
-            vim.lsp.config('*', {
-                capabilities = Server.make_capabilities(),
-            })
-
-            vim.diagnostic.config({
-                signs = true,
-                float = true,
-                underline = true,
-                virtual_lines = false,
-                virtual_text = true,
-                severity_sort = false,
-            })
-
-            for name, client in next, self.Clients do
-                if not client then
-                    goto continue
-                end
-
-                local new_client = Server.populate(name, client)
-
-                vim.lsp.config(name, new_client)
-                vim.lsp.enable(name)
-
-                if not in_tbl(Server.client_names, name) then
-                    table.insert(Server.client_names, name)
-                end
-
-                ::continue::
-            end
-
-            ---@type AllModeMaps
-            local Keys = {
-                n = {
-                    ['<leader>l'] = { group = '+LSP' },
-
-                    ['<leader>li'] = {
-                        function()
-                            if exists('lspconfig') then
-                                vim.cmd.LspInfo()
-                            end
-                        end,
-                        desc('Get LSP Config Info'),
-                    },
-                    ['<leader>lC'] = {
-                        function()
-                            vim.print(self.client_names)
-                        end,
-                        desc('List Clients'),
-                    },
-                },
-
-                v = { ['<leader>l'] = { group = '+LSP' } },
-            }
-
-            local Keymaps = require('user_api.config.keymaps')
-            Keymaps(Keys)
-
-            local Autocmd = require('plugin.lsp.autocmd')
-            Autocmd()
-
-            local Kinds = require('plugin.lsp.kinds')
-            Kinds()
-
-            local Trouble = require('plugin.lsp.trouble')
-            Trouble()
-
-            User.register_plugin('plugin.lsp')
-        end,
+    vim.lsp.config('*', {
+        capabilities = Server.make_capabilities(),
     })
+
+    vim.diagnostic.config({
+        signs = true,
+        float = true,
+        underline = true,
+        virtual_lines = false,
+        virtual_text = true,
+        severity_sort = false,
+    })
+
+    for name, client in next, Server.Clients do
+        if not client then
+            goto continue
+        end
+
+        local new_client = Server.populate(name, client)
+
+        vim.lsp.config(name, new_client)
+        vim.lsp.enable(name)
+
+        if not in_tbl(Server.client_names, name) then
+            table.insert(Server.client_names, name)
+        end
+
+        ::continue::
+    end
+
+    ---@type AllModeMaps
+    local Keys = {
+        n = {
+            ['<leader>l'] = { group = '+LSP' },
+
+            ['<leader>li'] = {
+                function()
+                    if exists('lspconfig') then
+                        vim.cmd.LspInfo()
+                    end
+                end,
+                desc('Get LSP Config Info'),
+            },
+            ['<leader>lC'] = {
+                function()
+                    vim.print(Server.client_names)
+                end,
+                desc('List Clients'),
+            },
+        },
+
+        v = { ['<leader>l'] = { group = '+LSP' } },
+    }
+
+    local Keymaps = require('user_api.config.keymaps')
+    Keymaps(Keys)
+
+    local Autocmd = require('plugin.lsp.autocmd')
+    Autocmd()
+
+    local Kinds = require('plugin.lsp.kinds')
+    Kinds()
+
+    local Trouble = require('plugin.lsp.trouble')
+    Trouble()
 end
 
-return Server.new()
+---@param config vim.lsp.Config
+---@param name string
+---@param exe? string
+function Server.add(config, name, exe)
+    exe = type_not_empty('string', exe) and exe or name
+
+    if not executable(exe) then
+        return
+    end
+
+    if Server.Clients[name] then
+        Server.Clients[name] = d_extend('force', copy(Server.Clients[name]), config)
+    else
+        Server.Clients[name] = config
+    end
+
+    Server.Clients[name] = Server.populate(name, copy(Server.Clients[name]))
+
+    Server.setup()
+end
+
+User.register_plugin('plugin.lsp')
+
+return Server
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

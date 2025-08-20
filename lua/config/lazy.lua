@@ -17,7 +17,6 @@ local desc = require('user_api.maps.kmap').desc
 
 local key_variant = CfgUtil.key_variant
 local in_console = require('user_api.check').in_console
-local is_root = require('user_api.check').is_root
 
 local uv = vim.uv or vim.loop
 
@@ -74,7 +73,7 @@ local Config = {
                 'matchparen',
                 'netrwPlugin',
                 -- 'tarPlugin',
-                -- 'tohtml',
+                'tohtml',
                 'tutor',
                 -- 'zipPlugin',
             },
