@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
 local Exists = Check.exists
