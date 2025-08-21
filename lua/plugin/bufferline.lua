@@ -9,11 +9,11 @@ if not exists('bufferline') or exists('barbar') then
 end
 
 ---@class Bufferline.Buf
----@field name string @the basename of the active file
----@field path string @the full path of the active file
----@field bufnr integer @the number of the active buffer
----@field buffers integer[] @the numbers of the buffers in the tab
----@field tabnr integer @the "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
+---@field name string The basename of the active file
+---@field path string The full path of the active file
+---@field bufnr integer The number of the active buffer
+---@field buffers integer[] The numbers of the buffers in the tab
+---@field tabnr integer The "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
 
 local BLine = require('bufferline')
 local Groups = require('bufferline.groups')

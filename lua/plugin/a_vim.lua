@@ -6,6 +6,11 @@ local desc = require('user_api.maps.kmap').desc
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
+if not vim.g.installed_a_vim == 1 then
+    User.deregister_plugin('plugin.a_vim')
+    return
+end
+
 local group = augroup('User.A_Vim', { clear = true })
 
 au({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
@@ -32,10 +37,11 @@ au({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
         ---@type AllModeMaps
         local Keys = {
             i = {
-                ['<C-Tab>'] = { '<Esc>:IH<CR>' },
+                ['<C-Tab>'] = { '<Esc>:IH<CR>', buffer = buf },
             },
+
             n = {
-                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)' },
+                ['<leader><C-h>'] = { group = '+Header/Source Switch (C/C++)', buffer = buf },
 
                 ['<leader><C-h>s'] = {
                     ':A<CR>',

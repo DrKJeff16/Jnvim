@@ -7,6 +7,7 @@ local in_console = Check.in_console
 local exists = Check.exists.module
 
 if not exists('which-key') then
+    User.deregister_plugin('plugin.which_key')
     return
 end
 

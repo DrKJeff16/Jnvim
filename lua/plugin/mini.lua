@@ -1,7 +1,3 @@
----@diagnostic disable:missing-fields
-
----@alias MiniModules table<string, table|nil>
-
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
@@ -67,7 +63,7 @@ local function src(mini_mod, opts)
     end
 end
 
----@type MiniModules
+---@class MiniModules
 local Mods = {}
 
 Mods.basics = {

@@ -3,12 +3,12 @@ local User = require('user_api')
 local exists = User.check.exists.module
 
 if not exists('blink.cmp') then
+    User.deregister_plugin('plugin.blink_cmp')
     return
 end
 
-local Config = require('plugin.blink_cmp.config')
-
 local Blink = require('blink.cmp')
+local Config = require('plugin.blink_cmp.config')
 
 if exists('luasnip.loaders.from_vscode') then
     require('luasnip.loaders.from_vscode').lazy_load()

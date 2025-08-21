@@ -6,6 +6,7 @@ local exists = Check.exists.module
 local desc = User.maps.kmap.desc
 
 if not exists('nvim-possession') then
+    User.deregister_plugin('plugin.possession')
     return
 end
 

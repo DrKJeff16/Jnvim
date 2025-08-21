@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias DraculaSubMod.Variant ('dracula'|'dracula-soft')
 
 local User = require('user_api')
@@ -29,13 +27,12 @@ function Dracula.valid()
     return exists('dracula')
 end
 
----@param self DraculaSubMod
 ---@param variant? DraculaSubMod.Variant
 ---@param transparent? boolean
 ---@param override? table
-function Dracula:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
-        or self.variants[1]
+function Dracula.setup(variant, transparent, override)
+    variant = (is_str(variant) and vim.tbl_contains(Dracula.variants, variant)) and variant
+        or Dracula.variants[1]
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -70,17 +67,8 @@ function Dracula:setup(variant, transparent, override)
 
     Drac.setup(vim.tbl_deep_extend('keep', override, Opts))
 
-    vim.cmd(self.mod_cmd .. variant)
+    vim.cmd(Dracula.mod_cmd .. variant)
 end
-
----@param O? table
----@return DraculaSubMod|table
-function Dracula.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Dracula })
-end
-
-User.register_plugin('plugin.colorschemes.dracula')
 
 return Dracula
 

@@ -11,6 +11,7 @@ local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend
 
 if not exists('trouble') then
+    User.deregister_plugin('plugin.lsp.trouble')
     return
 end
 
@@ -292,11 +293,11 @@ function Trouble.new()
             trouble.setup(self.Opts)
 
             Keymaps({ n = self.Keys })
-
-            User.register_plugin('plugin.lsp.trouble')
         end,
     })
 end
+
+User.register_plugin('plugin.lsp.trouble')
 
 return Trouble.new()
 

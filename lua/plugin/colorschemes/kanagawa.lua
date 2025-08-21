@@ -14,7 +14,7 @@ local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 local in_console = Check.in_console
 
---- A `CscSubMod` variant but for the `kanagawa` colorscheme
+--- A `CscSubMod` variant but for the `kanagawa` colorscheme.
 --- ---
 ---@class KanagawaSubMod
 local Kanagawa = {}
@@ -33,12 +33,12 @@ function Kanagawa.valid()
     return exists('kanagawa')
 end
 
----@param self KanagawaSubMod
 ---@param variant? KanagawaSubMod.Variant
 ---@param transparent? boolean
 ---@param override? KanagawaConfig
-function Kanagawa:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'dragon'
+function Kanagawa.setup(variant, transparent, override)
+    variant = (is_str(variant) and vim.tbl_contains(Kanagawa.variants, variant)) and variant
+        or 'dragon'
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -105,7 +105,7 @@ function Kanagawa:setup(variant, transparent, override)
 
     KGW.setup(vim.tbl_deep_extend('keep', override, DEFAULTS))
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(Kanagawa.mod_cmd)
 end
 
 function Kanagawa.new(O)

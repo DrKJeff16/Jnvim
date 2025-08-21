@@ -4,11 +4,19 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('Comment') then
+    User.deregister_plugin('plugin.Comment')
     return
 end
 
 local Comment = require('Comment')
 
+---Function to call before (un)comment.
+---
+---It is called with a `ctx` argument of type
+---[`comment.utils.CommentCtx`](lua://CommentCtx).
+---
+---(default: `nil`)
+--- ---
 ---@param ctx CommentCtx
 ---@return string
 local function pre_hook(ctx)
@@ -31,9 +39,8 @@ if exists('ts_context_commentstring') then
     pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
 end
 
+---@diagnostic disable-next-line:missing-fields
 Comment.setup({
-    ---Function to call before (un)comment
-    ---@return string
     pre_hook = pre_hook,
 
     post_hook = post_hook,

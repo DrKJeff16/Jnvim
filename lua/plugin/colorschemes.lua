@@ -1,18 +1,18 @@
 ---@alias AllColorSubMods
 ---|CpcSubMod
 ---|DraculaSubMod
----|ODSubMod
----|NFoxSubMod
----|TNSubMod
----|VSCodeSubMod
 ---|GloombuddySubMod
 ---|GruvboxSubMod
 ---|MolokaiSubMod
+---|NFoxSubMod
+---|ODSubMod
 ---|OakSubMod
----|SpaceVimSubMod
----|SpaceVimSubMod
 ---|SpaceDuckSubMod
+---|SpaceVimSubMod
+---|SpaceVimSubMod
 ---|SpacemacsSubMod
+---|TNSubMod
+---|VSCodeSubMod
 
 local User = require('user_api')
 local Check = User.check
@@ -84,7 +84,6 @@ Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@return CscMod|table|fun(color?: string|AllCsc, ...: any)
 function Colorschemes.new()
-    ---@operator call: fun(color?: string|AllCsc, ...: any)
     return setmetatable({}, {
         __index = Colorschemes,
 
@@ -92,7 +91,9 @@ function Colorschemes.new()
             rawset(self, key, value)
         end,
 
-        ---@type fun(self: CscMod, color?: string|AllCsc, ...: any)
+        ---@param self CscMod
+        ---@param color? string|AllCsc
+        ---@param ... any
         __call = function(self, color, ...)
             local Keymaps = require('user_api.config.keymaps')
 
@@ -136,7 +137,7 @@ function Colorschemes.new()
                         }
                         Keys['<leader>uc' .. csc_group .. i_str .. v] = {
                             function()
-                                TColor:setup(variant)
+                                TColor.setup(variant)
                             end,
                             desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
                         }
@@ -146,7 +147,7 @@ function Colorschemes.new()
                 else
                     Keys['<leader>uc' .. csc_group .. i_str] = {
                         function()
-                            TColor:setup()
+                            TColor.setup()
                         end,
                         desc(fmt('Set Colorscheme `%s`', capitalize(name))),
                     }
@@ -178,7 +179,7 @@ function Colorschemes.new()
             local Color = self[color]
 
             if Color ~= nil and Color.valid() then
-                Color:setup(...)
+                Color.setup(...)
                 return
             end
 
@@ -187,7 +188,7 @@ function Colorschemes.new()
                 Color = self[csc]
 
                 if Color.valid ~= nil and Color.valid() then
-                    Color:setup()
+                    Color.setup()
                     return
                 end
             end

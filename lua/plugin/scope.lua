@@ -10,6 +10,7 @@ local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
 if not exists('scope') then
+    User.deregister_plugin('plugin.scope')
     return
 end
 

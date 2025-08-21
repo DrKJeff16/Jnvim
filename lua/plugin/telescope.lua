@@ -39,7 +39,6 @@ local Telescope = require('telescope')
 local Actions = require('telescope.actions')
 local ActionsLayout = require('telescope.actions.layout')
 local Config = require('telescope.config')
-local Themes = require('telescope.themes')
 
 --- Clone the default Telescope configuration
 local vimgrep_arguments = { (unpack or table.unpack)(Config.values.vimgrep_arguments) }
@@ -640,11 +639,10 @@ local au_tbl = {
             pattern = 'TelescopePreviewerLoaded',
             group = group,
 
-            ---@param args vim.api.keyset.create_autocmd.callback_args
-            callback = function(args)
-                if args.data.filetype ~= 'help' then
+            callback = function(ev)
+                if ev.data.filetype ~= 'help' then
                     vim.wo.number = true
-                elseif args.data.bufname:match('*.csv') then
+                elseif ev.data.bufname:match('*.csv') then
                     vim.wo.wrap = false
                 end
             end,

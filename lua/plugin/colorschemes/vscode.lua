@@ -10,7 +10,9 @@ local is_bool = Check.value.is_bool
 local is_str = Check.value.is_str
 local is_tbl = Check.value.is_tbl
 
---- A colorscheme table for the `vscode` colorscheme
+local in_tbl = vim.tbl_contains
+
+--- A colorscheme table for the `vscode.nvim` colorscheme.
 --- ---
 ---@class VSCodeSubMod
 local VSCode = {}
@@ -28,12 +30,11 @@ function VSCode.valid()
     return exists('vscode')
 end
 
----@param self VSCodeSubMod
 ---@param variant? (VSCodeSubMod.Variant)[]
 ---@param transparent? boolean
 ---@param override? table
-function VSCode:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'dark'
+function VSCode.setup(variant, transparent, override)
+    variant = (is_str(variant) and in_tbl(VSCode.variants, variant)) and variant or 'dark'
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -55,17 +56,8 @@ function VSCode:setup(variant, transparent, override)
 
     require('vscode').load()
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(VSCode.mod_cmd)
 end
-
----@param O? table
----@return VSCodeSubMod|table
-function VSCode.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = VSCode })
-end
-
-User.register_plugin('plugin.colorschemes.vscode')
 
 return VSCode
 

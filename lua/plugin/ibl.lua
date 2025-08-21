@@ -3,13 +3,13 @@ local Check = User.check
 
 local exists = Check.exists.module
 local is_tbl = Check.value.is_tbl
-local is_int = Check.value.is_int
 local empty = Check.value.empty
 local vim_has = Check.exists.vim_has
 local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 
 if not exists('ibl') then
+    User.deregister_plugin('plugin.ibl')
     return
 end
 

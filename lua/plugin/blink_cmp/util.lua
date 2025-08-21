@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@module 'blink.cmp'
 
 ---@alias BlinkCmp.Util.Sources ('lsp'|'path'|'snippets'|'buffer'|string)[]
@@ -7,27 +5,24 @@
 
 local User = require('user_api')
 local Check = User.check
+local Util = User.util
 
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
 local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
+local ft_get = Util.ft_get
 
+local curr_buf = vim.api.nvim_get_current_buf
+local copy = vim.deepcopy
 local in_tbl = vim.tbl_contains
 
 ---@class BlinkCmp.Util
----@field curr_ft string
----@field Sources BlinkCmp.Util.Sources
----@field Providers BlinkCmp.Util.Providers
----@field reset_sources fun(snipps: boolean?, buf: boolean?)
----@field reset_providers fun()
----@field gen_sources fun(snipps: boolean?, buf: boolean?): BlinkCmp.Util.Sources
----@field gen_providers fun(P: BlinkCmp.Util.Providers?): BlinkCmp.Util.Providers
----@field new fun(): table|BlinkCmp.Util
 local BUtil = {}
 
+---@type BlinkCmp.Util.Sources
 BUtil.Sources = {}
 
+---@type BlinkCmp.Util.Providers
 BUtil.Providers = {}
 
 BUtil.curr_ft = ''
@@ -50,7 +45,9 @@ function BUtil.reset_sources(snipps, buf)
         table.insert(BUtil.Sources, 'buffer')
     end
 
-    if vim.bo.filetype == 'lua' then
+    local ft = ft_get(curr_buf())
+
+    if ft == 'lua' then
         table.insert(BUtil.Sources, 1, 'lazydev')
     end
 
@@ -61,11 +58,11 @@ function BUtil.reset_sources(snipps, buf)
         'gitrebase',
     }
 
-    if in_tbl(git_fts, vim.bo.filetype) then
+    if in_tbl(git_fts) then
         table.insert(BUtil.Sources, 1, 'git')
     end
 
-    if vim.bo.filetype == 'gitcommit' then
+    if ft == 'gitcommit' then
         table.insert(BUtil.Sources, 1, 'conventional_commits')
     end
 end
@@ -86,19 +83,6 @@ function BUtil.reset_providers()
     BUtil.Providers = {
         cmdline = {
             module = 'blink.cmp.sources.cmdline',
-        },
-
-        omni = {
-            module = 'blink.cmp.sources.complete_func',
-            enabled = function()
-                return vim.bo.omnifunc ~= 'v:lua.vim.lsp.omnifunc'
-            end,
-            ---@type blink.cmp.CompleteFuncOpts
-            opts = {
-                complete_func = function()
-                    return vim.bo.omnifunc
-                end,
-            },
         },
 
         buffer = {
@@ -306,18 +290,11 @@ function BUtil.gen_providers(P)
     BUtil.reset_providers()
 
     if type_not_empty('table', P) then
-        BUtil.Providers = vim.tbl_deep_extend('keep', P, BUtil.Providers)
+        BUtil.Providers = vim.tbl_deep_extend('force', copy(BUtil.Providers), P)
     end
 
     return BUtil.Providers
 end
-
----@return BlinkCmp.Util|table
-function BUtil.new()
-    return setmetatable({}, { __index = BUtil })
-end
-
-User.register_plugin('plugin.blink_cmp.util')
 
 return BUtil
 

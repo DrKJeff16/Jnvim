@@ -1,7 +1,3 @@
-local User = require('user_api')
-
-local is_tbl = User.check.value.is_tbl
-
 ---@class SpacemacsSubMod
 local Spacemacs = {}
 
@@ -12,19 +8,9 @@ function Spacemacs.valid()
     return vim.g.installed_spacemacs == 1
 end
 
----@param self SpacemacsSubMod
-function Spacemacs:setup()
-    vim.cmd(self.mod_cmd)
+function Spacemacs.setup()
+    vim.cmd(Spacemacs.mod_cmd)
 end
-
----@param O? table
----@return table|SpacemacsSubMod
-function Spacemacs.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Spacemacs })
-end
-
-User.register_plugin('plugin.colorschemes.spacemacs')
 
 return Spacemacs
 

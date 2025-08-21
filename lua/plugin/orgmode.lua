@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('orgmode') then
+    User.deregister_plugin('plugin.orgmode')
     return
 end
 

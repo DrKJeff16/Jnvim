@@ -12,6 +12,8 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
+local in_tbl = vim.tbl_contains
+
 --- A colorscheme class for the `tokyonight.nvim` colorscheme.
 --- ---
 ---@class TNSubMod
@@ -32,12 +34,11 @@ function TokyoNight.valid()
     return exists('tokyonight')
 end
 
----@param self TNSubMod
 ---@param variant? TNSubMod.Variant
 ---@param transparent? boolean
 ---@param override? tokyonight.Config
-function TokyoNight:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'moon'
+function TokyoNight.setup(variant, transparent, override)
+    variant = (is_str(variant) and in_tbl(TokyoNight.variants, variant)) and variant or 'moon'
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -92,17 +93,8 @@ function TokyoNight:setup(variant, transparent, override)
 
     TN.setup(vim.tbl_deep_extend('keep', override, Opts))
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(TokyoNight.mod_cmd)
 end
-
----@param O? table
----@return TNSubMod|table
-function TokyoNight.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = TokyoNight })
-end
-
-User.register_plugin('plugin.colorschemes.tokyonight')
 
 return TokyoNight
 

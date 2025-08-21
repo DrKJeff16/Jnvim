@@ -1,7 +1,3 @@
-local User = require('user_api')
-
-local is_tbl = User.check.value.is_tbl
-
 ---@class SpaceVimSubMod
 local SpaceVimDark = {}
 
@@ -12,19 +8,9 @@ function SpaceVimDark.valid()
     return vim.g.installed_space_vim_dark == 1
 end
 
----@param self SpaceVimSubMod
-function SpaceVimDark:setup()
-    vim.cmd(self.mod_cmd)
+function SpaceVimDark.setup()
+    vim.cmd(SpaceVimDark.mod_cmd)
 end
-
----@param O? table
----@return table|SpaceVimSubMod
-function SpaceVimDark.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = SpaceVimDark })
-end
-
-User.register_plugin('plugin.colorschemes.space_vim_dark')
 
 return SpaceVimDark
 

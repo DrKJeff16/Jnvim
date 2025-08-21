@@ -24,7 +24,9 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
---- A colorscheme class for the `onedark.nvim` colorscheme
+local in_tbl = vim.tbl_contains
+
+--- A colorscheme class for the `onedark.nvim` colorscheme.
 --- ---
 ---@class ODSubMod
 local OneDark = {}
@@ -49,8 +51,8 @@ end
 ---@param variant? OD.Variant
 ---@param transparent? boolean
 ---@param override? table|OD
-function OneDark:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant or 'deep'
+function OneDark.setup(variant, transparent, override)
+    variant = (is_str(variant) and in_tbl(OneDark.variants, variant)) and variant or 'deep'
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -96,15 +98,6 @@ function OneDark:setup(variant, transparent, override)
 
     OD.load()
 end
-
----@param O? table
----@return table|ODSubMod
-function OneDark.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = OneDark })
-end
-
-User.register_plugin('plugin.colorschemes.onedark')
 
 return OneDark
 

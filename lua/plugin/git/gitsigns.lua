@@ -14,6 +14,7 @@ local is_int = Check.value.is_int
 local desc = User.maps.kmap.desc
 
 if not executable('git') or not exists('gitsigns') then
+    User.deregister_plugin('plugin.git.gitsigns')
     return
 end
 

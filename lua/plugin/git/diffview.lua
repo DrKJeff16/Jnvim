@@ -794,12 +794,32 @@ DVW.setup({
                 Actions.select_entry,
                 desc('Change the current option'),
             },
-            { 'n', 'q', Actions.close, desc('Close the panel') },
-            { 'n', 'g?', Actions.help('option_panel'), desc('Open the help panel') },
+            {
+                'n',
+                'q',
+                Actions.close,
+                desc('Close the panel'),
+            },
+            {
+                'n',
+                'g?',
+                Actions.help('option_panel'),
+                desc('Open the help panel'),
+            },
         },
         help_panel = {
-            { 'n', 'q', Actions.close, desc('Close help menu') },
-            { 'n', '<Esc>', Actions.close, desc('Close help menu') },
+            {
+                'n',
+                'q',
+                Actions.close,
+                desc('Close help menu'),
+            },
+            {
+                'n',
+                '<Esc>',
+                Actions.close,
+                desc('Close help menu'),
+            },
         },
     },
 })
@@ -809,8 +829,14 @@ local Keys = {
     ['<leader>G'] = { group = '+Git' },
     ['<leader>Gv'] = { group = '+DiffView' },
 
-    ['<leader>Gvo'] = { DVW.open, desc('Open DiffView') },
-    ['<leader>Gvc'] = { DVW.close, desc('Close DiffView') },
+    ['<leader>Gvo'] = {
+        DVW.open,
+        desc('Open DiffView'),
+    },
+    ['<leader>Gvc'] = {
+        DVW.close,
+        desc('Close DiffView'),
+    },
 }
 
 Keymaps({ n = Keys })

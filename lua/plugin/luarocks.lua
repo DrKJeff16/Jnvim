@@ -3,6 +3,7 @@ local User = require('user_api')
 local exists = User.check.exists.module
 
 if not exists('luarocks-nvim') then
+    User.deregister_plugin('plugin.luarocks')
     return
 end
 

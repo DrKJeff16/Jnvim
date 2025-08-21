@@ -1,5 +1,3 @@
----@alias AlphaFun fun(variant: ('dashboard'|'theta'|'startify')?)
-
 local User = require('user_api')
 local Check = User.check
 

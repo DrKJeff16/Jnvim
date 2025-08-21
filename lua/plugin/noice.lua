@@ -6,6 +6,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('noice') then
+    User.deregister_plugin('plugin.noice')
     return
 end
 

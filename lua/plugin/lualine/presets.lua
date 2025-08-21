@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 
 local exists = User.check.exists.module
@@ -238,6 +236,19 @@ local floor = math.floor
 ---|LuaLine.Components.Tabs
 ---|LuaLine.Components.Windows
 
+---@alias LuaLineSection (LuaLine.Components|SectionComponentStr|fun())[]|table
+
+---@class LuaLine.Sections
+---@field lualine_a LuaLineSection
+---@field lualine_b LuaLineSection
+---@field lualine_c LuaLineSection
+---@field lualine_x LuaLineSection
+---@field lualine_y LuaLineSection
+---@field lualine_z LuaLineSection
+
+---@class LuaLine.Presets
+local Presets = {}
+
 ---@class LuaLine.ComponentsDict
 ---@field branch LuaLine.Components.Branch
 ---@field buffers LuaLine.Components.Buffers
@@ -257,25 +268,8 @@ local floor = math.floor
 ---@field selectioncount LuaLine.Components.Selectioncount
 ---@field tabs LuaLine.Components.Tabs
 ---@field windows LuaLine.Components.Windows
-
----@alias LuaLineSection (LuaLine.Components|SectionComponentStr|fun())[]|table
-
----@class LuaLine.Sections
----@field lualine_a LuaLineSection
----@field lualine_b LuaLineSection
----@field lualine_c LuaLineSection
----@field lualine_x LuaLineSection
----@field lualine_y LuaLineSection
----@field lualine_z LuaLineSection
-
----@class LuaLine.Presets
----@field components LuaLine.ComponentsDict
----@field default LuaLine.Sections
----@field default_inactive LuaLine.Sections
-local Presets = {}
-
----@type LuaLine.ComponentsDict
 Presets.components = {}
+
 Presets.components.buffers = {
     'buffers',
 
@@ -538,8 +532,6 @@ Presets.default_inactive = {
         Presets.components.location,
     },
 }
-
-User.register_plugin('plugin.lualine.presets')
 
 return Presets
 

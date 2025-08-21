@@ -8,6 +8,7 @@ local desc = User.maps.kmap.desc
 local tmap = User.maps.kmap.t
 
 if not exists('toggleterm') then
+    User.deregister_plugin('plugin.toggleterm')
     return
 end
 

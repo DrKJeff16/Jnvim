@@ -1,7 +1,3 @@
-local User = require('user_api')
-
-local is_tbl = User.check.value.is_tbl
-
 ---@class MolokaiSubMod
 local Molokai = {}
 
@@ -12,19 +8,9 @@ function Molokai.valid()
     return vim.g.installed_molokai == 1
 end
 
----@param self MolokaiSubMod
-function Molokai:setup()
-    vim.cmd(self.mod_cmd)
+function Molokai.setup()
+    vim.cmd(Molokai.mod_cmd)
 end
-
----@param O? table
----@return table|MolokaiSubMod
-function Molokai.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Molokai })
-end
-
-User.register_plugin('plugin.colorschemes.molokai')
 
 return Molokai
 

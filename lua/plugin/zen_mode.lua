@@ -7,6 +7,7 @@ local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
 
 if not exists('zen-mode') then
+    User.deregister_plugin('plugin.zen_mode')
     return
 end
 

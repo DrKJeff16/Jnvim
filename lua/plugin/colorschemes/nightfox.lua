@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias NFoxSubMod.Variant
 ---|'nightfox'
 ---|'carbonfox'
@@ -19,7 +17,9 @@ local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
 
---- A colorscheme class for the `nightfox.nvim` colorscheme
+local in_tbl = vim.tbl_contains
+
+--- A colorscheme class for the `nightfox.nvim` colorscheme.
 --- ---
 ---@class NFoxSubMod
 local Nightfox = {}
@@ -42,13 +42,12 @@ function Nightfox.valid()
     return exists('nightfox')
 end
 
----@param self NFoxSubMod
 ---@param variant? NFoxSubMod.Variants
 ---@param transparent? boolean
 ---@param override? table
-function Nightfox:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
-        or self.variants[1]
+function Nightfox.setup(variant, transparent, override)
+    variant = (is_str(variant) and in_tbl(Nightfox.variants, variant)) and variant
+        or Nightfox.variants[1]
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -116,19 +115,10 @@ function Nightfox:setup(variant, transparent, override)
         },
     }))
 
-    vim.cmd(self.mod_cmd .. variant)
+    vim.cmd(Nightfox.mod_cmd .. variant)
 
     NF.compile()
 end
-
----@param O? table
----@return NFoxSubMod|table
-function Nightfox.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Nightfox })
-end
-
-User.register_plugin('plugin.colorschemes.nightfox')
 
 return Nightfox
 

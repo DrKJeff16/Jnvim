@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('nvim-web-devicons') then
+    User.deregister_plugin('plugin.web_devicons')
     return
 end
 

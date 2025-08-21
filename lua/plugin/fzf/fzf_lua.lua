@@ -5,6 +5,7 @@ local exists = Check.exists.module
 local executable = Check.exists.executable
 
 if not (exists('fzf-lua') and executable('fzf')) then
+    User.deregister_plugin('plugin.fzf.fzf_lua')
     return
 end
 

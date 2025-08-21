@@ -7,6 +7,7 @@ local executable = Check.exists.executable
 local desc = User.maps.kmap.desc
 
 if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
+    User.deregister_plugin('plugin.git.lazygit')
     return
 end
 

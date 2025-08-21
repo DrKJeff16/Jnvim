@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
 
 ---@class CpcSubMod.Variants
@@ -36,16 +34,16 @@ function Catppuccin.valid()
     return exists('catppuccin')
 end
 
----@param self CpcSubMod
 ---@param variant? CpcSubMod.Variant
 ---@param transparent? boolean
 ---@param override? table|CatppuccinOptions
-function Catppuccin:setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(self.variants, variant)) and variant
-        or self.variants[1]
+function Catppuccin.setup(variant, transparent, override)
+    variant = (is_str(variant) and vim.tbl_contains(Catppuccin.variants, variant)) and variant
+        or Catppuccin.variants[1]
     transparent = is_bool(transparent) and transparent or false
 
     ---@type CatppuccinOptions
+    ---@diagnostic disable-next-line:missing-fields
     local Opts = {
         flavour = variant, -- latte, frappe, macchiato, mocha
         -- flavour = "auto" -- will respect terminal's background
@@ -153,17 +151,8 @@ function Catppuccin:setup(variant, transparent, override)
 
     require('catppuccin').setup(vim.tbl_deep_extend('keep', override, Opts))
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(Catppuccin.mod_cmd)
 end
-
----@param O? table
----@return CpcSubMod|table
-function Catppuccin.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Catppuccin })
-end
-
-User.register_plugin('plugin.colorschemes.catppuccin')
 
 return Catppuccin
 

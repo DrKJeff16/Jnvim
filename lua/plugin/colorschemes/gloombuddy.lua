@@ -2,7 +2,6 @@ local User = require('user_api')
 local Check = User.check
 
 local type_not_empty = Check.value.type_not_empty
-local is_tbl = Check.value.is_tbl
 
 ---@class GloombuddySubMod
 local Gloombuddy = {}
@@ -17,21 +16,11 @@ function Gloombuddy.valid()
     )
 end
 
----@param self GloombuddySubMod
-function Gloombuddy:setup()
+function Gloombuddy.setup()
     require('colorbuddy').colorscheme('gloombuddy')
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(Gloombuddy.mod_cmd)
 end
-
----@param O? table
----@return table|GloombuddySubMod
-function Gloombuddy.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Gloombuddy })
-end
-
-User.register_plugin('plugin.colorschemes.gloombuddy')
 
 return Gloombuddy
 

@@ -5,6 +5,7 @@ local exists = Check.exists.module
 local hl_from_dict = User.highlight.hl_from_dict
 
 if not exists('notify') then
+    User.deregister_plugin('plugin.notify')
     return
 end
 

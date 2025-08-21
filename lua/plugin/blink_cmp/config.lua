@@ -371,13 +371,6 @@ Cfg.Config = {
     term = { enabled = false },
 }
 
----@return BlinkCmp.Cfg|table
-function Cfg.new()
-    return setmetatable({}, { __index = Cfg })
-end
-
-User.register_plugin('plugin.blink_cmp.config')
-
 return Cfg
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

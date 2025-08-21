@@ -1,7 +1,6 @@
 local User = require('user_api')
 local Check = User.check
 
-local is_tbl = Check.value.is_tbl
 local type_not_empty = Check.value.type_not_empty
 
 ---@class Lsp.SubMods.Kinds

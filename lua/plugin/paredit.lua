@@ -1,10 +1,10 @@
-local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
 
 if not exists('nvim-paredit') then
+    User.deregister_plugin('plugin.paredit')
     return
 end
 

@@ -15,10 +15,9 @@ function Gruvbox.valid()
     return exists('gruvbox')
 end
 
----@param self GruvboxSubMod
 ---@param transparent? boolean
 ---@param override? table|GruvboxConfig
-function Gruvbox:setup(transparent, override)
+function Gruvbox.setup(transparent, override)
     transparent = is_bool(transparent) and transparent or false
     override = is_tbl(override) and override or {}
 
@@ -50,17 +49,8 @@ function Gruvbox:setup(transparent, override)
         palette_overrides = {},
     }))
 
-    vim.cmd(self.mod_cmd)
+    vim.cmd(Gruvbox.mod_cmd)
 end
-
----@param O? table
----@return table|GruvboxSubMod
-function Gruvbox.new(O)
-    O = is_tbl(O) and O or {}
-    return setmetatable(O, { __index = Gruvbox })
-end
-
-User.register_plugin('plugin.colorschemes.gruvbox')
 
 return Gruvbox
 
