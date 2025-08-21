@@ -101,24 +101,6 @@ local Opts = {
             layout_config = { width = 0.75, height = 0.75 },
         },
 
-        picker_list = {
-            theme = 'ivy',
-            opts = {
-                projects = { display_type = 'full' },
-                project = { display_type = 'full' },
-                notify = Themes.get_dropdown({}),
-            },
-
-            excluded_pickers = {},
-
-            user_pickers = {
-                'todo-comments',
-                function()
-                    vim.cmd.TodoTelescope('theme=cursor')
-                end,
-            },
-        },
-
         projects = {
             prompt_prefix = '󱎸  ',
         },
@@ -601,7 +583,7 @@ local known_exts = {
         end,
     },
 
-    ['telescope-picker-list'] = {
+    ['telescope._extensions.picker_list'] = {
         'picker_list',
 
         ---@return table|AllMaps
