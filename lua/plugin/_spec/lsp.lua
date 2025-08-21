@@ -32,6 +32,17 @@ local LSP = {
         config = source('plugin.lazydev'),
         cond = executable('lua-language-server'),
     },
+
+    {
+        'stevearc/aerial.nvim',
+        version = false,
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+        config = source('plugin.aerial'),
+    },
+
     {
         'folke/trouble.nvim',
         event = 'VeryLazy',

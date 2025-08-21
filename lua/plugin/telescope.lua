@@ -477,6 +477,31 @@ local known_exts = {
         end,
     },
 
+    aerial = {
+        'aerial',
+
+        ---@return table|AllMaps
+        keys = function()
+            local Extensions = require('telescope').extensions
+
+            if not type_not_empty('table', Extensions.aerial) then
+                return {}
+            end
+
+            return {
+                ['<leader><C-t>ea'] = {
+                    '<CMD>Telescope aerial<CR>',
+                    desc('Aerial Picker'),
+                },
+
+                ['<leader>laT'] = {
+                    '<CMD>Telescope aerial<CR>',
+                    desc('Aerial Telescope Picker'),
+                },
+            }
+        end,
+    },
+
     project = {
         'projects',
 
