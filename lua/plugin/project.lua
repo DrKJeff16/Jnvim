@@ -18,6 +18,7 @@ Project.setup({
     detection_methods = { 'lsp', 'pattern' },
 
     patterns = {
+        '!=' .. vim.fn.environ()['HOME'],
         '.git',
         '.github',
         '_darcs',
@@ -35,6 +36,7 @@ Project.setup({
         enabled = false,
         sort = 'newest',
         prefer_file_browser = true,
+        show_hidden = false,
     },
 
     ignore_lsp = {},
@@ -53,7 +55,6 @@ Project.setup({
         '~/Templates/*',
     },
 
-    show_hidden = false,
     silent_chdir = true,
     enable_autochdir = false,
 
