@@ -1,66 +1,44 @@
-local Keymaps = require('user_api.config.keymaps')
+local fmt = string.format
+
 local User = require('user_api')
 local Check = User.check
-local Util = User.util
 
+local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
 local is_fun = Check.value.is_fun
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
-local notify = Util.notify.notify
+
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
 
 ---@param mini_mod string
 ---@param opts table|nil
 local function src(mini_mod, opts)
     if not type_not_empty('string', mini_mod) then
-        notify('Invalid or empty Mini module', 'error', {
-            animate = true,
-            hide_from_history = false,
-            timeout = 2750,
-            title = '(plugin.mini.src)',
-        })
+        vim.notify('Invalid or empty Mini module', ERROR)
         return
     end
 
     -- If table key doesn't start with `mini.`
     local og_mini_mod = mini_mod
-    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and string.format('mini.%s', mini_mod) or mini_mod
+    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and fmt('mini.%s', mini_mod) or mini_mod
 
     if not exists(mini_mod) then
-        notify(string.format('Unable to import `%s`', og_mini_mod), 'error', {
-            animate = true,
-            hide_from_history = false,
-            timeout = 2750,
-            title = '(plugin.mini.src)',
-        })
+        vim.notify(fmt('Unable to import `%s`', og_mini_mod), ERROR)
         return
     end
 
     local M = require(mini_mod)
 
-    opts = is_tbl(opts) and opts or nil
-
-    if is_fun(M.setup) then
-        ---@type boolean
-        local ok
-        local _
-
-        if opts == nil then
-            ok, _ = pcall(M.setup)
-        else
-            ok, _ = pcall(M.setup, opts)
-        end
-
-        if not ok then
-            notify(string.format('Could not setup `%s`', mini_mod), 'error', {
-                animate = true,
-                hide_from_history = false,
-                timeout = 2750,
-                title = '(plugin.mini.src)',
-            })
-        end
+    if not is_fun(M.setup) then
+        vim.notify(fmt('`setup()` not found for module `%s`', mini_mod), WARN)
+        return
     end
+
+    opts = opts or {}
+
+    M.setup(opts)
 end
 
 ---@class MiniModules
@@ -165,36 +143,30 @@ Mods.extra = {}
 
 -- Mods.cursorword = { delay = 1000 }
 
-Mods.icons = {
-    style = 'glyph',
-    -- Customize per category. See `:h MiniIcons.config` for details.
-    default = {
-        -- Override default glyph for "file" category (reuse highlight group)
-        file = { glyph = '󰈤' },
-    },
-    directory = {},
-    extension = {
-        lua = { hl = 'Special' },
-    },
-    file = {},
-    filetype = {},
-    lsp = {},
-    os = {},
-
-    -- Control which extensions will be considered during "file" resolutions
-    ---@param ext string?
-    ---@param file string?
-    ---@return boolean
-    ---@diagnostic disable-next-line:unused-local
-    use_file_extension = function(ext, file)
-        if type_not_empty('string', ext) then
-            ---@diagnostic disable-next-line:need-check-nil
-            return ext:sub(-3) ~= 'scm'
-        end
-
-        return false
-    end,
-}
+-- Mods.icons = {
+--     style = 'glyph',
+--     -- Customize per category. See `:h MiniIcons.config` for details.
+--     default = {
+--         -- Override default glyph for "file" category (reuse highlight group)
+--         file = { glyph = '󰈤' },
+--     },
+--     directory = {},
+--     extension = {
+--         lua = { hl = 'Special' },
+--     },
+--     file = {},
+--     filetype = {},
+--     lsp = {},
+--     os = {},
+--
+--     -- Control which extensions will be considered during "file" resolutions
+--     ---@param ext string?
+--     ---@param file string?
+--     ---@return boolean
+--     use_file_extension = function(ext, file)
+--         return (ext ~= nil) and (ext:sub(-3) ~= 'scm') or false
+--     end,
+-- }
 
 Mods.map = {
     -- Highlight integrations (none by default)
@@ -210,9 +182,9 @@ Mods.map = {
         -- Encode symbols. See `:h MiniMap.config` for specification and
         -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
         -- Default: solid blocks with 3x2 resolution.
-        -- encode = require('mini.map').gen_encode_symbols.block('2x1'),
+        encode = require('mini.map').gen_encode_symbols.block('2x1'),
         -- encode = require('mini.map').gen_encode_symbols.dodt('1x2'),
-        encode = require('mini.map').gen_encode_symbols.shade('1x2'),
+        -- encode = require('mini.map').gen_encode_symbols.shade('1x2'),
 
         -- Scrollbar parts for view and line. Use empty string to disable any.
         scroll_line = '█',
@@ -245,10 +217,6 @@ Mods.move = {
     -- Module mappings. Use `''` (empty string) to disable one
     mappings = {
         -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl
-        -- left = '<leader>Ml',
-        -- right = '<leader>Mr',
-        -- down = '<leader>Md',
-        -- up = '<leader>Mu',
         left = '<C-Left>',
         right = '<C-Right>',
         down = '<C-Down>',
@@ -271,7 +239,11 @@ Mods.move = {
 if not exists('nvim-autopairs') then
     Mods.pairs = {
         -- In which modes mappings from this `config` should be created
-        modes = { insert = true, command = true, terminal = false },
+        modes = {
+            insert = true,
+            command = true,
+            terminal = false,
+        },
 
         -- Global mappings. Each right hand side should be a pair information, a
         -- table with at least these fields (see more in |MiniPairs.map|):
@@ -281,15 +253,47 @@ if not exists('nvim-autopairs') then
         -- <CR>, `'` does not insert pair after a letter.
         -- Only parts of tables can be tweaked (others will use these defaults).
         mappings = {
-            ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].' },
-            ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].' },
-            ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].' },
-            ['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
+            ['('] = {
+                action = 'open',
+                pair = '()',
+                neigh_pattern = '[^\\].',
+            },
+            ['['] = {
+                action = 'open',
+                pair = '[]',
+                neigh_pattern = '[^\\].',
+            },
+            ['{'] = {
+                action = 'open',
+                pair = '{}',
+                neigh_pattern = '[^\\].',
+            },
+            ['<'] = {
+                action = 'open',
+                pair = '<>',
+                neigh_pattern = '[^\\].',
+            },
 
-            [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
-            [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
-            ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
-            ['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+            [')'] = {
+                action = 'close',
+                pair = '()',
+                neigh_pattern = '[^\\].',
+            },
+            [']'] = {
+                action = 'close',
+                pair = '[]',
+                neigh_pattern = '[^\\].',
+            },
+            ['}'] = {
+                action = 'close',
+                pair = '{}',
+                neigh_pattern = '[^\\].',
+            },
+            ['>'] = {
+                action = 'close',
+                pair = '<>',
+                neigh_pattern = '[^\\].',
+            },
 
             ['"'] = {
                 action = 'closeopen',
@@ -312,18 +316,6 @@ if not exists('nvim-autopairs') then
         },
     }
 end
-
---[[ Mods.starter = exists('plugin.mini.starter') and require('plugin.mini.starter').telescope or {
-    autoopen = true,
-    -- Whether to evaluate action of single active item
-    evaluate_single = false,
-    items = nil,
-    header = nil,
-    footer = nil,
-    content_hooks = nil,
-    query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
-    silent = true,
-} ]]
 
 Mods.trailspace = { only_in_normal_buffers = true }
 
@@ -366,10 +358,6 @@ local Keys = {}
 
 for mod, opts in next, Mods do
     src(mod, opts)
-
-    if mod == 'icons' and exists('nvim-web-devicons') then
-        require('mini.icons').mock_nvim_web_devicons()
-    end
 
     if mod == 'map' then
         Keys['<leader>m'] = { group = '+Mini Map' }
