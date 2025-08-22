@@ -3,8 +3,8 @@ local fmt = string.format
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
-
 local Keymaps = require('user_api.config.keymaps')
+
 local exists = Check.exists.module
 local is_fun = Check.value.is_fun
 local type_not_empty = Check.value.type_not_empty
@@ -20,7 +20,7 @@ local in_tbl = vim.tbl_contains
 ---@param opts table|nil
 local function src(mini_mod, opts)
     if not type_not_empty('string', mini_mod) then
-        vim.notify('Invalid or empty Mini module', ERROR)
+        vim.notify('(mini src()): Invalid or empty Mini module', ERROR)
         return
     end
 
@@ -29,14 +29,14 @@ local function src(mini_mod, opts)
     mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and fmt('mini.%s', mini_mod) or mini_mod
 
     if not exists(mini_mod) then
-        vim.notify(fmt('Unable to import `%s`', og_mini_mod), ERROR)
+        vim.notify(fmt('(mini src()): Unable to import `%s`', og_mini_mod), ERROR)
         return
     end
 
     local M = require(mini_mod)
 
     if not is_fun(M.setup) then
-        vim.notify(fmt('`setup()` not found for module `%s`', mini_mod), WARN)
+        vim.notify(fmt('(mini src()): `setup()` not found for module `%s`', mini_mod), WARN)
         return
     end
 
