@@ -87,8 +87,7 @@ function BUtil.reset_providers()
 
         buffer = {
             score_offset = -20,
-
-            max_items = 8,
+            max_items = 10,
 
             opts = {
                 -- default to all visible buffers
@@ -104,7 +103,7 @@ function BUtil.reset_providers()
                 end,
                 -- buffers when searching with `/` or `?`
                 get_search_bufnrs = function()
-                    return { vim.api.nvim_get_current_buf() }
+                    return { curr_buf() }
                 end,
                 -- Maximum total number of characters (across all selected buffers) for which buffer completion runs synchronously. Above this, asynchronous processing is used.
                 max_sync_buffer_size = 20000,
@@ -146,8 +145,7 @@ function BUtil.reset_providers()
                 end
 
                 -- avoid duplicates from the corrections
-                local seen = {}
-                local out = {}
+                local seen, out = {}, {}
 
                 for _, item in next, items do
                     ---@type string
@@ -173,8 +171,6 @@ function BUtil.reset_providers()
             module = 'blink.cmp.sources.path',
             score_offset = 30,
 
-            fallbacks = { 'buffer' },
-
             ---@type blink.cmp.PathOpts
             opts = {
                 trailing_slash = false,
@@ -192,8 +188,7 @@ function BUtil.reset_providers()
 
         snippets = {
             name = 'Snippet',
-            score_offset = -50,
-            max_items = 7,
+            score_offset = -10,
 
             ---@type blink.cmp.SnippetsOpts
             opts = {
@@ -215,13 +210,12 @@ function BUtil.reset_providers()
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
             score_offset = 100,
-            fallbacks = { 'lsp' },
         },
 
         lsp = {
             name = 'LSP',
             module = 'blink.cmp.sources.lsp',
-            score_offset = 60,
+            score_offset = 70,
 
             ---@param _ blink.cmp.Context
             ---@param items blink.cmp.CompletionItem[]
@@ -236,9 +230,6 @@ function BUtil.reset_providers()
                     items
                 )
             end,
-            opts = { tailwind_color_icon = '██' },
-
-            fallbacks = {},
         },
     }
 
@@ -255,7 +246,7 @@ function BUtil.reset_providers()
                     'gitrebase',
                 }
 
-                return in_tbl(git_fts, vim.bo.filetype)
+                return in_tbl(git_fts, ft_get(curr_buf()))
             end,
         }
     end
@@ -266,7 +257,7 @@ function BUtil.reset_providers()
             module = 'blink-cmp-conventional-commits',
             score_offset = 100,
             enabled = function()
-                return vim.bo.filetype == 'gitcommit'
+                return ft_get(curr_buf()) == 'gitcommit'
             end,
 
             ---@module 'blink-cmp-conventional-commits'
@@ -279,7 +270,6 @@ function BUtil.reset_providers()
         BUtil.Providers.orgmode = {
             name = 'Orgmode',
             module = 'orgmode.org.autocompletion.blink',
-            fallbacks = { 'buffer' },
         }
     end
 end

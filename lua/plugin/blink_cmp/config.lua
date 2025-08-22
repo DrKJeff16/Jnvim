@@ -11,6 +11,9 @@ local has_words_before = Util.has_words_before
 
 local BUtil = require('plugin.blink_cmp.util')
 
+local gen_sources = BUtil.gen_sources
+local gen_providers = BUtil.gen_providers
+
 ---@param key string
 ---@return fun()
 local function gen_termcode_fun(key)
@@ -34,85 +37,51 @@ Cfg.Config = {
     keymap = {
         preset = 'super-tab',
 
-        ['<C-Space>'] = {
-            function(cmp)
-                if cmp.is_documentation_visible() then
-                    cmp.hide_documentation()
-                else
-                    cmp.show_documentation()
-                end
-
-                return cmp.show({ providers = BUtil.gen_sources(true, true) })
-            end,
-            'fallback',
-        },
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
 
         ---Also known as `<Esc>`
-        ['<C-e>'] = {
-            function(cmp)
-                if cmp.is_documentation_visible() then
-                    cmp.hide_documentation()
-                end
-                if cmp.is_signature_visible() then
-                    cmp.hide_signature()
-                end
-                if cmp.snippet_active() or cmp.is_active() or cmp.is_menu_visible() then
-                    return cmp.cancel()
-                end
-            end,
-            'fallback',
-        },
+        ['<C-e>'] = { 'cancel', 'fallback' },
 
         ['<CR>'] = { 'accept', 'fallback' },
 
         ['<Tab>'] = {
             function(cmp)
-                if cmp.snippet_active({ direction = 1 }) then
+                local visible = cmp.is_menu_visible
+                local snip_active = cmp.snippet_active
+
+                if snip_active({ direction = 1 }) then
                     return cmp.snippet_forward()
                 end
-            end,
-
-            function(cmp)
-                if cmp.is_menu_visible() then
-                    return cmp.select_next(select_opts)
-                end
-            end,
-
-            function(cmp)
-                local visible = cmp.is_menu_visible
 
                 if not visible() and has_words_before() then
-                    return cmp.show({ providers = BUtil.gen_sources(true, true) })
+                    return cmp.show({ providers = gen_sources(true, true) })
                 end
+
+                return cmp.select_next(select_opts)
             end,
             'fallback',
         },
         ['<S-Tab>'] = {
             function(cmp)
-                if cmp.snippet_active({ direction = -1 }) then
+                local visible = cmp.is_menu_visible
+                local snip_active = cmp.snippet_active
+
+                if snip_active({ direction = -1 }) then
                     return cmp.snippet_backward()
                 end
-            end,
-
-            function(cmp)
-                if cmp.is_menu_visible() then
-                    return cmp.select_prev(select_opts)
-                end
-            end,
-
-            function(cmp)
-                local visible = cmp.is_menu_visible
 
                 if not visible() and has_words_before() then
-                    return cmp.show({ providers = BUtil.gen_sources(true, true) })
+                    return cmp.show({ providers = gen_sources(true, true) })
                 end
+
+                return cmp.select_prev(select_opts)
             end,
             'fallback',
         },
 
         ['<Up>'] = {
             function(cmp)
-                if cmp.is_active() or cmp.is_visible() then
+                if cmp.is_menu_visible() then
                     return cmp.cancel({
                         callback = gen_termcode_fun('<Up>'),
                     })
@@ -122,7 +91,7 @@ Cfg.Config = {
         },
         ['<Down>'] = {
             function(cmp)
-                if cmp.is_active() or cmp.is_visible() then
+                if cmp.is_menu_visible() then
                     return cmp.cancel({
                         callback = gen_termcode_fun('<Down>'),
                     })
@@ -130,8 +99,26 @@ Cfg.Config = {
             end,
             'fallback',
         },
-        ['<Left>'] = { 'fallback' },
-        ['<Right>'] = { 'fallback' },
+        ['<Left>'] = {
+            function(cmp)
+                if cmp.is_menu_visible() then
+                    return cmp.cancel({
+                        callback = gen_termcode_fun('<Left>'),
+                    })
+                end
+            end,
+            'fallback',
+        },
+        ['<Right>'] = {
+            function(cmp)
+                if cmp.is_menu_visible() then
+                    return cmp.cancel({
+                        callback = gen_termcode_fun('<Right>'),
+                    })
+                end
+            end,
+            'fallback',
+        },
 
         ['<C-p>'] = { 'fallback' },
         ['<C-n>'] = { 'fallback' },
@@ -154,11 +141,11 @@ Cfg.Config = {
         },
         ['<C-k>'] = {
             function(cmp)
-                if not cmp.is_signature_visible() then
-                    return cmp.show_signature()
+                if cmp.is_signature_visible() then
+                    return cmp.hide_signature()
                 end
 
-                return cmp.hide_signature()
+                return cmp.show_signature()
             end,
             'fallback',
         },
@@ -172,7 +159,7 @@ Cfg.Config = {
         ---Sets the fallback highlight groups to nvim-cmp's highlight groups
         ---Useful for when your theme doesn't support blink.cmp
         ---Will be removed in a future release
-        use_nvim_cmp_as_default = true,
+        use_nvim_cmp_as_default = false,
 
         kind_icons = require('lspkind').symbol_map,
     },
@@ -287,7 +274,7 @@ Cfg.Config = {
 
     sources = {
         default = function()
-            return BUtil.gen_sources(true, true)
+            return gen_sources(true, true)
         end,
 
         ---Function to use when transforming the items before they're returned for all providers
@@ -296,7 +283,7 @@ Cfg.Config = {
             return items
         end,
 
-        providers = BUtil.gen_providers(),
+        providers = gen_providers(),
     },
 
     fuzzy = {

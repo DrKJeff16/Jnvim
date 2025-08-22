@@ -11,10 +11,43 @@ local executable = Check.exists.executable
 local Completion = {
     {
         'saghen/blink.cmp',
-        lazy = false,
         version = false,
         dependencies = {
-            'L3MON4D3/LuaSnip',
+            {
+                'L3MON4D3/LuaSnip',
+                version = false,
+                dependencies = {
+                    'rafamadriz/friendly-snippets',
+                    'benfowler/telescope-luasnip.nvim',
+                },
+                build = executable('make') and 'make -j $(nproc) install_jsregexp' or false,
+                config = function(_, opts)
+                    local luasnip = require('luasnip')
+                    local ft_extend = luasnip.filetype_extend
+
+                    if opts then
+                        luasnip.config.setup(opts)
+                    end
+                    vim.tbl_map(function(type)
+                        require('luasnip.loaders.from_' .. type).lazy_load()
+                    end, { 'vscode', 'snipmate', 'lua' })
+
+                    -- friendly-snippets - enable standardized comments snippets
+                    ft_extend('c', { 'cdoc' })
+                    ft_extend('cpp', { 'cppdoc' })
+                    ft_extend('cs', { 'csharpdoc' })
+                    ft_extend('java', { 'javadoc' })
+                    ft_extend('javascript', { 'jsdoc' })
+                    ft_extend('kotlin', { 'kdoc' })
+                    ft_extend('lua', { 'luadoc' })
+                    ft_extend('php', { 'phpdoc' })
+                    ft_extend('python', { 'pydoc' })
+                    ft_extend('ruby', { 'rdoc' })
+                    ft_extend('rust', { 'rustdoc' })
+                    ft_extend('sh', { 'shelldoc' })
+                    ft_extend('typescript', { 'tsdoc' })
+                end,
+            },
             'folke/lazydev.nvim',
             'onsails/lspkind.nvim',
             'Kaiser-Yang/blink-cmp-git',
@@ -22,13 +55,6 @@ local Completion = {
         },
         build = executable('cargo') and 'cargo build --release' or false,
         config = source('plugin.blink_cmp'),
-    },
-    {
-        'L3MON4D3/LuaSnip',
-        lazy = true,
-        version = false,
-        dependencies = { 'rafamadriz/friendly-snippets' },
-        build = executable('make') and 'make -j $(nproc) install_jsregexp' or false,
     },
     {
         'onsails/lspkind.nvim',
