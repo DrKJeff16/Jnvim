@@ -13,14 +13,6 @@ local Utils = {
         version = false,
         init = flag_installed('utl'),
     },
-
-    {
-        'aspeddro/pandoc.nvim',
-        lazy = true,
-        version = false,
-        config = source('plugin.pandoc'),
-        cond = executable('pandoc'),
-    },
 }
 
 return Utils
