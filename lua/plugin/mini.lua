@@ -2,15 +2,19 @@ local fmt = string.format
 
 local User = require('user_api')
 local Check = User.check
+local Util = User.util
 
 local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local is_fun = Check.value.is_fun
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
+local ft_get = Util.ft_get
 
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
+
+local in_tbl = vim.tbl_contains
 
 ---@param mini_mod string
 ---@param opts table|nil
@@ -236,6 +240,53 @@ Mods.move = {
     },
 }
 
+Mods.splitjoin = {
+    -- Module mappings. Use `''` (empty string) to disable one.
+    -- Created for both Normal and Visual modes.
+    mappings = {
+        toggle = '<leader>mst',
+        split = '<leader>mss',
+        join = '<leader>msj',
+    },
+
+    -- Detection options: where split/join should be done
+    detect = {
+        -- Array of Lua patterns to detect region with arguments.
+        -- Default: { '%b()', '%b[]', '%b{}' }
+        brackets = {
+            '%b()',
+            '%b[]',
+            '%b{}',
+        },
+
+        -- String Lua pattern defining argument separator
+        separator = '[,;]',
+
+        -- Array of Lua patterns for sub-regions to exclude separators from.
+        -- Enables correct detection in presence of nested brackets and quotes.
+        -- Default: { '%b()', '%b[]', '%b{}', '%b""', "%b''" }
+        exclude_regions = {
+            '%b()',
+            '%b[]',
+            '%b{}',
+            '%b""',
+            "%b''",
+        },
+    },
+
+    -- Split options
+    split = {
+        hooks_pre = {},
+        hooks_post = {},
+    },
+
+    -- Join options
+    join = {
+        hooks_pre = {},
+        hooks_post = {},
+    },
+}
+
 if not exists('nvim-autopairs') then
     Mods.pairs = {
         -- In which modes mappings from this `config` should be created
@@ -353,40 +404,76 @@ if not exists('todo-comments') then
     }
 end
 
----@type AllModeMaps
-local Keys = {}
+---@type AllMaps
+local Keys = {
+    ['<leader>m'] = { group = '+Mini' },
+}
+
+local group = vim.api.nvim_create_augroup('UserMini', { clear = true })
 
 for mod, opts in next, Mods do
     src(mod, opts)
 
     if mod == 'map' then
-        Keys['<leader>m'] = { group = '+Mini Map' }
-        Keys['<leader>mt'] = { group = '+Toggles' }
+        Keys['<leader>mm'] = { group = '+Mini Map' }
+        Keys['<leader>mmt'] = { group = '+Toggles' }
 
-        Keys['<leader>mtt'] = {
+        Keys['<leader>mmt'] = {
             require('mini.map').toggle,
             desc('Toggle Mini Map'),
         }
-        Keys['<leader>mts'] = {
+        Keys['<leader>mms'] = {
             require('mini.map').toggle_side,
             desc('Toggle Side'),
         }
-        Keys['<leader>mtf'] = {
+        Keys['<leader>mmf'] = {
             require('mini.map').toggle_focus,
             desc('Toggle Focus'),
         }
-        Keys['<leader>mo'] = {
+        Keys['<leader>mmo'] = {
             require('mini.map').open,
             desc('Open Mini Map'),
         }
-        Keys['<leader>md'] = {
+        Keys['<leader>mmd'] = {
             require('mini.map').close,
             desc('Close Mini Map'),
         }
-        Keys['<leader>mr'] = {
+        Keys['<leader>mmr'] = {
             require('mini.map').refresh,
             desc('Refresh Mini Map'),
         }
+    end
+
+    if mod == 'splitjoin' then
+        Keys['<leader>ms'] = { group = '+Splitjoin' }
+
+        vim.api.nvim_create_autocmd({ 'BufNew', 'BufAdd', 'BufEnter', 'BufCreate', 'WinEnter' }, {
+            group = group,
+            callback = function(ev)
+                local ft = ft_get(ev.buf)
+                local accepted = { 'lua' }
+
+                if not in_tbl(accepted, ft) then
+                    return
+                end
+
+                local hook = require('mini.splitjoin').gen_hook
+                local bracks = { brackets = { '%b{}' } }
+
+                local split_post = {
+                    hook.add_trailing_separator(bracks),
+                }
+                local join_post = {
+                    hook.del_trailing_separator(bracks),
+                    hook.pad_brackets(bracks),
+                }
+
+                vim.b.minisplitjoin_config = {
+                    split = { hooks_post = split_post },
+                    join = { hooks_post = join_post },
+                }
+            end,
+        })
     end
 end
 
