@@ -7,6 +7,7 @@ local Keymaps = require('user_api.config.keymaps')
 
 local exists = Check.exists.module
 local is_fun = Check.value.is_fun
+local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
 local desc = User.maps.kmap.desc
 local ft_get = Util.ft_get
@@ -15,6 +16,7 @@ local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
 local in_tbl = vim.tbl_contains
+local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param mini_mod string
 ---@param opts table|nil
@@ -312,41 +314,63 @@ if not exists('todo-comments') then
 end
 
 ---@type AllMaps
-local Keys = {
-    ['<leader>m'] = { group = '+Mini' },
-}
+local Keys = {}
+
+---@param force? boolean
+---@return fun()
+local function gen_bdel(force)
+    force = is_bool(force) and force or false
+
+    return function()
+        require('mini.bufremove').delete(curr_buf(), force)
+    end
+end
 
 local group = vim.api.nvim_create_augroup('UserMini', { clear = true })
 
 for mod, opts in next, Mods do
     src(mod, opts)
 
+    if mod == 'bufremove' then
+        Keys['<leader>bd'] = {
+            gen_bdel(false),
+            desc('Close Buffer (Mini)'),
+        }
+
+        Keys['<leader>bD'] = {
+            gen_bdel(true),
+            desc('Close Buffer Forcefully (Mini)'),
+        }
+    end
+
     if mod == 'map' then
+        local Map = require('mini.map')
+
         Keys['<leader>mm'] = { group = '+Mini Map' }
         Keys['<leader>mmt'] = { group = '+Toggles' }
 
         Keys['<leader>mmt'] = {
-            require('mini.map').toggle,
+            Map.toggle,
             desc('Toggle Mini Map'),
         }
         Keys['<leader>mms'] = {
-            require('mini.map').toggle_side,
+            Map.toggle_side,
             desc('Toggle Side'),
         }
         Keys['<leader>mmf'] = {
-            require('mini.map').toggle_focus,
+            Map.toggle_focus,
             desc('Toggle Focus'),
         }
         Keys['<leader>mmo'] = {
-            require('mini.map').open,
+            Map.open,
             desc('Open Mini Map'),
         }
         Keys['<leader>mmd'] = {
-            require('mini.map').close,
+            Map.close,
             desc('Close Mini Map'),
         }
         Keys['<leader>mmr'] = {
-            require('mini.map').refresh,
+            Map.refresh,
             desc('Refresh Mini Map'),
         }
     end
@@ -365,26 +389,38 @@ for mod, opts in next, Mods do
                 end
 
                 local hook = require('mini.splitjoin').gen_hook
+                local add_trail_sep = hook.add_trailing_separator
+                local del_trail_sep = hook.del_trailing_separator
+                local pad_bracks = hook.pad_brackets
+
                 local bracks = { brackets = { '%b{}' } }
 
-                local split_post = {
-                    hook.add_trailing_separator(bracks),
+                local join = {
+                    hooks_post = {
+                        add_trail_sep(bracks),
+                    },
                 }
-                local join_post = {
-                    hook.del_trailing_separator(bracks),
-                    hook.pad_brackets(bracks),
+                local split = {
+                    hooks_post = {
+                        del_trail_sep(bracks),
+                        pad_bracks(bracks),
+                    },
                 }
 
                 vim.b.minisplitjoin_config = {
-                    split = { hooks_post = split_post },
-                    join = { hooks_post = join_post },
+                    split = split,
+                    join = join,
                 }
             end,
         })
     end
 end
 
-Keymaps({ n = Keys })
+if not vim.tbl_isempty(Keys) then
+    Keys['<leader>m'] = { group = '+Mini' }
+
+    Keymaps({ n = Keys })
+end
 
 User.register_plugin('plugin.mini')
 
