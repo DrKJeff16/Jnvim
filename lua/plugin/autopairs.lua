@@ -4,6 +4,9 @@ local Util = User.util
 
 local exists = Check.exists.module
 local ft_get = Util.ft_get
+local bt_get = Util.bt_get
+
+local in_tbl = vim.tbl_contains
 
 if not exists('nvim-autopairs') then
     User.deregister_plugin('plugin.autopairs')
@@ -13,147 +16,167 @@ end
 local AP = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
 local ts_conds = require('nvim-autopairs.ts-conds')
-local Cond = require('nvim-autopairs.conds')
+local cond = require('nvim-autopairs.conds')
+
+local ts_node = ts_conds.is_ts_node
+
+---Control if auto-pairs should be enabled when attaching to a specific buffer.
+--- ---
+---@param bufnr integer
+---@return boolean
+local function enable(bufnr)
+    local EXCEPT_FT = {
+        'TelescopePrompt',
+        'TelescopeResults',
+        'help',
+        'lazy',
+        'man',
+        'minimap',
+        'notify',
+        'packer',
+        'qf',
+        'snacks_picker_input',
+        'spectre_panel',
+    }
+    local EXCEPT_BT = {
+        'help',
+        'nofile',
+        'nowrite',
+        'prompt',
+        'quickfix',
+        'terminal',
+    }
+
+    local ft, bt = ft_get(bufnr), bt_get(bufnr)
+
+    return not (in_tbl(EXCEPT_FT, ft) or in_tbl(EXCEPT_BT, bt))
+end
 
 AP.setup({
-    ---Control if auto-pairs should be enabled when attaching to a specific buffer
-    --- ---
-    ---@param bufnr integer
-    enabled = function(bufnr)
-        return ft_get(bufnr) ~= 'help'
-    end,
+    enabled = enable,
 
     disable_filetype = {
         'TelescopePrompt',
-        'spectre_panel',
         'snacks_picker_input',
+        'spectre_panel',
     },
 
-    disable_in_macro = true, -- disable when recording or executing a macro
-    disable_in_visualblock = false, -- disable when insert after visual block mode
+    disable_in_macro = true, -- Disable when recording or executing a macro
+    disable_in_visualblock = false, --- Disable when insert after visual block mode
     disable_in_replace_mode = true,
+
     ignored_next_char = [=[[%w%%%'%[%"%.%`%$]]=],
+
     enable_moveright = true,
-    enable_afterquote = true, -- add bracket pairs after quote
-    enable_check_bracket_line = false, --- check bracket in same line
+    enable_afterquote = true, --- Add bracket pairs after quote
+    enable_check_bracket_line = false, --- Check bracket in same line
     enable_bracket_in_quote = true, --
-    enable_abbr = false, -- trigger abbreviation
-    break_undo = true, -- switch for basic rule break undo sequence
+    enable_abbr = false, --- Trigger abbreviation
+
+    break_undo = true, --- Switch for basic rule break undo sequence
+
     check_ts = true,
     ts_config = {
         lua = { 'string' },
     },
-    map_cr = true,
-    map_bs = true, -- map the <BS> key
-    map_c_h = false, -- Map the <C-h> key to delete a pair
-    map_c_w = false, -- map <c-w> to delete a pair if possible
+
+    map_cr = true, --- Map the `<CR>` key
+    map_bs = true, --- Map the `<BS>` key
+    map_c_h = false, --- Map the `<C-h>` key to delete a pair
+    map_c_w = false, --- Map `<C-w>` to delete a pair if possible
 })
 
----@class BracketsSpec
-local brackets = {
+local bracks = {
     { '(', ')' },
     { '[', ']' },
     { '{', '}' },
 }
+local joined_bracks = { '()', '[]', '{}' }
+local spaced_bracks = { '(  )', '[  ]', '{  }' }
 
+---@type Rule[]
 local Rules = {
-    -- you can use regex
-    -- press u1234 => u1234number
-    Rule('u%d%d%d%d$', 'number', 'lua'):use_regex(true),
-
-    -- Rule('%', '%', 'lua'):with_pair(ts_conds.is_ts_node({ 'string', 'comment' })),
-    -- Rule('$', '$', 'lua'):with_pair(ts_conds.is_not_ts_node({ 'function' })),
-
     Rule('$', '$', { 'tex', 'latex' })
-        -- don't add a pair if the next character is %
+        --- Don't add a pair if the next character is %
         :with_pair(
-            Cond.not_after_regex('%%')
+            cond.not_after_regex('%%')
         )
-        -- don't add a pair if  the previous character is xxx
+        --- Don't add a pair if  the previous character is xxx
         :with_pair(
-            Cond.not_before_regex('xxx', 3)
+            cond.not_before_regex('xxx', 3)
         )
-        -- don't move right when repeat character
-        :with_move(Cond.none())
-        -- don't delete if the next character is xx
-        :with_del(Cond.not_after_regex('xx'))
-        -- disable adding a newline when you press <cr>
-        :with_cr(Cond.none()),
+        --- Don't move right when repeat character
+        :with_move(cond.none())
+        --- Don't delete if the next character is xx
+        :with_del(cond.not_after_regex('xx'))
+        --- Disable adding a newline when you press <CR>
+        :with_cr(cond.none()),
 
     Rule('$$', '$$', { 'tex', 'latex' }):with_pair(function(opts)
         print(vim.inspect(opts))
         if opts.line == 'aa $$' then
-            -- don't add pair on that line
+            --- don't add pair on that line
             return false
         end
     end),
 
-    Rule('x%d%d%d%d$', 'number', 'lua'):use_regex(true, '<Tab>'):replace_endpair(function(opts)
-        -- print(vim.inspect(opts))
-        return opts.prev_char:sub(#opts.prev_char - 3, #opts.prev_char)
-    end),
-
     Rule(' ', ' ')
-        -- Pair will only occur if the conditional function returns true
+        --- Pair will only occur if the conditional function returns true
         :with_pair(
             function(opts)
-                -- We are checking if we are inserting a space in (), [], or {}
+                --- We are checking if we are inserting a space in `()`, `[]`, or `{}`
                 local pair = opts.line:sub(opts.col - 1, opts.col)
-                return vim.tbl_contains({
-                    brackets[1][1] .. brackets[1][2],
-                    brackets[2][1] .. brackets[2][2],
-                    brackets[3][1] .. brackets[3][2],
-                }, pair)
+
+                return in_tbl(joined_bracks, pair)
             end
         )
-        :with_move(Cond.none())
-        :with_cr(Cond.none())
-        -- We only want to delete the pair of spaces when the cursor is as such: ( | )
+        :with_move(cond.none())
+        :with_cr(cond.none())
         :with_del(
+            ---We only want to delete the pair of spaces when the cursor is as such: `( | )`.
+            --- ---
             function(opts)
                 local col = vim.api.nvim_win_get_cursor(0)[2]
                 local context = opts.line:sub(col - 1, col + 2)
-                return vim.tbl_contains({
-                    brackets[1][1] .. '  ' .. brackets[1][2],
-                    brackets[2][1] .. '  ' .. brackets[2][2],
-                    brackets[3][1] .. '  ' .. brackets[3][2],
-                }, context)
+                return in_tbl(spaced_bracks, context)
             end
         ),
+
     Rule('<', '>', {
-        -- if you use nvim-ts-autotag, you may want to exclude these filetypes from this rule
-        -- so that it doesn't conflict with nvim-ts-autotag
+        --- If you use nvim-ts-autotag, you may want to exclude these filetypes from this rule
+        --- so that it doesn't conflict with `nvim-ts-autotag`
         '-html',
         '-markdown',
         '-javascriptreact',
         '-typescriptreact',
     }):with_pair(
-        -- regex will make it so that it will auto-pair on
-        -- `a<` but not `a <`
-        -- The `:?:?` part makes it also
-        -- work on Rust generics like `some_func::<T>()`
-        Cond.before_regex('%a+:?:?$', 3)
+        --- Regex will make it so that it will auto-pair on
+        --- `a<` but not `a <`.
+        --- The `:?:?` part makes it also
+        --- work on Rust generics like `some_func::<T>()`
+        cond.before_regex('%a+:?:?$', 3)
     ):with_move(function(opts)
         return opts.char == '>'
     end),
 
-    Rule('{', '},', 'lua'):with_pair(ts_conds.is_ts_node({ 'table_constructor' })),
-    Rule("'", "',", 'lua'):with_pair(ts_conds.is_ts_node({ 'table_constructor' })),
-    Rule('"', '",', 'lua'):with_pair(ts_conds.is_ts_node({ 'table_constructor' })),
+    Rule('{', '},', 'lua'):with_pair(ts_node({ 'table_constructor' })),
+    Rule("'", "',", 'lua'):with_pair(ts_node({ 'table_constructor' })),
+    Rule('"', '",', 'lua'):with_pair(ts_node({ 'table_constructor' })),
 }
 
-for _, bracket in next, brackets do
+for _, bracket in next, bracks do
     table.insert(
         Rules,
-        -- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
+        --- Each of these rules is for a pair with left-side `'( '`
+        --- and right-side `' )'` for each bracket type
         Rule(bracket[1] .. ' ', ' ' .. bracket[2])
-            :with_pair(Cond.none())
+            :with_pair(cond.none())
             :with_move(function(opts)
                 return opts.char == bracket[2]
             end)
-            :with_del(Cond.none())
+            :with_del(cond.none())
             :use_key(bracket[2])
-            -- Removes the trailing whitespace that can occur without this
+            --- Removes the trailing whitespace that can occur without this
             :replace_map_cr(
                 function(_)
                     return '<C-c>2xi<CR><C-c>O'
