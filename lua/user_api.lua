@@ -1,8 +1,6 @@
-local Error = require('user_api.util.error')
-
-local WARN = Error.WARN
-local INFO = Error.INFO
-local ERROR = Error.ERROR
+local WARN = vim.log.levels.WARN
+local INFO = vim.log.levels.INFO
+local ERROR = vim.log.levels.ERROR
 
 local in_tbl = vim.tbl_contains
 
@@ -271,7 +269,7 @@ local M = setmetatable(User, {
 
     ---@diagnostic disable-next-line:unused-local
     __newindex = function(self, k, v)
-        Error('User API is Read-Only!')
+        error('User API is Read-Only!', ERROR)
     end,
 })
 

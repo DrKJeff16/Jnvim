@@ -10,7 +10,7 @@ local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
 local desc = require('user_api.maps.kmap').desc
 
-local INFO = require('user_api.util.error').INFO
+local INFO = vim.log.levels.INFO
 
 local uv = vim.uv or vim.loop
 

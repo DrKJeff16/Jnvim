@@ -2,6 +2,9 @@
 
 ---@alias DirectionFun fun(t: AnyDict): res: AnyDict
 
+local ERROR = vim.log.levels.ERROR
+local INFO = vim.log.levels.INFO
+
 local curr_buf = vim.api.nvim_get_current_buf
 local optset = vim.api.nvim_set_option_value
 local optget = vim.api.nvim_get_option_value
@@ -15,10 +18,6 @@ local Util = {}
 Util.notify = require('user_api.util.notify')
 Util.au = require('user_api.util.autocmd')
 Util.string = require('user_api.util.string')
-Util.error = require('user_api.util.error')
-
-local ERROR = Util.error.ERROR
-local INFO = Util.error.INFO
 
 ---@return boolean
 function Util.has_words_before()
