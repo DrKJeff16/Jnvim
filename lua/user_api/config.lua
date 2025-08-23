@@ -1,18 +1,17 @@
+local ERROR = vim.log.levels.ERROR
+
 ---@class User.Config
-local M = {}
+local M = {
+    keymaps = require('user_api.config.keymaps'),
+    neovide = require('user_api.config.neovide'),
+}
 
-M.keymaps = require('user_api.config.keymaps')
-M.neovide = require('user_api.config.neovide')
-
-local Config = setmetatable(M, {
+return setmetatable({}, {
     __index = M,
 
-    __newindex = function(self, k, v)
-        local Error = require('user_api.util.error')
-        Error('User.Config table is Read-Only!')
+    __newindex = function(_, _, _)
+        error('User.Config table is Read-Only!', ERROR)
     end,
 })
-
-return Config
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

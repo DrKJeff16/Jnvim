@@ -915,7 +915,7 @@ local M = setmetatable({}, {
     __index = Keymaps,
 
     __newindex = function(_, _, _)
-        error('User.Config.Keymaps is Read-Only!', ERROR)
+        error('User.Config.Keymaps table is Read-Only!', ERROR)
     end,
 
     ---@param keys AllModeMaps

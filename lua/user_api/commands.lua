@@ -11,12 +11,15 @@ local desc = require('user_api.maps.kmap').desc
 local type_not_empty = Value.type_not_empty
 
 local ERROR = vim.log.levels.ERROR
-local WARN = vim.log.levels.WARN
 
+local validate = vim.validate
 local copy = vim.deepcopy
+local d_extend = vim.tbl_deep_extend
 local new_cmd = vim.api.nvim_create_user_command
 local exec2 = vim.api.nvim_exec2
 local set_lines = vim.api.nvim_buf_set_lines
+local open_win = vim.api.nvim_open_win
+local optset = vim.api.nvim_set_option_value
 
 ---@class User.Commands
 local Commands = {}
@@ -33,13 +36,16 @@ Commands.commands.Redir = {
         )
 
         local buf = vim.api.nvim_create_buf(true, true)
-        local win = vim.api.nvim_open_win(buf, true, { vertical = false })
 
+        open_win(buf, true, { vertical = false })
         set_lines(buf, 0, -1, false, lines)
 
-        vim.api.nvim_set_option_value('modified', false, { buf = buf })
+        optset('modified', false, { buf = buf })
     end,
-    { nargs = '+', complete = 'command' },
+    {
+        nargs = '+',
+        complete = 'command',
+    },
 
     mappings = {
         n = {
@@ -55,18 +61,29 @@ Commands.commands.Redir = {
 
 ---@param name string
 ---@param cmd fun(ctx?: vim.api.keyset.create_user_command.command_args)
----@param opts? vim.api.keyset.user_command|table
+---@param opts? vim.api.keyset.user_command
 ---@param mappings? AllModeMaps
 function Commands.add_command(name, cmd, opts, mappings)
-    if not type_not_empty('string', name) or cmd == nil then
-        error('(user_api.commands:new_command): bad argument(s)', ERROR)
+    validate('name', name, 'string', false)
+    validate(
+        'cmd',
+        cmd,
+        'function',
+        false,
+        'fun(ctx?: vim.api.keyset.create_user_command.command_args)'
+    )
+    validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
+    validate('mappings', mappings, 'table', true, 'AllModeMaps')
+
+    if not type_not_empty('string', name) then
+        error('(user_api.commands.add_command): bad argument `name`', ERROR)
     end
 
-    opts = opts ~= nil and opts or {}
+    opts = opts or {}
 
     local cmnd = { cmd, opts }
 
-    if type_not_empty('table', mappings) then
+    if mappings ~= nil and type_not_empty('table', mappings) then
         cmnd.mappings = mappings
     end
 
@@ -89,11 +106,11 @@ end
 
 ---@param cmds? User.Commands.Spec
 function Commands.setup(cmds)
-    local is_tbl = Value.is_tbl
+    validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
 
-    cmds = is_tbl(cmds) and cmds or {}
+    cmds = cmds or {}
 
-    Commands.commands = vim.tbl_deep_extend('keep', cmds, copy(Commands.commands))
+    Commands.commands = d_extend('keep', cmds, copy(Commands.commands))
 
     for cmd, T in next, Commands.commands do
         local exec, opts = T[1], T[2] or {}
@@ -103,13 +120,12 @@ function Commands.setup(cmds)
     Commands.setup_keys()
 end
 
----@return table|User.Commands
-function Commands.new()
-    return setmetatable({}, {
-        __index = Commands,
-    })
-end
+return setmetatable({}, {
+    __index = Commands,
 
-return Commands
+    __newindex = function(_, _, _)
+        error('User.Commands table is Read-Only!')
+    end,
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

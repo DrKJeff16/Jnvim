@@ -1,14 +1,17 @@
--- Modify runtimepath to also search the system-wide Vim directory
--- (eg. for Vim runtime files from Arch Linux packages)
-
----@diagnostic disable:missing-fields
+---Modify runtimepath to also search the system-wide Vim directory
+---(e.g. for Vim runtime files from Arch Linux packages)
 
 local WARN = vim.log.levels.WARN
+local ERROR = vim.log.levels.ERROR
+
+local in_tbl = vim.tbl_contains
+local is_dir = vim.fn.isdirectory
 
 ---@class User.Distro.Archlinux
 local Archlinux = {}
 
-Archlinux.rtpaths = {
+---@class User.Distro.Archlinux.RTP
+local RTPATHS = {
     '/usr/share/vim/vimfiles/after',
     '/usr/share/vim/vimfiles',
     '/usr/share/nvim/runtime',
@@ -16,6 +19,15 @@ Archlinux.rtpaths = {
     '/usr/local/share/vim/vimfiles',
     '/usr/local/share/nvim/runtime',
 }
+
+---@type User.Distro.Archlinux.RTP
+Archlinux.rtpaths = setmetatable({}, {
+    __index = RTPATHS,
+
+    __newindex = function(_, _, _)
+        error('User.Distro.Archlinux.RTP table is Read-Only!', ERROR)
+    end,
+})
 
 ---@return boolean
 function Archlinux.validate()
@@ -26,7 +38,7 @@ function Archlinux.validate()
 
     -- First check for each dir's existance
     for _, p in next, Archlinux.rtpaths do
-        if vim.fn.isdirectory(p) == 1 and not vim.tbl_contains(new_rtpaths, p) then
+        if vim.fn.isdirectory(p) == 1 and not in_tbl(new_rtpaths, p) then
             table.insert(new_rtpaths, p)
         end
     end
@@ -41,37 +53,34 @@ function Archlinux.validate()
     return true
 end
 
----@return table|User.Distro.Archlinux|fun()
-function Archlinux.new()
-    return setmetatable({}, {
-        __index = Archlinux,
+---@type User.Distro.Archlinux|fun()
+return setmetatable({}, {
+    __index = Archlinux,
 
-        ---@param self User.Distro.Archlinux
-        __call = function(self)
-            if not self.validate() then
-                return
+    __newindex = function(_, _, _)
+        error('User.Distro.Archlinux table is Read-Only!', ERROR)
+    end,
+
+    ---@param self User.Distro.Archlinux
+    __call = function(self)
+        if not Archlinux.validate() then
+            return
+        end
+
+        -- Check if path is in rtp already
+        for _, path in next, self.rtpaths do
+            if is_dir(path) == 1 and not in_tbl(vim.opt.rtp:get(), path) then
+                vim.opt.rtp:append(path)
             end
+        end
 
-            local is_dir = vim.fn.isdirectory
+        local ok = pcall(vim.cmd.runtime, { 'archlinux.vim', bang = true })
 
-            -- Check if path is in rtp already
-            for _, path in next, self.rtpaths do
-                if is_dir(path) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), path) then
-                    vim.opt.rtp:append(path)
-                end
-            end
-
-            ---@diagnostic disable-next-line
-            local ok, _ = pcall(vim.cmd, 'runtime! archlinux.vim')
-
-            if not ok then
-                vim.notify('BAD SETUP FOR Arch Linux!', WARN)
-                return
-            end
-        end,
-    })
-end
-
-return Archlinux.new()
+        if not ok then
+            vim.notify('Bad setup for Arch Linux!', WARN)
+            return
+        end
+    end,
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
