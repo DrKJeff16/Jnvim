@@ -1,6 +1,7 @@
 ---@module 'blink.cmp'
 
 ---@alias BlinkCmp.Util.Sources ('lsp'|'path'|'snippets'|'buffer'|string)[]
+
 ---@alias BlinkCmp.Util.Providers table<string, blink.cmp.SourceProviderConfigPartial>
 
 local User = require('user_api')
@@ -8,13 +9,13 @@ local Check = User.check
 local Util = User.util
 
 local exists = Check.exists.module
-local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
 local ft_get = Util.ft_get
 
 local curr_buf = vim.api.nvim_get_current_buf
 local copy = vim.deepcopy
 local in_tbl = vim.tbl_contains
+local validate = vim.validate
 
 ---@class BlinkCmp.Util
 local BUtil = {}
@@ -30,12 +31,16 @@ BUtil.curr_ft = ''
 ---@param snipps? boolean
 ---@param buf? boolean
 function BUtil.reset_sources(snipps, buf)
-    snipps = is_bool(snipps) and snipps or false
-    buf = is_bool(buf) and buf or true
+    validate('BUtil.reset_sources - snipps', snipps, 'boolean', true, 'boolean')
+    validate('BUtil.reset_sources - buffer', buf, 'boolean', true, 'boolean')
+
+    snipps = snipps ~= nil and snipps or false
+    buf = buf ~= nil and buf or true
 
     BUtil.Sources = {
         'lsp',
         'path',
+        'env',
     }
 
     if snipps then
@@ -71,8 +76,8 @@ end
 ---@param buf? boolean
 ---@return BlinkCmp.Util.Sources
 function BUtil.gen_sources(snipps, buf)
-    snipps = is_bool(snipps) and snipps or false
-    buf = is_bool(buf) and buf or true
+    validate('BUtil.reset_sources - snipps', snipps, 'boolean', true, 'boolean')
+    validate('BUtil.reset_sources - buffer', buf, 'boolean', true, 'boolean')
 
     BUtil.reset_sources(snipps, buf)
 
@@ -96,12 +101,17 @@ function BUtil.reset_providers()
                         :map(function(win)
                             return vim.api.nvim_win_get_buf(win)
                         end)
-                        :filter(function(buf)
-                            return vim.bo[buf].buftype ~= 'nofile'
-                        end)
+                        :filter(
+                            ---@param bufnr integer
+                            ---@return boolean
+                            function(bufnr)
+                                return vim.bo[bufnr].buftype ~= 'nofile'
+                            end
+                        )
                         :totable()
                 end,
                 -- buffers when searching with `/` or `?`
+                ---@return integer[]
                 get_search_bufnrs = function()
                     return { curr_buf() }
                 end,
@@ -112,7 +122,12 @@ function BUtil.reset_providers()
                 -- Maximum text size across all buffers (default: 500KB)
                 max_total_buffer_size = 500000,
                 -- Order in which buffers are retained for completion, up to the max total size limit (see above)
-                retention_order = { 'focused', 'visible', 'recency', 'largest' },
+                retention_order = {
+                    'focused',
+                    'visible',
+                    'recency',
+                    'largest',
+                },
                 -- Cache words for each buffer which increases memory usage but drastically reduces cpu usage. Memory usage depends on the size of the buffers from `get_bufnrs`. For 100k items, it will use ~20MBs of memory. Invalidated and refreshed whenever the buffer content is modified.
                 use_cache = true,
                 -- Whether to enable buffer source in substitute (:s) and global (:g) commands.
@@ -178,8 +193,10 @@ function BUtil.reset_providers()
 
                 show_hidden_files_by_default = true,
 
-                get_cwd = function(context)
-                    return vim.fn.expand(('#%d:p:h'):format(context.bufnr))
+                ---@param ctx blink.cmp.Context
+                ---@return string
+                get_cwd = function(ctx)
+                    return vim.fn.expand(('#%d:p:h'):format(ctx.bufnr))
                 end,
 
                 ignore_root_slash = false,
@@ -201,6 +218,7 @@ function BUtil.reset_providers()
             },
 
             ---@param ctx blink.cmp.Context
+            ---@return boolean
             should_show_items = function(ctx)
                 return ctx.trigger.initial_kind ~= 'trigger_character'
             end,
@@ -233,11 +251,31 @@ function BUtil.reset_providers()
         },
     }
 
+    if exists('blink-cmp-env') then
+        ---@module 'blink-cmp-env'
+
+        BUtil.Providers.env = {
+            name = 'Env',
+            module = 'blink-cmp-env',
+            score_offset = 40,
+
+            --- @type blink-cmp-env.Options
+            opts = {
+                item_kind = require('blink.cmp.types').CompletionItemKind.Variable,
+                show_braces = false,
+                show_documentation_window = true,
+            },
+        }
+    end
+
     if exists('blink-cmp-git') then
+        ---@module 'blink-cmp-git'
+
         BUtil.Providers.git = {
             name = 'Git',
             module = 'blink-cmp-git',
 
+            ---@return boolean
             enabled = function()
                 local git_fts = {
                     'git',
@@ -248,19 +286,25 @@ function BUtil.reset_providers()
 
                 return in_tbl(git_fts, ft_get(curr_buf()))
             end,
+
+            ---@type blink-cmp-git.Options
+            opts = {},
         }
     end
 
     if exists('blink-cmp-conventional-commits') then
+        ---@module 'blink-cmp-conventional-commits'
+
         BUtil.Providers.conventional_commits = {
             name = 'CC',
             module = 'blink-cmp-conventional-commits',
             score_offset = 100,
+
+            ---@return boolean
             enabled = function()
                 return ft_get(curr_buf()) == 'gitcommit'
             end,
 
-            ---@module 'blink-cmp-conventional-commits'
             ---@type blink-cmp-conventional-commits.Options
             opts = {}, -- none so far
         }
@@ -277,10 +321,12 @@ end
 ---@param P? BlinkCmp.Util.Providers
 ---@return BlinkCmp.Util.Providers
 function BUtil.gen_providers(P)
+    validate('BUtil.gen_providers - P', P, 'table', true, 'BlinkCmp.Util.Providers')
+
     BUtil.reset_providers()
 
     if type_not_empty('table', P) then
-        BUtil.Providers = vim.tbl_deep_extend('force', copy(BUtil.Providers), P)
+        BUtil.Providers = vim.tbl_deep_extend('keep', P, copy(BUtil.Providers))
     end
 
     return BUtil.Providers

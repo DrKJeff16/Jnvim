@@ -1,6 +1,7 @@
 local User = require('user_api')
+local Check = User.check
 
-local exists = User.check.exists.module
+local exists = Check.exists.module
 
 if not exists('blink.cmp') then
     User.deregister_plugin('plugin.blink_cmp')

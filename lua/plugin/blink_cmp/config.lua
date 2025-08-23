@@ -14,9 +14,13 @@ local BUtil = require('plugin.blink_cmp.util')
 local gen_sources = BUtil.gen_sources
 local gen_providers = BUtil.gen_providers
 
+local validate = vim.validate
+
 ---@param key string
 ---@return fun()
 local function gen_termcode_fun(key)
+    validate('key', key, 'string', false)
+
     return function()
         local termcode = vim.api.nvim_replace_termcodes(key, true, false, true)
         vim.api.nvim_feedkeys(termcode, 'i', false)
@@ -99,26 +103,8 @@ Cfg.Config = {
             end,
             'fallback',
         },
-        ['<Left>'] = {
-            function(cmp)
-                if cmp.is_menu_visible() then
-                    return cmp.cancel({
-                        callback = gen_termcode_fun('<Left>'),
-                    })
-                end
-            end,
-            'fallback',
-        },
-        ['<Right>'] = {
-            function(cmp)
-                if cmp.is_menu_visible() then
-                    return cmp.cancel({
-                        callback = gen_termcode_fun('<Right>'),
-                    })
-                end
-            end,
-            'fallback',
-        },
+        ['<Left>'] = { 'fallback' },
+        ['<Right>'] = { 'fallback' },
 
         ['<C-p>'] = { 'fallback' },
         ['<C-n>'] = { 'fallback' },
@@ -289,6 +275,8 @@ Cfg.Config = {
     fuzzy = {
         implementation = executable({ 'cargo', 'rustc' }) and 'prefer_rust_with_warning' or 'lua',
 
+        ---@param keyword string
+        ---@return integer
         max_typos = function(keyword)
             return math.floor(#keyword / 3)
         end,

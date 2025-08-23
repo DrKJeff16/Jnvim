@@ -1,6 +1,4 @@
----@module 'config.lazy'
-
-local CfgUtil = require('config.util') ---@see Config.Util
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
@@ -48,10 +46,16 @@ local Completion = {
                     ft_extend('typescript', { 'tsdoc' })
                 end,
             },
-            'folke/lazydev.nvim',
             'onsails/lspkind.nvim',
+
+            'folke/lazydev.nvim',
             'Kaiser-Yang/blink-cmp-git',
             'disrupted/blink-cmp-conventional-commits',
+            {
+                'bydlw98/blink-cmp-env',
+                dev = true,
+                version = false,
+            },
         },
         build = executable('cargo') and 'cargo build --release' or false,
         config = source('plugin.blink_cmp'),
