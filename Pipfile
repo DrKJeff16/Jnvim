@@ -9,7 +9,6 @@ typing = "*"
 typing-extensions = "*"
 argparse = "*"
 argcomplete = "*"
-argh = "*"
 setuptools = "*"
 python-lsp-server = {extras = ["all"], version = "*"}
 mypy = "*"
@@ -21,8 +20,6 @@ isort = "*"
 pre-commit = "*"
 
 [dev-packages]
-typing = "*"
-typing-extensions = "*"
 
 [requires]
 python_version = "3.13"
