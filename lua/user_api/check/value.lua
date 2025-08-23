@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias Types
 ---|'string'
 ---|'number'
@@ -12,6 +10,11 @@
 ---|'number'
 ---|'integer'
 ---|'table'
+
+local fmt = string.format
+
+local validate = vim.validate
+local in_tbl = vim.tbl_contains
 
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
@@ -41,11 +44,15 @@ local function type_fun(t)
     end
 
     if ret then
-        error(string.format('(user_api.check.value.type_fun): Invalid type `%s`', t), ERROR)
+        error(fmt('(user_api.check.value.type_fun): Invalid type `%s`', t), ERROR)
     end
 
+    ---@param var any
+    ---@param multiple? boolean
     return function(var, multiple)
-        multiple = (multiple ~= nil and type(multiple) == 'boolean') and multiple or false
+        validate('multiple', multiple, 'boolean', true)
+
+        multiple = multiple ~= nil and multiple or false
 
         if not multiple then
             return var ~= nil and type(var) == t
@@ -72,9 +79,10 @@ local function type_fun(t)
     end
 end
 
---- Value checking utilities.
+---Value checking utilities.
 ---
---- Pretty much reserved for data checking, type checking and conditional operations.
+---Pretty much reserved for data checking, type checking
+---and conditional operations.
 --- ---
 ---@class User.Check.Value
 local Value = {}
@@ -84,11 +92,11 @@ local Value = {}
 ---## Parameters
 ---
 --- - `var`: Any data type to be checked if it's a string.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
 ---        Otherwise it will be flagged as a non-string and the function will return `false`
 --- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---             If set to `true`, every element of the table will be checked.
----             If **any** element is not a string, the function automatically returns false
+---             If **any** element is not a string, the function automatically returns `false`
 --- ---
 ---## Return
 ---
@@ -102,12 +110,12 @@ Value.is_str = type_fun('string')
 ---## Parameters
 ---
 --- - `var`: Any data type to be checked if it's a boolean.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
 ---        Otherwise it will be flagged as a non-boolean and the function will return `false`
 ---
 --- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---             If set to `true`, every element of the table will be checked.
----             If **any** element is not a boolean, the function automatically returns false
+---             If **any** element is not a boolean, the function automatically returns `false`
 --- ---
 ---## Return
 ---
@@ -121,11 +129,11 @@ Value.is_bool = type_fun('boolean')
 ---## Parameters
 ---
 --- - `var`: Any data type to be checked if it's a function.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
 ---        Otherwise it will be flagged as a non-function and the function will return `false`
 --- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---             If set to `true`, every element of the table will be checked.
----             If **any** element is not a function, the function automatically returns false
+---             If **any** element is not a function, the function automatically returns `false`
 --- ---
 ---## Return
 ---
@@ -139,11 +147,11 @@ Value.is_fun = type_fun('function')
 ---## Parameters
 ---
 --- - `var`: Any data type to be checked if it's a number.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
 ---        Otherwise it will be flagged as a non-number and the function will return `false`
 --- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---             If set to `true`, every element of the table will be checked.
----             If **any** element is not a number, the function automatically returns false
+---             If **any** element is not a number, the function automatically returns `false`
 --- ---
 ---## Return
 ---
@@ -157,11 +165,11 @@ Value.is_num = type_fun('number')
 ---## Parameters
 ---
 --- - `var`: Any data type to be checked if it's a table.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST_ be a _non-empty_ table**.
+---        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
 ---        Otherwise it will be flagged as a non-table and the function will return `false`
 --- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
 ---             If set to `true`, every element of the table will be checked.
----             If **any** element is not a table, the function automatically returns false
+---             If **any** element is not a table, the function automatically returns `false`
 --- ---
 ---## Return
 ---
@@ -178,14 +186,15 @@ Value.is_tbl = type_fun('table')
 ---@param multiple? boolean Tell the integer you're checking for multiple values. (Default: `false`)
 ---@return boolean
 function Value.is_int(var, multiple)
+    validate('multiple', multiple, 'boolean', true)
+
     local is_tbl = Value.is_tbl
-    local is_bool = Value.is_bool
     local is_num = Value.is_num
 
     local floor = math.floor
     local ceil = math.ceil
 
-    multiple = is_bool(multiple) and multiple or false
+    multiple = multiple ~= nil and multiple or false
 
     if not multiple then
         return is_num(var) and var >= 0 and (var == floor(var) or var == ceil(var))
@@ -205,7 +214,7 @@ function Value.is_int(var, multiple)
     return true
 end
 
----Returns whether one or more given string/number/table are **empty**
+---Returns whether one or more given string/number/table are **empty**.
 --- ---
 ---
 ---Scenarios included if `multiple` is `false`:
@@ -228,36 +237,41 @@ end
 --- ---
 ---## Returns
 ---
----A boolean indicating whether the input data is _empty_ or not
+---A boolean indicating whether the input data is _empty_ or not.
 --- ---
----@param v string|table|number|integer|(string|table|number|integer)[]
+---@param data (string|table|number|integer)[]|string|table|number|integer
 ---@param multiple? boolean
 ---@return boolean
-function Value.empty(v, multiple)
+function Value.empty(data, multiple)
+    validate('data', data, function(v)
+        if v == nil then
+            return false
+        end
+
+        return in_tbl({ 'string', 'table', 'number' }, type(v))
+    end, false, '(string|table|number|integer)[]|string|table|number|integer')
+    validate('multiple', multiple, 'boolean', true)
+
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
     local is_num = Value.is_num
-    local is_bool = Value.is_bool
 
-    multiple = is_bool(multiple) and multiple or false
+    multiple = multiple ~= nil and multiple or false
 
-    -- Empty string
-    if is_str(v) then
-        return v == ''
+    if is_str(data) then
+        return data == ''
     end
 
-    -- Number is 0
-    if is_num(v) then
-        return v == 0
+    if is_num(data) then
+        return data == 0
     end
 
-    -- Empty table
-    if is_tbl(v) and not multiple then
-        return tbl_isempty(v)
+    if is_tbl(data) and not multiple then
+        return tbl_isempty(data)
     end
 
-    if is_tbl(v) and multiple then
-        if tbl_isempty(v) then
+    if is_tbl(data) and multiple then
+        if tbl_isempty(data) then
             vim.notify(
                 '(user_api.check.value.empty): No values to check despite `multiple` being `true`',
                 WARN
@@ -265,8 +279,8 @@ function Value.empty(v, multiple)
             return true
         end
 
-        for _, val in next, v do
-            -- NOTE: NO RECURSIVE CHECKING
+        for _, val in next, data do
+            ---NOTE: NO RECURSIVE CHECKING
             if Value.empty(val, false) then
                 return true
             end
@@ -279,7 +293,7 @@ function Value.empty(v, multiple)
     return true
 end
 
----Checks whether a certain number `num` is within a specified range
+---Checks whether a certain number `num` is within a specified range.
 --- ---
 ---@param num number The number to be checked
 ---@param low number The low limit
@@ -340,32 +354,21 @@ function Value.num_range(num, low, high, eq)
     return func()
 end
 
----@param field string|integer|(string|integer)[]
+---@param field (string|integer)[]|string|integer
 ---@param T table<string|integer, any>
 ---@return boolean
 function Value.fields(field, T)
     local is_tbl = Value.is_tbl
-    local is_str = Value.is_str
-    local is_num = Value.is_num
-    local empty = Value.empty
+    local is_int = Value.is_int
+    local type_not_empty = Value.type_not_empty
 
-    if not is_tbl(T) then
-        local t_t = type(T)
+    validate('field', field, function(v)
+        return type_not_empty('string', v) or type_not_empty('table', v) or is_int(v)
+    end, true, '(string|integer)[]|string|integer')
 
-        vim.notify(
-            '(user_api.check.value.fields): Cannot look up a field on type: `' .. t_t .. '`',
-            ERROR
-        )
-        return false
-    end
-
-    if not (is_str(field) or is_num(field) or is_tbl(field)) or empty(field) then
-        vim.notify(
-            '(user_api.check.value.fields): Field type `' .. type(T) .. '` is not parseable',
-            ERROR
-        )
-        return false
-    end
+    validate('T', T, function(v)
+        return type_not_empty('table', v)
+    end, false, 'table<string|integer, any>')
 
     if not is_tbl(field) then
         return T[field] ~= nil
@@ -385,25 +388,17 @@ end
 ---@param return_keys? boolean
 ---@return boolean|string|integer|(string|integer)[] res
 function Value.tbl_values(values, T, return_keys)
-    local is_tbl = Value.is_tbl
+    local type_not_empty = Value.type_not_empty
+    validate('values', values, function(v)
+        return type_not_empty('table', v)
+    end, false, 'any[]|table<string, any>')
+    validate('T', T, function(v)
+        return type_not_empty('table', v)
+    end, false, 'table')
+    validate('return_keys', return_keys, 'boolean', true)
+
     local is_bool = Value.is_bool
     local empty = Value.empty
-
-    if not is_tbl(values) or empty(values) then
-        vim.notify(
-            '(user_api.check.value.tbl_values): Value argument is either not a table or an empty one',
-            ERROR
-        )
-        return false
-    end
-
-    if not is_tbl(T) or empty(T) then
-        vim.notify(
-            '(user_api.check.value.tbl_values): Table to check is either not a table or an empty one',
-            ERROR
-        )
-        return false
-    end
 
     return_keys = is_bool(return_keys) and return_keys or false
 
@@ -441,47 +436,24 @@ end
 ---@param T table
 ---@return boolean
 function Value.single_type_tbl(type_str, T)
-    local is_str = Value.is_str
-    local is_tbl = Value.is_tbl
-    local empty = Value.empty
+    validate('type_str', type_str, function(v)
+        if v == nil or type(v) ~= 'string' then
+            return false
+        end
 
-    local ALLOWED_TYPES = {
-        'boolean',
-        'function',
-        'nil',
-        'number',
-        'string',
-        'table',
-        'thread',
-        'userdata',
-    }
+        return in_tbl({ 'boolean', 'function', 'number', 'string', 'table' }, v)
+    end, false, "'boolean'|'function'|'number'|'string'|'table'")
+    validate('T', T, 'table', false)
 
-    if not is_str(type_str) then
-        vim.notify(
-            '(user_api.check.value.single_type_tbl): You need to define a type as a string',
-            ERROR
-        )
-        return false
-    end
+    local type_not_empty = Value.type_not_empty
 
-    if not vim.tbl_contains(ALLOWED_TYPES, type_str) then
-        vim.notify(
-            '(user_api.check.value.single_type_tbl): `' .. type_str .. '` is not an allowed type',
-            ERROR
-        )
-        return false
-    end
-
-    if not is_tbl(T) or empty(T) then
+    if not type_not_empty('table', T) then
         vim.notify('(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE', ERROR)
         return false
     end
 
     for _, v in next, T do
-        if type_str == 'nil' and v ~= nil then
-            return false
-        end
-        if type(v) ~= type_str then
+        if (type_str == 'nil' and v ~= nil) or type(v) ~= type_str then
             return false
         end
     end
@@ -489,13 +461,12 @@ function Value.single_type_tbl(type_str, T)
     return true
 end
 
----Check if given data is a string/table/integer/number and whether it's empty or not
---- ---
----## Description
+---Check if given data is a string/table/integer/number and whether it's empty or not.
 ---
----Specify what data type should the given value be
+---Specifies what data type should the given value be
 ---and this function will check both if it's that type
----and if so, whether it's empty (for numbers this means a value of `0`)
+---and if so, whether it's empty (for numbers this means a value of `0`).
+---
 --- ---
 ---## Parameters
 ---
@@ -503,9 +474,17 @@ end
 --- - `data`: The input data
 --- ---
 ---@param type_str EmptyTypes
----@param data string|number|table
+---@param data any
 ---@return boolean
 function Value.type_not_empty(type_str, data)
+    validate('type_str', type_str, function(v)
+        if v == nil or type(v) ~= 'string' then
+            return false
+        end
+
+        return in_tbl({ 'integer', 'number', 'string', 'table' }, v)
+    end, false, 'EmptyTypes')
+
     local empty = Value.empty
 
     if data == nil then
@@ -520,7 +499,7 @@ function Value.type_not_empty(type_str, data)
         table = Value.is_tbl,
     }
 
-    if not vim.tbl_contains(vim.tbl_keys(valid_types), type_str) then
+    if not in_tbl(vim.tbl_keys(valid_types), type_str) then
         return false
     end
 
@@ -538,18 +517,20 @@ end
 ---@param T table
 ---@return boolean
 function Value.in_tbl_range(num, T)
-    local is_int = Value.is_int
-    local type_not_enpty = Value.type_not_empty
-
-    if not (is_int(num) and type_not_enpty('table', T)) then
-        return false
-    end
+    validate('num', num, Value.is_int, false, 'integer')
+    validate('T', T, 'table', false)
 
     local len = #T
 
     return not len == 0 and (num >= 1 and num <= len) or false
 end
 
-return Value
+return setmetatable(Value, {
+    __index = Value,
+
+    __newindex = function(_, _, _)
+        error('User.Check.Value table is Read-Only!', ERROR)
+    end,
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

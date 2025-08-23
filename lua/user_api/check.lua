@@ -1,4 +1,6 @@
---- Checking Utilities
+local ERROR = vim.log.levels.ERROR
+
+---Checking Utilities.
 --- ---
 ---@class User.Check
 local Check = {}
@@ -14,15 +16,15 @@ Check.exists = require('user_api.check.exists')
 ---@return boolean
 function Check.in_console()
     local fields = Check.value.fields
-    ---@type table<string, any>
+
+    ---@type table<string, string>
     local env = vim.fn.environ()
 
     --- FIXME: This is not a good enough check. Must find a better solution
     return (vim.tbl_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
 end
 
---- Check whether Nvim is running as root (`PID` == `0`).
----
+---Check whether Nvim is running as root (`PID == 0`).
 --- ---
 ---@return boolean
 function Check.is_root()
@@ -32,6 +34,12 @@ end
 _G.in_console = Check.in_console()
 _G.is_root = Check.is_root()
 
-return Check
+return setmetatable(Check, {
+    __index = Check,
+
+    __newindex = function(_, _, _)
+        error('User.Check is read-only!', ERROR)
+    end,
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

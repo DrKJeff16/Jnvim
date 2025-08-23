@@ -1,5 +1,8 @@
 ---@diagnostic disable:missing-fields
 
+local validate = vim.validate
+local in_tbl = vim.tbl_contains
+
 local ERROR = vim.log.levels.ERROR
 
 ---@return User.Check.Value
@@ -7,17 +10,19 @@ local function get_value()
     return require('user_api.check.value')
 end
 
--- Exitstance checks.
---
--- This contains many checkers for environment, modules, namespaces, etc.
--- Also, simplified Vim functions can be found here.
--- ---
+---Exitstance checks.
+---
+---This contains many checkers for environment, modules, namespaces, etc.
+---Also, simplified Vim functions can be found here.
+--- ---
 ---@class User.Check.Existance
 local Exists = {}
 
 ---@param mod string
 ---@return boolean
 function Exists.module(mod)
+    validate('mod', mod, 'string', false)
+
     local Value = get_value()
 
     local type_not_empty = Value.type_not_empty
@@ -26,52 +31,7 @@ function Exists.module(mod)
         error('`(user_api.check.exists.module)`: Input is not valid', ERROR)
     end
 
-    local res, _ = pcall(require, mod)
-
-    return res
-end
-
----@param mod string[]|string
----@param need_all? boolean
----@return boolean|table<string, boolean>
-function Exists.modules(mod, need_all)
-    local Value = get_value()
-    local exists = Exists.module
-
-    local is_str = Value.is_str
-    local is_bool = Value.is_bool
-    local type_not_empty = Value.type_not_empty
-
-    if not (type_not_empty('string', mod) or type_not_empty('table', mod)) then
-        error(
-            '`(user_api.check.exists.modules)`: Arg neither a string nor a table, or is empty',
-            ERROR
-        )
-    end
-
-    need_all = is_bool(need_all) and need_all or false
-
-    if is_str(mod) then
-        return not need_all and exists(mod) or { [mod] = exists(mod) }
-    end
-
-    ---@type boolean|table<string, boolean>
-    local res = {}
-
-    for _, v in next, mod do
-        local r = exists(v)
-
-        if need_all then
-            res[v] = r
-        else
-            -- Break when a module is not found
-            if not r then
-                break
-            end
-
-            res = r
-        end
-    end
+    local res = pcall(require, mod)
 
     return res
 end
@@ -79,13 +39,15 @@ end
 ---@param expr string[]|string
 ---@return boolean
 function Exists.vim_has(expr)
-    local Value = get_value()
+    local type_not_empty = get_value().type_not_empty
 
-    local type_not_empty = Value.type_not_empty
+    validate('expr', expr, function(v)
+        if not in_tbl({ 'string', 'table' }, type(v)) then
+            return false
+        end
 
-    if not (type_not_empty('string', expr) or type_not_empty('table', expr)) then
-        return false
-    end
+        return type_not_empty('string', v) or type_not_empty('table', v)
+    end, false, 'string[]|string')
 
     if type_not_empty('string', expr) then
         return vim.fn.has(expr) == 1
@@ -103,14 +65,17 @@ end
 ---@param expr string[]|string
 ---@return boolean
 function Exists.vim_exists(expr)
-    local Value = get_value()
+    local type_not_empty = get_value().type_not_empty
 
-    local type_not_empty = Value.type_not_empty
+    validate('expr', expr, function(v)
+        if not in_tbl({ 'string', 'table' }, type(v)) then
+            return false
+        end
+
+        return type_not_empty('string', v) or type_not_empty('table', v)
+    end, false, 'string[]|string')
+
     local exists = vim.fn.exists
-
-    if not (type_not_empty('string', expr) or type_not_empty('table', expr)) then
-        return false
-    end
 
     if type_not_empty('string', expr) then
         return exists(expr) == 1
@@ -138,19 +103,21 @@ function Exists.env_vars(vars, fallback)
     local is_str = Value.is_str
     local is_fun = Value.is_fun
     local is_tbl = Value.is_tbl
+    local type_not_empty = Value.type_not_empty
+
+    validate('vars', vars, function(v)
+        if not in_tbl({ 'string', 'table' }, type(v)) then
+            return false
+        end
+
+        return type_not_empty('string', v) or type_not_empty('table', v)
+    end, false, 'string[]|string')
+
+    validate('fallback', fallback, 'function', true, 'fun()?')
+
+    fallback = fallback or nil
 
     local environment = vim.fn.environ()
-
-    if not (is_str(vars) or is_tbl(vars)) then
-        vim.notify(
-            '(user_api.check.exists.env_vars): Argument type is neither string nor table',
-            ERROR
-        )
-        return false
-    end
-
-    fallback = is_fun(fallback) and fallback or nil
-
     local res = false
 
     if is_str(vars) then
@@ -179,14 +146,15 @@ function Exists.executable(exe)
 
     local is_str = Value.is_str
     local is_tbl = Value.is_tbl
+    local type_not_empty = Value.type_not_empty
 
-    if not (is_str(exe) or is_tbl(exe)) then
-        vim.notify(
-            '(user_api.check.exists.executable): Argument type is neither string nor table',
-            ERROR
-        )
-        return false
-    end
+    validate('exe', exe, function(v)
+        if not in_tbl({ 'string', 'table' }, type(v)) then
+            return false
+        end
+
+        return type_not_empty('string', v) or type_not_empty('table', v)
+    end, false, 'string[]|string')
 
     local res = false
 
@@ -209,10 +177,17 @@ end
 ---@return boolean
 function Exists.vim_isdir(path)
     local type_not_empty = get_value().type_not_empty
+    validate('path', path, 'string', false)
 
     return type_not_empty('string', path) and (vim.fn.isdirectory(path) == 1) or false
 end
 
-return Exists
+return setmetatable(Exists, {
+    __index = Exists,
+
+    __newindex = function(_, _, _)
+        error('User.Check.Exists table is Read-Only!', ERROR)
+    end,
+})
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
