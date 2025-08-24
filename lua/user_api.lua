@@ -261,7 +261,7 @@ function User.setup(opts)
     User.config.neovide.setup()
 end
 
-return setmetatable(User, {
+return setmetatable({}, {
     __index = User,
 
     __newindex = function(_, _, _)
