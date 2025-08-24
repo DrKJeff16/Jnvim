@@ -4,6 +4,7 @@
 # FALLBACK INIT (for bug reporting)
 /fallback.lua
 /repro.lua
+/minimal_init.lua
 /rtp.lua
 /.repro/
 
