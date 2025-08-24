@@ -79,7 +79,7 @@ Mods.bufremove = {
 
 Mods.extra = {}
 
-Mods.cursorword = { delay = 200 }
+-- Mods.cursorword = { delay = 200 }
 
 Mods.map = {
     -- Highlight integrations (none by default)
