@@ -56,6 +56,12 @@ local Completion = {
                 dev = true,
                 version = false,
             },
+            {
+                'bydlw98/blink-cmp-sshconfig',
+                dev = true,
+                build = executable('uv') and 'make' or false,
+                version = false,
+            },
         },
         build = executable('cargo') and 'cargo build --release' or false,
         config = source('plugin.blink_cmp'),

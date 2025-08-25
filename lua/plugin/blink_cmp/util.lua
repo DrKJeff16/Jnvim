@@ -54,6 +54,12 @@ function BUtil.reset_sources(snipps, buf)
 
     if ft == 'lua' then
         table.insert(BUtil.Sources, 1, 'lazydev')
+        return
+    end
+
+    if ft == 'sshconfig' then
+        table.insert(BUtil.Sources, 1, 'sshconfig')
+        return
     end
 
     local git_fts = {
@@ -250,6 +256,14 @@ function BUtil.reset_providers()
             end,
         },
     }
+
+    if exists('blink-cmp-sshconfig') then
+        ---@module 'blink-cmp-sshconfig'
+        BUtil.Providers.sshconfig = {
+            name = 'SshConfig',
+            module = 'blink-cmp-sshconfig',
+        }
+    end
 
     if exists('blink-cmp-env') then
         ---@module 'blink-cmp-env'
