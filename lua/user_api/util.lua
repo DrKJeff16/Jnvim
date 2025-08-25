@@ -1,7 +1,3 @@
----@alias AnyDict table<string, any>
-
----@alias DirectionFun fun(t: AnyDict): res: AnyDict
-
 local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
@@ -31,7 +27,7 @@ end
 
 ---@param s string|string[]
 ---@param bufnr? integer
----@return AnyDict res
+---@return table<string, any> res
 function Util.get_opts_tbl(s, bufnr)
     local Value = require('user_api.check.value')
 
@@ -40,7 +36,7 @@ function Util.get_opts_tbl(s, bufnr)
 
     bufnr = is_int(bufnr) and bufnr or curr_buf()
 
-    ---@type AnyDict
+    ---@type table<string, any>
     local res = {}
 
     if type_not_empty('string', s) then
@@ -56,20 +52,13 @@ function Util.get_opts_tbl(s, bufnr)
     return res
 end
 
----@param T AnyDict
+---@param T table<string, any>
 ---@param steps? integer
 ---@param direction? 'l'|'r'
----@return AnyDict res
+---@return table<string, any> res
 function Util.mv_tbl_values(T, steps, direction)
-    local notify = Util.notify.notify
-
     if T == nil or type(T) ~= 'table' then
-        notify("Input isn't a table, or it is empty", ERROR, {
-            title = '(user_api.util.mv_tbl_values)',
-            animate = true,
-            hide_from_history = false,
-            timeout = 2500,
-        })
+        error("Input isn't a table, or it is empty", ERROR)
     end
 
     steps = steps > 0 and steps or 1
@@ -78,14 +67,15 @@ function Util.mv_tbl_values(T, steps, direction)
     ---@class DirectionFuns
     local direction_funcs = {
 
-        ---@type DirectionFun
+        ---@param t table<string, any>
+        ---@return table<string, any> res
         r = function(t)
             ---@type string[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
             local len = #keys
 
-            ---@type AnyDict
+            ---@type table<string, any>
             local res = {}
 
             for i, v in next, keys do
@@ -99,14 +89,15 @@ function Util.mv_tbl_values(T, steps, direction)
             return res
         end,
 
-        ---@type DirectionFun
+        ---@param t table<string, any>
+        ---@return table<string, any> res
         l = function(t)
             ---@type string[]
             local keys = vim.tbl_keys(t)
             table.sort(keys)
             local len = #keys
 
-            ---@type AnyDict
+            ---@type table<string, any>
             local res = {}
 
             for i, v in next, keys do
@@ -121,8 +112,7 @@ function Util.mv_tbl_values(T, steps, direction)
         end,
     }
 
-    local res = T
-    local func = direction_funcs[direction]
+    local res, func = T, direction_funcs[direction]
 
     while steps > 0 do
         res = func(res)
@@ -144,10 +134,10 @@ function Util.xor(x, y)
     local notify = Util.notify.notify
 
     if not is_bool({ x, y }, true) then
-        notify('An argument is not of boolean type', 'error', {
+        notify('An argument is not of boolean type', ERROR, {
             title = '(user_api.util.xor)',
             animate = true,
-            timeout = 2250,
+            timeout = 1250,
             hide_from_history = false,
         })
         return false
@@ -156,9 +146,9 @@ function Util.xor(x, y)
     return (x and not y) or (not x and y)
 end
 
----@param T AnyDict
+---@param T table<string, any>
 ---@param fields string|integer|(string|integer)[]
----@return AnyDict res
+---@return table<string, any> res
 function Util.strip_fields(T, fields)
     local Value = require('user_api.check.value')
 
@@ -174,7 +164,7 @@ function Util.strip_fields(T, fields)
         return T
     end
 
-    ---@type AnyDict
+    ---@type table<string, any>
     local res = {}
 
     if is_str(fields) then
@@ -200,10 +190,10 @@ function Util.strip_fields(T, fields)
     return res
 end
 
----@param T AnyDict
+---@param T table<string, any>
 ---@param values any[]
 ---@param max_instances? integer
----@return AnyDict res
+---@return table<string, any> res
 function Util.strip_values(T, values, max_instances)
     local Value = require('user_api.check.value')
 
@@ -222,9 +212,8 @@ function Util.strip_values(T, values, max_instances)
 
     max_instances = is_int(max_instances) and max_instances or 0
 
-    ---@type AnyDict
-    local res = {}
-    local count = 0
+    ---@type table<string, any>, integer
+    local res, count = {}, 0
 
     for k, v in next, T do
         -- Both arguments can't be true simultaneously
@@ -445,14 +434,12 @@ function Util.setup_autocmd()
                         end
 
                         if bt == 'help' or ft == 'help' then
-                            vim.schedule(function()
-                                optset('signcolumn', 'no', O)
-                                optset('number', false, O)
-                                optset('wrap', true, O)
+                            optset('signcolumn', 'no', O)
+                            optset('number', false, O)
+                            optset('wrap', true, O)
 
-                                vim.cmd.wincmd('=')
-                                vim.cmd.noh()
-                            end)
+                            vim.cmd.wincmd('=')
+                            vim.cmd.noh()
 
                             return
                         end
@@ -467,7 +454,7 @@ function Util.setup_autocmd()
                                     ['<leader><C-l>'] = {
                                         function()
                                             ---@diagnostic disable-next-line:param-type-mismatch
-                                            local ok, _ = pcall(vim.cmd, 'silent! !stylua %')
+                                            local ok = pcall(vim.cmd, 'silent! !stylua %')
 
                                             if not ok then
                                                 return
@@ -476,7 +463,7 @@ function Util.setup_autocmd()
                                             notify('Formatted successfully!', INFO, {
                                                 title = 'StyLua',
                                                 animate = true,
-                                                timeout = 350,
+                                                timeout = 200,
                                                 hide_from_history = true,
                                             })
                                         end,
@@ -492,7 +479,7 @@ function Util.setup_autocmd()
                                     ['<leader><C-l>'] = {
                                         function()
                                             ---@diagnostic disable-next-line:param-type-mismatch
-                                            local ok, _ = pcall(vim.cmd, 'silent! !isort %')
+                                            local ok = pcall(vim.cmd, 'silent! !isort %')
 
                                             if not ok then
                                                 return
@@ -501,7 +488,7 @@ function Util.setup_autocmd()
                                             notify('Formatted successfully!', INFO, {
                                                 title = 'isort',
                                                 animate = true,
-                                                timeout = 350,
+                                                timeout = 200,
                                                 hide_from_history = true,
                                             })
                                         end,
@@ -516,7 +503,7 @@ function Util.setup_autocmd()
         },
     }
 
-    local ok, _ = pcall(require, 'orgmode')
+    local ok = pcall(require, 'orgmode')
 
     if ok then
         table.insert(AUS[1].opts_tbl, {
