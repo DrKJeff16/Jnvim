@@ -171,6 +171,11 @@ function M.au_repeated_events(T)
     end
 end
 
-return M
+---@type User.Util.Autocmd
+local AU = setmetatable({}, {
+    __index = M,
+})
+
+return AU
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
