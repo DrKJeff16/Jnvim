@@ -131,43 +131,41 @@ vim.g.markdown_minlines = 500
 local Lsp = L.lsp()
 Lsp.setup()
 
-vim.schedule(function()
-    local in_tbl = vim.tbl_contains
-    local optset = vim.api.nvim_set_option_value
-    local ft_get = Util.ft_get
-    local bt_get = Util.bt_get
+local in_tbl = vim.tbl_contains
+local optset = vim.api.nvim_set_option_value
+local ft_get = Util.ft_get
+local bt_get = Util.bt_get
 
-    local buf = curr_buf()
+local buf = curr_buf()
 
-    DISABLE_FT = {
-        'help',
-        'lazy',
-        'checkhealth',
-        'notify',
-        'qf',
-        'TelescopePrompt',
-        'TelescopeResults',
-    }
+DISABLE_FT = {
+    'help',
+    'lazy',
+    'checkhealth',
+    'notify',
+    'qf',
+    'TelescopePrompt',
+    'TelescopeResults',
+}
 
-    DISABLE_BT = {
-        'help',
-        'prompt',
-        'quickfix',
-        'terminal',
-    }
+DISABLE_BT = {
+    'help',
+    'prompt',
+    'quickfix',
+    'terminal',
+}
 
-    local ft, bt = ft_get(buf), bt_get(buf)
+local ft, bt = ft_get(buf), bt_get(buf)
 
-    -- HACK: In case we're on specific buffer (file|buf)types
-    if not (in_tbl(DISABLE_FT, ft) or in_tbl(DISABLE_BT, bt)) then
-        return
-    end
+-- HACK: In case we're on specific buffer (file|buf)types
+if not (in_tbl(DISABLE_FT, ft) or in_tbl(DISABLE_BT, bt)) then
+    return
+end
 
-    ---@type vim.api.keyset.option
-    local opts = { scope = 'local' }
+---@type vim.api.keyset.option
+local opts = { scope = 'local' }
 
-    optset('number', false, opts)
-    optset('signcolumn', 'no', opts)
-end)
+optset('number', false, opts)
+optset('signcolumn', 'no', opts)
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
