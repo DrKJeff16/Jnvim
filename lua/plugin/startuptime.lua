@@ -4,26 +4,26 @@ local desc = User.maps.kmap.desc
 local hi = User.highlight.hl
 local Keymaps = require('user_api.config.keymaps')
 
-if vim.g.installed_startuptime == nil or vim.g.installed_startuptime ~= 1 then
+if not vim.g.installed_startuptime or vim.g.installed_startuptime ~= 1 then
     User.deregister_plugin('plugin.startuptime')
     return
 end
 
 local Flags = {
-    more_info_key_seq = 'K',
-    split_edit_key_seq = 'gf',
-    sort = true,
-    tries = 10,
-    sourcing_events = true,
-    other_events = true,
-    sourced = true,
-    event_width = 0,
-    time_width = 8,
-    plot_width = 30,
     colorize = true,
-    use_blocks = vim.opt.encoding:get() == 'utf-8',
+    event_width = 0,
     fine_blocks = not is_windows,
+    more_info_key_seq = 'K',
+    other_events = true,
+    plot_width = 30,
+    sort = true,
+    sourced = true,
+    sourcing_events = true,
+    split_edit_key_seq = 'gf',
     startup_indent = 8,
+    time_width = 8,
+    tries = 10,
+    use_blocks = vim.opt.encoding:get() == 'utf-8',
     zero_progress_msg = true,
     zero_progress_time = 2500,
 }
