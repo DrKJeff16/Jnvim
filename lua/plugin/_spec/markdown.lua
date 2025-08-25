@@ -20,6 +20,7 @@ local MD = {
             'nvim-tree/nvim-web-devicons',
         },
         config = source('plugin.markdown.render'),
+        cond = false,
     },
 }
 
