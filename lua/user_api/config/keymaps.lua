@@ -494,7 +494,6 @@ Keymaps.Keys = {
 
         ['<leader>vs'] = {
             function()
-                ---@diagnostic disable-next-line:param-type-mismatch
                 local ok, err = pcall(vim.cmd.luafile, MYVIMRC)
 
                 if ok then
@@ -974,11 +973,13 @@ local M = setmetatable({}, {
         Keymaps.no_oped = true
 
         ---@type AllModeMaps
-        local res = load_defaults and d_extend('keep', parsed_keys, Keymaps.Keys) or parsed_keys
-
-        map_dict(res, 'wk.register', true, nil, bufnr or nil)
-
         Keymaps.Keys = d_extend('keep', copy(Keymaps.Keys), parsed_keys)
+
+        local res = load_defaults and Keymaps.Keys or parsed_keys
+
+        vim.defer_fn(function()
+            map_dict(res, 'wk.register', true, nil, bufnr or nil)
+        end, 100)
     end,
 })
 
