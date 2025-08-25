@@ -1,6 +1,7 @@
 ---@alias AllColorSubMods
 ---|CpcSubMod
 ---|DraculaSubMod
+---|FlexokiSubMod
 ---|GloombuddySubMod
 ---|GruvboxSubMod
 ---|MolokaiSubMod
@@ -35,40 +36,27 @@ local Colorschemes = {}
 local Colors = {
     tokyonight = 1,
     nightfox = 2,
-    catppuccin = 3,
-    onedark = 4,
-    gruvbox = 5,
-    kanagawa = 6,
+    kanagawa = 3,
+    catppuccin = 4,
+    onedark = 5,
+    gruvbox = 6,
     vscode = 7,
     dracula = 8,
-    gloombuddy = 9,
-    molokai = 10,
-    oak = 11,
-    space_vim_dark = 12,
-    spaceduck = 13,
-    spacemacs = 14,
+    flexoki = 9,
+    gloombuddy = 10,
+    molokai = 11,
+    oak = 12,
+    space_vim_dark = 13,
+    spaceduck = 14,
+    spacemacs = 15,
 }
 
 ---@type AllCsc[]
-Colorschemes.OPTIONS = {
-    'nightfox',
-    'tokyonight',
-    'catppuccin',
-    'onedark',
-    'gruvbox',
-    'kanagawa',
-    'vscode',
-    'dracula',
-    'gloombuddy',
-    'molokai',
-    'oak',
-    'space_vim_dark',
-    'spaceduck',
-    'spacemacs',
-}
+Colorschemes.OPTIONS = vim.tbl_keys(Colors)
 
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
+Colorschemes.flexoki = require('plugin.colorschemes.flexoki')
 Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
 Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
 Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
@@ -82,124 +70,122 @@ Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
----@return CscMod|table|fun(color?: string|AllCsc, ...: any)
-function Colorschemes.new()
-    return setmetatable({}, {
-        __index = Colorschemes,
+---@type CscMod|fun(color?: string|AllCsc, ...: any)
+local M = setmetatable({}, {
+    __index = Colorschemes,
 
-        __newindex = function(self, key, value)
-            rawset(self, key, value)
-        end,
+    __newindex = function(self, key, value)
+        rawset(self, key, value)
+    end,
 
-        ---@param self CscMod
-        ---@param color? string|AllCsc
-        ---@param ... any
-        __call = function(self, color, ...)
-            local Keymaps = require('user_api.config.keymaps')
+    ---@param self CscMod
+    ---@param color? string|AllCsc
+    ---@param ... any
+    __call = function(self, color, ...)
+        local Keymaps = require('user_api.config.keymaps')
 
-            ---@type AllMaps
-            local Keys = {
-                ['<leader>u'] = { group = '+UI' },
-                ['<leader>uc'] = { group = '+Colorschemes' },
+        ---@type AllMaps
+        local Keys = {
+            ['<leader>u'] = { group = '+UI' },
+            ['<leader>uc'] = { group = '+Colorschemes' },
+        }
+
+        local csc_group = 'A'
+        local i = 1
+
+        ---@type string[]
+        local valid = {}
+
+        -- NOTE: This was also a pain in the ass
+        --
+        -- Generate keybinds for each colorscheme that is found
+        -- Try checking them by typing `<leader>uc` IN NORMAL MODE
+        for _, name in next, self.OPTIONS do
+            ---@type AllColorSubMods
+            local TColor = self[name]
+
+            if TColor.valid == nil or not TColor.valid() then
+                goto continue
+            end
+
+            table.insert(valid, name)
+
+            Keys['<leader>uc' .. csc_group] = {
+                group = '+Group ' .. csc_group,
             }
 
-            local csc_group = 'A'
-            local i = 1
+            local i_str = tostring(i)
 
-            ---@type string[]
-            local valid = {}
-
-            -- NOTE: This was also a pain in the ass
-            --
-            -- Generate keybinds for each colorscheme that is found
-            -- Try checking them by typing `<leader>uc` IN NORMAL MODE
-            for _, name in next, self.OPTIONS do
-                ---@type AllColorSubMods
-                local TColor = self[name]
-
-                if TColor.valid == nil or not TColor.valid() then
-                    goto continue
-                end
-
-                table.insert(valid, name)
-
-                Keys['<leader>uc' .. csc_group] = {
-                    group = '+Group ' .. csc_group,
-                }
-
-                local i_str = tostring(i)
-
-                if type_not_empty('table', TColor.variants) then
-                    local v = 'a'
-                    for _, variant in next, TColor.variants do
-                        Keys['<leader>uc' .. csc_group .. i_str] = {
-                            group = fmt('+%s', capitalize(name)),
-                        }
-                        Keys['<leader>uc' .. csc_group .. i_str .. v] = {
-                            function()
-                                TColor.setup(variant)
-                            end,
-                            desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
-                        }
-
-                        v = displace_letter(v, 'next', false)
-                    end
-                else
+            if type_not_empty('table', TColor.variants) then
+                local v = 'a'
+                for _, variant in next, TColor.variants do
                     Keys['<leader>uc' .. csc_group .. i_str] = {
-                        function()
-                            TColor.setup()
-                        end,
-                        desc(fmt('Set Colorscheme `%s`', capitalize(name))),
+                        group = fmt('+%s', capitalize(name)),
                     }
+                    Keys['<leader>uc' .. csc_group .. i_str .. v] = {
+                        function()
+                            TColor.setup(variant)
+                        end,
+                        desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
+                    }
+
+                    v = displace_letter(v, 'next', false)
                 end
-
-                -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
-                if i == 9 then
-                    -- If last  keymap set ended on 9, reset back to 1,
-                    -- and go to next letter alphabetically
-                    i = 1
-                    csc_group = displace_letter(csc_group, 'next', false)
-                elseif i < 9 then
-                    i = i + 1
-                end
-
-                ::continue::
+            else
+                Keys['<leader>uc' .. csc_group .. i_str] = {
+                    function()
+                        TColor.setup()
+                    end,
+                    desc(fmt('Set Colorscheme `%s`', capitalize(name))),
+                }
             end
 
-            if not type_not_empty('table', valid) then
-                error('No valid colorschemes!', ERROR)
+            -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
+            if i == 9 then
+                -- If last  keymap set ended on 9, reset back to 1,
+                -- and go to next letter alphabetically
+                i = 1
+                csc_group = displace_letter(csc_group, 'next', false)
+            elseif i < 9 then
+                i = i + 1
             end
-            Keymaps({ n = Keys })
 
-            if not (is_str(color) and vim.tbl_contains(valid, color)) then
-                color = valid[1]
-            end
+            ::continue::
+        end
 
+        if not type_not_empty('table', valid) then
+            error('No valid colorschemes!', ERROR)
+        end
+        Keymaps({ n = Keys })
+
+        if not (is_str(color) and vim.tbl_contains(valid, color)) then
+            color = valid[1]
+        end
+
+        ---@type AllColorSubMods
+        local Color = self[color]
+
+        if Color ~= nil and Color.valid() then
+            Color.setup(...)
+            return
+        end
+
+        for _, csc in next, valid do
             ---@type AllColorSubMods
-            local Color = self[color]
+            Color = self[csc]
 
-            if Color ~= nil and Color.valid() then
-                Color.setup(...)
+            if Color.valid ~= nil and Color.valid() then
+                Color.setup()
                 return
             end
+        end
 
-            for _, csc in next, valid do
-                ---@type AllColorSubMods
-                Color = self[csc]
-
-                if Color.valid ~= nil and Color.valid() then
-                    Color.setup()
-                    return
-                end
-            end
-
-            vim.cmd.colorscheme('default')
-        end,
-    })
-end
+        vim.cmd.colorscheme('default')
+    end,
+})
 
 User.register_plugin('plugin.colorschemes')
 
-return Colorschemes.new()
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
