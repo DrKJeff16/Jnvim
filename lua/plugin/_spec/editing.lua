@@ -3,7 +3,6 @@
 local CfgUtil = require('config.util')
 local Check = require('user_api.check')
 
-local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local in_console = Check.in_console
@@ -17,20 +16,20 @@ local Editing = {
         dependencies = {
             { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter', version = false },
         },
-        config = source('plugin.autopairs'),
+        config = CfgUtil.require('plugin.autopairs'),
     },
     {
         'folke/persistence.nvim',
         event = 'BufReadPre',
         version = false,
-        config = source('plugin.persistence'),
+        config = CfgUtil.require('plugin.persistence'),
     },
 
     {
         'folke/twilight.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.twilight'),
+        config = CfgUtil.require('plugin.twilight'),
         cond = not in_console(),
     },
     {
@@ -41,7 +40,7 @@ local Editing = {
             'nvim-treesitter/nvim-treesitter',
             'JoosepAlviste/nvim-ts-context-commentstring',
         },
-        config = source('plugin.Comment'),
+        config = CfgUtil.require('plugin.Comment'),
     },
 
     {
@@ -60,7 +59,7 @@ local Editing = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-lua/plenary.nvim',
         },
-        config = source('plugin.todo_comments'),
+        config = CfgUtil.require('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },
     {
@@ -68,19 +67,19 @@ local Editing = {
         event = 'VeryLazy',
         version = false,
         init = flag_installed('a_vim'),
-        config = source('plugin.a_vim'),
+        config = CfgUtil.require('plugin.a_vim'),
     },
     {
         'folke/zen-mode.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.zen_mode'),
+        config = CfgUtil.require('plugin.zen_mode'),
         cond = not in_console(),
     },
     {
         'julienvincent/nvim-paredit',
         version = false,
-        config = source('plugin.paredit'),
+        config = CfgUtil.require('plugin.paredit'),
     },
 }
 

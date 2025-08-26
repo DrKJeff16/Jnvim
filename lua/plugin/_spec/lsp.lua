@@ -4,7 +4,6 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local source = CfgUtil.source
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 
@@ -29,7 +28,7 @@ local LSP = {
         dependencies = {
             { 'justinsgithub/wezterm-types', lazy = true, dev = true, version = false },
         },
-        config = source('plugin.lazydev'),
+        config = CfgUtil.require('plugin.lazydev'),
         cond = executable('lua-language-server'),
     },
 
@@ -40,7 +39,7 @@ local LSP = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-tree/nvim-web-devicons',
         },
-        config = source('plugin.aerial'),
+        config = CfgUtil.require('plugin.aerial'),
     },
 
     {
@@ -54,7 +53,7 @@ local LSP = {
         ft = { 'c', 'cpp' },
         dev = true,
         version = false,
-        config = source('plugin.lsp.clangd'),
+        config = CfgUtil.require('plugin.lsp.clangd'),
         cond = executable('clangd'),
     },
 }

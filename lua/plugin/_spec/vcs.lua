@@ -1,10 +1,9 @@
 ---@module 'config.lazy'
 
+local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
-local CfgUtil = require('config.util')
 
-local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 
@@ -19,14 +18,14 @@ local VCS = {
     {
         'lewis6991/gitsigns.nvim',
         version = false,
-        config = source('plugin.git.gitsigns'),
+        config = CfgUtil.require('plugin.git.gitsigns'),
         cond = executable('git'),
     },
     {
         'sindrets/diffview.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.git.diffview'),
+        config = CfgUtil.require('plugin.git.diffview'),
         cond = executable('git'),
     },
     {
@@ -34,10 +33,10 @@ local VCS = {
         event = 'VeryLazy',
         version = false,
         dependencies = {
-            'plenary.nvim',
-            'telescope.nvim',
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope.nvim',
         },
-        config = source('plugin.git.lazygit'),
+        config = CfgUtil.require('plugin.git.lazygit'),
         cond = executable({ 'git', 'lazygit' }),
     },
 }

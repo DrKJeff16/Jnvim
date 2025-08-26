@@ -2,15 +2,13 @@
 
 local CfgUtil = require('config.util')
 
-local source = CfgUtil.source
-
 ---@type LazySpecs
 local MD = {
     {
         'tadmccorkle/markdown.nvim',
         ft = 'markdown',
         version = false,
-        config = source('plugin.markdown'),
+        config = CfgUtil.require('plugin.markdown'),
     },
     {
         'MeanderingProgrammer/render-markdown.nvim',
@@ -19,7 +17,7 @@ local MD = {
             'echasnovski/mini.nvim',
             'nvim-tree/nvim-web-devicons',
         },
-        config = source('plugin.markdown.render'),
+        config = CfgUtil.require('plugin.markdown.render'),
         cond = false,
     },
 }

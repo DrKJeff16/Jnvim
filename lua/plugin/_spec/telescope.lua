@@ -4,7 +4,6 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local source = CfgUtil.source
 local tel_fzf_build = CfgUtil.tel_fzf_build
 local executable = Check.exists.executable
 
@@ -28,14 +27,14 @@ local Telescope = {
             {
                 'LukasPietzschmann/telescope-tabs',
                 version = false,
-                config = source('plugin.telescope.tabs'),
+                config = CfgUtil.require('plugin.telescope.tabs'),
             },
             {
                 'DrKJeff16/telescope-makefile',
                 ft = 'make',
                 version = false,
                 dependencies = { 'akinsho/toggleterm.nvim' },
-                config = source('plugin.telescope.makefile'),
+                config = CfgUtil.require('plugin.telescope.makefile'),
                 cond = executable('make') or executable('mingw32-make'),
             },
             {
@@ -45,7 +44,7 @@ local Telescope = {
                 cond = executable('git'),
             },
         },
-        config = source('plugin.telescope'),
+        config = CfgUtil.require('plugin.telescope'),
     },
 }
 

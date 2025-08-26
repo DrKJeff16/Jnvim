@@ -12,6 +12,11 @@ local is_bool = Value.is_bool
 local is_str = Value.is_str
 local type_not_empty = Value.type_not_empty
 
+local validate = vim.validate
+local in_tbl = vim.tbl_contains
+
+local ERROR = vim.log.levels.ERROR
+
 ---@class Config.Util
 local CfgUtil = {}
 
@@ -29,16 +34,13 @@ end
 ---@param name string
 ---@return fun()
 function CfgUtil.flag_installed(name)
-    if not type_not_empty('string', name) then
-        error('Unable to set `vim.g` var')
+    validate('name', name, 'string', false)
+
+    if name == '' then
+        error('Unable to set `vim.g` var', ERROR)
     end
 
-    local flag = ''
-    if name:sub(1, 10) == 'installed_' then
-        flag = name
-    else
-        flag = 'installed_' .. name
-    end
+    local flag = (name:sub(1, 10) == 'installed_') and name or ('installed_' .. name)
 
     return function()
         vim.g[flag] = 1
@@ -90,7 +92,7 @@ end
 ---            **_That being said_**, you can use any module path if you wish to do so:
 ---   ```lua
 ---   --- Lua
----   source('plugin.<plugin_name>[.<...>]')
+---   CfgUtil.require('plugin.<plugin_name>[.<...>]')
 ---   ```
 --- ---
 ---## Return
@@ -98,7 +100,9 @@ end
 --- ---
 ---@param mod_str string
 ---@return fun()
-function CfgUtil.source(mod_str)
+function CfgUtil.require(mod_str)
+    validate('mod_str', mod_str, 'string', false)
+
     return function()
         if exists(mod_str) then
             require(mod_str)
@@ -145,8 +149,10 @@ end
 ---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
 ---@return fun()
 function CfgUtil.key_variant(cmd)
-    cmd = (is_str(cmd) and vim.tbl_contains({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd
-        or 'ed'
+    validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
+
+    cmd = in_tbl({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd) and cmd or 'ed'
+
     local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
     local FUNCS = {
@@ -169,11 +175,12 @@ end
 
 ---@return boolean
 function CfgUtil.has_tgc()
-    ---@diagnostic disable-next-line
-    return (not in_console()) and (vim_exists('+termguicolors') and vim.o.termguicolors) or false
-end
+    if not vim_exists('+termguicolors') then
+        return false
+    end
 
-User.register_plugin('config.util')
+    return (not in_console()) and (vim.opt.termguicolors:get()) or false
+end
 
 return CfgUtil
 

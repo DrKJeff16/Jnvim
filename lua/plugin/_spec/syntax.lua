@@ -4,7 +4,6 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 local in_console = Check.in_console
 local executable = Check.exists.executable
@@ -22,7 +21,7 @@ local Syntax = {
         ft = { 'c', 'cpp' },
         version = false,
         init = flag_installed('doxygen_toolkit'),
-        config = source('plugin.doxygen'),
+        config = CfgUtil.require('plugin.doxygen'),
         cond = executable('doxygen'),
     },
     {
@@ -30,7 +29,7 @@ local Syntax = {
         event = 'VeryLazy',
         ft = { 'org' },
         version = false,
-        config = source('plugin.orgmode'),
+        config = CfgUtil.require('plugin.orgmode'),
         cond = not in_console(),
     },
 }

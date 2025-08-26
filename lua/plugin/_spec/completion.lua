@@ -2,7 +2,6 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local source = CfgUtil.source
 local executable = Check.exists.executable
 
 ---@type LazySpecs
@@ -64,12 +63,12 @@ local Completion = {
             },
         },
         build = executable('cargo') and 'cargo build --release' or false,
-        config = source('plugin.blink_cmp'),
+        config = CfgUtil.require('plugin.blink_cmp'),
     },
     {
         'onsails/lspkind.nvim',
         version = false,
-        config = source('plugin.lspkind'),
+        config = CfgUtil.require('plugin.lspkind'),
     },
 }
 

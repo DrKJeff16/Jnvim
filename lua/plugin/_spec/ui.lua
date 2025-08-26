@@ -4,7 +4,6 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local source = CfgUtil.source
 local in_console = Check.in_console
 
 ---@type LazySpecs
@@ -18,7 +17,7 @@ local UI = {
             'rcarriga/nvim-notify',
             'echasnovski/mini.nvim',
         },
-        config = source('plugin.noice'),
+        config = CfgUtil.require('plugin.noice'),
         cond = not in_console(),
     },
 
@@ -32,7 +31,7 @@ local UI = {
             'nvim-tree/nvim-web-devicons',
             'nvim-lua/plenary.nvim',
         },
-        config = source('plugin.alpha'),
+        config = CfgUtil.require('plugin.alpha'),
     },
 
     -- Statusline
@@ -47,7 +46,7 @@ local UI = {
                 version = false,
             },
         },
-        config = source('plugin.lualine'),
+        config = CfgUtil.require('plugin.lualine'),
         cond = not in_console(),
     },
 
@@ -60,7 +59,7 @@ local UI = {
             'nvim-tree/nvim-web-devicons',
             'tiagovla/scope.nvim',
         },
-        config = source('plugin.bufferline'),
+        config = CfgUtil.require('plugin.bufferline'),
         cond = not in_console(),
     },
 
@@ -73,10 +72,10 @@ local UI = {
             {
                 'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
                 version = false,
-                config = source('plugin.rainbow_delimiters'),
+                config = CfgUtil.require('plugin.rainbow_delimiters'),
             },
         },
-        config = source('plugin.ibl'),
+        config = CfgUtil.require('plugin.ibl'),
         cond = not in_console(),
     },
 
@@ -87,14 +86,14 @@ local UI = {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-web-devicons' },
-        config = source('plugin.nvim_tree'),
+        config = CfgUtil.require('plugin.nvim_tree'),
     },
 
     {
         'folke/edgy.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.edgy'),
+        config = CfgUtil.require('plugin.edgy'),
         cond = not in_console(),
         enabled = false,
     },
@@ -103,7 +102,7 @@ local UI = {
         'akinsho/toggleterm.nvim',
         event = 'VeryLazy',
         version = false,
-        config = source('plugin.toggleterm'),
+        config = CfgUtil.require('plugin.toggleterm'),
         cond = not in_console(),
     },
 }

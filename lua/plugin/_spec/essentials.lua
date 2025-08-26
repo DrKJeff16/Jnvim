@@ -1,3 +1,5 @@
+---@module 'config.lazy'
+
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
@@ -6,7 +8,6 @@ local vim_has = Check.exists.vim_has
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
-local source = CfgUtil.source
 local flag_installed = CfgUtil.flag_installed
 
 ---@type LazySpecs
@@ -20,7 +21,7 @@ local Essentials = {
             vim.opt.timeout = true
             vim.opt.timeoutlen = 500
         end,
-        config = source('plugin.which_key'),
+        config = CfgUtil.require('plugin.which_key'),
         cond = vim_has('nvim-0.10'),
     },
     {
@@ -28,7 +29,7 @@ local Essentials = {
         priority = 1000,
         version = false,
         init = flag_installed('startuptime'),
-        config = source('plugin.startuptime'),
+        config = CfgUtil.require('plugin.startuptime'),
     },
     {
         'MunifTanjim/nui.nvim',
@@ -37,8 +38,7 @@ local Essentials = {
     {
         'echasnovski/mini.nvim',
         version = false,
-        config = source('plugin.mini'),
-        cond = vim_has('nvim-0.10'),
+        config = CfgUtil.require('plugin.mini'),
     },
     {
         'tiagovla/scope.nvim',
@@ -51,7 +51,7 @@ local Essentials = {
                 'globals',
             }
         end,
-        config = source('plugin.scope'),
+        config = CfgUtil.require('plugin.scope'),
     },
     {
         'nvim-lua/plenary.nvim',
@@ -62,7 +62,7 @@ local Essentials = {
         'rcarriga/nvim-notify',
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
-        config = source('plugin.notify'),
+        config = CfgUtil.require('plugin.notify'),
         cond = not in_console(),
     },
     -- Project Manager
@@ -72,12 +72,12 @@ local Essentials = {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
-        config = source('plugin.project'),
+        config = CfgUtil.require('plugin.project'),
     },
     {
         'nvim-tree/nvim-web-devicons',
         version = false,
-        config = source('plugin.web_devicons'),
+        config = CfgUtil.require('plugin.web_devicons'),
         cond = not in_console(),
     },
     {
@@ -89,11 +89,11 @@ local Essentials = {
                 lazy = true,
                 version = false,
                 dependencies = { 'nvim-tree/nvim-web-devicons' },
-                config = source('plugin.fzf.fzf_lua'),
+                config = CfgUtil.require('plugin.fzf.fzf_lua'),
                 cond = executable('fzf'),
             },
         },
-        config = source('plugin.possession'),
+        config = CfgUtil.require('plugin.possession'),
     },
 }
 
