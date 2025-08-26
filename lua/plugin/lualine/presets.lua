@@ -38,8 +38,8 @@ local floor = math.floor
 ---@field color? nil|vim.api.keyset.highlight|string
 ---@field type? any
 ---@field padding? integer
----@field fmt? nil|fun(str: string, context: any?)
----@field on_click? nil|fun(clicks: integer?, button: string, mods: any)
+---@field fmt? nil|fun(str: string, context?: any)
+---@field on_click? nil|fun(clicks?: integer, button: string, mods: any)
 
 ---@class ComponentsColor
 ---@field active
@@ -427,15 +427,58 @@ Presets.components.mode = {
     end,
 }
 
-Presets.components.possession = exists('nvim-possession')
-        and {
-            require('nvim-possession').status,
+if exists('nvim-possession') then
+    Presets.components.possession = {
+        require('nvim-possession').status,
 
-            cond = function()
-                return require('nvim-possession').status() ~= nil
-            end,
-        }
-    or {}
+        cond = function()
+            return require('nvim-possession').status() ~= nil
+        end,
+    }
+end
+
+if exists('lualine.components.lsp_progress') then
+    -- Color for highlights
+    local colors = {
+        red = '#ec5f67',
+        green = '#98be65',
+        blue = '#51afef',
+        yellow = '#ECBE7B',
+        cyan = '#008080',
+        magenta = '#c678dd',
+        violet = '#a9a1e1',
+        orange = '#FF8800',
+        darkblue = '#081633',
+    }
+
+    ---@type LuaLine.Components.Spec
+    Presets.components.lsp_progress = {
+        'lsp_progress',
+        -- display_components = { 'lsp_client_name', { 'title', 'percentage', 'message' } },
+        -- With spinner
+        colors = {
+            percentage = colors.cyan,
+            title = colors.cyan,
+            message = colors.cyan,
+            spinner = colors.cyan,
+            lsp_client_name = colors.magenta,
+            use = true,
+        },
+        separators = {
+            component = ' ',
+            progress = ' | ',
+            message = { pre = '(', post = ')' },
+            percentage = { pre = '', post = '%% ' },
+            title = { pre = '', post = ': ' },
+            lsp_client_name = { pre = '[', post = ']' },
+            spinner = { pre = '', post = '' },
+            -- message = { commenced = 'In Progress', completed = 'Completed' },
+        },
+        display_components = { 'lsp_client_name', 'spinner', { 'title', 'percentage', 'message' } },
+        timer = { progress_enddelay = 500, spinner = 1000, lsp_client_name_enddelay = 1000 },
+        spinner_symbols = { '🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 ' },
+    }
+end
 
 Presets.components.noice = {
     hl_get = {},
@@ -444,38 +487,36 @@ Presets.components.noice = {
     search_get = {},
 }
 
-if exists('noice') then
-    local NoiceAPI = require('noice.api')
+local NoiceAPI = require('noice.api')
 
-    ---@diagnostic disable
-    Presets.components.noice = {
-        hl_get = {
-            NoiceAPI.status.message.get_hl,
-            cond = NoiceAPI.status.message.has,
-        },
-        command_get = {
-            NoiceAPI.status.command.get,
-            cond = NoiceAPI.status.command.has,
-            color = { fg = '#ff9e64' },
-        },
-        mode_get = {
-            NoiceAPI.status.mode.get,
-            cond = NoiceAPI.status.mode.has,
-            color = { fg = '#ff9e64' },
-        },
-        search_get = {
-            NoiceAPI.status.search.get,
-            cond = NoiceAPI.status.search.has,
-            color = { fg = '#ff9e64' },
-        },
-    }
-end
+---@diagnostic disable
+Presets.components.noice = {
+    hl_get = {
+        NoiceAPI.status.message.get_hl,
+        cond = NoiceAPI.status.message.has,
+    },
+    command_get = {
+        NoiceAPI.status.command.get,
+        cond = NoiceAPI.status.command.has,
+        color = { fg = '#ff9e64' },
+    },
+    mode_get = {
+        NoiceAPI.status.mode.get,
+        cond = NoiceAPI.status.mode.has,
+        color = { fg = '#ff9e64' },
+    },
+    search_get = {
+        NoiceAPI.status.search.get,
+        cond = NoiceAPI.status.search.has,
+        color = { fg = '#ff9e64' },
+    },
+}
 
 ---@diagnostic enable
 
 Presets.default = {
     lualine_a = {
-        Presets.components.noice.mode_get,
+        -- Presets.components.noice.mode_get,
         -- Presets.components.noice.command_get,
         -- Presets.components.noice.search_get,
         -- Presets.components.datetime,
@@ -505,6 +546,7 @@ Presets.default = {
         },
     lualine_x = {
         -- Presets.components.encoding,
+        Presets.components.lsp_progress,
         Presets.components.fileformat,
         Presets.components.filetype,
     },
