@@ -44,7 +44,7 @@ function Dracula.setup(variant, transparent, override)
         -- show the '~' characters after the end of buffers
         show_end_of_buffer = false, -- default false
         -- use transparent background
-        transparent_bg = false, -- default false
+        transparent_bg = transparent, -- default false
         -- set custom lualine background color
         lualine_bg_color = '#44475a', -- default nil
         -- set italic comment

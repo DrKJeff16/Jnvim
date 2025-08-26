@@ -212,7 +212,7 @@ end
 function User.setup(opts)
     validate('opts', opts, 'table', true)
 
-    opts = opts or {}
+    opts = opts or {} -- luacheck: ignore
 
     local desc = User.maps.desc
     local insp = inspect or vim.inspect

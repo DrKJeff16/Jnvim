@@ -1,26 +1,16 @@
----@diagnostic disable:missing-fields
-
----@class TelCC.Opts
----@field theme? 'ivy'|'dropdown'|'cursor'
----@field action? fun(entry: table)
----@field include_body_and_footer? boolean
-
----@class TelCC
----@field cc TelCC.Opts
----@field loadkeys fun()
-
 local User = require('user_api')
-local Keymaps = require('user_api.config.keymaps')
 local Check = User.check
 
+local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local desc = User.maps.desc
 
 if not exists('telescope._extensions.conventional_commits.actions') then
+    User.deregister_plugin('plugin.telescope.cc')
     return nil
 end
 
----@type TelCC
+---@class TelCC
 local CC = {}
 
 local function create_cc()
@@ -38,10 +28,11 @@ local function create_cc()
     picker(vim.tbl_extend('keep', Opts, Themes.get_dropdown({})))
 end
 
+---@class TelCC.Opts
 CC.cc = {
     theme = 'dropdown', -- custom theme
-    action = function(entry)
-        entry = {
+    action = function(_)
+        local entry = {
             display = 'feat       A new feature',
             index = 7,
             ordinal = 'feat',

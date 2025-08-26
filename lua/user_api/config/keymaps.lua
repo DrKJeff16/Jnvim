@@ -1,6 +1,6 @@
 local fmt = string.format
 
-_G.MYVIMRC = MYVIMRC or vim.fn.stdpath('config') .. '/init.lua'
+local VIMRC = _G.MYVIMRC or vim.fn.stdpath('config') .. '/init.lua'
 
 local Value = require('user_api.check.value')
 
@@ -28,28 +28,28 @@ local optset = vim.api.nvim_set_option_value
 ---@return fun()
 local function rcfile_ed()
     return function()
-        vim.cmd.edit(MYVIMRC)
+        vim.cmd.edit(VIMRC)
     end
 end
 
 ---@return fun()
 local function rcfile_split()
     return function()
-        vim.cmd.split(MYVIMRC)
+        vim.cmd.split(VIMRC)
     end
 end
 
 ---@return fun()
 local function rcfile_vsplit()
     return function()
-        vim.cmd.vsplit(MYVIMRC)
+        vim.cmd.vsplit(VIMRC)
     end
 end
 
 ---@return fun()
 local function rcfile_tab()
     return function()
-        vim.cmd.tabnew(MYVIMRC)
+        vim.cmd.tabnew(VIMRC)
     end
 end
 
@@ -251,9 +251,9 @@ Keymaps.Keys = {
         ['<leader>v'] = { group = '+Vim' },
         ['<leader>ve'] = { group = '+Edit Nvim Config File' },
         ['<leader>vh'] = { group = '+Checkhealth' },
-        ['<leader>w'] = { group = '+Window' },
-        ['<leader>wW'] = { group = '+Extra Operations' },
-        ['<leader>ws'] = { group = '+Split' },
+        ['<leader>W'] = { group = '+Window' },
+        ['<leader>WW'] = { group = '+Extra Operations' },
+        ['<leader>Ws'] = { group = '+Split' },
         ['<leader>U'] = { group = '+User API' },
         ['<leader>UK'] = { group = '+Keymaps' },
 
@@ -312,10 +312,10 @@ Keymaps.Keys = {
 
         ['<leader>fs'] = {
             function()
-                local bufnr, ok, err = curr_buf(), true, nil
+                local bufnr = curr_buf()
 
                 if optget('modifiable', { buf = bufnr }) then
-                    ok, err = pcall(vim.cmd.write)
+                    local ok = pcall(vim.cmd.write)
 
                     if ok then
                         vim.notify('File Written', INFO, {
@@ -329,7 +329,7 @@ Keymaps.Keys = {
                     end
                 end
 
-                vim.notify(err or 'Unable to write', ERROR, {
+                vim.notify('Unable to write', ERROR, {
                     title = 'Vim Write',
                     animate = true,
                     timeout = 1500,
@@ -388,11 +388,10 @@ Keymaps.Keys = {
         ['<leader>fvl'] = {
             function()
                 local ft = ft_get(curr_buf())
-                local ok, err = true, ''
 
                 if ft == 'lua' then
                     ---@diagnostic disable-next-line:param-type-mismatch
-                    ok, err = pcall(vim.cmd.luafile, '%')
+                    local ok = pcall(vim.cmd.luafile, '%')
 
                     if ok then
                         vim.notify('Sourced current Lua file', INFO, {
@@ -406,7 +405,7 @@ Keymaps.Keys = {
                     end
                 end
 
-                vim.notify(err, ERROR, {
+                vim.notify('Failed to source Lua file!', ERROR, {
                     title = 'Lua',
                     animate = true,
                     timeout = 2000,
@@ -418,11 +417,9 @@ Keymaps.Keys = {
         ['<leader>fvv'] = {
             function()
                 local ft = ft_get(curr_buf())
-                local ok, err = true, ''
 
                 if ft == 'vim' then
-                    ---@diagnostic disable-next-line:param-type-mismatch
-                    ok, err = pcall(vim.cmd.source, '%')
+                    local ok = pcall(vim.cmd.source, '%')
 
                     if ok then
                         vim.notify('Sourced current Vim file', INFO, {
@@ -436,7 +433,7 @@ Keymaps.Keys = {
                     end
                 end
 
-                vim.notify(err, ERROR, {
+                vim.notify('Failed to source Vim file!', ERROR, {
                     title = 'Vim',
                     animate = true,
                     timeout = 2000,
@@ -494,7 +491,7 @@ Keymaps.Keys = {
 
         ['<leader>vs'] = {
             function()
-                local ok, err = pcall(vim.cmd.luafile, MYVIMRC)
+                local ok, err = pcall(vim.cmd.luafile, VIMRC)
 
                 if ok then
                     vim.notify('Sourced `init.lua`', INFO, {
@@ -585,7 +582,7 @@ Keymaps.Keys = {
             desc('Open Arbitrary Man Page (Horizontal)'),
         },
 
-        ['<leader>wN'] = {
+        ['<leader>WN'] = {
             function()
                 local bufnr = curr_buf()
                 local ft = ft_get(bufnr)
@@ -599,129 +596,129 @@ Keymaps.Keys = {
             end,
             desc('New Blank File'),
         },
-        ['<leader>w='] = {
+        ['<leader>W='] = {
             function()
                 vim.cmd.wincmd('=')
             end,
             desc('Resize all windows equally'),
         },
-        ['<leader>w<Left>'] = {
+        ['<leader>W<Left>'] = {
             function()
                 vim.cmd.wincmd('h')
             end,
             desc('Go To Window On The Left'),
         },
-        ['<leader>w<Right>'] = {
+        ['<leader>W<Right>'] = {
             function()
                 vim.cmd.wincmd('l')
             end,
             desc('Go To Window On The Right'),
         },
-        ['<leader>w<Up>'] = {
+        ['<leader>W<Up>'] = {
             function()
                 vim.cmd.wincmd('k')
             end,
             desc('Go To Window Above'),
         },
-        ['<leader>w<Down>'] = {
+        ['<leader>W<Down>'] = {
             function()
                 vim.cmd.wincmd('j')
             end,
             desc('Go To Window Below'),
         },
-        ['<leader>wd'] = {
+        ['<leader>Wd'] = {
             function()
                 vim.cmd.wincmd('q')
             end,
             desc('Close Window'),
         },
-        ['<leader>wn'] = {
+        ['<leader>Wn'] = {
             function()
                 vim.cmd.wincmd('w')
             end,
             desc('Next Window'),
         },
-        ['<leader>ww'] = {
+        ['<leader>Ww'] = {
             function()
                 vim.cmd.wincmd('w')
             end,
             desc('Next Window'),
         },
-        ['<leader>wS'] = {
+        ['<leader>WS'] = {
             function()
                 vim.cmd.wincmd('x')
             end,
             desc('Swap Current With Next'),
         },
-        ['<leader>wx'] = {
+        ['<leader>Wx'] = {
             function()
                 vim.cmd.wincmd('x')
             end,
             desc('Exchange Current With Next'),
         },
-        ['<leader>wt'] = {
+        ['<leader>Wt'] = {
             function()
                 vim.cmd.wincmd('T')
             end,
             desc('Break Current Window Into Tab'),
         },
-        ['<leader>wp'] = {
+        ['<leader>Wp'] = {
             function()
                 vim.cmd.wincmd('W')
             end,
             desc('Previous Window'),
         },
-        ['<leader>w<CR>'] = {
+        ['<leader>W<CR>'] = {
             function()
                 vim.cmd.wincmd('o')
             end,
             desc('Make Current Only Window'),
         },
-        ['<leader>wsx'] = {
+        ['<leader>Wsx'] = {
             function()
                 vim.cmd.wincmd('s')
             end,
             desc('Horizontal Split'),
         },
-        ['<leader>wsv'] = {
+        ['<leader>Wsv'] = {
             function()
                 vim.cmd.wincmd('v')
             end,
             desc('Vertical Split'),
         },
-        ['<leader>wsX'] = {
+        ['<leader>WsX'] = {
             ':split ',
             desc('Horizontal Split (Prompt)', false),
         },
-        ['<leader>wsV'] = {
+        ['<leader>WsV'] = {
             ':vsplit ',
             desc('Vertical Split (Prompt)', false),
         },
-        ['<leader>w|'] = {
+        ['<leader>W|'] = {
             function()
                 vim.cmd.wincmd('^')
             end,
             desc('Split Current To Edit Alternate File'),
         },
-        ['<leader>wW<Up>'] = {
+        ['<leader>WW<Up>'] = {
             function()
                 vim.cmd.wincmd('K')
             end,
             desc('Move Window To The Very Top'),
         },
-        ['<leader>wW<Down>'] = {
+        ['<leader>WW<Down>'] = {
             function()
                 vim.cmd.wincmd('J')
             end,
             desc('Move Window To The Very Bottom'),
         },
-        ['<leader>wW<Right>'] = {
+        ['<leader>WW<Right>'] = {
             function()
                 vim.cmd.wincmd('L')
             end,
             desc('Move Window To Far Right'),
         },
-        ['<leader>wW<Left>'] = {
+        ['<leader>WW<Left>'] = {
             function()
                 vim.cmd.wincmd('H')
             end,
@@ -865,7 +862,7 @@ function Keymaps.set_leader(leader, local_leader, force)
     local_leader = type_not_empty('string', local_leader) and local_leader or leader
     force = is_bool(force) and force or false
 
-    if leader_set and not force then
+    if _G.leader_set and not force then
         return
     end
 
@@ -928,7 +925,7 @@ local M = setmetatable({}, {
         local MODES = require('user_api.maps').modes
         local insp = inspect or vim.inspect
 
-        if not leader_set then
+        if not _G.leader_set then
             vim.notify('`keymaps.set_leader()` not called!', WARN, {
                 title = '[WARNING] (user_api.config.keymaps.setup)',
                 animate = true,

@@ -12,6 +12,20 @@ local curr_buf = vim.api.nvim_get_current_buf
 ---@type LazySpecs
 local Utils = {
     {
+        'vimwiki/vimwiki',
+        priority = 1000,
+        version = false,
+        init = flag_installed('vimwiki', function()
+            vim.g.vimwiki_list = {
+                {
+                    path = '~/.vimwiki',
+                    syntax = 'default',
+                    ext = '.wiki',
+                },
+            }
+        end),
+    },
+    {
         'vim-scripts/UTL.vim',
         version = false,
         init = flag_installed('utl'),

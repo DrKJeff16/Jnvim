@@ -6,7 +6,6 @@ local Util = User.util
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
-local is_tbl = Check.value.is_tbl
 local has_words_before = Util.has_words_before
 
 local BUtil = require('plugin.blink_cmp.util')
@@ -192,9 +191,7 @@ Cfg.Config = {
 
         list = {
             selection = {
-                preselect = function(ctx)
-                    ctx = is_tbl(ctx) and ctx or {}
-
+                preselect = function(_) -- `ctx`
                     return require('blink.cmp').snippet_active({ direction = 1 })
                 end,
 

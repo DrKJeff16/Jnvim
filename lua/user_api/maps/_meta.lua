@@ -1,4 +1,5 @@
 ---@meta
+-- luacheck: ignore
 
 ---@module 'user_api.maps.wk'
 ---@module 'user_api.maps.keymap'

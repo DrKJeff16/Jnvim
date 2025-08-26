@@ -62,7 +62,7 @@ local Defaults = {
     wildmenu = true,
 }
 
-if is_windows then
+if _G.is_windows then
     if executable('mingw32-make') then
         Defaults.makeprg = 'mingw32-make'
     end

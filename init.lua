@@ -22,7 +22,7 @@ local curr_buf = vim.api.nvim_get_current_buf
 -- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
 ---@type fun(...: any)
 function _G.notify_inspect(...)
-    vim.notify(inspect(...), INFO)
+    vim.notify(vim.inspect(...), INFO)
 end
 
 Opts({
@@ -138,7 +138,7 @@ local bt_get = Util.bt_get
 
 local buf = curr_buf()
 
-DISABLE_FT = {
+local DISABLE_FT = {
     'help',
     'lazy',
     'checkhealth',
@@ -148,7 +148,7 @@ DISABLE_FT = {
     'TelescopeResults',
 }
 
-DISABLE_BT = {
+local DISABLE_BT = {
     'help',
     'prompt',
     'quickfix',

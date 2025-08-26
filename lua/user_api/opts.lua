@@ -106,15 +106,13 @@ function Opts.long_opts_convert(T, verbose)
     table.sort(keys)
 
     for opt, val in next, T do
-        local new_opt = ''
-
         -- If neither long nor short (known) option, append to warning message
         if not (in_tbl(keys, opt) or Value.tbl_values({ opt }, ALL_OPTIONS)) then
             msg = fmt('%s- Option `%s` not valid!\n', msg, opt)
         elseif in_tbl(keys, opt) then
             parsed_opts[opt] = val
         else
-            new_opt = Value.tbl_values({ opt }, ALL_OPTIONS, true)
+            local new_opt = Value.tbl_values({ opt }, ALL_OPTIONS, true)
             if is_str(new_opt) and new_opt ~= '' then
                 parsed_opts[new_opt] = val
                 verb_str = fmt('%s%s ==> %s\n', verb_str, opt, new_opt)
@@ -140,7 +138,7 @@ end
 --- @param O User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
 --- @param verbose? boolean Enable verbose printing if `true`
 function Opts.optset(O, verbose)
-    local insp = inspect or vim.inspect
+    local insp = vim.inspect
     local curr_buf = vim.api.nvim_get_current_buf
 
     O = is_tbl(O) and O or {}
@@ -178,7 +176,7 @@ end
 ---Set up `guicursor` so that cursor blinks.
 ---
 function Opts.set_cursor_blink()
-    if in_console() then
+    if _G.in_console() then
         return
     end
 
@@ -197,7 +195,7 @@ end
 function Opts.print_set_opts()
     local T = copy(Opts.options)
     table.sort(T)
-    vim.notify((inspect or vim.inspect)(T), INFO)
+    vim.notify(vim.inspect(T), INFO)
 end
 
 ---@param O string[]|string

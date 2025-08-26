@@ -58,6 +58,8 @@ function Flexoki.setup(variant, overrides)
         highlight_groups = {},
     }
 
+    Flex.setup(Opts)
+
     vim.cmd(Flexoki.mod_cmd)
 end
 

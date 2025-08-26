@@ -1,9 +1,7 @@
 local validate = vim.validate
 
 local executable = require('user_api.check.exists').executable
-local is_str = require('user_api.check.value').is_str
 local is_tbl = require('user_api.check.value').is_tbl
-local is_num = require('user_api.check.value').is_num
 local num_range = require('user_api.check.value').num_range
 
 local augroup = vim.api.nvim_create_augroup

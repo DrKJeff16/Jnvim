@@ -32,9 +32,11 @@ function CfgUtil.set_tgc(force)
 end
 
 ---@param name string
+---@param callback? fun()
 ---@return fun()
-function CfgUtil.flag_installed(name)
+function CfgUtil.flag_installed(name, callback)
     validate('name', name, 'string', false)
+    validate('callback', callback, 'function', true, 'fun()')
 
     if name == '' then
         error('Unable to set `vim.g` var', ERROR)
@@ -44,6 +46,10 @@ function CfgUtil.flag_installed(name)
 
     return function()
         vim.g[flag] = 1
+
+        if callback then
+            callback()
+        end
     end
 end
 

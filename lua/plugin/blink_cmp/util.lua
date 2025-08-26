@@ -150,7 +150,7 @@ function BUtil.reset_providers()
             ---@return blink.cmp.CompletionItem[]
             transform_items = function(ctx, items)
                 local keyword = ctx.get_keyword()
-                local correct = ''
+                local correct
 
                 ---@type fun(s: string|number): string
                 local case

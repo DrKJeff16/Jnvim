@@ -41,7 +41,7 @@ function VSCode.setup(variant, transparent, override)
     local C = require('vscode.colors').get_colors()
 
     require('vscode').setup(vim.tbl_extend('keep', override, {
-        style = 'dark',
+        style = variant,
         transparent = transparent and not in_console(),
         italic_comments = false,
         underline_links = true,

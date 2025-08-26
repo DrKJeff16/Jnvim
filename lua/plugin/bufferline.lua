@@ -40,18 +40,6 @@ local function diagnostics_indicator(count, lvl, diags, context)
     return s
 end
 
----@param buf Bufferline.Buf
----@return string?
-local function name_formatter(buf) -- buf contains:
-    -- name                | str        | the basename of the active file
-    -- path                | str        | the full path of the active file
-    -- bufnr (buffer only) | int        | the number of the active buffer
-    -- buffers (tabs only) | table(int) | the numbers of the buffers in the tab
-    -- tabnr (tabs only)   | int        | the "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
-
-    return nil
-end
-
 BLine.setup({
     highlights = {
         fill = {

@@ -524,20 +524,17 @@ end
 
 ---@param c string
 ---@param direction? 'next'|'prev'
----@param cycle? boolean
 ---@return string
-function Util.displace_letter(c, direction, cycle)
+function Util.displace_letter(c, direction)
     local Value = require('user_api.check.value')
     local A = Util.string.alphabet
 
     local fields = Value.fields
     local is_str = Value.is_str
-    local is_bool = Value.is_bool
     local mv = Util.mv_tbl_values
 
     direction = (is_str(direction) and in_tbl({ 'next', 'prev' }, direction)) and direction
         or 'next'
-    cycle = is_bool(cycle) and cycle or false
 
     if c == '' then
         return 'a'

@@ -158,7 +158,7 @@ Autocmd.autocommands = {
                             vim.lsp.stop_client(client.id, true)
 
                             vim.schedule(function()
-                                vim.lsp.start(LAST_LSP, { bufnr = curr_buf() })
+                                vim.lsp.start(_G.LAST_LSP, { bufnr = curr_buf() })
                             end)
                         end,
                         desc('Force Server Restart'),
@@ -170,7 +170,7 @@ Autocmd.autocommands = {
                             vim.lsp.stop_client(client.id)
 
                             vim.schedule(function()
-                                vim.lsp.start(LAST_LSP, { bufnr = curr_buf() })
+                                vim.lsp.start(_G.LAST_LSP, { bufnr = curr_buf() })
                             end)
                         end,
                         desc('Server Restart'),

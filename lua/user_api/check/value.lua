@@ -522,7 +522,11 @@ function Value.in_tbl_range(num, T)
 
     local len = #T
 
-    return not len == 0 and (num >= 1 and num <= len) or false
+    if len == 0 then
+        return false
+    end
+
+    return num >= 1 and num <= len
 end
 
 return setmetatable(Value, {
