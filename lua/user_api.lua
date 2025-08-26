@@ -154,7 +154,7 @@ end
 
 function User.setup_maps()
     local Keymaps = User.config.keymaps
-    local desc = User.maps.kmap.desc
+    local desc = User.maps.desc
     local type_not_empty = User.check.value.type_not_empty
     local displace_letter = User.util.displace_letter
     local replace = User.util.string.replace
@@ -214,7 +214,7 @@ function User.setup(opts)
 
     opts = opts or {}
 
-    local desc = User.maps.kmap.desc
+    local desc = User.maps.desc
     local insp = inspect or vim.inspect
 
     ---@type AllMaps

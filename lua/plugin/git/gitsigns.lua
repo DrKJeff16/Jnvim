@@ -11,7 +11,7 @@ local Check = User.check
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_int = Check.value.is_int
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not executable('git') or not exists('gitsigns') then
     User.deregister_plugin('plugin.git.gitsigns')

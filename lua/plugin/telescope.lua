@@ -25,7 +25,7 @@ local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local exists = Check.exists.module
 local Keymaps = require('user_api.config.keymaps')
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not exists('telescope') then
     User.deregister_plugin('plugin.telescope')

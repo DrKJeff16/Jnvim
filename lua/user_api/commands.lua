@@ -7,7 +7,7 @@
 
 local Value = require('user_api.check.value')
 
-local desc = require('user_api.maps.kmap').desc
+local desc = require('user_api.maps').desc
 local type_not_empty = Value.type_not_empty
 
 local ERROR = vim.log.levels.ERROR

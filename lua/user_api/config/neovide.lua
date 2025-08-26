@@ -214,7 +214,7 @@ function Neovide.setup_maps()
     end
 
     local Keymaps = require('user_api.config.keymaps')
-    local desc = require('user_api.maps.kmap').desc
+    local desc = require('user_api.maps').desc
     local notify = require('user_api.util.notify').notify
 
     ---@type AllMaps

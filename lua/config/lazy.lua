@@ -13,7 +13,7 @@ local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
 local Termux = require('user_api.distro.termux')
 
-local desc = require('user_api.maps.kmap').desc
+local desc = require('user_api.maps').desc
 
 local key_variant = CfgUtil.key_variant
 local in_console = require('user_api.check').in_console

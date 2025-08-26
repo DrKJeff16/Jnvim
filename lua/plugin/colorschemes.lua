@@ -22,7 +22,7 @@ local is_str = Check.value.is_str
 local type_not_empty = Check.value.type_not_empty
 local capitalize = User.util.string.capitalize
 local displace_letter = User.util.displace_letter
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 local ERROR = vim.log.levels.ERROR
 

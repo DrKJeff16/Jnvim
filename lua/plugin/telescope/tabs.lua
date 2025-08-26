@@ -40,7 +40,7 @@ end
 
 function TelescopeTabs.loadkeys()
     local Keymaps = require('user_api.config.keymaps')
-    local desc = require('user_api.maps.kmap').desc
+    local desc = require('user_api.maps').desc
 
     ---@type AllMaps
     local Keys = {

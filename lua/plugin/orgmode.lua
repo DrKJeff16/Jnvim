@@ -1,7 +1,10 @@
 local User = require('user_api')
 local Check = User.check
 
+local Keymaps = User.config.keymaps
 local exists = Check.exists.module
+
+local floor = math.floor
 
 if not exists('orgmode') then
     User.deregister_plugin('plugin.orgmode')
@@ -34,17 +37,21 @@ Orgmode.setup({
 
     org_ellipsis = '...',
 
+    ---@param name string
     win_split_mode = function(name)
-        -- Make sure it's not a scratch buffer by passing false as 2nd argument
+        --- Make sure it's not a scratch buffer by passing false as 2nd argument
         local bufnr = vim.api.nvim_create_buf(false, false)
+
+        local cols, rows = vim.opt.columns:get(), vim.opt.lines:get()
+
         --- Setting buffer name is required
         vim.api.nvim_buf_set_name(bufnr, name)
 
         local fill = 0.8
-        local width = math.floor((vim.o.columns * fill))
-        local height = math.floor((vim.o.lines * fill))
-        local row = math.floor((((vim.o.lines - height) / 2) - 1))
-        local col = math.floor(((vim.o.columns - width) / 2))
+        local width = floor(cols * fill)
+        local height = floor(rows * fill)
+        local row = floor(((rows - height) / 2) - 1)
+        local col = floor((cols - width) / 2)
 
         vim.api.nvim_open_win(bufnr, true, {
             relative = 'editor',
@@ -64,6 +71,12 @@ Orgmode.setup({
     org_babel_default_header_args = { [':tangle'] = 'no', [':noweb'] = 'no' },
 
     calendar_week_start_day = 0,
+})
+
+Keymaps({
+    n = {
+        ['<leader>o'] = { group = '+Orgmode' },
+    },
 })
 
 User.register_plugin('plugin.orgmode')

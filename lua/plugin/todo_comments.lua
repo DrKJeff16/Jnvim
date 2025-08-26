@@ -4,7 +4,7 @@ local Check = User.check
 local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 local in_tbl = vim.tbl_contains
 

@@ -4,7 +4,7 @@ local Check = User.check
 local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local hi = User.highlight.hl_from_dict
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not exists('treesitter-context') then
     User.deregister_plugin('plugin.ts.context')

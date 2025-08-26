@@ -8,7 +8,7 @@ local Termux = require('user_api.distro.termux')
 
 local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
-local desc = require('user_api.maps.kmap').desc
+local desc = require('user_api.maps').desc
 
 local INFO = vim.log.levels.INFO
 

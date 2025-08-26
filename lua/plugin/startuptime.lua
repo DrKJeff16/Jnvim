@@ -1,6 +1,6 @@
 local User = require('user_api')
 
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 local hi = User.highlight.hl
 local Keymaps = require('user_api.config.keymaps')
 

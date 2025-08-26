@@ -8,7 +8,7 @@ local Check = User.check
 local exists = Check.exists.module
 local type_not_empty = Check.value.type_not_empty
 local executable = Check.exists.executable
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 local in_tbl = vim.tbl_contains
 local mk_caps = vim.lsp.protocol.make_client_capabilities

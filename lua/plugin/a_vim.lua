@@ -1,7 +1,7 @@
 local User = require('user_api')
 
 local Keymaps = require('user_api.config.keymaps')
-local desc = require('user_api.maps.kmap').desc
+local desc = require('user_api.maps').desc
 
 local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd

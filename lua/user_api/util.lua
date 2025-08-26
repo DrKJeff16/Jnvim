@@ -416,7 +416,7 @@ function Util.setup_autocmd()
                     callback = function(ev)
                         local Keymaps = require('user_api.config.keymaps')
                         local executable = require('user_api.check.exists').executable
-                        local desc = require('user_api.maps.kmap').desc
+                        local desc = require('user_api.maps').desc
                         local notify = Util.notify.notify
 
                         local buf = ev.buf

@@ -14,7 +14,7 @@ local Keymaps = require('user_api.config.keymaps')
 local Check = User.check
 
 local exists = Check.exists.module
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not exists('telescope._extensions.conventional_commits.actions') then
     return nil

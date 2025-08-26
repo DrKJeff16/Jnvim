@@ -4,8 +4,8 @@ local Check = User.check
 
 local exists = Check.exists.module
 local is_int = Check.value.is_int
-local desc = User.maps.kmap.desc
-local tmap = User.maps.kmap.t
+local desc = User.maps.desc
+local tmap = User.maps.keymap.t
 
 if not exists('toggleterm') then
     User.deregister_plugin('plugin.toggleterm')

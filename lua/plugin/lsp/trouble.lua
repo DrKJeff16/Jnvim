@@ -5,7 +5,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend

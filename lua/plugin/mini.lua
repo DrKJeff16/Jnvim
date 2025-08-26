@@ -9,7 +9,7 @@ local exists = Check.exists.module
 local is_fun = Check.value.is_fun
 local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 local ft_get = Util.ft_get
 
 local ERROR = vim.log.levels.ERROR

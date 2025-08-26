@@ -5,7 +5,7 @@ local Au = User.util.au
 local Notify = User.util.notify
 
 local is_tbl = Check.value.is_tbl
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 local au = Au.au_repeated
 local notify = Notify.notify
 

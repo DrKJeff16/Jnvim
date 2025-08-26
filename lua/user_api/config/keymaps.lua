@@ -10,7 +10,7 @@ local is_bool = Value.is_bool
 local type_not_empty = Value.type_not_empty
 local nop = require('user_api.maps').nop
 local map_dict = require('user_api.maps').map_dict
-local desc = require('user_api.maps.kmap').desc
+local desc = require('user_api.maps').desc
 local ft_get = require('user_api.util').ft_get
 local bt_get = require('user_api.util').bt_get
 

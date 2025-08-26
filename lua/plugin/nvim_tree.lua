@@ -48,7 +48,7 @@ local empty = Check.value.empty
 local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 local au = User.util.au.au_from_dict
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not exists('nvim-tree') then
     User.deregister_plugin('plugin.nvim_tree')

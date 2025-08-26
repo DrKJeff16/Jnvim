@@ -3,7 +3,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local desc = User.maps.kmap.desc
+local desc = User.maps.desc
 
 if not exists('project') then
     User.deregister_plugin('plugin.project')

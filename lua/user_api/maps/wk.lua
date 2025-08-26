@@ -7,23 +7,23 @@
 ---|'o'
 ---|'x'
 
--- This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Kmap`), with few extensions
--- ---
--- ## Description
+-- This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Opts`),
+-- with few extensions.
 --
--- This table defines a keymap that is used for grouping keymaps with an extra sequence,
--- e.g.
+-- This table defines a keymap that is used for grouping keymaps with an extra sequence.
 --
 -- This class type is reserved for either direct usage with `which-key`, or most regularly
--- for `User.maps.map_dict()` and anything in the `User.maps.wk` module
---
+-- for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
 -- ---
----@class RegKey: vim.keymap.set.Opts
---- AKA `lhs` of a Vim Keymap
+---@class RegKey
+--- AKA `lhs` of a Vim Keymap.
+---
 ---@field [1] string
---- AKA `rhs` of a Vim Keymap
+--- AKA `rhs` of a Vim Keymap.
+---
 ---@field [2] string|fun()
---- Keymap's description
+--- Keymap's description.
+---
 ---@field desc? string
 --- If `true`, `which-key` will hide this keymap
 --- **See `:h vim.keymap.set()` to find the other fields**
@@ -34,47 +34,6 @@
 ---@field icon? string|wk.Icon|fun(): (wk.Icon|string)
 ---@field proxy? string
 ---@field expand? fun(): wk.Spec
-
---- A **group mapping scheme** for usage related to `which-key`
---- ---
---- ## Description
----
----  * **WARNING:** If you remove the `group` field, it'll be parsed as any other table
----
---- This class type is reserver for either direct usage with `which-key`, or most regularly
---- for `User.maps.map_dict()` and anything in the `User.maps.wk` module
----
---- This table defines a keymap that is used for grouping keymaps with an extra sequence,
---- e.g.
----
---- ```
---- <leader>fs    <=== [ ] not a group
---- <leader>f     <=== [X] this is a group the keymap above belongs to
---- ```
----
---- **_EXAMPLE:_**
----
---- ```lua
---- arbitrory_keys = {
----     ['<leader><leader>']= { group = '+Group1', buffer = 4, hidden = true },
----                         --- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
----                             --- This is the `RegPfx` table
---- }
---- ```
----
---- ---
---- ## Fields
----
---- - **_`group`_** (string): The name of the group. Optionally you can prepend a `+` to the name, but
----                   I don't think `which-key` cares if you don't do it
----
---- - **_`hidden`_** (boolean, **optional**): Determines whether said key should be shown by `which-key` or not
----
---- **See `:h vim.keymap.set()` to find the other fields**
----
---- ---
----@class RegPfx: vim.keymap.set.Opts
----@field group string
 
 --- A dictionary of string ==> `RegKey` class
 --- ---
@@ -99,20 +58,51 @@
 --- ```
 ---@alias RegKeys table<string, RegKey>
 
---- A dictionary of string ==> `RegPfx` class
---- ---
---- ## Description
+---A dictionary of string ==> `RegPfx` class.
 ---
---- This merely describes a dictionary of `RegPfx` type objects
+---This merely describes a dictionary of `RegPfx` type objects.
 ---
---- - **NOTE:** This is **only valid if** _`which-key`_ is installed
+---**This is only valid if _`which-key`_ is installed.**
+---
 ---@alias RegKeysNamed table<string, RegPfx>
 
 ---@alias ModeRegKeys table<MapModes, RegKeys>
 
 ---@alias ModeRegKeysNamed table<MapModes, RegKeysNamed>
 
----@class RegKeyOpts: vim.keymap.set.Opts
+--- A group mapping scheme for usage related to `which-key`.
+---
+--- - **WARNING:** If you remove the `group` field, it'll be parsed as any other table
+---
+--- This class type is reserver for either direct usage with `which-key`, or most regularly
+--- for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
+---
+--- This table defines a keymap that is used for grouping keymaps with an extra sequence,
+--- for example:
+---
+--- ```
+--- <leader>fs    <=== [ ] not a group
+--- <leader>f     <=== [X] this is a group the keymap above belongs to
+--- ```
+---
+--- **_EXAMPLE:_**
+---
+--- ```lua
+--- arbitrory_keys = {
+---     ['<leader><leader>']= { group = '+Group1', buffer = 4, hidden = true },
+--- }
+--- ```
+---
+--- - `group` (`string`): The name of the group. Optionally you can prepend a `+` to the name,
+---                   but I don't think `which-key` cares if you don't do it
+---
+--- - `hidden` (`boolean`, optional): Determines whether said key should be shown
+---                               by `which-key` or not
+---
+--- See `:h vim.keymap.set()` to find the other fields.
+---
+--- ---
+---@class RegPfx: vim.keymap.set.Opts
 ---@field mode? MapModes
 ---@field hidden? boolean
 ---@field group? string
@@ -146,8 +136,8 @@ function WK.available()
 end
 
 ---@param lhs string
----@param rhs User.Maps.Keymap.Rhs|RegKey|RegPfx
----@param opts? User.Maps.Keymap.Opts|RegKeyOpts
+---@param rhs string|fun()
+---@param opts? User.Maps.Opts|vim.keymap.set.Opts|RegPfx
 ---@return RegKey|RegPfx
 function WK.convert(lhs, rhs, opts)
     if not WK.available() then
@@ -156,7 +146,7 @@ function WK.convert(lhs, rhs, opts)
 
     opts = is_tbl(opts) and opts or {}
 
-    ---@type RegKey|RegKeyOpts
+    ---@type RegKey|RegPfx
     local res = { lhs, rhs }
 
     if is_bool(opts.hidden) then
@@ -182,16 +172,20 @@ function WK.convert_dict(T)
     local res = {}
 
     for lhs, v in next, T do
-        v[2] = is_tbl(v[2]) and v[2] or {}
+        ---@type string|fun()
+        local rhs = v[1]
 
-        table.insert(res, WK.convert(lhs, v[1], v[2]))
+        ---@type User.Maps.Opts
+        local opts = is_tbl(v[2]) and v[2] or {}
+
+        table.insert(res, WK.convert(lhs, rhs, opts))
     end
 
     return res
 end
 
 ---@param T AllMaps
----@param opts? RegKeyOpts|User.Maps.Keymap.Opts
+---@param opts? RegPfx|User.Maps.Opts
 ---@return false?
 function WK.register(T, opts)
     if not WK.available() then

@@ -34,7 +34,7 @@ au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
     pattern = '*',
     callback = function()
         local WK = require('which-key')
-        local desc = require('user_api.maps.kmap').desc
+        local desc = require('user_api.maps').desc
         local nop = require('user_api.maps').nop
 
         ---@param tabnr? integer
