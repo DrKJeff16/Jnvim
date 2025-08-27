@@ -2,6 +2,9 @@
 
 # Jnvim
 
+- [Codeberg Mirror](https://codeberg.org/DrKJeff16/Jnvim) (RECOMMENDED)
+- [GitHub Mirror](https://github.com/DrKJeff16/Jnvim)
+
 </div>
 
 ## Table Of Contents
