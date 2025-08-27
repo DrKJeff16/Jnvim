@@ -168,7 +168,6 @@ function Server.setup()
         local new_client = Server.populate(name, client)
 
         vim.lsp.config(name, new_client)
-        vim.lsp.enable(name)
 
         if not in_tbl(Server.client_names, name) then
             table.insert(Server.client_names, name)
@@ -176,6 +175,8 @@ function Server.setup()
 
         ::continue::
     end
+
+    vim.lsp.enable(Server.client_names)
 
     ---@type AllModeMaps
     local Keys = {
