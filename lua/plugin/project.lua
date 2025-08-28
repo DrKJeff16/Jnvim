@@ -13,6 +13,8 @@ end
 local Project = require('project')
 
 Project.setup({
+    logging = false,
+
     manual_mode = false,
 
     detection_methods = { 'lsp', 'pattern' },
