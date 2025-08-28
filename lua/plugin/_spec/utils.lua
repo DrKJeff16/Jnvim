@@ -24,6 +24,7 @@ local Utils = {
                 },
             }
         end),
+        enabled = false,
     },
     {
         'vim-scripts/UTL.vim',
