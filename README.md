@@ -10,17 +10,17 @@
 ## Table Of Contents
 
 1. [About](#about)
-    1. [Requirements](#requirements)
-    2. [Structure](#structure)
-    3. [Plugins](#plugins)
+  1. [Requirements](#requirements)
+  2. [Structure](#structure)
+  3. [Plugins](#plugins)
 2. [The User API](#the-user-api)
-    1. [`user_api.util`](#user_apiutil)
-    2. [`user_api.opts`](#user_apiutil)
-    3. [`user_api.check`](#user_apicheck)
-    4. [`user_api.maps`](#user_apimaps)
-        1. [`user_api.maps.kmap.desc`](#user_apimapskmapdesc)
-        2. [`user_api.maps.wk`](#user_apimapswk)
-    5. [`user_api.highlight`](#user_apihighlight)
+  1. [`user_api.util`](#user_apiutil)
+  2. [`user_api.opts`](#user_apiutil)
+  3. [`user_api.check`](#user_apicheck)
+  4. [`user_api.maps`](#user_apimaps)
+      1. [`user_api.maps.keymap`](#user_apimapskeymap)
+      2. [`user_api.maps.wk`](#user_apimapswk)
+  5. [`user_api.highlight`](#user_apihighlight)
 
 ---
 
@@ -84,37 +84,38 @@ For these to work, the following executables must be installed and in your `$PAT
 │   │   ├── utils.lua  <==  Utilities and other helpful plugins
 │   │   └── vcs.lua  <==  Version Control plugins
 │   ├── plugin1/  <==  Arbitrary plugin #1
-│   │   └── init.lua  <==  Entry points + setup
+│   │   └── submodule1.lua  <==  Extra module config
 │   ├── plugin2/  <==  Arbitrary plugin #2
-│   │   ├── init.lua  <==  Entry points + setup
-│   │   └── submoule.lua  <==  Arbitrary submodule
+│   │   └── submodule1.lua  <==  Extra module config
+│   │   └── submodule2.lua  <==  Extra module config
 │   └── ...  <==   More plugin configs...
+├── user_api.lua  <==  API entry points
 ├── user_api/  <==  User API module
-│   ├── init.lua  <==  API entry points
+│   ├── check.lua  <==  Entry points for `check/` are defined here
 │   ├── check/  <==  Checker Functions
-│   │   ├── init.lua  <==  Entry points are defined here
 │   │   ├── exists.lua  <==  Existance checkers
 │   │   └── value.lua  <==  Value checkers
 │   ├── commands.lua  <==  User-defined commands
+│   ├── config.lua  <==  Entry points for `config/` are defined here
 │   ├── config/  <==  Configuration-related tools
 │   │   ├── keymaps.lua  <==  `Keymap()` call
 │   │   └── neovide.lua  <==  Neovide activation tools
+│   ├── distro.lua  <==  Entry points for `distro/` are defined here
 │   ├── distro/  <==  OS Utilities
-│   │   ├── init.lua  <==  Entry points are defined here
 │   │   ├── archlinux.lua  <==  Arch Linux utilities
 │   │   └── termux.lua <==  Termux (Android) utilities
 │   ├── highlight.lua  <==  Highlight Functions
+│   ├── maps.lua  <==  Entry points for `maps/` are defined here
 │   ├── maps/  <==  Mapping Utilities
-│   │   ├── init.lua  <==  Entry points are defined here
-│   │   ├── kmap.lua  <==  `vim.keymap.set` utilities
+│   │   ├── keymap.lua  <==  `vim.keymap.set` utilities
 │   │   └── wk.lua  <==  `which_key` utilities (regardless if installed or not)
+│   ├── opts.lua  <==  Entry points for `opts/` are defined here
 │   ├── opts/  <==  Vim Option Utilities
-│   │   ├── init.lua  <==  Entry points are defined here
 │   │   ├── all_opts.lua  <==  Internal checking utility [DO NOT TOUCH]
 │   │   └── config.lua  <==  Default options set here
 │   ├── update.lua  <==  Update utilities
+│   ├── util.lua  <==  Entry points for `util/` are defined here
 │   ├── util/  <==  Misc Utils
-│   │   ├── init.lua  <==  Entry points are defined here
 │   │   ├── autocmd.lua  <==  Autocommand utilities
 │   │   ├── notify.lua  <==  Notification utilities
 └───└───└── string.lua  <==  String operators/pre-defined lists
@@ -131,12 +132,12 @@ on how to install plugins.
 
 Some of the most important plugins used:
 
-- [`blink.cmp`](https://github.com/Saghen/blink.cmp)
 - [`project.nvim`](https://github.com/DrKJeff16/project.nvim)
 - [`which-key.nvim`](https://github.com/folke/which-key.nvim)
+- [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
+- [`blink.cmp`](https://github.com/Saghen/blink.cmp)
 - [`mini.nvim`](https://github.com/echasnovski/mini.nvim)
 - [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim)
-- [`nvim-notify`](https://github.com/rcarriga/nvim-notify)
 - [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
 - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
 - [`lazydev.nvim`](https://github.com/folke/lazydev.nvim)
@@ -175,7 +176,7 @@ Opts2:setup_keys() -- Setup keymaps
 ```
 
 The `setup()` function optionally accepts a dictionary-like table with your own vim options.
-It overwrites some of the default options as defined in [`user_api.opts`](./lua/user_api/opts/init.lua).
+It overwrites some of the default options as defined in [`user_api.opts`](./lua/user_api/opts.lua).
 **MAKE SURE THEY CAN BE ACCEPTED BY `vim.opt`**.
 
 As an example:
@@ -207,32 +208,31 @@ sub-tables. Both used for many conditional checks, aswell as module handling.
 _These are the following:_
 
 - **`user_api.check.value`**
-    Used for value checking, differentiation and conditional code, aswell as
-    for optional parameters in functions.
-    It can be found in [`user_api/check/value.lua`](./lua/user_api/check/value.lua).
+  Used for value checking, differentiation and conditional code, aswell as
+  for optional parameters in functions.
+  It can be found in [`user_api/check/value.lua`](./lua/user_api/check/value.lua).
 
-    |       function      |                                                                                               description                                                                                               |                          parameter types                          | return type |
-    |:-------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
-    |       `is_str`      |            Checks whether the input values are of `string` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |       `is_num`      |            Checks whether the input values are of `number` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |       `is_bool`     |            Checks whether the input values are of `boolean` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |       `is_fun`      |           Checks whether the input values are of `function` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |       `is_tbl`      |             Checks whether the input values are of `table` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |       `is_int`      |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
-    |        `empty`      |              If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.<br>If other type return `true`.            |                    `v`: `string\|number\|table`                   |  `boolean`  |
-    |   `type_not_empty`  |                   It essentially combines  `is_<type>()` with `empty()` as<br>both statements get used un conjuction a lot                                                                              |   <ol><li> `type_str`: `'string'\|'number'\|'table'`</li><li> `data`: `string\|number\|table`</li></ol> | `boolean` |
+  |       Function      |                                                                                               description                                                                                               |                            Parameter Types                        | Return Type |
+  |:-------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------:|:-----------:|
+  |       `is_str`      |            Checks whether the input values are of `string` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |       `is_num`      |            Checks whether the input values are of `number` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |       `is_bool`     |            Checks whether the input values are of `boolean` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |       `is_fun`      |           Checks whether the input values are of `function` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.           | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |       `is_tbl`      |             Checks whether the input values are of `table` type.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.            | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |       `is_int`      |              Checks whether the input values are **integers**.<br>By default it checks for a single value,<br>but can be told to check for multiple<br>by setting the 2nd param as `true`.              | `var`: `unknown\|table`, `multiple`: `boolean` (default: `false`) |  `boolean`  |
+  |        `empty`      |              If input is a string, checks for an empty string.<br>If input is number, checks for value `0`.<br>If input is table, checks for an empty table.<br>If other type return `true`.            |                    `v`: `string\|number\|table`                   |  `boolean`  |
+  |   `type_not_empty`  |                   It essentially combines  `is_<type>()` with `empty()` as<br>both statements get used un conjuction a lot                                                                              |   <ol><li> `type_str`: `'string'\|'number'\|'table'`</li><li> `data`: `string\|number\|table`</li></ol> | `boolean` |
 
 - **`user_api.check.exists`**
-    Used for data existance checks, conditional module loading and fallback operations.
-    It can be found in [`user_api/check/exists.lua`](./lua/user_api/check/exists.lua).
-    |   function   |                                                                                                                                                                                              description                                                                                                                              |                       parameter types                           |            return type            |
-    |:------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------:|
-    | `module`     |                                                                                                                                                                Checks whether a `require(...)` statement is valid, given the input string                                                                                             |                       `mod`: `string`                           |             `boolean`             |
-    | `modules`    |   Checks whether multiple `require(...)` statements are valid, given the input strings.<br>If 2nd parameter is `false` then check for each string, then stop and return false if one is not valid.<br>If 2nd parameter is `true`, return a dictionary for each key as each input string,<br> and a boolean as its respective value.   |   `mod`: `string[]`, `need_all`: `boolean` (default: `false`)   | `boolean\|table<string, boolean>` |
-    | `vim_exists` |                                            Checks whether a string or multiple strings are true statements using the Vimscript `exists()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished.                                             |                    `expr`: `string\|string[]`                   |             `boolean`             |
-    | `vim_has`    |                                                 Checks whether a string or multiple are true statements when using the Vimscript `has()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished.                                              |                    `expr`: `string\|string[]`                   |             `boolean`             |
-    | `vim_isdir`  |                                                                                                                                                                                  Checks whether the string is a directory.                                                                                                            |                        `path`: `string`                         |             `boolean`             |
-    | `executable` | Checks whether one or multiple strings are executables found in `$PATH`.<br>If a string array is given, check each string and if any string is invalid and the `fallback` parameter is a function then execute the _fallback_ function.<br>This function will return the result regardless of whether `fallback` has been set or not. | `exe`: `string\|string[]`, `fallback`: `fun()` (default: `nil`) |             `boolean`             |
+  Used for data existance checks, conditional module loading and fallback operations.
+  It can be found in [`user_api/check/exists.lua`](./lua/user_api/check/exists.lua).
+  |   Function   |                                                                                                                                                                                              Description                                                                                                                              |                       parameter types                           |            Return Type            |
+  |:------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------:|:---------------------------------:|
+  | `module`     |                                                                                                                                                                Checks whether a `require(...)` statement is valid, given the input string                                                                                             |                       `mod`: `string`                           |             `boolean`             |
+  | `vim_exists` |                                            Checks whether a string or multiple strings are true statements using the Vimscript `exists()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished.                                             |                    `expr`: `string\|string[]`                   |             `boolean`             |
+  | `vim_has`    |                                                 Checks whether a string or multiple are true statements when using the Vimscript `has()` function.<br>If a string array is given, check each string and if any string is invalid, return `false`. Otherwise return `true` when finished.                                              |                    `expr`: `string\|string[]`                   |             `boolean`             |
+  | `vim_isdir`  |                                                                                                                                                                                  Checks whether the string is a directory.                                                                                                            |                        `path`: `string`                         |             `boolean`             |
+  | `executable` | Checks whether one or multiple strings are executables found in `$PATH`.<br>If a string array is given, check each string and if any string is invalid and the `fallback` parameter is a function then execute the _fallback_ function.<br>This function will return the result regardless of whether `fallback` has been set or not. | `exe`: `string\|string[]`, `fallback`: `fun()` (default: `nil`) |             `boolean`             |
 
 ---
 
@@ -241,20 +241,7 @@ _These are the following:_
 This module provides keymapping utilities in a more
 complete, extensible and (hopefully) smarter way for the end user.
 
-The `maps.kmap` module has the same function names for each mode:
-
-- `maps.kmap.n(...)`: Same as `:nmap`
-- `maps.kmap.i(...)`: Same as `:imap`
-- `maps.kmap.v(...)`: Same as `:vmap`
-- `maps.kmap.t(...)`: Same as `:tmap`
-- `maps.kmap.o(...)`: Same as `:omap`
-- `maps.kmap.x(...)`: Same as `:xmap`
-
-<!--TODO: Fix sections above and below-->
-
-#### `user_api.maps.kmap.desc`
-
-There exists a `kmap.desc()` method that returns an option table with a description field
+There exists a `maps.desc()` method that returns an option table with a description field
 and other fields corresponding to each parameter.
 
 ```lua
@@ -266,7 +253,7 @@ and other fields corresponding to each parameter.
 ---@param nowait? boolean Defaults to `true`
 ---@param expr? boolean Defaults to `false`
 ---@return vim.keymap.set.Opts
-require('user_api.maps.kmap').desc(msg, silent, bufnr, noremap, nowait, expr)
+require('user_api.maps').desc(msg, silent, bufnr, noremap, nowait, expr)
 ```
 
 The function returns this table:
@@ -291,6 +278,19 @@ The function returns this table:
 }
 ```
 
+#### `user_api.maps.keymap`
+
+The `maps.keymap` module has the same function names for each mode:
+
+- `maps.keymap.n(...)`: Same as `:nmap`
+- `maps.keymap.i(...)`: Same as `:imap`
+- `maps.keymap.v(...)`: Same as `:vmap`
+- `maps.keymap.t(...)`: Same as `:tmap`
+- `maps.keymap.o(...)`: Same as `:omap`
+- `maps.keymap.x(...)`: Same as `:xmap`
+
+<!--TODO: Fix sections above and below-->
+
 #### `user_api.maps.wk`
 
 The `maps` API also includes integration with
@@ -308,17 +308,17 @@ Use it, for example, to setup a fallback for setting keys, like in the
 following example:
 
 ```lua
-local Kmap = require('user_api.maps.kmap')
+local Keymap = require('user_api.maps.keymap')
 local WK = require('user_api.maps.wk')
 
 local my_keys = {
-    --- Your maps go here...
+  --- Your maps go here...
 }
 
 if WK.available() then
-    --- Use `WK`
+  --- Use `WK`
 else
-    --- Use `Kmap`
+  --- Use `Keymap`
 end
 
 ```
@@ -329,33 +329,22 @@ return `false` and refuse to process your keymaps altogether.
 If you want to convert a keymap table, you must first structure it as follows:
 
 ```lua
--- Using `vim.keymap.set()` (`User.maps.kmap`) as an example.
+local desc = require('user_api.maps').desc
 
----@class KeyMapRhsOptsArr
----@field [1] User.Maps.Keymap.Rhs
----@field [2]? User.Maps.Keymap.Opts
-
----@alias KeyMapDict table<string, KeyMapRhsOptsArr> A dict with the key as lhs and the value as the class above
-
----@alias MapMode ('n'|'i'|'v'|'t'|'o'|'x') Vim Mode
----@alias MapModes MapMode[]
-
----@alias KeyMapModeDict table<MapMode, KeyMapDict>
-
--- Without modes
----@type KeyMapDict
+---This alias expands to `table<string, KeyMapRhsArr|RegKey|RegPfx>`
+---@type AllMaps
 local Keys1 = {
-    ['lhs1'] = { 'rhs1', { desc = 'Keymap 1' } },
-    ['lhs2'] = {
+  ['lhs1'] = { 'rhs1', { desc('Keymap 1') } },
+  ['lhs2'] = {
     function()
-      vim.print('this is rhs2')
+      vim.print('this is rhs2 and I\'m buffer-local!')
     end,
-    { desc = 'Keymap 1', noremap = true },
+    desc('Keymap 1', 0),
   },
 }
 
 -- With modes
----@type KeyMapModeDict
+---@type AllModeMaps
 local Keys2 = {
     -- Normal Mode Keys
     n = {
@@ -372,7 +361,7 @@ local Keys2 = {
 }
 ```
 
-You can then pass this dictionary to [`user_api.maps.map_dict()`](./lua/user_api/maps/init.lua):
+You can then pass this dictionary to [`user_api.maps.map_dict()`](./lua/user_api/maps.lua):
 
 - **Example**
     ```lua
