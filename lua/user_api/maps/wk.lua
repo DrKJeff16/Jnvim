@@ -22,6 +22,7 @@
 --- AKA `rhs` of a Vim Keymap.
 ---
 ---@field [2] string|fun()
+---@field [3]? User.Maps.Opts
 --- Keymap's description.
 ---
 ---@field desc? string
@@ -117,6 +118,7 @@
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
+local O = require('user_api.maps.objects')
 local Value = require('user_api.check.value')
 
 local is_tbl = Value.is_tbl
@@ -188,6 +190,9 @@ end
 ---@param opts? RegPfx|User.Maps.Opts
 ---@return false?
 function WK.register(T, opts)
+    vim.validate('T', T, 'table', false, 'AllMaps')
+    vim.validate('opts', opts, 'table', true, 'RegPfx|User.Maps.Opts')
+
     if not WK.available() then
         vim.notify('(user.maps.wk.register): `which_key` unavailable', ERROR)
         return false
@@ -195,7 +200,7 @@ function WK.register(T, opts)
 
     local WKEY = require('which-key')
 
-    opts = is_tbl(opts) and opts or {}
+    opts = opts or O.new({ mode = 'n' })
 
     opts.mode = (is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode)) and opts.mode or 'n'
 

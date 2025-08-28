@@ -22,14 +22,7 @@
 ---@alias KeyMapDicts table<string, KeyMapRhsDict>
 
 ---@alias AllMaps table<string, KeyMapRhsArr|RegKey|RegPfx>
-
----@class AllModeMaps
----@field n? AllMaps
----@field i? AllMaps
----@field v? AllMaps
----@field t? AllMaps
----@field o? AllMaps
----@field x? AllMaps
+---@alias AllModeMaps table<MapModes, AllMaps>
 
 ---@class KeyMapTbl
 ---@field lhs string
@@ -71,20 +64,23 @@ end
 
 ---@class User.Maps.Keymap
 local Keymap = {
-    n = variant('n'),
-    i = variant('i'),
-    v = variant('v'),
-    t = variant('t'),
-    o = variant('o'),
-    x = variant('x'),
+    ['n'] = variant('n'),
+    ['i'] = variant('i'),
+    ['v'] = variant('v'),
+    ['t'] = variant('t'),
+    ['o'] = variant('o'),
+    ['x'] = variant('x'),
 }
 
-return setmetatable({}, {
+---@type User.Maps.Keymap
+local M = setmetatable({}, {
     __index = Keymap,
 
     __newindex = function(_, _, _)
         error('(user_api.maps.keymap): Not allowed to modify this table')
     end,
 })
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

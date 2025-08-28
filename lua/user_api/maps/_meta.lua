@@ -36,7 +36,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr) end
 ---@param T AllModeMaps
 ---@param map_func 'keymap'|'wk.register'
 ---@param has_modes? false
----@param mode nil
+---@param mode? nil
 ---@param bufnr? integer
 function Maps.map_dict(T, map_func, has_modes, mode, bufnr) end
 
