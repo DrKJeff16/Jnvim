@@ -17,9 +17,9 @@ local function alpha()
     return string.format('%x', math.floor(255 * (vim.g.transparency or 1.0)))
 end
 
----@param args vim.api.keyset.create_autocmd.callback_args
-local function set_ime(args)
-    vim.g.neovide_input_ime = args.event:match('Enter$') ~= nil
+---@param ev vim.api.keyset.create_autocmd.callback_args
+local function set_ime(ev)
+    vim.g.neovide_input_ime = ev.event:match('Enter$') ~= nil
 end
 
 ---@class Config.Neovide.Opts.G
