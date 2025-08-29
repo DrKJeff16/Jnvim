@@ -24,7 +24,7 @@ return {
         pylsp = {
             configurationSources = { 'flake8' },
             plugins = {
-                autopep8 = { enabled = false },
+                autopep8 = { enabled = true },
                 flake8 = {
                     enabled = true,
                     executable = 'flake8',
@@ -32,23 +32,14 @@ return {
                     indentSize = 4,
                     maxComplexity = 15,
                     maxLineLength = 100,
-                    ignore = {
-                        'D400',
-                        'D401',
-                        'F401',
-                    },
+                    ignore = { 'D400', 'D401', 'F401' },
                 },
+                pycodestyle = { enabled = false },
                 pydocstyle = {
                     enabled = true,
                     convention = 'numpy',
-                    addIgnore = {
-                        'D400',
-                        'D401',
-                    },
-                    ignore = {
-                        'D400',
-                        'D401',
-                    },
+                    addIgnore = { 'D400', 'D401' },
+                    ignore = { 'D400', 'D401' },
                 },
                 pyflakes = { enabled = false },
                 pylint = { enabled = false },
@@ -72,19 +63,11 @@ return {
                     all_scopes = true,
                     include_import_symbols = true,
                 },
-                pycodestyle = {
-                    enabled = false,
-                },
-                preload = { enabled = false },
+                preload = { enabled = true },
                 mccabe = { enabled = true, threshold = 15 },
-                rope_autoimport = {
-                    completions = { enabled = true },
-                },
-                rope_completion = {
-                    enabled = true,
-                    eager = true,
-                },
-                yapf = { enabled = true },
+                rope_autoimport = { completions = { enabled = true } },
+                rope_completion = { enabled = true, eager = true },
+                yapf = { enabled = false },
             },
         },
     },
