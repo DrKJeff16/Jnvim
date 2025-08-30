@@ -2,10 +2,12 @@
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
+local Keymaps = require('user_api.config.keymaps')
 local Check = User.check
 
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
+local desc = require('user_api.maps').desc
 
 local curr_buf = vim.api.nvim_get_current_buf
 
@@ -26,6 +28,50 @@ local Utils = {
         end),
         enabled = false,
     },
+
+    {
+        'jiaoshijie/undotree',
+        dev = true,
+        version = false,
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        config = function()
+            local UDT = require('undotree')
+
+            UDT.setup({
+                float_diff = true, -- using float window previews diff, set this `true` will disable layout option
+                layout = 'left_bottom', -- "left_bottom", "left_left_bottom"
+                position = 'left', -- "right", "bottom"
+                ignore_filetype = {
+                    'TelescopePrompt',
+                    'lazy',
+                    'notify',
+                    'qf',
+                    'spectre_panel',
+                    'tsplayground',
+                    'undotree',
+                    'undotreeDiff',
+                },
+                window = { winblend = 30 },
+                keymaps = {
+                    J = 'move_change_next',
+                    K = 'move_change_prev',
+                    ['<cr>'] = 'action_enter',
+                    gj = 'move2parent',
+                    j = 'move_next',
+                    k = 'move_prev',
+                    p = 'enter_diffbuf',
+                    q = 'quit',
+                },
+            })
+
+            Keymaps({
+                n = {
+                    ['<leader><C-u>'] = { UDT.toggle, desc('Toggle UndoTree') },
+                },
+            })
+        end,
+    },
+
     {
         'vim-scripts/UTL.vim',
         version = false,
@@ -34,7 +80,6 @@ local Utils = {
 
     {
         'epwalsh/pomo.nvim',
-        event = 'VeryLazy',
         version = false,
     },
 
