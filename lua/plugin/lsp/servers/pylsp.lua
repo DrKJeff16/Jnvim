@@ -22,11 +22,13 @@ return {
 
     settings = {
         pylsp = {
-            configurationSources = { 'flake8' },
+            ---@type { [1]: 'pycodestyle'|'flake8', [2]: 'flake8'|'pycodestyle' }
+            configurationSources = { 'pycodestyle' },
+
             plugins = {
                 autopep8 = { enabled = true },
                 flake8 = {
-                    enabled = true,
+                    enabled = false,
                     executable = 'flake8',
                     hangClosing = true,
                     indentSize = 4,
@@ -34,15 +36,6 @@ return {
                     maxLineLength = 100,
                     ignore = { 'D400', 'D401', 'F401' },
                 },
-                pycodestyle = { enabled = false },
-                pydocstyle = {
-                    enabled = true,
-                    convention = 'numpy',
-                    addIgnore = { 'D400', 'D401' },
-                    ignore = { 'D400', 'D401' },
-                },
-                pyflakes = { enabled = false },
-                pylint = { enabled = false },
                 jedi_completion = {
                     enabled = true,
                     eager = true,
@@ -63,8 +56,33 @@ return {
                     all_scopes = true,
                     include_import_symbols = true,
                 },
-                preload = { enabled = true },
                 mccabe = { enabled = true, threshold = 15 },
+                preload = {
+                    enabled = true,
+                    modules = {
+                        'sys',
+                        'typing',
+                        'os',
+                        'argparse',
+                        'string',
+                        're',
+                    },
+                },
+                pycodestyle = {
+                    enabled = true,
+                    ignore = { 'D400', 'D401', 'F401' },
+                    maxLineLength = 100,
+                    indentSize = 4,
+                    hangClosing = false,
+                },
+                pydocstyle = {
+                    enabled = true,
+                    convention = 'numpy',
+                    addIgnore = { 'D400', 'D401' },
+                    ignore = { 'D400', 'D401' },
+                },
+                pyflakes = { enabled = true },
+                pylint = { enabled = false },
                 rope_autoimport = { completions = { enabled = true } },
                 rope_completion = { enabled = true, eager = true },
                 yapf = { enabled = false },
