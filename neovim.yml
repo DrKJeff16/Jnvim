@@ -2,14 +2,23 @@
 base: lua51
 name: neovim
 
-lua_versions:
-- luajit
-
 globals:
   _:
     any: true
 
   user_api:
+    any: true
+
+  inspect:
+    any: true
+
+  is_windows:
+    any: true
+
+  MYVIMRC:
+    any: true
+
+  in_console:
     any: true
 
   os:

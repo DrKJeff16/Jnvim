@@ -58,7 +58,7 @@ function Flexoki.setup(variant, overrides)
         highlight_groups = {},
     }
 
-    Flex.setup(Opts)
+    Flex.setup(vim.tbl_deep_extend('keep', overrides, Opts))
 
     vim.cmd(Flexoki.mod_cmd)
 end

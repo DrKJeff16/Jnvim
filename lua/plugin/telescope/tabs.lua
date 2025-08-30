@@ -4,6 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not (exists('telescope') and exists('telescope-tabs')) then
+    User.deregister_plugin('plugin.telescope.tabs')
     return nil
 end
 
@@ -17,7 +18,7 @@ function TelescopeTabs.create()
 
     -- if you use the picker directly you have to provide your theme manually
     local Opts = {
-        entry_formatter = function(tab_id, buffer_ids, file_names, file_paths, is_current)
+        entry_formatter = function(tab_id, _, _, file_paths, is_current)
             local entry_string = table.concat(
                 vim.tbl_map(function(v)
                     return vim.fn.fnamemodify(v, ':.')
@@ -27,7 +28,7 @@ function TelescopeTabs.create()
             return string.format('%d: %s%s', tab_id, entry_string, is_current and ' <' or '')
         end,
 
-        entry_ordinal = function(tab_id, buffer_ids, file_names, file_paths, is_current)
+        entry_ordinal = function(_, _, file_names, _, _)
             return table.concat(file_names, ' ')
         end,
         show_preview = true,

@@ -335,7 +335,7 @@ local AllOpts = {
 
 return setmetatable(AllOpts, {
     __index = AllOpts,
-    __newindex = function(self, k, v)
+    __newindex = function(_, _, _)
         error('AllOpts is read only!', vim.log.levels.ERROR)
     end,
 })

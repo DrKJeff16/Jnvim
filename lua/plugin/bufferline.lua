@@ -19,12 +19,12 @@ local BLine = require('bufferline')
 local Groups = require('bufferline.groups')
 local SP = BLine.style_preset
 
----@param count integer
----@param lvl 'error'|'warning'
+--@param count integer
+--@param lvl 'error'|'warning'
 ---@param diags? table<string, string>
 ---@param context? table
 ---@return string
-local function diagnostics_indicator(count, lvl, diags, context)
+local function diagnostics_indicator(_, _, diags, context)
     if context == nil or not context.buffer:current() then
         return ''
     end

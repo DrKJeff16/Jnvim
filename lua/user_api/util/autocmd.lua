@@ -27,13 +27,11 @@ function M.au_pair(T)
     local type_not_empty = require('user_api.check.value').type_not_empty
 
     if not type_not_empty('table', T) then
-        vim.notify('(user_api.util.au.au_pair): Not a table, or empty table', ERROR)
-        return
+        error('(user_api.util.au.au_pair): Not a table, or empty table', ERROR)
     end
 
     if not (type_not_empty('string', T.event) or type_not_empty('table', T.event)) then
-        vim.notify('(user_api.util.au.au_pair): Event is neither a string nor a table', ERROR)
-        return
+        error('(user_api.util.au.au_pair): Event is neither a string nor a table', ERROR)
     end
 
     au(T.event, T.opts)
@@ -49,25 +47,19 @@ function M.au_from_arr(T)
     end
 
     for _, v in next, T do
-        if not (type_not_empty('string', v.event) or type_not_empty('table', v.event)) then
-            vim.notify(
+        if
+            not (
+                type_not_empty('string', v.event)
+                or type_not_empty('table', v.event) and type_not_empty('table', v.opts)
+            )
+        then
+            error(
                 '(user_api.util.au.au_from_arr): Event is neither a string nor a table, skipping',
                 ERROR
             )
-            goto continue
-        end
-
-        if not type_not_empty('table', v.opts) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Options are not in a table, skipping',
-                ERROR
-            )
-            goto continue
         end
 
         au(v.event, v.opts)
-
-        ::continue::
     end
 end
 
@@ -84,25 +76,11 @@ function M.au_from_dict(T)
     end
 
     for k, v in next, T do
-        if not is_str(k) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Dictionary key is not a string, skipping',
-                ERROR
-            )
-            goto continue
-        end
-
-        if not type_not_empty('table', v) then
-            vim.notify(
-                '(user_api.util.au.au_from_arr): Dictionary value is not a table, skipping',
-                ERROR
-            )
-            goto continue
+        if not (is_str(k) and type_not_empty('table', v)) then
+            error('(user_api.util.au.au_from_arr): Dictionary key is not a string, skipping', ERROR)
         end
 
         au(k, v)
-
-        ::continue::
     end
 end
 
@@ -120,13 +98,11 @@ function M.au_repeated(T)
 
     for event, t in next, T do
         if not is_str(event) then
-            vim.notify('(user_api.util.au.au_repeated): Event is not a string, skipping', ERROR)
-            goto continue
+            error('(user_api.util.au.au_repeated): Event is not a string, skipping', ERROR)
         end
 
         if not type_not_empty('table', t) then
-            vim.notify('(user_api.util.au.au_repeated): Invalid options table, skipping', ERROR)
-            goto continue
+            error('(user_api.util.au.au_repeated): Invalid options table, skipping', ERROR)
         end
 
         for _, opts in next, t do
@@ -137,8 +113,6 @@ function M.au_repeated(T)
 
             au(event, opts)
         end
-
-        ::continue::
     end
 end
 
@@ -158,24 +132,13 @@ function M.au_repeated_events(T)
 
     for _, opts in next, T.opts_tbl do
         if not type_not_empty('table', opts) then
-            vim.notify(
-                '(user_api.util.au.au_repeated_events): Options are not a vaild table',
-                ERROR
-            )
-            goto continue
+            error('(user_api.util.au.au_repeated_events): Options are not a vaild table', ERROR)
         end
 
         au(T.events, opts)
-
-        ::continue::
     end
 end
 
----@type User.Util.Autocmd
-local AU = setmetatable({}, {
-    __index = M,
-})
-
-return AU
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:

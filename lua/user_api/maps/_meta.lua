@@ -1,4 +1,5 @@
 ---@meta
+--# selene: allow(unused_variable)
 -- luacheck: ignore
 
 ---@module 'user_api.maps.wk'

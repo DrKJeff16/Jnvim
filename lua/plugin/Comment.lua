@@ -17,14 +17,12 @@ local Comment = require('Comment')
 ---
 ---(default: `nil`)
 --- ---
----@param ctx CommentCtx
 ---@return string
-local function pre_hook(ctx)
+local function pre_hook(_)
     return vim.bo.commentstring
 end
 
----@param ctx CommentCtx
-local function post_hook(ctx)
+local function post_hook(_)
     local bufnr = vim.api.nvim_get_current_buf()
     local win = vim.api.nvim_get_current_win()
 

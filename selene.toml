@@ -2,3 +2,4 @@ std = "neovim"
 
 [lints]
 mixed_table = "allow"
+global_usage = "allow"

@@ -21,6 +21,27 @@ local Opts = {}
 function Opts.get_all_opts()
     return require('user_api.opts.all_opts')
 end
+---@param ArgLead string
+---@param CursorPos integer
+local function complete_fun(ArgLead, _, CursorPos)
+    local toggleable = Opts.toggleable
+    local len = ArgLead:len()
+    local CMD_LEN = string.len('OptsToggle ') + 1
+
+    if len == 0 or CursorPos < CMD_LEN then
+        return toggleable
+    end
+
+    ---@type string[]
+    local valid = {}
+    for _, o in next, toggleable do
+        if o:match(ArgLead) ~= nil and string.find(o, '^' .. ArgLead) then
+            table.insert(valid, o)
+        end
+    end
+
+    return valid
+end
 
 ---@param T User.Opts.AllOpts
 ---@return string[]
@@ -41,17 +62,13 @@ local function gen_toggleable(T)
         end
     end
     for _, opt in next, short do
-        if opt == '' then
-            goto continue
+        if opt ~= '' then
+            local value = vim.api.nvim_get_option_value(opt, { scope = 'global' })
+
+            if type(value) == 'boolean' or in_tbl({ 'no', 'yes' }, value) then
+                table.insert(valid, opt)
+            end
         end
-
-        local value = vim.api.nvim_get_option_value(opt, { scope = 'global' })
-
-        if type(value) == 'boolean' or in_tbl({ 'no', 'yes' }, value) then
-            table.insert(valid, opt)
-        end
-
-        ::continue::
     end
 
     table.sort(valid)
@@ -64,7 +81,7 @@ Opts.toggleable = gen_toggleable(Opts.get_all_opts())
 setmetatable(Opts.toggleable, {
     __index = Opts.toggleable,
 
-    __newindex = function(self, k, v)
+    __newindex = function(_, _, _)
         error('Toggleable options list is read only!', ERROR)
     end,
 })
@@ -176,7 +193,7 @@ end
 ---Set up `guicursor` so that cursor blinks.
 ---
 function Opts.set_cursor_blink()
-    if _G.in_console() then
+    if in_console() then
         return
     end
 
@@ -214,22 +231,18 @@ function Opts.toggle(O, verbose)
     local toggleables = Opts.toggleable
 
     for _, opt in next, O do
-        if not in_tbl(toggleables, opt) then
-            goto continue
+        if in_tbl(toggleables, opt) then
+            local _option = vim.opt[opt]
+            local value = _option:get()
+
+            if is_bool(value) then
+                value = not value
+            else
+                value = value == 'yes' and 'no' or 'yes'
+            end
+
+            Opts.optset({ [opt] = value }, verbose)
         end
-
-        local _option = vim.opt[opt]
-        local value = _option:get()
-
-        if is_bool(value) then
-            value = not value
-        else
-            value = value == 'yes' and 'no' or 'yes'
-        end
-
-        Opts.optset({ [opt] = value }, verbose)
-
-        ::continue::
     end
 end
 
@@ -243,44 +256,17 @@ function Opts.setup_cmds()
                 error(fmt('Cannot toggle option `%s`, aborting', v), ERROR)
             end
 
-            if not in_tbl(Opts.toggleable, v) and ctx.bang then
-                goto continue
-            end
-
-            if not in_tbl(cmds, v) then
+            if in_tbl(Opts.toggleable, v) and ctx.bang and not in_tbl(cmds, v) then
                 table.insert(cmds, v)
             end
-
-            ::continue::
         end
 
         Opts.toggle(cmds, ctx.bang)
     end, {
         nargs = '+',
 
-        ---@param ArgLead string
-        ---@param CmdLine string
-        ---@param CursorPos integer
-        complete = function(ArgLead, CmdLine, CursorPos)
-            local toggleable = Opts.toggleable
-            local len = string.len(ArgLead)
+        complete = complete_fun,
 
-            local CMD_LEN = string.len('OptsToggle ') + 1
-
-            if len == 0 or CursorPos < CMD_LEN then
-                return toggleable
-            end
-
-            ---@type string[]
-            local valid = {}
-            for _, o in next, toggleable do
-                if o:match(ArgLead) ~= nil and string.find(o, '^' .. ArgLead) then
-                    table.insert(valid, o)
-                end
-            end
-
-            return valid
-        end,
         bang = true,
         desc = 'Toggle toggleable Vim Options',
     })
@@ -312,7 +298,7 @@ function Opts.new()
     return setmetatable(Opts, {
         __index = Opts,
 
-        __newindex = function(self, k, v)
+        __newindex = function(_, _, _)
             error('(user_api.opts): This module is read only!', ERROR)
         end,
 

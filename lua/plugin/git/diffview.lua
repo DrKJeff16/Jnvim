@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 ---@alias DiffView.Views
 ---|'diff1_plain'
 ---|'diff2_horizontal'
@@ -197,8 +195,7 @@ DVW.setup({
 
     --- See `:h diffview-config-hooks`
     hooks = {
-        ---@param bufnr integer
-        diff_buf_read = function(bufnr)
+        diff_buf_read = function(_)
             --- Change local options in diff buffers
             vim.opt_local.wrap = true
             vim.opt_local.list = true

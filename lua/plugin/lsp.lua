@@ -161,19 +161,15 @@ function Server.setup()
     })
 
     for name, client in next, Server.Clients do
-        if not client then
-            goto continue
+        if client then
+            local new_client = Server.populate(name, client)
+
+            vim.lsp.config(name, new_client)
+
+            if not in_tbl(Server.client_names, name) then
+                table.insert(Server.client_names, name)
+            end
         end
-
-        local new_client = Server.populate(name, client)
-
-        vim.lsp.config(name, new_client)
-
-        if not in_tbl(Server.client_names, name) then
-            table.insert(Server.client_names, name)
-        end
-
-        ::continue::
     end
 
     vim.lsp.enable(Server.client_names)

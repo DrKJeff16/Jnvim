@@ -93,7 +93,7 @@ Aerial.setup({
         ['<C-v>'] = 'actions.jump_vsplit',
         ['<C-x>'] = 'actions.jump_split',
 
-        ['p'] = 'actions.scroll',
+        p = 'actions.scroll',
 
         ['<C-j>'] = 'actions.down_and_scroll',
         ['<C-k>'] = 'actions.up_and_scroll',
@@ -103,16 +103,16 @@ Aerial.setup({
         ['[['] = 'actions.prev_up',
         [']]'] = 'actions.next_up',
 
-        ['q'] = 'actions.close',
+        q = 'actions.close',
 
-        ['o'] = 'actions.tree_toggle',
-        ['O'] = 'actions.tree_toggle_recursive',
+        o = 'actions.tree_toggle',
+        O = 'actions.tree_toggle_recursive',
 
-        ['l'] = 'actions.tree_open',
-        ['L'] = 'actions.tree_open_recursive',
+        l = 'actions.tree_open',
+        L = 'actions.tree_open_recursive',
 
-        ['h'] = 'actions.tree_close',
-        ['H'] = 'actions.tree_close_recursive',
+        h = 'actions.tree_close',
+        H = 'actions.tree_close_recursive',
 
         -- ['zr'] = 'actions.tree_increase_fold_level',
         -- ['zR'] = 'actions.tree_open_all',
@@ -263,10 +263,7 @@ Aerial.setup({
     --   * syntax_tree?: specific to the treesitter backend
     --   * match?: specific to the treesitter backend, TS query match
     --
-    ---@param bufnr integer
-    ---@param item aerial.Symbol
-    ---@param ctx aerial.Ctx
-    post_parse_symbol = function(bufnr, item, ctx)
+    post_parse_symbol = function(_, _, _)
         return true
     end,
 
@@ -281,10 +278,8 @@ Aerial.setup({
     --   * lang: info about the language
     --   * symbols?: specific to the lsp backend
     --   * syntax_tree?: specific to the treesitter backend
-    ---@param bufnr integer
     ---@param items aerial.Symbol
-    ---@param ctx table
-    post_add_all_symbols = function(bufnr, items, ctx)
+    post_add_all_symbols = function(_, items, _)
         return items
     end,
 
@@ -310,8 +305,8 @@ Aerial.setup({
     },
 
     -- Set this function to override the highlight groups for certain symbols
-    get_highlight = function(symbol, is_icon, is_collapsed)
-        -- return "MyHighlight" .. symbol.kind
+    get_highlight = function(symbol, _, _)
+        return 'MyHighlight' .. symbol.kind
     end,
 
     -- Options for opening aerial in a floating win
@@ -333,7 +328,7 @@ Aerial.setup({
         height = nil,
         min_height = { 8, 0.1 },
 
-        override = function(conf, source_winid)
+        override = function(conf, _)
             -- This is the config that will be passed to nvim_open_win.
             -- Change values here to customize the layout
             return conf

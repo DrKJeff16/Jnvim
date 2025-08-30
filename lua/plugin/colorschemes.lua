@@ -104,53 +104,47 @@ local M = setmetatable({}, {
             ---@type AllColorSubMods
             local TColor = self[name]
 
-            if TColor.valid == nil or not TColor.valid() then
-                goto continue
-            end
+            if TColor.valid ~= nil and TColor.valid() then
+                table.insert(valid, name)
 
-            table.insert(valid, name)
-
-            Keys['<leader>uc' .. csc_group] = {
-                group = '+Group ' .. csc_group,
-            }
-
-            local i_str = tostring(i)
-
-            if type_not_empty('table', TColor.variants) then
-                local v = 'a'
-                for _, variant in next, TColor.variants do
-                    Keys['<leader>uc' .. csc_group .. i_str] = {
-                        group = fmt('+%s', capitalize(name)),
-                    }
-                    Keys['<leader>uc' .. csc_group .. i_str .. v] = {
-                        function()
-                            TColor.setup(variant)
-                        end,
-                        desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
-                    }
-
-                    v = displace_letter(v, 'next', false)
-                end
-            else
-                Keys['<leader>uc' .. csc_group .. i_str] = {
-                    function()
-                        TColor.setup()
-                    end,
-                    desc(fmt('Set Colorscheme `%s`', capitalize(name))),
+                Keys['<leader>uc' .. csc_group] = {
+                    group = '+Group ' .. csc_group,
                 }
-            end
 
-            -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
-            if i == 9 then
-                -- If last  keymap set ended on 9, reset back to 1,
-                -- and go to next letter alphabetically
-                i = 1
-                csc_group = displace_letter(csc_group, 'next', false)
-            elseif i < 9 then
-                i = i + 1
-            end
+                local i_str = tostring(i)
 
-            ::continue::
+                if type_not_empty('table', TColor.variants) then
+                    local v = 'a'
+                    for _, variant in next, TColor.variants do
+                        Keys['<leader>uc' .. csc_group .. i_str] = {
+                            group = fmt('+%s', capitalize(name)),
+                        }
+                        Keys['<leader>uc' .. csc_group .. i_str .. v] = {
+                            function()
+                                TColor.setup(variant)
+                            end,
+                            desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
+                        }
+
+                        v = displace_letter(v, 'next')
+                    end
+                else
+                    Keys['<leader>uc' .. csc_group .. i_str] = {
+                        TColor.setup,
+                        desc(fmt('Set Colorscheme `%s`', capitalize(name))),
+                    }
+                end
+
+                -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
+                if i == 9 then
+                    -- If last  keymap set ended on 9, reset back to 1,
+                    -- and go to next letter alphabetically
+                    i = 1
+                    csc_group = displace_letter(csc_group, 'next')
+                elseif i < 9 then
+                    i = i + 1
+                end
+            end
         end
 
         if not type_not_empty('table', valid) then

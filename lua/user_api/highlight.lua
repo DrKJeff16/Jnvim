@@ -47,19 +47,15 @@ function Hl.hl_from_arr(A)
     local type_not_empty = Value.type_not_empty
 
     if not type_not_empty('table', A) then
-        vim.notify('(user_api.highlight.hl_from_arr): Bad argument', ERROR)
-        return
+        error('(user_api.highlight.hl_from_arr): Bad argument', ERROR)
     end
 
     for _, t in next, A do
-        if not (type_not_empty('string', t.name) and type_not_empty('table', t.opts)) then
+        if type_not_empty('string', t.name) and type_not_empty('table', t.opts) then
+            Hl.hl(t.name, t.opts)
+        else
             vim.notify('(user_api.highlight.hl_from_arr): Skipping invalid table', ERROR)
-            goto continue
         end
-
-        Hl.hl(t.name, t.opts)
-
-        ::continue::
     end
 end
 
@@ -87,14 +83,11 @@ function Hl.hl_from_dict(D)
     end
 
     for k, v in next, D do
-        if not (type_not_empty('string', k) and type_not_empty('table', v)) then
+        if type_not_empty('string', k) and type_not_empty('table', v) then
+            Hl.hl(k, v)
+        else
             vim.notify('(user_api.highlight.hl_from_dict): Skipping bad highlight', ERROR)
-            goto continue
         end
-
-        Hl.hl(k, v)
-
-        ::continue::
     end
 end
 
@@ -102,11 +95,7 @@ end
 function Hl.new()
     return setmetatable({}, {
         __index = Hl,
-
-        ---@param self User.Hl
-        ---@param k integer|string
-        ---@param v any
-        __newindex = function(self, k, v)
+        __newindex = function(_, _, _)
             error('(user_api.highlight): This is an immutable module!', ERROR)
         end,
     })

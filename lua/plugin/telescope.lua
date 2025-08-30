@@ -615,19 +615,15 @@ local known_exts = {
 --- Load and Set Keymaps for available extensions
 for mod, ext in next, known_exts do
     --- If extension is unavailable/invalid
-    if not (exists(mod) and is_str(ext[1])) then
-        goto continue
-    end
+    if exists(mod) and is_str(ext[1]) then
+        load_ext(ext[1])
 
-    load_ext(ext[1])
-
-    if is_fun(ext.keys) then
-        for lhs, v in next, ext.keys() do
-            Keys[lhs] = v
+        if is_fun(ext.keys) then
+            for lhs, v in next, ext.keys() do
+                Keys[lhs] = v
+            end
         end
     end
-
-    ::continue::
 end
 
 local group = augroup('UserTelescope', { clear = true })

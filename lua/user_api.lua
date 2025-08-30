@@ -92,10 +92,6 @@ end
 function User.deregister_plugin(pathstr)
     validate('pathstr', pathstr, 'string', false)
 
-    local Value = User.check.value
-
-    local type_not_empty = Value.type_not_empty
-
     if not in_tbl(User.registered_plugins, pathstr) then
         return
     end
@@ -247,17 +243,6 @@ function User.setup(opts)
     User.config.neovide.setup()
 end
 
----@type UserAPI
-local M = setmetatable(User, {
-    __index = User,
-
-    __newindex = function(_, _, _)
-        error('User API is Read-Only!', ERROR)
-    end,
-})
-
-_G.user_api = User
-
-return M
+return User
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
