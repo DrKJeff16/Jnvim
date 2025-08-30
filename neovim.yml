@@ -9,6 +9,9 @@ globals:
   _:
     any: true
 
+  user_api:
+    any: true
+
   os:
     any: true
 

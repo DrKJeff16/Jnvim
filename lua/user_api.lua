@@ -23,13 +23,10 @@ User.highlight = require('user_api.highlight')
 
 User.config = require('user_api.config')
 
----@type string[]|table
-User.paths = {}
+---@type string[]|table, string[]|table
+User.paths, User.FAILED = {}, {}
 
----@type string[]|table
-User.FAILED = {}
-
----@type string[]|table
+---@type string[]
 User.registered_plugins = {}
 
 ---Registers a plugin in the User API for possible reloading later.
@@ -80,35 +77,24 @@ function User.register_plugin(pathstr, index)
         return
     end
 
-    ---@type string|nil
-    local warning = nil
-    local len = #User.registered_plugins
-
-    if index >= 1 and index <= len then
+    if index >= 1 and index <= #User.registered_plugins then
         table.insert(User.registered_plugins, index, pathstr)
-    elseif index == 0 then
-        table.insert(User.registered_plugins, pathstr)
-    elseif index < 0 or index > len then
-        warning = 'Invalid index, appending instead'
-        table.insert(User.registered_plugins, pathstr)
-    end
-
-    if warning == nil then
         return
     end
 
-    vim.notify(warning, WARN)
+    if index < 0 or index > #User.registered_plugins then
+        vim.notify('Invalid index, appending instead', WARN)
+    end
+    table.insert(User.registered_plugins, pathstr)
 end
 
 ---@param pathstr string The path of the plugin to be de-registered
 function User.deregister_plugin(pathstr)
+    validate('pathstr', pathstr, 'string', false)
+
     local Value = User.check.value
 
     local type_not_empty = Value.type_not_empty
-
-    if not type_not_empty('string', pathstr) then
-        return
-    end
 
     if not in_tbl(User.registered_plugins, pathstr) then
         return
@@ -196,7 +182,7 @@ function User.setup_maps()
         }
 
         if cycle == 9 then
-            group = displace_letter(group, 'next', false)
+            group = displace_letter(group, 'next')
             cycle = 1
         elseif cycle < 9 then
             cycle = cycle + 1
@@ -261,12 +247,17 @@ function User.setup(opts)
     User.config.neovide.setup()
 end
 
-return setmetatable({}, {
+---@type UserAPI
+local M = setmetatable(User, {
     __index = User,
 
     __newindex = function(_, _, _)
         error('User API is Read-Only!', ERROR)
     end,
 })
+
+_G.user_api = User
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
