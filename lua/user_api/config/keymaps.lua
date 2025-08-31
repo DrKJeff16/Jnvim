@@ -8,6 +8,7 @@ local map_dict = require('user_api.maps').map_dict
 local desc = require('user_api.maps').desc
 local ft_get = require('user_api.util').ft_get
 local bt_get = require('user_api.util').bt_get
+local is_int = require('user_api.check.value').is_int
 
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
@@ -822,6 +823,41 @@ function Keymaps.set_leader(leader, local_leader, force)
     vim.g.maplocalleader = vim_vars.localleader
 
     vim.g.leader_set = true
+end
+
+---@param K table<('n'|'i'|'v'|'t'|'o'|'x'), string[]>|string[]
+---@param bufnr? integer
+---@return table<('n'|'i'|'v'|'t'|'o'|'x'), nil[]>|nil
+function Keymaps.delete(K, bufnr)
+    validate('K', K, 'table', false, "{ [('n'|'i'|'v'|'t'|'o'|'x')]: string[] }|string[]")
+    validate('bufnr', bufnr, 'number', true, 'integer')
+
+    bufnr = bufnr or nil
+
+    if vim.tbl_isemyty(K) then
+        return
+    end
+
+    ---@type table<('n'|'i'|'v'|'t'|'o'|'x'), nil[]>
+    local ditched_keys = {}
+
+    for k, v in next, K do
+        local isarr = is_int(k)
+
+        if isarr then
+            Keymaps.delete(v, bufnr)
+        end
+
+        if bufnr ~= nil then
+            vim.keymap.del(k, v, { buffer = bufnr })
+        else
+            vim.keymap.del(k, v, {})
+        end
+
+        ditched_keys[k][v] = nil
+    end
+
+    return ditched_keys
 end
 
 ---@type table|User.Config.Keymaps|fun(keys: AllModeMaps, bufnr?: integer, load_defaults?: boolean)

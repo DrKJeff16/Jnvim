@@ -3,8 +3,8 @@ local fmt = string.format
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
-local Keymaps = require('user_api.config.keymaps')
 
+local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
 local is_fun = Check.value.is_fun
 local is_bool = Check.value.is_bool
@@ -72,10 +72,10 @@ Mods.basics = {
     silent = true,
 }
 
-Mods.bufremove = {
-    set_vim_settings = true,
-    silent = true,
-}
+-- Mods.bufremove = {
+--     set_vim_settings = true,
+--     silent = true,
+-- }
 
 Mods.extra = {}
 

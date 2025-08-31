@@ -69,7 +69,6 @@ local Essentials = {
     {
         'DrKJeff16/project.nvim',
         dev = true,
-        event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-telescope/telescope.nvim' },
         config = CfgUtil.require('plugin.project'),

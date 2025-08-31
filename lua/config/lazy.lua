@@ -1,4 +1,4 @@
----@alias LazySpecs (LazySpec)[]
+---@alias LazySpecs LazySpec[]
 
 ---@class LazySources
 ---@field [1] 'lazy'
