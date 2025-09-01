@@ -22,13 +22,10 @@ local CfgUtil = {}
 
 ---@param force? boolean
 function CfgUtil.set_tgc(force)
-    force = is_bool(force) and force or false
+    validate('force', force, 'boolean', true)
+    force = force ~= nil and force or false
 
-    if force then
-        vim.opt.termguicolors = true
-    end
-
-    vim.opt.termguicolors = vim_exists('+termguicolors') and not in_console()
+    vim.o.tgc = not force and (vim_exists('+termguicolors') and not in_console()) or true
 end
 
 ---@param name string
@@ -135,14 +132,12 @@ end
 --- ---
 ---@return string|false cmd
 function CfgUtil.tel_fzf_build()
-    ---@type string|false
-    local cmd = executable('nproc') and 'make -j"$(nproc)"' or 'make'
-
-    if is_windows and executable('mingw32-make') then
-        cmd = 'mingw32-' .. cmd
-    elseif not executable('make') then
-        cmd = false
+    if not executable({ 'make', 'mingw32-make' }) then
+        return false
     end
+
+    local cmd = executable({ 'make', 'nproc' }) and 'make -j"$(nproc)"'
+        or (executable('make') and 'make' or 'mingw32-make')
 
     return cmd
 end
@@ -157,7 +152,7 @@ end
 function CfgUtil.key_variant(cmd)
     validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
 
-    cmd = in_tbl({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd) and cmd or 'ed'
+    cmd = (cmd ~= nil and in_tbl({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
 
     local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
@@ -181,11 +176,7 @@ end
 
 ---@return boolean
 function CfgUtil.has_tgc()
-    if not vim_exists('+termguicolors') then
-        return false
-    end
-
-    return (not in_console()) and (vim.opt.termguicolors:get()) or false
+    return (not in_console() and exists('+termguicolors')) and vim.o.tgc or false
 end
 
 return CfgUtil
