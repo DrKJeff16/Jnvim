@@ -10,8 +10,6 @@ local Value = require('user_api.check.value')
 local desc = require('user_api.maps').desc
 local type_not_empty = Value.type_not_empty
 
-local ERROR = vim.log.levels.ERROR
-
 local validate = vim.validate
 local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend
