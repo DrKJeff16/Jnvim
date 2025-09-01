@@ -23,7 +23,7 @@ local Flags = {
     startup_indent = 8,
     time_width = 8,
     tries = 10,
-    use_blocks = vim.opt.encoding:get() == 'utf-8',
+    use_blocks = vim.o.encoding == 'utf-8',
     zero_progress_msg = true,
     zero_progress_time = 2500,
 }

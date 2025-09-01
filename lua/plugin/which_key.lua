@@ -1,9 +1,6 @@
----@diagnostic disable:missing-fields
-
 local User = require('user_api')
 local Check = User.check
 
-local in_console = Check.in_console
 local exists = Check.exists.module
 
 if not exists('which-key') then
@@ -15,12 +12,12 @@ local WK = require('which-key')
 
 WK.setup({
     ---@type false|'classic'|'modern'|'helix'
-    preset = 'modern',
+    preset = 'classic',
 
     -- Delay before showing the popup. Can be a number or a function that returns a number.
     ---@type number|fun(ctx: { keys: string, mode: string, plugin?: string }): number
     delay = function(ctx)
-        return ctx.plugin and 0 or 100
+        return ctx.plugin and 0 or 50
     end,
 
     --- You can add any mappings here, or use `require('which-key').add()` later
@@ -39,10 +36,6 @@ WK.setup({
     -- Only used by enabled xo mapping modes.
     ---@param ctx { mode: string, operator: string }
     defer = function(ctx)
-        if vim.list_contains({ 'd', 'y' }, ctx.operator) then
-            return true
-        end
-
         local deferred_ops = {
             'o',
             'v',
@@ -68,10 +61,7 @@ WK.setup({
         registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
         -- the presets plugin, adds help for a bunch of default keybindings in Neovim
         -- No actual key bindings are created
-        spelling = {
-            enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
-            suggestions = 10, -- how many suggestions should be shown in the list?
-        },
+        spelling = { enabled = false },
         presets = {
             operators = true, -- adds help for operators like d, y, ...
             motions = true, -- adds help for motions
@@ -97,12 +87,18 @@ WK.setup({
             modifiable = false,
         },
         wo = {
-            winblend = in_console() and 0 or 35, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+            winblend = Check.in_console() and 0 or 45, -- value between 0-100 0 for fully opaque and 100 for fully transparent
         },
     },
 
     layout = {
-        width = { min = 20, max = math.floor(vim.opt_local.columns:get() * 3 / 4) }, -- min and max width of the columns
+        width = {
+            min = 20,
+            max = (function()
+                local cols = vim.api.nvim_get_option_value('columns', { scope = 'local' })
+                return math.floor(cols * 3 / 4)
+            end)(),
+        }, -- min and max width of the columns
         spacing = 1, -- spacing between columns
         align = 'center', -- align columns left, center or right
     },
@@ -122,7 +118,7 @@ WK.setup({
     --- * manual: the order the mappings were added
     --- * case: lower-case first
     ---@type (string|wk.Sorter)[]
-    sort = { 'alphanum', 'case', 'group', 'local', 'mod' },
+    sort = { 'alphanum', 'case', 'mod', 'group', 'order', 'local' },
 
     -- expand = 0, -- expand groups when <= n mappings
 
@@ -178,21 +174,20 @@ WK.setup({
             Right = '',
             -- C = '󰘴 ',
             C = 'CTRL-',
-            M = '󰘵 ',
-            S = '󰘶 ',
+            -- M = '󰘵 ',
+            M = 'META-',
+            -- S = '󰘶 ',
+            S = 'SHIFT-',
             -- CR = '󰌑 ',
             CR = '<CR>',
             -- Esc = '󱊷 ',
-            Esc = 'ESC ',
+            Esc = '<ESC>',
             ScrollWheelDown = '󱕐 ',
             ScrollWheelUp = '󱕑 ',
-            -- NL = '󰌑 ',
-            NL = '\\n ',
+            NL = '󰌑 ',
             BS = '⌫ ',
-            -- Space = '󱁐 ',
-            Space = 'SPC ',
-            -- Tab = '󰌒 ',
-            Tab = 'TAB ',
+            Space = '󱁐 ',
+            Tab = '󰌒 ',
             F1 = '󱊫',
             F2 = '󱊬',
             F3 = '󱊭',
@@ -209,7 +204,6 @@ WK.setup({
     },
 
     show_help = true, -- show a help message in the command line for using WhichKey
-
     show_keys = true, -- show the currently pressed key and its label as a message in the command line
 
     -- Which-key automatically sets up triggers for your mappings.

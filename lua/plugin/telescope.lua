@@ -1,7 +1,7 @@
 ---@class KeyMapArgs
 ---@field lhs string
 ---@field rhs string|fun()
----@field opts? User.Maps.Keymap.Opts
+---@field opts? User.Maps.Opts
 
 ---@class TelAuData
 ---@field title string
@@ -61,12 +61,12 @@ local Opts = {
         layout_strategy = 'flex',
         layout_config = {
             vertical = {
-                width = floor(vim.opt.columns:get() * 3 / 4),
-                height = floor(vim.opt.lines:get() * 4 / 5),
+                width = floor(vim.o.columns * 3 / 4),
+                height = floor(vim.o.lines * 4 / 5),
             },
             horizontal = {
-                width = floor(vim.opt.columns:get() * 4 / 5),
-                height = floor(vim.opt.lines:get() * 3 / 4),
+                width = floor(vim.o.columns * 4 / 5),
+                height = floor(vim.o.lines * 3 / 4),
             },
         },
 
@@ -113,7 +113,7 @@ local Opts = {
                 preview_height = 0.8,
             },
             vim_diff_opts = {
-                ctxlen = vim.opt.scrolloff:get(),
+                ctxlen = vim.o.scrolloff,
             },
             entry_format = 'state #$ID, $STAT, $TIME',
             time_format = '',

@@ -32,7 +32,7 @@ local g_opts = {
     no_idle = true,
 
     ---@type boolean
-    confirm_quit = vim.opt.confirm:get(),
+    confirm_quit = vim.o.confirm,
 
     fullscreen = false,
 
@@ -118,17 +118,12 @@ local g_opts = {
 
 ---@class Config.Neovide.Opts.O
 local o_opts = {
-    guifont = 'FiraCode Nerd Font Mono:h19',
-}
-
----@class Config.Neovide.Opts.Opt
-local opt_opts = {
     linespace = 0,
+    guifont = 'FiraCode Nerd Font Mono:h19',
 }
 
 ---@class Config.Neovide.Opts
 ---@field g Config.Neovide.Opts.G
----@field opt Config.Neovide.Opts.Opt
 ---@field o Config.Neovide.Opts.O
 
 ---@class User.Config.Neovide
@@ -143,7 +138,6 @@ Neovide.active = false
 function Neovide.get_defaults()
     return {
         g = g_opts,
-        opt = opt_opts,
         o = o_opts,
     }
 end
@@ -252,10 +246,6 @@ function Neovide.setup(T, transparent, verbose)
     verbose = verbose ~= nil and verbose or false
 
     local Defaults = Neovide.get_defaults()
-
-    for o, v in next, Defaults.opt do
-        vim.opt[o] = v
-    end
 
     for o, v in next, Defaults.o do
         vim.o[o] = v

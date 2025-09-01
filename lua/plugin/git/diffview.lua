@@ -197,9 +197,9 @@ DVW.setup({
     hooks = {
         diff_buf_read = function(_)
             --- Change local options in diff buffers
-            vim.opt_local.wrap = true
-            vim.opt_local.list = true
-            vim.opt_local.colorcolumn = { 120 }
+            vim.api.nvim_set_option_value('wrap', true, { scope = 'local' })
+            vim.api.nvim_set_option_value('list', true, { scope = 'local' })
+            vim.api.nvim_set_option_value('colorcolumn', '120', { scope = 'local' })
         end,
 
         ---@param view View
@@ -714,7 +714,7 @@ DVW.setup({
             {
                 'n',
                 '<2-LeftMouse>',
-                vim.tbl_isempty(vim.opt.mouse:get()) and '<Nop>' or Actions.select_entry,
+                vim.o.mouse == '' and '<Nop>' or Actions.select_entry,
                 desc('Open the diff for the selected entry.'),
             },
             {

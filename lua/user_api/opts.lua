@@ -84,23 +84,6 @@ end
 ---@type User.Opts.Spec
 Opts.options = {}
 
----@param T string[]
----@return User.Opts.Spec res
-function Opts.convert_str_arr(T)
-    ---@type User.Opts.Spec
-    local res, ALL_OPTS = {}, Opts.get_all_opts()
-    local long, short = vim.tbl_keys(ALL_OPTS), vim.tbl_values(ALL_OPTS)
-
-    for _, s in next, T do
-        if in_tbl(long, s) or in_tbl(short, s) then
-            local _option = vim.opt[s]
-            res[s] = _option:get()
-        end
-    end
-
-    return res
-end
-
 ---@param T User.Opts.Spec
 ---@param verbose? boolean
 ---@return User.Opts.Spec parsed_opts
@@ -156,22 +139,22 @@ end
 
 --- Option setter for the aforementioned options dictionary.
 --- ---
---- @param O User.Opts.Spec A dictionary with keys acting as `vim.opt` fields, and values
+--- @param O User.Opts.Spec A dictionary with keys acting as `vim.o` fields, and values
 --- @param verbose? boolean Enable verbose printing if `true`
 function Opts.optset(O, verbose)
+    validate('O', O, 'table', false, 'User.Opts.Spec')
+    validate('verbose', verbose, 'boolean', true)
+    verbose = verbose ~= nil and verbose or false
+
     local insp = vim.inspect
     local curr_buf = vim.api.nvim_get_current_buf
-
-    O = is_tbl(O) and O or {}
-    verbose = is_bool(verbose) and verbose or false
 
     if not vim.api.nvim_get_option_value('modifiable', { buf = curr_buf() }) then
         return
     end
 
-    local opts = Opts.long_opts_convert(O, verbose)
-
     local msg, verb_msg = '', ''
+    local opts = Opts.long_opts_convert(O, verbose)
 
     for k, v in next, opts do
         if type(vim.o[k]) == type(v) then
@@ -199,14 +182,7 @@ function Opts.set_cursor_blink()
     end
 
     Opts.optset({
-        guicursor = {
-            'n-v-c:block',
-            'i-ci-ve:ver25',
-            'r-cr:hor20',
-            'o:hor50',
-            'a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor',
-            'sm:block-blinkwait175-blinkoff150-blinkon175',
-        },
+        guicursor = 'n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175',
     })
 end
 

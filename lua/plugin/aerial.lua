@@ -65,7 +65,7 @@ Aerial.setup({
         -- Preserve window size equality with (:help CTRL-W_=)
         --
         ---@type boolean
-        preserve_equality = vim.opt.equalalways:get(),
+        preserve_equality = vim.o.equalalways,
     },
 
     -- Determines how the aerial window decides which buffer to display symbols for

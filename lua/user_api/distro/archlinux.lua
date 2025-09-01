@@ -5,7 +5,10 @@ local WARN = vim.log.levels.WARN
 local ERROR = vim.log.levels.ERROR
 
 local in_tbl = vim.tbl_contains
-local is_dir = vim.fn.isdirectory
+
+local function is_dir(dir)
+    return vim.fn.isdirectory(dir) == 1
+end
 
 ---@class User.Distro.Archlinux
 local Archlinux = {}
@@ -21,7 +24,7 @@ local RTPATHS = {
 }
 
 ---@type User.Distro.Archlinux.RTP
-Archlinux.rtpaths = setmetatable({}, {
+Archlinux.rtpaths = setmetatable(RTPATHS, {
     __index = RTPATHS,
 
     __newindex = function(_, _, _)
@@ -69,8 +72,8 @@ return setmetatable({}, {
 
         -- Check if path is in rtp already
         for _, path in next, self.rtpaths do
-            if is_dir(path) == 1 and not in_tbl(vim.opt.rtp:get(), path) then
-                vim.opt.rtp:append(path)
+            if is_dir(path) then
+                vim.go.rtp = vim.go.rtp .. ',' .. path
             end
         end
 

@@ -45,7 +45,7 @@ local highlight = {
 
 ---@return boolean
 local function breakindent_check()
-    return vim_has('nvim-0.10') and vim.opt.breakindent:get() and vim.opt.breakindentopt:get() ~= ''
+    return vim_has('nvim-0.10') and vim.o.breakindent and vim.o.breakindentopt ~= ''
 end
 
 if type_not_empty('table', vim.g.rainbow_delimiters) then

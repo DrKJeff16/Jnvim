@@ -18,8 +18,8 @@ local Essentials = {
         event = 'VeryLazy',
         version = false,
         init = function()
-            vim.opt.timeout = true
-            vim.opt.timeoutlen = 500
+            vim.o.timeout = true
+            vim.o.timeoutlen = 500
         end,
         config = CfgUtil.require('plugin.which_key'),
         cond = vim_has('nvim-0.10'),
@@ -45,11 +45,7 @@ local Essentials = {
         version = false,
         init = function()
             -- NOTE: Required for `scope`
-            vim.opt.sessionoptions = {
-                'buffers',
-                'tabpages',
-                'globals',
-            }
+            vim.o.sessionoptions = 'buffers,tabpages,globals'
         end,
         config = CfgUtil.require('plugin.scope'),
     },

@@ -42,7 +42,7 @@ Orgmode.setup({
         --- Make sure it's not a scratch buffer by passing false as 2nd argument
         local bufnr = vim.api.nvim_create_buf(false, false)
 
-        local cols, rows = vim.opt.columns:get(), vim.opt.lines:get()
+        local cols, rows = vim.o.columns, vim.o.lines
 
         --- Setting buffer name is required
         vim.api.nvim_buf_set_name(bufnr, name)

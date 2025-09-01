@@ -19,14 +19,14 @@ local augroup = vim.api.nvim_create_augroup
 
 local TT = require('toggleterm')
 
-local FACTOR = floor(vim.opt.columns:get() * 0.85)
+local FACTOR = floor(vim.o.columns * 0.85)
 
 TT.setup({
     ---@param term Terminal
     ---@return integer
     size = function(term)
         if term.direction == 'vertical' then
-            return floor(vim.opt.columns:get() * 0.65)
+            return floor(vim.o.columns * 0.65)
         end
 
         return FACTOR
@@ -65,7 +65,7 @@ TT.setup({
     start_in_insert = true,
     insert_mappings = true,
     terminal_mappings = true,
-    shell = vim.opt.shell:get(),
+    shell = vim.o.shell,
     auto_scroll = true,
 
     persist_size = true,

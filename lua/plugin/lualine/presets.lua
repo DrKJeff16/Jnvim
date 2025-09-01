@@ -295,7 +295,7 @@ Presets.components.buffers = {
         inactive = 'lualine_c_inactive',
     },
 
-    max_length = floor(vim.opt.columns:get() / 4),
+    max_length = floor(vim.o.columns / 4),
 }
 
 Presets.components.diff = {
@@ -357,7 +357,7 @@ Presets.components.searchcount = {
 Presets.components.tabs = {
     'tabs',
 
-    tab_max_length = floor(vim.opt.columns:get() / 3),
+    tab_max_length = floor(vim.o.columns / 3),
 
     mode = 2,
     path = 1,
@@ -370,7 +370,7 @@ Presets.components.tabs = {
 Presets.components.windows = {
     'windows',
 
-    max_length = floor(vim.opt.columns:get() / 5),
+    max_length = floor(vim.o.columns / 5),
 
     disabled_buftypes = {
         'help',

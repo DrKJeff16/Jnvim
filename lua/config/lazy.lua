@@ -8,6 +8,8 @@
 ---@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
 ---@alias LazyPlugs (LazyPlug)[]
 
+local fmt = string.format
+
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
@@ -22,17 +24,17 @@ local uv = vim.uv or vim.loop
 
 local stdpath = vim.fn.stdpath
 
-_G.LAZY_DATA = stdpath('data') .. '/lazy'
-_G.LAZY_STATE = stdpath('state') .. '/lazy'
+local LAZY_DATA = stdpath('data') .. '/lazy'
+local LAZY_STATE = stdpath('state') .. '/lazy'
 
 --- Set installation dir for `Lazy`
-_G.LAZYPATH = _G.LAZY_DATA .. '/lazy.nvim'
-_G.README_PATH = _G.LAZY_STATE .. '/readme'
+local LAZYPATH = LAZY_DATA .. '/lazy.nvim'
+local README_PATH = LAZY_STATE .. '/readme'
 
 --- Install `Lazy` automatically
-if not uv.fs_stat(_G.LAZYPATH) then
+if not uv.fs_stat(LAZYPATH) then
     local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-    local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, _G.LAZYPATH })
+    local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, LAZYPATH })
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
@@ -45,7 +47,9 @@ if not uv.fs_stat(_G.LAZYPATH) then
 end
 
 --- Add `Lazy` to runtimepath
-vim.opt.rtp:prepend(_G.LAZYPATH)
+if not vim.o.rtp:find(LAZYPATH) then
+    vim.o.rtp = fmt('%s,%s', LAZYPATH, vim.o.rtp)
+end
 
 local Lazy = require('lazy')
 
@@ -60,7 +64,7 @@ local Config = {
         version = false,
     },
 
-    root = _G.LAZY_DATA,
+    root = LAZY_DATA,
 
     performance = {
         reset_packpath = true,
@@ -93,7 +97,7 @@ local Config = {
 
     pkg = {
         enabled = true,
-        cache = _G.LAZY_STATE .. '/pkg-cache.lua',
+        cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
         sources = (function()
             ---@type LazySources
@@ -137,14 +141,14 @@ local Config = {
 
     readme = {
         enabled = true,
-        root = _G.README_PATH,
+        root = README_PATH,
         files = { 'README.md', 'lua/**/README.md' },
 
         -- only generate markdown helptags for plugins that dont have docs
         skip_if_doc_exists = true,
     },
 
-    state = _G.LAZY_STATE .. '/state.json',
+    state = LAZY_STATE .. '/state.json',
 
     profiling = {
         -- Enables extra stats on the debug tab related to the loader cache.

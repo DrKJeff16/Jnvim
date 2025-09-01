@@ -3,10 +3,11 @@
 
 local fmt = string.format
 
-local is_dir = require('user_api.check.exists').vim_isdir
+local function is_dir(dir)
+    return vim.fn.isdirectory(dir) == 1
+end
 
 local environ = vim.fn.environ
-local in_tbl = vim.tbl_contains
 local copy = vim.deepcopy
 
 local ERROR = vim.log.levels.ERROR
@@ -16,8 +17,6 @@ local Termux = {}
 
 ---@type string|''
 Termux.PREFIX = vim.fn.has_key(environ(), 'PREFIX') and environ()['PREFIX'] or ''
-
-_G.PREFIX = Termux.PREFIX
 
 Termux.rtpaths = {
     fmt('%s/share/vim/vimfiles/after', Termux.PREFIX),
@@ -63,14 +62,13 @@ local M = setmetatable({}, {
 
     ---@param self User.Distro.Termux
     __call = function(self)
-        if not (self.validate() and is_dir(self.PREFIX)) then
+        if not (Termux.validate() and is_dir(Termux.PREFIX)) then
             return
         end
 
         for _, path in next, copy(self.rtpaths) do
-            ---@diagnostic disable-next-line:param-type-mismatch
-            if is_dir(path) and not in_tbl(vim.opt.rtp:get(), path) then
-                vim.opt.rtp:append(path)
+            if is_dir(path) == 1 then
+                vim.go.rtp = vim.go.rtp .. ',' .. path
             end
         end
 
