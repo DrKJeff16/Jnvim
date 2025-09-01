@@ -75,15 +75,11 @@ function Commands.add_command(name, cmd, opts, mappings)
     validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
     validate('mappings', mappings, 'table', true, 'AllModeMaps')
 
-    if not type_not_empty('string', name) then
-        error('(user_api.commands.add_command): bad argument `name`', ERROR)
-    end
-
     opts = opts or {}
 
     local cmnd = { cmd, opts }
 
-    if mappings ~= nil and type_not_empty('table', mappings) then
+    if mappings ~= nil then
         cmnd.mappings = mappings
     end
 

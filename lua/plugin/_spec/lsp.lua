@@ -44,6 +44,7 @@ local LSP = {
 
     {
         'folke/trouble.nvim',
+        dev = true,
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-tree/nvim-web-devicons' },
