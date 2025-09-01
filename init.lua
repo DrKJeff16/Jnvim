@@ -30,6 +30,7 @@ Opts({
     backup = false,
     bg = 'dark', -- `background`
     bs = 'indent,eol,start', -- `backspace`
+    cc = '101', -- `colorcolumn`
     cmdwinheight = Termux.validate() and 15 or 25,
     ci = false, -- `copyindent`
     confirm = true,
