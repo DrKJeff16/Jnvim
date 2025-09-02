@@ -86,6 +86,7 @@ local Utils = {
     {
         'hat0uma/doxygen-previewer.nvim',
         event = 'VeryLazy',
+        dev = true,
         version = false,
         cmd = {
             'DoxygenOpen',
@@ -94,7 +95,13 @@ local Utils = {
             'DoxygenLog',
             'DoxygenTempDoxyfileOpen',
         },
-        dependencies = { 'hat0uma/prelive.nvim' },
+        dependencies = {
+            {
+                'hat0uma/prelive.nvim',
+                dev = true,
+                version = false,
+            },
+        },
         opts = {
             --- Path to output doxygen results
             tempdir = vim.fn.stdpath('cache'),
