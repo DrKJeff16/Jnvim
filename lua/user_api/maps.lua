@@ -2,6 +2,7 @@
 
 local Value = require('user_api.check.value')
 local Util = require('user_api.util')
+local O = require('user_api.maps.objects')
 
 local is_tbl = Value.is_tbl
 local is_str = Value.is_str
@@ -17,37 +18,6 @@ local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
----@class User.Maps.Opts: vim.keymap.set.Opts
-local O = {}
-
----@param self User.Maps.Opts
----@param T User.Maps.Opts|table
-function O:add(T)
-    validate('T', T, 'table', false, 'User.Maps.Opts|table')
-
-    if not type_not_empty('table', T) then
-        return
-    end
-
-    for k, v in next, T do
-        if not in_tbl({ 'add', 'new' }, k) then
-            self[k] = v
-        end
-    end
-end
-
----@param T? User.Maps.Opts|table
----@return User.Maps.Opts
-function O.new(T)
-    validate('T', T, 'table', true, 'User.Maps.Opts|table')
-
-    T = T or {}
-
-    return setmetatable(T, {
-        __index = O,
-    })
-end
-
 ---@type User.Maps
 local Maps = {}
 
@@ -56,6 +26,8 @@ Maps.keymap = require('user_api.maps.keymap')
 Maps.wk = require('user_api.maps.wk')
 
 function Maps.desc(desc, silent, bufnr, noremap, nowait, expr)
+    validate('desc', desc, { 'string', 'nil' }, false, 'string|nil')
+
     if not type_not_empty('string', desc) then
         desc = 'Unnamed Key'
     end
@@ -146,7 +118,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
     local map_choices = { 'keymap', 'wk.register' }
 
     -- Choose `which-key` by default
-    map_func = (is_str(map_func) and in_tbl(map_choices, map_func)) and map_func or 'wk.register'
+    map_func = in_tbl(map_choices, map_func) and map_func or 'wk.register'
 
     if not Maps.wk.available() then
         map_func = 'keymap'
@@ -192,7 +164,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
 
                         tbl.mode = mode_choice
 
-                        if bufnr ~= nil then
+                        if bufnr ~= nil and vim.api.nvim_buf_is_valid(bufnr) then
                             tbl.buffer = bufnr
                         end
 
@@ -256,7 +228,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
 
             tbl.mode = mode
 
-            if bufnr ~= nil then
+            if bufnr ~= nil and vim.api.nvim_buf_is_valid(bufnr) then
                 tbl.buffer = bufnr
             end
 
