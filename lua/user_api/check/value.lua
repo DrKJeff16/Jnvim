@@ -517,7 +517,7 @@ end
 ---@param T table
 ---@return boolean
 function Value.in_tbl_range(num, T)
-    validate('num', num, Value.is_int, false, 'integer')
+    validate('num', num, 'number', false, 'integer')
     validate('T', T, 'table', false)
 
     local len = #T

@@ -9,6 +9,7 @@ local ERROR = vim.log.levels.ERROR
 local in_tbl = vim.tbl_contains
 
 ---@class UserAPI
+---@field FAILED? string[]
 local User = {}
 
 User.util = require('user_api.util')
@@ -23,8 +24,8 @@ User.highlight = require('user_api.highlight')
 
 User.config = require('user_api.config')
 
----@type string[]|table, string[]|table
-User.paths, User.FAILED = {}, {}
+---@type string[]
+User.paths = {}
 
 ---@type string[]
 User.registered_plugins = {}
@@ -34,19 +35,19 @@ User.registered_plugins = {}
 ---@param pathstr string The path of the plugin to be registered
 ---@param index? integer An optional integer to insert the plugin in a given position
 function User.register_plugin(pathstr, index)
+    validate('pathstr', pathstr, 'string', false)
+    validate('index', index, 'number', true, 'integer')
+
     local Value = User.check.value
 
     local type_not_empty = Value.type_not_empty
     local tbl_contains = vim.tbl_contains
     local in_tbl_range = Value.in_tbl_range
-    local is_int = Value.is_int
-
-    validate('pathstr', pathstr, 'string', false)
-    validate('index', index, is_int, true, 'integer')
 
     local _NAME = 'user_api.register_plugin'
 
-    index = (is_int(index) and in_tbl_range(index, User.registered_plugins)) and index or 0
+    index = index or 0
+    index = in_tbl_range(index, User.registered_plugins) and index or 0
 
     if not type_not_empty('string', pathstr) then
         return
