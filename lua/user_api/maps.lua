@@ -46,15 +46,15 @@ function Maps.desc(desc, silent, bufnr, noremap, nowait, expr)
         noremap = noremap,
     })
 
-    if nowait ~= nil and is_bool(nowait) then
+    if nowait ~= nil then
         res:add({ nowait = nowait })
     end
 
-    if expr ~= nil and is_bool(expr) then
+    if expr ~= nil then
         res:add({ expr = expr })
     end
 
-    if bufnr ~= nil and is_int(bufnr) then
+    if bufnr ~= nil then
         res:add({ buffer = bufnr })
     end
 
@@ -164,7 +164,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
 
                         tbl.mode = mode_choice
 
-                        if bufnr ~= nil and vim.api.nvim_buf_is_valid(bufnr) then
+                        if bufnr ~= nil then
                             tbl.buffer = bufnr
                         end
 
@@ -228,7 +228,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
 
             tbl.mode = mode
 
-            if bufnr ~= nil and vim.api.nvim_buf_is_valid(bufnr) then
+            if bufnr ~= nil then
                 tbl.buffer = bufnr
             end
 

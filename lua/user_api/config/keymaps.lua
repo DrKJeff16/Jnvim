@@ -923,9 +923,7 @@ local M = setmetatable({}, {
 
         local Keys = load_defaults and Keymaps.Keys or parsed_keys
 
-        vim.defer_fn(function()
-            map_dict(Keys, 'wk.register', true, nil, bufnr)
-        end, 100)
+        map_dict(Keys, 'wk.register', true, nil, bufnr)
     end,
 })
 
