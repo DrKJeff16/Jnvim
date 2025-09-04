@@ -81,6 +81,24 @@ local Editing = {
         version = false,
         config = CfgUtil.require('plugin.paredit'),
     },
+    {
+        'mfussenegger/nvim-lint',
+        version = false,
+        config = function()
+            require('lint').linters_by_ft = {
+                lua = { 'selene' },
+            }
+
+            vim.api.nvim_create_autocmd('BufWritePost', {
+                group = vim.api.nvim_create_augroup('nvim-lint', { clear = false }),
+                callback = function()
+                    -- try_lint without arguments runs the linters defined in `linters_by_ft`
+                    -- for the current filetype
+                    require('lint').try_lint()
+                end,
+            })
+        end,
+    },
 }
 
 return Editing
