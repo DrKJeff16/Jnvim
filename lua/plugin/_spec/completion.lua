@@ -1,10 +1,12 @@
+---@module 'lazy'
+
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
 local executable = Check.exists.executable
 
----@type LazySpecs
+---@type LazySpec[]
 local Completion = {
     {
         'saghen/blink.cmp',
@@ -56,7 +58,8 @@ local Completion = {
                 version = false,
             },
             {
-                'bydlw98/blink-cmp-sshconfig',
+                'DrKJeff16/blink-cmp-sshconfig',
+                branch = 'patch/build',
                 dev = true,
                 build = executable('uv') and 'make' or false,
                 version = false,
