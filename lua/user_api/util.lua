@@ -515,6 +515,8 @@ end
 ---@param direction? 'next'|'prev'
 ---@return string
 function Util.displace_letter(c, direction)
+    validate('c', c, 'string', false)
+    validate('direction', direction, 'string', true, "'next'|'prev'")
     local Value = require('user_api.check.value')
     local A = Util.string.alphabet
 

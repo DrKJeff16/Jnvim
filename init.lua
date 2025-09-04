@@ -44,6 +44,7 @@ Opts({
     hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
+    matchpairs = '(:),[:],{:},<:>',
     matchtime = 30,
     menuitems = 50,
     mouse = '',
