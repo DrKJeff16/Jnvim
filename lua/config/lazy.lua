@@ -183,6 +183,11 @@ local Keys = {
         desc('Open `Lazy`File Vertical Window'),
     },
 
+    ['<leader>Lb'] = {
+        ':Lazy build ',
+        desc('Prompt To Build', false),
+    },
+
     ['<leader>Ll'] = {
         Lazy.show,
         desc('Show Lazy Home'),
