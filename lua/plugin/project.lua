@@ -13,12 +13,8 @@ end
 local Project = require('project')
 
 Project.setup({
-    logging = false,
-
-    manual_mode = false,
-
+    logging = true,
     detection_methods = { 'lsp', 'pattern' },
-
     patterns = {
         '!=' .. vim.fn.environ()['HOME'],
         '.git',
@@ -31,8 +27,6 @@ Project.setup({
         '.pre-commit-config.yml',
         'Pipfile',
     },
-
-    allow_different_owners = false,
 
     telescope = {
         enabled = false,
