@@ -35,7 +35,7 @@ function Flexoki.setup(variant, overrides)
         ---defaulting to 'main' for dark and 'dawn' for light. To change the dark
         ---variant, use `options.dark_variant = 'moon'`.
         ---@type Flexoki.Variant
-        variant = variant,
+        variant = variant or 'moon',
 
         ---Set the desired dark variant: applies when `options.variant` is set to
         ---'auto' to match `vim.o.background`.
@@ -58,7 +58,7 @@ function Flexoki.setup(variant, overrides)
         highlight_groups = {},
     }
 
-    Flex.setup(vim.tbl_deep_extend('keep', overrides, Opts))
+    Flex.setup(vim.tbl_deep_extend('keep', overrides or {}, Opts))
 
     vim.cmd(Flexoki.mod_cmd)
 end
