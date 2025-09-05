@@ -18,6 +18,7 @@ local MD = {
             'nvim-tree/nvim-web-devicons',
         },
         config = CfgUtil.require('plugin.markdown.render'),
+        cond = not in_console(),
     },
 }
 

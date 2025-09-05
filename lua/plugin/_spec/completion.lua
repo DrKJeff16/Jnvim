@@ -72,6 +72,7 @@ local Completion = {
         'onsails/lspkind.nvim',
         version = false,
         config = CfgUtil.require('plugin.lspkind'),
+        cond = not in_console(),
     },
 }
 

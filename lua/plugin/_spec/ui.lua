@@ -76,7 +76,7 @@ local UI = {
             },
         },
         config = CfgUtil.require('plugin.ibl'),
-        cond = not in_console(),
+        -- cond = not in_console(),
     },
 
     -- File Tree
@@ -87,15 +87,6 @@ local UI = {
         version = false,
         dependencies = { 'nvim-web-devicons' },
         config = CfgUtil.require('plugin.nvim_tree'),
-    },
-
-    {
-        'folke/edgy.nvim',
-        event = 'VeryLazy',
-        version = false,
-        config = CfgUtil.require('plugin.edgy'),
-        cond = not in_console(),
-        enabled = false,
     },
 
     {
@@ -124,6 +115,7 @@ local UI = {
                 },
             })
         end,
+        cond = not in_console(),
     },
 }
 

@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -38,6 +38,11 @@ local VCS = {
         },
         config = CfgUtil.require('plugin.git.lazygit'),
         cond = executable({ 'git', 'lazygit' }),
+    },
+    {
+        'ttibsi/pre-commit.nvim',
+        event = 'VeryLazy',
+        version = false,
     },
 }
 
