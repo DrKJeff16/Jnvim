@@ -10,15 +10,6 @@ local in_console = Check.in_console
 ---@type LazySpecs
 local Editing = {
     {
-        'windwp/nvim-autopairs',
-        event = 'InsertEnter',
-        version = false,
-        dependencies = {
-            { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter', version = false },
-        },
-        config = CfgUtil.require('plugin.autopairs'),
-    },
-    {
         'folke/persistence.nvim',
         event = 'BufReadPre',
         version = false,
@@ -31,23 +22,6 @@ local Editing = {
         version = false,
         config = CfgUtil.require('plugin.twilight'),
         cond = not in_console(),
-    },
-    {
-        'numToStr/Comment.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'JoosepAlviste/nvim-ts-context-commentstring',
-        },
-        config = CfgUtil.require('plugin.Comment'),
-    },
-
-    {
-        'tpope/vim-endwise',
-        lazy = false,
-        version = false,
-        init = flag_installed('endwise'),
     },
 
     --- TODO COMMENTS
@@ -80,24 +54,6 @@ local Editing = {
         'julienvincent/nvim-paredit',
         version = false,
         config = CfgUtil.require('plugin.paredit'),
-    },
-    {
-        'mfussenegger/nvim-lint',
-        version = false,
-        config = function()
-            require('lint').linters_by_ft = {
-                lua = { 'selene' },
-            }
-
-            vim.api.nvim_create_autocmd('BufWritePost', {
-                group = vim.api.nvim_create_augroup('nvim-lint', { clear = false }),
-                callback = function()
-                    -- try_lint without arguments runs the linters defined in `linters_by_ft`
-                    -- for the current filetype
-                    require('lint').try_lint()
-                end,
-            })
-        end,
     },
 }
 

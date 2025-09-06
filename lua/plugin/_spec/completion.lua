@@ -10,6 +10,7 @@ local executable = Check.exists.executable
 local Completion = {
     {
         'saghen/blink.cmp',
+        event = 'InsertEnter',
         version = false,
         dependencies = {
             {

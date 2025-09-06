@@ -9,20 +9,16 @@
 ---@alias LazyPlugs (LazyPlug)[]
 
 local fmt = string.format
+local uv = vim.uv or vim.loop
+local stdpath = vim.fn.stdpath
 
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
 local Termux = require('user_api.distro.termux')
-
-local desc = require('user_api.maps').desc
-
-local key_variant = CfgUtil.key_variant
 local in_console = require('user_api.check').in_console
-
-local uv = vim.uv or vim.loop
-
-local stdpath = vim.fn.stdpath
+local desc = require('user_api.maps').desc
+local key_variant = CfgUtil.key_variant
 
 local LAZY_DATA = stdpath('data') .. '/lazy'
 local LAZY_STATE = stdpath('state') .. '/lazy'
@@ -53,17 +49,23 @@ end
 
 local Lazy = require('lazy')
 
----@type LazyConfig
-local Config = {
+Lazy.setup({
     spec = {
         { import = 'plugin._spec' },
+        { import = 'plugin.Comment' },
+        { import = 'plugin.autopairs' },
+        { import = 'plugin.fzf_lua' },
+        { import = 'plugin.project' },
+        { import = 'plugin.pomo' },
+        { import = 'plugin.refactoring' },
+
+        { import = 'plugin.startuptime' },
     },
 
-    defaults = {
-        lazy = false,
-        version = false,
-    },
-
+    defaults = { lazy = false, version = false },
+    install = { colorscheme = { 'habamax' }, missing = true },
+    dev = { path = '~/Projects/nvim', patterns = {}, fallback = true },
+    change_detection = { enabled = true, notify = Archlinux.validate() },
     root = LAZY_DATA,
 
     performance = {
@@ -73,8 +75,8 @@ local Config = {
             reset = true,
             disabled_plugins = {
                 -- 'gzip',
-                'matchit',
-                'matchparen',
+                -- 'matchit',
+                -- 'matchparen',
                 'netrwPlugin',
                 -- 'tarPlugin',
                 'tohtml',
@@ -82,11 +84,6 @@ local Config = {
                 -- 'zipPlugin',
             },
         },
-    },
-
-    install = {
-        colorscheme = { 'habamax' },
-        missing = true,
     },
 
     rocks = {
@@ -112,17 +109,6 @@ local Config = {
         end)(),
     },
 
-    dev = {
-        path = '~/Projects/nvim',
-        patterns = {},
-        fallback = true,
-    },
-
-    change_detection = {
-        enabled = true,
-        notify = Archlinux.validate(),
-    },
-
     checker = {
         enabled = not Termux.validate(),
         notify = Archlinux.validate(),
@@ -143,23 +129,16 @@ local Config = {
         enabled = true,
         root = README_PATH,
         files = { 'README.md', 'lua/**/README.md' },
-
-        -- only generate markdown helptags for plugins that dont have docs
         skip_if_doc_exists = true,
     },
 
     state = LAZY_STATE .. '/state.json',
 
-    profiling = {
-        -- Enables extra stats on the debug tab related to the loader cache.
-        -- Additionally gathers stats about all package.loaders
-        loader = true,
-        -- Track each new require in the Lazy profiling tab
-        require = true,
-    },
-}
-
-Lazy.setup(Config)
+    -- - `loader`: Enables extra stats on the debug tab related to the loader cache.
+    --           Additionally gathers stats about all `package.loaders`
+    -- - `require`: Track each new require in the Lazy profiling tab
+    profiling = { loader = true, require = true },
+})
 
 ---@type AllMaps
 local Keys = {

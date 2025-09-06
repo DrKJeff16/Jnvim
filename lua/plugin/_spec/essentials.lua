@@ -1,21 +1,16 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
 local vim_has = Check.exists.vim_has
-local executable = Check.exists.executable
 local in_console = Check.in_console
 
-local flag_installed = CfgUtil.flag_installed
-
----@type LazySpecs
+---@type LazySpec[]
 local Essentials = {
     {
         'folke/which-key.nvim',
-        main = 'which-key',
-        event = 'VeryLazy',
         version = false,
         init = function()
             vim.o.timeout = true
@@ -23,13 +18,6 @@ local Essentials = {
         end,
         config = CfgUtil.require('plugin.which_key'),
         cond = vim_has('nvim-0.10'),
-    },
-    {
-        'dstein64/vim-startuptime',
-        priority = 1000,
-        version = false,
-        init = flag_installed('startuptime'),
-        config = CfgUtil.require('plugin.startuptime'),
     },
     {
         'MunifTanjim/nui.nvim',
@@ -61,14 +49,6 @@ local Essentials = {
         config = CfgUtil.require('plugin.notify'),
         cond = not in_console(),
     },
-    -- Project Manager
-    {
-        'DrKJeff16/project.nvim',
-        dev = true,
-        version = false,
-        dependencies = { 'nvim-telescope/telescope.nvim' },
-        config = CfgUtil.require('plugin.project'),
-    },
     {
         'nvim-tree/nvim-web-devicons',
         version = false,
@@ -79,14 +59,7 @@ local Essentials = {
         'gennaro-tedesco/nvim-possession',
         version = false,
         dependencies = {
-            {
-                'ibhagwan/fzf-lua',
-                lazy = true,
-                version = false,
-                dependencies = { 'nvim-tree/nvim-web-devicons' },
-                config = CfgUtil.require('plugin.fzf.fzf_lua'),
-                cond = executable('fzf'),
-            },
+            { 'ibhagwan/fzf-lua' },
         },
         config = CfgUtil.require('plugin.possession'),
     },

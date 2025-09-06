@@ -8,16 +8,21 @@ if not exists('rainbow-delimiters') then
     return
 end
 
-local RD = require('rainbow-delimiters.setup')
-
-RD.setup({
+require('rainbow-delimiters.setup').setup({
     strategy = {
         [''] = 'rainbow-delimiters.strategy.global',
+        bash = 'rainbow-delimiters.strategy.local',
+        c = 'rainbow-delimiters.strategy.global',
+        commonlisp = 'rainbow-delimiters.strategy.local',
+        cpp = 'rainbow-delimiters.strategy.global',
+        lua = 'rainbow-delimiters.strategy.local',
+        python = 'rainbow-delimiters.strategy.local',
         vim = 'rainbow-delimiters.strategy.local',
     },
     query = {
         [''] = 'rainbow-delimiters',
         lua = 'rainbow-blocks',
+        python = 'rainbow-blocks',
     },
     priority = {
         [''] = 110,

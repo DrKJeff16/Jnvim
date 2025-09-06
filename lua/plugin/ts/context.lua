@@ -16,13 +16,13 @@ local Context = require('treesitter-context')
 Context.setup({
     enable = true,
     multiwindow = true,
-    mode = 'cursor',
-    trim_scope = 'inner',
-    line_numbers = true,
-    min_window_height = 0,
-    zindex = 50,
-    multiline_threshold = 20,
     max_lines = 0,
+    min_window_height = 0,
+    line_numbers = false,
+    multiline_threshold = 20,
+    trim_scope = 'outer',
+    mode = 'cursor',
+    zindex = 20,
 
     separator = nil,
 
@@ -31,14 +31,13 @@ Context.setup({
     on_attach = nil,
 })
 
----@type HlDict
-local hls = {
-    ['TreesitterContextBottom'] = { underline = true, sp = 'Grey' },
-    ['TreesitterContextLineNumberBottom'] = { underline = true, sp = 'Grey' },
-    ['TreesitterContextLineNumber'] = { link = 'LineNr' },
-    ['TreesitterContextSeparator'] = { link = 'FloatBorder' },
-    ['TreesitterContext'] = { link = 'NormalFloat' },
-}
+hi({
+    TreesitterContextBottom = { underline = true, sp = 'Grey' },
+    TreesitterContextLineNumberBottom = { underline = true, sp = 'Grey' },
+    TreesitterContextLineNumber = { link = 'LineNr' },
+    TreesitterContextSeparator = { link = 'FloatBorder' },
+    TreesitterContext = { link = 'NormalFloat' },
+})
 
 ---@type AllMaps
 local Keys = {
@@ -71,8 +70,6 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
-
-hi(hls)
 
 User.register_plugin('plugin.ts.context')
 

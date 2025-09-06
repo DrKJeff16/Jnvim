@@ -305,7 +305,7 @@ Render.setup({
 
     completions = {
         lsp = { enabled = true },
-        blink = { enabled = exists('blink.cmp') },
+        blink = { enabled = true },
     },
 
     win_options = {
