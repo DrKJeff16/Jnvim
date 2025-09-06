@@ -41,6 +41,7 @@ local VCS = {
     },
     {
         'ttibsi/pre-commit.nvim',
+        dev = true,
         event = 'VeryLazy',
         version = false,
     },
