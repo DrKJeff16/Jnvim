@@ -126,7 +126,7 @@ Lazy.setup({
     },
 
     readme = {
-        enabled = true,
+        enabled = false,
         root = README_PATH,
         files = { 'README.md', 'lua/**/README.md' },
         skip_if_doc_exists = true,

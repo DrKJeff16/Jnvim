@@ -374,7 +374,6 @@ return {
             'onsails/lspkind.nvim',
             version = false,
             config = require('config.util').require('plugin.lspkind'),
-            cond = not in_console(),
         },
 
         'folke/lazydev.nvim',

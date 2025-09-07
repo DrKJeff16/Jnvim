@@ -57,6 +57,15 @@ local LSP = {
         config = CfgUtil.require('plugin.lsp.clangd'),
         cond = executable('clangd'),
     },
+
+    {
+        'NeoSahadeo/lsp-toggle.nvim/',
+        dev = true,
+        version = false,
+        config = function()
+            require('lsp-toggle').setup()
+        end,
+    },
 }
 
 return LSP
