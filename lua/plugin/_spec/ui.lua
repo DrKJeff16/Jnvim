@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -6,21 +6,9 @@ local Check = User.check
 
 local in_console = Check.in_console
 
----@type LazySpecs
+---@type LazySpec[]
 local UI = {
-    {
-        'folke/noice.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'MunifTanjim/nui.nvim',
-            'rcarriga/nvim-notify',
-            'echasnovski/mini.nvim',
-        },
-        config = CfgUtil.require('plugin.noice'),
-        cond = not in_console(),
-    },
-
+    { import = 'plugin.noice' },
     -- Start Greeter
     {
         'goolord/alpha-nvim',

@@ -3,18 +3,20 @@
 local User = require('user_api')
 local Check = User.check
 
+local Keymaps = User.config.keymaps
 local exists = Check.exists.module
+local desc = User.maps.desc
+
+local fs_stat = (vim.uv or vim.loop).fs_stat
+local buf_name = vim.api.nvim_buf_get_name
 
 if not exists('nvim-treesitter') then
     User.deregister_plugin('plugin.ts')
     return
 end
 
-local fs_stat = (vim.uv or vim.loop).fs_stat
-local buf_name = vim.api.nvim_buf_get_name
-local in_tbl = vim.tbl_contains
-
 local TS = require('nvim-treesitter')
+local ts_repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
 
 local ensure_langs = {
     'bash',
@@ -84,20 +86,13 @@ else
         highlight = {
             enable = true,
 
-            ---@param lang? string
-            ---@param buf? integer
+            ---@param bufnr? integer
             ---@return boolean
-            disable = function(lang, buf)
+            disable = function(_, bufnr)
                 local max_fs = 1024 * 1024
-                local ok, stats = pcall(fs_stat, buf_name(buf))
+                local ok, stats = pcall(fs_stat, buf_name(bufnr))
 
-                local disable_lang = {
-                    'text',
-                }
-
-                local res = in_tbl(disable_lang, lang)
-
-                return (res or ok and stats ~= nil and stats.size > max_fs)
+                return ok and stats ~= nil and stats.size > max_fs
             end,
 
             additional_vim_regex_highlighting = false,
@@ -106,7 +101,7 @@ else
         indent = { enable = true },
 
         incremental_selection = {
-            enable = false,
+            enable = true,
             keymaps = {
                 init_selection = 'gnn', -- set to `false` to disable one of the mappings
                 node_incremental = 'grn',
@@ -132,18 +127,18 @@ else
                 -- Automatically jump forward to textobj, similar to targets.vim
                 lookahead = true,
                 keymaps = {
-                    -- You can use the capture groups defined in textobjects.scm
-                    ['af'] = '@function.outer',
                     ['if'] = '@function.inner',
-                    ['ac'] = '@class.outer',
+                    -- You can use the capture groups defined in textobjects.scm
+                    af = '@function.outer',
+                    ac = '@class.outer',
                     -- You can optionally set descriptions to the mappings (used in the desc parameter of
                     -- nvim_buf_set_keymap) which plugins like which-key display
-                    ['ic'] = {
+                    ic = {
                         query = '@class.inner',
                         desc = 'Select inner part of a class region',
                     },
                     -- You can also use captures from other query groups like `locals.scm`
-                    ['as'] = {
+                    as = {
                         query = '@local.scope',
                         query_group = 'locals',
                         desc = 'Select language scope',
@@ -175,12 +170,8 @@ else
 
             swap = {
                 enable = true,
-                swap_next = {
-                    ['<leader>a'] = '@parameter.inner',
-                },
-                swap_previous = {
-                    ['<leader>A'] = '@parameter.inner',
-                },
+                swap_next = { ['<leader>a'] = '@parameter.inner' },
+                swap_previous = { ['<leader>A'] = '@parameter.inner' },
             },
 
             move = {
@@ -189,75 +180,64 @@ else
                 goto_next_start = {
                     [']m'] = '@function.outer',
                     [']]'] = { query = '@class.outer', desc = 'Next class start' },
-                    --
+
                     -- You can use regex matching (i.e. lua pattern) and/or pass a list in a "query" key to group multiple queries.
-                    [']o'] = '@loop.*',
-                    -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
-                    --
+                    -- [']o'] = '@loop.*',
+                    [']o'] = { query = { '@loop.inner', '@loop.outer' } },
+
                     -- You can pass a query group to use query from `queries/<lang>/<query_group>.scm file in your runtime path.
                     -- Below example nvim-treesitter's `locals.scm` and `folds.scm`. They also provide highlights.scm and indent.scm.
                     [']s'] = { query = '@local.scope', query_group = 'locals', desc = 'Next scope' },
                     [']z'] = { query = '@fold', query_group = 'folds', desc = 'Next fold' },
                 },
-                goto_next_end = {
-                    [']M'] = '@function.outer',
-                    [']['] = '@class.outer',
-                },
-                goto_previous_start = {
-                    ['[m'] = '@function.outer',
-                    ['[['] = '@class.outer',
-                },
-                goto_previous_end = {
-                    ['[M'] = '@function.outer',
-                    ['[]'] = '@class.outer',
-                },
+                goto_next_end = { [']M'] = '@function.outer', [']['] = '@class.outer' },
+                goto_previous_start = { ['[m'] = '@function.outer', ['[['] = '@class.outer' },
+                goto_previous_end = { ['[M'] = '@function.outer', ['[]'] = '@class.outer' },
                 -- Below will go to either the start or the end, whichever is closer.
                 -- Use if you want more granular movements
-                -- Make it even more gradual by adding multiple queries and regex.
-                goto_next = {
-                    [']d'] = '@conditional.outer',
-                },
-                goto_previous = {
-                    ['[d'] = '@conditional.outer',
-                },
+                -- Make it even more gradual by adding multiple queries and regex.,
+                goto_next = { [']d'] = '@conditional.outer' },
+                goto_previous = { ['[d'] = '@conditional.outer' },
             },
         },
 
         refactor = {
-            highlight_definitions = {
-                enable = true,
-                clear_on_cursor_move = true,
-            },
-
+            highlight_definitions = { enable = true, clear_on_cursor_move = true },
             highlight_current_scope = { enable = true },
-
-            smart_rename = {
-                enable = true,
-                -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
-                keymaps = {
-                    smart_rename = 'grr',
-                },
-            },
+            smart_rename = { enable = true, keymaps = { smart_rename = 'grr' } },
         },
     })
 end
 
-local ts_repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
+---@type AllMaps
+local Keys = {
+    [';'] = {
+        ts_repeat_move.repeat_last_move,
+        desc('Repeat Last Move (Next)'),
+    },
+    [','] = {
+        ts_repeat_move.repeat_last_move_opposite,
+        desc('Repeat Last Move (Previous)'),
+    },
+    ['f'] = {
+        ts_repeat_move.builtin_f_expr,
+        desc('Builtin `f` Expr', true, nil, true, false, true),
+    },
+    ['F'] = {
+        ts_repeat_move.builtin_F_expr,
+        desc('Builtin `F` Expr', true, nil, true, false, true),
+    },
+    ['t'] = {
+        ts_repeat_move.builtin_t_expr,
+        desc('Builtin `t` Expr', true, nil, true, false, true),
+    },
+    ['T'] = {
+        ts_repeat_move.builtin_T_expr,
+        desc('Builtin `T` Expr', true, nil, true, false, true),
+    },
+}
 
--- Repeat movement with ; and ,
--- ensure ; goes forward and , goes backward regardless of the last direction
-vim.keymap.set({ 'n', 'x', 'o' }, ';', ts_repeat_move.repeat_last_move_next)
-vim.keymap.set({ 'n', 'x', 'o' }, ',', ts_repeat_move.repeat_last_move_previous)
-
--- vim way: ; goes to the direction you were moving.
--- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
--- vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
-
--- Optionally, make builtin f, F, t, T also repeatable with ; and ,
-vim.keymap.set({ 'n', 'x', 'o' }, 'f', ts_repeat_move.builtin_f_expr, { expr = true })
-vim.keymap.set({ 'n', 'x', 'o' }, 'F', ts_repeat_move.builtin_F_expr, { expr = true })
-vim.keymap.set({ 'n', 'x', 'o' }, 't', ts_repeat_move.builtin_t_expr, { expr = true })
-vim.keymap.set({ 'n', 'x', 'o' }, 'T', ts_repeat_move.builtin_T_expr, { expr = true })
+Keymaps({ n = Keys, o = Keys, x = Keys })
 
 require('plugin.ts.autotag')
 require('plugin.ts.context')
