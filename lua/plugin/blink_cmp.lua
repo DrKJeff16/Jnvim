@@ -386,7 +386,6 @@ return {
         },
         {
             'DrKJeff16/blink-cmp-sshconfig',
-            branch = 'patch/build',
             dev = true,
             build = executable('uv') and 'make' or false,
             version = false,
