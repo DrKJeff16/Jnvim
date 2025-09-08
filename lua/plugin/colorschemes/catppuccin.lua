@@ -41,6 +41,7 @@ function Catppuccin.setup(variant, transparent, override)
     variant = (is_str(variant) and vim.tbl_contains(Catppuccin.variants, variant)) and variant
         or Catppuccin.variants[1]
     transparent = is_bool(transparent) and transparent or false
+    override = is_tbl(override) and override or {}
 
     ---@type CatppuccinOptions
     ---@diagnostic disable-next-line:missing-fields
@@ -146,8 +147,6 @@ function Catppuccin.setup(variant, transparent, override)
             -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
         },
     }
-
-    override = is_tbl(override) and override or {}
 
     require('catppuccin').setup(vim.tbl_deep_extend('keep', override, Opts))
 

@@ -4,6 +4,7 @@
 ---|FlexokiSubMod
 ---|GloombuddySubMod
 ---|GruvboxSubMod
+---|GruvDarkSubMod
 ---|MolokaiSubMod
 ---|NFoxSubMod
 ---|ODSubMod
@@ -32,23 +33,23 @@ local fmt = string.format
 local Colorschemes = {}
 
 ---@enum (key) AllCsc
----@diagnostic disable-next-line:unused-local
 local Colors = {
     tokyonight = 1,
     nightfox = 2,
     kanagawa = 3,
     catppuccin = 4,
     onedark = 5,
-    gruvbox = 6,
-    vscode = 7,
-    dracula = 8,
-    flexoki = 9,
-    gloombuddy = 10,
-    molokai = 11,
-    oak = 12,
-    space_vim_dark = 13,
-    spaceduck = 14,
-    spacemacs = 15,
+    gruvdark = 6,
+    gruvbox = 7,
+    vscode = 8,
+    dracula = 9,
+    flexoki = 10,
+    gloombuddy = 11,
+    molokai = 12,
+    oak = 13,
+    space_vim_dark = 14,
+    spaceduck = 15,
+    spacemacs = 16,
 }
 
 ---@type AllCsc[]
@@ -68,6 +69,7 @@ Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
 Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
+Colorschemes.gruvdark = require('plugin.colorschemes.gruvdark')
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
 
 ---@type CscMod|fun(color?: string|AllCsc, ...: any)
@@ -104,7 +106,7 @@ local M = setmetatable({}, {
             ---@type AllColorSubMods
             local TColor = self[name]
 
-            if TColor.valid ~= nil and TColor.valid() then
+            if TColor and TColor.valid ~= nil and TColor.valid() then
                 table.insert(valid, name)
 
                 Keys['<leader>uc' .. csc_group] = {

@@ -10,10 +10,16 @@ local in_console = require('user_api.check').in_console
 local ColorSchemes = {
     {
         'folke/tokyonight.nvim',
-        main = 'tokyonight',
         priority = 1000,
         version = false,
         init = CfgUtil.colorscheme_init('installed_tokyonight'),
+        cond = not in_console(),
+    },
+    {
+        'darianmorat/gruvdark.nvim',
+        priority = 1000,
+        version = false,
+        init = CfgUtil.colorscheme_init('installed_gruvdark'),
         cond = not in_console(),
     },
     {
@@ -55,19 +61,19 @@ local ColorSchemes = {
     {
         'Mofiqul/dracula.nvim',
         name = 'dracula',
-        main = 'dracula',
         lazy = false,
         priority = 1000,
         version = false,
         init = CfgUtil.colorscheme_init('installed_dracula'),
+        cond = not in_console(),
     },
     {
         'ellisonleao/gruvbox.nvim',
-        main = 'gruvbox',
         lazy = false,
         priority = 1000,
         version = false,
         init = CfgUtil.colorscheme_init('installed_gruvbox'),
+        cond = not in_console(),
     },
     {
         'kepano/flexoki-neovim',
@@ -76,6 +82,7 @@ local ColorSchemes = {
         priority = 1000,
         version = false,
         init = CfgUtil.colorscheme_init('installed_flexoki'),
+        cond = not in_console(),
     },
     {
         'bkegley/gloombuddy',
@@ -133,6 +140,7 @@ local ColorSchemes = {
         priority = 1000,
         version = false,
         init = CfgUtil.colorscheme_init('installed_spacemacs'),
+        cond = not in_console(),
     },
 }
 
