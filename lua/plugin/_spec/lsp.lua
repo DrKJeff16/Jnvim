@@ -59,7 +59,7 @@ local LSP = {
     },
 
     {
-        'NeoSahadeo/lsp-toggle.nvim/',
+        'NeoSahadeo/lsp-toggle.nvim',
         dev = true,
         version = false,
         config = function()
