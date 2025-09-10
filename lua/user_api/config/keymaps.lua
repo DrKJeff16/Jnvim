@@ -337,9 +337,9 @@ Keymaps.Keys = {
                 vim.api.nvim_feedkeys('gg=G', 'n', false)
 
                 -- HACK: Wait for `feedkeys` to end, then reset to position
-                -- vim.schedule(function()
-                cursor_set(win, saved_pos)
-                -- end)
+                vim.schedule(function()
+                    cursor_set(win, saved_pos)
+                end)
             end,
             desc('Indent Whole File'),
         },

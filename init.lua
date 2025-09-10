@@ -6,12 +6,16 @@ local Check = require('user_api.check')
 local Util = require('user_api.util')
 local Termux = require('user_api.distro.termux')
 
+local ft_get = Util.ft_get
+local bt_get = Util.bt_get
 local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
 local desc = require('user_api.maps').desc
 
-local INFO = vim.log.levels.INFO
+local in_tbl = vim.tbl_contains
+local optset = vim.api.nvim_set_option_value
 
+local INFO = vim.log.levels.INFO
 local uv = vim.uv or vim.loop
 
 _G.is_windows = uv.os_uname().version:match('Windows') ~= nil
@@ -66,8 +70,9 @@ Opts({
     sts = 4, -- `softtabstop`
     sw = 4, -- `shiftwidth`
     swb = 'usetab', -- `switchbuf`
-    ts = 4, -- `tabstop`
     title = true,
+    ts = 4, -- `tabstop`
+    tw = 100,
     wrap = Termux.validate(),
 })
 
@@ -122,11 +127,6 @@ vim.g.markdown_minlines = 500
 
 local Lsp = L.lsp()
 Lsp.setup()
-
-local in_tbl = vim.tbl_contains
-local optset = vim.api.nvim_set_option_value
-local ft_get = Util.ft_get
-local bt_get = Util.bt_get
 
 local buf = curr_buf()
 
