@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -11,7 +11,7 @@ local desc = require('user_api.maps').desc
 
 local curr_buf = vim.api.nvim_get_current_buf
 
----@type LazySpecs
+---@type LazySpec[]
 local Utils = {
     {
         'vimwiki/vimwiki',
@@ -51,7 +51,7 @@ local Utils = {
                     'undotree',
                     'undotreeDiff',
                 },
-                window = { winblend = 30 },
+                window = { winblend = 10 },
                 keymaps = {
                     J = 'move_change_next',
                     K = 'move_change_prev',
@@ -68,6 +68,33 @@ local Utils = {
                 n = {
                     ['<leader><C-u>'] = { UDT.toggle, desc('Toggle UndoTree') },
                 },
+            })
+
+            vim.api.nvim_create_user_command('Undotree', function(opts)
+                local args = opts.fargs
+                local cmd = args[1]
+
+                if cmd == 'toggle' then
+                    require('undotree').toggle()
+                elseif cmd == 'open' then
+                    require('undotree').open()
+                elseif cmd == 'close' then
+                    require('undotree').close()
+                else
+                    vim.notify('Invalid subcommand: ' .. (cmd or ''), vim.log.levels.ERROR)
+                end
+            end, {
+                nargs = 1,
+                complete = function(_, line)
+                    local subcommands = { 'toggle', 'open', 'close' }
+                    local input = vim.split(line, '%s+')
+                    local prefix = input[#input]
+
+                    return vim.tbl_filter(function(cmd)
+                        return vim.startswith(cmd, prefix)
+                    end, subcommands)
+                end,
+                desc = 'Undotree command with subcommands: toggle, open, close',
             })
         end,
     },
