@@ -327,8 +327,7 @@ Keymaps.Keys = {
                 local bufnr = curr_buf()
 
                 if not opt_get('modifiable', { buf = bufnr }) then
-                    vim.notify('Unable to indent. File is not modifiable!', ERROR)
-                    return
+                    error('Unable to indent. File is not modifiable!', ERROR)
                 end
 
                 local win = vim.api.nvim_get_current_win()
@@ -928,4 +927,4 @@ local M = setmetatable({}, {
 
 return M
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

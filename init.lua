@@ -36,9 +36,10 @@ Opts({
     bs = 'indent,eol,start', -- `backspace`
     cc = '101', -- `colorcolumn`
     cmdwinheight = Termux.validate() and 15 or 25,
-    ci = false, -- `copyindent`
+    ci = true, -- `copyindent`
     confirm = true,
     equalalways = true,
+    errorbells = false,
     et = true, -- `expandtab`
     ff = 'unix', -- `fileformat`
     fo = 'bjlnopqw', -- `formatoptions`
@@ -48,12 +49,13 @@ Opts({
     hls = true, -- `hlsearch`
     ignorecase = false,
     incsearch = true,
+    list = true,
     matchpairs = '(:),[:],{:},<:>',
     matchtime = 30,
     menuitems = 50,
     mouse = '',
     nu = true, -- `number`
-    pi = false, -- `preserveindent`
+    pi = true, -- `preserveindent`
     relativenumber = false,
     rl = false, -- `rightleft`
     ruler = true,
@@ -72,7 +74,7 @@ Opts({
     swb = 'usetab', -- `switchbuf`
     title = true,
     ts = 4, -- `tabstop`
-    tw = 100,
+    tw = 100, -- `textwidth`
     wrap = Termux.validate(),
 })
 
