@@ -63,7 +63,10 @@ local LSP = {
         dev = true,
         version = false,
         config = function()
-            require('lsp-toggle').setup()
+            require('lsp-toggle').setup({
+                cache = true,
+                exclude_lsp = { 'marksman', 'yamlls', 'taplo' },
+            })
         end,
     },
 }
