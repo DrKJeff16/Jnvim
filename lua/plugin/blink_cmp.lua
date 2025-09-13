@@ -6,9 +6,9 @@ local Check = User.check
 local Util = User.util
 
 local validate = vim.validate
-local curr_buf = vim.api.nvim_get_current_buf
 local copy = vim.deepcopy
 local in_tbl = vim.tbl_contains
+local curr_buf = vim.api.nvim_get_current_buf
 
 local exists = Check.exists.module
 local executable = Check.exists.executable
@@ -24,8 +24,8 @@ BUtil.curr_ft = ''
 ---@param snipps? boolean
 ---@param buf? boolean
 function BUtil.reset_sources(snipps, buf)
-    validate('BUtil.reset_sources - snipps', snipps, 'boolean', true, 'boolean')
-    validate('BUtil.reset_sources - buffer', buf, 'boolean', true, 'boolean')
+    validate('snipps', snipps, 'boolean', true)
+    validate('buf', buf, 'boolean', true)
 
     snipps = snipps ~= nil and snipps or false
     buf = buf ~= nil and buf or true
@@ -74,8 +74,8 @@ end
 ---@param snipps? boolean
 ---@param buf? boolean
 function BUtil.gen_sources(snipps, buf)
-    validate('BUtil.reset_sources - snipps', snipps, 'boolean', true, 'boolean')
-    validate('BUtil.reset_sources - buffer', buf, 'boolean', true, 'boolean')
+    validate('snipps', snipps, 'boolean', true)
+    validate('buf', buf, 'boolean', true)
 
     BUtil.reset_sources(snipps, buf)
 
@@ -197,8 +197,11 @@ function BUtil.reset_providers()
 
         snippets = {
             name = 'Snippet',
+            module = 'blink.cmp.sources.snippets',
             score_offset = -10,
+            ---@module 'blink.cmp.sources.snippets'
 
+            ---@type blink.cmp.SnippetsOpts
             opts = {
                 -- Whether to use show_condition for filtering snippets
                 use_show_condition = true,

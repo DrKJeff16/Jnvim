@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -7,7 +7,7 @@ local Check = User.check
 local executable = Check.exists.executable
 local vim_has = Check.exists.vim_has
 
----@type LazySpecs
+---@type LazySpec[]
 local LSP = {
     {
         'neovim/nvim-lspconfig',
