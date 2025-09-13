@@ -1,5 +1,4 @@
 local d_extend = vim.tbl_deep_extend
-local copy = vim.deepcopy
 local fs_stat = (vim.uv or vim.loop).fs_stat
 
 local User = require('user_api')
@@ -34,7 +33,7 @@ local function on_init(client)
         '${3rd}/busted/library',
     }
 
-    client.config.settings.Lua = d_extend('force', copy(client.config.settings.Lua), {
+    client.config.settings.Lua = d_extend('force', client.config.settings.Lua or {}, {
         diagnostics = {
             enable = true,
             globals = { 'vim' },

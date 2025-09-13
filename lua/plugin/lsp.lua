@@ -221,12 +221,9 @@ function Server.add(config, name, exe)
         return
     end
 
-    if Server.Clients[name] then
-        Server.Clients[name] = d_extend('force', copy(Server.Clients[name]), config)
-    else
-        Server.Clients[name] = config
-    end
+    local cfg = Server.Clients[name]
 
+    Server.Clients[name] = cfg and d_extend('force', cfg, config) or config
     Server.Clients[name] = Server.populate(name, copy(Server.Clients[name]))
 
     Server.setup()
