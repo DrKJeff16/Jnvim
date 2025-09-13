@@ -7,7 +7,7 @@ local in_console = User.check.in_console
 
 ---@type LazySpec
 return {
-    'folke/noice.nvim',
+    'cameronr/noice.nvim',
     event = 'VeryLazy',
     version = false,
     dependencies = {
