@@ -11,17 +11,17 @@ A **modular, _obsessively documented_, portable and platform-agnostic** [Neovim]
 ## Table Of Contents
 
 1. [About](#about)
-  1. [Requirements](#requirements)
-  2. [Structure](#structure)
-  3. [Plugins](#plugins)
+    1. [Requirements](#requirements)
+    2. [Structure](#structure)
+    3. [Plugins](#plugins)
 2. [The User API](#the-user-api)
-  1. [`user_api.util`](#user_apiutil)
-  2. [`user_api.opts`](#user_apiutil)
-  3. [`user_api.check`](#user_apicheck)
-  4. [`user_api.maps`](#user_apimaps)
-      1. [`user_api.maps.keymap`](#user_apimapskeymap)
-      2. [`user_api.maps.wk`](#user_apimapswk)
-  5. [`user_api.highlight`](#user_apihighlight)
+    1. [`user_api.util`](#user_apiutil)
+    2. [`user_api.opts`](#user_apiutil)
+    3. [`user_api.check`](#user_apicheck)
+    4. [`user_api.maps`](#user_apimaps)
+        1. [`user_api.maps.keymap`](#user_apimapskeymap)
+        2. [`user_api.maps.wk`](#user_apimapswk)
+    5. [`user_api.highlight`](#user_apihighlight)
 
 ---
 
