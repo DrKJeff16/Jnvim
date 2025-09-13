@@ -2,8 +2,9 @@
 
 # Jnvim
 
-- [Codeberg Mirror](https://codeberg.org/DrKJeff16/Jnvim) (RECOMMENDED)
-- [GitHub Mirror](https://github.com/DrKJeff16/Jnvim)
+[Codeberg Mirror](https://codeberg.org/DrKJeff16/Jnvim) (MAIN) | [GitHub Mirror](https://github.com/DrKJeff16/Jnvim)
+
+A **modular, _obsessively documented_, portable and platform-agnostic** [Neovim](https://github.com/neovim/neovim) config.
 
 </div>
 
@@ -26,20 +27,15 @@
 
 ## About
 
-This is a [Nvim](https://github.com/neovim/neovim) configuration,
-configured in a **modular, _obsessively documented_, portable
-and platform-independent** way. Typed documentation is included.
-
-This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim)
-as the default plugin manager.
-Please read the [Plugins section](#plugins) to get an understanding of how this works.
+This configuration uses [`lazy.nvim`](https://github.com/folke/lazy.nvim) as the default plugin manager.
+Please read the [Plugins](#plugins) Section to get an understanding of how this works.
 
 This configuration has its core entirely dependant on the
-[`user_api`](./lua/user_api) module, which provides a customized
+[`user_api`](./lua/user_api.lua) module, which provides a customized
 **_API_** which includes **_module checking_**,
 **_type checking_**, **_highlighting functions_**,
 **_options setting_**, **_keymap functions_**, **_annotations_**, and more.
-For more info make sure to check the [User API](#the-user-api) section.
+For more info make sure to check the [User API](#the-user-api) Section.
 
 ### Requirements
 
@@ -151,7 +147,7 @@ Some of the most important plugins used:
 
 ## The User API
 
-The `user` API can be found in [`lua/user_api`](./lua/user_api).
+The `user` API can be found in [`lua/user_api.lua`](./lua/user_api.lua).
 It provides a bunch of functionalities to give easier
 code structures and to simplify configuration.
 **It's still at an experimental phase, but it works as-is**.
