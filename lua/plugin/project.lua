@@ -8,6 +8,14 @@ return {
     dependencies = {
         'nvim-telescope/telescope.nvim',
         'ibhagwan/fzf-lua',
+        {
+            'akobwesthoff/project-fzf.nvim',
+            dev = true,
+            version = false,
+            config = function()
+                require('project-fzf').setup()
+            end,
+        },
     },
     config = function()
         local User = require('user_api')
