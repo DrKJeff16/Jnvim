@@ -680,7 +680,7 @@ return {
 
                 trigger = {
                     ---Show the signature help automatically
-                    enabled = true,
+                    enabled = false,
 
                     ---Show the signature help window after typing any of alphanumerics, `-` or `_`
                     show_on_keyword = false,
