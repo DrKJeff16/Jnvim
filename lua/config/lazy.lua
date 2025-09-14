@@ -58,6 +58,7 @@ Lazy.setup({
         { import = 'plugin.project' },
         { import = 'plugin.pomo' },
         { import = 'plugin.refactoring' },
+        { import = 'plugin.checkmate' },
 
         { import = 'plugin.startuptime' },
     },
