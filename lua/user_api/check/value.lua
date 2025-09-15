@@ -35,7 +35,7 @@ local function type_fun(t)
     local ret = true
     local name = ''
 
-    for k, _type in next, ALLOWED_TYPES do
+    for k, _type in pairs(ALLOWED_TYPES) do
         if _type == t then
             ret = false
             name = k
@@ -63,7 +63,8 @@ local function type_fun(t)
             return false
         end
 
-        for _, v in next, var do
+        ---@cast var any[]
+        for _, v in ipairs(var) do
             if t == nil or type(v) ~= t then
                 vim.notify(
                     '(user_api.check.value.'
@@ -205,7 +206,8 @@ function Value.is_int(var, multiple)
         return false
     end
 
-    for _, v in next, var do
+    ---@cast var any[]
+    for _, v in ipairs(var) do
         if not (is_num(v) and v >= 0 and (v == floor(v) or v == ceil(v))) then
             return false
         end
@@ -279,7 +281,8 @@ function Value.empty(data, multiple)
             return true
         end
 
-        for _, val in next, data do
+        ---@cast data (string|number|table)[]
+        for _, val in ipairs(data) do
             ---NOTE: NO RECURSIVE CHECKING
             if Value.empty(val, false) then
                 return true
@@ -374,7 +377,8 @@ function Value.fields(field, T)
         return T[field] ~= nil
     end
 
-    for _, v in next, field do
+    ---@cast field (string|integer)[]
+    for _, v in ipairs(field) do
         if not Value.fields(v, T) then
             return false
         end

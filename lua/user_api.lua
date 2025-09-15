@@ -55,7 +55,7 @@ function User.register_plugin(pathstr, index)
 
     if tbl_contains(User.registered_plugins, pathstr) then
         local old_idx = 0
-        for i, v in next, User.registered_plugins do
+        for i, v in ipairs(User.registered_plugins) do
             if v == pathstr then
                 old_idx = i
                 break
@@ -99,7 +99,7 @@ function User.deregister_plugin(pathstr)
 
     local idx = 0
 
-    for i, v in next, User.registered_plugins do
+    for i, v in ipairs(User.registered_plugins) do
         if v == pathstr then
             idx = i
             break
@@ -115,7 +115,7 @@ function User.reload_plugins()
     User.FAILED = {}
     local noerr = true
 
-    for _, plugin in next, User.registered_plugins do
+    for _, plugin in ipairs(User.registered_plugins) do
         if not User.check.exists.module(plugin) then
             table.insert(User.FAILED, plugin)
             noerr = false
@@ -128,7 +128,7 @@ end
 function User.print_loaded_plugins()
     local msg = ''
 
-    for _, v in next, User.registered_plugins do
+    for _, v in ipairs(User.registered_plugins) do
         msg = fmt('%s\n%s', msg, v)
     end
 
@@ -149,11 +149,10 @@ function User.setup_maps()
 
     User.paths = {}
 
-    for _, v in next, User.registered_plugins do
+    for _, v in ipairs(User.registered_plugins) do
         local fpath = vim.fn.stdpath('config') .. '/lua/plugin'
         if v:sub(1, 7) == 'plugin.' then
-            v = fpath .. replace(v:sub(7), '.', '/')
-            v = v .. (is_dir(v) and '/init.lua' or '.lua')
+            v = fpath .. replace(v:sub(7), '.', '/') .. (is_dir(v) and '/init.lua' or '.lua')
 
             table.insert(User.paths, v)
         end

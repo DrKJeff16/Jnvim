@@ -53,7 +53,8 @@ function Exists.vim_has(expr)
         return vim.fn.has(expr) == 1
     end
 
-    for _, v in next, expr do
+    ---@cast expr string[]
+    for _, v in ipairs(expr) do
         if not Exists.vim_has(v) then
             return false
         end
@@ -83,7 +84,8 @@ function Exists.vim_exists(expr)
 
     local res = false
 
-    for _, v in next, expr do
+    ---@cast expr string[]
+    for _, v in ipairs(expr) do
         res = Exists.vim_exists(v)
 
         if not res then
@@ -123,7 +125,8 @@ function Exists.env_vars(vars, fallback)
     if is_str(vars) then
         res = vim.fn.has_key(environment, vars) == 1
     elseif is_tbl(vars) then
-        for _, v in next, vars do
+        ---@cast vars string[]
+        for _, v in ipairs(vars) do
             res = Exists.env_vars(v)
 
             if not res then
@@ -161,7 +164,8 @@ function Exists.executable(exe)
     if is_str(exe) then
         res = vim.fn.executable(exe) == 1
     elseif is_tbl(exe) then
-        for _, v in next, exe do
+        ---@cast exe string[]
+        for _, v in ipairs(exe) do
             res = Exists.executable(v)
 
             if not res then

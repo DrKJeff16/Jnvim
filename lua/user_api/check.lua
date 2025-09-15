@@ -21,7 +21,7 @@ function Check.in_console()
     local env = vim.fn.environ()
 
     --- FIXME: This is not a good enough check. Must find a better solution
-    return (vim.tbl_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
+    return (vim.list_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
 end
 
 ---Check whether Nvim is running as root (`PID == 0`).
