@@ -9,16 +9,12 @@ local executable = Check.exists.executable
 
 ---@type LazySpecs
 local VCS = {
+    { import = 'plugin.git.gitsigns' },
+
     {
         'tpope/vim-fugitive',
         version = false,
         init = flag_installed('fugitive'),
-        cond = executable('git'),
-    },
-    {
-        'lewis6991/gitsigns.nvim',
-        version = false,
-        config = CfgUtil.require('plugin.git.gitsigns'),
         cond = executable('git'),
     },
     {
