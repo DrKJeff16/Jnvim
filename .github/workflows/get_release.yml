@@ -61,4 +61,3 @@ jobs:
             Jnvim.zip
             Jnvim.zip.sha512sum
           token: ${{ secrets.GITHUB_TOKEN }}
-
