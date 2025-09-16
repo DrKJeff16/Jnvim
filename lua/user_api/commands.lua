@@ -72,7 +72,6 @@ function Commands.add_command(name, cmd, opts, mappings)
     )
     validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
     validate('mappings', mappings, 'table', true, 'AllModeMaps')
-
     opts = opts or {}
 
     local cmnd = { cmd, opts }
@@ -91,7 +90,7 @@ function Commands.setup_keys()
 
     local Keymaps = require('user_api.config.keymaps')
 
-    for _, cmd in next, Commands.commands do
+    for _, cmd in pairs(Commands.commands) do
         if type_not_empty('table', cmd.mappings) then
             Keymaps(cmd.mappings)
         end
@@ -101,12 +100,11 @@ end
 ---@param cmds? User.Commands.Spec
 function Commands.setup(cmds)
     validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
-
     cmds = cmds or {}
 
     Commands.commands = d_extend('keep', cmds, copy(Commands.commands))
 
-    for cmd, T in next, Commands.commands do
+    for cmd, T in pairs(Commands.commands) do
         local exec, opts = T[1], T[2] or {}
         new_cmd(cmd, exec, opts)
     end

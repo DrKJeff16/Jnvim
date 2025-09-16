@@ -189,7 +189,7 @@ function Neovide.parse_g_opts(O, pfx)
 
     pfx = (pfx ~= nil and pfx:sub(1, 8) == 'neovide_') and pfx or 'neovide_'
 
-    for k, v in next, O do
+    for k, v in ipairs(O) do
         local key = pfx .. k
 
         if is_tbl(v) then
@@ -247,7 +247,7 @@ function Neovide.setup(T, transparent, verbose)
 
     local Defaults = Neovide.get_defaults()
 
-    for o, v in next, Defaults.o do
+    for o, v in pairs(Defaults.o) do
         vim.o[o] = v
     end
 
@@ -274,7 +274,7 @@ function Neovide.setup(T, transparent, verbose)
         callback = set_ime,
     })
 
-    for k, v in next, Neovide.g_opts do
+    for k, v in pairs(Neovide.g_opts) do
         vim.g[k] = v
     end
 

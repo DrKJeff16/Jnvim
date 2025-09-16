@@ -891,7 +891,7 @@ local M = setmetatable({}, {
         ---@type AllModeMaps
         local parsed_keys = {}
 
-        for k, v in next, keys do
+        for k, v in pairs(keys) do
             if not in_tbl(MODES, k) then
                 vim.notify(fmt('Ignoring badly formatted table\n`%s`', insp(keys)), WARN)
             else
@@ -904,7 +904,7 @@ local M = setmetatable({}, {
         end
 
         -- Noop keys after `<leader>` to avoid accidents
-        for _, mode in next, MODES do
+        for _, mode in ipairs(MODES) do
             if Keymaps.no_oped then
                 break
             end

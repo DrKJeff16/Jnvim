@@ -13,7 +13,7 @@ end
 ---@class User.Distro.Archlinux
 local Archlinux = {}
 
----@class User.Distro.Archlinux.RTP
+---@type string[]
 local RTPATHS = {
     '/usr/share/vim/vimfiles/after',
     '/usr/share/vim/vimfiles',
@@ -23,7 +23,7 @@ local RTPATHS = {
     '/usr/local/share/nvim/runtime',
 }
 
----@type User.Distro.Archlinux.RTP
+---@type string[]
 Archlinux.rtpaths = setmetatable(RTPATHS, {
     __index = RTPATHS,
 
@@ -40,7 +40,7 @@ function Archlinux.validate()
     local new_rtpaths = {}
 
     -- First check for each dir's existance
-    for _, p in next, Archlinux.rtpaths do
+    for _, p in ipairs(Archlinux.rtpaths) do
         if vim.fn.isdirectory(p) == 1 and not in_tbl(new_rtpaths, p) then
             table.insert(new_rtpaths, p)
         end
@@ -70,8 +70,7 @@ return setmetatable({}, {
             return
         end
 
-        -- Check if path is in rtp already
-        for _, path in next, self.rtpaths do
+        for _, path in ipairs(self.rtpaths) do
             if is_dir(path) then
                 vim.go.rtp = vim.go.rtp .. ',' .. path
             end

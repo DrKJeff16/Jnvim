@@ -13,6 +13,7 @@ local strip_fields = Util.strip_fields
 
 local validate = vim.validate
 local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 
 local MODES = { 'n', 'i', 'v', 't', 'o', 'x' }
 local ERROR = vim.log.levels.ERROR
@@ -95,36 +96,27 @@ function Maps.nop(T, opts, mode, prefix)
         return
     end
 
-    for _, v in next, T do
+    ---@cast T string[]
+    for _, v in ipairs(T) do
         func(prefix .. v, '<Nop>', opts)
     end
 end
 
 function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
-    if not (type_not_empty('table', T)) then
+    if not type_not_empty('table', T) then
         error("(user_api.maps.map_dict): Keys either aren't table or table is empty", ERROR)
-    end
-
-    if is_str(mode) and not in_tbl(MODES, mode) then
-        mode = 'n'
-    elseif type_not_empty('table', mode) then
-        for _, v in next, mode do
-            if not in_tbl(MODES, v) then
-                error('(user_api.maps.map_dict): Bad modes table', ERROR)
-            end
-        end
     end
 
     local map_choices = { 'keymap', 'wk.register' }
 
     -- Choose `which-key` by default
-    map_func = in_tbl(map_choices, map_func) and map_func or 'wk.register'
+    map_func = in_list(map_choices, map_func) and map_func or 'wk.register'
 
     if not Maps.wk.available() then
         map_func = 'keymap'
     end
 
-    mode = (is_str(mode) and in_tbl(MODES, mode)) and mode or 'n'
+    mode = (is_str(mode) and in_list(MODES, mode)) and mode or 'n'
     has_modes = is_bool(has_modes) and has_modes or false
     bufnr = is_int(bufnr) and bufnr or nil
 
@@ -134,12 +126,13 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
     if has_modes then
         local keymap_ran = false
 
-        for mode_choice, t in next, T do
+        ---@cast T AllModeMaps
+        for mode_choice, t in pairs(T) do
             if in_tbl(MODES, mode_choice) then
                 if map_func == 'keymap' then
                     func = Maps.keymap[mode_choice]
 
-                    for lhs, v in next, t do
+                    for lhs, v in pairs(t) do
                         v[2] = is_tbl(v[2]) and v[2] or {}
 
                         func(lhs, v[1], v[2])
@@ -148,7 +141,7 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
                     keymap_ran = true
                 end
 
-                for lhs, v in next, t do
+                for lhs, v in pairs(t) do
                     if keymap_ran then
                         break
                     end
@@ -208,7 +201,8 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
     if map_func == 'keymap' then
         func = Maps.keymap[mode]
 
-        for lhs, v in next, T do
+        ---@cast T AllMaps
+        for lhs, v in pairs(T) do
             v[2] = is_tbl(v[2]) and v[2] or {}
 
             func(lhs, v[1], v[2])
@@ -217,7 +211,8 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr)
         return
     end
 
-    for lhs, v in next, T do
+    ---@cast T AllMaps
+    for lhs, v in pairs(T) do
         local tbl = {}
         if is_str(lhs) then
             table.insert(tbl, lhs)

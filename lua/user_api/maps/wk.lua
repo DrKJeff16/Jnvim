@@ -1,20 +1,14 @@
--- The Vim modes used for `which-key` as a `string`
----@alias RegModes
----|'n'
----|'i'
----|'v'
----|'t'
----|'o'
----|'x'
+---The Vim modes used for `which-key` as a `string`
+---@alias RegModes 'n'|'i'|'v'|'t'|'o'|'x'
 
--- This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Opts`),
--- with few extensions.
---
--- This table defines a keymap that is used for grouping keymaps with an extra sequence.
---
--- This class type is reserved for either direct usage with `which-key`, or most regularly
--- for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
--- ---
+---This is an abstraction of `vim.keymaps.set.Opts` (see `User.Maps.Opts`),
+---with few extensions.
+---
+---This table defines a keymap that is used for grouping keymaps with an extra sequence.
+---
+---This class type is reserved for either direct usage with `which-key`, or most regularly
+---for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
+--- ---
 ---@class RegKey
 --- AKA `lhs` of a Vim Keymap.
 ---
@@ -37,26 +31,25 @@
 ---@field expand? fun(): wk.Spec
 
 --- A dictionary of string ==> `RegKey` class
+---
+---This merely describes a dictionary of `RegKey` type objects
+---
+---**Example:**
+---
+---```lua
+----- DO NOT COPY THE CODE BELOW OUT OF THE BLUE!!!!
+---
+------@type RegKeys
+---local Keys = {
+---    ['<leader>x'] = {
+---        rhs()|'rhs',
+---        { ... }, ---@see vim.keymap.set.Opts
+---        hidden = false,
+---        mode = 'n' | 'i' | 'v' | 't' | 'o' | 'x',
+---    },
+---}
+---```
 --- ---
---- ## Description
----
---- This merely describes a dictionary of `RegKey` type objects
----
---- **Example:**
----
---- ```lua
---- -- DO NOT COPY THE CODE BELOW OUT OF THE BLUE!!!!
----
---- ---@type RegKeys
---- local Keys = {
----     ['<leader>x'] = {
----         rhs()|'rhs',
----         { ... }, ---@see vim.keymap.set.Opts
----         hidden = false,
----         mode = 'n' | 'i' | 'v' | 't' | 'o' | 'x',
----     },
---- }
---- ```
 ---@alias RegKeys table<string, RegKey>
 
 ---A dictionary of string ==> `RegPfx` class.
@@ -71,28 +64,28 @@
 
 ---@alias ModeRegKeysNamed table<MapModes, RegKeysNamed>
 
---- A group mapping scheme for usage related to `which-key`.
+---A group mapping scheme for usage related to `which-key`.
 ---
---- - **WARNING:** If you remove the `group` field, it'll be parsed as any other table
+--- - **Warning:** If you remove the `group` field, it'll be parsed as any other table
 ---
---- This class type is reserver for either direct usage with `which-key`, or most regularly
---- for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
+---This class type is reserver for either direct usage with `which-key`, or most regularly
+---for `User.maps.map_dict()` and anything in the `User.maps.wk` module.
 ---
---- This table defines a keymap that is used for grouping keymaps with an extra sequence,
---- for example:
+---This table defines a keymap that is used for grouping keymaps with an extra sequence,
+---for example:
 ---
---- ```
---- <leader>fs    <=== [ ] not a group
---- <leader>f     <=== [X] this is a group the keymap above belongs to
---- ```
+---```
+---<leader>fs    <=== [ ] not a group
+---<leader>f     <=== [X] this is a group the keymap above belongs to
+---```
 ---
---- **_EXAMPLE:_**
+---**_EXAMPLE:_**
 ---
---- ```lua
---- arbitrory_keys = {
----     ['<leader><leader>']= { group = '+Group1', buffer = 4, hidden = true },
---- }
---- ```
+---```lua
+---arbitrory_keys = {
+---    ['<leader><leader>']= { group = '+Group1', buffer = 4, hidden = true },
+---}
+---```
 ---
 --- - `group` (`string`): The name of the group. Optionally you can prepend a `+` to the name,
 ---                   but I don't think `which-key` cares if you don't do it
@@ -100,15 +93,14 @@
 --- - `hidden` (`boolean`, optional): Determines whether said key should be shown
 ---                               by `which-key` or not
 ---
---- See `:h vim.keymap.set()` to find the other fields.
----
+---See `:h vim.keymap.set()` to find the other fields.
 --- ---
 ---@class RegPfx: vim.keymap.set.Opts
 ---@field mode? MapModes
 ---@field hidden? boolean
 ---@field group? string
 
----Configuration table to be passed to `require('which-key').add()`
+---Configuration table to be passed to `require('which-key').add()`.
 --- ---
 ---@class RegOpts: wk.Opts
 ---@field create? boolean
@@ -173,7 +165,7 @@ function WK.convert_dict(T)
     ---@type RegKeys
     local res = {}
 
-    for lhs, v in next, T do
+    for lhs, v in pairs(T) do
         ---@type string|fun()
         local rhs = v[1]
 
@@ -202,12 +194,12 @@ function WK.register(T, opts)
 
     opts = opts or O.new({ mode = 'n' })
 
-    opts.mode = (is_str(opts.mode) and vim.tbl_contains(MODES, opts.mode)) and opts.mode or 'n'
+    opts.mode = (is_str(opts.mode) and vim.list_contains(MODES, opts.mode)) and opts.mode or 'n'
 
-    ---@type RegKeys
+    ---@type (KeyMapRhsArr|AllMaps|AllModeMaps)[]
     local filtered = {}
 
-    for _, val in next, T do
+    for _, val in pairs(T) do
         table.insert(filtered, val)
     end
 

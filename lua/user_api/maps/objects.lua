@@ -9,7 +9,7 @@ local in_tbl = vim.tbl_contains
 local O = {}
 
 ---@param self User.Maps.Opts
----@param T User.Maps.Opts|table
+---@param T User.Maps.Opts
 function O:add(T)
     validate('T', T, 'table', false, 'User.Maps.Opts|table')
 
@@ -17,21 +17,19 @@ function O:add(T)
         return
     end
 
-    for k, v in next, T do
+    for k, v in pairs(T) do
         if not in_tbl({ 'add', 'new' }, k) then
             self[k] = v
         end
     end
 end
 
----@param T? User.Maps.Opts|table
+---@param T? User.Maps.Opts
 ---@return User.Maps.Opts
 function O.new(T)
     validate('T', T, 'table', true, 'User.Maps.Opts|table')
 
-    T = T or {}
-
-    return setmetatable(T, {
+    return setmetatable(T or {}, {
         __index = O,
     })
 end

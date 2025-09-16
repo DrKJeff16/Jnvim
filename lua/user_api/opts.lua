@@ -9,7 +9,7 @@ local is_bool = Value.is_bool
 local type_not_empty = Value.type_not_empty
 
 local deep_extend = vim.tbl_deep_extend
-local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 local copy = vim.deepcopy
 
 local ERROR = vim.log.levels.ERROR
@@ -27,16 +27,16 @@ end
 ---@param CursorPos integer
 local function complete_fun(ArgLead, _, CursorPos)
     local len = ArgLead:len()
-    local CMD_LEN = string.len('OptsToggle ') + 1
+    local CMD_LEN = ('OptsToggle '):len() + 1
 
     if len == 0 or CursorPos < CMD_LEN then
-        return copy(Opts.toggleable)
+        return Opts.toggleable
     end
 
     ---@type string[]
     local valid = {}
-    for _, o in next, Opts.toggleable do
-        if o:match(ArgLead) ~= nil and string.find(o, '^' .. ArgLead) then
+    for _, o in ipairs(Opts.toggleable) do
+        if o:match(ArgLead) ~= nil and o:find('^' .. ArgLead) then
             table.insert(valid, o)
         end
     end
@@ -50,20 +50,22 @@ function Opts.gen_toggleable()
     local valid = {}
 
     local T = Opts.get_all_opts()
+
+    ---@type string[], string[]
     local long, short = vim.tbl_keys(T), vim.tbl_values(T)
 
-    for _, opt in next, long do
+    for _, opt in ipairs(long) do
         local value = vim.api.nvim_get_option_value(opt, { scope = 'global' })
 
-        if type(value) == 'boolean' or in_tbl({ 'no', 'yes' }, value) then
+        if type(value) == 'boolean' or in_list({ 'no', 'yes' }, value) then
             table.insert(valid, opt)
         end
     end
-    for _, opt in next, short do
+    for _, opt in ipairs(short) do
         if opt ~= '' then
             local value = vim.api.nvim_get_option_value(opt, { scope = 'global' })
 
-            if type(value) == 'boolean' or in_tbl({ 'no', 'yes' }, value) then
+            if type(value) == 'boolean' or in_list({ 'no', 'yes' }, value) then
                 table.insert(valid, opt)
             end
         end
@@ -109,11 +111,11 @@ function Opts.long_opts_convert(T, verbose)
     local keys = vim.tbl_keys(ALL_OPTIONS)
     table.sort(keys)
 
-    for opt, val in next, T do
+    for opt, val in pairs(T) do
         -- If neither long nor short (known) option, append to warning message
-        if not (in_tbl(keys, opt) or Value.tbl_values({ opt }, ALL_OPTIONS)) then
+        if not (in_list(keys, opt) or Value.tbl_values({ opt }, ALL_OPTIONS)) then
             msg = fmt('%s- Option `%s` not valid!\n', msg, opt)
-        elseif in_tbl(keys, opt) then
+        elseif in_list(keys, opt) then
             parsed_opts[opt] = val
         else
             local new_opt = Value.tbl_values({ opt }, ALL_OPTIONS, true)
@@ -156,7 +158,7 @@ function Opts.optset(O, verbose)
     local msg, verb_msg = '', ''
     local opts = Opts.long_opts_convert(O, verbose)
 
-    for k, v in next, opts do
+    for k, v in pairs(opts) do
         if type(vim.o[k]) == type(v) then
             Opts.options[k] = v
             vim.o[k] = Opts.options[k]
@@ -182,7 +184,12 @@ function Opts.set_cursor_blink()
     end
 
     Opts.optset({
-        guicursor = 'n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175',
+        guicursor = 'n-v-c:block'
+            .. ',i-ci-ve:ver25'
+            .. ',r-cr:hor20'
+            .. ',o:hor50'
+            .. ',a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
+            .. ',sm:block-blinkwait175-blinkoff150-blinkon175',
     })
 end
 
@@ -208,8 +215,9 @@ function Opts.toggle(O, verbose)
         return
     end
 
-    for _, opt in next, O do
-        if in_tbl(Opts.toggleable, opt) then
+    ---@cast O string[]
+    for _, opt in ipairs(O) do
+        if in_list(Opts.toggleable, opt) then
             local value = vim.o[opt]
 
             if is_bool(value) then
@@ -228,12 +236,12 @@ function Opts.setup_cmds()
 
     Commands.add_command('OptsToggle', function(ctx)
         local cmds = {}
-        for _, v in next, ctx.fargs do
-            if not (in_tbl(Opts.toggleable, v) or ctx.bang) then
+        for _, v in ipairs(ctx.fargs) do
+            if not (in_list(Opts.toggleable, v) or ctx.bang) then
                 error(fmt('(OptsToggle): Cannot toggle option `%s`, aborting', v), ERROR)
             end
 
-            if in_tbl(Opts.toggleable, v) and not in_tbl(cmds, v) then
+            if in_list(Opts.toggleable, v) and not in_list(cmds, v) then
                 table.insert(cmds, v)
             end
         end

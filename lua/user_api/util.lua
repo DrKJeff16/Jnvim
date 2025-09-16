@@ -9,6 +9,7 @@ local buf_lines = vim.api.nvim_buf_get_lines
 local win_cursor = vim.api.nvim_win_get_cursor
 local curr_win = vim.api.nvim_get_current_win
 local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 local validate = vim.validate
 
 ---@class User.Util
@@ -39,12 +40,14 @@ function Util.get_opts_tbl(s, bufnr)
     ---@type table<string, any>
     local res = {}
 
+    ---@cast s string
     if type_not_empty('string', s) then
         res[s] = optget(s, { buf = bufnr })
     end
 
+    ---@cast s string[]
     if type_not_empty('table', s) then
-        for _, opt in next, s do
+        for _, opt in ipairs(s) do
             res[opt] = Util.get_opts_tbl(opt, bufnr)
         end
     end
@@ -62,7 +65,7 @@ function Util.mv_tbl_values(T, steps, direction)
     validate('direction', direction, 'string', true, "'l'|'r'")
 
     steps = steps > 0 and steps or 1
-    direction = (direction ~= nil and in_tbl({ 'l', 'r' }, direction)) and direction or 'r'
+    direction = (direction ~= nil and in_list({ 'l', 'r' }, direction)) and direction or 'r'
 
     ---@class DirectionFuns
     local direction_funcs = {
@@ -78,7 +81,7 @@ function Util.mv_tbl_values(T, steps, direction)
             ---@type table<string, any>
             local res = {}
 
-            for i, v in next, keys do
+            for i, v in ipairs(keys) do
                 res[v] = t[keys[i == 1 and len or (i - 1)]]
             end
 
@@ -96,7 +99,7 @@ function Util.mv_tbl_values(T, steps, direction)
             ---@type table<string, any>
             local res = {}
 
-            for i, v in next, keys do
+            for i, v in ipairs(keys) do
                 res[v] = t[keys[i == len and 1 or (i + 1)]]
             end
 
@@ -152,12 +155,13 @@ function Util.strip_fields(T, fields)
     ---@type table<string, any>
     local res = {}
 
+    ---@cast fields string
     if is_str(fields) then
         if not (type_not_empty('string', fields) and field(fields, T)) then
             return T
         end
 
-        for k, v in next, T do
+        for k, v in pairs(T) do
             if k ~= fields then
                 res[k] = v
             end
@@ -166,7 +170,8 @@ function Util.strip_fields(T, fields)
         return res
     end
 
-    for k, v in next, T do
+    for k, v in pairs(T) do
+        ---@cast fields (string|integer)[]
         if not in_tbl(fields, k) then
             res[k] = v
         end
@@ -198,7 +203,7 @@ function Util.strip_values(T, values, max_instances)
     ---@type table<string, any>, integer
     local res, count = {}, 0
 
-    for k, v in next, T do
+    for k, v in pairs(T) do
         -- Both arguments can't be true simultaneously
         if Util.xor((max_instances == 0), (max_instances ~= 0 and max_instances > count)) then
             if not in_tbl(values, v) and is_int(k) then
@@ -329,7 +334,7 @@ function Util.setup_autocmd()
                             filetype = 'c',
                         }
 
-                        for opt, val in next, opt_dict do
+                        for opt, val in pairs(opt_dict) do
                             optset(opt, val, setopt_opts)
                         end
                     end,
@@ -364,7 +369,7 @@ function Util.setup_autocmd()
                             autoindent = true,
                         }
 
-                        for opt, val in next, opt_dict do
+                        for opt, val in pairs(opt_dict) do
                             optset(opt, val, setopt_opts)
                         end
                     end,
@@ -504,9 +509,10 @@ function Util.setup_autocmd()
         })
     end
 
+    ---@type AuRepeatEvents[]
     Util.au.created = vim.tbl_deep_extend('keep', Util.au.created or {}, AUS)
 
-    for _, t in next, Util.au.created do
+    for _, t in ipairs(Util.au.created) do
         au_repeated_events(t)
     end
 end
@@ -524,7 +530,7 @@ function Util.displace_letter(c, direction)
     local is_str = Value.is_str
     local mv = Util.mv_tbl_values
 
-    direction = (is_str(direction) and in_tbl({ 'next', 'prev' }, direction)) and direction
+    direction = (is_str(direction) and in_list({ 'next', 'prev' }, direction)) and direction
         or 'next'
 
     if c == '' then
@@ -575,6 +581,7 @@ function Util.discard_dups(data)
     ---@type string|table
     local res
 
+    ---@cast data string
     if is_str(data) then
         res = data:sub(1, 1)
 
@@ -594,6 +601,7 @@ function Util.discard_dups(data)
     ---@type table
     res = {}
 
+    ---@cast data table
     for k, v in next, data do
         if not in_tbl(res, v) then
             res[k] = v

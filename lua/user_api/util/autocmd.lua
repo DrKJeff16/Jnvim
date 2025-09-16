@@ -46,7 +46,7 @@ function M.au_from_arr(T)
         return
     end
 
-    for _, v in next, T do
+    for _, v in ipairs(T) do
         if
             not (
                 type_not_empty('string', v.event)
@@ -75,7 +75,7 @@ function M.au_from_dict(T)
         return
     end
 
-    for k, v in next, T do
+    for k, v in pairs(T) do
         if not (is_str(k) and type_not_empty('table', v)) then
             error('(user_api.util.au.au_from_arr): Dictionary key is not a string, skipping', ERROR)
         end
@@ -96,7 +96,7 @@ function M.au_repeated(T)
         return
     end
 
-    for event, t in next, T do
+    for event, t in pairs(T) do
         if not is_str(event) then
             error('(user_api.util.au.au_repeated): Event is not a string, skipping', ERROR)
         end
@@ -105,7 +105,7 @@ function M.au_repeated(T)
             error('(user_api.util.au.au_repeated): Invalid options table, skipping', ERROR)
         end
 
-        for _, opts in next, t do
+        for _, opts in ipairs(t) do
             if not type_not_empty('table', opts) then
                 vim.notify('(user_api.util.au.au_repeated): Option table is empty, skipping', ERROR)
                 break
@@ -130,7 +130,7 @@ function M.au_repeated_events(T)
         return
     end
 
-    for _, opts in next, T.opts_tbl do
+    for _, opts in ipairs(T.opts_tbl) do
         if not type_not_empty('table', opts) then
             error('(user_api.util.au.au_repeated_events): Options are not a vaild table', ERROR)
         end

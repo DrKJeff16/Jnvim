@@ -50,7 +50,7 @@ function Hl.hl_from_arr(A)
         error('(user_api.highlight.hl_from_arr): Bad argument', ERROR)
     end
 
-    for _, t in next, A do
+    for _, t in ipairs(A) do
         if type_not_empty('string', t.name) and type_not_empty('table', t.opts) then
             Hl.hl(t.name, t.opts)
         else
@@ -82,7 +82,7 @@ function Hl.hl_from_dict(D)
         return
     end
 
-    for k, v in next, D do
+    for k, v in pairs(D) do
         if type_not_empty('string', k) and type_not_empty('table', v) then
             Hl.hl(k, v)
         else

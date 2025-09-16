@@ -18,6 +18,7 @@ local Termux = {}
 ---@type string|''
 Termux.PREFIX = vim.fn.has_key(environ(), 'PREFIX') and environ()['PREFIX'] or ''
 
+---@type string[]
 Termux.rtpaths = {
     fmt('%s/share/vim/vimfiles/after', Termux.PREFIX),
     fmt('%s/share/vim/vimfiles', Termux.PREFIX),
@@ -38,7 +39,7 @@ function Termux.validate()
     ---@type string[]|table
     local new_rtpaths = {}
 
-    for _, path in next, Termux.rtpaths do
+    for _, path in ipairs(Termux.rtpaths) do
         if is_dir(path) then
             table.insert(new_rtpaths, path)
         end
@@ -66,7 +67,7 @@ local M = setmetatable({}, {
             return
         end
 
-        for _, path in next, copy(self.rtpaths) do
+        for _, path in ipairs(self.rtpaths) do
             if is_dir(path) == 1 then
                 vim.go.rtp = vim.go.rtp .. ',' .. path
             end
