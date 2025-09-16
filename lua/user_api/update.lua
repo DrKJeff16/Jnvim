@@ -1,5 +1,3 @@
----@diagnostic disable:missing-fields
-
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
