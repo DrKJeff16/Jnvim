@@ -103,6 +103,20 @@ Keymaps({
             desc('Run `:Notifications`'),
         },
     },
+    x = {
+        ['<M-m>'] = {
+            function()
+                _G.cursor_line = vim.fn.line('.')
+            end,
+            desc('Visual Mode trick'),
+        },
+        ['<M-n>'] = {
+            function()
+                _G.other_line = vim.fn.line('v')
+            end,
+            desc('Visual Mode trick'),
+        },
+    },
 }, nil, true)
 
 local Alpha = L.alpha()
