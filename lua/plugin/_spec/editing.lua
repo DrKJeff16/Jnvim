@@ -3,7 +3,6 @@
 local CfgUtil = require('config.util')
 local Check = require('user_api.check')
 
-local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local in_console = Check.in_console
 
