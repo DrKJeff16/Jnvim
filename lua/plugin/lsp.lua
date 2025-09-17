@@ -152,7 +152,14 @@ function Server.setup()
     })
 
     vim.diagnostic.config({
-        signs = true,
+        signs = {
+            text = {
+                [vim.diagnostic.severity.ERROR] = '',
+                [vim.diagnostic.severity.WARN] = '',
+                [vim.diagnostic.severity.INFO] = '',
+                [vim.diagnostic.severity.HINT] = '󰌵',
+            },
+        },
         float = true,
         underline = true,
         virtual_lines = false,

@@ -67,15 +67,16 @@ local UI = {
         -- cond = not in_console(),
     },
 
-    -- File Tree
-    {
-        'nvim-tree/nvim-tree.lua',
-        main = 'nvim-tree',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = { 'nvim-web-devicons' },
-        config = CfgUtil.require('plugin.nvim_tree'),
-    },
+    -- -- File Tree
+    -- {
+    --     'nvim-tree/nvim-tree.lua',
+    --     main = 'nvim-tree',
+    --     event = 'VeryLazy',
+    --     version = false,
+    --     dependencies = { 'nvim-web-devicons' },
+    --     config = CfgUtil.require('plugin.nvim_tree'),
+    -- },
+    { import = 'plugin.neo_tree' },
 
     {
         'akinsho/toggleterm.nvim',
