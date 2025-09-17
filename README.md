@@ -409,3 +409,7 @@ It can be found in [`user_api/highlight.lua`](./lua/user_api/highlight.lua).
 structured in a satisfactory manner._**
 
 ---
+
+## License
+
+[MIT](./LICENSE)
