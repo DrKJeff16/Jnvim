@@ -36,13 +36,7 @@ local Editing = {
         config = CfgUtil.require('plugin.todo_comments'),
         cond = executable('rg') and not in_console(),
     },
-    {
-        'vim-scripts/a.vim',
-        event = 'VeryLazy',
-        version = false,
-        init = flag_installed('a_vim'),
-        config = CfgUtil.require('plugin.a_vim'),
-    },
+    { import = 'plugin.a_vim' },
     {
         'folke/zen-mode.nvim',
         event = 'VeryLazy',
