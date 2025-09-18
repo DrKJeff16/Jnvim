@@ -32,28 +32,28 @@ local fmt = string.format
 ---@class CscMod
 local Colorschemes = {}
 
----@enum (key) AllCsc
+---@enum AllCsc
 local Colors = {
-    tokyonight = 1,
-    nightfox = 2,
-    kanagawa = 3,
-    catppuccin = 4,
-    onedark = 5,
-    gruvdark = 6,
-    gruvbox = 7,
-    vscode = 8,
-    dracula = 9,
-    flexoki = 10,
-    gloombuddy = 11,
-    molokai = 12,
-    oak = 13,
-    space_vim_dark = 14,
-    spaceduck = 15,
-    spacemacs = 16,
+    'tokyonight',
+    'nightfox',
+    'kanagawa',
+    'catppuccin',
+    'onedark',
+    'gruvdark',
+    'gruvbox',
+    'vscode',
+    'dracula',
+    'flexoki',
+    'gloombuddy',
+    'molokai',
+    'oak',
+    'space_vim_dark',
+    'spaceduck',
+    'spacemacs',
 }
 
 ---@type AllCsc[]
-Colorschemes.OPTIONS = vim.tbl_keys(Colors)
+Colorschemes.OPTIONS = Colors
 
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
