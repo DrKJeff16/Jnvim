@@ -18,19 +18,14 @@ local fs_stat = (vim.uv or vim.loop).fs_stat
 
 local LazyDev = require('lazydev')
 
----@type (lazydev.Library.spec)[]
-local library = {
-    { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-    {
-        path = vim.fn.environ()['HOME'] .. '/Projects/nvim/wezterm-types',
-        mods = { 'wezterm' },
-    },
-}
-
 LazyDev.setup({
     runtime = vim.env.VIMRUNTIME,
 
-    library = library,
+    library = {
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = 'snacks.nvim', words = { 'Snacks' } },
+        { path = 'wezterm-types', mods = { 'wezterm' } },
+    },
 
     ---@type boolean|(fun(root_dir: string): boolean)
     enabled = function(root_dir)
