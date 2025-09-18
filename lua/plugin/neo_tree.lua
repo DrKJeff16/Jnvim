@@ -10,13 +10,6 @@ return {
         'MunifTanjim/nui.nvim',
         'nvim-tree/nvim-web-devicons',
         {
-            'antosha417/nvim-lsp-file-operations',
-            version = false,
-            config = function()
-                require('lsp-file-operations').setup()
-            end,
-        },
-        {
             's1n7ax/nvim-window-picker',
             version = false,
             config = function()
