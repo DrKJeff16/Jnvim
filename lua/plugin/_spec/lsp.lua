@@ -25,20 +25,10 @@ local LSP = {
         ft = 'lua',
         version = false,
         dependencies = {
-            { 'justinsgithub/wezterm-types', lazy = true, dev = true, version = false },
+            { 'DrKJeff16/wezterm-types', lazy = true, dev = true, version = false },
         },
         config = CfgUtil.require('plugin.lazydev'),
         cond = executable('lua-language-server'),
-    },
-
-    {
-        'stevearc/aerial.nvim',
-        version = false,
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-tree/nvim-web-devicons',
-        },
-        config = CfgUtil.require('plugin.aerial'),
     },
 
     {

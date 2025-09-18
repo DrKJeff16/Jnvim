@@ -12,7 +12,7 @@ local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
 local desc = require('user_api.maps').desc
 
-local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 local optset = vim.api.nvim_set_option_value
 
 local INFO = vim.log.levels.INFO
@@ -132,9 +132,11 @@ local Color = L.colorschemes()
 
 -- Color('nightfox', 'nightfox')
 -- Color('nightfox', 'carbonfox')
--- Color('tokyonight', 'moon')
+-- Color('nightfox', 'duskfox')
 Color('tokyonight', 'storm')
 -- Color('catppuccin', 'mocha')
+-- Color('catppuccin', 'macchiato')
+-- Color('catppuccin', 'frappe')
 
 vim.cmd.packadd('nohlsearch')
 
@@ -166,7 +168,7 @@ local DISABLE_BT = {
 local ft, bt = ft_get(buf), bt_get(buf)
 
 -- HACK: In case we're on specific buffer (file|buf)types
-if not (in_tbl(DISABLE_FT, ft) or in_tbl(DISABLE_BT, bt)) then
+if not (in_list(DISABLE_FT, ft) or in_list(DISABLE_BT, bt)) then
     return
 end
 
