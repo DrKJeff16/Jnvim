@@ -833,6 +833,8 @@ return {
             },
         })
 
+        Fzf.register_ui_select()
+
         vim.api.nvim_set_hl(0, 'FzfLuaBorder', { link = 'FloatBorder' })
 
         User.register_plugin('plugin.fzf.fzf_lua')
