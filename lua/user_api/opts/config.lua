@@ -1,49 +1,36 @@
 local executable = require('user_api.check.exists').executable
 
----@class User.Opts.Spec: vim.wo,vim.bo,vim.Option
+---@class User.Opts.Spec: vim.wo,vim.bo
 local Defaults = {
-    ai = true, -- `autoindent`
-    ar = true, -- `autoread`
-    backspace = { 'indent', 'eol', 'start' },
+    autoindent = true,
+    autoread = true,
+    backspace = 'indent,eol,start',
     backup = false,
-    belloff = { 'all' },
-    ci = false, -- `copyindent`
+    belloff = 'all',
+    copyindent = false,
     encoding = 'utf-8',
     errorbells = false,
-    et = true, -- `expandtab`
+    expandtab = true,
     foldmethod = 'manual',
-    formatoptions = {
-        b = true,
-        c = false,
-        j = true,
-        l = true,
-        n = true,
-        o = true,
-        p = true,
-        q = true,
-        w = true,
-    },
+    formatoptions = 'bjlnopqw',
+    helplang = 'en',
     hidden = true,
-    hlg = { 'en' }, -- `helplang`
     hlsearch = true,
     incsearch = true,
-    ls = 2, -- `laststatus`
+    laststatus = 2,
     makeprg = 'make',
-    matchpairs = {
-        '(:)',
-        '[:]',
-        '{:}',
-        '<:>',
-    },
-    mouse = { a = false }, -- Disable the mouse by default
-    nu = true, -- `number`
-    nuw = 4, -- `numberwidth`
-    pi = false, -- `preserveindent`
+    matchpairs = '(:),[:],{:},<:>',
+    mouse = '',
+    number = true,
+    numberwidth = 4,
+    preserveindent = false,
     relativenumber = false,
     ruler = true,
+    shiftwidth = 4,
     showcmd = true,
     showmatch = true,
     showmode = false,
+    showtabline = 2,
     signcolumn = 'yes',
     smartcase = true,
     smartindent = true,
@@ -52,10 +39,8 @@ local Defaults = {
     spell = false,
     splitbelow = true,
     splitright = true,
-    stal = 2, -- `showtabline`
-    sw = 4, -- `shiftwidth`
+    tabstop = 4,
     termguicolors = true,
-    ts = 4, -- `tabstop`
     updatecount = 100,
     updatetime = 1000,
     visualbell = false,

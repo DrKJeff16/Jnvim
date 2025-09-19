@@ -278,7 +278,7 @@ function Opts.setup_maps()
     })
 end
 
----@return table|User.Opts|fun(override?: User.Opts.Spec, verbose?: boolean)
+---@return User.Opts|fun(override?: User.Opts.Spec, verbose?: boolean)
 function Opts.new()
     return setmetatable(Opts, {
         __index = Opts,
@@ -291,18 +291,27 @@ function Opts.new()
         ---@param override? User.Opts.Spec A table with custom options
         ---@param verbose? boolean Flag to make the function return a string with invalid values, if any
         __call = function(self, override, verbose)
-            override = is_tbl(override) and override or {}
-            verbose = is_bool(verbose) and verbose or false
+            if vim.fn.has('nvim-0.11') == 1 then
+                validate('override', override, 'table', true, 'User.Opts.Spec')
+                validate('verbose', verbose, 'boolean', true)
+            else
+                validate({
+                    override = { override, { 'table', 'nil' } },
+                    verbose = { verbose, { 'boolean', 'nil' } },
+                })
+            end
+            override = override or {}
+            verbose = verbose ~= nil and verbose or false
 
-            local defaults = self.get_defaults()
+            local defaults = Opts.get_defaults()
 
             if not type_not_empty('table', self.options) then
-                self.options = self.long_opts_convert(defaults, verbose)
+                self.options = Opts.long_opts_convert(defaults, verbose)
             end
 
-            local parsed_opts = self.long_opts_convert(override, verbose)
+            local parsed_opts = Opts.long_opts_convert(override, verbose)
 
-            ---@type table|vim.bo|vim.wo
+            ---@type vim.bo|vim.wo
             Opts.options = deep_extend('keep', parsed_opts, self.options)
 
             Opts.optset(Opts.options, verbose)
