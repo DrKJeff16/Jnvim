@@ -5,10 +5,8 @@
 
 ---@alias User.Commands.Spec table<string, User.Commands.CmdSpec>
 
-local Value = require('user_api.check.value')
-
 local desc = require('user_api.maps').desc
-local type_not_empty = Value.type_not_empty
+local type_not_empty = require('user_api.check.value').type_not_empty
 
 local validate = vim.validate
 local copy = vim.deepcopy
@@ -23,35 +21,34 @@ local optset = vim.api.nvim_set_option_value
 local Commands = {}
 
 ---@type User.Commands.Spec
-Commands.commands = {}
+Commands.commands = {
+    Redir = {
+        function(ctx)
+            local lines = vim.split(
+                exec2(ctx.args, { output = true })['output'],
+                string.char(10), -- `'\n'`
+                { plain = true }
+            )
 
-Commands.commands.Redir = {
-    function(ctx)
-        local lines = vim.split(
-            exec2(ctx.args, { output = true })['output'],
-            string.char(10), -- `'\n'`
-            { plain = true }
-        )
+            local bufnr = vim.api.nvim_create_buf(true, true)
 
-        local buf = vim.api.nvim_create_buf(true, true)
+            open_win(bufnr, true, { vertical = false })
+            set_lines(bufnr, 0, -1, false, lines)
+            optset('modified', false, { buf = bufnr })
+        end,
+        {
+            nargs = '+',
+            complete = 'command',
+        },
 
-        open_win(buf, true, { vertical = false })
-        set_lines(buf, 0, -1, false, lines)
+        mappings = {
+            n = {
+                ['<Leader>UC'] = { group = '+Commands' },
 
-        optset('modified', false, { buf = buf })
-    end,
-    {
-        nargs = '+',
-        complete = 'command',
-    },
-
-    mappings = {
-        n = {
-            ['<Leader>UC'] = { group = '+Commands' },
-
-            ['<Leader>UCR'] = {
-                ':Redir ',
-                desc('Prompt to `Redir` command', false),
+                ['<Leader>UCR'] = {
+                    ':Redir ',
+                    desc('Prompt to `Redir` command', false),
+                },
             },
         },
     },
@@ -62,21 +59,30 @@ Commands.commands.Redir = {
 ---@param opts? vim.api.keyset.user_command
 ---@param mappings? AllModeMaps
 function Commands.add_command(name, cmd, opts, mappings)
-    validate('name', name, 'string', false)
-    validate(
-        'cmd',
-        cmd,
-        'function',
-        false,
-        'fun(ctx?: vim.api.keyset.create_user_command.command_args)'
-    )
-    validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
-    validate('mappings', mappings, 'table', true, 'AllModeMaps')
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('name', name, 'string', false)
+        validate(
+            'cmd',
+            cmd,
+            'function',
+            false,
+            'fun(ctx?: vim.api.keyset.create_user_command.command_args)'
+        )
+        validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
+        validate('mappings', mappings, 'table', true, 'AllModeMaps')
+    else
+        validate({
+            name = { name, 'string' },
+            cmd = { cmd, 'function' },
+            opts = { opts, { 'table', 'nil' } },
+            mappings = { mappings, { 'table', 'nil' } },
+        })
+    end
     opts = opts or {}
 
+    ---@type User.Commands.CmdSpec
     local cmnd = { cmd, opts }
-
-    if mappings ~= nil then
+    if mappings then
         cmnd.mappings = mappings
     end
 
@@ -89,9 +95,8 @@ function Commands.setup_keys()
     end
 
     local Keymaps = require('user_api.config.keymaps')
-
     for _, cmd in pairs(Commands.commands) do
-        if type_not_empty('table', cmd.mappings) then
+        if cmd.mappings and not vim.tbl_isempty(cmd.mappings) then
             Keymaps(cmd.mappings)
         end
     end
@@ -99,25 +104,32 @@ end
 
 ---@param cmds? User.Commands.Spec
 function Commands.setup(cmds)
-    validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
+    else
+        validate({ cmds = { cmds, { 'table', 'nil' } } })
+    end
     cmds = cmds or {}
 
     Commands.commands = d_extend('keep', cmds, copy(Commands.commands))
-
     for cmd, T in pairs(Commands.commands) do
-        local exec, opts = T[1], T[2] or {}
+        local exec = T[1]
+        local opts = T[2] or {}
         new_cmd(cmd, exec, opts)
     end
 
     Commands.setup_keys()
 end
 
-return setmetatable({}, {
+---@type User.Commands
+local M = setmetatable({}, {
     __index = Commands,
 
     __newindex = function(_, _, _)
         error('User.Commands table is Read-Only!')
     end,
 })
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

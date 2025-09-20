@@ -1,28 +1,14 @@
-local fmt = string.format
+local MODSTR = 'user_api'
 
-local validate = vim.validate
+local in_list = vim.list_contains
 
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 local ERROR = vim.log.levels.ERROR
 
-local in_tbl = vim.tbl_contains
-
 ---@class UserAPI
 ---@field FAILED? string[]
 local User = {}
-
-User.util = require('user_api.util')
-
-User.check = require('user_api.check')
-User.distro = require('user_api.distro')
-User.maps = require('user_api.maps')
-User.opts = require('user_api.opts')
-User.commands = require('user_api.commands')
-User.update = require('user_api.update')
-User.highlight = require('user_api.highlight')
-
-User.config = require('user_api.config')
 
 ---@type string[]
 User.paths = {}
@@ -30,30 +16,42 @@ User.paths = {}
 ---@type string[]
 User.registered_plugins = {}
 
+User.util = require('user_api.util')
+User.check = require('user_api.check')
+User.distro = require('user_api.distro')
+User.maps = require('user_api.maps')
+User.opts = require('user_api.opts')
+User.commands = require('user_api.commands')
+User.update = require('user_api.update')
+User.highlight = require('user_api.highlight')
+User.config = require('user_api.config')
+
 ---Registers a plugin in the User API for possible reloading later.
 --- ---
 ---@param pathstr string The path of the plugin to be registered
 ---@param index? integer An optional integer to insert the plugin in a given position
 function User.register_plugin(pathstr, index)
-    validate('pathstr', pathstr, 'string', false)
-    validate('index', index, 'number', true, 'integer')
+    if vim.fn.has('nvim-0.11') == 1 then
+        vim.validate('pathstr', pathstr, 'string', false)
+        vim.validate('index', index, 'number', true, 'integer')
+    else
+        vim.validate({
+            pathstr = { pathstr, 'string' },
+            index = { index, { 'number', 'nil' } },
+        })
+    end
 
-    local Value = User.check.value
+    if pathstr == '' then
+        return
+    end
 
-    local type_not_empty = Value.type_not_empty
-    local tbl_contains = vim.tbl_contains
-    local in_tbl_range = Value.in_tbl_range
-
-    local _NAME = 'user_api.register_plugin'
+    local _NAME = MODSTR .. '.register_plugin'
+    local in_tbl_range = User.check.value.in_tbl_range
 
     index = index or 0
     index = in_tbl_range(index, User.registered_plugins) and index or 0
 
-    if not type_not_empty('string', pathstr) then
-        return
-    end
-
-    if tbl_contains(User.registered_plugins, pathstr) then
+    if in_list(User.registered_plugins, pathstr) then
         local old_idx = 0
         for i, v in ipairs(User.registered_plugins) do
             if v == pathstr then
@@ -63,16 +61,14 @@ function User.register_plugin(pathstr, index)
         end
 
         table.remove(User.registered_plugins, old_idx)
-
-        if tbl_contains({ 0, old_idx }, index) or index > #User.registered_plugins then
+        if in_list({ 0, old_idx }, index) or index > #User.registered_plugins then
             table.insert(User.registered_plugins, old_idx, pathstr)
         else
-            table.insert(User.registered_plugins, index, pathstr)
-
             vim.notify(
-                fmt('(%s): Moved `%s` from index `%d` to `%d`', _NAME, pathstr, old_idx, index),
+                ('(%s): Moved `%s` from index `%d` to `%d`'):format(_NAME, pathstr, old_idx, index),
                 INFO
             )
+            table.insert(User.registered_plugins, index, pathstr)
         end
 
         return
@@ -80,25 +76,25 @@ function User.register_plugin(pathstr, index)
 
     if index >= 1 and index <= #User.registered_plugins then
         table.insert(User.registered_plugins, index, pathstr)
-        return
+    elseif index < 0 or index > #User.registered_plugins then
+        vim.notify(('(%s): Invalid index, appending instead'):format(_NAME), WARN)
+        table.insert(User.registered_plugins, pathstr)
     end
-
-    if index < 0 or index > #User.registered_plugins then
-        vim.notify('Invalid index, appending instead', WARN)
-    end
-    table.insert(User.registered_plugins, pathstr)
 end
 
 ---@param pathstr string The path of the plugin to be de-registered
 function User.deregister_plugin(pathstr)
-    validate('pathstr', pathstr, 'string', false)
+    if vim.fn.has('nvim-0.11') == 1 then
+        vim.validate('pathstr', pathstr, 'string', false)
+    else
+        vim.validate({ pathstr = { pathstr, 'string' } })
+    end
 
-    if not in_tbl(User.registered_plugins, pathstr) then
+    if pathstr == '' or not in_list(User.registered_plugins, pathstr) then
         return
     end
 
     local idx = 0
-
     for i, v in ipairs(User.registered_plugins) do
         if v == pathstr then
             idx = i
@@ -127,9 +123,8 @@ end
 
 function User.print_loaded_plugins()
     local msg = ''
-
     for _, v in ipairs(User.registered_plugins) do
-        msg = fmt('%s\n%s', msg, v)
+        msg = ('%s\n%s'):format(msg, v)
     end
 
     vim.notify(msg, INFO)
@@ -148,13 +143,17 @@ function User.setup_maps()
     end
 
     User.paths = {}
-
     for _, v in ipairs(User.registered_plugins) do
         local fpath = vim.fn.stdpath('config') .. '/lua/plugin'
         if v:sub(1, 7) == 'plugin.' then
-            v = fpath .. replace(v:sub(7), '.', '/') .. (is_dir(v) and '/init.lua' or '.lua')
-
-            table.insert(User.paths, v)
+            table.insert(
+                User.paths,
+                ('%s%s%s'):format(
+                    fpath,
+                    replace(v:sub(7), '.', '/'),
+                    (is_dir(v) and '/init.lua' or '.lua')
+                )
+            )
         end
     end
 
@@ -164,12 +163,10 @@ function User.setup_maps()
     }
 
     local group, i, cycle = 'a', 1, 1
-
     while i < #User.paths do
-        Keys['<leader>Pe' .. group] = { group = '+Group ' .. string.upper(group) }
-
         local name = User.paths[i]
 
+        Keys['<leader>Pe' .. group] = { group = '+Group ' .. group:upper() }
         Keys['<leader>Pe' .. group .. tostring(cycle)] = {
             function()
                 vim.cmd.tabnew(name)
@@ -192,12 +189,15 @@ end
 
 ---@param opts? table
 function User.setup(opts)
-    validate('opts', opts, 'table', true)
-
+    if vim.fn.has('nvim-0.11') == 1 then
+        vim.validate('opts', opts, 'table', true, 'table?')
+    else
+        vim.validate({ opts = { opts, { 'table', 'nil' } } })
+    end
     opts = opts or {} -- luacheck: ignore
 
     local desc = User.maps.desc
-    local insp = inspect or vim.inspect
+    local insp = vim.inspect
 
     ---@type AllMaps
     local Keys = {
@@ -209,7 +209,6 @@ function User.setup(opts)
                 vim.notify('Reloading...', INFO)
 
                 local res, failed = User.reload_plugins()
-
                 if not (res or vim.tbl_isempty(failed)) then
                     vim.notify(insp(failed), ERROR)
                     return
@@ -230,16 +229,11 @@ function User.setup(opts)
 
     User.setup_maps()
     User.commands.setup()
-    User.update.setup_maps()
+    User.update.setup()
     User.opts.setup_maps()
     User.opts.setup_cmds()
-
-    -- Call the User API file associations and other autocmds
-    User.util.setup_autocmd()
-
-    -- Call runtimepath optimizations for specific platforms
-    User.distro()
-
+    User.util.setup_autocmd() -- Call the User API file associations and other autocmds
+    User.distro() -- Call runtimepath optimizations for specific platforms
     User.config.neovide.setup()
 end
 

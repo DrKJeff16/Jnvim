@@ -1,3 +1,5 @@
+local MODSTR = 'user_api.update'
+
 local WARN = vim.log.levels.WARN
 local INFO = vim.log.levels.INFO
 
@@ -26,11 +28,8 @@ function Update.update(verbose)
     }
 
     cd(vim.fn.stdpath('config'))
-
     local res = vim.fn.system(cmd)
-
     cd(og_cwd)
-
     local lvl = res:match('error') and WARN or INFO
 
     if verbose then
@@ -43,18 +42,18 @@ function Update.update(verbose)
     end
 
     if vim.v.shell_error ~= 0 then
-        error('Failed to update Jnvim, try to do it manually', WARN)
+        error(('(%s.update): Failed to update Jnvim, try to do it manually'):format(MODSTR), WARN)
     end
 
     if res:match('Already up to date') then
-        notify('Jnvim is up to date!', INFO, {
+        notify(('(%s.update): Jnvim is up to date!'):format(MODSTR), INFO, {
             animate = true,
             hide_from_history = true,
             timeout = 1750,
             title = 'User API - Update',
         })
     elseif not res:match('error') then
-        notify('You need to restart Nvim!', WARN, {
+        notify(('(%s.update): You need to restart Nvim!'):format(MODSTR), WARN, {
             animate = true,
             hide_from_history = false,
             timeout = 5000,
@@ -65,7 +64,7 @@ function Update.update(verbose)
     return res
 end
 
-function Update.setup_maps()
+function Update.setup()
     local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps').desc
 
@@ -84,6 +83,13 @@ function Update.setup_maps()
                 desc('Update User Config (Verbose)'),
             },
         },
+    })
+
+    vim.api.nvim_create_user_command('UserUpdate', function(ctx)
+        Update.update(ctx.bang)
+    end, {
+        bang = true,
+        desc = 'Update Jnvim',
     })
 end
 
