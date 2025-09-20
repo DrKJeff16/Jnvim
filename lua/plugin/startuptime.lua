@@ -3,6 +3,7 @@
 ---@type LazySpec
 return {
     'dstein64/vim-startuptime',
+    lazy = false,
     priority = 1000,
     version = false,
     init = require('config.util').flag_installed('startuptime'),
