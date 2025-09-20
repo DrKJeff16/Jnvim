@@ -17,7 +17,6 @@ local Editing = {
 
     {
         'folke/twilight.nvim',
-        event = 'VeryLazy',
         version = false,
         config = CfgUtil.require('plugin.twilight'),
         cond = not in_console(),
