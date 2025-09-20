@@ -238,4 +238,4 @@ User.register_plugin('plugin.lsp.autocmd')
 
 return Autocmd.new()
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

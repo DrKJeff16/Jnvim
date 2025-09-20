@@ -173,4 +173,4 @@ vim.api.nvim_create_user_command('NotifyError', gen_cmd_lvl(vim.log.levels.ERROR
 
 return Notify
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:noci:nopi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
