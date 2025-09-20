@@ -1,4 +1,5 @@
 local ERROR = vim.log.levels.ERROR
+local in_list = vim.list_contains
 
 ---Checking Utilities.
 --- ---
@@ -21,7 +22,7 @@ function Check.in_console()
     local env = vim.fn.environ()
 
     --- FIXME: This is not a good enough check. Must find a better solution
-    return (vim.list_contains({ 'linux' }, env['TERM']) and not fields('DISPLAY', env))
+    return in_list({ 'linux' }, env['TERM']) and not fields('DISPLAY', env)
 end
 
 ---Check whether Nvim is running as root (`PID == 0`).
@@ -31,15 +32,17 @@ function Check.is_root()
     return (vim.uv or vim.loop).getuid() == 0
 end
 
-_G.in_console = Check.in_console()
 _G.is_root = Check.is_root()
 
-return setmetatable(Check, {
+---@type User.Check
+local M = setmetatable(Check, {
     __index = Check,
 
     __newindex = function(_, _, _)
         error('User.Check is read-only!', ERROR)
     end,
 })
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
