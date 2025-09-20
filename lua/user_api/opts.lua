@@ -1,10 +1,8 @@
-local fmt = string.format
 local validate = vim.validate
 
 local Value = require('user_api.check.value')
 
 local is_str = Value.is_str
-local is_tbl = Value.is_tbl
 local is_bool = Value.is_bool
 local type_not_empty = Value.type_not_empty
 
@@ -114,16 +112,16 @@ function Opts.long_opts_convert(T, verbose)
     for opt, val in pairs(T) do
         -- If neither long nor short (known) option, append to warning message
         if not (in_list(keys, opt) or Value.tbl_values({ opt }, ALL_OPTIONS)) then
-            msg = fmt('%s- Option `%s` not valid!\n', msg, opt)
+            msg = ('%s- Option `%s` not valid!\n'):format(msg, opt)
         elseif in_list(keys, opt) then
             parsed_opts[opt] = val
         else
             local new_opt = Value.tbl_values({ opt }, ALL_OPTIONS, true)
             if is_str(new_opt) and new_opt ~= '' then
                 parsed_opts[new_opt] = val
-                verb_str = fmt('%s%s ==> %s\n', verb_str, opt, new_opt)
+                verb_str = ('%s%s ==> %s\n'):format(verb_str, opt, new_opt)
             else
-                msg = fmt('%s- Option `%s` non valid!\n', msg, new_opt)
+                msg = ('%s- Option `%s` non valid!\n'):format(msg, new_opt)
             end
         end
     end
@@ -162,7 +160,7 @@ function Opts.optset(O, verbose)
         if type(vim.o[k]) == type(v) then
             Opts.options[k] = v
             vim.o[k] = Opts.options[k]
-            verb_msg = fmt('%s- %s: %s\n', verb_msg, k, insp(v))
+            verb_msg = ('%s- %s: %s\n'):format(verb_msg, k, insp(v))
         end
     end
 
@@ -202,9 +200,15 @@ end
 ---@param O string[]|string
 ---@param verbose? boolean
 function Opts.toggle(O, verbose)
-    validate('O', O, { 'string', 'table' }, false, 'string[]|string')
-    validate('verbose', verbose, 'boolean', true)
-
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('O', O, { 'string', 'table' }, false, 'string[]|string')
+        validate('verbose', verbose, 'boolean', true)
+    else
+        validate({
+            O = { O, { 'string', 'table' } },
+            verbose = { verbose, { 'boolean', 'nil' } },
+        })
+    end
     verbose = verbose ~= nil and verbose or false
 
     if is_str(O) then
@@ -238,7 +242,7 @@ function Opts.setup_cmds()
         local cmds = {}
         for _, v in ipairs(ctx.fargs) do
             if not (in_list(Opts.toggleable, v) or ctx.bang) then
-                error(fmt('(OptsToggle): Cannot toggle option `%s`, aborting', v), ERROR)
+                error(('(OptsToggle): Cannot toggle option `%s`, aborting'):format(v), ERROR)
             end
 
             if in_list(Opts.toggleable, v) and not in_list(cmds, v) then
@@ -249,9 +253,7 @@ function Opts.setup_cmds()
         Opts.toggle(cmds, ctx.bang)
     end, {
         nargs = '+',
-
         complete = complete_fun,
-
         bang = true,
         desc = 'Toggle toggleable Vim Options',
     })
