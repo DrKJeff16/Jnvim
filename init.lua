@@ -1,26 +1,21 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
+_G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
+_G.in_console = require('user_api.check').in_console
 _G.inspect = vim.inspect
 
 local User = require('user_api')
-local Check = require('user_api.check')
 local Util = require('user_api.util')
 local Termux = require('user_api.distro.termux')
 
-local ft_get = Util.ft_get
-local bt_get = Util.bt_get
 local Keymaps = require('user_api.config.keymaps')
 local Opts = require('user_api.opts')
 local desc = require('user_api.maps').desc
-
-local in_list = vim.list_contains
-local optset = vim.api.nvim_set_option_value
+local ft_get = Util.ft_get
+local bt_get = Util.bt_get
 
 local INFO = vim.log.levels.INFO
-local uv = vim.uv or vim.loop
-
-_G.is_windows = uv.os_uname().version:match('Windows') ~= nil
-_G.in_console = Check.in_console
-
+local in_list = vim.list_contains
+local optset = vim.api.nvim_set_option_value
 local curr_buf = vim.api.nvim_get_current_buf
 
 -- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
@@ -42,6 +37,7 @@ Opts({
     errorbells = false,
     expandtab = true,
     fileformat = 'unix',
+    fileignorecase = not _G.is_windows,
     foldmethod = 'manual',
     formatoptions = 'bjlnopqw',
     helplang = 'en',
@@ -60,6 +56,7 @@ Opts({
     rightleft = false,
     ruler = true,
     scrolloff = 2,
+    secure = false,
     sessionoptions = 'buffers,tabpages,globals',
     shiftwidth = 4,
     showmatch = true,

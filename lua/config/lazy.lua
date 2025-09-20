@@ -1,14 +1,5 @@
 ---@alias LazySpecs LazySpec[]
 
----@class LazySources
----@field [1] 'lazy'
----@field [2]? 'rockspec'|'packspec'
----@field [3]? 'rockspec'|'packspec'
-
----@alias LazyPlug string|LazyConfig|LazyPluginSpec|LazySpecImport[][]
----@alias LazyPlugs (LazyPlug)[]
-
-local fmt = string.format
 local uv = vim.uv or vim.loop
 local stdpath = vim.fn.stdpath
 
@@ -19,6 +10,7 @@ local Termux = require('user_api.distro.termux')
 local in_console = require('user_api.check').in_console
 local desc = require('user_api.maps').desc
 local key_variant = CfgUtil.key_variant
+local luarocks_check = CfgUtil.luarocks_check
 
 local LAZY_DATA = stdpath('data') .. '/lazy'
 local LAZY_STATE = stdpath('state') .. '/lazy'
@@ -44,7 +36,7 @@ end
 
 --- Add `Lazy` to runtimepath
 if not vim.o.rtp:find(LAZYPATH) then
-    vim.o.rtp = fmt('%s,%s', LAZYPATH, vim.o.rtp)
+    vim.o.rtp = ('%s,%s'):format(LAZYPATH, vim.o.rtp)
 end
 
 local Lazy = require('lazy')
@@ -52,6 +44,7 @@ local Lazy = require('lazy')
 Lazy.setup({
     spec = {
         { import = 'plugin._spec' },
+        { import = 'plugin.startuptime' },
         { import = 'plugin.Comment' },
         { import = 'plugin.autopairs' },
         { import = 'plugin.fzf_lua' },
@@ -60,8 +53,6 @@ Lazy.setup({
         { import = 'plugin.refactoring' },
         { import = 'plugin.checkmate' },
         { import = 'plugin.snacks' },
-
-        { import = 'plugin.startuptime' },
     },
 
     defaults = { lazy = false, version = false },
@@ -89,7 +80,7 @@ Lazy.setup({
     },
 
     rocks = {
-        enabled = CfgUtil.luarocks_check(),
+        enabled = luarocks_check(),
         root = stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -98,23 +89,13 @@ Lazy.setup({
         enabled = true,
         cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
-        sources = (function()
-            ---@type LazySources
-            local S = { 'lazy', 'packspec' }
-
-            if CfgUtil.luarocks_check() then
-                --- If `luarocks` is available and configured
-                table.insert(S, 'rockspec')
-            end
-
-            return S
-        end)(),
+        sources = luarocks_check() and { 'lazy', 'packspec' } or { 'lazy', 'packspec', 'rockspec' },
     },
 
     checker = {
         enabled = not Termux.validate(),
         notify = Archlinux.validate(),
-        frequency = 900,
+        frequency = 600,
         check_pinned = false,
     },
 
@@ -122,8 +103,8 @@ Lazy.setup({
         backdrop = not in_console() and 60 or 100,
         border = 'double',
         title = 'L        A        Z        Y',
-        wrap = true,
         title_pos = 'center',
+        wrap = true,
         pills = true,
     },
 
@@ -190,7 +171,17 @@ local Keys = {
         desc('Install Lazy Plugins'),
     },
 
-    ['<leader>LL'] = {
+    ['<leader>Lh'] = {
+        Lazy.health,
+        desc('Run Lazy checkhealth'),
+    },
+
+    ['<leader>vhL'] = {
+        Lazy.health,
+        desc('Run Lazy checkhealth'),
+    },
+
+    ['<leader>L<CR>'] = {
         ':Lazy ',
         desc('Select `Lazy` Operation (Interactively)', false),
     },
@@ -204,15 +195,24 @@ Keymaps({ n = Keys })
 local M = {}
 
 function M.colorschemes()
-    return require('plugin.colorschemes')
+    local exists = require('user_api.check.exists').module
+    if exists('plugin.colorschemes') then
+        return require('plugin.colorschemes')
+    end
 end
 
 function M.lsp()
-    return require('plugin.lsp')
+    local exists = require('user_api.check.exists').module
+    if exists('plugin.lsp') then
+        return require('plugin.lsp')
+    end
 end
 
 function M.alpha()
-    return require('plugin.alpha') or nil
+    local exists = require('user_api.check.exists').module
+    if exists('plugin.alpha') then
+        return require('plugin.alpha') or nil
+    end
 end
 
 return M

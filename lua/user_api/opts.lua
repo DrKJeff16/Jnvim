@@ -1,3 +1,5 @@
+local MODSTR = 'user_api.opts'
+
 local validate = vim.validate
 
 local Value = require('user_api.check.value')
@@ -175,9 +177,9 @@ function Opts.optset(O, verbose)
 end
 
 ---Set up `guicursor` so that cursor blinks.
----
+--- ---
 function Opts.set_cursor_blink()
-    if in_console() then
+    if require('user_api.check').in_console() then
         return
     end
 
@@ -211,15 +213,16 @@ function Opts.toggle(O, verbose)
     end
     verbose = verbose ~= nil and verbose or false
 
+    ---@cast O string
     if is_str(O) then
         O = { O }
     end
 
+    ---@cast O string[]
     if vim.tbl_isempty(O) then
         return
     end
 
-    ---@cast O string[]
     for _, opt in ipairs(O) do
         if in_list(Opts.toggleable, opt) then
             local value = vim.o[opt]
@@ -286,7 +289,7 @@ function Opts.new()
         __index = Opts,
 
         __newindex = function(_, _, _)
-            error('(user_api.opts): This module is read only!', ERROR)
+            error(('(%s): This module is read only!'):format(MODSTR), ERROR)
         end,
 
         ---@param self User.Opts

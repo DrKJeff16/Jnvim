@@ -2,9 +2,8 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-local is_str = Check.value.is_str
 
-local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 
 if not exists('alpha') then
     User.deregister_plugin('plugin.alpha')
@@ -44,7 +43,7 @@ function M.dashboard()
     Alpha.setup(Dashboard.config)
 end
 
----@return table|AlphaCaller|fun(variant?: 'theta'|'dashboard'|'startify')
+---@return AlphaCaller|fun(variant?: 'theta'|'dashboard'|'startify')
 function M.new()
     return setmetatable({}, {
         __index = M,
@@ -52,12 +51,20 @@ function M.new()
         ---@param self AlphaCaller
         ---@param variant? 'theta'|'dashboard'|'startify'
         __call = function(self, variant)
-            if not (is_str(variant) and in_tbl({ 'theta', 'dashboard', 'startify' }, variant)) then
-                return
+            if vim.fn.has('nvim-0.11') == 1 then
+                vim.validate('variant', variant, 'string', true, "'theta'|'dashboard'|'startify'")
+            else
+                vim.validate({ variant = { variant, { 'string', 'nil' } } })
+            end
+            variant = variant or 'theta'
+
+            if not in_list({ 'theta', 'dashboard', 'startify' }, variant) then
+                variant = 'theta'
             end
 
             ---@type fun()
-            self[variant]()
+            local func = self[variant]
+            func()
         end,
     })
 end

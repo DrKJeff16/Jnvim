@@ -1,3 +1,5 @@
+local MODSTR = 'config.util'
+
 local User = require('user_api')
 local Check = User.check
 local Exists = Check.exists
@@ -10,10 +12,9 @@ local env_vars = Exists.env_vars
 local vim_exists = Exists.vim_exists
 local is_bool = Value.is_bool
 local is_str = Value.is_str
-local type_not_empty = Value.type_not_empty
 
 local validate = vim.validate
-local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
 
 local ERROR = vim.log.levels.ERROR
 
@@ -22,7 +23,11 @@ local CfgUtil = {}
 
 ---@param force? boolean
 function CfgUtil.set_tgc(force)
-    validate('force', force, 'boolean', true)
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('force', force, 'boolean', true)
+    else
+        validate({ force = { force, { 'boolean', 'nil' } } })
+    end
     force = force ~= nil and force or false
 
     vim.o.tgc = not force and (vim_exists('+termguicolors') and not in_console()) or true
@@ -32,11 +37,18 @@ end
 ---@param callback? fun()
 ---@return fun()
 function CfgUtil.flag_installed(name, callback)
-    validate('name', name, 'string', false)
-    validate('callback', callback, 'function', true, 'fun()')
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('name', name, 'string', false)
+        validate('callback', callback, 'function', true, 'fun()')
+    else
+        validate({
+            name = { name, 'string' },
+            callback = { callback, { 'function', 'nil' } },
+        })
+    end
 
     if name == '' then
-        error('Unable to set `vim.g` var', ERROR)
+        error(('(%s.flag_installed): Unable to set `vim.g` var'):format(MODSTR), ERROR)
     end
 
     local flag = (name:sub(1, 10) == 'installed_') and name or ('installed_' .. name)
@@ -69,6 +81,15 @@ end
 ---@param force_tgc? boolean
 ---@return fun()
 function CfgUtil.colorscheme_init(fields, force_tgc)
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('fields', fields, { 'string', 'table' }, false, 'string|table<string, any>')
+        validate('force_tgc', force_tgc, 'boolean', true, 'boolean?')
+    else
+        validate({
+            fields = { fields, { 'string', 'table' } },
+            force_tgc = { force_tgc, { 'boolean', 'nil' } },
+        })
+    end
     force_tgc = is_bool(force_tgc) and force_tgc or false
 
     return function()
@@ -79,10 +100,8 @@ function CfgUtil.colorscheme_init(fields, force_tgc)
             return
         end
 
-        if type_not_empty('table', fields) then
-            for field, val in next, fields do
-                vim.g[field] = val
-            end
+        for field, val in pairs(fields) do
+            vim.g[field] = val
         end
     end
 end
@@ -104,7 +123,11 @@ end
 ---@param mod_str string
 ---@return fun()
 function CfgUtil.require(mod_str)
-    validate('mod_str', mod_str, 'string', false)
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('mod_str', mod_str, 'string', false)
+    else
+        validate({ mod_str = { mod_str, 'string' } })
+    end
 
     return function()
         if exists(mod_str) then
@@ -150,9 +173,12 @@ end
 ---@param cmd? 'ed'|'tabnew'|'split'|'vsplit'
 ---@return fun()
 function CfgUtil.key_variant(cmd)
-    validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
-
-    cmd = (cmd ~= nil and in_tbl({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
+    else
+        validate({ cmd = { cmd, { 'string', 'nil' } } })
+    end
+    cmd = (cmd ~= nil and in_list({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
 
     local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
 
@@ -171,12 +197,17 @@ function CfgUtil.key_variant(cmd)
         end,
     }
 
-    return FUNCS[cmd]
+    local res = FUNCS[cmd]
+    return res
 end
 
 ---@return boolean
 function CfgUtil.has_tgc()
-    return (not in_console() and exists('+termguicolors')) and vim.o.tgc or false
+    if in_console or not exists('+termguicolors') then
+        return false
+    end
+
+    return vim.o.termguicolors
 end
 
 return CfgUtil

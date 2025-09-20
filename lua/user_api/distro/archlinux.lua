@@ -57,7 +57,7 @@ function Archlinux.validate()
 end
 
 ---@type User.Distro.Archlinux|fun()
-return setmetatable({}, {
+local M = setmetatable({}, {
     __index = Archlinux,
 
     __newindex = function(_, _, _)
@@ -84,5 +84,7 @@ return setmetatable({}, {
         end
     end,
 })
+
+return M
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
