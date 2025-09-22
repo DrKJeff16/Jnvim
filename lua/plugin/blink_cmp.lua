@@ -184,14 +184,12 @@ function BUtil.reset_providers()
             opts = {
                 trailing_slash = false,
                 label_trailing_slash = true,
-
+                ignore_root_slash = false,
                 show_hidden_files_by_default = true,
 
                 get_cwd = function(ctx)
                     return vim.fn.expand(('#%d:p:h'):format(ctx.bufnr))
                 end,
-
-                ignore_root_slash = false,
             },
         },
 
@@ -226,7 +224,6 @@ function BUtil.reset_providers()
             name = 'LSP',
             module = 'blink.cmp.sources.lsp',
             score_offset = 70,
-
             transform_items = function(_, items)
                 return vim.tbl_filter(function(value)
                     return value.kind ~= require('blink.cmp.types').CompletionItemKind.Keyword
@@ -512,7 +509,6 @@ return {
                 ---Useful for when your theme doesn't support blink.cmp
                 ---Will be removed in a future release
                 use_nvim_cmp_as_default = false,
-
                 kind_icons = require('lspkind').symbol_map,
             },
 
@@ -574,7 +570,6 @@ return {
                 menu = {
                     ---Don't automatically show the completion menu
                     auto_show = true,
-
                     border = 'single',
 
                     ---`nvim-cmp`-style menu

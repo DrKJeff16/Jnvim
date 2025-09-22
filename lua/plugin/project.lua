@@ -3,12 +3,10 @@
 ---@type LazySpec
 return {
     'DrKJeff16/project.nvim',
+    event = 'VeryLazy',
     dev = true,
     version = false,
-    dependencies = {
-        'nvim-telescope/telescope.nvim',
-        'ibhagwan/fzf-lua',
-    },
+    dependencies = { 'nvim-telescope/telescope.nvim' },
     config = function()
         local User = require('user_api')
         local Check = User.check
@@ -46,6 +44,8 @@ return {
                 show_hidden = false,
             },
 
+            fzf_lua = { enabled = true },
+
             exclude_dirs = {
                 '/usr/*',
                 '~/.build/*',
@@ -62,9 +62,7 @@ return {
 
             silent_chdir = true,
             enable_autochdir = false,
-
             scope_chdir = 'tab',
-
             datapath = vim.fn.stdpath('data'),
         })
 
@@ -89,6 +87,10 @@ return {
             ['<leader>pf'] = {
                 Project.run_fzf_lua,
                 desc('Run Fzf-Lua'),
+            },
+            ['<leader>pl'] = {
+                vim.cmd.ProjectLog,
+                desc('Open Project Log Window'),
             },
         }
 

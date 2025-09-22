@@ -87,6 +87,7 @@ vim.g.loaded_netrwPlugin = 1
 ---Uncomment to use system clipboard
 -- vim.o.clipboard = 'unnamedplus'
 
+---Call Lazy Plugins
 local L = require('config.lazy')
 
 Keymaps({
@@ -98,6 +99,16 @@ Keymaps({
         ['<leader>vN'] = {
             vim.cmd.Notifications,
             desc('Run `:Notifications`'),
+        },
+        ['<C-/>'] = {
+            ':normal gcc<CR>',
+            desc('Toggle Comment'),
+        },
+    },
+    v = {
+        ['<C-/>'] = {
+            ":'<,'>normal gcc<CR>",
+            desc('Toggle Comment'),
         },
     },
     x = {

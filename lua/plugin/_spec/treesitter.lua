@@ -1,8 +1,8 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 
----@type LazySpecs
+---@type LazySpec[]
 local TS = {
     {
         'nvim-treesitter/nvim-treesitter',
@@ -11,7 +11,6 @@ local TS = {
         dependencies = {
             'nvim-treesitter/nvim-treesitter-context',
             'JoosepAlviste/nvim-ts-context-commentstring',
-            'nvim-treesitter/nvim-treesitter-textobjects',
             'nvim-treesitter/nvim-treesitter-refactor',
             'windwp/nvim-ts-autotag',
         },
