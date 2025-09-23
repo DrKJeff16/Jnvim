@@ -2,12 +2,12 @@ local ERROR = vim.log.levels.ERROR
 local INFO = vim.log.levels.INFO
 
 local curr_buf = vim.api.nvim_get_current_buf
+local curr_win = vim.api.nvim_get_current_win
 local optset = vim.api.nvim_set_option_value
 local optget = vim.api.nvim_get_option_value
 local augroup = vim.api.nvim_create_augroup
 local buf_lines = vim.api.nvim_buf_get_lines
 local win_cursor = vim.api.nvim_win_get_cursor
-local curr_win = vim.api.nvim_get_current_win
 local in_tbl = vim.tbl_contains
 local in_list = vim.list_contains
 local validate = vim.validate
@@ -108,7 +108,6 @@ function Util.mv_tbl_values(T, steps, direction)
     }
 
     local res, func = T, direction_funcs[direction]
-
     while steps > 0 do
         res = func(res)
 
@@ -123,37 +122,43 @@ end
 ---@param y boolean
 ---@return boolean
 function Util.xor(x, y)
-    validate('x', x, 'boolean', false)
-    validate('y', y, 'boolean', false)
+    if vim.fn.has('nvim-0.11') then
+        validate('x', x, 'boolean', false)
+        validate('y', y, 'boolean', false)
+    else
+        validate({
+            x = { x, 'boolean' },
+            y = { y, 'boolean' },
+        })
+    end
 
     return (x and not y) or (not x and y)
 end
 
 ---@param T table<string, any>
 ---@param fields string|integer|(string|integer)[]
----@return table<string, any> res
+---@return table<string, any> T
 function Util.strip_fields(T, fields)
-    validate('T', T, 'table', false, 'table<string, any>')
-    validate(
-        'fields',
-        fields,
-        { 'string', 'number', 'table' },
-        false,
-        'string|integer|(string|integer)[]'
-    )
+    if vim.fn.has('nvim-0.11') then
+        validate('T', T, 'table', false, 'table<string, any>')
+        validate(
+            'fields',
+            fields,
+            { 'string', 'number', 'table' },
+            false,
+            'string|integer|(string|integer)[]'
+        )
+    else
+        validate({
+            T = { T, 'table' },
+            fields = { fields, { 'string', 'number', 'table' } },
+        })
+    end
 
     local Value = require('user_api.check.value')
-
     local is_str = Value.is_str
     local field = Value.fields
     local type_not_empty = Value.type_not_empty
-
-    if not type_not_empty('table', fields) then
-        return T
-    end
-
-    ---@type table<string, any>
-    local res = {}
 
     ---@cast fields string
     if is_str(fields) then
@@ -161,23 +166,23 @@ function Util.strip_fields(T, fields)
             return T
         end
 
-        for k, v in pairs(T) do
-            if k ~= fields then
-                res[k] = v
+        for k, _ in pairs(T) do
+            if k == fields then
+                T[k] = nil
             end
         end
 
-        return res
+        return T
     end
 
-    for k, v in pairs(T) do
+    for k, _ in pairs(T) do
         ---@cast fields (string|integer)[]
-        if not in_tbl(fields, k) then
-            res[k] = v
+        if in_tbl(fields, k) then
+            T[k] = nil
         end
     end
 
-    return res
+    return T
 end
 
 ---@param T table<string, any>
@@ -419,26 +424,35 @@ function Util.setup_autocmd()
                         local ft = Util.ft_get(ev.buf)
 
                         ---@type vim.api.keyset.option
-                        local O = { scope = 'local' }
+                        local win_opts = { win = curr_win() }
+
+                        ---@type vim.api.keyset.option
+                        local buf_opts = { buf = ev.buf }
 
                         if ft == 'lazy' then
-                            optset('signcolumn', 'no', O)
-                            optset('number', false, O)
+                            optset('signcolumn', 'no', win_opts)
+                            optset('number', false, win_opts)
                             return
                         end
 
                         if bt == 'help' or ft == 'help' then
-                            optset('signcolumn', 'no', O)
-                            optset('number', false, O)
-                            optset('wrap', true, O)
+                            optset('signcolumn', 'no', win_opts)
+                            optset('number', false, win_opts)
+                            optset('wrap', true, win_opts)
+                            optset('colorcolumn', '', win_opts)
 
-                            vim.cmd.wincmd('=')
-                            vim.cmd.noh()
+                            vim.keymap.set('n', 'q', vim.cmd.bdelete, { buffer = ev.buf })
 
+                            local fn = vim.schedule_wrap(function()
+                                vim.cmd.wincmd('=')
+                                vim.cmd.noh()
+                            end)
+
+                            fn()
                             return
                         end
 
-                        if not optget('modifiable', O) then
+                        if not optget('modifiable', buf_opts) then
                             return
                         end
 
