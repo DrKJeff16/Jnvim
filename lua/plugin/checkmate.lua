@@ -176,7 +176,8 @@ return {
             enabled = true,
         },
     },
-    enabled = not vim.g.vscode and true or false,
+    cond = not vim.g.vscode and true or false,
+    enabled = false,
 }
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

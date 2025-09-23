@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -8,7 +8,7 @@ local flag_installed = CfgUtil.flag_installed
 local in_console = Check.in_console
 local executable = Check.exists.executable
 
----@type LazySpecs
+---@type LazySpec[]
 local Syntax = {
     {
         'rhysd/vim-syntax-codeowners',

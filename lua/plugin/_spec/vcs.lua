@@ -7,7 +7,7 @@ local Check = User.check
 local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 
----@type LazySpecs
+---@type LazySpec[]
 local VCS = {
     { import = 'plugin.git.gitsigns' },
 

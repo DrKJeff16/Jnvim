@@ -4,21 +4,10 @@ local CfgUtil = require('config.util')
 local User = require('user_api')
 local Check = User.check
 
-local vim_has = Check.exists.vim_has
 local in_console = Check.in_console
 
 ---@type LazySpec[]
 local Essentials = {
-    {
-        'folke/which-key.nvim',
-        version = false,
-        init = function()
-            vim.o.timeout = true
-            vim.o.timeoutlen = 500
-        end,
-        config = CfgUtil.require('plugin.which_key'),
-        cond = vim_has('nvim-0.10'),
-    },
     {
         'MunifTanjim/nui.nvim',
         version = false,

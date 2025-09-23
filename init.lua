@@ -129,7 +129,7 @@ Keymaps({
 
 local Alpha = L.alpha()
 
-if Alpha ~= nil then
+if Alpha then
     Alpha('theta')
 end
 
@@ -141,10 +141,13 @@ local Color = L.colorschemes()
 -- Color('nightfox', 'nightfox')
 -- Color('nightfox', 'carbonfox')
 -- Color('nightfox', 'duskfox')
-Color('tokyonight', 'storm')
+-- Color('tokyonight', 'storm')
+Color('tokyonight', 'moon')
+-- Color('tokyodark')
 -- Color('catppuccin', 'mocha')
 -- Color('catppuccin', 'macchiato')
 -- Color('catppuccin', 'frappe')
+-- Color('spaceduck')
 
 vim.cmd.packadd('nohlsearch')
 

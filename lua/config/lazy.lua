@@ -1,4 +1,4 @@
----@alias LazySpecs LazySpec[]
+---@module 'lazy'
 
 local uv = vim.uv or vim.loop
 local stdpath = vim.fn.stdpath
@@ -43,6 +43,8 @@ local Lazy = require('lazy')
 
 Lazy.setup({
     spec = {
+        { import = 'plugin.which_key' },
+        { import = 'plugin.blink_cmp' },
         { import = 'plugin._spec' },
         { import = 'plugin.startuptime' },
         { import = 'plugin.Comment' },

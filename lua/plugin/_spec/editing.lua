@@ -1,12 +1,11 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local Check = require('user_api.check')
 
-local executable = Check.exists.executable
 local in_console = Check.in_console
 
----@type LazySpecs
+---@type LazySpec[]
 local Editing = {
     {
         'folke/persistence.nvim',
@@ -23,17 +22,7 @@ local Editing = {
     },
 
     --- TODO COMMENTS
-    {
-        'folke/todo-comments.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-lua/plenary.nvim',
-        },
-        config = CfgUtil.require('plugin.todo_comments'),
-        cond = executable('rg') and not in_console(),
-    },
+    { import = 'plugin.todo_comments' },
     { import = 'plugin.a_vim' },
     {
         'folke/zen-mode.nvim',

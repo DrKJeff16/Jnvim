@@ -1,4 +1,4 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 local User = require('user_api')
@@ -7,7 +7,7 @@ local Check = User.check
 local tel_fzf_build = CfgUtil.tel_fzf_build
 local executable = Check.exists.executable
 
----@type LazySpecs
+---@type LazySpec[]
 local Telescope = {
     {
         'nvim-telescope/telescope.nvim',

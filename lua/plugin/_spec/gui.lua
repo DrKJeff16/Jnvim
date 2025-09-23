@@ -1,8 +1,8 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local in_console = require('user_api.check').in_console
 
----@type LazySpecs
+---@type LazySpec[]
 local GUI = {
     {
         'equalsraf/neovim-gui-shim',

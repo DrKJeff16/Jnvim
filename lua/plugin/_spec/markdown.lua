@@ -1,8 +1,8 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
 
----@type LazySpecs
+---@type LazySpec[]
 local MD = {
     {
         'tadmccorkle/markdown.nvim',
