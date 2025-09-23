@@ -14,6 +14,7 @@
 ---|SpaceVimSubMod
 ---|SpacemacsSubMod
 ---|TNSubMod
+---|TokyoDarkSubMod
 ---|VSCodeSubMod
 
 local User = require('user_api')
@@ -27,14 +28,13 @@ local desc = User.maps.desc
 
 local ERROR = vim.log.levels.ERROR
 
-local fmt = string.format
-
 ---@class CscMod
 local Colorschemes = {}
 
 ---@enum AllCsc
-local Colors = {
+Colorschemes.OPTIONS = {
     'tokyonight',
+    'tokyodark',
     'nightfox',
     'kanagawa',
     'catppuccin',
@@ -52,9 +52,6 @@ local Colors = {
     'spacemacs',
 }
 
----@type AllCsc[]
-Colorschemes.OPTIONS = Colors
-
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
 Colorschemes.flexoki = require('plugin.colorschemes.flexoki')
@@ -68,6 +65,7 @@ Colorschemes.onedark = require('plugin.colorschemes.onedark')
 Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
 Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
 Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
+Colorschemes.tokyodark = require('plugin.colorschemes.tokyodark')
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 Colorschemes.gruvdark = require('plugin.colorschemes.gruvdark')
 Colorschemes.vscode = require('plugin.colorschemes.vscode')
@@ -102,7 +100,7 @@ local M = setmetatable({}, {
         --
         -- Generate keybinds for each colorscheme that is found
         -- Try checking them by typing `<leader>uc` IN NORMAL MODE
-        for _, name in next, self.OPTIONS do
+        for _, name in ipairs(self.OPTIONS) do
             ---@type AllColorSubMods
             local TColor = self[name]
 
@@ -119,13 +117,13 @@ local M = setmetatable({}, {
                     local v = 'a'
                     for _, variant in next, TColor.variants do
                         Keys['<leader>uc' .. csc_group .. i_str] = {
-                            group = fmt('+%s', capitalize(name)),
+                            group = ('+%s'):format(capitalize(name)),
                         }
                         Keys['<leader>uc' .. csc_group .. i_str .. v] = {
                             function()
                                 TColor.setup(variant)
                             end,
-                            desc(fmt('Set Colorscheme `%s` (%s)', capitalize(name), variant)),
+                            desc(('Set Colorscheme `%s` (%s)'):format(capitalize(name), variant)),
                         }
 
                         v = displace_letter(v, 'next')
@@ -133,7 +131,7 @@ local M = setmetatable({}, {
                 else
                     Keys['<leader>uc' .. csc_group .. i_str] = {
                         TColor.setup,
-                        desc(fmt('Set Colorscheme `%s`', capitalize(name))),
+                        desc(('Set Colorscheme `%s`'):format(capitalize(name))),
                     }
                 end
 

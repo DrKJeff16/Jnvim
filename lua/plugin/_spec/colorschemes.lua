@@ -1,25 +1,30 @@
----@module 'config.lazy'
+---@module 'lazy'
 
 local CfgUtil = require('config.util')
-
+local colorscheme_init = CfgUtil.colorscheme_init
 local in_console = require('user_api.check').in_console
 
--- WARN: Colorschemes are called from `lua/plugin/colorschemes/init.lua`
-
----@type LazySpecs
-local ColorSchemes = {
+---@type LazySpec[]
+return {
     {
         'folke/tokyonight.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_tokyonight'),
+        init = colorscheme_init('installed_tokyonight'),
+        cond = not in_console(),
+    },
+    {
+        'tiagovla/tokyodark.nvim',
+        priority = 1000,
+        version = false,
+        init = colorscheme_init('installed_tokyodark'),
         cond = not in_console(),
     },
     {
         'darianmorat/gruvdark.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_gruvdark'),
+        init = colorscheme_init('installed_gruvdark'),
         cond = not in_console(),
     },
     {
@@ -27,35 +32,35 @@ local ColorSchemes = {
         name = 'catppuccin',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_catppuccin'),
+        init = colorscheme_init('installed_catppuccin'),
         cond = not in_console(),
     },
     {
         'navarasu/onedark.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_onedark'),
+        init = colorscheme_init('installed_onedark'),
         cond = not in_console(),
     },
     {
         'EdenEast/nightfox.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_nightfox'),
+        init = colorscheme_init('installed_nightfox'),
         cond = not in_console(),
     },
     {
         'rebelot/kanagawa.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_kanagawa'),
+        init = colorscheme_init('installed_kanagawa'),
         cond = not in_console(),
     },
     {
         'Mofiqul/vscode.nvim',
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_vscode'),
+        init = colorscheme_init('installed_vscode'),
         cond = not in_console(),
     },
     {
@@ -64,7 +69,7 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_dracula'),
+        init = colorscheme_init('installed_dracula'),
         cond = not in_console(),
     },
     {
@@ -72,7 +77,7 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_gruvbox'),
+        init = colorscheme_init('installed_gruvbox'),
         cond = not in_console(),
     },
     {
@@ -81,7 +86,7 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_flexoki'),
+        init = colorscheme_init('installed_flexoki'),
         cond = not in_console(),
     },
     {
@@ -95,11 +100,11 @@ local ColorSchemes = {
                 lazy = false,
                 priority = 1000,
                 version = false,
-                init = CfgUtil.colorscheme_init('installed_colorbuddy'),
+                init = colorscheme_init('installed_colorbuddy'),
                 cond = not in_console(),
             },
         },
-        init = CfgUtil.colorscheme_init('installed_gloombuddy'),
+        init = colorscheme_init('installed_gloombuddy'),
         cond = not in_console(),
     },
     {
@@ -107,7 +112,7 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init({
+        init = colorscheme_init({
             ['installed_oak'] = 1,
             ['oak_virtualtext_bg'] = 1,
         }),
@@ -117,7 +122,7 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_spaceduck'),
+        init = colorscheme_init('installed_spaceduck'),
         cond = not in_console(),
     },
     {
@@ -125,25 +130,23 @@ local ColorSchemes = {
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_space_vim_dark'),
+        init = colorscheme_init('installed_space_vim_dark'),
     },
     {
         'tomasr/molokai',
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_molokai'),
+        init = colorscheme_init('installed_molokai'),
     },
     {
         'colepeters/spacemacs-theme.vim',
         lazy = false,
         priority = 1000,
         version = false,
-        init = CfgUtil.colorscheme_init('installed_spacemacs'),
+        init = colorscheme_init('installed_spacemacs'),
         cond = not in_console(),
     },
 }
-
-return ColorSchemes
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
