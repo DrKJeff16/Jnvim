@@ -22,7 +22,9 @@ return {
         local Project = require('project')
 
         Project.setup({
-            logging = true,
+            log = {
+                enabled = true,
+            },
             detection_methods = { 'lsp', 'pattern' },
             patterns = {
                 '!=' .. vim.fn.environ()['HOME'],
