@@ -8,9 +8,7 @@ if not (executable('clangd') and exists('clangd_extensions')) then
     return
 end
 
-local Clangd = require('clangd_extensions')
-
-Clangd.setup({
+require('clangd_extensions').setup({
     inlay_hints = {
         inline = false,
     },
@@ -40,7 +38,5 @@ Clangd.setup({
     memory_usage = { border = 'double' },
     symbol_info = { border = 'single' },
 })
-
-User.register_plugin('plugin.lsp.clangd')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

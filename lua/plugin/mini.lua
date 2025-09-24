@@ -1,5 +1,3 @@
-local fmt = string.format
-
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
@@ -28,17 +26,17 @@ local function src(mini_mod, opts)
 
     -- If table key doesn't start with `mini.`
     local og_mini_mod = mini_mod
-    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and fmt('mini.%s', mini_mod) or mini_mod
+    mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and ('mini.%s'):format(mini_mod) or mini_mod
 
     if not exists(mini_mod) then
-        vim.notify(fmt('(mini src()): Unable to import `%s`', og_mini_mod), ERROR)
+        vim.notify(('(mini src()): Unable to import `%s`'):format(og_mini_mod), ERROR)
         return
     end
 
     local M = require(mini_mod)
 
     if not is_fun(M.setup) then
-        vim.notify(fmt('(mini src()): `setup()` not found for module `%s`', mini_mod), WARN)
+        vim.notify(('(mini src()): `setup()` not found for module `%s`'):format(mini_mod), WARN)
         return
     end
 
@@ -421,7 +419,5 @@ if not vim.tbl_isempty(Keys) then
 
     Keymaps({ n = Keys })
 end
-
-User.register_plugin('plugin.mini')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

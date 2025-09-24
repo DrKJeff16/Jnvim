@@ -6,7 +6,6 @@ local exists = Check.exists.module
 local desc = User.maps.desc
 
 if not exists('persistence') then
-    User.deregister_plugin('plugin.persistence')
     return
 end
 
@@ -37,7 +36,5 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
-
-User.register_plugin('plugin.persistence')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

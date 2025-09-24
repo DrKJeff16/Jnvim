@@ -7,7 +7,6 @@ local executable = Check.exists.executable
 local desc = User.maps.desc
 
 if not exists('zen-mode') then
-    User.deregister_plugin('plugin.zen_mode')
     return
 end
 
@@ -93,7 +92,5 @@ Keymaps({
         ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
     },
 })
-
-User.register_plugin('plugin.zen_mode')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

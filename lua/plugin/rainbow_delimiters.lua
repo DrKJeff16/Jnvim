@@ -2,9 +2,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-
 if not exists('rainbow-delimiters') then
-    User.deregister_plugin('plugin.rainbow_delimiters')
     return
 end
 

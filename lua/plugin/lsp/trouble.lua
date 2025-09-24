@@ -2,18 +2,10 @@
 
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
-local Check = User.check
-
-local exists = Check.exists.module
 local desc = User.maps.desc
 
 local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend
-
-if not exists('trouble') then
-    User.deregister_plugin('plugin.lsp.trouble')
-    return
-end
 
 local trouble = require('trouble')
 
@@ -296,8 +288,6 @@ function Trouble.new()
         end,
     })
 end
-
-User.register_plugin('plugin.lsp.trouble')
 
 return Trouble.new()
 

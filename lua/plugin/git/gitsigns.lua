@@ -10,7 +10,6 @@
 local User = require('user_api')
 local Check = User.check
 
-local exists = Check.exists.module
 local executable = Check.exists.executable
 local is_int = Check.value.is_int
 local desc = User.maps.desc
@@ -21,19 +20,13 @@ return {
     version = false,
     cond = executable('git'),
     config = function()
-        if not executable('git') or not exists('gitsigns') then
-            User.deregister_plugin('plugin.git.gitsigns')
-            return
-        end
-
         local GS = require('gitsigns')
-
         GS.setup({
             ---@param bufnr? integer
             on_attach = function(bufnr)
-                local Keymaps = require('user_api.config.keymaps')
-
                 bufnr = is_int(bufnr) and bufnr or vim.api.nvim_get_current_buf()
+
+                local Keymaps = require('user_api.config.keymaps')
 
                 ---@type AllModeMaps
                 local Keys = {
@@ -185,8 +178,6 @@ return {
                 col = 1,
             },
         })
-
-        User.register_plugin('plugin.git.gitsigns')
     end,
 }
 

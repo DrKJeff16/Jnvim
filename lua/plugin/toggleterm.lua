@@ -8,7 +8,6 @@ local desc = User.maps.desc
 local tmap = User.maps.keymap.t
 
 if not exists('toggleterm') then
-    User.deregister_plugin('plugin.toggleterm')
     return
 end
 
@@ -193,7 +192,5 @@ local aus = {
 for event, v in next, aus do
     au(event, v)
 end
-
-User.register_plugin('plugin.toggleterm')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -12,17 +12,15 @@
 ---|'table'
 
 local MODSTR = 'user_api.check.value'
-
-local floor = math.floor
-local ceil = math.ceil
+local ERROR = vim.log.levels.ERROR
+local WARN = vim.log.levels.WARN
 
 local validate = vim.validate
-local in_tbl = vim.tbl_contains
 local tbl_isempty = vim.tbl_isempty
 local in_list = vim.list_contains
 
-local ERROR = vim.log.levels.ERROR
-local WARN = vim.log.levels.WARN
+local floor = math.floor
+local ceil = math.ceil
 
 ---@param t Types
 ---@return fun(var: any, multiple: boolean?): boolean
@@ -94,93 +92,26 @@ local Value = {}
 
 ---Checks whether a value is a string.
 --- ---
----## Parameters
----
---- - `var`: Any data type to be checked if it's a string.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
----        Otherwise it will be flagged as a non-string and the function will return `false`
---- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not a string, the function automatically returns `false`
---- ---
----## Return
----
----A boolean value indicating whether the data is a string or not.
---- ---
 Value.is_str = type_fun('string')
 
 ---Checks whether a value is a boolean.
---- ---
----## Parameters
----
---- - `var`: Any data type to be checked if it's a boolean.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
----        Otherwise it will be flagged as a non-boolean and the function will return `false`
----
---- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not a boolean, the function automatically returns `false`
---- ---
----## Return
----
----A boolean value indicating whether the data is a boolean or not.
 --- ---
 Value.is_bool = type_fun('boolean')
 
 ---Checks whether a value is a function.
 --- ---
----## Parameters
----
---- - `var`: Any data type to be checked if it's a function.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
----        Otherwise it will be flagged as a non-function and the function will return `false`
---- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not a function, the function automatically returns `false`
---- ---
----## Return
----
----A boolean value indicating whether the data is a function or not.
---- ---
 Value.is_fun = type_fun('function')
 
 ---Checks whether a value is a number.
---- ---
----## Parameters
----
---- - `var`: Any data type to be checked if it's a number.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
----        Otherwise it will be flagged as a non-number and the function will return `false`
---- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not a number, the function automatically returns `false`
---- ---
----## Return
----
----A boolean value indicating whether the data is a number or not.
 --- ---
 Value.is_num = type_fun('number')
 
 ---Checks whether a value is a table.
 --- ---
----## Parameters
----
---- - `var`: Any data type to be checked if it's a table.
----        **Keep in mind that if `multiple` is set to `true`, this _MUST be a non-empty_ table**.
----        Otherwise it will be flagged as a non-table and the function will return `false`
---- - `multiple`: Tell the function you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not a table, the function automatically returns `false`
---- ---
----## Return
----
----A boolean value indicating whether the data is a table or not.
---- ---
 Value.is_tbl = type_fun('table')
 
----Checks whether a value is an integer i.e. _greater than or equal to `0` and a **whole number**_.
----
----Returns a boolean value indicating whether the data is an integer or not.
+---Checks whether a value is an integer,
+---i.e. _greater than or equal to `0` and a **whole number**_.
 --- ---
 ---@param var any Any data type to be checked if it's an integer
 ---@param multiple? boolean Tell the integer you're checking for multiple values. (Default: `false`)
@@ -201,7 +132,7 @@ function Value.is_int(var, multiple)
     end
 
     if not is_tbl(var) then
-        vim.notify('(user_api.check.value.is_int): Input is not a table (`multiple` is true)', WARN)
+        vim.notify(('(%s.is_int): Input is not a table (`multiple` is true)'):format(MODSTR), WARN)
         return false
     end
 
@@ -226,18 +157,6 @@ end
 ---If `multiple` is `true` apply the above to a table of allowed values.
 ---
 ---**THIS FUNCTION IS NOT RECURSIVE!**
---- ---
----## Parameters
----
---- - `v`: Must be either a string, number or a table.
----      Otherwise you'll get complaints and the function will return `true`
---- - `multiple`: Tell the integer you're checking for multiple values. (Default: `false`).
----             If set to `true`, every element of the table will be checked.
----             If **any** element is not _empty_, the function automatically returns `false`
---- ---
----## Returns
----
----A boolean indicating whether the input data is _empty_ or not.
 --- ---
 ---@param data (string|number)[]|string|number|table
 ---@param multiple? boolean
@@ -309,7 +228,7 @@ function Value.num_range(num, low, high, eq)
     local type_not_empty = Value.type_not_empty
 
     if not is_num({ num, low, high }, true) then
-        error('(user_api.check.value.num_range): One argument is not a number', ERROR)
+        error(('(%s.num_range): One argument is not a number'):format(MODSTR), ERROR)
     end
 
     eq = type_not_empty('table', eq) and eq or { low = true, high = true }
@@ -441,19 +360,27 @@ end
 ---@param T table
 ---@return boolean
 function Value.single_type_tbl(type_str, T)
-    validate('type_str', type_str, function(v)
-        if v == nil or type(v) ~= 'string' then
-            return false
-        end
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate(
+            'type_str',
+            type_str,
+            'string',
+            false,
+            "'boolean'|'function'|'number'|'string'|'table'"
+        )
+        validate('T', T, 'table', false)
+    else
+        validate({
+            type_str = { type_str, 'string' },
+            T = { T, 'table' },
+        })
+    end
+    if not in_list({ 'boolean', 'function', 'number', 'string', 'table' }, type_str) then
+        error(('(%s.single_type_tbl): Wrong type `%s`.'):format(MODSTR, type_str))
+    end
 
-        return in_tbl({ 'boolean', 'function', 'number', 'string', 'table' }, v)
-    end, false, "'boolean'|'function'|'number'|'string'|'table'")
-    validate('T', T, 'table', false)
-
-    local type_not_empty = Value.type_not_empty
-
-    if not type_not_empty('table', T) then
-        vim.notify('(user_api.check.value.single_type_tbl): Expected a NON-EMPTY TABLE', ERROR)
+    if vim.tbl_isempty(T) then
+        vim.notify(('(%s.single_type_tbl): Expected a non-empty table!'):format(MODSTR), ERROR)
         return false
     end
 
@@ -471,26 +398,20 @@ end
 ---Specifies what data type should the given value be
 ---and this function will check both if it's that type
 ---and if so, whether it's empty (for numbers this means a value of `0`).
----
---- ---
----## Parameters
----
---- - `type_str`: The type string (only `'integer'`, `'number'`, `'string'` or `'table'`)
---- - `data`: The input data
 --- ---
 ---@param type_str EmptyTypes
 ---@param data any
 ---@return boolean
 function Value.type_not_empty(type_str, data)
-    validate('type_str', type_str, function(v)
-        if v == nil or type(v) ~= 'string' then
-            return false
-        end
+    if vim.fn.has('nvim-0.11') == 1 then
+        validate('type_str', type_str, 'string', false, 'EmptyTypes')
+    else
+        validate({ type_str = { type_str, 'string' } })
+    end
 
-        return in_tbl({ 'integer', 'number', 'string', 'table' }, v)
-    end, false, 'EmptyTypes')
-
-    local empty = Value.empty
+    if not in_list({ 'integer', 'number', 'string', 'table' }, type_str) then
+        error(('(%s.type_not_empty): Invalid type `%s`!'):format(MODSTR, type_str))
+    end
 
     if data == nil then
         return false
@@ -509,7 +430,7 @@ function Value.type_not_empty(type_str, data)
     end
 
     local checker = valid_types[type_str]
-    return checker(data) and not empty(data)
+    return checker(data) and not Value.empty(data)
 end
 
 ---Checks whether a certain `num` does not exceed table index range
@@ -517,16 +438,16 @@ end
 ---
 ---If the table is empty, then it'll return `false`.
 --- ---
----@param num integer
+---@param index integer
 ---@param T table
 ---@return boolean
-function Value.in_tbl_range(num, T)
+function Value.in_tbl_range(index, T)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('num', num, 'number', false, 'integer')
+        validate('index', index, 'number', false, 'integer')
         validate('T', T, 'table', false)
     else
         validate({
-            num = { num, 'number' },
+            index = { index, 'number' },
             T = { T, 'table' },
         })
     end
@@ -535,7 +456,7 @@ function Value.in_tbl_range(num, T)
         return false
     end
 
-    return num >= 1 and num <= #T
+    return index >= 1 and index <= #T
 end
 
 ---@type User.Check.Value

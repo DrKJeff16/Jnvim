@@ -93,8 +93,6 @@ function FileBrowser.loadkeys()
     Keymaps({ n = Keys })
 end
 
-User.register_plugin('plugin.telescope.file_browser')
-
 return FileBrowser
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

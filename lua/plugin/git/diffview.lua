@@ -13,19 +13,18 @@
 ---@alias DiffView.WinConfig.Positon 'left'|'top'|'right'|'bottom'
 ---@alias DiffView.WinConfig.Relative 'editor'|'win'
 
+local min = math.min
+local floor = math.floor
+
 local Keymaps = require('user_api.config.keymaps')
 local User = require('user_api')
 local Check = User.check
 
-local exists = Check.exists.module
 local desc = User.maps.desc
-
+local exists = Check.exists.module
 if not exists('diffview') then
     return
 end
-
-local min = math.min
-local floor = math.floor
 
 local DVW = require('diffview')
 local Actions = require('diffview.actions')
@@ -837,7 +836,5 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
-
-User.register_plugin('plugin.git.diffview')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

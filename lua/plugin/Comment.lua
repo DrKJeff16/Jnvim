@@ -12,13 +12,7 @@ return {
     config = function()
         local User = require('user_api')
         local Check = User.check
-
         local exists = Check.exists.module
-
-        if not exists('Comment') then
-            User.deregister_plugin('plugin.Comment')
-            return
-        end
 
         local Comment = require('Comment')
 
@@ -53,7 +47,6 @@ return {
         ---@diagnostic disable-next-line:missing-fields
         Comment.setup({
             pre_hook = pre_hook,
-
             post_hook = post_hook,
 
             -- Add a space b/w comment and the line
@@ -101,8 +94,6 @@ return {
                 extra = true,
             },
         })
-
-        User.register_plugin('plugin.Comment')
     end,
 }
 

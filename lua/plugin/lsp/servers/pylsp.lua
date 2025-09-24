@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('pylsp') then
-    User.deregister_plugin('plugin.lsp.servers.pylsp')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.pylsp')
-
 return {
     cmd = { 'pylsp' },
     filetypes = { 'python' },

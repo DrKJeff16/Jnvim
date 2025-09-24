@@ -2,9 +2,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-
 if not exists('nvim-ts-autotag') then
-    User.deregister_plugin('plugin.ts.autotag')
     return
 end
 
@@ -24,7 +22,5 @@ AutoTag.setup({
     --- ---
     per_filetype = {},
 })
-
-User.register_plugin('plugin.ts.autotag')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('clangd') then
-    User.deregister_plugin('plugin.lsp.servers.clangd')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.clangd')
-
 return {
     cmd = { 'clangd' },
     filetypes = {

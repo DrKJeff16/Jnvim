@@ -236,8 +236,6 @@ function Server.add(config, name, exe)
     Server.setup()
 end
 
-User.register_plugin('plugin.lsp')
-
 return Server
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

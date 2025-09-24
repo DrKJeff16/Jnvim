@@ -9,16 +9,13 @@ local type_not_empty = Check.value.type_not_empty
 local hi = User.highlight.hl_from_dict
 
 if not exists('ibl') then
-    User.deregister_plugin('plugin.ibl')
     return
 end
 
 local Ibl = require('ibl')
 local Hooks = require('ibl.hooks')
-
 local HType = Hooks.type
 local Builtin = Hooks.builtin
-
 local register = Hooks.register
 
 ---@type HlDict
@@ -146,7 +143,5 @@ for _, t in next, arg_tbl do
         reg(t[1], t[2])
     end
 end
-
-User.register_plugin('plugin.ibl')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -4,7 +4,6 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('bufferline') or exists('barbar') then
-    User.deregister_plugin('plugin.bufferline')
     return
 end
 
@@ -200,7 +199,5 @@ BLine.setup({
         },
     },
 })
-
-User.register_plugin('plugin.bufferline')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -15,7 +15,6 @@ return {
         local desc = User.maps.desc
 
         if not exists('project') then
-            User.deregister_plugin('plugin.project')
             return
         end
 
@@ -97,8 +96,6 @@ return {
         }
 
         Keymaps({ n = Keys })
-
-        User.register_plugin('plugin.project')
     end,
 }
 

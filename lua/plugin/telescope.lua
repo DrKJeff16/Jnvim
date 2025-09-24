@@ -28,7 +28,6 @@ local Keymaps = require('user_api.config.keymaps')
 local desc = User.maps.desc
 
 if not exists('telescope') then
-    User.deregister_plugin('plugin.telescope')
     return
 end
 
@@ -653,7 +652,5 @@ for event, v in next, au_tbl do
 end
 
 Keymaps({ n = Keys })
-
-User.register_plugin('plugin.telescope')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

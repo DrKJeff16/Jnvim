@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('vscode-css-language-server') then
-    User.deregister_plugin('plugin.lsp.servers.cssls')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.cssls')
-
 return {
     cmd = { 'vscode-css-language-server', '--stdio' },
 

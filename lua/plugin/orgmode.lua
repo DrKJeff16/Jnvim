@@ -1,32 +1,25 @@
 local User = require('user_api')
 local Check = User.check
 
+local floor = math.floor
 local Keymaps = User.config.keymaps
 local exists = Check.exists.module
-
-local floor = math.floor
-
 if not exists('orgmode') then
-    User.deregister_plugin('plugin.orgmode')
     return
 end
 
 local Orgmode = require('orgmode')
-
 local ORG_PFX = vim.fn.expand('~/.org')
 
 Orgmode.setup({
     org_startup_indented = true,
     org_adapt_indentation = true,
-
     org_agenda_files = ORG_PFX .. '/**/*',
-
     org_default_notes_file = ORG_PFX .. '/default.org',
-
     org_highlight_latex_and_related = 'native',
-
     org_todo_keywords = { 'TODO', 'WAITING', '|', 'DONE', 'DELEGATED' },
     org_todo_repeat_to_state = nil,
+
     org_todo_keyword_faces = {
         WAITING = ':foreground blue :weight bold',
         DELEGATED = ':background #FFFFFF :underline on',
@@ -34,7 +27,6 @@ Orgmode.setup({
 
     org_hide_leading_stars = false,
     org_hide_emphasis_markers = false,
-
     org_ellipsis = '...',
 
     ---@param name string
@@ -65,20 +57,11 @@ Orgmode.setup({
     end,
 
     win_border = 'single',
-
     org_startup_folded = 'showeverything',
-
     org_babel_default_header_args = { [':tangle'] = 'no', [':noweb'] = 'no' },
-
     calendar_week_start_day = 0,
 })
 
-Keymaps({
-    n = {
-        ['<leader>o'] = { group = '+Orgmode' },
-    },
-})
-
-User.register_plugin('plugin.orgmode')
+Keymaps({ n = { ['<leader>o'] = { group = '+Orgmode' } } })
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -406,7 +406,6 @@ return {
     build = executable('cargo') and 'cargo build --release' or false,
     config = function()
         if not exists('blink.cmp') then
-            User.deregister_plugin('plugin.blink_cmp')
             return
         end
 
@@ -717,8 +716,6 @@ return {
 
             term = { enabled = false },
         })
-
-        User.register_plugin('plugin.blink_cmp')
     end,
 }
 

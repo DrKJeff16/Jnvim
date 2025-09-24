@@ -1,16 +1,5 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('jdtls') then
-    User.deregister_plugin('plugin.lsp.servers.jdtls')
-    return
-end
-
 local environ = vim.fn.environ()
-
 local HOME = vim.fn.has_key(environ, 'HOME') and environ['HOME'] or environ['USERPROFILE']
-
-User.register_plugin('plugin.lsp.servers.jdtls')
 
 return {
     cmd = {

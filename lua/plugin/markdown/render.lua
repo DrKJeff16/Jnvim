@@ -4,7 +4,6 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not exists('render-markdown') then
-    User.deregister_plugin('plugin.markdown.render')
     return
 end
 
@@ -498,7 +497,5 @@ Render.setup({
         },
     },
 })
-
-User.register_plugin('plugin.markdown.render')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

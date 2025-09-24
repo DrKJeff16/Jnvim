@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('css-variables-language-server') then
-    User.deregister_plugin('plugin.lsp.servers.css_variables')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.css_variables')
-
 return {
     cmd = { 'css-variables-language-server', '--stdio' },
     filetypes = { 'css', 'scss', 'less' },

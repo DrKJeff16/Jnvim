@@ -20,7 +20,6 @@ return {
         local in_tbl = vim.tbl_contains
 
         if not exists('nvim-autopairs') then
-            User.deregister_plugin('plugin.autopairs')
             return
         end
 
@@ -221,8 +220,6 @@ return {
         end
 
         AP.add_rules(Rules)
-
-        User.register_plugin('plugin.autopairs')
     end,
 }
 

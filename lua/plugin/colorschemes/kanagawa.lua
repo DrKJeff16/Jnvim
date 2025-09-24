@@ -113,8 +113,6 @@ function Kanagawa.new(O)
     return setmetatable(O, { __index = Kanagawa })
 end
 
-User.register_plugin('plugin.colorschemes.kanagawa')
-
 return Kanagawa
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

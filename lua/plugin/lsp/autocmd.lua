@@ -20,7 +20,7 @@ local function print_workspace_folders()
     local msg = ''
 
     for _, v in next, vim.lsp.buf.list_workspace_folders() do
-        msg = string.format('%s\n - %s', msg, v)
+        msg = ('%s\n - %s'):format(msg, v)
     end
 
     notify(msg, INFO, {
@@ -194,10 +194,9 @@ Autocmd.autocommands = {
                     ['<leader>lSi'] = {
                         function()
                             local config = copy(client.config)
-
                             table.sort(config)
 
-                            vim.notify(string.format('%s: %s', client.name, inspect(config)), INFO)
+                            vim.notify(('%s: %s'):format(client.name, inspect(config)), INFO)
                         end,
                         desc('Show LSP Info'),
                     },
@@ -233,8 +232,6 @@ function Autocmd.new()
         end,
     })
 end
-
-User.register_plugin('plugin.lsp.autocmd')
 
 return Autocmd.new()
 

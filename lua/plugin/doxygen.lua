@@ -2,9 +2,7 @@ local User = require('user_api')
 local Check = User.check
 
 local executable = Check.exists.executable
-
-if not executable('doxygen') or vim.g.installed_doxygen_toolkit ~= 1 then
-    User.deregister_plugin('plugin.doxygen')
+if not executable('doxygen') then
     return
 end
 
@@ -21,7 +19,5 @@ local g_vars = {
 for k, v in next, g_vars do
     vim.g['DoxygenToolkit_' .. k] = v
 end
-
-User.register_plugin('plugin.doxygen')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

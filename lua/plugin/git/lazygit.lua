@@ -7,7 +7,6 @@ local executable = Check.exists.executable
 local desc = User.maps.desc
 
 if not (executable({ 'git', 'lazygit' }) and exists('lazygit.utils')) then
-    User.deregister_plugin('plugin.git.lazygit')
     return
 end
 
@@ -104,7 +103,5 @@ au('TermClose', {
 -- vim.cmd([[
 -- au TermClose * if &filetype != 'lazygit' && !v:event.status | silent! exe 'bdelete! '..expand('<abuf>') | endif
 -- ]])
-
-User.register_plugin('plugin.git.lazygit')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

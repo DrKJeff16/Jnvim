@@ -4,7 +4,6 @@ local Check = User.check
 local exists = Check.exists.module
 
 if not (exists('telescope') and exists('telescope-tabs')) then
-    User.deregister_plugin('plugin.telescope.tabs')
     return nil
 end
 
@@ -51,8 +50,6 @@ function TelescopeTabs.loadkeys()
 
     Keymaps({ n = Keys })
 end
-
-User.register_plugin('plugin.telescope.tabs')
 
 return TelescopeTabs
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

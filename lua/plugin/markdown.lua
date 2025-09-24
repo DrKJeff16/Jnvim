@@ -2,9 +2,7 @@ local User = require('user_api')
 local Check = User.check
 
 local exists = Check.exists.module
-
 if not exists('markdown') then
-    User.deregister_plugin('plugin.markdown')
     return
 end
 
@@ -74,7 +72,5 @@ MD.setup({
     ---@type nil|(fun(bufnr: integer))
     on_attach = nil,
 })
-
-User.register_plugin('plugin.markdown')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

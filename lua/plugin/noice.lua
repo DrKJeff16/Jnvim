@@ -18,12 +18,6 @@ return {
     cond = not in_console(),
     config = function()
         local exists = Check.exists.module
-
-        if not exists('noice') then
-            User.deregister_plugin('plugin.noice')
-            return
-        end
-
         local Noice = require('noice')
 
         Noice.setup({
@@ -303,8 +297,6 @@ return {
             ---@type NoiceFormatOptions
             format = {}, ---@see section on formatting
         })
-
-        User.register_plugin('plugin.noice')
     end,
 }
 

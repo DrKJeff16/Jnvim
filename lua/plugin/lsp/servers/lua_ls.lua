@@ -1,14 +1,6 @@
 local d_extend = vim.tbl_deep_extend
 local fs_stat = (vim.uv or vim.loop).fs_stat
 
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('lua-language-server') then
-    User.deregister_plugin('plugin.lsp.servers.lua_ls')
-    return nil
-end
-
 local stdpath = vim.fn.stdpath('config')
 
 ---@param client vim.lsp.Client
@@ -56,8 +48,6 @@ local function on_init(client)
         },
     })
 end
-
-User.register_plugin('plugin.lsp.servers.lua_ls')
 
 return {
     cmd = { 'lua-language-server' },

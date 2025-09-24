@@ -1,12 +1,10 @@
 local User = require('user_api')
 local Check = User.check
 
-local exists = Check.exists.module
-
 local in_list = vim.list_contains
 
+local exists = Check.exists.module
 if not exists('alpha') then
-    User.deregister_plugin('plugin.alpha')
     return nil
 end
 
@@ -68,8 +66,6 @@ function M.new()
         end,
     })
 end
-
-User.register_plugin('plugin.alpha')
 
 return M.new()
 

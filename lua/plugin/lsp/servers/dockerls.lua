@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('docker-langserver') then
-    User.deregister_plugin('plugin.lsp.servers.dockerls')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.dockerls')
-
 return {
     cmd = { 'docker-langserver', '--stdio' },
     filetypes = { 'dockerfile' },

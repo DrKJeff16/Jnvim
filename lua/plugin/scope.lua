@@ -10,7 +10,6 @@ local augroup = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
 if not exists('scope') then
-    User.deregister_plugin('plugin.scope')
     return
 end
 
@@ -91,10 +90,8 @@ au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
 
             ---@type integer
             local i = 1
-
             while i < 10 do
                 nop(tostring(i), nop_opts, 'n', prefix)
-
                 i = i + 1
             end
         end
@@ -103,6 +100,4 @@ au({ 'TabNew', 'TabNewEntered', 'TabClosed', 'TabEnter', 'TabLeave' }, {
 
 Scope.setup(Opts)
 
-User.register_plugin('plugin.scope')
-
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+-- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

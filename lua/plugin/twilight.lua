@@ -6,7 +6,6 @@ local exists = Check.exists.module
 local desc = User.maps.desc
 
 if not exists('twilight') then
-    User.deregister_plugin('plugin.twilight')
     return
 end
 
@@ -52,7 +51,5 @@ local Keys = {
 }
 
 Keymaps({ n = Keys })
-
-User.register_plugin('plugin.twilight')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

@@ -9,12 +9,10 @@ local type_not_empty = Check.value.type_not_empty
 local in_tbl = vim.tbl_contains
 
 if not exists('lualine') then
-    User.deregister_plugin('plugin.lualine')
     return
 end
 
 local Lualine = require('lualine')
-
 local Presets = require('plugin.lualine.presets')
 
 ---@param theme? ''|'auto'|string
@@ -85,7 +83,5 @@ if exists('toggleterm') and not in_tbl(Opts.extensions, 'toggleterm') then
 end
 
 Lualine.setup(Opts)
-
-User.register_plugin('plugin.lualine')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

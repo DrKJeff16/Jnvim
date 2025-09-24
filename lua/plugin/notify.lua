@@ -5,7 +5,6 @@ local exists = Check.exists.module
 local hl_from_dict = User.highlight.hl_from_dict
 
 if not exists('notify') then
-    User.deregister_plugin('plugin.notify')
     return
 end
 
@@ -71,7 +70,5 @@ local NotifyHl = {
 }
 
 hl_from_dict(NotifyHl)
-
-User.register_plugin('plugin.notify')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

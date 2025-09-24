@@ -4,17 +4,14 @@ local Check = User.check
 local executable = Check.exists.executable
 local exists = Check.exists.module
 
-if exists('neodev') then
-    User.deregister_plugin('plugin.lazydev')
-    return
-end
-
-if not (exists('lazydev') and executable('lua-language-server')) then
-    User.deregister_plugin('plugin.lazydev')
-    return
-end
-
 local fs_stat = (vim.uv or vim.loop).fs_stat
+
+if exists('neodev') then
+    return
+end
+if not (exists('lazydev') and executable('lua-language-server')) then
+    return
+end
 
 local LazyDev = require('lazydev')
 
@@ -38,7 +35,5 @@ LazyDev.setup({
         coq = false,
     },
 })
-
-User.register_plugin('plugin.lazydev')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:

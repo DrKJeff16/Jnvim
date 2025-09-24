@@ -6,7 +6,6 @@ local exists = Check.exists.module
 local desc = User.maps.desc
 
 if not exists('telescope._extensions.conventional_commits.actions') then
-    User.deregister_plugin('plugin.telescope.cc')
     return nil
 end
 
@@ -56,8 +55,6 @@ function CC.loadkeys()
 
     Keymaps({ n = Keys })
 end
-
-User.register_plugin('plugin.telescope.cc')
 
 return CC
 

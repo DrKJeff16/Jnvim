@@ -14,11 +14,6 @@ return {
         local hi = User.highlight.hl
         local Keymaps = require('user_api.config.keymaps')
 
-        if not vim.g.installed_startuptime or vim.g.installed_startuptime ~= 1 then
-            User.deregister_plugin('plugin.startuptime')
-            return
-        end
-
         local Flags = {
             colorize = true,
             event_width = 0,
@@ -53,8 +48,6 @@ return {
         Keymaps({ n = Keys })
 
         hi('StartupTimeSourcingEvent', { link = 'Title' })
-
-        User.register_plugin('plugin.startuptime')
     end,
 }
 

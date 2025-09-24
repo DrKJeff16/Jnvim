@@ -1,5 +1,3 @@
-local User = require('user_api')
-
 local Keymaps = require('user_api.config.keymaps')
 local desc = require('user_api.maps').desc
 
@@ -11,16 +9,10 @@ return {
     version = false,
     init = require('config.util').flag_installed('a_vim'),
     config = function()
-        if vim.g.installed_a_vim ~= 1 then
-            User.deregister_plugin('plugin.a_vim')
-            return
-        end
-
         local group = augroup('User.A_Vim', { clear = true })
 
-        au({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
+        au('BufEnter', {
             group = group,
-
             pattern = {
                 '*.c',
                 '*.cc',
@@ -37,56 +29,54 @@ return {
             },
 
             callback = function(ev)
-                local buf = ev.buf
-
                 ---@type AllModeMaps
                 local Keys = {
                     i = {
-                        ['<C-Tab>'] = { '<Esc>:IH<CR>', buffer = buf },
+                        ['<C-Tab>'] = { '<Esc>:IH<CR>', buffer = ev.buf },
                     },
 
                     n = {
                         ['<leader><C-h>'] = {
                             group = '+Header/Source Switch (C/C++)',
-                            buffer = buf,
+                            buffer = ev.buf,
                         },
 
                         ['<leader><C-h>s'] = {
                             ':A<CR>',
-                            desc('Cycle Header/Source', true, buf),
+                            desc('Cycle Header/Source', true, ev.buf),
                         },
                         ['<leader><C-h>x'] = {
                             ':AS<CR>',
-                            desc('Horizontal Cycle Header/Source', true, buf),
+                            desc('Horizontal Cycle Header/Source', true, ev.buf),
                         },
                         ['<leader><C-h>v'] = {
                             ':AV<CR>',
-                            desc('Vertical Cycle Header/Source', true, buf),
+                            desc('Vertical Cycle Header/Source', true, ev.buf),
                         },
                         ['<leader><C-h>t'] = {
                             ':AT<CR>',
-                            desc('Tab Cycle Header/Source', true, buf),
+                            desc('Tab Cycle Header/Source', true, ev.buf),
                         },
                         ['<leader><C-h>S'] = {
                             ':IH<CR>',
-                            desc('Cycle Header/Source (Cursor)', true, buf),
+                            desc('Cycle Header/Source (Cursor)', true, ev.buf),
                         },
                         ['<leader><C-h>X'] = {
                             ':IHS<CR>',
-                            desc('Horizontal Cycle Header/Source (Cursor)', true, buf),
+                            desc('Horizontal Cycle Header/Source (Cursor)', true, ev.buf),
                         },
                         ['<leader><C-h>V'] = {
                             ':IHV<CR>',
-                            desc('Vertical Cycle Header/Source (Cursor)', true, buf),
+                            desc('Vertical Cycle Header/Source (Cursor)', true, ev.buf),
                         },
                         ['<leader><C-h>T'] = {
                             ':IHT<CR>',
-                            desc('Tab Cycle Header/Source (Cursor)', true, buf),
+                            desc('Tab Cycle Header/Source (Cursor)', true, ev.buf),
                         },
                     },
                 }
 
-                Keymaps(Keys, buf)
+                Keymaps(Keys, ev.buf)
             end,
         })
 
@@ -94,8 +84,6 @@ return {
         vim.keymap.del({ 'n', 'i' }, '<leader>ihn')
         vim.keymap.del({ 'n', 'i' }, '<leader>ih')
         vim.keymap.del({ 'n', 'i' }, '<leader>is')
-
-        User.register_plugin('plugin.a_vim')
     end,
 }
 

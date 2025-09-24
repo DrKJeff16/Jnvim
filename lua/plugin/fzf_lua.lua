@@ -6,17 +6,6 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     cond = require('user_api.check.exists').executable('fzf'),
     config = function()
-        local User = require('user_api')
-        local Check = User.check
-
-        local exists = Check.exists.module
-        local executable = Check.exists.executable
-
-        if not (exists('fzf-lua') and executable('fzf')) then
-            User.deregister_plugin('plugin.fzf.fzf_lua')
-            return
-        end
-
         local Fzf = require('fzf-lua')
 
         local actions = Fzf.actions
@@ -836,8 +825,6 @@ return {
         Fzf.register_ui_select()
 
         vim.api.nvim_set_hl(0, 'FzfLuaBorder', { link = 'FloatBorder' })
-
-        User.register_plugin('plugin.fzf.fzf_lua')
     end,
 }
 

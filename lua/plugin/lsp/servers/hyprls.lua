@@ -1,16 +1,6 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('hyprls') then
-    User.deregister_plugin('plugin.lsp.servers.hyprls')
-    return nil
-end
-
 vim.filetype.add({
     pattern = { ['.*/hypr/.*%.conf'] = 'hyprlang' },
 })
-
-User.register_plugin('plugin.lsp.servers.hyprls')
 
 return {
     cmd = { 'hyprls', '--stdio' },

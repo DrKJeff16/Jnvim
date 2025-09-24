@@ -1,13 +1,3 @@
-local User = require('user_api')
-local executable = require('user_api.check.exists').executable
-
-if not executable('vim-language-server') then
-    User.deregister_plugin('plugin.lsp.servers.vimls')
-    return nil
-end
-
-User.register_plugin('plugin.lsp.servers.vimls')
-
 return {
     cmd = { 'vim-language-server', '--stdio' },
     filetypes = { 'vim' },

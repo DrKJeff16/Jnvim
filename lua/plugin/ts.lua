@@ -1,23 +1,20 @@
 ---@diagnostic disable:missing-fields
 
+local fs_stat = (vim.uv or vim.loop).fs_stat
+local buf_name = vim.api.nvim_buf_get_name
+
 local User = require('user_api')
 local Check = User.check
 
 local Keymaps = User.config.keymaps
-local exists = Check.exists.module
 local desc = User.maps.desc
-
-local fs_stat = (vim.uv or vim.loop).fs_stat
-local buf_name = vim.api.nvim_buf_get_name
-
+local exists = Check.exists.module
 if not exists('nvim-treesitter') then
-    User.deregister_plugin('plugin.ts')
     return
 end
 
 local TS = require('nvim-treesitter')
 local ts_repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
-
 local ensure_langs = {
     'bash',
     'c',
@@ -247,7 +244,5 @@ if exists('ts_context_commentstring') then
         enable_autocmd = false,
     })
 end
-
-User.register_plugin('plugin.ts')
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
