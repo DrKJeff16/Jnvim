@@ -1,9 +1,11 @@
 local ERROR = vim.log.levels.ERROR
+local INFO = vim.log.levels.INFO
 
 local curr_buf = vim.api.nvim_get_current_buf
 local curr_win = vim.api.nvim_get_current_win
 local optset = vim.api.nvim_set_option_value
 local optget = vim.api.nvim_get_option_value
+local augroup = vim.api.nvim_create_augroup
 local buf_lines = vim.api.nvim_buf_get_lines
 local win_cursor = vim.api.nvim_win_get_cursor
 local in_tbl = vim.tbl_contains
@@ -284,6 +286,245 @@ end
 
 function Util.setup_autocmd()
     local au_repeated_events = Util.au.au_repeated_events
+    local ft_set = Util.ft_set
+
+    local group = augroup('User.AU', { clear = true })
+
+    ---@type AuRepeatEvents[]
+    local AUS = {
+        -- NOTE: Keep this as first element for `orgmode` addition
+        {
+            events = { 'BufCreate', 'BufAdd', 'BufNew', 'BufNewFile', 'BufRead' },
+            opts_tbl = {
+                {
+                    group = group,
+                    pattern = '.spacemacs',
+                    callback = function(ev)
+                        ft_set('lisp', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = '*.el',
+                    callback = function(ev)
+                        ft_set('lisp', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = '.clangd',
+                    callback = function(ev)
+                        ft_set('yaml', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = '*.norg',
+                    callback = function(ev)
+                        ft_set('norg', ev.buf)()
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = { '*.c', '*.h' },
+                    callback = function(ev)
+                        ---@type vim.api.keyset.option
+                        local setopt_opts = { buf = ev.buf }
+                        local opt_dict = {
+                            tabstop = 2,
+                            shiftwidth = 2,
+                            softtabstop = 2,
+                            expandtab = true,
+                            autoindent = true,
+                            filetype = 'c',
+                        }
+
+                        for opt, val in pairs(opt_dict) do
+                            optset(opt, val, setopt_opts)
+                        end
+                    end,
+                },
+                {
+                    group = group,
+                    pattern = {
+                        '*.C',
+                        '*.H',
+                        '*.c++',
+                        '*.cc',
+                        '*.cpp',
+                        '*.cxx',
+                        '*.h++',
+                        '*.hh',
+                        '*.hpp',
+                        '*.html',
+                        '*.hxx',
+                        '*.md',
+                        '*.mdx',
+                        '*.yaml',
+                        '*.yml',
+                    },
+                    callback = function(ev)
+                        ---@type vim.api.keyset.option
+                        local setopt_opts = { buf = ev.buf }
+                        local opt_dict = {
+                            tabstop = 2,
+                            shiftwidth = 2,
+                            softtabstop = 2,
+                            expandtab = true,
+                            autoindent = true,
+                        }
+
+                        for opt, val in pairs(opt_dict) do
+                            optset(opt, val, setopt_opts)
+                        end
+                    end,
+                },
+            },
+        },
+        {
+            events = { 'FileType' },
+            opts_tbl = {
+                {
+                    pattern = 'checkhealth',
+                    group = group,
+                    callback = function()
+                        ---@type vim.api.keyset.option
+                        local O = { scope = 'local' }
+                        optset('wrap', true, O)
+                        optset('number', false, O)
+                        optset('signcolumn', 'no', O)
+                    end,
+                },
+            },
+        },
+        {
+            events = { 'TextYankPost' },
+            opts_tbl = {
+                {
+                    pattern = '*',
+                    group = group,
+                    callback = function()
+                        vim.hl.on_yank({ higroup = 'Visual', timeout = 300 })
+                    end,
+                },
+            },
+        },
+        {
+            events = { 'BufEnter', 'WinEnter', 'BufWinEnter' },
+            opts_tbl = {
+                {
+                    group = group,
+                    callback = function(ev)
+                        local Keymaps = require('user_api.config.keymaps')
+                        local executable = require('user_api.check.exists').executable
+                        local desc = require('user_api.maps').desc
+                        local notify = Util.notify.notify
+
+                        local bt = Util.bt_get(ev.buf)
+                        local ft = Util.ft_get(ev.buf)
+
+                        ---@type vim.api.keyset.option
+                        local win_opts = { win = curr_win() }
+
+                        ---@type vim.api.keyset.option
+                        local buf_opts = { buf = ev.buf }
+
+                        if ft == 'lazy' then
+                            optset('signcolumn', 'no', win_opts)
+                            optset('number', false, win_opts)
+                            return
+                        end
+
+                        if bt == 'help' or ft == 'help' then
+                            optset('signcolumn', 'no', win_opts)
+                            optset('number', false, win_opts)
+                            optset('wrap', true, win_opts)
+                            optset('colorcolumn', '', win_opts)
+
+                            vim.keymap.set('n', 'q', vim.cmd.bdelete, { buffer = ev.buf })
+
+                            local fn = vim.schedule_wrap(function()
+                                vim.cmd.wincmd('=')
+                                vim.cmd.noh()
+                            end)
+
+                            fn()
+                            return
+                        end
+
+                        if not optget('modifiable', buf_opts) then
+                            return
+                        end
+
+                        if ft == 'lua' and executable('stylua') then
+                            Keymaps({
+                                n = {
+                                    ['<leader><C-l>'] = {
+                                        function()
+                                            ---@diagnostic disable-next-line:param-type-mismatch
+                                            local ok = pcall(vim.cmd, 'silent! !stylua %')
+
+                                            if not ok then
+                                                return
+                                            end
+
+                                            notify('Formatted successfully!', INFO, {
+                                                title = 'StyLua',
+                                                animate = true,
+                                                timeout = 200,
+                                                hide_from_history = true,
+                                            })
+                                        end,
+                                        desc('Format With `stylua`'),
+                                    },
+                                },
+                            }, ev.buf)
+                        end
+
+                        if ft == 'python' and executable('isort') then
+                            Keymaps({
+                                n = {
+                                    ['<leader><C-l>'] = {
+                                        function()
+                                            ---@diagnostic disable-next-line:param-type-mismatch
+                                            local ok = pcall(vim.cmd, 'silent! !isort %')
+
+                                            if not ok then
+                                                return
+                                            end
+
+                                            notify('Formatted successfully!', INFO, {
+                                                title = 'isort',
+                                                animate = true,
+                                                timeout = 200,
+                                                hide_from_history = true,
+                                            })
+                                        end,
+                                        desc('Format With `isort`'),
+                                    },
+                                },
+                            }, ev.buf)
+                        end
+                    end,
+                },
+            },
+        },
+    }
+
+    local ok = pcall(require, 'orgmode')
+
+    if ok then
+        table.insert(AUS[1].opts_tbl, {
+            group = group,
+            pattern = '*.org',
+            callback = function(ev)
+                Util.ft_set('org', ev.buf)()
+            end,
+        })
+    end
+
+    ---@type AuRepeatEvents[]
+    Util.au.created = vim.tbl_deep_extend('keep', Util.au.created or {}, AUS)
 
     for _, t in ipairs(Util.au.created) do
         au_repeated_events(t)
