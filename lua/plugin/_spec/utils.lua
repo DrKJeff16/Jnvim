@@ -43,6 +43,7 @@ local Utils = {
                 position = 'left', -- "right", "bottom"
                 ignore_filetype = {
                     'TelescopePrompt',
+                    'help',
                     'lazy',
                     'notify',
                     'qf',
@@ -66,7 +67,7 @@ local Utils = {
 
             Keymaps({
                 n = {
-                    ['<leader><C-u>'] = { UDT.toggle, desc('Toggle UndoTree') },
+                    ['<leader><M-u>'] = { UDT.toggle, desc('Toggle UndoTree') },
                 },
             })
 
@@ -99,16 +100,7 @@ local Utils = {
         end,
     },
 
-    {
-        'vim-scripts/UTL.vim',
-        version = false,
-        init = flag_installed('utl'),
-    },
-
-    {
-        'epwalsh/pomo.nvim',
-        version = false,
-    },
+    { 'epwalsh/pomo.nvim', version = false },
 
     {
         'hat0uma/doxygen-previewer.nvim',

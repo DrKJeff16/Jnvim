@@ -26,7 +26,8 @@ local function on_init(client)
     end
 
     local library = {
-        vim.env.VIMRUNTIME,
+        -- vim.env.VIMRUNTIME,
+        vim.api.nvim_get_runtime_file('', true),
 
         '${3rd}/luv/library',
         '${3rd}/busted/library',

@@ -4,12 +4,12 @@ _G.in_console = require('user_api.check').in_console
 _G.inspect = vim.inspect
 
 local User = require('user_api')
-local Util = require('user_api.util')
-local Termux = require('user_api.distro.termux')
+local Util = User.util
+local Termux = User.distro.termux
 
-local Keymaps = require('user_api.config.keymaps')
-local Opts = require('user_api.opts')
-local desc = require('user_api.maps').desc
+local Keymaps = User.config.keymaps
+local Opts = User.opts
+local desc = User.maps.desc
 local ft_get = Util.ft_get
 local bt_get = Util.bt_get
 

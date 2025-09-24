@@ -232,6 +232,18 @@ function BUtil.reset_providers()
         },
     }
 
+    if exists('css-vars.blink') then
+        BUtil.Providers.css_vars = {
+            name = 'css-vars',
+            module = 'css-vars.blink',
+            opts = {
+                -- WARNING: The search is not optimized to look for variables in JS files.
+                -- If you change the search_extensions you might get false positives and weird completion results.
+                search_extensions = { '.js', '.ts', '.jsx', '.tsx' },
+            },
+        }
+    end
+
     if exists('blink-cmp-sshconfig') then
         BUtil.Providers.sshconfig = {
             name = 'SshConfig',
@@ -375,8 +387,8 @@ return {
             version = false,
             config = require('config.util').require('plugin.lspkind'),
         },
-
         'folke/lazydev.nvim',
+        'jdrupal-dev/css-vars.nvim',
         'Kaiser-Yang/blink-cmp-git',
         'disrupted/blink-cmp-conventional-commits',
         {
