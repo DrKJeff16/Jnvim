@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #
 # Print all Lua files containing the specified regex
 #

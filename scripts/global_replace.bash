@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #
 # TODO!: Implement option parsing
 #
@@ -18,18 +20,15 @@ error() {
 _cmd() {
     [[ $# -eq 0 ]] && return 127
 
-    local EC=0
-
     while [[ $# -gt 0 ]]; do
         if ! command -v "$1" &> /dev/null; then
-            EC=1
-            break
+            return 1
         fi
 
         shift
     done
 
-    return "$EC"
+    return 0
 }
 
 # Terminate the script, optionally set the exit code and abort message
@@ -56,7 +55,6 @@ die() {
 # TODO: Make help/usage function
 
 ! _cmd 'find' && die 127 "\`find\` is not in PATH."
-
 [[ $# -eq 0 ]] && die 127 "No arguments were given. Aborting"
 
 EC=0
@@ -72,7 +70,7 @@ while [[ $# -gt 0 ]]; do
     REGEX="$1"
 
     printf "\n%s\n" "Applying regex ${REGEX}:"
-    for F in $(find . -type f -regex '.*\.lua$' | cut -d '/' -f2-); do
+    for F in $(find . -type f -regex '.*\.\(c\|cc\|cpp\|h\|hh\|hpp\|sh\|bash\|i?py\|lua\)$' | cut -d '/' -f2-); do
         echo -e "    ==> ${F}"
         if ! sed -i "${REGEX}" "$F"; then
             error "Unable to replace contents of file \`$F\`. Skipping file"
