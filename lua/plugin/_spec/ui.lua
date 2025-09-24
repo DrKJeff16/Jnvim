@@ -23,20 +23,7 @@ local UI = {
     },
 
     -- Statusline
-    {
-        'nvim-lualine/lualine.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'nvim-tree/nvim-web-devicons',
-            {
-                'arkav/lualine-lsp-progress',
-                version = false,
-            },
-        },
-        config = CfgUtil.require('plugin.lualine'),
-        cond = not in_console(),
-    },
+    { import = 'plugin.lualine' },
 
     -- Tabline
     {

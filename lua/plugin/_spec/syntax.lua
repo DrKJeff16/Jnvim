@@ -6,23 +6,15 @@ local Check = User.check
 
 local flag_installed = CfgUtil.flag_installed
 local in_console = Check.in_console
-local executable = Check.exists.executable
 
 ---@type LazySpec[]
 local Syntax = {
+    { import = 'plugin.doxygen' },
     {
         'rhysd/vim-syntax-codeowners',
         lazy = false,
         version = false,
         init = flag_installed('codeowners'),
-    },
-    {
-        'vim-scripts/DoxygenToolkit.vim',
-        ft = { 'c', 'cpp' },
-        version = false,
-        init = flag_installed('doxygen_toolkit'),
-        config = CfgUtil.require('plugin.doxygen'),
-        cond = executable('doxygen'),
     },
     {
         'nvim-orgmode/orgmode',

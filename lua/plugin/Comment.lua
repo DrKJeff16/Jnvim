@@ -1,51 +1,40 @@
 ---@module 'lazy'
 
+---Function to call before (un)comment.
+---
+---It is called with a `ctx` argument of type
+---[`comment.utils.CommentCtx`](lua://CommentCtx).
+---
+---(default: `nil`)
+--- ---
+---@return string
+local function pre_hook(_)
+    return vim.bo.commentstring
+end
+
+local function post_hook(_)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local win = vim.api.nvim_get_current_win()
+    local r = unpack(vim.api.nvim_win_get_cursor(win))
+    if vim.api.nvim_buf_line_count(bufnr) > r then
+        vim.api.nvim_win_set_cursor(win, { r + 1, 0 })
+    end
+end
+
 ---@type LazySpec
 return {
     'numToStr/Comment.nvim',
-    event = 'InsertEnter',
+    event = 'BufEnter',
     version = false,
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
         'JoosepAlviste/nvim-ts-context-commentstring',
     },
     config = function()
-        local User = require('user_api')
-        local Check = User.check
-        local exists = Check.exists.module
-
-        local Comment = require('Comment')
-
-        ---Function to call before (un)comment.
-        ---
-        ---It is called with a `ctx` argument of type
-        ---[`comment.utils.CommentCtx`](lua://CommentCtx).
-        ---
-        ---(default: `nil`)
-        --- ---
-        ---@return string
-        local function pre_hook(_)
-            return vim.bo.commentstring
-        end
-
-        local function post_hook(_)
-            local bufnr = vim.api.nvim_get_current_buf()
-            local win = vim.api.nvim_get_current_win()
-
-            local r = unpack(vim.api.nvim_win_get_cursor(win))
-
-            if vim.api.nvim_buf_line_count(bufnr) > r then
-                vim.api.nvim_win_set_cursor(win, { r + 1, 0 })
-            end
-        end
-
-        if exists('ts_context_commentstring') then
-            pre_hook =
-                require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
-        end
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
 
         ---@diagnostic disable-next-line:missing-fields
-        Comment.setup({
+        require('Comment').setup({
             pre_hook = pre_hook,
             post_hook = post_hook,
 
@@ -59,6 +48,7 @@ return {
             toggler = {
                 -- Line-comment toggle keymap
                 line = 'gcc',
+
                 -- Block-comment toggle keymap
                 block = 'gbc',
             },
