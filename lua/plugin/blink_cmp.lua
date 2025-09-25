@@ -1,21 +1,23 @@
----@module 'blink.cmp'
 ---@module 'lazy'
 
 local User = require('user_api')
 local Check = User.check
 local Util = User.util
 
-local validate = vim.validate
-local copy = vim.deepcopy
-local in_tbl = vim.tbl_contains
-local curr_buf = vim.api.nvim_get_current_buf
-
 local exists = Check.exists.module
 local executable = Check.exists.executable
 local type_not_empty = Check.value.type_not_empty
+local vim_has = Check.exists.vim_has
 local has_words_before = Util.has_words_before
 local ft_get = Util.ft_get
 
+local validate = vim.validate
+local copy = vim.deepcopy
+local in_tbl = vim.tbl_contains
+local in_list = vim.list_contains
+local curr_buf = vim.api.nvim_get_current_buf
+
+---@class BUtil
 local BUtil = {}
 BUtil.Sources = {}
 BUtil.Providers = {}
@@ -24,17 +26,19 @@ BUtil.curr_ft = ''
 ---@param snipps? boolean
 ---@param buf? boolean
 function BUtil.reset_sources(snipps, buf)
-    validate('snipps', snipps, 'boolean', true)
-    validate('buf', buf, 'boolean', true)
-
+    if vim_has('nvim-0.11') then
+        validate('snipps', snipps, 'boolean', true, 'boolean?')
+        validate('buf', buf, 'boolean', true, 'boolean?')
+    else
+        validate({
+            snipps = { snipps, { 'boolean', 'nil' } },
+            buf = { buf, { 'boolean', 'nil' } },
+        })
+    end
     snipps = snipps ~= nil and snipps or false
     buf = buf ~= nil and buf or true
 
-    BUtil.Sources = {
-        'lsp',
-        'path',
-        'env',
-    }
+    BUtil.Sources = { 'lsp', 'path', 'env' }
 
     if snipps then
         table.insert(BUtil.Sources, 'snippets')
@@ -62,12 +66,12 @@ function BUtil.reset_sources(snipps, buf)
         'gitrebase',
     }
 
-    if in_tbl(git_fts) then
+    if in_list(git_fts, ft) then
         table.insert(BUtil.Sources, 1, 'git')
-    end
 
-    if ft == 'gitcommit' then
-        table.insert(BUtil.Sources, 1, 'conventional_commits')
+        if ft == 'gitcommit' then
+            table.insert(BUtil.Sources, 1, 'conventional_commits')
+        end
     end
 end
 
@@ -405,10 +409,6 @@ return {
     },
     build = executable('cargo') and 'cargo build --release' or false,
     config = function()
-        if not exists('blink.cmp') then
-            return
-        end
-
         local Blink = require('blink.cmp')
 
         if exists('luasnip.loaders.from_vscode') then
@@ -600,7 +600,7 @@ return {
             },
 
             cmdline = {
-                enabled = false,
+                enabled = true,
 
                 keymap = {
                     preset = 'cmdline',
@@ -683,7 +683,6 @@ return {
 
             signature = {
                 enabled = true,
-
                 trigger = {
                     ---Show the signature help automatically
                     enabled = false,

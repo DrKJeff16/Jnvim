@@ -6,12 +6,13 @@ local CfgUtil = require('config.util')
 local TS = {
     {
         'nvim-treesitter/nvim-treesitter',
+        lazy = false,
+        branch = 'main',
         build = ':TSUpdate',
         version = false,
         dependencies = {
             'nvim-treesitter/nvim-treesitter-context',
             'JoosepAlviste/nvim-ts-context-commentstring',
-            'nvim-treesitter/nvim-treesitter-refactor',
             'windwp/nvim-ts-autotag',
         },
         config = CfgUtil.require('plugin.ts'),

@@ -1,11 +1,9 @@
 ---@module 'lazy'
 
-local CfgUtil = require('config.util')
 local User = require('user_api')
 local Keymaps = require('user_api.config.keymaps')
 local Check = User.check
 
-local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 local desc = require('user_api.maps').desc
 
@@ -13,22 +11,6 @@ local curr_buf = vim.api.nvim_get_current_buf
 
 ---@type LazySpec[]
 local Utils = {
-    {
-        'vimwiki/vimwiki',
-        priority = 1000,
-        version = false,
-        init = flag_installed('vimwiki', function()
-            vim.g.vimwiki_list = {
-                {
-                    path = '~/.vimwiki',
-                    syntax = 'default',
-                    ext = '.wiki',
-                },
-            }
-        end),
-        enabled = false,
-    },
-
     {
         'jiaoshijie/undotree',
         dev = true,
@@ -255,50 +237,6 @@ local Utils = {
                 max_backups = 3,
             },
         },
-    },
-
-    {
-        'ThePrimeagen/harpoon',
-        version = false,
-        config = function()
-            require('harpoon').setup({
-                menu = {
-                    width = vim.api.nvim_win_get_width(0) - 4,
-                },
-                -- sets the marks upon calling `toggle` on the ui, instead of require `:w`.
-                save_on_toggle = false,
-
-                -- saves the harpoon file upon every change. disabling is unrecommended.
-                save_on_change = true,
-
-                -- sets harpoon to run the command immediately as it's passed to the terminal when calling `sendCommand`.
-                enter_on_sendcmd = false,
-
-                -- closes any tmux windows harpoon that harpoon creates when you close Neovim.
-                tmux_autoclose_windows = false,
-
-                -- filetypes that you want to prevent from adding to the harpoon list menu.
-                excluded_filetypes = { 'harpoon' },
-
-                -- set marks specific to each git branch inside git repository
-                mark_branch = true,
-
-                -- enable tabline with harpoon marks
-                tabline = true,
-                tabline_prefix = '   ',
-                tabline_suffix = '   ',
-            })
-
-            require('telescope').load_extension('harpoon')
-
-            require('user_api.highlight').hl_from_dict({
-                ['HarpoonActive'] = { bg = 'NONE', foreground = 'white' },
-                ['HarpoonInactive'] = { bg = 'NONE', foreground = '#63698c' },
-                ['HarpoonNumberActive'] = { bg = 'NONE', foreground = '#7aa2f7' },
-                ['HarpoonNumberInactive'] = { bg = 'NONE', foreground = '#7aa2f7' },
-                ['TabLineFill'] = { bg = 'NONE', foreground = 'white' },
-            })
-        end,
     },
 }
 
