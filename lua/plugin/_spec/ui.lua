@@ -26,17 +26,7 @@ local UI = {
     { import = 'plugin.lualine' },
 
     -- Tabline
-    {
-        'akinsho/bufferline.nvim',
-        event = 'VeryLazy',
-        version = false,
-        dependencies = {
-            'nvim-tree/nvim-web-devicons',
-            'tiagovla/scope.nvim',
-        },
-        config = CfgUtil.require('plugin.bufferline'),
-        cond = not in_console(),
-    },
+    { import = 'plugin.bufferline' },
 
     -- Indent Scope
     {
