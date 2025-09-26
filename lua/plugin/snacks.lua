@@ -14,4 +14,6 @@ return {
         input = { enabled = true },
         layout = { enabled = true },
     },
+
+    enabled = false,
 }

@@ -822,10 +822,8 @@ return {
             },
         })
 
-        Fzf.register_ui_select()
-
         vim.api.nvim_set_hl(0, 'FzfLuaBorder', { link = 'FloatBorder' })
     end,
 }
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

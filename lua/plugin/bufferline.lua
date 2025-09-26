@@ -39,6 +39,11 @@ return {
     },
     cond = not in_console(),
     config = function()
+        _G.__cached_neo_tree_selector = nil
+        _G.__get_selector = function()
+            return _G.__cached_neo_tree_selector
+        end
+
         local exists = require('user_api.check.exists').module
         local BLine = require('bufferline')
         local Groups = require('bufferline.groups')
@@ -193,10 +198,16 @@ return {
                         text_align = 'center',
                         separator = true,
                     },
+                    {
+                        filetype = 'neo-tree',
+                        raw = ' %{%v:lua.__get_selector()%} ',
+                        highlight = { sep = { link = 'WinSeparator' } },
+                        separator = '┃',
+                    },
                 },
             },
         })
     end,
 }
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

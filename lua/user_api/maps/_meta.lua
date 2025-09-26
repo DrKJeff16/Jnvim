@@ -47,4 +47,4 @@ function Maps.map_dict(T, map_func, has_modes, mode, bufnr) end
 ---@param prefix? string
 function Maps.nop(T, opts, mode, prefix) end
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

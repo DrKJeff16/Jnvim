@@ -1,22 +1,12 @@
 ---@module 'lazy'
 
 local CfgUtil = require('config.util')
-local User = require('user_api')
-local Check = User.check
+local Check = require('user_api.check')
 
-local flag_installed = CfgUtil.flag_installed
 local executable = Check.exists.executable
 
 ---@type LazySpec[]
 local VCS = {
-    { import = 'plugin.git.gitsigns' },
-
-    {
-        'tpope/vim-fugitive',
-        version = false,
-        init = flag_installed('fugitive'),
-        cond = executable('git'),
-    },
     {
         'sindrets/diffview.nvim',
         event = 'VeryLazy',
@@ -40,9 +30,10 @@ local VCS = {
         dev = true,
         event = 'VeryLazy',
         version = false,
+        cond = executable({ 'git', 'pre-commit' }),
     },
 }
 
 return VCS
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

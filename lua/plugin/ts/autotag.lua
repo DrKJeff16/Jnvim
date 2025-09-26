@@ -1,14 +1,8 @@
-local User = require('user_api')
-local Check = User.check
-
-local exists = Check.exists.module
+local exists = require('user_api.check.exists').module
 if not exists('nvim-ts-autotag') then
     return
 end
-
-local AutoTag = require('nvim-ts-autotag')
-
-AutoTag.setup({
+require('nvim-ts-autotag').setup({
     opts = {
         enable_close = true, -- Auto close tags
         enable_rename = true, -- Auto rename pairs of tags
@@ -23,4 +17,4 @@ AutoTag.setup({
     per_filetype = {},
 })
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

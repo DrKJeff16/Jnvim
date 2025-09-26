@@ -56,7 +56,6 @@ vim.api.nvim_create_autocmd('FileType', {
     pattern = '*',
     callback = function(ev)
         vim.treesitter.start(ev.buf)
-
         vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
         vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end,
@@ -96,9 +95,7 @@ require('plugin.ts.autotag')
 require('plugin.ts.context')
 
 if exists('ts_context_commentstring') then
-    require('ts_context_commentstring').setup({
-        enable_autocmd = false,
-    })
+    require('ts_context_commentstring').setup({ enable_autocmd = false })
 end
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

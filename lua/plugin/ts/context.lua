@@ -22,11 +22,9 @@ Context.setup({
     trim_scope = 'outer',
     mode = 'cursor',
     zindex = 20,
-
     separator = nil,
 
-    -- Return false to disable attaching
-    ---@type nil|(fun(buf: integer): boolean)
+    ---@type nil|fun(buf: integer): boolean
     on_attach = nil,
 })
 
@@ -45,24 +43,21 @@ local Keys = {
     ['<leader>Cs'] = {
         function()
             local msg = Context.enabled() and 'Enabled' or 'Disabled'
-            vim.notify('TS Context ==> ' .. msg)
+            vim.notify(('TS Context ==> %s'):format(msg))
         end,
         desc('Status of TS Context'),
     },
-
     ['<leader>Cn'] = {
         function()
             Context.go_to_context(vim.v.count1)
         end,
         desc('Go To Current Context'),
     },
-
     ['<leader>Ct'] = {
         function()
             Context.toggle()
-
-            local msg = Context.enabled() and 'En' or 'Dis'
-            vim.notify(msg .. 'abled TS Context')
+            local msg = Context.enabled() and 'Enabled' or 'Disabled'
+            vim.notify(('%s TS Context'):format(msg))
         end,
         desc('Toggle Context'),
     },
@@ -70,4 +65,4 @@ local Keys = {
 
 Keymaps({ n = Keys })
 
---- vim:ts=4:sts=4:sw=4:et:ai:si:sta:ci:pi:
+--- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
