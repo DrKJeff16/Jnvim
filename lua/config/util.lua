@@ -1,11 +1,7 @@
 local MODSTR = 'config.util'
-
-local User = require('user_api')
-local Check = User.check
-local Exists = Check.exists
-local Value = Check.value
-
-local in_console = Check.in_console
+local Exists = require('user_api.check.exists')
+local Value = require('user_api.check.value')
+local in_console = require('user_api.check').in_console
 local exists = Exists.module
 local executable = Exists.executable
 local env_vars = Exists.env_vars
@@ -13,9 +9,7 @@ local vim_exists = Exists.vim_exists
 local is_bool = Value.is_bool
 local is_str = Value.is_str
 
-local validate = vim.validate
 local in_list = vim.list_contains
-
 local ERROR = vim.log.levels.ERROR
 
 ---@class Config.Util
@@ -24,12 +18,11 @@ local CfgUtil = {}
 ---@param force? boolean
 function CfgUtil.set_tgc(force)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('force', force, 'boolean', true)
+        vim.validate('force', force, 'boolean', true)
     else
-        validate({ force = { force, { 'boolean', 'nil' } } })
+        vim.validate({ force = { force, { 'boolean', 'nil' } } })
     end
     force = force ~= nil and force or false
-
     vim.o.tgc = not force and (vim_exists('+termguicolors') and not in_console()) or true
 end
 
@@ -38,21 +31,19 @@ end
 ---@return fun()
 function CfgUtil.flag_installed(name, callback)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('name', name, 'string', false)
-        validate('callback', callback, 'function', true, 'fun()')
+        vim.validate('name', name, 'string', false)
+        vim.validate('callback', callback, 'function', true, 'fun()')
     else
-        validate({
+        vim.validate({
             name = { name, 'string' },
             callback = { callback, { 'function', 'nil' } },
         })
     end
-
     if name == '' then
         error(('(%s.flag_installed): Unable to set `vim.g` var'):format(MODSTR), ERROR)
     end
 
     local flag = (name:sub(1, 10) == 'installed_') and name or ('installed_' .. name)
-
     return function()
         vim.g[flag] = 1
 
@@ -64,42 +55,26 @@ end
 
 ---Set the global condition for a later submodule call.
 --- ---
----
----## Parameters
----
---- - `fields`: Either a `string` that will be the name of a vim `g:...` variable, or
----           a `dictionary` with the keys as the vim `g:...` variable names, and the value
----           as whatever said variables are set to respectively.
---- - `force_tgc`: An optional boolean that, if `true`, will force `termguicolors` regardless.
---- ---
----## Return
----
----A function that sets the pre-loading for the colorscheme
----and initializes the `vim.g.<field>` variable(s)
---- ---
 ---@param fields string|table<string, any>
 ---@param force_tgc? boolean
 ---@return fun()
 function CfgUtil.colorscheme_init(fields, force_tgc)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('fields', fields, { 'string', 'table' }, false, 'string|table<string, any>')
-        validate('force_tgc', force_tgc, 'boolean', true, 'boolean?')
+        vim.validate('fields', fields, { 'string', 'table' }, false, 'string|table<string, any>')
+        vim.validate('force_tgc', force_tgc, 'boolean', true, 'boolean?')
     else
-        validate({
+        vim.validate({
             fields = { fields, { 'string', 'table' } },
             force_tgc = { force_tgc, { 'boolean', 'nil' } },
         })
     end
     force_tgc = is_bool(force_tgc) and force_tgc or false
-
     return function()
         CfgUtil.set_tgc(force_tgc)
-
         if is_str(fields) then
             CfgUtil.flag_installed(fields)()
             return
         end
-
         for field, val in pairs(fields) do
             vim.g[field] = val
         end
@@ -108,27 +83,14 @@ end
 
 ---A `config` function to call your plugin from a `lazy` spec.
 --- ---
----## Parameters
---- - `mod_str`: This parameter must comply with the format below,
----            as all the plugin configs MUST BE IN the repo's `lua/plugins/` directory.
----            **_That being said_**, you can use any module path if you wish to do so:
----   ```lua
----   --- Lua
----   CfgUtil.require('plugin.<plugin_name>[.<...>]')
----   ```
---- ---
----## Return
----A function that attempts to import the given module from `mod_str`.
---- ---
 ---@param mod_str string
 ---@return fun()
 function CfgUtil.require(mod_str)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('mod_str', mod_str, 'string', false)
+        vim.validate('mod_str', mod_str, 'string', false)
     else
-        validate({ mod_str = { mod_str, 'string' } })
+        vim.validate({ mod_str = { mod_str, 'string' } })
     end
-
     return function()
         if exists(mod_str) then
             require(mod_str)
@@ -137,7 +99,7 @@ function CfgUtil.require(mod_str)
 end
 
 ---Returns the string for the `build` field for `Telescope-fzf` depending on certain conditions.
---- ---
+---
 ---For UNIX systems, it'll be something akin to:
 ---
 ---```sh
@@ -174,14 +136,13 @@ end
 ---@return fun()
 function CfgUtil.key_variant(cmd)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
+        vim.validate('cmd', cmd, 'string', true, "'ed'|'tabnew'|'split'|'vsplit'")
     else
-        validate({ cmd = { cmd, { 'string', 'nil' } } })
+        vim.validate({ cmd = { cmd, { 'string', 'nil' } } })
     end
     cmd = (cmd ~= nil and in_list({ 'ed', 'tabnew', 'split', 'vsplit' }, cmd)) and cmd or 'ed'
 
     local fpath = vim.fn.stdpath('config') .. '/lua/config/lazy.lua'
-
     local FUNCS = {
         ed = function()
             vim.cmd.ed(fpath)
@@ -196,9 +157,7 @@ function CfgUtil.key_variant(cmd)
             vim.cmd.vsplit(fpath)
         end,
     }
-
-    local res = FUNCS[cmd]
-    return res
+    return FUNCS[cmd]
 end
 
 ---@return boolean
@@ -206,10 +165,8 @@ function CfgUtil.has_tgc()
     if in_console or not exists('+termguicolors') then
         return false
     end
-
     return vim.o.termguicolors
 end
 
 return CfgUtil
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

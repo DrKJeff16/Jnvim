@@ -91,11 +91,4 @@ local Keys = {
 
 Keymaps({ n = Keys, o = Keys, x = Keys })
 
-require('plugin.ts.autotag')
-require('plugin.ts.context')
-
-if exists('ts_context_commentstring') then
-    require('ts_context_commentstring').setup({ enable_autocmd = false })
-end
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

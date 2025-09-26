@@ -3,22 +3,32 @@
 local CfgUtil = require('config.util')
 
 ---@type LazySpec[]
-local TS = {
+return {
     {
         'nvim-treesitter/nvim-treesitter',
-        lazy = false,
         branch = 'main',
         build = ':TSUpdate',
         version = false,
         dependencies = {
-            'nvim-treesitter/nvim-treesitter-context',
-            'JoosepAlviste/nvim-ts-context-commentstring',
-            'windwp/nvim-ts-autotag',
+            {
+                'nvim-treesitter/nvim-treesitter-context',
+                version = false,
+                config = CfgUtil.require('plugin.ts.context'),
+            },
+            {
+                'windwp/nvim-ts-autotag',
+                version = false,
+                config = CfgUtil.require('plugin.ts.autotag'),
+            },
+            {
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                version = false,
+                config = function()
+                    require('ts_context_commentstring').setup({ enable_autocmd = false })
+                end,
+            },
         },
         config = CfgUtil.require('plugin.ts'),
     },
 }
-
-return TS
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
