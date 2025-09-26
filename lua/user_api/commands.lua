@@ -1,14 +1,12 @@
+---@alias User.Commands.Spec table<string, User.Commands.CmdSpec>
 ---@class User.Commands.CmdSpec
 ---@field [1] fun(ctx?: vim.api.keyset.create_user_command.command_args)
 ---@field [2]? vim.api.keyset.user_command
 ---@field mappings? AllModeMaps
 
----@alias User.Commands.Spec table<string, User.Commands.CmdSpec>
-
 local desc = require('user_api.maps').desc
 local type_not_empty = require('user_api.check.value').type_not_empty
 
-local validate = vim.validate
 local copy = vim.deepcopy
 local d_extend = vim.tbl_deep_extend
 local new_cmd = vim.api.nvim_create_user_command
@@ -29,9 +27,7 @@ Commands.commands = {
                 string.char(10), -- `'\n'`
                 { plain = true }
             )
-
             local bufnr = vim.api.nvim_create_buf(true, true)
-
             open_win(bufnr, true, { vertical = false })
             set_lines(bufnr, 0, -1, false, lines)
             optset('modified', false, { buf = bufnr })
@@ -60,18 +56,12 @@ Commands.commands = {
 ---@param mappings? AllModeMaps
 function Commands.add_command(name, cmd, opts, mappings)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('name', name, 'string', false)
-        validate(
-            'cmd',
-            cmd,
-            'function',
-            false,
-            'fun(ctx?: vim.api.keyset.create_user_command.command_args)'
-        )
-        validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
-        validate('mappings', mappings, 'table', true, 'AllModeMaps')
+        vim.validate('name', name, 'string', false)
+        vim.validate('cmd', cmd, 'function', false)
+        vim.validate('opts', opts, 'table', true, 'vim.api.keyset.user_command')
+        vim.validate('mappings', mappings, 'table', true, 'AllModeMaps')
     else
-        validate({
+        vim.validate({
             name = { name, 'string' },
             cmd = { cmd, 'function' },
             opts = { opts, { 'table', 'nil' } },
@@ -80,12 +70,10 @@ function Commands.add_command(name, cmd, opts, mappings)
     end
     opts = opts or {}
 
-    ---@type User.Commands.CmdSpec
-    local cmnd = { cmd, opts }
+    local cmnd = { cmd, opts } ---@type User.Commands.CmdSpec
     if mappings then
         cmnd.mappings = mappings
     end
-
     Commands.setup({ [name] = cmnd })
 end
 
@@ -93,7 +81,6 @@ function Commands.setup_keys()
     if not type_not_empty('table', Commands.commands) then
         return
     end
-
     local Keymaps = require('user_api.config.keymaps')
     for _, cmd in pairs(Commands.commands) do
         if cmd.mappings and not vim.tbl_isempty(cmd.mappings) then
@@ -105,9 +92,9 @@ end
 ---@param cmds? User.Commands.Spec
 function Commands.setup(cmds)
     if vim.fn.has('nvim-0.11') == 1 then
-        validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
+        vim.validate('cmds', cmds, 'table', true, 'User.Commands.Spec')
     else
-        validate({ cmds = { cmds, { 'table', 'nil' } } })
+        vim.validate({ cmds = { cmds, { 'table', 'nil' } } })
     end
     cmds = cmds or {}
 
@@ -117,19 +104,16 @@ function Commands.setup(cmds)
         local opts = T[2] or {}
         new_cmd(cmd, exec, opts)
     end
-
     Commands.setup_keys()
 end
 
 ---@type User.Commands
 local M = setmetatable({}, {
     __index = Commands,
-
     __newindex = function(_, _, _)
         error('User.Commands table is Read-Only!')
     end,
 })
 
 return M
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

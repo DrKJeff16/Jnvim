@@ -42,7 +42,5 @@ local M = setmetatable(Check, {
         error('User.Check is read-only!', ERROR)
     end,
 })
-
 return M
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

@@ -2,7 +2,6 @@
 
 local uv = vim.uv or vim.loop
 local stdpath = vim.fn.stdpath
-
 local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
@@ -14,12 +13,8 @@ local luarocks_check = CfgUtil.luarocks_check
 
 local LAZY_DATA = stdpath('data') .. '/lazy'
 local LAZY_STATE = stdpath('state') .. '/lazy'
-
---- Set installation dir for `Lazy`
 local LAZYPATH = LAZY_DATA .. '/lazy.nvim'
 local README_PATH = LAZY_STATE .. '/readme'
-
---- Install `Lazy` automatically
 if not uv.fs_stat(LAZYPATH) then
     local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
     local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, LAZYPATH })
@@ -33,14 +28,10 @@ if not uv.fs_stat(LAZYPATH) then
         os.exit(1)
     end
 end
-
---- Add `Lazy` to runtimepath
 if not vim.o.rtp:find(LAZYPATH) then
     vim.o.rtp = ('%s,%s'):format(LAZYPATH, vim.o.rtp)
 end
-
 local Lazy = require('lazy')
-
 Lazy.setup({
     spec = {
         { import = 'plugin.which_key' },
@@ -57,16 +48,13 @@ Lazy.setup({
         { import = 'plugin.snacks' },
         { import = 'plugin.git.gitsigns' },
     },
-
     defaults = { lazy = false, version = false },
     install = { colorscheme = { 'habamax' }, missing = true },
     dev = { path = '~/Projects/nvim', patterns = {}, fallback = true },
     change_detection = { enabled = true, notify = Archlinux.validate() },
     root = LAZY_DATA,
-
     performance = {
         reset_packpath = true,
-
         rtp = {
             reset = true,
             disabled_plugins = {
@@ -81,27 +69,23 @@ Lazy.setup({
             },
         },
     },
-
     rocks = {
         enabled = luarocks_check(),
         root = stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
-
     pkg = {
         enabled = true,
         cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
         sources = luarocks_check() and { 'lazy', 'packspec' } or { 'lazy', 'packspec', 'rockspec' },
     },
-
     checker = {
         enabled = not Termux.validate(),
         notify = Archlinux.validate(),
         frequency = 600,
         check_pinned = false,
     },
-
     ui = {
         backdrop = not in_console() and 60 or 100,
         border = 'double',
@@ -110,19 +94,13 @@ Lazy.setup({
         wrap = true,
         pills = true,
     },
-
     readme = {
         enabled = false,
         root = README_PATH,
         files = { 'README.md', 'lua/**/README.md' },
         skip_if_doc_exists = true,
     },
-
     state = LAZY_STATE .. '/state.json',
-
-    -- - `loader`: Enables extra stats on the debug tab related to the loader cache.
-    --           Additionally gathers stats about all `package.loaders`
-    -- - `require`: Track each new require in the Lazy profiling tab
     profiling = { loader = true, require = true },
 })
 
@@ -147,12 +125,10 @@ local Keys = {
         key_variant('vsplit'),
         desc('Open `Lazy`File Vertical Window'),
     },
-
     ['<leader>Lb'] = {
         ':Lazy build ',
         desc('Prompt To Build', false),
     },
-
     ['<leader>Ll'] = {
         Lazy.show,
         desc('Show Lazy Home'),
@@ -173,17 +149,14 @@ local Keys = {
         Lazy.install,
         desc('Install Lazy Plugins'),
     },
-
     ['<leader>Lh'] = {
         Lazy.health,
         desc('Run Lazy checkhealth'),
     },
-
     ['<leader>vhL'] = {
         Lazy.health,
         desc('Run Lazy checkhealth'),
     },
-
     ['<leader>L<CR>'] = {
         ':Lazy ',
         desc('Select `Lazy` Operation (Interactively)', false),
