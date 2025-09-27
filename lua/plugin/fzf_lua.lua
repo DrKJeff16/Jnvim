@@ -7,12 +7,11 @@ return {
     cond = require('user_api.check.exists').executable('fzf'),
     config = function()
         local Fzf = require('fzf-lua')
-
         local actions = Fzf.actions
         actions = {
             files = {
                 true, -- uncomment to inherit all the below in your custom config
-                ['enter'] = actions.file_edit_or_qf,
+                enter = actions.file_edit_or_qf,
                 ['ctrl-s'] = actions.file_split,
                 ['ctrl-v'] = actions.file_vsplit,
                 ['ctrl-t'] = actions.file_tabedit,
@@ -23,7 +22,6 @@ return {
                 ['alt-f'] = actions.toggle_follow,
             },
         }
-
         Fzf.setup({
             globals = {
                 file_icon_padding = '',
@@ -36,7 +34,7 @@ return {
             --     copen        = "topleft copen",
             --   },
             files = {
-                -- previewer      = "bat",          -- uncomment to override previewer
+                previewer = 'bat', -- uncomment to override previewer
                 -- (name from 'previewers' table)
                 -- set to 'false' to disable
                 prompt = 'Files❯ ',
@@ -51,7 +49,7 @@ return {
                 -- executed command priority is 'cmd' (if exists)
                 -- otherwise auto-detect prioritizes `fd`:`rg`:`find`
                 -- default options are controlled by 'fd|rg|find|_opts'
-                -- cmd            = "rg --files",
+                cmd = 'rg --files',
                 find_opts = [[-type f \! -path '*/.git/*']],
                 rg_opts = [[--color=never --hidden --files -g "!.git"]],
                 fd_opts = [[--color=never --hidden --type f --type l --exclude .git]],
@@ -60,7 +58,7 @@ return {
                 -- parameter to a different folder than the current working directory
                 -- uncomment if you wish to force display of the cwd as part of the
                 -- query prompt string (fzf.vim style), header line or both
-                -- cwd_header = true,
+                cwd_header = true,
                 cwd_prompt = true,
                 cwd_prompt_shorten_len = 32, -- shorten prompt beyond this length
                 cwd_prompt_shorten_val = 1, -- shortened path parts length
@@ -74,7 +72,7 @@ return {
                     -- inherits from 'actions.files', here we can override
                     -- or set bind to 'false' to disable a default action
                     -- uncomment to override `actions.file_edit_or_qf`
-                    --   ["enter"]     = actions.file_edit,
+                    enter = actions.file_edit,
                     -- custom actions are available too
                     --   ["ctrl-y"]    = function(selected) print(selected[1]) end,
                 },
@@ -224,17 +222,17 @@ return {
                     },
                 },
                 icons = {
-                    ['M'] = { icon = 'M', color = 'yellow' },
-                    ['D'] = { icon = 'D', color = 'red' },
-                    ['A'] = { icon = 'A', color = 'green' },
+                    -- M = { icon = 'M', color = 'yellow' },
+                    -- D = { icon = 'D', color = 'red' },
+                    -- A = { icon = 'A', color = 'green' },
                     ['R'] = { icon = 'R', color = 'yellow' },
                     ['C'] = { icon = 'C', color = 'yellow' },
                     ['T'] = { icon = 'T', color = 'magenta' },
                     ['?'] = { icon = '?', color = 'magenta' },
                     -- override git icons?
-                    -- ["M"]        = { icon = "★", color = "red" },
-                    -- ["D"]        = { icon = "✗", color = "red" },
-                    -- ["A"]        = { icon = "+", color = "green" },
+                    M = { icon = '★', color = 'red' },
+                    D = { icon = '✗', color = 'red' },
+                    A = { icon = '+', color = 'green' },
                 },
             },
             grep = {
@@ -728,12 +726,10 @@ return {
                 prompt = { 'fg', 'Conditional' },
                 spinner = { 'fg', 'Label' },
             },
-
             hls = {
                 normal = 'Normal', -- highlight group for normal fg/bg
                 preview_normal = 'Normal', -- highlight group for preview fg/bg
             },
-
             previewers = {
                 cat = {
                     cmd = 'cat',
@@ -822,6 +818,7 @@ return {
             },
         })
 
+        Fzf.register_ui_select()
         vim.api.nvim_set_hl(0, 'FzfLuaBorder', { link = 'FloatBorder' })
     end,
 }
