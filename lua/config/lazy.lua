@@ -1,5 +1,3 @@
----@module 'lazy'
-
 local uv = vim.uv or vim.loop
 local stdpath = vim.fn.stdpath
 local CfgUtil = require('config.util')
@@ -127,6 +125,10 @@ local Keys = {
     },
     ['<leader>Lb'] = {
         ':Lazy build ',
+        desc('Prompt To Build', false),
+    },
+    ['<leader>Lr'] = {
+        ':Lazy reload ',
         desc('Prompt To Build', false),
     },
     ['<leader>Ll'] = {
