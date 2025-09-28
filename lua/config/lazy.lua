@@ -6,8 +6,8 @@ local Archlinux = require('user_api.distro.archlinux')
 local Termux = require('user_api.distro.termux')
 local in_console = require('user_api.check').in_console
 local desc = require('user_api.maps').desc
+local exists = require('user_api.check.exists').module
 local key_variant = CfgUtil.key_variant
-local luarocks_check = CfgUtil.luarocks_check
 
 local LAZY_DATA = stdpath('data') .. '/lazy'
 local LAZY_STATE = stdpath('state') .. '/lazy'
@@ -32,25 +32,28 @@ end
 local Lazy = require('lazy')
 Lazy.setup({
     spec = {
+        { import = 'plugin._spec.colorschemes' },
         { import = 'plugin.which_key' },
         { import = 'plugin.blink_cmp' },
+        { import = 'plugin.project' },
         { import = 'plugin._spec' },
         { import = 'plugin.startuptime' },
         { import = 'plugin.Comment' },
         { import = 'plugin.autopairs' },
         { import = 'plugin.fzf_lua' },
-        { import = 'plugin.project' },
         { import = 'plugin.pomo' },
         { import = 'plugin.refactoring' },
         { import = 'plugin.checkmate' },
         { import = 'plugin.snacks' },
         { import = 'plugin.git.gitsigns' },
+        { import = 'plugin.fyler' },
+        { import = 'plugin.hoversplit' },
     },
+    root = LAZY_DATA,
     defaults = { lazy = false, version = false },
     install = { colorscheme = { 'habamax' }, missing = true },
     dev = { path = '~/Projects/nvim', patterns = {}, fallback = true },
     change_detection = { enabled = true, notify = Archlinux.validate() },
-    root = LAZY_DATA,
     performance = {
         reset_packpath = true,
         rtp = {
@@ -68,7 +71,7 @@ Lazy.setup({
         },
     },
     rocks = {
-        enabled = luarocks_check(),
+        enabled = CfgUtil.luarocks_check(),
         root = stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -76,7 +79,8 @@ Lazy.setup({
         enabled = true,
         cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
-        sources = luarocks_check() and { 'lazy', 'packspec' } or { 'lazy', 'packspec', 'rockspec' },
+        sources = CfgUtil.luarocks_check() and { 'lazy', 'packspec' }
+            or { 'lazy', 'packspec', 'rockspec' },
     },
     checker = {
         enabled = not Termux.validate(),
@@ -102,70 +106,69 @@ Lazy.setup({
     profiling = { loader = true, require = true },
 })
 
----@type AllMaps
-local Keys = {
-    ['<leader>L'] = { group = '+Lazy' },
-    ['<leader>Le'] = { group = '+Edit Lazy File' },
+Keymaps({
+    n = {
+        ['<leader>L'] = { group = '+Lazy' },
+        ['<leader>Le'] = { group = '+Edit Lazy File' },
 
-    ['<leader>Lee'] = {
-        key_variant('ed'),
-        desc('Open `Lazy` File'),
+        ['<leader>Lee'] = {
+            key_variant('ed'),
+            desc('Open `Lazy` File'),
+        },
+        ['<leader>Les'] = {
+            key_variant('split'),
+            desc('Open `Lazy` File Horizontal Window'),
+        },
+        ['<leader>Let'] = {
+            key_variant('tabnew'),
+            desc('Open `Lazy` File Tab'),
+        },
+        ['<leader>Lev'] = {
+            key_variant('vsplit'),
+            desc('Open `Lazy`File Vertical Window'),
+        },
+        ['<leader>Ll'] = {
+            Lazy.show,
+            desc('Show Lazy Home'),
+        },
+        ['<leader>Ls'] = {
+            Lazy.sync,
+            desc('Sync Lazy Plugins'),
+        },
+        ['<leader>Lx'] = {
+            Lazy.clear,
+            desc('Clear Lazy Plugins'),
+        },
+        ['<leader>Lc'] = {
+            Lazy.check,
+            desc('Check Lazy Plugins'),
+        },
+        ['<leader>Li'] = {
+            Lazy.install,
+            desc('Install Lazy Plugins'),
+        },
+        ['<leader>Lh'] = {
+            Lazy.health,
+            desc('Run Lazy checkhealth'),
+        },
+        ['<leader>vhL'] = {
+            Lazy.health,
+            desc('Run Lazy checkhealth'),
+        },
+        ['<leader>L<CR>'] = {
+            ':Lazy ',
+            desc('Select `Lazy` Operation (Interactively)', false),
+        },
+        ['<leader>Lb'] = {
+            ':Lazy build ',
+            desc('Prompt To Build', false),
+        },
+        ['<leader>Lr'] = {
+            ':Lazy reload ',
+            desc('Prompt To Build', false),
+        },
     },
-    ['<leader>Les'] = {
-        key_variant('split'),
-        desc('Open `Lazy` File Horizontal Window'),
-    },
-    ['<leader>Let'] = {
-        key_variant('tabnew'),
-        desc('Open `Lazy` File Tab'),
-    },
-    ['<leader>Lev'] = {
-        key_variant('vsplit'),
-        desc('Open `Lazy`File Vertical Window'),
-    },
-    ['<leader>Lb'] = {
-        ':Lazy build ',
-        desc('Prompt To Build', false),
-    },
-    ['<leader>Lr'] = {
-        ':Lazy reload ',
-        desc('Prompt To Build', false),
-    },
-    ['<leader>Ll'] = {
-        Lazy.show,
-        desc('Show Lazy Home'),
-    },
-    ['<leader>Ls'] = {
-        Lazy.sync,
-        desc('Sync Lazy Plugins'),
-    },
-    ['<leader>Lx'] = {
-        Lazy.clear,
-        desc('Clear Lazy Plugins'),
-    },
-    ['<leader>Lc'] = {
-        Lazy.check,
-        desc('Check Lazy Plugins'),
-    },
-    ['<leader>Li'] = {
-        Lazy.install,
-        desc('Install Lazy Plugins'),
-    },
-    ['<leader>Lh'] = {
-        Lazy.health,
-        desc('Run Lazy checkhealth'),
-    },
-    ['<leader>vhL'] = {
-        Lazy.health,
-        desc('Run Lazy checkhealth'),
-    },
-    ['<leader>L<CR>'] = {
-        ':Lazy ',
-        desc('Select `Lazy` Operation (Interactively)', false),
-    },
-}
-
-Keymaps({ n = Keys })
+})
 
 ---List of manually-callable plugins.
 --- ---
@@ -173,21 +176,18 @@ Keymaps({ n = Keys })
 local M = {}
 
 function M.colorschemes()
-    local exists = require('user_api.check.exists').module
     if exists('plugin.colorschemes') then
         return require('plugin.colorschemes')
     end
 end
 
 function M.lsp()
-    local exists = require('user_api.check.exists').module
     if exists('plugin.lsp') then
         return require('plugin.lsp')
     end
 end
 
 function M.alpha()
-    local exists = require('user_api.check.exists').module
     if exists('plugin.alpha') then
         return require('plugin.alpha') or nil
     end
