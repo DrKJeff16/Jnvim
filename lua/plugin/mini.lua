@@ -79,6 +79,8 @@ Mods.extra = {}
 
 -- Mods.cursorword = { delay = 200 }
 
+Mods.icons = {}
+
 Mods.map = {
     -- Highlight integrations (none by default)
     integrations = {
@@ -419,5 +421,4 @@ if not vim.tbl_isempty(Keys) then
 
     Keymaps({ n = Keys })
 end
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

@@ -48,6 +48,7 @@ Lazy.setup({
         { import = 'plugin.git.gitsigns' },
         { import = 'plugin.fyler' },
         { import = 'plugin.hoversplit' },
+        { import = 'plugin.buffer-sticks' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },

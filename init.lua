@@ -24,6 +24,8 @@ function _G.notify_inspect(...)
     vim.notify(vim.inspect(...), INFO)
 end
 
+vim.g.loaded_perl_provider = 0
+
 Opts({
     autoread = true,
     background = 'dark',
