@@ -18,7 +18,6 @@ local Syntax = {
     },
     {
         'nvim-orgmode/orgmode',
-        event = 'VeryLazy',
         ft = { 'org' },
         version = false,
         config = CfgUtil.require('plugin.orgmode'),

@@ -33,6 +33,13 @@ local Lazy = require('lazy')
 Lazy.setup({
     spec = {
         { import = 'plugin._spec.colorschemes' },
+        {
+            'nvim-tree/nvim-web-devicons',
+            version = false,
+            config = CfgUtil.require('plugin.web_devicons'),
+            cond = not in_console(),
+        },
+        { 'nvim-mini/mini.icons', version = false },
         { import = 'plugin.which_key' },
         { import = 'plugin.blink_cmp' },
         { import = 'plugin.project' },
@@ -49,6 +56,7 @@ Lazy.setup({
         { import = 'plugin.fyler' },
         { import = 'plugin.hoversplit' },
         { import = 'plugin.buffer-sticks' },
+        { import = 'plugin.persistence' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },

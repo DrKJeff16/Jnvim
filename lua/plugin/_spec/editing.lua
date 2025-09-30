@@ -8,13 +8,6 @@ local in_console = Check.in_console
 ---@type LazySpec[]
 local Editing = {
     {
-        'folke/persistence.nvim',
-        event = 'BufReadPre',
-        version = false,
-        config = CfgUtil.require('plugin.persistence'),
-    },
-
-    {
         'folke/twilight.nvim',
         version = false,
         config = CfgUtil.require('plugin.twilight'),

@@ -1,18 +1,18 @@
 ---@alias AllColorSubMods
+---|AriakeSubMod
 ---|CpcSubMod
 ---|DraculaSubMod
 ---|FlexokiSubMod
 ---|GloombuddySubMod
----|GruvboxSubMod
 ---|GruvDarkSubMod
+---|GruvboxSubMod
 ---|MolokaiSubMod
 ---|NFoxSubMod
 ---|ODSubMod
 ---|OakSubMod
 ---|SpaceDuckSubMod
+---|SpaceNvimSubMod
 ---|SpaceVimSubMod
----|SpaceVimSubMod
----|SpacemacsSubMod
 ---|TNSubMod
 ---|TokyoDarkSubMod
 ---|VSCodeSubMod
@@ -42,6 +42,7 @@ Colorschemes.OPTIONS = {
     'gruvdark',
     'gruvbox',
     'vscode',
+    'ariake',
     'dracula',
     'flexoki',
     'gloombuddy',
@@ -49,9 +50,10 @@ Colorschemes.OPTIONS = {
     'oak',
     'space_vim_dark',
     'spaceduck',
-    'spacemacs',
+    'space_nvim',
 }
 
+Colorschemes.ariake = require('plugin.colorschemes.ariake')
 Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
 Colorschemes.dracula = require('plugin.colorschemes.dracula')
 Colorschemes.flexoki = require('plugin.colorschemes.flexoki')
@@ -64,7 +66,7 @@ Colorschemes.oak = require('plugin.colorschemes.oak')
 Colorschemes.onedark = require('plugin.colorschemes.onedark')
 Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
 Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
-Colorschemes.spacemacs = require('plugin.colorschemes.spacemacs')
+Colorschemes.space_nvim = require('plugin.colorschemes.space-nvim')
 Colorschemes.tokyodark = require('plugin.colorschemes.tokyodark')
 Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
 Colorschemes.gruvdark = require('plugin.colorschemes.gruvdark')
@@ -90,11 +92,10 @@ local M = setmetatable({}, {
             ['<leader>uc'] = { group = '+Colorschemes' },
         }
 
-        local csc_group = 'A'
-        local i = 1
-
         ---@type string[]
         local valid = {}
+        local csc_group = 'A'
+        local i = 1
 
         -- NOTE: This was also a pain in the ass
         --
@@ -103,16 +104,13 @@ local M = setmetatable({}, {
         for _, name in ipairs(self.OPTIONS) do
             ---@type AllColorSubMods
             local TColor = self[name]
-
             if TColor and TColor.valid ~= nil and TColor.valid() then
                 table.insert(valid, name)
-
                 Keys['<leader>uc' .. csc_group] = {
                     group = '+Group ' .. csc_group,
                 }
 
                 local i_str = tostring(i)
-
                 if type_not_empty('table', TColor.variants) then
                     local v = 'a'
                     for _, variant in next, TColor.variants do
@@ -125,7 +123,6 @@ local M = setmetatable({}, {
                             end,
                             desc(('Set Colorscheme `%s` (%s)'):format(capitalize(name), variant)),
                         }
-
                         v = displace_letter(v, 'next')
                     end
                 else
@@ -146,34 +143,28 @@ local M = setmetatable({}, {
                 end
             end
         end
-
         if not type_not_empty('table', valid) then
             error('No valid colorschemes!', ERROR)
         end
         Keymaps({ n = Keys })
-
-        if not (is_str(color) and vim.tbl_contains(valid, color)) then
+        if not (is_str(color) and vim.list_contains(valid, color)) then
             color = valid[1]
         end
 
         ---@type AllColorSubMods
         local Color = self[color]
-
         if Color ~= nil and Color.valid() then
             Color.setup(...)
             return
         end
-
         for _, csc in next, valid do
             ---@type AllColorSubMods
             Color = self[csc]
-
             if Color.valid ~= nil and Color.valid() then
                 Color.setup()
                 return
             end
         end
-
         vim.cmd.colorscheme('default')
     end,
 })

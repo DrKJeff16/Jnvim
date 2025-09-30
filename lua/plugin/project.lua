@@ -47,6 +47,13 @@ return {
                 '~/Public/*',
                 '~/Templates/*',
             },
+            integrations = {
+                persistence = {
+                    enabled = true,
+                    auto_open = true,
+                    auto_save = true,
+                },
+            },
             scope_chdir = 'tab',
         })
         Keymaps({

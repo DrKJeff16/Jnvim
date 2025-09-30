@@ -1,10 +1,7 @@
 ---@module 'lazy'
 
 local CfgUtil = require('config.util')
-local User = require('user_api')
-local Check = User.check
-
-local in_console = Check.in_console
+local in_console = require('user_api.check').in_console
 
 ---@type LazySpec[]
 local Essentials = {
@@ -13,7 +10,7 @@ local Essentials = {
         version = false,
     },
     {
-        'echasnovski/mini.nvim',
+        'nvim-mini/mini.nvim',
         version = false,
         config = CfgUtil.require('plugin.mini'),
     },
@@ -36,12 +33,6 @@ local Essentials = {
         version = false,
         dependencies = { 'nvim-lua/plenary.nvim' },
         config = CfgUtil.require('plugin.notify'),
-        cond = not in_console(),
-    },
-    {
-        'nvim-tree/nvim-web-devicons',
-        version = false,
-        config = CfgUtil.require('plugin.web_devicons'),
         cond = not in_console(),
     },
     {

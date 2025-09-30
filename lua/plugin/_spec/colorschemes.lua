@@ -1,7 +1,6 @@
 ---@module 'lazy'
 
-local CfgUtil = require('config.util')
-local colorscheme_init = CfgUtil.colorscheme_init
+local colorscheme_init = require('config.util').colorscheme_init
 local in_console = require('user_api.check').in_console
 
 ---@type LazySpec[]
@@ -12,6 +11,12 @@ return {
         version = false,
         init = colorscheme_init('installed_tokyonight'),
         cond = not in_console(),
+    },
+    {
+        'jim-at-jibba/ariake.nvim',
+        priority = 1000,
+        version = false,
+        init = colorscheme_init('installed_ariake'),
     },
     {
         'tiagovla/tokyodark.nvim',
@@ -140,11 +145,11 @@ return {
         init = colorscheme_init('installed_molokai'),
     },
     {
-        'colepeters/spacemacs-theme.vim',
+        'Th3Whit3Wolf/space-nvim',
         lazy = false,
         priority = 1000,
         version = false,
-        init = colorscheme_init('installed_spacemacs'),
+        init = colorscheme_init('installed_space_nvim'),
         cond = not in_console(),
     },
 }

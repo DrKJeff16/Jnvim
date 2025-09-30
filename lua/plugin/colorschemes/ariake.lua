@@ -2,20 +2,21 @@ local exists = require('user_api.check.exists').module
 
 ---A submodule class for the `<NAME>` colorscheme.
 --- ---
----@class CscSubMod
+---@class AriakeSubMod
 local Template = {}
 
----@class CscSubMod.Variants
+---@class AriakeSubMod.Variants
 Template.variants = {}
 
-Template.mod_cmd = 'silent! colorscheme template'
+Template.mod_cmd = 'silent! colorscheme ariake'
 
 ---@return boolean
 function Template.valid()
-    return exists('template')
+    return exists('ariake')
 end
 
 function Template.setup()
+    require('ariake').setup()
     vim.cmd(Template.mod_cmd)
 end
 

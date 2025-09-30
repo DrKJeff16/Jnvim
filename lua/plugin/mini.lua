@@ -1,19 +1,14 @@
-local User = require('user_api')
-local Check = User.check
-local Util = User.util
-
+local Check = require('user_api.check')
 local Keymaps = require('user_api.config.keymaps')
 local exists = Check.exists.module
-local is_fun = Check.value.is_fun
 local is_bool = Check.value.is_bool
 local type_not_empty = Check.value.type_not_empty
-local desc = User.maps.desc
-local ft_get = Util.ft_get
+local desc = require('user_api.maps').desc
+local ft_get = require('user_api.util').ft_get
 
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
-local in_tbl = vim.tbl_contains
 local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param mini_mod string
@@ -27,27 +22,26 @@ local function src(mini_mod, opts)
     -- If table key doesn't start with `mini.`
     local og_mini_mod = mini_mod
     mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and ('mini.%s'):format(mini_mod) or mini_mod
-
     if not exists(mini_mod) then
         vim.notify(('(mini src()): Unable to import `%s`'):format(og_mini_mod), ERROR)
         return
     end
 
     local M = require(mini_mod)
-
-    if not is_fun(M.setup) then
+    if not (M.setup and vim.is_callable(M.setup)) then
         vim.notify(('(mini src()): `setup()` not found for module `%s`'):format(mini_mod), WARN)
         return
     end
 
-    opts = opts or {}
-
-    M.setup(opts)
+    M.setup(opts or {})
 end
 
 ---@class MiniModules
+---@field pairs? MiniModules.Pairs
+---@field hipatterns? MiniModules.HiPatterns
 local Mods = {}
 
+---@class MiniModules.Basics
 Mods.basics = {
     options = {
         basic = true,
@@ -70,62 +64,82 @@ Mods.basics = {
     silent = true,
 }
 
+-- ---@class MiniModules.Bufremove
 -- Mods.bufremove = {
 --     set_vim_settings = true,
 --     silent = true,
 -- }
 
-Mods.extra = {}
-
+-- ---@class MiniModules.Cursorword
 -- Mods.cursorword = { delay = 200 }
 
-Mods.icons = {}
+---@class MiniModules.Extra
+Mods.extra = {}
 
-Mods.map = {
-    -- Highlight integrations (none by default)
-    integrations = {
-        require('mini.map').gen_integration.builtin_search(),
-        require('mini.map').gen_integration.diagnostic(),
-        require('mini.map').gen_integration.diff(),
-        require('mini.map').gen_integration.gitsigns(),
+---@class MiniModules.Icons
+Mods.icons = {
+    style = 'glyph',
+    default = {
+        -- Override default glyph for "file" category (reuse highlight group)
+        file = { glyph = '󰈤' },
     },
+    extension = {
+        -- Override highlight group (not necessary from 'mini.icons')
+        lua = { hl = 'Special' },
 
-    -- Symbols used to display data
-    symbols = {
-        -- Encode symbols. See `:h MiniMap.config` for specification and
-        -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
-        -- Default: solid blocks with 3x2 resolution.
-        encode = require('mini.map').gen_encode_symbols.block('2x1'),
-        -- encode = require('mini.map').gen_encode_symbols.dodt('1x2'),
-        -- encode = require('mini.map').gen_encode_symbols.shade('1x2'),
-
-        -- Scrollbar parts for view and line. Use empty string to disable any.
-        scroll_line = '█',
-        scroll_view = '┃',
-    },
-
-    -- Window options
-    window = {
-        -- Whether window is focusable in normal way (with `wincmd` or mouse)
-        focusable = false,
-
-        -- Side to stick ('left' or 'right')
-        side = 'right',
-
-        -- Whether to show count of multiple integration highlights
-        show_integration_count = true,
-
-        -- Total width
-        width = 20,
-
-        -- Value of 'winblend' option
-        winblend = 25,
-
-        -- Z-index
-        zindex = 50,
+        -- Add icons for custom extension. This will also be used in
+        -- 'file' category for input like 'file.my.ext'.
+        -- ['my.ext'] = { glyph = '󰻲', hl = 'MiniIconsRed' },
     },
 }
 
+-- ---@class MiniModules.Map
+-- Mods.map = {
+--     -- Highlight integrations (none by default)
+--     integrations = {
+--         require('mini.map').gen_integration.builtin_search(),
+--         require('mini.map').gen_integration.diagnostic(),
+--         require('mini.map').gen_integration.diff(),
+--         require('mini.map').gen_integration.gitsigns(),
+--     },
+--
+--     -- Symbols used to display data
+--     symbols = {
+--         -- Encode symbols. See `:h MiniMap.config` for specification and
+--         -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
+--         -- Default: solid blocks with 3x2 resolution.
+--         encode = require('mini.map').gen_encode_symbols.block('2x1'),
+--         -- encode = require('mini.map').gen_encode_symbols.dodt('1x2'),
+--         -- encode = require('mini.map').gen_encode_symbols.shade('1x2'),
+--
+--         -- Scrollbar parts for view and line. Use empty string to disable any.
+--         scroll_line = '█',
+--         scroll_view = '┃',
+--     },
+--
+--     -- Window options
+--     window = {
+--         -- Whether window is focusable in normal way (with `wincmd` or mouse)
+--         focusable = false,
+--
+--         -- Side to stick ('left' or 'right')
+--         side = 'right',
+--
+--         -- Whether to show count of multiple integration highlights
+--         show_integration_count = true,
+--
+--         -- Total width
+--         width = 20,
+--
+--         -- Value of 'winblend' option
+--         winblend = 25,
+--
+--         -- Z-index
+--         zindex = 50,
+--     },
+-- }
+
+---@class MiniModules.Move
 Mods.move = {
     -- Module mappings. Use `''` (empty string) to disable one
     mappings = {
@@ -149,6 +163,7 @@ Mods.move = {
     },
 }
 
+---@class MiniModules.SplitJoin
 Mods.splitjoin = {
     -- Module mappings. Use `''` (empty string) to disable one.
     -- Created for both Normal and Visual modes.
@@ -197,6 +212,7 @@ Mods.splitjoin = {
 }
 
 if not exists('nvim-autopairs') then
+    ---@class MiniModules.Pairs
     Mods.pairs = {
         -- In which modes mappings from this `config` should be created
         modes = {
@@ -277,11 +293,46 @@ if not exists('nvim-autopairs') then
     }
 end
 
+Mods.sessions = {
+    -- Whether to read default session if Neovim opened without file arguments
+    autoread = false,
+
+    -- Whether to write currently read session before leaving it
+    autowrite = true,
+
+    -- Directory where global sessions are stored (use `''` to disable)
+    -- directory = <"session" subdir of user data directory from |stdpath()|>,
+
+    -- File for local session (use `''` to disable)
+    file = '',
+
+    -- Whether to force possibly harmful actions (meaning depends on function)
+    force = { read = false, write = true, delete = false },
+
+    -- Hook functions for actions. Default `nil` means 'do nothing'.
+    -- Takes table with active session data as argument.
+    hooks = {
+        -- Before successful action
+        pre = {
+            read = nil,
+            write = nil,
+            delete = nil,
+        },
+        -- After successful action
+        post = { read = nil, write = nil, delete = nil },
+    },
+
+    -- Whether to print session path after action
+    verbose = { read = true, write = true, delete = true },
+}
+
+---@class MiniModules.Trailspace
 Mods.trailspace = { only_in_normal_buffers = true }
 
 -- WARN: This section creates visual hell if combined with other highlight plugins
 -- (e.g. todo-comments)
 if not exists('todo-comments') then
+    ---@class MiniModules.HiPatterns
     Mods.hipatterns = {
         highlighters = {
             -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
@@ -328,15 +379,20 @@ end
 
 local group = vim.api.nvim_create_augroup('UserMini', { clear = true })
 
-for mod, opts in next, Mods do
+for mod, opts in pairs(Mods) do ---@cast mod string
     src(mod, opts)
+
+    if mod == 'icons' then
+        exists('nvim-web-devicons')
+        _G.MiniIcons.mock_nvim_web_devicons()
+        _G.MiniIcons.tweak_lsp_kind('prepend')
+    end
 
     if mod == 'bufremove' then
         Keys['<leader>bd'] = {
             gen_bdel(false),
             desc('Close Buffer (Mini)'),
         }
-
         Keys['<leader>bD'] = {
             gen_bdel(true),
             desc('Close Buffer Forcefully (Mini)'),
@@ -345,10 +401,8 @@ for mod, opts in next, Mods do
 
     if mod == 'map' then
         local Map = require('mini.map')
-
         Keys['<leader>mm'] = { group = '+Mini Map' }
         Keys['<leader>mmt'] = { group = '+Toggles' }
-
         Keys['<leader>mmt'] = {
             Map.toggle,
             desc('Toggle Mini Map'),
@@ -377,14 +431,13 @@ for mod, opts in next, Mods do
 
     if mod == 'splitjoin' then
         Keys['<leader>ms'] = { group = '+Splitjoin' }
-
         vim.api.nvim_create_autocmd({ 'BufNew', 'BufAdd', 'BufEnter', 'BufCreate', 'WinEnter' }, {
             group = group,
             callback = function(ev)
                 local ft = ft_get(ev.buf)
                 local accepted = { 'lua' }
 
-                if not in_tbl(accepted, ft) then
+                if not vim.list_contains(accepted, ft) then
                     return
                 end
 
@@ -394,7 +447,6 @@ for mod, opts in next, Mods do
                 local pad_bracks = hook.pad_brackets
 
                 local bracks = { brackets = { '%b{}' } }
-
                 local join = {
                     hooks_post = {
                         add_trail_sep(bracks),
@@ -418,7 +470,6 @@ end
 
 if not vim.tbl_isempty(Keys) then
     Keys['<leader>m'] = { group = '+Mini' }
-
     Keymaps({ n = Keys })
 end
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
