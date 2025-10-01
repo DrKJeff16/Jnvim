@@ -167,6 +167,8 @@ function Server.setup()
         severity_sort = false,
     })
 
+    vim.lsp.log.set_level(vim.log.levels.INFO)
+
     for name, client in next, Server.Clients do
         if client then
             local new_client = Server.populate(name, client)

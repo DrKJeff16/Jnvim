@@ -1,42 +1,36 @@
-local User = require('user_api')
-local Check = User.check
+---@module 'lazy'
 
-local exists = Check.exists.module
-if not exists('nvim-web-devicons') then
-    return
-end
-
-local WDI = require('nvim-web-devicons')
-
-WDI.setup({
-    override = {},
-
-    color_icons = true,
-    default_icons = true,
-    strict = true,
-
-    variant = 'dark',
-
-    override_by_filename = {
-        ['.gitignore'] = {
-            icon = '',
-            color = '#f1502f',
-            name = 'Gitignore',
+---@type LazySpec
+return {
+    'nvim-tree/nvim-web-devicons',
+    version = false,
+    cond = not require('user_api.check').in_console(),
+    opts = {
+        color_icons = true,
+        default_icons = true,
+        strict = true,
+        variant = 'dark',
+        override = {},
+        override_by_filename = {
+            ['.gitignore'] = {
+                icon = '',
+                color = '#f1502f',
+                name = 'Gitignore',
+            },
+        },
+        override_by_extension = {},
+        override_by_operating_system = {
+            ['apple'] = {
+                icon = '',
+                color = '#A2AAAD',
+                cterm_color = '248',
+                name = 'Apple',
+            },
         },
     },
-
-    override_by_extension = {},
-
-    override_by_operating_system = {
-        ['apple'] = {
-            icon = '',
-            color = '#A2AAAD',
-            cterm_color = '248',
-            name = 'Apple',
-        },
-    },
-})
-
-WDI.set_up_highlights()
-
+    config = function(_, opts)
+        require('nvim-web-devicons').setup(opts)
+        require('nvim-web-devicons').set_up_highlights()
+    end,
+}
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

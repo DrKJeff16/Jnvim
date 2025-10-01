@@ -9,25 +9,14 @@ return {
         { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter', version = false },
     },
     config = function()
-        local User = require('user_api')
-        local Check = User.check
-        local Util = User.util
-
-        local exists = Check.exists.module
-        local ft_get = Util.ft_get
-        local bt_get = Util.bt_get
-
-        local in_tbl = vim.tbl_contains
-
-        if not exists('nvim-autopairs') then
-            return
-        end
+        local ft_get = require('user_api.util').ft_get
+        local bt_get = require('user_api.util').bt_get
+        local in_list = vim.list_contains
 
         local AP = require('nvim-autopairs')
         local Rule = require('nvim-autopairs.rule')
         local ts_conds = require('nvim-autopairs.ts-conds')
         local cond = require('nvim-autopairs.conds')
-
         local ts_node = ts_conds.is_ts_node
 
         ---Control if auto-pairs should be enabled when attaching to a specific buffer.
@@ -58,38 +47,30 @@ return {
             }
 
             local ft, bt = ft_get(bufnr), bt_get(bufnr)
-
-            return not (in_tbl(EXCEPT_FT, ft) or in_tbl(EXCEPT_BT, bt))
+            return not (in_list(EXCEPT_FT, ft) or in_list(EXCEPT_BT, bt))
         end
 
         AP.setup({
             enabled = enable,
-
             disable_filetype = {
                 'TelescopePrompt',
                 'snacks_picker_input',
                 'spectre_panel',
             },
-
             disable_in_macro = true, -- Disable when recording or executing a macro
             disable_in_visualblock = false, --- Disable when insert after visual block mode
             disable_in_replace_mode = true,
-
             ignored_next_char = [=[[%w%%%'%[%"%.%`%$]]=],
-
             enable_moveright = true,
             enable_afterquote = true, --- Add bracket pairs after quote
             enable_check_bracket_line = false, --- Check bracket in same line
             enable_bracket_in_quote = true, --
             enable_abbr = false, --- Trigger abbreviation
-
             break_undo = true, --- Switch for basic rule break undo sequence
-
             check_ts = true,
             ts_config = {
                 lua = { 'string' },
             },
-
             map_cr = true, --- Map the `<CR>` key
             map_bs = true, --- Map the `<BS>` key
             map_c_h = false, --- Map the `<C-h>` key to delete a pair
@@ -140,8 +121,7 @@ return {
                     function(opts)
                         --- We are checking if we are inserting a space in `()`, `[]`, or `{}`
                         local pair = opts.line:sub(opts.col - 1, opts.col)
-
-                        return in_tbl(joined_bracks, pair)
+                        return in_list(joined_bracks, pair)
                     end
                 )
                 :with_move(cond.none())
@@ -152,7 +132,7 @@ return {
                     function(opts)
                         local col = vim.api.nvim_win_get_cursor(0)[2]
                         local context = opts.line:sub(col - 1, col + 2)
-                        return in_tbl(spaced_bracks, context)
+                        return in_list(spaced_bracks, context)
                     end
                 ),
 
@@ -177,7 +157,6 @@ return {
             Rule("'", "',", 'lua'):with_pair(ts_node({ 'table_constructor' })),
             Rule('"', '",', 'lua'):with_pair(ts_node({ 'table_constructor' })),
         }
-
         for _, bracket in next, bracks do
             table.insert(
                 Rules,
@@ -198,7 +177,6 @@ return {
                     )
             )
         end
-
         for _, punct in next, { ',', ';' } do
             table.insert(
                 Rules,
@@ -218,9 +196,7 @@ return {
                     :use_key(punct)
             )
         end
-
         AP.add_rules(Rules)
     end,
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

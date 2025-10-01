@@ -1,14 +1,6 @@
 ---@module 'lazy'
 
-local User = require('user_api')
-local Check = User.check
-
-local Keymaps = require('user_api.config.keymaps')
-local exists = Check.exists.module
-local executable = Check.exists.executable
-local type_not_empty = Check.value.type_not_empty
-local desc = User.maps.desc
-
+local executable = require('user_api.check.exists').executable
 local in_list = vim.list_contains
 
 ---@type LazySpec
@@ -19,11 +11,12 @@ return {
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
         'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim',
     },
     cond = executable('rg') and not in_console(),
     config = function()
+        local desc = require('user_api.maps').desc
         local TODO = require('todo-comments')
-
         TODO.setup({
             signs = true, -- show icons in the signs column
             sign_priority = 8, -- sign priority
@@ -160,19 +153,13 @@ return {
         ---@param keywords string[]
         ---@return fun()
         local function jump(direction, keywords)
-            if
-                not (type_not_empty('string', direction) or in_list({ 'next', 'prev' }, direction))
-            then
+            if not in_list({ 'next', 'prev' }, direction) then
                 error('(plugin.todo_comments:jump): Invalid direction')
             end
-
-            local direction_map = {
-                next = TODO.jump_next,
-                prev = TODO.jump_prev,
-            }
-
+            local direction_map = { next = TODO.jump_next, prev = TODO.jump_prev }
+            local func = direction_map[direction]
             return function()
-                direction_map[direction]({ keywords = keywords })
+                func({ keywords = keywords })
             end
         end
 
@@ -211,73 +198,57 @@ return {
             TEST = { 'TEST', 'TESTING', 'PASSED', 'FAILED' },
             PERF = { 'PERF', 'OPTIM', 'OPTIMIZED', 'PERFORMANCE' },
         }
-
-        ---@type AllMaps
-        local Keys = {
-            ['<leader>c'] = { group = '+Comments' },
-            ['<leader>cf'] = { group = "+'FIX'" },
-            ['<leader>cw'] = { group = "+'WARNING'" },
-            ['<leader>ct'] = { group = "+'TODO'" },
-            ['<leader>cn'] = { group = "+'NOTE'" },
-
-            -- `TODO`
-            ['<leader>ctn'] = {
-                jump('next', KEYWORDS.TODO),
-                desc("Next 'TODO' Comment"),
+        require('user_api.config').keymaps({
+            n = {
+                ['<leader>c'] = { group = '+Comments' },
+                ['<leader>cf'] = { group = "+'FIX'" },
+                ['<leader>cw'] = { group = "+'WARNING'" },
+                ['<leader>ct'] = { group = "+'TODO'" },
+                ['<leader>cn'] = { group = "+'NOTE'" },
+                ['<leader>ctn'] = { -- `TODO`
+                    jump('next', KEYWORDS.TODO),
+                    desc("Next 'TODO' Comment"),
+                },
+                ['<leader>ctp'] = {
+                    jump('prev', KEYWORDS.TODO),
+                    desc("Previous 'TODO' Comment"),
+                },
+                ['<leader>cfn'] = { -- `FIX`
+                    jump('next', KEYWORDS.FIX),
+                    desc("Next 'FIX' Comment"),
+                },
+                ['<leader>cfp'] = {
+                    jump('prev', KEYWORDS.FIX),
+                    desc("Previous 'FIX' Comment"),
+                },
+                ['<leader>cwn'] = { -- `WARNING`
+                    jump('next', KEYWORDS.WARN),
+                    desc("Next 'WARNING' Comment"),
+                },
+                ['<leader>cwp'] = {
+                    jump('prev', KEYWORDS.WARN),
+                    desc("Previous 'WARNING' Comment"),
+                },
+                ['<leader>cnn'] = { -- `NOTE`
+                    jump('next', KEYWORDS.NOTE),
+                    desc("Next 'NOTE' Comment"),
+                },
+                ['<leader>cnp'] = {
+                    jump('prev', KEYWORDS.NOTE),
+                    desc("Previous 'NOTE' Comment"),
+                },
+                ['<leader>cl'] = {
+                    vim.cmd.TodoLocList,
+                    desc('Open Loclist For TODO Comments'),
+                },
+                ['<leader>cT'] = {
+                    function()
+                        vim.cmd.TodoTelescope(('keywords=TODO,FIX cwd='):format(vim.uv.cwd()))
+                    end,
+                    desc('Open TODO Telescope'),
+                },
             },
-            ['<leader>ctp'] = {
-                jump('prev', KEYWORDS.TODO),
-                desc("Previous 'TODO' Comment"),
-            },
-
-            -- `FIX`
-            ['<leader>cfn'] = {
-                jump('next', KEYWORDS.FIX),
-                desc("Next 'FIX' Comment"),
-            },
-            ['<leader>cfp'] = {
-                jump('prev', KEYWORDS.FIX),
-                desc("Previous 'FIX' Comment"),
-            },
-
-            -- `WARNING`
-            ['<leader>cwn'] = {
-                jump('next', KEYWORDS.WARN),
-                desc("Next 'WARNING' Comment"),
-            },
-            ['<leader>cwp'] = {
-                jump('prev', KEYWORDS.WARN),
-                desc("Previous 'WARNING' Comment"),
-            },
-
-            -- `NOTE`
-            ['<leader>cnn'] = {
-                jump('next', KEYWORDS.NOTE),
-                desc("Next 'NOTE' Comment"),
-            },
-            ['<leader>cnp'] = {
-                jump('prev', KEYWORDS.NOTE),
-                desc("Previous 'NOTE' Comment"),
-            },
-
-            ['<leader>cl'] = {
-                vim.cmd.TodoLocList,
-                desc('Open Loclist For TODO Comments'),
-            },
-        }
-
-        if exists('telescope') then
-            Keys['<leader>cT'] = {
-                function()
-                    local cwd = (vim.uv or vim.loop).cwd()
-                    vim.cmd.TodoTelescope('keywords=TODO,FIX cwd=' .. cwd)
-                end,
-                desc('Open TODO Telescope'),
-            }
-        end
-
-        Keymaps({ n = Keys })
+        })
     end,
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

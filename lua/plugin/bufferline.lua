@@ -1,33 +1,5 @@
 ---@module 'lazy'
 
---@param count integer
---@param lvl 'error'|'warning'
----@param diags? table<string, string>
----@param context? table
----@return string
-local function diagnostics_indicator(_, _, diags, context)
-    if context == nil or not context.buffer:current() then
-        return ''
-    end
-
-    ---@type string
-    local s = ' '
-
-    for e, n in next, diags do
-        local sym = (e == 'error') and ' ' or (e == 'warning' and ' ' or '')
-        s = ('%s%s%s'):format(s, n, sym)
-    end
-
-    return s
-end
-
----@class Bufferline.Buf
----@field name string The basename of the active file
----@field path string The full path of the active file
----@field bufnr integer The number of the active buffer
----@field buffers integer[] The numbers of the buffers in the tab
----@field tabnr integer The "handle" of the tab, can be converted to its ordinal number using: `vim.api.nvim_tabpage_get_number(buf.tabnr)`
-
 ---@type LazySpec
 return {
     'akinsho/bufferline.nvim',
@@ -43,13 +15,7 @@ return {
         _G.__get_selector = function()
             return _G.__cached_neo_tree_selector
         end
-
-        local exists = require('user_api.check.exists').module
-        local BLine = require('bufferline')
-        local Groups = require('bufferline.groups')
-        local SP = BLine.style_preset
-
-        BLine.setup({
+        require('bufferline').setup({
             highlights = {
                 fill = {
                     fg = { attribute = 'fg', highlight = 'Normal' },
@@ -97,44 +63,6 @@ return {
                 },
             },
             options = {
-                -- style_preset = {
-                --     SP.minimal,
-                --     SP.no_bold,
-                --     SP.no_italic,
-                -- },
-
-                themable = true,
-                mode = 'tabs',
-                style_preset = {
-                    SP.no_italic,
-                    SP.default,
-                },
-
-                numbers = 'ordinal',
-                close_command = 'bdelete! %d',
-                right_mouse_command = nil,
-                left_mouse_command = nil,
-
-                indicator = {
-                    icon = '▎',
-                    style = 'none',
-                },
-
-                buffer_close_icon = '󰅖',
-                modified_icon = '●',
-                close_icon = '',
-                left_trunc_marker = '',
-                right_trunc_marker = '',
-
-                max_name_length = 28,
-                max_prefix_length = 16,
-                truncate_names = true,
-                tab_size = 16,
-
-                diagnostics = 'nvim_lsp',
-                diagnostics_update_in_insert = false,
-                diagnostics_update_on_event = false,
-                diagnostics_indicator = diagnostics_indicator,
                 color_icons = true,
                 show_buffer_icons = true,
                 show_buffer_close_icons = false,
@@ -143,42 +71,65 @@ return {
                 duplicates_across_groups = true,
                 persist_buffer_sort = true,
                 move_wraps_at_ends = true,
-
-                get_element_icon = exists('nvim-web-devicons')
-                        and function(element)
-                            local DEVIC = require('nvim-web-devicons')
-                            -- element consists of {filetype: string, path: string, extension: string, directory: string}
-                            -- This can be used to change how bufferline fetches the icon
-                            -- e.g.
-                            -- for an element e.g. a buffer or a tab
-                            local icon, hl = DEVIC.get_icon_by_filetype(element.filetype, {
-                                default = false,
-                            })
-                            return icon, hl
-                        end
-                    or nil,
-
+                themable = true,
+                mode = 'tabs',
+                sort_by = 'tabs',
+                numbers = 'ordinal',
+                close_command = 'bdelete! %d',
+                right_mouse_command = nil,
+                left_mouse_command = nil,
+                buffer_close_icon = '󰅖',
+                modified_icon = '●',
+                close_icon = '',
+                left_trunc_marker = '',
+                right_trunc_marker = '',
+                max_name_length = 28,
+                max_prefix_length = 16,
+                truncate_names = true,
+                tab_size = 16,
                 separator_style = 'padded_slope',
                 enforce_regular_tabs = true,
                 always_show_bufferline = true,
                 auto_toggle_bufferline = false,
-
+                diagnostics = 'nvim_lsp',
+                diagnostics_update_in_insert = false,
+                diagnostics_update_on_event = false,
+                style_preset = {
+                    require('bufferline').style_preset.no_italic,
+                    require('bufferline').style_preset.default,
+                },
+                indicator = { icon = '▎', style = 'none' },
+                ---@param diags table<string, string>
+                ---@param context? table
+                ---@return string
+                diagnostics_indicator = function(_, _, diags, context)
+                    local s = ''
+                    if not (context and context.buffer:current()) then
+                        return s
+                    end
+                    s = ' '
+                    for e, n in pairs(diags) do
+                        local sym = e == 'error' and ' ' or (e == 'warning' and ' ' or '')
+                        s = ('%s%s%s'):format(s, n, sym)
+                    end
+                    return s
+                end,
+                ---@param element { filetype: string, path: string, extension: string, directory: string }
+                ---@return string
+                ---@return string
+                get_element_icon = function(element)
+                    return require('nvim-web-devicons').get_icon_by_filetype(element.filetype, {
+                        default = false,
+                    })
+                end,
                 groups = {
                     options = { toggle_hidden_on_enter = true },
-                    items = { Groups.builtin.pinned:with({ icon = '' }) },
+                    items = { require('bufferline.groups').builtin.pinned:with({ icon = '' }) },
                 },
-
-                hover = {
-                    enabled = false,
-                    delay = 150,
-                    reveal = { 'close' },
-                },
-
-                sort_by = 'tabs',
+                hover = { enabled = false },
                 pick = {
                     alphabet = 'abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ1234567890',
                 },
-
                 offsets = {
                     {
                         filetype = 'NvimTree',

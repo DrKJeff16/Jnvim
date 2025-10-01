@@ -1,13 +1,13 @@
+local MODSTR = 'config.lazy'
 local uv = vim.uv or vim.loop
 local stdpath = vim.fn.stdpath
-local CfgUtil = require('config.util')
 local Keymaps = require('user_api.config.keymaps')
 local Archlinux = require('user_api.distro.archlinux')
 local Termux = require('user_api.distro.termux')
-local in_console = require('user_api.check').in_console
 local desc = require('user_api.maps').desc
 local exists = require('user_api.check.exists').module
-local key_variant = CfgUtil.key_variant
+local key_variant = require('config.util').key_variant
+local luarocks_check = require('config.util').luarocks_check
 
 local LAZY_DATA = stdpath('data') .. '/lazy'
 local LAZY_STATE = stdpath('state') .. '/lazy'
@@ -18,7 +18,7 @@ if not uv.fs_stat(LAZYPATH) then
     local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', lazyrepo, LAZYPATH })
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
-            { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
+            { ('(%s): Failed to clone lazy.nvim:\n'):format(MODSTR), 'ErrorMsg' },
             { out, 'WarningMsg' },
             { '\nPress any key to exit...' },
         }, true, {})
@@ -33,30 +33,33 @@ local Lazy = require('lazy')
 Lazy.setup({
     spec = {
         { import = 'plugin._spec.colorschemes' },
-        {
-            'nvim-tree/nvim-web-devicons',
-            version = false,
-            config = CfgUtil.require('plugin.web_devicons'),
-            cond = not in_console(),
-        },
-        { 'nvim-mini/mini.icons', version = false },
+        { import = 'plugin.startuptime' },
+        { import = 'plugin.web_devicons' },
+        { import = 'plugin.mini.icons' },
+        { import = 'plugin.lspkind' },
         { import = 'plugin.which_key' },
         { import = 'plugin.blink_cmp' },
         { import = 'plugin.project' },
         { import = 'plugin._spec' },
-        { import = 'plugin.startuptime' },
+        { import = 'plugin.fzf_lua' },
+        { import = 'plugin.ibl' },
         { import = 'plugin.Comment' },
         { import = 'plugin.autopairs' },
-        { import = 'plugin.fzf_lua' },
+        { import = 'plugin.scope' },
+        { import = 'plugin.persistence' },
+        { import = 'plugin.noice' },
         { import = 'plugin.pomo' },
         { import = 'plugin.refactoring' },
         { import = 'plugin.checkmate' },
+        { import = 'plugin.ts-comments' },
+        { import = 'plugin.neo_tree' },
         { import = 'plugin.snacks' },
         { import = 'plugin.git.gitsigns' },
         { import = 'plugin.fyler' },
         { import = 'plugin.hoversplit' },
         { import = 'plugin.buffer-sticks' },
-        { import = 'plugin.persistence' },
+        { import = 'plugin.lualine' },
+        { import = 'plugin.bufferline' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },
@@ -80,7 +83,7 @@ Lazy.setup({
         },
     },
     rocks = {
-        enabled = CfgUtil.luarocks_check(),
+        enabled = luarocks_check(),
         root = stdpath('data') .. '/lazy-rocks',
         server = 'https://nvim-neorocks.github.io/rocks-binaries/',
     },
@@ -88,8 +91,7 @@ Lazy.setup({
         enabled = true,
         cache = LAZY_STATE .. '/pkg-cache.lua',
         versions = true,
-        sources = CfgUtil.luarocks_check() and { 'lazy', 'packspec' }
-            or { 'lazy', 'packspec', 'rockspec' },
+        sources = luarocks_check() and { 'lazy', 'packspec' } or { 'lazy', 'packspec', 'rockspec' },
     },
     checker = {
         enabled = not Termux.validate(),
@@ -98,7 +100,7 @@ Lazy.setup({
         check_pinned = false,
     },
     ui = {
-        backdrop = not in_console() and 60 or 100,
+        backdrop = not require('user_api.check').in_console() and 60 or 100,
         border = 'double',
         title = 'L        A        Z        Y',
         title_pos = 'center',
@@ -203,5 +205,4 @@ function M.alpha()
 end
 
 return M
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

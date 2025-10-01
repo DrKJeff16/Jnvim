@@ -1,17 +1,5 @@
 ---@module 'lazy'
 
----Function to call before (un)comment.
----
----It is called with a `ctx` argument of type
----[`comment.utils.CommentCtx`](lua://CommentCtx).
----
----(default: `nil`)
---- ---
----@return string
-local function pre_hook(_)
-    return vim.bo.commentstring
-end
-
 local function post_hook(_)
     local bufnr = vim.api.nvim_get_current_buf()
     local win = vim.api.nvim_get_current_win()
@@ -30,61 +18,19 @@ return {
         'nvim-treesitter/nvim-treesitter',
         'JoosepAlviste/nvim-ts-context-commentstring',
     },
-    config = function()
-        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
-
-        ---@diagnostic disable-next-line:missing-fields
-        require('Comment').setup({
-            pre_hook = pre_hook,
-            post_hook = post_hook,
-
-            -- Add a space b/w comment and the line
-            padding = true,
-
-            -- Whether the cursor should stay at its position
-            sticky = true,
-
-            -- LHS of toggle mappings in NORMAL mode
-            toggler = {
-                -- Line-comment toggle keymap
-                line = 'gcc',
-
-                -- Block-comment toggle keymap
-                block = 'gbc',
-            },
-
-            -- LHS of operator-pending mappings in NORMAL and VISUAL mode
-            opleader = {
-                -- Line-comment keymap
-                line = 'gc',
-
-                -- Block-comment keymap
-                block = 'gb',
-            },
-
-            -- LHS of extra mappings
-            extra = {
-                -- Add comment on the line above
-                above = 'gcO',
-
-                -- Add comment on the line below
-                below = 'gco',
-
-                -- Add comment at the end of line
-                eol = 'gcA',
-            },
-
-            ---Enable keybindings
-            ---NOTE: If given `false` then the plugin won't create any mappings
-            mappings = {
-                -- Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
-                basic = true,
-
-                -- Extra mapping; `gco`, `gcO`, `gcA`
-                extra = true,
-            },
-        })
+    opts = { ---@type CommentConfig
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+        post_hook = post_hook,
+        ignore = 'nil',
+        padding = true,
+        sticky = true,
+        toggler = { line = 'gcc', block = 'gbc' },
+        opleader = { line = 'gc', block = 'gb' },
+        extra = { above = 'gcO', below = 'gco', eol = 'gcA' },
+        mappings = { basic = true, extra = true },
+    },
+    config = function(_, opts) ---@param opts CommentConfig
+        require('Comment').setup(opts)
     end,
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

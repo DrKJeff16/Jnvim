@@ -1,22 +1,15 @@
-local User = require('user_api')
-local Check = User.check
+---@module 'lazy'
 
-local exists = Check.exists.module
-local is_tbl = Check.value.is_tbl
-local empty = Check.value.empty
-local vim_has = Check.exists.vim_has
-local type_not_empty = Check.value.type_not_empty
-local hi = User.highlight.hl_from_dict
-
-if not exists('ibl') then
-    return
+---@param htype string
+---@param func fun(...: any): any
+---@param opts? ibl.hooks.options
+local function reg(htype, func, opts)
+    if not opts or require('user_api.check.value').empty(opts) then
+        require('ibl.hooks').register(htype, func)
+        return
+    end
+    require('ibl.hooks').register(htype, func, opts)
 end
-
-local Ibl = require('ibl')
-local Hooks = require('ibl.hooks')
-local HType = Hooks.type
-local Builtin = Hooks.builtin
-local register = Hooks.register
 
 ---@type HlDict
 local Hilite = {
@@ -28,120 +21,97 @@ local Hilite = {
     RainbowViolet = { fg = '#C678DD' },
     RainbowCyan = { fg = '#56B6C2' },
 }
+local highlight = vim.tbl_keys(Hilite) ---@type string[]
 
----@type string[]
-local highlight = {
-    'RainbowRed',
-    'RainbowYellow',
-    'RainbowBlue',
-    'RainbowOrange',
-    'RainbowGreen',
-    'RainbowViolet',
-    'RainbowCyan',
-}
-
----@return boolean
-local function breakindent_check()
-    return vim_has('nvim-0.10') and vim.o.breakindent and vim.o.breakindentopt ~= ''
-end
-
-if type_not_empty('table', vim.g.rainbow_delimiters) then
-    vim.g.rainbow_delimiters =
-        vim.tbl_deep_extend('force', vim.g.rainbow_delimiters, { highlight = highlight })
-end
-
----@param htype string
----@param func fun(...: any): any
----@param opts? ibl.hooks.options
-local function reg(htype, func, opts)
-    opts = is_tbl(opts) and opts or {}
-
-    if empty(opts) then
-        register(htype, func)
-    else
-        register(htype, func, opts)
-    end
-end
-
-reg(HType.HIGHLIGHT_SETUP, function()
-    hi(Hilite)
-end)
-
-Ibl.setup({
-    enabled = true,
-    debounce = 200,
-    indent = {
-        highlight = highlight,
-
-        -- char = '•',
-        char = {
-            '╎',
-            '╏',
-            '┆',
-            '┇',
-            '┊',
-            '┋',
+---@type LazySpec
+return {
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    version = false,
+    dependencies = {
+        {
+            'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
+            version = false,
+            config = require('config.util').require('plugin.rainbow_delimiters'),
+        },
+    },
+    opts = {
+        enabled = true,
+        debounce = 200,
+        indent = {
+            highlight = highlight,
+            repeat_linebreak = (
+                vim.fn.has('nvim-0.10') == 1
+                and vim.o.breakindent
+                and vim.o.breakindentopt ~= ''
+            ),
+            smart_indent_cap = false,
+            char = {
+                '╎',
+                '╏',
+                '┆',
+                '┇',
+                '┊',
+                '┋',
+            },
+            tab_char = {
+                '▏',
+                '▎',
+                '▍',
+                '▌',
+                '▋',
+                '▊',
+                '▉',
+                '█',
+            },
+        },
+        whitespace = {
+            highlight = { 'Whitespace', 'NonText' },
+            remove_blankline_trail = false,
         },
 
-        tab_char = {
-            '▏',
-            '▎',
-            '▍',
-            '▌',
-            '▋',
-            '▊',
-            '▉',
-            '█',
-        },
-
-        repeat_linebreak = breakindent_check(),
-        smart_indent_cap = false,
+        scope = { highlight = highlight },
     },
+    config = function(_, cfg_opts)
+        reg(require('ibl.hooks').type.HIGHLIGHT_SETUP, function()
+            require('user_api.highlight').hl_from_dict(Hilite)
+        end)
+        require('ibl').setup(cfg_opts)
 
-    whitespace = {
-        highlight = { 'Whitespace', 'NonText' },
-        remove_blankline_trail = false,
-    },
+        ---@type { [1]: string, [2]: (fun(...: any): any), [3]?: ibl.hooks.options }[]
+        local arg_tbl = {
+            {
+                require('ibl.hooks').type.ACTIVE,
+                ---@param bufnr integer
+                ---@return boolean
+                function(bufnr)
+                    return vim.api.nvim_buf_line_count(bufnr) < 5000
+                end,
+            },
+            {
+                require('ibl.hooks').type.SCOPE_HIGHLIGHT,
+                require('ibl.hooks').builtin.scope_highlight_from_extmark,
+            },
+            {
+                require('ibl.hooks').type.SKIP_LINE,
+                require('ibl.hooks').builtin.skip_preproc_lines,
+                { bufnr = 0 },
+            },
+        }
 
-    scope = { highlight = highlight },
-})
+        for _, t in next, arg_tbl do
+            local htype, func, opts = t[1], t[2], t[3] or nil
+            if opts then
+                reg(htype, func, opts)
+            else
+                reg(htype, func)
+            end
+        end
 
----@type { [1]: string, [2]: (fun(...: any): any), [3]: ibl.hooks.options? }[]
-local arg_tbl = {
-    {
-        HType.ACTIVE,
-
-        ---@param bufnr integer
-        ---@return boolean
-        function(bufnr)
-            return vim.api.nvim_buf_line_count(bufnr) < 5000
-        end,
-    },
-    {
-        HType.SCOPE_HIGHLIGHT,
-        Builtin.scope_highlight_from_extmark,
-    },
-    {
-        HType.SKIP_LINE,
-        Builtin.skip_preproc_lines,
-        { bufnr = 0 },
-    },
-    -- {
-    --     HType.WHITESPACE,
-    --     Builtin.hide_first_space_indent_level,
-    -- },
-    -- {
-    --     HType.WHITESPACE,
-    --     Builtin.hide_first_tab_indent_level,
-    -- },
+        if require('user_api.check.value').type_not_empty('table', vim.g.rainbow_delimiters) then
+            vim.g.rainbow_delimiters =
+                vim.tbl_deep_extend('force', vim.g.rainbow_delimiters, { highlight = highlight })
+        end
+    end,
 }
-
-for _, t in next, arg_tbl do
-    if t[3] ~= nil then
-        reg(t[1], t[2], t[3])
-    else
-        reg(t[1], t[2])
-    end
-end
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

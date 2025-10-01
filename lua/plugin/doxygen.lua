@@ -6,7 +6,7 @@ return {
     ft = { 'c', 'cpp' },
     version = false,
     init = require('config.util').flag_installed('doxygen_toolkit'),
-    cond = require('user_api.check.exists').executable('doxygen'),
+    enabled = require('user_api.check.exists').executable('doxygen'),
     config = function()
         local g_vars = {
             authorName = 'Guennadi "DrKJeff16" Maximov C.',
@@ -19,7 +19,7 @@ return {
         }
 
         for k, v in next, g_vars do
-            vim.g['DoxygenToolkit_' .. k] = v
+            vim.g[('DoxygenToolkit_%s'):format(k)] = v
         end
     end,
 }

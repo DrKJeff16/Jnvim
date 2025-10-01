@@ -7,48 +7,41 @@ return {
     priority = 1000,
     version = false,
     init = require('config.util').flag_installed('startuptime'),
-    config = function()
-        local User = require('user_api')
-
-        local desc = User.maps.desc
-        local hi = User.highlight.hl
-        local Keymaps = require('user_api.config.keymaps')
-
-        local Flags = {
-            colorize = true,
-            event_width = 0,
-            fine_blocks = not is_windows,
-            more_info_key_seq = 'K',
-            other_events = true,
-            plot_width = 30,
-            sort = true,
-            sourced = true,
-            sourcing_events = true,
-            split_edit_key_seq = 'gf',
-            startup_indent = 8,
-            time_width = 8,
-            tries = 10,
-            use_blocks = vim.o.encoding == 'utf-8',
-            zero_progress_msg = true,
-            zero_progress_time = 2500,
-        }
-
-        for flag, val in next, Flags do
-            vim.g['startuptime_' .. flag] = val
+    ---@type table<string, any>
+    opts = {
+        colorize = true,
+        event_width = 0,
+        fine_blocks = not is_windows,
+        more_info_key_seq = 'K',
+        other_events = true,
+        plot_width = 30,
+        sort = true,
+        sourced = true,
+        sourcing_events = true,
+        split_edit_key_seq = 'gf',
+        startup_indent = 8,
+        time_width = 8,
+        tries = 10,
+        use_blocks = vim.o.encoding == 'utf-8',
+        zero_progress_msg = true,
+        zero_progress_time = 2500,
+    },
+    config = function(_, opts) ---@param opts table<string, any>
+        for flag, val in pairs(opts) do
+            vim.g[('startuptime_%s'):format(flag)] = val
         end
-
-        ---@type AllMaps
-        local Keys = {
-            ['<leader>vS'] = {
-                vim.cmd.StartupTime,
-                desc('Run StartupTime'),
+        local desc = require('user_api.maps').desc
+        require('user_api.config').keymaps({
+            n = {
+                ['<leader>vS'] = {
+                    vim.cmd.StartupTime,
+                    desc('Run StartupTime'),
+                },
             },
-        }
-
-        Keymaps({ n = Keys })
-
-        hi('StartupTimeSourcingEvent', { link = 'Title' })
+        })
+        require('user_api.highlight').hl_from_dict({
+            ['StartupTimeSourcingEvent'] = { link = 'Title' },
+        })
     end,
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

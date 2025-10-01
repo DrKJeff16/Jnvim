@@ -8,7 +8,6 @@ local in_console = Check.in_console
 
 ---@type LazySpec[]
 local UI = {
-    { import = 'plugin.noice' },
     -- Start Greeter
     {
         'goolord/alpha-nvim',
@@ -21,40 +20,6 @@ local UI = {
         },
         config = CfgUtil.require('plugin.alpha'),
     },
-
-    -- Statusline
-    { import = 'plugin.lualine' },
-
-    -- Tabline
-    { import = 'plugin.bufferline' },
-
-    -- Indent Scope
-    {
-        'lukas-reineke/indent-blankline.nvim',
-        main = 'ibl',
-        version = false,
-        dependencies = {
-            {
-                'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
-                version = false,
-                config = CfgUtil.require('plugin.rainbow_delimiters'),
-            },
-        },
-        config = CfgUtil.require('plugin.ibl'),
-        -- cond = not in_console(),
-    },
-
-    -- -- File Tree
-    -- {
-    --     'nvim-tree/nvim-tree.lua',
-    --     main = 'nvim-tree',
-    --     event = 'VeryLazy',
-    --     version = false,
-    --     dependencies = { 'nvim-web-devicons' },
-    --     config = CfgUtil.require('plugin.nvim_tree'),
-    -- },
-    { import = 'plugin.neo_tree' },
-
     {
         'akinsho/toggleterm.nvim',
         event = 'VeryLazy',

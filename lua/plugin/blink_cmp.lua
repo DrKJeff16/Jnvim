@@ -386,11 +386,7 @@ return {
                 ft_extend('typescript', { 'tsdoc' })
             end,
         },
-        {
-            'onsails/lspkind.nvim',
-            version = false,
-            config = require('config.util').require('plugin.lspkind'),
-        },
+        'onsails/lspkind.nvim',
         'folke/lazydev.nvim',
         'jdrupal-dev/css-vars.nvim',
         'Kaiser-Yang/blink-cmp-git',

@@ -1,21 +1,20 @@
-local Check = require('user_api.check')
-local Keymaps = require('user_api.config.keymaps')
-local exists = Check.exists.module
-local is_bool = Check.value.is_bool
-local type_not_empty = Check.value.type_not_empty
-local desc = require('user_api.maps').desc
-local ft_get = require('user_api.util').ft_get
-
+local MODSTR = 'plugin.mini'
 local ERROR = vim.log.levels.ERROR
 local WARN = vim.log.levels.WARN
 
+local Keymaps = require('user_api.config.keymaps')
+local exists = require('user_api.check.exists').module
+local is_bool = require('user_api.check.value').is_bool
+local type_not_empty = require('user_api.check.value').type_not_empty
+local desc = require('user_api.maps').desc
+local ft_get = require('user_api.util').ft_get
 local curr_buf = vim.api.nvim_get_current_buf
 
 ---@param mini_mod string
 ---@param opts table|nil
 local function src(mini_mod, opts)
     if not type_not_empty('string', mini_mod) then
-        vim.notify('(mini src()): Invalid or empty Mini module', ERROR)
+        vim.notify(('(%s.src): Invalid or empty Mini module!'):format(MODSTR), ERROR)
         return
     end
 
@@ -23,13 +22,16 @@ local function src(mini_mod, opts)
     local og_mini_mod = mini_mod
     mini_mod = mini_mod:sub(1, 5) ~= 'mini.' and ('mini.%s'):format(mini_mod) or mini_mod
     if not exists(mini_mod) then
-        vim.notify(('(mini src()): Unable to import `%s`'):format(og_mini_mod), ERROR)
+        vim.notify(('(%s.src): Unable to import `%s`!'):format(MODSTR, og_mini_mod), ERROR)
         return
     end
 
     local M = require(mini_mod)
     if not (M.setup and vim.is_callable(M.setup)) then
-        vim.notify(('(mini src()): `setup()` not found for module `%s`'):format(mini_mod), WARN)
+        vim.notify(
+            ('(%s.src): `setup()` not found for module `%s`!'):format(MODSTR, mini_mod),
+            WARN
+        )
         return
     end
 
@@ -75,23 +77,6 @@ Mods.basics = {
 
 ---@class MiniModules.Extra
 Mods.extra = {}
-
----@class MiniModules.Icons
-Mods.icons = {
-    style = 'glyph',
-    default = {
-        -- Override default glyph for "file" category (reuse highlight group)
-        file = { glyph = '󰈤' },
-    },
-    extension = {
-        -- Override highlight group (not necessary from 'mini.icons')
-        lua = { hl = 'Special' },
-
-        -- Add icons for custom extension. This will also be used in
-        -- 'file' category for input like 'file.my.ext'.
-        -- ['my.ext'] = { glyph = '󰻲', hl = 'MiniIconsRed' },
-    },
-}
 
 -- ---@class MiniModules.Map
 -- Mods.map = {
@@ -381,12 +366,6 @@ local group = vim.api.nvim_create_augroup('UserMini', { clear = true })
 
 for mod, opts in pairs(Mods) do ---@cast mod string
     src(mod, opts)
-
-    if mod == 'icons' then
-        exists('nvim-web-devicons')
-        _G.MiniIcons.mock_nvim_web_devicons()
-        _G.MiniIcons.tweak_lsp_kind('prepend')
-    end
 
     if mod == 'bufremove' then
         Keys['<leader>bd'] = {

@@ -482,7 +482,7 @@ local known_exts = {
         end,
     },
 
-    project = {
+    ['telescope._extensions.projects'] = {
         'projects',
 
         ---@return table|AllMaps

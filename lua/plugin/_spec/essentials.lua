@@ -15,15 +15,6 @@ local Essentials = {
         config = CfgUtil.require('plugin.mini'),
     },
     {
-        'tiagovla/scope.nvim',
-        version = false,
-        init = function()
-            -- NOTE: Required for `scope`
-            vim.o.sessionoptions = 'buffers,tabpages,globals'
-        end,
-        config = CfgUtil.require('plugin.scope'),
-    },
-    {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,

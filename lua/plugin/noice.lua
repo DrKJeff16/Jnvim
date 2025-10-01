@@ -1,9 +1,8 @@
 ---@diagnostic disable:missing-fields
 ---@module 'lazy'
 
-local in_console = require('user_api.check').in_console
-
-return { ---@type LazySpec
+---@type LazySpec
+return {
     'cameronr/noice.nvim',
     event = 'VeryLazy',
     version = false,
@@ -12,7 +11,7 @@ return { ---@type LazySpec
         'rcarriga/nvim-notify',
         'echasnovski/mini.nvim',
     },
-    cond = not in_console(),
+    enabled = not require('user_api.check').in_console(),
     config = function()
         require('noice').setup({
             throttle = 1000 / 30,
