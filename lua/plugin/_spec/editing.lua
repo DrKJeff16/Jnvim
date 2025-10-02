@@ -1,18 +1,9 @@
 ---@module 'lazy'
 
 local CfgUtil = require('config.util')
-local Check = require('user_api.check')
-
-local in_console = Check.in_console
 
 ---@type LazySpec[]
 local Editing = {
-    {
-        'folke/twilight.nvim',
-        version = false,
-        config = CfgUtil.require('plugin.twilight'),
-        cond = not in_console(),
-    },
     {
         'julienvincent/nvim-paredit',
         version = false,

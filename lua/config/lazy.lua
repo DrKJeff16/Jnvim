@@ -63,6 +63,7 @@ Lazy.setup({
         { import = 'plugin.zen-mode' },
         { import = 'plugin.todo_comments' },
         { import = 'plugin.a_vim' },
+        { import = 'plugin.twilight' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },
