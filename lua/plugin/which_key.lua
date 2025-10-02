@@ -1,30 +1,30 @@
 ---@module 'lazy'
 
-local in_list = vim.list_contains
-
 ---@type LazySpec
 return {
     'folke/which-key.nvim',
     lazy = false,
     priority = 1000,
     version = false,
+    enabled = require('user_api.check.exists').vim_has('nvim-0.10'),
     init = function()
         vim.o.timeout = true
         vim.o.timeoutlen = 500
     end,
     opts = {
-        ---@type false|'classic'|'modern'|'helix'
-        preset = 'helix',
-
-        ---Delay before showing the popup. Can be a number or a function that returns a number.
         ---@type integer|fun(ctx: { keys: string, mode: string, plugin?: string }): integer
         delay = function(ctx)
             return ctx.plugin and 0 or 50
         end,
-
-        ---You can add any mappings here, or use `require('which-key').add()` later
-        ---@type wk.Spec
-        spec = {
+        preset = 'helix', ---@type false|'classic'|'modern'|'helix'
+        notify = true,
+        keys = { scroll_down = '<C-d>', scroll_up = '<C-u>' },
+        show_help = true,
+        show_keys = true,
+        debug = false,
+        disable = { ft = {}, bt = {} },
+        -- expand = 0,
+        spec = { ---@type wk.Spec
             {
                 '<leader>?',
                 function()
@@ -33,12 +33,7 @@ return {
                 desc = 'Buffer Local Keymaps (which_key)',
             },
         },
-
-        ---Start hidden and wait for a key to be pressed before showing the popup
-        ---Only used by enabled xo mapping modes.
-        ---@param ctx { mode: string, operator: string }
-        ---@return boolean
-        defer = function(ctx)
+        defer = function(ctx) ---@param ctx { mode: string, operator: string }
             local deferred_ops = {
                 'o',
                 'v',
@@ -46,72 +41,41 @@ return {
                 '<C-v>',
                 '<C-V>',
             }
-            return not in_list(deferred_ops, ctx.operator)
+            return not vim.list_contains(deferred_ops, ctx.operator)
         end,
-
-        ---@param mapping wk.Mapping
-        ---@return boolean
-        filter = function(mapping)
-            -- example to exclude mappings without a description
-            return mapping.desc and mapping.desc ~= ''
+        filter = function(mapping) ---@param mapping wk.Mapping
+            return (mapping.desc and mapping.desc ~= '')
         end,
-
-        -- show a warning when issues were detected with your mappings
-        notify = true,
-
-        -- Enable/disable WhichKey for certain mapping modes
         plugins = {
-            marks = true, -- shows a list of your marks on ' and `
-            registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
-            -- the presets plugin, adds help for a bunch of default keybindings in Neovim
-            -- No actual key bindings are created
+            marks = true,
+            registers = true,
             spelling = { enabled = false },
             presets = {
-                operators = true, -- adds help for operators like d, y, ...
-                motions = true, -- adds help for motions
-                text_objects = true, -- help for text objects triggered after entering an operator
-                windows = true, -- default bindings on <c-w>
-                nav = true, -- misc bindings to work with windows
-                z = true, -- bindings for folds, spelling and others prefixed with z
-                g = true, -- bindings for prefixed with g
+                operators = true,
+                motions = true,
+                text_objects = true,
+                windows = true,
+                nav = true,
+                z = true,
+                g = true,
             },
         },
-
-        ---@type wk.Win
         ---@diagnostic disable-next-line:missing-fields
-        win = {
+        win = { ---@type wk.Win
             no_overlap = true,
             border = 'single',
             padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
             title = true,
             title_pos = 'center',
             zindex = 1000,
-            -- Additional vim.wo and vim.bo options
-            bo = {
-                modifiable = false,
-            },
-            wo = {
-                winblend = require('user_api.check').in_console() and 0 or 45, -- value between 0-100 0 for fully opaque and 100 for fully transparent
-            },
+            bo = { modifiable = false },
+            wo = { winblend = require('user_api.check').in_console() and 0 or 45 },
         },
-
         layout = {
-            width = {
-                min = 20,
-                max = (function()
-                    local cols = vim.api.nvim_get_option_value('columns', { scope = 'local' })
-                    return math.floor(cols * 3 / 4)
-                end)(),
-            }, -- min and max width of the columns
-            spacing = 1, -- spacing between columns
-            align = 'center', -- align columns left, center or right
+            width = { min = 20, max = math.floor(vim.o.columns * 3 / 4) },
+            spacing = 1,
+            align = 'center',
         },
-
-        keys = {
-            scroll_down = '<c-d>', -- binding to scroll down inside the popup
-            scroll_up = '<c-u>', -- binding to scroll up inside the popup
-        },
-
         --- Mappings are sorted using configured sorters and natural sort of the keys
         --- Available sorters:
         --- * local: buffer-local mappings first
@@ -123,15 +87,10 @@ return {
         --- * case: lower-case first
         ---@type (string|wk.Sorter)[]
         sort = { 'alphanum', 'case', 'mod', 'group', 'order', 'local' },
-
-        -- expand = 0, -- expand groups when <= n mappings
-
         expand = function(node)
-            return not node.desc -- expand all nodes without a description
+            return not node.desc
         end,
-
-        ---@type table<string, ({ [1]: string, [2]: string }|fun(str: string): string)[]>
-        replace = {
+        replace = { ---@type table<string, ({ [1]: string, [2]: string }|fun(str: string): string)[]>
             key = {
                 function(key)
                     return require('which-key.view').format(key)
@@ -149,27 +108,17 @@ return {
                 { '^:%s*', '' },
             },
         },
-
         icons = {
-            breadcrumb = '»', -- symbol used in the command line area that shows your active key combo
-            separator = '➜', -- symbol used between a key and it's label
-            group = '+', -- symbol prepended to a group
+            breadcrumb = '»',
+            separator = '➜',
+            group = '+',
             ellipsis = '…',
             mappings = true,
-
-            --- See `lua/which-key/icons.lua` for more details
-            --- Set to `false` to disable keymap icons
-            ---@type wk.IconRule[]|false
-            rules = {
+            colors = true,
+            rules = { ---@type wk.IconRule[]|false
                 { pattern = 'toggleterm', icon = ' ', color = 'cyan' },
                 { pattern = 'lsp', icon = ' ', color = 'purple' },
             },
-
-            -- use the highlights from mini.icons
-            -- When `false`, it will use `WhichKeyIcon` instead
-            colors = true,
-
-            -- used by key format
             keys = {
                 Up = '',
                 Down = '',
@@ -205,33 +154,12 @@ return {
                 F12 = '󱊶',
             },
         },
-
-        show_help = true, -- show a help message in the command line for using WhichKey
-        show_keys = true, -- show the currently pressed key and its label as a message in the command line
-
-        -- Which-key automatically sets up triggers for your mappings.
-        -- But you can disable this and setup the triggers yourself.
-        -- Be aware, that triggers are not needed for visual and operator pending mode.
-        ---@type wk.Spec
-        triggers = {
+        triggers = { ---@type wk.Spec
             { '<auto>', mode = 'nxso' },
             { '<leader>', mode = { 'n', 'v' } },
             { 'a', mode = { 'n', 'v' } },
         },
-
-        disable = {
-            -- disable WhichKey for certain buf types and file types.
-            ft = {},
-            bt = {},
-
-            -- -- disable a trigger for a certain context by returning true
-            -- ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-            -- trigger = function(ctx) return false end,
-        },
-
-        debug = false,
     },
-    cond = require('user_api.check.exists').vim_has('nvim-0.10'),
 }
 
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

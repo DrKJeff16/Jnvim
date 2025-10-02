@@ -4,7 +4,7 @@
 return {
     'nvim-tree/nvim-web-devicons',
     version = false,
-    cond = not require('user_api.check').in_console(),
+    enabled = not require('user_api.check').in_console(),
     opts = {
         color_icons = true,
         default_icons = true,
