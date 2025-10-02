@@ -15,15 +15,11 @@ local CC = {}
 local function create_cc()
     local Actions = require('telescope._extensions.conventional_commits.actions')
     local Themes = require('telescope.themes')
-
     local picker = require('telescope._extensions.conventional_commits.picker')
-
-    -- if you use the picker directly you have to provide your theme manually
     local Opts = {
         action = Actions.prompt,
         include_body_and_footer = true,
     }
-
     picker(vim.tbl_extend('keep', Opts, Themes.get_dropdown({})))
 end
 
@@ -43,17 +39,15 @@ CC.cc = {
 }
 
 function CC.loadkeys()
-    ---@type AllMaps
-    local Keys = {
-        ['<leader>Gc'] = { group = '+Commit' },
-
-        ['<leader>GcC'] = {
-            create_cc,
-            desc('Create Conventional Commit'),
+    Keymaps({
+        n = {
+            ['<leader>Gc'] = { group = '+Commit' },
+            ['<leader>GcC'] = {
+                create_cc,
+                desc('Create Conventional Commit'),
+            },
         },
-    }
-
-    Keymaps({ n = Keys })
+    })
 end
 
 return CC

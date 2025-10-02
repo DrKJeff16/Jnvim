@@ -4,7 +4,7 @@ local Check = User.check
 local exists = Check.exists.module
 local executable = Check.exists.executable
 
-if not exists('telescope') or not exists('telescope._extensions.file_browser') then
+if not exists('telescope._extensions.file_browser') then
     return nil
 end
 
@@ -37,62 +37,58 @@ FileBrowser.file_browser = {
     dir_icon_hl = 'Default',
     no_ignore = false,
     theme = 'ivy',
-    hijack_netrw = not exists('nvim-tree'),
+    hijack_netrw = false,
     mappings = {
         ['i'] = {
             ['<A-c>'] = Actions.create,
-            ['<S-CR>'] = Actions.create_from_prompt,
-            ['<A-r>'] = Actions.rename,
-            ['<A-m>'] = Actions.move,
-            ['<A-y>'] = Actions.copy,
             ['<A-d>'] = Actions.remove,
-            ['<C-o>'] = Actions.open,
-            ['<C-g>'] = Actions.goto_parent_dir,
-            ['<C-e>'] = Actions.goto_home_dir,
-            ['<C-w>'] = Actions.goto_cwd,
+            ['<A-m>'] = Actions.move,
+            ['<A-r>'] = Actions.rename,
             ['<A-t>'] = Actions.change_cwd,
+            ['<A-y>'] = Actions.copy,
+            ['<BS>'] = Actions.backspace,
+            ['<C-e>'] = Actions.goto_home_dir,
             ['<C-f>'] = Actions.toggle_browser,
+            ['<C-g>'] = Actions.goto_parent_dir,
             ['<C-h>'] = Actions.toggle_hidden,
+            ['<C-o>'] = Actions.open,
             ['<C-s>'] = Actions.toggle_all,
-            ['<bs>'] = Actions.backspace,
+            ['<C-w>'] = Actions.goto_cwd,
+            ['<S-CR>'] = Actions.create_from_prompt,
         },
         ['n'] = {
-            ['c'] = Actions.create,
-            ['r'] = Actions.rename,
-            ['m'] = Actions.move,
-            ['y'] = Actions.copy,
-            ['d'] = Actions.remove,
-            ['o'] = Actions.open,
-            ['g'] = Actions.goto_parent_dir,
-            ['e'] = Actions.goto_home_dir,
-            ['w'] = Actions.goto_cwd,
-            ['t'] = Actions.change_cwd,
-            ['f'] = Actions.toggle_browser,
-            ['h'] = Actions.toggle_hidden,
-            ['s'] = Actions.toggle_all,
+            c = Actions.create,
+            d = Actions.remove,
+            e = Actions.goto_home_dir,
+            f = Actions.toggle_browser,
+            g = Actions.goto_parent_dir,
+            h = Actions.toggle_hidden,
+            m = Actions.move,
+            o = Actions.open,
+            r = Actions.rename,
+            s = Actions.toggle_all,
+            t = Actions.change_cwd,
+            w = Actions.goto_cwd,
+            y = Actions.copy,
         },
     },
 }
 
 function FileBrowser.loadkeys()
-    local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps').desc
-
-    ---@type AllMaps
-    local Keys = {
-        ['<leader>fTeb'] = {
-            require('telescope').extensions.file_browser.file_browser,
-            desc('File Browser'),
+    require('user_api.config').keymaps({
+        n = {
+            ['<leader>fTeb'] = {
+                require('telescope').extensions.file_browser.file_browser,
+                desc('File Browser'),
+            },
+            ['<leader>ff'] = {
+                require('telescope').extensions.file_browser.file_browser,
+                desc('Telescope File Browser'),
+            },
         },
-        ['<leader>ff'] = {
-            require('telescope').extensions.file_browser.file_browser,
-            desc('Telescope File Browser'),
-        },
-    }
-
-    Keymaps({ n = Keys })
+    })
 end
 
 return FileBrowser
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

@@ -1,8 +1,4 @@
-local User = require('user_api')
-local Check = User.check
-
-local exists = Check.exists.module
-
+local exists = require('user_api.check.exists').module
 if not (exists('telescope') and exists('telescope-tabs')) then
     return nil
 end
@@ -14,9 +10,7 @@ local TelescopeTabs = {}
 
 function TelescopeTabs.create()
     require('telescope').load_extension('telescope-tabs')
-
-    -- if you use the picker directly you have to provide your theme manually
-    local Opts = {
+    Tabs.setup({
         entry_formatter = function(tab_id, _, _, file_paths, is_current)
             local entry_string = table.concat(
                 vim.tbl_map(function(v)
@@ -33,22 +27,17 @@ function TelescopeTabs.create()
         show_preview = true,
         close_tab_shortcut_i = '<C-d>', -- if you're in insert mode
         close_tab_shortcut_n = 'D', -- if you're in normal mode
-    }
-
-    Tabs.setup(Opts)
+    })
 end
 
 function TelescopeTabs.loadkeys()
-    local Keymaps = require('user_api.config.keymaps')
     local desc = require('user_api.maps').desc
-
-    ---@type AllMaps
-    local Keys = {
-        ['<leader>fTet'] = { Tabs.list_tabs, desc('Tabs') },
-        ['<leader>tt'] = { Tabs.list_tabs, desc('Telescope Tabs') },
-    }
-
-    Keymaps({ n = Keys })
+    require('user_api.config').keymaps({
+        n = {
+            ['<leader>fTet'] = { Tabs.list_tabs, desc('Tabs') },
+            ['<leader>tt'] = { Tabs.list_tabs, desc('Telescope Tabs') },
+        },
+    })
 end
 
 return TelescopeTabs

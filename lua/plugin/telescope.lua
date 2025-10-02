@@ -13,16 +13,13 @@
 
 ---@class TelExtension
 ---@field [1] string
----@field keys? fun(): (table|AllMaps)
+---@field keys? AllMaps
 
 local floor = math.floor
 
 local User = require('user_api')
 local Check = User.check
 
-local is_fun = Check.value.is_fun
-local is_str = Check.value.is_str
-local type_not_empty = Check.value.type_not_empty
 local exists = Check.exists.module
 local Keymaps = require('user_api.config.keymaps')
 local desc = User.maps.desc
@@ -333,324 +330,191 @@ local known_exts = {
 
     ['telescope._extensions.undo'] = {
         'undo',
-
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.undo) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eu'] = {
-                    '<CMD>Telescope undo<CR>',
-                    desc('Undo Picker'),
-                },
-
-                ['<leader>fu'] = {
-                    '<CMD>Telescope undo<CR>',
-                    desc('Undo Telescope Picker'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader><C-t>eu'] = {
+                '<CMD>Telescope undo<CR>',
+                desc('Undo Picker'),
+            },
+            ['<leader>fu'] = {
+                '<CMD>Telescope undo<CR>',
+                desc('Undo Telescope Picker'),
+            },
+        },
     },
 
     ['plugin.telescope.cc'] = {
         'conventional_commits',
+        keys = {
+            ['<leader><C-t>eC'] = {
+                '<CMD>Telescope conventional_commits<CR>',
+                desc('Conventional Commits Picker'),
+            },
 
-        ---@return AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.conventional_commits) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eC'] = {
-                    '<CMD>Telescope conventional_commits<CR>',
-                    desc('Conventional Commits Picker'),
-                },
-
-                ['<leader>GC'] = {
-                    '<CMD>Telescope conventional_commits<CR>',
-                    desc('Conventional Commits Telescope Picker'),
-                },
-            }
-        end,
+            ['<leader>GC'] = {
+                '<CMD>Telescope conventional_commits<CR>',
+                desc('Conventional Commits Telescope Picker'),
+            },
+        },
     },
 
     scope = {
         'scope',
+        keys = {
+            ['<leader><C-t>eS'] = {
+                '<CMD>Telescope buffers<CR>',
+                desc('Scope Buffers Picker'),
+            },
 
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
+            ['<leader>S'] = { group = '+Scope' },
 
-            if not type_not_empty('table', Extensions.scope) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eS'] = {
-                    '<CMD>Telescope buffers<CR>',
-                    desc('Scope Buffers Picker'),
-                },
-
-                ['<leader>S'] = { group = '+Scope' },
-
-                ['<leader>Sb'] = {
-                    '<CMD>Telescope buffers<CR>',
-                    desc('Scope Buffers Telescope Picker'),
-                },
-            }
-        end,
+            ['<leader>Sb'] = {
+                '<CMD>Telescope buffers<CR>',
+                desc('Scope Buffers Telescope Picker'),
+            },
+        },
     },
 
     persisted = {
         'persisted',
-
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.persisted) then
-                return {}
-            end
-
-            local pfx = Extensions.persisted
-
-            return {
-                ['<leader><C-t>ef'] = {
-                    pfx.persisted,
-                    desc('Persisted Picker'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader><C-t>ef'] = {
+                '<CMD>Telescope persisted<CR>',
+                desc('Persisted Picker'),
+            },
+        },
     },
 
     ['telescope-makefile'] = {
         'make',
-
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.make) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eM'] = {
-                    '<CMD>Telescope make<CR>',
-                    desc('Makefile Picker'),
-                },
-
-                ['<leader>fM'] = { group = '+Make' },
-
-                ['<leader>fMT'] = {
-                    '<CMD>Telescope make<CR>',
-                    desc('Makefile Telescope Picker'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader>fM'] = { group = '+Make' },
+            ['<leader><C-t>eM'] = {
+                '<CMD>Telescope make<CR>',
+                desc('Makefile Picker'),
+            },
+            ['<leader>fMT'] = {
+                '<CMD>Telescope make<CR>',
+                desc('Makefile Telescope Picker'),
+            },
+        },
     },
 
     aerial = {
         'aerial',
+        keys = {
+            ['<leader><C-t>ea'] = {
+                '<CMD>Telescope aerial<CR>',
+                desc('Aerial Picker'),
+            },
 
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.aerial) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>ea'] = {
-                    '<CMD>Telescope aerial<CR>',
-                    desc('Aerial Picker'),
-                },
-
-                ['<leader>laT'] = {
-                    '<CMD>Telescope aerial<CR>',
-                    desc('Aerial Telescope Picker'),
-                },
-            }
-        end,
+            ['<leader>laT'] = {
+                '<CMD>Telescope aerial<CR>',
+                desc('Aerial Telescope Picker'),
+            },
+        },
     },
 
     ['telescope._extensions.projects'] = {
         'projects',
+        keys = {
+            ['<leader><C-t>ep'] = {
+                '<CMD>Telescope projects<CR>',
+                desc('Project Picker'),
+            },
 
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.projects) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>ep'] = {
-                    '<CMD>Telescope projects<CR>',
-                    desc('Project Picker'),
-                },
-
-                ['<leader>pT'] = {
-                    '<CMD>Telescope projects<CR>',
-                    desc('Project Telescope Picker'),
-                },
-            }
-        end,
+            ['<leader>pT'] = {
+                '<CMD>Telescope projects<CR>',
+                desc('Project Telescope Picker'),
+            },
+        },
     },
 
     notify = {
         'notify',
-
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.notify) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eN'] = {
-                    '<CMD>Telescope notify<CR>',
-                    desc('Notify Picker'),
-                },
-
-                ['<leader>N'] = { group = '+Notify' },
-
-                ['<leader>NT'] = {
-                    '<CMD>Telescope notify<CR>',
-                    desc('Notify Telescope Picker'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader>N'] = { group = '+Notify' },
+            ['<leader><C-t>eN'] = {
+                '<CMD>Telescope notify<CR>',
+                desc('Notify Picker'),
+            },
+            ['<leader>NT'] = {
+                '<CMD>Telescope notify<CR>',
+                desc('Notify Telescope Picker'),
+            },
+        },
     },
     noice = {
         'noice',
-
-        ---@return AllMaps
-        keys = function()
-            return {
-                ['<leader><C-t>en'] = { group = '+Noice' },
-
-                ['<leader><C-t>enl'] = {
-                    function()
-                        require('noice').cmd('last')
-                    end,
-                    desc('NoiceLast'),
-                },
-                ['<leader><C-t>enh'] = {
-                    function()
-                        require('noice').cmd('history')
-                    end,
-                    desc('NoiceHistory'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader><C-t>en'] = { group = '+Noice' },
+            ['<leader><C-t>enl'] = {
+                function()
+                    require('noice').cmd('last')
+                end,
+                desc('NoiceLast'),
+            },
+            ['<leader><C-t>enh'] = {
+                function()
+                    require('noice').cmd('history')
+                end,
+                desc('NoiceHistory'),
+            },
+        },
     },
     ['lazygit.utils'] = {
         'lazygit',
+        keys = {
+            ['<leader><C-t>eG'] = {
+                '<CMD>Telescope lazygit<CR>',
+                desc('LazyGit Picker'),
+            },
 
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.lazygit) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eG'] = {
-                    '<CMD>Telescope lazygit<CR>',
-                    desc('LazyGit Picker'),
-                },
-
-                ['<leader>GlT'] = {
-                    '<CMD>Telescope lazygit<CR>',
-                    desc('LazyGit Telescope Picker'),
-                },
-            }
-        end,
+            ['<leader>GlT'] = {
+                '<CMD>Telescope lazygit<CR>',
+                desc('LazyGit Telescope Picker'),
+            },
+        },
     },
 
     ['telescope._extensions.picker_list'] = {
         'picker_list',
-
-        ---@return table|AllMaps
-        keys = function()
-            local Extensions = require('telescope').extensions
-
-            if not type_not_empty('table', Extensions.picker_list) then
-                return {}
-            end
-
-            return {
-                ['<leader><C-t>eP'] = {
-                    '<CMD>Telescope picker_list<CR>',
-                    desc('Picker List'),
-                },
-                ['<leader><C-t>bp'] = {
-                    '<CMD>Telescope picker_list<CR>',
-                    desc('Picker List (Extension)'),
-                },
-
-                ['<leader><leader>'] = {
-                    '<CMD>Telescope picker_list<CR>',
-                    desc('Telescope Picker List'),
-                },
-            }
-        end,
+        keys = {
+            ['<leader><C-t>eP'] = {
+                '<CMD>Telescope picker_list<CR>',
+                desc('Picker List'),
+            },
+            ['<leader><C-t>bp'] = {
+                '<CMD>Telescope picker_list<CR>',
+                desc('Picker List (Extension)'),
+            },
+            ['<leader><leader>'] = {
+                '<CMD>Telescope picker_list<CR>',
+                desc('Telescope Picker List'),
+            },
+        },
     },
 }
-
---- Load and Set Keymaps for available extensions
 for mod, ext in next, known_exts do
-    --- If extension is unavailable/invalid
-    if exists(mod) and is_str(ext[1]) then
+    if exists(mod) and ext[1] then
         load_ext(ext[1])
-
-        if is_fun(ext.keys) then
-            for lhs, v in next, ext.keys() do
+        if ext.keys then
+            for lhs, v in pairs(ext.keys) do
                 Keys[lhs] = v
             end
         end
     end
 end
-
-local group = augroup('UserTelescope', { clear = true })
-
----@type AuRepeat
-local au_tbl = {
-    ['User'] = {
-        {
-            pattern = 'TelescopePreviewerLoaded',
-            group = group,
-
-            callback = function(ev)
-                if ev.data.filetype ~= 'help' then
-                    vim.wo.number = true
-                elseif ev.data.bufname:match('*.csv') then
-                    vim.wo.wrap = false
-                end
-            end,
-        },
-    },
-}
-
-for event, v in next, au_tbl do
-    for _, au_opts in next, v do
-        au(event, au_opts)
-    end
-end
-
 Keymaps({ n = Keys })
 
+au('User', {
+    group = augroup('UserTelescope', { clear = true }),
+    pattern = 'TelescopePreviewerLoaded',
+    callback = function(ev)
+        if ev.data.filetype ~= 'help' then
+            vim.wo.number = true
+        elseif ev.data.bufname:match('*.csv') then
+            vim.wo.wrap = false
+        end
+    end,
+})
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
