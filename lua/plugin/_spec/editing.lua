@@ -13,17 +13,6 @@ local Editing = {
         config = CfgUtil.require('plugin.twilight'),
         cond = not in_console(),
     },
-
-    --- TODO COMMENTS
-    { import = 'plugin.todo_comments' },
-    { import = 'plugin.a_vim' },
-    {
-        'folke/zen-mode.nvim',
-        event = 'VeryLazy',
-        version = false,
-        config = CfgUtil.require('plugin.zen_mode'),
-        cond = not in_console(),
-    },
     {
         'julienvincent/nvim-paredit',
         version = false,
