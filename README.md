@@ -4,9 +4,12 @@
 
 [Codeberg Mirror](https://codeberg.org/DrKJeff16/Jnvim) (MAIN) | [GitHub Mirror](https://github.com/DrKJeff16/Jnvim)
 
-A **modular, _obsessively documented_, portable and platform-agnostic** [Neovim](https://github.com/neovim/neovim) config.
+A **modular**, **_obsessively documented_**, **portable**, **platform-agnostic**
+[Neovim](https://github.com/neovim/neovim) config.
 
 </div>
+
+---
 
 ## Table Of Contents
 
