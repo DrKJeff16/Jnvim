@@ -9,6 +9,8 @@ A **modular**, **_obsessively documented_**, **portable**, **platform-agnostic**
 
 </div>
 
+<a href="#"><img src="./assets/Jnvim.jpg" /></a>
+
 ---
 
 ## Table Of Contents
