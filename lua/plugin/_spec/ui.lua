@@ -15,7 +15,7 @@ local UI = {
         priority = 1000,
         version = false,
         dependencies = {
-            'nvim-tree/nvim-web-devicons',
+            'echasnovski/mini.icons',
             'nvim-lua/plenary.nvim',
         },
         config = CfgUtil.require('plugin.alpha'),

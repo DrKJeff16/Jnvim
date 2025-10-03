@@ -15,29 +15,34 @@ local M = {}
 
 function M.theta()
     local Theta = require('alpha.themes.theta')
-
-    if exists('nvim-web-devicons') then
-        ---@type 'mini'|'devicons'
-        Theta.file_icons.provider = 'devicons'
-    end
-
+    Theta.header = {
+        type = 'text',
+        val = {
+            [[      _            _ ]],
+            [[     | |_ ____   _(_)_ __ ___  ]],
+            [[  _  | |  _ \ \ / / |  _   _ \  ]],
+            [[ | | | | | | | V /| | | | | | | ]],
+            [[  \___/|_| |_|\_/ |_|_| |_| |_| ]],
+        },
+        opts = {
+            position = 'center',
+            hl = 'Type',
+            wrap = 'overflow',
+        },
+    }
+    Theta.config.layout[2] = Theta.header
+    Theta.file_icons.provider = 'mini'
     Alpha.setup(Theta.config)
 end
 
 function M.startify()
     local Startify = require('alpha.themes.startify')
-
-    if exists('nvim-web-devicons') then
-        ---@type 'mini'|'devicons'
-        Startify.file_icons.provider = 'devicons'
-    end
-
+    Startify.file_icons.provider = 'mini'
     Alpha.setup(Startify.config)
 end
 
 function M.dashboard()
     local Dashboard = require('alpha.themes.dashboard')
-
     Alpha.setup(Dashboard.config)
 end
 
@@ -68,5 +73,4 @@ function M.new()
 end
 
 return M.new()
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
