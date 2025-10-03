@@ -1,65 +1,49 @@
 ---@alias CpcSubMod.Variant ('frappe'|'latte'|'macchiato'|'mocha')
 
----@class CpcSubMod.Variants
----@field [1] 'frappe'
----@field [2] 'macchiato'
----@field [3] 'mocha'
----@field [4] 'latte'
-
-local User = require('user_api')
-local Check = User.check
-
-local exists = Check.exists.module
-local is_str = Check.value.is_str
-local is_bool = Check.value.is_bool
-local is_tbl = Check.value.is_tbl
-
 --- A submodule class for the `catppuccin.nvim` colorscheme.
 --- ---
 ---@class CpcSubMod
 local Catppuccin = {}
 
----@type CpcSubMod.Variants
-Catppuccin.variants = {
-    'frappe',
-    'macchiato',
-    'mocha',
-    'latte',
-}
-
+---@class CpcSubMod.Variants
+Catppuccin.variants = { 'frappe', 'macchiato', 'mocha', 'latte' }
 Catppuccin.mod_cmd = 'silent! colorscheme catppuccin'
 
 ---@return boolean
 function Catppuccin.valid()
-    return exists('catppuccin')
+    return require('user_api.check.exists').module('catppuccin')
 end
 
 ---@param variant? CpcSubMod.Variant
 ---@param transparent? boolean
----@param override? table|CatppuccinOptions
+---@param override? CatppuccinOptions
 function Catppuccin.setup(variant, transparent, override)
-    variant = (is_str(variant) and vim.tbl_contains(Catppuccin.variants, variant)) and variant
-        or Catppuccin.variants[1]
-    transparent = is_bool(transparent) and transparent or false
-    override = is_tbl(override) and override or {}
+    if vim.fn.has('nvim-0.11') == 1 then
+        vim.validate('variant', variant, 'string', true)
+        vim.validate('transparent', transparent, 'boolean', true)
+        vim.validate('override', override, 'table', true)
+    else
+        vim.validate({
+            variant = { variant, { 'string', 'nil' } },
+            transparent = { transparent, { 'boolean', 'nil' } },
+            override = { override, { 'table', 'nil' } },
+        })
+    end
+    variant = variant or 'auto'
+    variant = vim.list_contains(Catppuccin.variants, variant) and variant or 'auto'
+    transparent = transparent ~= nil and transparent or false
+    override = override or {}
 
     ---@type CatppuccinOptions
-    ---@diagnostic disable-next-line:missing-fields
     local Opts = {
-        flavour = variant, -- latte, frappe, macchiato, mocha
-        -- flavour = "auto" -- will respect terminal's background
-        background = { -- :h background
-            light = 'latte',
-            dark = variant ~= 'latte' and variant or 'mocha',
-        },
+        flavour = 'auto', -- will respect terminal's background
+        background = { light = 'latte', dark = variant ~= 'latte' and variant or 'mocha' },
+        default_integrations = true,
+        float = { solid = true, transparent = true },
         transparent_background = transparent and not in_console(), -- disables setting the background color
         show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
         term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
-        dim_inactive = {
-            enabled = true, -- dims the background color of inactive window
-            shade = 'dark',
-            percentage = 0.20, -- percentage of the shade to apply to the inactive window
-        },
+        dim_inactive = { enabled = true, shade = 'dark', percentage = 0.20 },
         no_italic = true, -- Force no italic
         no_bold = false, -- Force no bold
         no_underline = false, -- Force no underline
@@ -74,11 +58,10 @@ function Catppuccin.setup(variant, transparent, override)
             numbers = { 'altfont' },
             booleans = { 'bold' },
             properties = { 'bold' },
-            types = { 'undercurl' },
+            types = { 'altfont' },
             operators = { 'altfont' },
             -- miscs = {}, -- Uncomment to turn off hard-coded styles
         },
-
         color_overrides = {},
         custom_highlights = function(colors)
             return {
@@ -88,35 +71,26 @@ function Catppuccin.setup(variant, transparent, override)
                 TabLineSel = { bg = colors.pink },
             }
         end,
-
-        default_integrations = true,
         integrations = {
-            barbar = exists('barbar'),
-            blink_cmp = {
-                style = 'bordered',
-            },
-            colorful_winsep = {
-                enabled = exists('colorful-winsep'),
-                color = 'teal',
-            },
-            cmp = exists('cmp'),
-            dashboard = exists('dashboard'),
-            diffview = exists('diffview'),
-            gitsigns = exists('gitsigns'),
-            headlines = exists('headlines'),
+            alpha = true,
+            barbar = true,
+            blink_cmp = { style = 'bordered' },
+            cmp = false,
+            diffview = true,
+            fzf = true,
+            gitsigns = true,
+            headlines = false,
             indent_blankline = {
-                enabled = exists('ibl'),
+                enabled = true,
                 scope_color = 'teal',
                 colored_indent_levels = true,
             },
-            lsp_trouble = exists('trouble'),
+            lsp_trouble = true,
             markdown = true,
-            mini = {
-                enabled = true,
-                indentscope_color = 'lavender',
-            },
+            mini = { enabled = true, indentscope_color = 'lavender' },
             native_lsp = {
                 enabled = true,
+                inlay_hints = { background = true },
                 virtual_text = {
                     errors = { 'bold', 'underdouble' },
                     warnings = { 'bold', 'underline' },
@@ -131,28 +105,22 @@ function Catppuccin.setup(variant, transparent, override)
                     information = { 'underline' },
                     ok = { 'underline' },
                 },
-                inlay_hints = { background = true },
             },
-            noice = exists('noice'),
-            notify = exists('notify'),
-            nvimtree = exists('nvim-tree'),
-            rainbow_delimiters = exists('rainbow-delimiters'),
-            telescope = {
-                enabled = exists('telescope'),
-                -- style = 'nvchad',
-            },
-            treesitter = exists('nvim-treesitter'),
-            treesitter_context = exists('treesitter-context'),
-            which_key = exists('which-key'),
-            -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+            neotree = true,
+            noice = true,
+            notify = true,
+            nvimtree = false,
+            rainbow_delimiters = true,
+            render_markdown = true,
+            telescope = { enabled = true },
+            treesitter = true,
+            treesitter_context = true,
+            which_key = true,
         },
     }
-
     require('catppuccin').setup(vim.tbl_deep_extend('keep', override, Opts))
-
     vim.cmd(Catppuccin.mod_cmd)
 end
 
 return Catppuccin
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

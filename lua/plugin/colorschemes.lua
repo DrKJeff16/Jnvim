@@ -6,6 +6,8 @@
 ---|GloombuddySubMod
 ---|GruvDarkSubMod
 ---|GruvboxSubMod
+---|KanagawaSubMod
+---|KPSubMod
 ---|MolokaiSubMod
 ---|NFoxSubMod
 ---|ODSubMod
@@ -17,15 +19,10 @@
 ---|TokyoDarkSubMod
 ---|VSCodeSubMod
 
-local User = require('user_api')
-local Check = User.check
-
-local is_str = Check.value.is_str
-local type_not_empty = Check.value.type_not_empty
-local capitalize = User.util.string.capitalize
-local displace_letter = User.util.displace_letter
-local desc = User.maps.desc
-
+local is_str = require('user_api.check.value').is_str
+local type_not_empty = require('user_api.check.value').type_not_empty
+local displace_letter = require('user_api.util').displace_letter
+local desc = require('user_api.maps').desc
 local ERROR = vim.log.levels.ERROR
 
 ---@class CscMod
@@ -33,109 +30,95 @@ local Colorschemes = {}
 
 ---@enum AllCsc
 Colorschemes.OPTIONS = {
-    'tokyonight',
-    'tokyodark',
-    'nightfox',
-    'kanagawa',
-    'catppuccin',
-    'onedark',
-    'gruvdark',
-    'gruvbox',
-    'vscode',
-    'ariake',
-    'dracula',
-    'flexoki',
-    'gloombuddy',
-    'molokai',
-    'oak',
-    'space_vim_dark',
-    'spaceduck',
-    'space_nvim',
+    'Tokyonight',
+    'Tokyodark',
+    'Nightfox',
+    'Kanagawa',
+    'KanagawaPaper',
+    'Catppuccin',
+    'Spaceduck',
+    'Onedark',
+    'Gruvdark',
+    'Gruvbox',
+    'Vscode',
+    'Ariake',
+    'Dracula',
+    'Flexoki',
+    'Gloombuddy',
+    'Molokai',
+    'Oak',
+    'SpaceVimDark',
+    'SpaceNvim',
 }
 
-Colorschemes.ariake = require('plugin.colorschemes.ariake')
-Colorschemes.catppuccin = require('plugin.colorschemes.catppuccin')
-Colorschemes.dracula = require('plugin.colorschemes.dracula')
-Colorschemes.flexoki = require('plugin.colorschemes.flexoki')
-Colorschemes.gloombuddy = require('plugin.colorschemes.gloombuddy')
-Colorschemes.gruvbox = require('plugin.colorschemes.gruvbox')
-Colorschemes.kanagawa = require('plugin.colorschemes.kanagawa')
-Colorschemes.molokai = require('plugin.colorschemes.molokai')
-Colorschemes.nightfox = require('plugin.colorschemes.nightfox')
-Colorschemes.oak = require('plugin.colorschemes.oak')
-Colorschemes.onedark = require('plugin.colorschemes.onedark')
-Colorschemes.space_vim_dark = require('plugin.colorschemes.space_vim_dark')
-Colorschemes.spaceduck = require('plugin.colorschemes.spaceduck')
-Colorschemes.space_nvim = require('plugin.colorschemes.space-nvim')
-Colorschemes.tokyodark = require('plugin.colorschemes.tokyodark')
-Colorschemes.tokyonight = require('plugin.colorschemes.tokyonight')
-Colorschemes.gruvdark = require('plugin.colorschemes.gruvdark')
-Colorschemes.vscode = require('plugin.colorschemes.vscode')
+-- stylua: ignore start
+
+Colorschemes.Ariake         = require('plugin.colorschemes.ariake')
+Colorschemes.Catppuccin     = require('plugin.colorschemes.catppuccin')
+Colorschemes.Dracula        = require('plugin.colorschemes.dracula')
+Colorschemes.Flexoki        = require('plugin.colorschemes.flexoki')
+Colorschemes.Gloombuddy     = require('plugin.colorschemes.gloombuddy')
+Colorschemes.Gruvbox        = require('plugin.colorschemes.gruvbox')
+Colorschemes.Gruvdark       = require('plugin.colorschemes.gruvdark')
+Colorschemes.Kanagawa       = require('plugin.colorschemes.kanagawa')
+Colorschemes.KanagawaPaper  = require('plugin.colorschemes.kanagawa_paper')
+Colorschemes.Molokai        = require('plugin.colorschemes.molokai')
+Colorschemes.Nightfox       = require('plugin.colorschemes.nightfox')
+Colorschemes.Oak            = require('plugin.colorschemes.oak')
+Colorschemes.Onedark        = require('plugin.colorschemes.onedark')
+Colorschemes.SpaceNvim      = require('plugin.colorschemes.space-nvim')
+Colorschemes.SpaceVimDark   = require('plugin.colorschemes.space_vim_dark')
+Colorschemes.Spaceduck      = require('plugin.colorschemes.spaceduck')
+Colorschemes.Tokyodark      = require('plugin.colorschemes.tokyodark')
+Colorschemes.Tokyonight     = require('plugin.colorschemes.tokyonight')
+Colorschemes.Vscode         = require('plugin.colorschemes.vscode')
+
+-- stylua: ignore end
 
 ---@type CscMod|fun(color?: string|AllCsc, ...: any)
 local M = setmetatable({}, {
     __index = Colorschemes,
 
-    __newindex = function(self, key, value)
-        rawset(self, key, value)
-    end,
-
     ---@param self CscMod
     ---@param color? string|AllCsc
     ---@param ... any
     __call = function(self, color, ...)
-        local Keymaps = require('user_api.config.keymaps')
-
-        ---@type AllMaps
-        local Keys = {
+        local Keys = { ---@type AllMaps
             ['<leader>u'] = { group = '+UI' },
             ['<leader>uc'] = { group = '+Colorschemes' },
         }
-
-        ---@type string[]
-        local valid = {}
+        local valid = {} ---@type string[]
         local csc_group = 'A'
         local i = 1
-
-        -- NOTE: This was also a pain in the ass
-        --
-        -- Generate keybinds for each colorscheme that is found
-        -- Try checking them by typing `<leader>uc` IN NORMAL MODE
         for _, name in ipairs(self.OPTIONS) do
-            ---@type AllColorSubMods
-            local TColor = self[name]
-            if TColor and TColor.valid ~= nil and TColor.valid() then
+            local TColor = self[name] ---@type AllColorSubMods
+            if TColor and TColor.valid and TColor.valid() then
                 table.insert(valid, name)
                 Keys['<leader>uc' .. csc_group] = {
                     group = '+Group ' .. csc_group,
                 }
-
                 local i_str = tostring(i)
                 if type_not_empty('table', TColor.variants) then
                     local v = 'a'
-                    for _, variant in next, TColor.variants do
+                    for _, variant in ipairs(TColor.variants) do
                         Keys['<leader>uc' .. csc_group .. i_str] = {
-                            group = ('+%s'):format(capitalize(name)),
+                            group = ('+%s'):format(name),
                         }
                         Keys['<leader>uc' .. csc_group .. i_str .. v] = {
                             function()
                                 TColor.setup(variant)
                             end,
-                            desc(('Set Colorscheme `%s` (%s)'):format(capitalize(name), variant)),
+                            desc(('Set Colorscheme `%s` (%s)'):format(name, variant)),
                         }
                         v = displace_letter(v, 'next')
                     end
                 else
                     Keys['<leader>uc' .. csc_group .. i_str] = {
                         TColor.setup,
-                        desc(('Set Colorscheme `%s`'):format(capitalize(name))),
+                        desc(('Set Colorscheme `%s`'):format(name)),
                     }
                 end
-
-                -- NOTE: This was TOO PAINFUL to get right (including `displace_letter`)
                 if i == 9 then
-                    -- If last  keymap set ended on 9, reset back to 1,
-                    -- and go to next letter alphabetically
                     i = 1
                     csc_group = displace_letter(csc_group, 'next')
                 elseif i < 9 then
@@ -146,7 +129,7 @@ local M = setmetatable({}, {
         if not type_not_empty('table', valid) then
             error('No valid colorschemes!', ERROR)
         end
-        Keymaps({ n = Keys })
+        require('user_api.config').keymaps({ n = Keys })
         if not (is_str(color) and vim.list_contains(valid, color)) then
             color = valid[1]
         end
@@ -157,9 +140,8 @@ local M = setmetatable({}, {
             Color.setup(...)
             return
         end
-        for _, csc in next, valid do
-            ---@type AllColorSubMods
-            Color = self[csc]
+        for _, csc in ipairs(valid) do
+            Color = self[csc] ---@type AllColorSubMods
             if Color.valid ~= nil and Color.valid() then
                 Color.setup()
                 return
@@ -170,5 +152,4 @@ local M = setmetatable({}, {
 })
 
 return M
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

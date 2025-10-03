@@ -2,7 +2,6 @@ local fmt = string.format
 
 local ERROR = vim.log.levels.ERROR
 
-local validate = vim.validate
 local in_tbl = vim.tbl_contains
 
 ---@class User.Util.String
@@ -179,16 +178,22 @@ String.digits = {
 ---@param triggers? string[]
 ---@return string new_str
 function String.capitalize(str, use_dot, triggers)
-    validate('str', str, 'string', false)
-    validate('use_dot', use_dot, 'boolean', true)
-    validate('triggers', triggers, 'table', true, 'string[]')
-
-    local Value = require('user_api.check.value')
-    local type_not_empty = Value.type_not_empty
-
+    if vim.fn.has('nvim-0.11') then
+        vim.validate('str', str, 'string', false)
+        vim.validate('use_dot', use_dot, 'boolean', true)
+        vim.validate('triggers', triggers, 'table', true, 'string[]')
+    else
+        vim.validate({
+            str = { str, 'string' },
+            use_dot = { use_dot, { 'boolean', 'nil' } },
+            triggers = { triggers, { 'table', 'nil' } },
+        })
+    end
     if str == '' then
         return str
     end
+    local Value = require('user_api.check.value')
+    local type_not_empty = Value.type_not_empty
 
     use_dot = use_dot ~= nil and use_dot or false
     triggers = type_not_empty('table', triggers) and triggers or { ' ', '' }
@@ -237,9 +242,9 @@ end
 ---@param new string
 ---@return string
 function String.replace(str, target, new)
-    validate('str', str, 'string', false)
-    validate('target', target, 'string', false)
-    validate('new', new, 'string', false)
+    vim.validate('str', str, 'string', false)
+    vim.validate('target', target, 'string', false)
+    vim.validate('new', new, 'string', false)
 
     if in_tbl({ str:len(), target:len(), new:len() }, 0) or new == target then
         return str

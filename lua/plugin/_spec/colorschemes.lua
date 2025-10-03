@@ -62,6 +62,13 @@ return {
         cond = not in_console(),
     },
     {
+        'thesimonho/kanagawa-paper.nvim',
+        priority = 1000,
+        version = false,
+        init = colorscheme_init('installed_kanagawa_paper'),
+        cond = not in_console(),
+    },
+    {
         'Mofiqul/vscode.nvim',
         priority = 1000,
         version = false,

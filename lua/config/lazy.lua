@@ -46,6 +46,7 @@ Lazy.setup({
         { import = 'plugin.ibl' },
         { import = 'plugin.Comment' },
         { import = 'plugin.autopairs' },
+        { import = 'plugin.yanky' },
         { import = 'plugin.paredit' },
         { import = 'plugin.scope' },
         { import = 'plugin.persistence' },
