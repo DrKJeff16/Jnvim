@@ -25,6 +25,7 @@ return {
             logpath = vim.fn.stdpath('state'),
         },
         patterns = {
+            '!^/usr',
             '!=' .. vim.fn.environ()['HOME'],
             '.git',
             '.github',

@@ -36,16 +36,33 @@ Commands.commands = {
             nargs = '+',
             complete = 'command',
         },
-
         mappings = {
             n = {
                 ['<Leader>UC'] = { group = '+Commands' },
-
                 ['<Leader>UCR'] = {
                     ':Redir ',
                     desc('Prompt to `Redir` command', false),
                 },
             },
+        },
+    },
+
+    DeleteInactiveBuffers = {
+        function(ctx)
+            local notify = ctx.bang ~= nil and ctx.bang or false
+            for _, buf in ipairs(vim.fn.getbufinfo()) do
+                if not next(buf.windows) and buf.listed == 1 and buf.loaded == 1 then
+                    notify = true
+                    vim.cmd.bdelete({ buf.bufnr, bang = true })
+                end
+            end
+            if notify then
+                vim.notify('Deleted inactive buffers.', vim.log.levels.INFO)
+            end
+        end,
+        {
+            desc = 'Delete listed unmodified buffers that are not in a window',
+            bang = true,
         },
     },
 }

@@ -185,10 +185,18 @@ if not (in_list(DISABLE_FT, ft) or in_list(DISABLE_BT, bt)) then
     return
 end
 
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('<YOUR-AUGROUP>', { clear = false }),
+    pattern = { '*.html', '...' },
+    callback = function()
+        local win = vim.api.nvim_get_current_win()
+        vim.wo[win].wrap = true
+    end,
+})
+
 ---@type vim.api.keyset.option
-local opts = { scope = 'local' }
+local win_opts = { scope = 'local' }
 
-optset('number', false, opts)
-optset('signcolumn', 'no', opts)
-
+optset('number', false, win_opts)
+optset('signcolumn', 'no', win_opts)
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

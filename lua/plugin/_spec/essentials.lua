@@ -1,7 +1,6 @@
 ---@module 'lazy'
 
 local CfgUtil = require('config.util')
-local in_console = require('user_api.check').in_console
 
 ---@type LazySpec[]
 local Essentials = {
@@ -18,13 +17,6 @@ local Essentials = {
         'nvim-lua/plenary.nvim',
         lazy = true,
         version = false,
-    },
-    {
-        'rcarriga/nvim-notify',
-        version = false,
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        config = CfgUtil.require('plugin.notify'),
-        cond = not in_console(),
     },
     {
         'gennaro-tedesco/nvim-possession',
