@@ -2,6 +2,7 @@
 ---|AriakeSubMod
 ---|CpcSubMod
 ---|DraculaSubMod
+---|EmbarkSubMod
 ---|FlexokiSubMod
 ---|GloombuddySubMod
 ---|GruvDarkSubMod
@@ -33,6 +34,7 @@ Colorschemes.OPTIONS = {
     'Tokyonight',
     'Tokyodark',
     'Nightfox',
+    'Embark',
     'Kanagawa',
     'KanagawaPaper',
     'Catppuccin',
@@ -56,6 +58,7 @@ Colorschemes.OPTIONS = {
 Colorschemes.Ariake         = require('plugin.colorschemes.ariake')
 Colorschemes.Catppuccin     = require('plugin.colorschemes.catppuccin')
 Colorschemes.Dracula        = require('plugin.colorschemes.dracula')
+Colorschemes.Embark         = require('plugin.colorschemes.embark')
 Colorschemes.Flexoki        = require('plugin.colorschemes.flexoki')
 Colorschemes.Gloombuddy     = require('plugin.colorschemes.gloombuddy')
 Colorschemes.Gruvbox        = require('plugin.colorschemes.gruvbox')

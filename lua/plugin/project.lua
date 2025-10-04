@@ -17,13 +17,9 @@ return {
         'ProjectSession',
     },
     dependencies = { 'nvim-telescope/telescope.nvim' },
-    ---@type Project.Config.Options
-    opts = {
-        -- manual_mode = true,
-        log = {
-            enabled = true,
-            logpath = vim.fn.stdpath('state'),
-        },
+    opts = { ---@type Project.Config.Options
+        -- manual_mode = true
+        log = { enabled = true, logpath = vim.fn.stdpath('state') },
         patterns = {
             '!^/usr',
             '!=' .. vim.fn.environ()['HOME'],
@@ -37,11 +33,7 @@ return {
             '.pre-commit-config.yml',
             'Pipfile',
         },
-        telescope = {
-            enabled = false,
-            sort = 'newest',
-            prefer_file_browser = true,
-        },
+        telescope = { enabled = false, sort = 'newest', prefer_file_browser = true },
         show_hidden = true,
         fzf_lua = { enabled = true },
         exclude_dirs = {
@@ -56,13 +48,6 @@ return {
             '~/Desktop/*',
             '~/Public/*',
             '~/Templates/*',
-        },
-        integrations = {
-            persistence = {
-                enabled = true,
-                auto_open = true,
-                auto_save = true,
-            },
         },
         scope_chdir = 'tab',
     },

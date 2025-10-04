@@ -9,7 +9,7 @@ return {
     dependencies = {
         'MunifTanjim/nui.nvim',
         'rcarriga/nvim-notify',
-        'echasnovski/mini.nvim',
+        'nvim-mini/mini.nvim',
     },
     enabled = not require('user_api.check').in_console(),
     config = function()

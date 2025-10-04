@@ -6,13 +6,13 @@ local Check = require('user_api.check')
 local executable = Check.exists.executable
 
 ---@type LazySpec[]
-local VCS = {
+return {
     {
         'sindrets/diffview.nvim',
         event = 'VeryLazy',
         version = false,
         config = CfgUtil.require('plugin.git.diffview'),
-        cond = executable('git'),
+        enabled = executable('git'),
     },
     {
         'kdheepak/lazygit.nvim',
@@ -23,17 +23,14 @@ local VCS = {
             'nvim-telescope/telescope.nvim',
         },
         config = CfgUtil.require('plugin.git.lazygit'),
-        cond = executable({ 'git', 'lazygit' }),
+        enabled = executable({ 'git', 'lazygit' }),
     },
     {
         'ttibsi/pre-commit.nvim',
         dev = true,
         event = 'VeryLazy',
         version = false,
-        cond = executable({ 'git', 'pre-commit' }),
+        enabled = executable({ 'git', 'pre-commit' }),
     },
 }
-
-return VCS
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

@@ -5,7 +5,35 @@ local executable = require('user_api.check.exists').executable
 ---@type LazySpec
 return {
     'folke/zen-mode.nvim',
+    lazy = true,
     version = false,
+    cmd = 'ZenMode',
+    keys = {
+        {
+            '<leader>Zo',
+            function()
+                require('zen-mode').open()
+            end,
+            desc = 'Open Zen Mode',
+            mode = { 'n' },
+        },
+        {
+            '<leader>Zd',
+            function()
+                require('zen-mode').close()
+            end,
+            desc = 'Close Zen Mode',
+            mode = { 'n' },
+        },
+        {
+            '<leader>Zt',
+            function()
+                require('zen-mode').toggle()
+            end,
+            desc = 'Toggle Zen Mode',
+            mode = { 'n' },
+        },
+    },
     enabled = not require('user_api.check').in_console(),
     opts = {
         window = {
@@ -44,15 +72,10 @@ return {
         },
     },
     config = function(_, opts)
-        local ZM = require('zen-mode')
-        local desc = require('user_api.maps').desc
-        ZM.setup(opts)
+        require('zen-mode').setup(opts)
         require('user_api.config').keymaps({
             n = {
                 ['<leader>Z'] = { group = '+Zen Mode' },
-                ['<leader>Zo'] = { ZM.open, desc('Open Zen Mode') },
-                ['<leader>Zd'] = { ZM.close, desc('Close Zen Mode') },
-                ['<leader>Zt'] = { ZM.toggle, desc('Toggle Zen Mode') },
             },
         })
     end,

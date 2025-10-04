@@ -5,7 +5,7 @@ return {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
-        'echasnovski/mini.nvim',
+        'nvim-mini/mini.nvim',
         'nvim-tree/nvim-web-devicons',
     },
     cond = not require('user_api.check').in_console(),

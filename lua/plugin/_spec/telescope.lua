@@ -8,7 +8,7 @@ local tel_fzf_build = CfgUtil.tel_fzf_build
 local executable = Check.exists.executable
 
 ---@type LazySpec[]
-local Telescope = {
+return {
     {
         'nvim-telescope/telescope.nvim',
         version = false,
@@ -22,7 +22,7 @@ local Telescope = {
                 'nvim-telescope/telescope-fzf-native.nvim',
                 version = false,
                 build = tel_fzf_build(),
-                cond = executable('fzf'),
+                enabled = executable('fzf'),
             },
             {
                 'LukasPietzschmann/telescope-tabs',
@@ -35,19 +35,16 @@ local Telescope = {
                 version = false,
                 dependencies = { 'akinsho/toggleterm.nvim' },
                 config = CfgUtil.require('plugin.telescope.makefile'),
-                cond = executable('make') or executable('mingw32-make'),
+                enabled = executable('make') or executable('mingw32-make'),
             },
             {
                 'olacin/telescope-cc.nvim',
                 ft = 'gitcommit',
                 version = false,
-                cond = executable('git'),
+                enabled = executable('git'),
             },
         },
         config = CfgUtil.require('plugin.telescope'),
     },
 }
-
-return Telescope
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

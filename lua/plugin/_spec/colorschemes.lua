@@ -7,10 +7,20 @@ local in_console = require('user_api.check').in_console
 return {
     {
         'folke/tokyonight.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_tokyonight'),
-        cond = not in_console(),
+        enabled = not in_console(),
+    },
+    {
+        'embark-theme/vim',
+        lazy = false,
+        priority = 1000,
+        name = 'embark',
+        version = false,
+        init = colorscheme_init('installed_embark'),
+        enabled = not in_console(),
     },
     {
         'jim-at-jibba/ariake.nvim',
@@ -23,14 +33,14 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_tokyodark'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'darianmorat/gruvdark.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_gruvdark'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'catppuccin/nvim',
@@ -38,42 +48,42 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_catppuccin'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'navarasu/onedark.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_onedark'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'EdenEast/nightfox.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_nightfox'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'rebelot/kanagawa.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_kanagawa'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'thesimonho/kanagawa-paper.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_kanagawa_paper'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'Mofiqul/vscode.nvim',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_vscode'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'Mofiqul/dracula.nvim',
@@ -82,7 +92,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_dracula'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'ellisonleao/gruvbox.nvim',
@@ -90,7 +100,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_gruvbox'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'kepano/flexoki-neovim',
@@ -99,7 +109,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_flexoki'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'bkegley/gloombuddy',
@@ -113,11 +123,11 @@ return {
                 priority = 1000,
                 version = false,
                 init = colorscheme_init('installed_colorbuddy'),
-                cond = not in_console(),
+                enabled = not in_console(),
             },
         },
         init = colorscheme_init('installed_gloombuddy'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'vigoux/oak',
@@ -135,7 +145,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_spaceduck'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
     {
         'liuchengxu/space-vim-dark',
@@ -157,8 +167,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_space_nvim'),
-        cond = not in_console(),
+        enabled = not in_console(),
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

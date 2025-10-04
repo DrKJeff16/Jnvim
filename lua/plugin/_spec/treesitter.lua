@@ -1,7 +1,5 @@
 ---@module 'lazy'
 
-local CfgUtil = require('config.util')
-
 ---@type LazySpec[]
 return {
     {
@@ -13,12 +11,12 @@ return {
             {
                 'nvim-treesitter/nvim-treesitter-context',
                 version = false,
-                config = CfgUtil.require('plugin.ts.context'),
+                config = require('config.util').require('plugin.ts.context'),
             },
             {
                 'windwp/nvim-ts-autotag',
                 version = false,
-                config = CfgUtil.require('plugin.ts.autotag'),
+                config = require('config.util').require('plugin.ts.autotag'),
             },
             {
                 'JoosepAlviste/nvim-ts-context-commentstring',
@@ -28,7 +26,7 @@ return {
                 end,
             },
         },
-        config = CfgUtil.require('plugin.ts'),
+        config = require('config.util').require('plugin.ts'),
     },
 }
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
