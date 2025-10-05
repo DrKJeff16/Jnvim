@@ -15,6 +15,7 @@ return {
     },
     {
         'embark-theme/vim',
+        dev = true,
         lazy = false,
         priority = 1000,
         name = 'embark',

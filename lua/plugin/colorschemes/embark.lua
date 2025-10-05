@@ -12,6 +12,9 @@ end
 
 function Embark.setup()
     vim.o.termguicolors = true
+    if require('user_api.check.exists').module('embark') then
+        require('embark').setup()
+    end
     vim.cmd(Embark.mod_cmd)
 end
 

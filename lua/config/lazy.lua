@@ -48,6 +48,7 @@ Lazy.setup({
         { import = 'plugin.Comment' },
         { import = 'plugin.autopairs' },
         { import = 'plugin.yanky' },
+        { import = 'plugin.screenkey' },
         { import = 'plugin.paredit' },
         { import = 'plugin.scope' },
         { import = 'plugin.possession' },
