@@ -8,7 +8,7 @@ return {
         'nvim-mini/mini.nvim',
         'nvim-tree/nvim-web-devicons',
     },
-    cond = not require('user_api.check').in_console(),
+    enabled = not require('user_api.check').in_console(),
     ---@module 'render-markdown'
 
     ---@type render.md.UserConfig
