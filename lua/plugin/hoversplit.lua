@@ -3,8 +3,10 @@
 ---@type LazySpec
 return {
     'roobert/hoversplit.nvim',
+    dev = true,
     version = false,
-    opts = {
+    opts = { ---@type HoverSplit.Opts
+        conceallevel = 0,
         key_bindings = {
             split_remain_focused = '<leader>hs',
             vsplit_remain_focused = '<leader>hv',

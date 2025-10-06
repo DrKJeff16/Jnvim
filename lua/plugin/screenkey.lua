@@ -3,17 +3,18 @@
 ---@type LazySpec
 return {
     'NStefan002/screenkey.nvim',
+    dev = true,
     lazy = false,
     version = false,
     opts = { ---@type screenkey.config
         win_opts = {
-            row = vim.o.lines - vim.o.cmdheight - 1,
-            col = vim.o.columns - 1,
+            row = 0,
+            col = math.floor((vim.o.columns - 60) / 2) - 1,
             relative = 'editor',
-            anchor = 'SE',
+            anchor = 'NW',
             width = 60,
             height = 3,
-            border = 'double',
+            border = 'rounded',
             title = {
                 { 'Sc', 'DiagnosticOk' },
                 { 're', 'DiagnosticWarn' },
@@ -24,25 +25,23 @@ return {
             style = 'minimal',
             focusable = false,
             noautocmd = true,
-            zindex = 200,
+            zindex = 50,
         },
         hl_groups = {
-            ['screenkey.hl.key'] = { link = 'DiffAdd' },
-            ['screenkey.hl.map'] = { link = 'DiffDelete' },
+            ['screenkey.hl.key'] = { link = 'DiagnosticOk' },
+            ['screenkey.hl.map'] = { link = 'DiagnosticWarn' },
             ['screenkey.hl.sep'] = { bg = 'red', fg = 'blue' },
         },
-        compress_after = 3,
+        compress_after = 2,
         clear_after = 3,
         emit_events = true,
         disable = {
             filetypes = {},
-            buftypes = {
-                'terminal',
-            },
+            buftypes = { 'terminal' },
             modes = {},
         },
         show_leader = true,
-        group_mappings = false,
+        group_mappings = true,
         display_infront = {},
         display_behind = {},
         filter = function(keys)
@@ -51,9 +50,6 @@ return {
                     keys[i].key = '%%'
                 end
             end
-            return keys
-        end,
-        colorize = function(keys)
             return keys
         end,
         separator = ' ',
@@ -87,7 +83,7 @@ return {
             ['<F12>'] = '󱊶',
             ['CTRL'] = 'Ctrl',
             ['ALT'] = 'Alt',
-            ['SUPER'] = '󰘳',
+            ['SUPER'] = 'Super',
             ['<leader>'] = '<leader>',
         },
         notify_method = 'notify',
@@ -98,7 +94,6 @@ return {
     },
     config = function(_, opts) ---@param opts screenkey.config
         require('screenkey').setup(opts)
-
         local desc = require('user_api.maps').desc
         require('user_api.config').keymaps({
             n = {
