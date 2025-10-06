@@ -16,10 +16,7 @@ local function server_load(name, exe)
             exe = { exe, { 'string', 'nil' } },
         })
     end
-    if not exe or exe == '' then
-        exe = name
-    end
-
+    exe = (exe and exe ~= '') and exe or name
     if not executable(exe) then
         return
     end

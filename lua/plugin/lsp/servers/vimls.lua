@@ -1,3 +1,4 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'vim-language-server', '--stdio' },
     filetypes = { 'vim' },
@@ -12,10 +13,7 @@ return {
         isNeovim = true,
         iskeyword = '@,48-57,_,192-255,-#',
         runtimepath = '',
-        suggest = {
-            fromRuntimepath = true,
-            fromVimruntime = true,
-        },
+        suggest = { fromRuntimepath = true, fromVimruntime = true },
         vimruntime = '',
     },
     root_markers = { '.git' },

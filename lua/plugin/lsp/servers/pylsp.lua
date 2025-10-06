@@ -1,3 +1,4 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'pylsp' },
     filetypes = { 'python' },
@@ -9,12 +10,10 @@ return {
         'Pipfile',
         '.git',
     },
-
     settings = {
         pylsp = {
-            ---@type { [1]: 'pycodestyle'|'flake8', [2]: 'flake8'|'pycodestyle' }
+            ---@type { [1]: 'pycodestyle' }|{ [1]: 'flake8' }
             configurationSources = { 'pycodestyle' },
-
             plugins = {
                 autopep8 = { enabled = true },
                 flake8 = {
@@ -80,5 +79,4 @@ return {
         },
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

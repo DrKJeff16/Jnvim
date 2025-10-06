@@ -1,6 +1,7 @@
 local environ = vim.fn.environ()
 local HOME = vim.fn.has_key(environ, 'HOME') and environ['HOME'] or environ['USERPROFILE']
 
+---@type vim.lsp.ClientConfig
 return {
     cmd = {
         'jdtls',
@@ -25,5 +26,4 @@ return {
     },
     settings = {},
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

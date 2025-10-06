@@ -49,9 +49,11 @@ local function on_init(client)
     })
 end
 
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'lua-language-server' },
     filetypes = { 'lua' },
+    on_init = on_init,
     root_markers = {
         '.luarc.json',
         '.luarc.jsonc',
@@ -62,9 +64,6 @@ return {
         'selene.yml',
         '.git',
     },
-
-    on_init = on_init,
-
     settings = {
         Lua = {
             addonManager = { enable = true },
@@ -143,5 +142,4 @@ return {
         },
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

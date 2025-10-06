@@ -1,8 +1,8 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'css-variables-language-server', '--stdio' },
     filetypes = { 'css', 'scss', 'less' },
     root_markers = { 'package.json', '.git' },
-
     settings = {
         cssVariables = {
             blacklistFolders = {
@@ -23,5 +23,4 @@ return {
         },
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

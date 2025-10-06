@@ -1,3 +1,4 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'docker-langserver', '--stdio' },
     filetypes = { 'dockerfile' },
@@ -12,5 +13,4 @@ return {
         },
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

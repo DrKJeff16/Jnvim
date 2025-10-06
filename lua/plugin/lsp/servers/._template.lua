@@ -1,3 +1,4 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { '<LSP_COMMAND>', '<OPTIONAL_ARGS>' },
     filetypes = {},

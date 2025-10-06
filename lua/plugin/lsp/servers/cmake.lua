@@ -1,3 +1,4 @@
+---@type vim.lsp.ClientConfig
 return {
     cmd = { 'cmake-language-server' },
     filetypes = { 'cmake' },
@@ -10,5 +11,4 @@ return {
         'cmake',
     },
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
