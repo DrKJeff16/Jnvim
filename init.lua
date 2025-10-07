@@ -129,12 +129,6 @@ Keymaps({
     },
 }, nil, true)
 
-local Alpha = L.alpha()
-
-if Alpha then
-    Alpha('theta')
-end
-
 -- Initialize the User API
 User.setup()
 

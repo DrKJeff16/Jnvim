@@ -36,6 +36,7 @@ Lazy.setup({
         { import = 'plugin.startuptime' },
         { import = 'plugin.web_devicons' },
         { import = 'plugin.mini.icons' },
+        { import = 'plugin.mini.starter' },
         { import = 'plugin.lspkind' },
         { import = 'plugin.notify' },
         { import = 'plugin.which_key' },
@@ -68,13 +69,16 @@ Lazy.setup({
         { import = 'plugin.buffer-sticks' },
         { import = 'plugin.lualine' },
         { import = 'plugin.bufferline' },
+        { import = 'plugin.fzf-tmux-runner' },
         { import = 'plugin.zen-mode' },
         { import = 'plugin.todo_comments' },
         { import = 'plugin.a_vim' },
         { import = 'plugin.twilight' },
         { import = 'plugin.qwahl' },
         { import = 'plugin.doxygen' },
+        { import = 'plugin.log-highlight' },
         { import = 'plugin.pomo' },
+        { import = 'plugin.gh-co' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },
@@ -210,12 +214,6 @@ end
 function M.lsp()
     if exists('plugin.lsp') then
         return require('plugin.lsp')
-    end
-end
-
-function M.alpha()
-    if exists('plugin.alpha') then
-        return require('plugin.alpha') or nil
     end
 end
 
