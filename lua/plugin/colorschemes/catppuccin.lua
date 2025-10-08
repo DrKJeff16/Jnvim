@@ -40,7 +40,7 @@ function Catppuccin.setup(variant, transparent, override)
         background = { light = 'latte', dark = variant ~= 'latte' and variant or 'mocha' },
         default_integrations = true,
         float = { solid = true, transparent = true },
-        transparent_background = transparent and not in_console(), -- disables setting the background color
+        transparent_background = transparent and not require('user_api.check').in_console(), -- disables setting the background color
         show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
         term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
         dim_inactive = { enabled = true, shade = 'dark', percentage = 0.20 },

@@ -1,6 +1,5 @@
 _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
-_G.in_console = require('user_api.check').in_console
 _G.inspect = vim.inspect
 
 local User = require('user_api')

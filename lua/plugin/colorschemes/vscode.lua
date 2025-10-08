@@ -42,7 +42,7 @@ function VSCode.setup(variant, transparent, override)
 
     require('vscode').setup(vim.tbl_extend('keep', override, {
         style = variant,
-        transparent = transparent and not in_console(),
+        transparent = transparent and not require('user_api.check').in_console(),
         italic_comments = false,
         underline_links = true,
         disable_nvimtree_bg = false,

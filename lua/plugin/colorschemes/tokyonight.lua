@@ -1,8 +1,4 @@
----@alias TNSubMod.Variant
----|'night'
----|'moon'
----|'day'
----|'storm'
+---@alias TNSubMod.Variant 'night'|'moon'|'day'|'storm'
 
 local User = require('user_api')
 local Check = User.check
@@ -53,7 +49,7 @@ function TokyoNight.setup(variant, transparent, override)
         end,
 
         terminal_colors = true,
-        transparent = transparent and not in_console(),
+        transparent = transparent and not require('user_api.check').in_console(),
 
         sidebars = {
             'NvimTree',

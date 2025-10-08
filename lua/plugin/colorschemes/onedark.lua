@@ -23,6 +23,7 @@ local exists = Check.exists.module
 local is_str = Check.value.is_str
 local is_bool = Check.value.is_bool
 local is_tbl = Check.value.is_tbl
+local in_console = require('user_api.check').in_console
 
 local in_tbl = vim.tbl_contains
 

@@ -261,7 +261,7 @@ return {
         'nvim-tree/nvim-web-devicons',
         { 'arkav/lualine-lsp-progress', version = false },
     },
-    cond = not in_console(),
+    cond = not require('user_api.check').in_console(),
     config = function()
         local Lualine = require('lualine')
         local floor = math.floor

@@ -22,7 +22,7 @@ function Gruvbox.setup(transparent, override)
     override = is_tbl(override) and override or {}
 
     require('gruvbox').setup(vim.tbl_deep_extend('keep', override, {
-        transparent_mode = transparent and not in_console(),
+        transparent_mode = transparent and not require('user_api.check').in_console(),
         dim_inactive = true,
         terminal_colors = true,
 
