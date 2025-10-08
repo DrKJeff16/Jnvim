@@ -9,7 +9,7 @@ return {
         'nvim-tree/nvim-web-devicons',
         'tiagovla/scope.nvim',
     },
-    cond = not in_console(),
+    cond = not require('user_api.check').in_console(),
     config = function()
         _G.__cached_neo_tree_selector = nil
         _G.__get_selector = function()

@@ -16,7 +16,7 @@ return {
         ft = 'org',
         version = false,
         config = CfgUtil.require('plugin.orgmode'),
-        enabled = not require('user_api.check').in_console(),
+        cond = not require('user_api.check').in_console(),
     },
 }
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

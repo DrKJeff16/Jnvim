@@ -1,23 +1,24 @@
 ---@module 'lazy'
 
-local executable = require('user_api.check.exists').executable
+local uv = vim.uv or vim.loop
 local in_list = vim.list_contains
 
 ---@type LazySpec
 return {
     'folke/todo-comments.nvim',
-    event = 'VeryLazy',
     version = false,
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
         'nvim-lua/plenary.nvim',
         'nvim-telescope/telescope.nvim',
     },
-    cond = executable('rg') and not in_console(),
+    cond = function()
+        return require('user_api.check.exists').executable('rg')
+            and not require('user_api.check').in_console()
+    end,
     config = function()
         local desc = require('user_api.maps').desc
-        local TODO = require('todo-comments')
-        TODO.setup({
+        require('todo-comments').setup({
             signs = true, -- show icons in the signs column
             sign_priority = 8, -- sign priority
             -- keywords recognized as todo comments
@@ -151,20 +152,35 @@ return {
 
         ---@param direction 'next'|'prev'
         ---@param keywords string[]
-        ---@return fun()
+        ---@return function
         local function jump(direction, keywords)
-            if not in_list({ 'next', 'prev' }, direction) then
-                error('(plugin.todo_comments:jump): Invalid direction')
+            if vim.fn.has('nvim-0.11') == 1 then
+                vim.validate('direction', direction, 'string', false, "'next'|'prev'")
+                vim.validate('keywords', keywords, 'table', false, 'string[]')
+            else
+                vim.validate({
+                    direction = { direction, 'string' },
+                    keywords = { keywords, 'table' },
+                })
             end
-            local direction_map = { next = TODO.jump_next, prev = TODO.jump_prev }
-            local func = direction_map[direction]
+            if not in_list({ 'next', 'prev' }, direction) then
+                error(('(plugin.todo_comments:jump): Invalid direction `%s`!'):format(direction))
+            end
+            if vim.tbl_isempty(keywords) then
+                error('(plugin.todo_comments:jump): No available keywords!')
+            end
+
+            local direction_map = {
+                next = require('todo-comments').jump_next,
+                prev = require('todo-comments').jump_prev,
+            }
             return function()
+                local func = direction_map[direction]
                 func({ keywords = keywords })
             end
         end
 
-        ---@class TODOKeywords
-        local KEYWORDS = {
+        local KEYWORDS = { ---@class TODOKeywords
             TODO = { 'TODO', 'PENDING', 'MISSING' },
             FIX = {
                 'FIX',
@@ -243,7 +259,7 @@ return {
                 },
                 ['<leader>cT'] = {
                     function()
-                        vim.cmd.TodoTelescope(('keywords=TODO,FIX cwd='):format(vim.uv.cwd()))
+                        vim.cmd.TodoTelescope(('keywords=TODO,FIX cwd='):format(uv.cwd()))
                     end,
                     desc('Open TODO Telescope'),
                 },

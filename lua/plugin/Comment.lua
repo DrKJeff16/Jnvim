@@ -1,6 +1,7 @@
 ---@module 'lazy'
 
-local function post_hook(_)
+---@diagnostic disable-next-line:unused-local
+local function post_hook()
     local bufnr = vim.api.nvim_get_current_buf()
     local win = vim.api.nvim_get_current_win()
     local r = unpack(vim.api.nvim_win_get_cursor(win))
@@ -12,6 +13,7 @@ end
 ---@type LazySpec
 return {
     'numToStr/Comment.nvim',
+    lazy = true,
     event = 'BufEnter',
     version = false,
     dependencies = {

@@ -27,13 +27,13 @@ return {
             },
         },
         config = require('config.util').require('plugin.ts'),
-        enabled = true,
+        cond = true,
     },
     {
         'tjdevries/tree-sitter-lua',
         build = 'cargo build --release',
         version = false,
-        enabled = false,
+        cond = false,
     },
 }
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

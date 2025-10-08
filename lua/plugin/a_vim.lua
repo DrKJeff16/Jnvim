@@ -1,18 +1,15 @@
-local Keymaps = require('user_api.config.keymaps')
-local desc = require('user_api.maps').desc
+---@module 'lazy'
 
-local augroup = vim.api.nvim_create_augroup
-local au = vim.api.nvim_create_autocmd
+---@type LazySpec
 return {
     'vim-scripts/a.vim',
+    lazy = true,
     ft = { 'c', 'cpp' },
     version = false,
     init = require('config.util').flag_installed('a_vim'),
     config = function()
-        local group = augroup('User.A_Vim', { clear = true })
-
-        au('BufEnter', {
-            group = group,
+        vim.api.nvim_create_autocmd('BufEnter', {
+            group = vim.api.nvim_create_augroup('User.A_Vim', { clear = true }),
             pattern = {
                 '*.c',
                 '*.cc',
@@ -27,24 +24,16 @@ return {
                 '*.h++',
                 '*.H',
             },
-
             callback = function(ev)
-                ---@type AllModeMaps
-                local Keys = {
-                    i = {
-                        ['<C-Tab>'] = { '<Esc>:IH<CR>', buffer = ev.buf },
-                    },
-
+                local desc = require('user_api.maps').desc
+                require('user_api.config').keymaps({
+                    i = { ['<C-Tab>'] = { '<Esc>:IH<CR>', buffer = ev.buf } },
                     n = {
                         ['<leader><C-h>'] = {
                             group = '+Header/Source Switch (C/C++)',
                             buffer = ev.buf,
                         },
-
-                        ['<leader><C-h>s'] = {
-                            ':A<CR>',
-                            desc('Cycle Header/Source', true, ev.buf),
-                        },
+                        ['<leader><C-h>s'] = { ':A<CR>', desc('Cycle Header/Source', true, ev.buf) },
                         ['<leader><C-h>x'] = {
                             ':AS<CR>',
                             desc('Horizontal Cycle Header/Source', true, ev.buf),
@@ -74,17 +63,13 @@ return {
                             desc('Tab Cycle Header/Source (Cursor)', true, ev.buf),
                         },
                     },
-                }
-
-                Keymaps(Keys, ev.buf)
+                }, ev.buf)
             end,
         })
-
-        ---HACK: Delete default plugin maps
+        ---HACK: Delete default plugin maps (very annoying ones)
         vim.keymap.del({ 'n', 'i' }, '<leader>ihn')
         vim.keymap.del({ 'n', 'i' }, '<leader>ih')
         vim.keymap.del({ 'n', 'i' }, '<leader>is')
     end,
 }
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

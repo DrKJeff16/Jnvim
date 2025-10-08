@@ -4,6 +4,7 @@
 return {
     'jiaoshijie/undotree',
     dev = true,
+    cond = false,
     version = false,
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()

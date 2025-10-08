@@ -7,15 +7,6 @@ return {
     { 'neovim/nvim-lspconfig', version = false },
     { 'b0o/SchemaStore.nvim', lazy = true, version = false },
     {
-        'folke/lazydev.nvim',
-        version = false,
-        dependencies = {
-            { 'DrKJeff16/wezterm-types', lazy = true, dev = true, version = false },
-        },
-        config = CfgUtil.require('plugin.lazydev'),
-        enabled = require('user_api.check.exists').executable('lua-language-server'),
-    },
-    {
         'folke/trouble.nvim',
         dev = true,
         event = 'VeryLazy',

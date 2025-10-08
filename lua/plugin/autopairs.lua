@@ -1,54 +1,61 @@
 ---@module 'lazy'
 
+local in_list = vim.list_contains
+
+---Control if auto-pairs should be enabled when
+---attaching to a specific buffer.
+--- ---
+---@param bufnr integer
+---@return boolean
+local function enable(bufnr)
+    local EXCEPT_FT = {
+        'TelescopePrompt',
+        'TelescopeResults',
+        'help',
+        'lazy',
+        'man',
+        'minimap',
+        'notify',
+        'packer',
+        'qf',
+        'snacks_picker_input',
+        'spectre_panel',
+    }
+    local EXCEPT_BT = {
+        'help',
+        'nofile',
+        'nowrite',
+        'prompt',
+        'quickfix',
+        'terminal',
+    }
+    local ft = require('user_api.util').ft_get(bufnr)
+    local bt = require('user_api.util').bt_get(bufnr)
+
+    return not (in_list(EXCEPT_FT, ft) or in_list(EXCEPT_BT, bt))
+end
+
 ---@type LazySpec
 return {
     'windwp/nvim-autopairs',
+    lazy = true,
     event = 'InsertEnter',
     version = false,
     dependencies = {
-        { 'RRethy/nvim-treesitter-endwise', event = 'InsertEnter', version = false },
+        {
+            'RRethy/nvim-treesitter-endwise',
+            lazy = true,
+            event = 'InsertEnter',
+            version = false,
+            dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        },
     },
     config = function()
-        local ft_get = require('user_api.util').ft_get
-        local bt_get = require('user_api.util').bt_get
-        local in_list = vim.list_contains
-
         local AP = require('nvim-autopairs')
         local Rule = require('nvim-autopairs.rule')
         local ts_conds = require('nvim-autopairs.ts-conds')
         local cond = require('nvim-autopairs.conds')
         local ts_node = ts_conds.is_ts_node
-
-        ---Control if auto-pairs should be enabled when attaching to a specific buffer.
-        --- ---
-        ---@param bufnr integer
-        ---@return boolean
-        local function enable(bufnr)
-            local EXCEPT_FT = {
-                'TelescopePrompt',
-                'TelescopeResults',
-                'help',
-                'lazy',
-                'man',
-                'minimap',
-                'notify',
-                'packer',
-                'qf',
-                'snacks_picker_input',
-                'spectre_panel',
-            }
-            local EXCEPT_BT = {
-                'help',
-                'nofile',
-                'nowrite',
-                'prompt',
-                'quickfix',
-                'terminal',
-            }
-
-            local ft, bt = ft_get(bufnr), bt_get(bufnr)
-            return not (in_list(EXCEPT_FT, ft) or in_list(EXCEPT_BT, bt))
-        end
 
         AP.setup({
             enabled = enable,
@@ -68,25 +75,17 @@ return {
             enable_abbr = false, --- Trigger abbreviation
             break_undo = true, --- Switch for basic rule break undo sequence
             check_ts = true,
-            ts_config = {
-                lua = { 'string' },
-            },
+            ts_config = { lua = { 'string' } },
             map_cr = true, --- Map the `<CR>` key
             map_bs = true, --- Map the `<BS>` key
             map_c_h = false, --- Map the `<C-h>` key to delete a pair
             map_c_w = false, --- Map `<C-w>` to delete a pair if possible
         })
 
-        local bracks = {
-            { '(', ')' },
-            { '[', ']' },
-            { '{', '}' },
-        }
         local joined_bracks = { '()', '[]', '{}' }
         local spaced_bracks = { '(  )', '[  ]', '{  }' }
-
-        ---@type Rule[]
-        local Rules = {
+        local bracks = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
+        local Rules = { ---@type Rule[]
             Rule('$', '$', { 'tex', 'latex' })
                 --- Don't add a pair if the next character is %
                 :with_pair(
@@ -108,16 +107,13 @@ return {
                 ),
 
             Rule('$$', '$$', { 'tex', 'latex' }):with_pair(function(opts)
-                print(vim.inspect(opts))
                 if opts.line == 'aa $$' then
-                    --- don't add pair on that line
-                    return false
+                    return false --- don't add pair on that line
                 end
             end),
 
             Rule(' ', ' ')
-                --- Pair will only occur if the conditional function returns true
-                :with_pair(
+                :with_pair( --- Pair will only occur if the conditional function returns true
                     function(opts)
                         --- We are checking if we are inserting a space in `()`, `[]`, or `{}`
                         local pair = opts.line:sub(opts.col - 1, opts.col)
@@ -126,9 +122,8 @@ return {
                 )
                 :with_move(cond.none())
                 :with_cr(cond.none())
+                ---We only want to delete the pair of spaces when the cursor is as such: `( | )`
                 :with_del(
-                    ---We only want to delete the pair of spaces when the cursor is as such: `( | )`.
-                    --- ---
                     function(opts)
                         local col = vim.api.nvim_win_get_cursor(0)[2]
                         local context = opts.line:sub(col - 1, col + 2)
@@ -137,7 +132,8 @@ return {
                 ),
 
             Rule('<', '>', {
-                --- If you use nvim-ts-autotag, you may want to exclude these filetypes from this rule
+                --- If you use nvim-ts-autotag, you may want to
+                --- exclude these filetypes from this rule
                 --- so that it doesn't conflict with `nvim-ts-autotag`
                 '-html',
                 '-markdown',
