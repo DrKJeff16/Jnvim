@@ -23,6 +23,7 @@ return {
             },
         }
         Fzf.setup({
+            { 'telescope' },
             globals = {
                 file_icon_padding = '',
                 help_open_win = vim.api.nvim_open_win,
