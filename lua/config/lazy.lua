@@ -81,6 +81,7 @@ Lazy.setup({
         { import = 'plugin.log-highlight' },
         { import = 'plugin.pomo' },
         { import = 'plugin.gh-co' },
+        { import = 'plugin.nvim-test' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },
