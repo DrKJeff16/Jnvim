@@ -379,6 +379,8 @@ Mods.sessions = {
     verbose = { read = true, write = true, delete = true },
 }
 
+Mods.test = {}
+
 ---@class MiniModules.Trailspace
 Mods.trailspace = { only_in_normal_buffers = true }
 

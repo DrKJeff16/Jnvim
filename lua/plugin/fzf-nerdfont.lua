@@ -4,6 +4,9 @@
 return {
     'stephansama/fzf-nerdfont.nvim',
     dev = true,
-    version = false,
+    lazy = true,
+    build = ':FzfNerdfont generate',
+    dependencies = { 'ibhagwan/fzf-lua' },
+    cmd = 'FzfNerdfont',
     opts = {},
 }
