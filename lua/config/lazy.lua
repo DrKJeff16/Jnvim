@@ -65,7 +65,7 @@ Lazy.setup({
         { import = 'plugin.lsp.clangd' },
         { import = 'plugin.git.gitsigns' },
         { import = 'plugin.toggleterm' },
-        -- { import = 'plugin.screenkey' },
+        { import = 'plugin.screenkey' },
         -- { import = 'plugin.fyler' },
         { import = 'plugin.hoversplit' },
         { import = 'plugin.outline' },
