@@ -28,13 +28,7 @@ return {
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
     version = false,
-    dependencies = {
-        {
-            'https://gitlab.com/HiPhish/rainbow-delimiters.nvim',
-            version = false,
-            config = require('config.util').require('plugin.rainbow_delimiters'),
-        },
-    },
+    dependencies = { 'HiPhish/rainbow-delimiters.nvim' },
     opts = {
         enabled = true,
         debounce = 200,

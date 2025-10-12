@@ -1,7 +1,5 @@
 ---@module 'lazy'
 
-local CfgUtil = require('config.util')
-
 ---@type LazySpec[]
 return {
     { 'neovim/nvim-lspconfig', version = false },
@@ -12,14 +10,6 @@ return {
         event = 'VeryLazy',
         version = false,
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-    },
-    {
-        'p00f/clangd_extensions.nvim',
-        ft = { 'c', 'cpp' },
-        dev = true,
-        version = false,
-        config = CfgUtil.require('plugin.lsp.clangd'),
-        enabled = require('user_api.check.exists').executable('clangd'),
     },
     {
         'NeoSahadeo/lsp-toggle.nvim',

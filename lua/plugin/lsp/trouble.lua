@@ -1,96 +1,66 @@
 ---@diagnostic disable:missing-fields
 
-local Keymaps = require('user_api.config.keymaps')
-local User = require('user_api')
-local desc = User.maps.desc
+local Trouble = {} ---@class Lsp.SubMods.Trouble
 
-local copy = vim.deepcopy
-local d_extend = vim.tbl_deep_extend
-
-local trouble = require('trouble')
-
----@class Lsp.SubMods.Trouble
-local Trouble = {}
-
----@type trouble.Config
-Trouble.Opts = {
-    auto_close = true, -- auto close when there are no items
-    auto_open = false, -- auto open when there are items
-    auto_preview = true, -- automatically open preview when on an item
-    auto_refresh = true, -- auto refresh when open
-    auto_jump = true, -- auto jump to the item when there's only one
-    focus = true, -- Focus the window when opened
-    restore = true, -- restores the last location in the list when opening
-    follow = true, -- Follow the current item
-    indent_guides = true, -- show indent guides
-    max_items = 200, -- limit number of items that can be displayed per section
-    multiline = true, -- render multi-line messages
-    pinned = false, -- When pinned, the opened trouble window will be bound to the current buffer
-    warn_no_results = false, -- show a warning when there are no results
-    open_no_results = false, -- open the trouble window when there are no results
-
-    ---@type trouble.Window.opts
-    win = {}, -- window options for the results window. Can be a split or a floating window
-
-    -- Window options for the preview window. Can be a split, floating window,
-    -- or `main` to show the preview in the main editor window
-    ---@type trouble.Window.opts
-    preview = {
-        type = 'main',
-        -- when a buffer is not yet loaded, the preview window will be created
-        -- in a scratch buffer with only syntax highlighting enabled.
-        -- Set to false, if you want the preview to always be a real loaded buffer
-        scratch = false,
+Trouble.Opts = { ---@type trouble.Config
+    auto_close = true,
+    auto_open = false,
+    auto_preview = true,
+    auto_refresh = true,
+    auto_jump = true,
+    focus = true,
+    restore = true,
+    follow = true,
+    indent_guides = true,
+    max_items = 200,
+    multiline = true,
+    pinned = false,
+    warn_no_results = false,
+    open_no_results = false,
+    win = {}, ---@type trouble.Window.opts
+    preview = { type = 'main', scratch = true }, ---@type trouble.Window.opts
+    throttle = { ---@type table<string, integer|{ ms: number, debounce?: boolean }>
+        refresh = 20,
+        update = 10,
+        render = 10,
+        follow = 100,
+        preview = { ms = 100, debounce = true },
     },
-    --- Throttle/Debounce settings. Should usually not be changed
-    ---@type table<string, number|{ ms: number, debounce?: boolean }>
-    throttle = {
-        refresh = 20, -- fetches new data when needed
-        update = 10, -- updates the window
-        render = 10, -- renders the window
-        follow = 100, -- follows the current item
-        preview = { ms = 100, debounce = true }, -- shows the preview for the current item
-    },
-    -- Key mappings can be set to the name of a builtin action,
-    -- or you can define your own custom action
-    ---@type table<string, string|trouble.Action>
-    keys = {
-        ['?'] = 'help',
-        r = 'refresh',
+    keys = { ---@type table<string, string|trouble.Action>
+        -- ['<2-leftmouse>'] = 'jump',
+        P = 'toggle_preview',
         R = 'toggle_refresh',
-        q = 'close',
-        o = 'jump_close',
-        ['<Esc>'] = 'cancel',
-        ['<CR>'] = 'jump',
-        ['<2-leftmouse>'] = 'jump',
         ['<C-s>'] = 'jump_split',
         ['<C-v>'] = 'jump_vsplit',
-        -- go down to next item (accepts count)
-        j = 'next',
-        ['}'] = 'next',
-        [']]'] = 'next',
-        -- go up to prev item (accepts count)
-        k = 'prev',
-        ['{'] = 'prev',
+        ['<CR>'] = 'jump',
+        ['<Esc>'] = 'cancel',
+        ['?'] = 'help',
         ['[['] = 'prev',
+        [']]'] = 'next',
+        ['{'] = 'prev',
+        ['}'] = 'next',
         i = 'inspect',
+        j = 'next',
+        k = 'prev',
+        o = 'jump_close',
         p = 'preview',
-        P = 'toggle_preview',
-        zo = 'fold_open',
-        zO = 'fold_open_recursive',
-        zc = 'fold_close',
-        zC = 'fold_close_recursive',
-        za = 'fold_toggle',
+        q = 'close',
+        r = 'refresh',
         zA = 'fold_toggle_recursive',
-        zm = 'fold_more',
+        zC = 'fold_close_recursive',
         zM = 'fold_close_all',
-        zr = 'fold_reduce',
-        zR = 'fold_open_all',
-        zx = 'fold_update',
-        zX = 'fold_update_all',
-        zn = 'fold_disable',
         zN = 'fold_enable',
+        zO = 'fold_open_recursive',
+        zR = 'fold_open_all',
+        zX = 'fold_update_all',
+        za = 'fold_toggle',
+        zc = 'fold_close',
         zi = 'fold_toggle_enable',
+        zm = 'fold_more',
+        zn = 'fold_disable',
+        zo = 'fold_open',
+        zr = 'fold_reduce',
+        zx = 'fold_update',
         gb = { -- example of a custom action that toggles the active view filter
             action = function(view)
                 view:filter({ buf = vim.api.nvim_get_current_buf() }, { toggle = true })
@@ -110,8 +80,7 @@ Trouble.Opts = {
             desc = 'Toggle Severity Filter',
         },
     },
-    ---@type table<string, trouble.Mode>
-    modes = {
+    modes = { ---@type table<string, trouble.Mode>
         -- sources define their own modes, which you can use directly,
         -- or override like in the example below
         lsp_references = {
@@ -126,10 +95,9 @@ Trouble.Opts = {
         lsp_base = {
             params = {
                 -- don't include the current location in the results
-                include_current = false,
+                include_current = true,
             },
         },
-
         diagnostics = {
             mode = 'diagnostics',
             auto_preview = true,
@@ -141,7 +109,6 @@ Trouble.Opts = {
             auto_open = false,
             auto_close = true,
         },
-
         test = {
             mode = 'diagnostics',
             preview = {
@@ -151,12 +118,10 @@ Trouble.Opts = {
                 size = 0.3,
             },
         },
-
         diagnostics_buffer = {
             mode = 'diagnostics',
             filter = { buf = 0 },
         },
-
         symbols = {
             desc = 'document symbols',
             mode = 'lsp_document_symbols',
@@ -168,7 +133,6 @@ Trouble.Opts = {
                 any = {
                     -- all symbol kinds for help / markdown files
                     ft = { 'help', 'markdown' },
-                    -- default set of symbol kinds
                     kind = {
                         'Class',
                         'Constructor',
@@ -188,15 +152,11 @@ Trouble.Opts = {
             },
         },
     },
-
     icons = {
-        ---@type trouble.Indent.symbols
-        indent = {
+        indent = { ---@type trouble.Indent.symbols
             top = '│ ',
             middle = '├╴',
-            -- last        = "└╴",
-            -- last          = "-╴",
-            last = '╰╴', -- rounded
+            last = '╰╴',
             fold_open = ' ',
             fold_closed = ' ',
             ws = '  ',
@@ -234,10 +194,9 @@ Trouble.Opts = {
     },
 }
 
----@type AllMaps
-Trouble.Keys = {
+local desc = require('user_api.maps').desc
+Trouble.Keys = { ---@type AllMaps
     ['<leader>lx'] = { group = '+Trouble' },
-
     ['<leader>lxx'] = {
         function()
             vim.cmd.Trouble(
@@ -280,15 +239,12 @@ function Trouble.new()
         ---@param self Lsp.SubMods.Trouble
         ---@param override? trouble.Config
         __call = function(self, override)
-            self.Opts = d_extend('force', copy(self.Opts), override or {})
-
-            trouble.setup(self.Opts)
-
-            Keymaps({ n = self.Keys })
+            self.Opts = vim.tbl_deep_extend('force', self.Opts, override or {})
+            require('trouble').setup(self.Opts)
+            require('user_api.config').keymaps({ n = self.Keys })
         end,
     })
 end
 
 return Trouble.new()
-
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:

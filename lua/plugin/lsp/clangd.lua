@@ -1,42 +1,37 @@
-local User = require('user_api')
-local Check = User.check
+---@module 'lazy'
 
-local exists = Check.exists.module
-local executable = Check.exists.executable
-
-if not (executable('clangd') and exists('clangd_extensions')) then
-    return
-end
-
-require('clangd_extensions').setup({
-    inlay_hints = {
-        inline = false,
-    },
-    ast = {
-        -- These require codicons (https://github.com/microsoft/vscode-codicons)
-        role_icons = {
-            type = '',
-            declaration = '',
-            expression = '',
-            specifier = '',
-            statement = '',
-            ['template argument'] = '',
+---@type LazySpec
+return {
+    'p00f/clangd_extensions.nvim',
+    lazy = true,
+    ft = { 'c', 'cpp' },
+    dev = true,
+    version = false,
+    cond = require('user_api.check.exists').executable('clangd'),
+    opts = {
+        inlay_hints = { inline = false },
+        ast = {
+            role_icons = {
+                type = '',
+                declaration = '',
+                expression = '',
+                specifier = '',
+                statement = '',
+                ['template argument'] = '',
+            },
+            kind_icons = {
+                Compound = '',
+                Recovery = '',
+                TranslationUnit = '',
+                PackExpansion = '',
+                TemplateTypeParm = '',
+                TemplateTemplateParm = '',
+                TemplateParamObject = '',
+            },
+            highlights = { detail = 'Comment' },
         },
-
-        kind_icons = {
-            Compound = '',
-            Recovery = '',
-            TranslationUnit = '',
-            PackExpansion = '',
-            TemplateTypeParm = '',
-            TemplateTemplateParm = '',
-            TemplateParamObject = '',
-        },
-
-        highlights = { detail = 'Comment' },
+        memory_usage = { border = 'double' },
+        symbol_info = { border = 'single' },
     },
-    memory_usage = { border = 'double' },
-    symbol_info = { border = 'single' },
-})
-
+}
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
