@@ -38,7 +38,7 @@ return {
         disable = {
             filetypes = {},
             buftypes = { 'terminal' },
-            modes = {},
+            modes = { 'i' },
         },
         show_leader = true,
         group_mappings = true,
