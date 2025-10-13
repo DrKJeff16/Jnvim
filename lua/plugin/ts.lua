@@ -106,18 +106,15 @@ vim.api.nvim_create_autocmd('FileType', {
             if not (lang and vim.treesitter.language.add(lang)) then
                 return
             end
-
             vim.treesitter.start()
-
             -- -- Set folding if available
             -- if vim.treesitter.query.get(lang, 'folds') then
             --     vim.wo[vim.api.nvim_get_current_win()].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
             -- end
-
-            -- Set indentation if available (overrides traditional indent)
-            if vim.treesitter.query.get(lang, 'indents') then
-                vim.bo[ev.buf].indentexpr = 'nvim_treesitter#indent()'
-            end
+            -- -- Set indentation if available (overrides traditional indent)
+            -- if vim.treesitter.query.get(lang, 'indents') then
+            --     vim.bo[ev.buf].indentexpr = 'nvim_treesitter#indent()'
+            -- end
         end
     end,
 })

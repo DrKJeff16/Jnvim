@@ -8,6 +8,7 @@ return {
     lazy = true,
     version = false,
     cmd = 'ZenMode',
+    cond = not require('user_api.check').in_console(),
     keys = {
         {
             '<leader>Zo',
@@ -34,7 +35,6 @@ return {
             mode = { 'n' },
         },
     },
-    enabled = not require('user_api.check').in_console(),
     opts = {
         window = {
             backdrop = 1,

@@ -83,6 +83,7 @@ Lazy.setup({
         { import = 'plugin.pomo' },
         { import = 'plugin.gh-co' },
         { import = 'plugin.nvim-test' },
+        { import = 'plugin.dooku' },
     },
     root = LAZY_DATA,
     defaults = { lazy = false, version = false },
