@@ -18,6 +18,7 @@
 ---|SpaceVimSubMod
 ---|TNSubMod
 ---|TokyoDarkSubMod
+---|VagueSubMod
 ---|VSCodeSubMod
 
 local is_str = require('user_api.check.value').is_str
@@ -36,6 +37,7 @@ Colorschemes.OPTIONS = {
     'Nightfox',
     'Embark',
     'Kanagawa',
+    'Vague',
     'KanagawaPaper',
     'Catppuccin',
     'Spaceduck',
@@ -74,6 +76,7 @@ Colorschemes.SpaceVimDark   = require('plugin.colorschemes.space_vim_dark')
 Colorschemes.Spaceduck      = require('plugin.colorschemes.spaceduck')
 Colorschemes.Tokyodark      = require('plugin.colorschemes.tokyodark')
 Colorschemes.Tokyonight     = require('plugin.colorschemes.tokyonight')
+Colorschemes.Vague          = require('plugin.colorschemes.vague')
 Colorschemes.Vscode         = require('plugin.colorschemes.vscode')
 
 -- stylua: ignore end

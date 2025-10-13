@@ -25,6 +25,7 @@ return {
     },
     {
         'jim-at-jibba/ariake.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_ariake'),
@@ -32,6 +33,7 @@ return {
     },
     {
         'tiagovla/tokyodark.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_tokyodark'),
@@ -39,6 +41,7 @@ return {
     },
     {
         'darianmorat/gruvdark.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_gruvdark'),
@@ -46,6 +49,7 @@ return {
     },
     {
         'catppuccin/nvim',
+        lazy = false,
         name = 'catppuccin',
         priority = 1000,
         version = false,
@@ -54,6 +58,7 @@ return {
     },
     {
         'navarasu/onedark.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_onedark'),
@@ -61,6 +66,7 @@ return {
     },
     {
         'EdenEast/nightfox.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_nightfox'),
@@ -68,13 +74,23 @@ return {
     },
     {
         'rebelot/kanagawa.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_kanagawa'),
         cond = not in_console(),
     },
     {
+        'vague-theme/vague.nvim',
+        lazy = false,
+        priority = 1000,
+        version = false,
+        init = colorscheme_init('installed_vague'),
+        cond = not in_console(),
+    },
+    {
         'thesimonho/kanagawa-paper.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_kanagawa_paper'),
@@ -82,6 +98,7 @@ return {
     },
     {
         'Mofiqul/vscode.nvim',
+        lazy = false,
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_vscode'),
@@ -89,8 +106,8 @@ return {
     },
     {
         'Mofiqul/dracula.nvim',
-        name = 'dracula',
         lazy = false,
+        name = 'dracula',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_dracula'),
@@ -106,8 +123,8 @@ return {
     },
     {
         'kepano/flexoki-neovim',
-        name = 'flexoki',
         lazy = false,
+        name = 'flexoki',
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_flexoki'),
@@ -136,11 +153,7 @@ return {
         lazy = false,
         priority = 1000,
         version = false,
-        init = colorscheme_init({
-            ['installed_oak'] = 1,
-            ['oak_virtualtext_bg'] = 1,
-        }),
-        cond = not in_console(),
+        init = colorscheme_init({ installed_oak = 1, oak_virtualtext_bg = 1 }),
     },
     {
         'pineapplegiant/spaceduck',
@@ -156,6 +169,7 @@ return {
         priority = 1000,
         version = false,
         init = colorscheme_init('installed_space_vim_dark'),
+        cond = not in_console(),
     },
     {
         'tomasr/molokai',
