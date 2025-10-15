@@ -2,19 +2,14 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
 _G.inspect = vim.inspect
 
-local User = require('user_api')
-local Util = User.util
-local Termux = User.distro.termux
-
-local Keymaps = User.config.keymaps
-local Opts = User.opts
-local desc = User.maps.desc
-local ft_get = Util.ft_get
-local bt_get = Util.bt_get
+local Keymaps = require('user_api.config.keymaps')
+local Opts = require('user_api').opts
+local desc = require('user_api.maps').desc
+local ft_get = require('user_api.util').ft_get
+local bt_get = require('user_api.util').bt_get
 
 local INFO = vim.log.levels.INFO
 local in_list = vim.list_contains
-local optset = vim.api.nvim_set_option_value
 local curr_buf = vim.api.nvim_get_current_buf
 
 -- [SOURCE](https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
@@ -30,7 +25,7 @@ Opts({
     background = 'dark',
     backspace = 'indent,eol,start',
     backup = false,
-    cmdwinheight = Termux.validate() and 15 or 25,
+    cmdwinheight = require('user_api.distro.termux').validate() and 15 or 25,
     colorcolumn = '101',
     confirm = true,
     copyindent = true,
@@ -73,7 +68,7 @@ Opts({
     tabstop = 4,
     textwidth = 100,
     title = true,
-    wrap = Termux.validate(),
+    wrap = require('user_api.distro.termux').validate(),
 })
 
 Opts.set_cursor_blink()
@@ -93,24 +88,12 @@ local L = require('config.lazy')
 
 Keymaps({
     n = {
-        ['<leader>vM'] = {
-            vim.cmd.messages,
-            desc('Run `:messages`'),
-        },
-        ['<leader>vN'] = {
-            vim.cmd.Notifications,
-            desc('Run `:Notifications`'),
-        },
-        ['<C-/>'] = {
-            ':normal gcc<CR>',
-            desc('Toggle Comment'),
-        },
+        ['<leader>vM'] = { vim.cmd.messages, desc('Run `:messages`') },
+        ['<leader>vN'] = { vim.cmd.Notifications, desc('Run `:Notifications`') },
+        ['<C-/>'] = { ':normal gcc<CR>', desc('Toggle Comment') },
     },
     v = {
-        ['<C-/>'] = {
-            ":'<,'>normal gcc<CR>",
-            desc('Toggle Comment'),
-        },
+        ['<C-/>'] = { ":'<,'>normal gcc<CR>", desc('Toggle Comment') },
     },
     x = {
         ['<M-m>'] = {
@@ -129,7 +112,7 @@ Keymaps({
 }, nil, true)
 
 -- Initialize the User API
-User.setup()
+require('user_api').setup()
 
 local Color = L.colorschemes()
 
@@ -146,13 +129,13 @@ Color('tokyonight', 'moon')
 
 vim.cmd.packadd('nohlsearch')
 
--- NOTE: See `:h g:markdown_minlines`
+if vim.fn.has('nvim-0.12.0') == 1 then
+    vim.cmd.packadd('nvim.undotree')
+end
+
 vim.g.markdown_minlines = 500
 
-local Lsp = L.lsp()
-Lsp.setup()
-
-local buf = curr_buf()
+L.lsp().setup()
 
 local DISABLE_FT = {
     'help',
@@ -171,25 +154,13 @@ local DISABLE_BT = {
     'terminal',
 }
 
-local ft, bt = ft_get(buf), bt_get(buf)
-
--- HACK: In case we're on specific buffer (file|buf)types
-if not (in_list(DISABLE_FT, ft) or in_list(DISABLE_BT, bt)) then
+local bufnr = curr_buf()
+if not (in_list(DISABLE_FT, ft_get(bufnr)) or in_list(DISABLE_BT, bt_get(bufnr))) then
     return
 end
 
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('<YOUR-AUGROUP>', { clear = false }),
-    pattern = { '*.html', '...' },
-    callback = function()
-        local win = vim.api.nvim_get_current_win()
-        vim.wo[win].wrap = true
-    end,
-})
-
----@type vim.api.keyset.option
-local win_opts = { scope = 'local' }
-
-optset('number', false, win_opts)
-optset('signcolumn', 'no', win_opts)
+vim.keymap.set('n', 'q', vim.cmd.bdelete, { noremap = true, silent = true, buffer = bufnr })
+local win = vim.api.nvim_get_current_win()
+vim.wo[win].number = false
+vim.wo[win].signcolumn = 'no'
 --- vim:ts=4:sts=4:sw=4:et:ai:si:sta:
