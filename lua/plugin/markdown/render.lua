@@ -1,4 +1,5 @@
 ---@module 'lazy'
+---@module 'render-markdown'
 
 ---@type LazySpec
 return {
@@ -8,11 +9,8 @@ return {
         'nvim-mini/mini.nvim',
         'nvim-tree/nvim-web-devicons',
     },
-    enabled = not require('user_api.check').in_console(),
-    ---@module 'render-markdown'
-
-    ---@type render.md.UserConfig
-    opts = {
+    cond = not require('user_api.check').in_console(),
+    opts = { ---@type render.md.UserConfig
         enabled = true,
         completions = { lsp = { enabled = true } },
         render_modes = { 'n', 'c', 't' },

@@ -11,7 +11,7 @@ return {
         'rcarriga/nvim-notify',
         'nvim-mini/mini.nvim',
     },
-    enabled = not require('user_api.check').in_console(),
+    cond = not require('user_api.check').in_console(),
     config = function()
         require('noice').setup({
             throttle = 1000 / 30,

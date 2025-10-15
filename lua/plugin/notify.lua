@@ -5,7 +5,7 @@ return {
     'rcarriga/nvim-notify',
     version = false,
     dependencies = { 'nvim-lua/plenary.nvim' },
-    enabled = not require('user_api.check').in_console(),
+    cond = not require('user_api.check').in_console(),
     opts = { ---@type notify.Config
         background_colour = 'NotifyBackground',
         merge_duplicates = true,

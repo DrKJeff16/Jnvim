@@ -17,7 +17,7 @@ local in_list = vim.list_contains
 local optset = vim.api.nvim_set_option_value
 local curr_buf = vim.api.nvim_get_current_buf
 
--- [SOURCE](stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
+-- [SOURCE](https://stackoverflow.com/questions/7183998/in-lua-what-is-the-right-way-to-handle-varargs-which-contains-nil)
 ---@type fun(...: any)
 function _G.notify_inspect(...)
     vim.notify(vim.inspect(...), INFO)
