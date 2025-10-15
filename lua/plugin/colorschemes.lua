@@ -1,5 +1,6 @@
 ---@alias AllColorSubMods
 ---|AriakeSubMod
+---|ConiferSubMod
 ---|CpcSubMod
 ---|DraculaSubMod
 ---|EmbarkSubMod
@@ -32,6 +33,7 @@ local Colorschemes = {}
 
 ---@enum AllCsc
 Colorschemes.OPTIONS = {
+    'Conifer',
     'Tokyonight',
     'Tokyodark',
     'Nightfox',
@@ -59,6 +61,7 @@ Colorschemes.OPTIONS = {
 
 Colorschemes.Ariake         = require('plugin.colorschemes.ariake')
 Colorschemes.Catppuccin     = require('plugin.colorschemes.catppuccin')
+Colorschemes.Conifer        = require('plugin.colorschemes.conifer')
 Colorschemes.Dracula        = require('plugin.colorschemes.dracula')
 Colorschemes.Embark         = require('plugin.colorschemes.embark')
 Colorschemes.Flexoki        = require('plugin.colorschemes.flexoki')

@@ -2,7 +2,7 @@ _G.MYVIMRC = vim.fn.stdpath('config') .. '/init.lua'
 _G.is_windows = (vim.uv or vim.loop).os_uname().version:match('Windows') ~= nil
 _G.inspect = vim.inspect
 
-local Keymaps = require('user_api.config.keymaps')
+local Keymaps = require('user_api.config').keymaps
 local Opts = require('user_api').opts
 local desc = require('user_api.maps').desc
 local ft_get = require('user_api.util').ft_get
@@ -116,16 +116,17 @@ require('user_api').setup()
 
 local Color = L.colorschemes()
 
--- Color('nightfox', 'nightfox')
--- Color('nightfox', 'carbonfox')
--- Color('nightfox', 'duskfox')
--- Color('tokyonight', 'storm')
-Color('tokyonight', 'moon')
--- Color('tokyodark')
--- Color('catppuccin', 'mocha')
--- Color('catppuccin', 'macchiato')
--- Color('catppuccin', 'frappe')
--- Color('spaceduck')
+-- Color('Nightfox', 'nightfox')
+-- Color('Nightfox', 'carbonfox')
+-- Color('Nightfox', 'duskfox')
+-- Color('Tokyonight', 'storm')
+-- Color('Tokyonight', 'moon')
+-- Color('Conifer', 'lunar')
+Color('Tokyodark')
+-- Color('Catppuccin', 'mocha')
+-- Color('Catppuccin', 'macchiato')
+-- Color('Catppuccin', 'frappe')
+-- Color('Spaceduck')
 
 vim.cmd.packadd('nohlsearch')
 

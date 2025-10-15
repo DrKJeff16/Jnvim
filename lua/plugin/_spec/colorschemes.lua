@@ -6,6 +6,14 @@ local in_console = require('user_api.check').in_console
 ---@type LazySpec[]
 return {
     {
+        'lucasadelino/conifer.nvim',
+        lazy = false,
+        priority = 1000,
+        version = false,
+        init = colorscheme_init('installed_conifer'),
+        cond = not in_console(),
+    },
+    {
         'folke/tokyonight.nvim',
         lazy = false,
         priority = 1000,
