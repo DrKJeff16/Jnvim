@@ -47,7 +47,7 @@ Lazy.setup({
         { import = 'plugin.which_key' },
         { import = 'plugin.blink_cmp' },
         { import = 'plugin.project' },
-        { import = 'plugin.fzf_lua' },
+        { import = 'plugin.fzf-lua' },
         { import = 'plugin.lazydev' },
         -- { import = 'plugin.undotree' },
         { import = 'plugin.ibl' },
